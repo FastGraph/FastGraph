@@ -111,7 +111,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\QuickGraph\QuickGraph.csproj">
+    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj">
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Name>QuickGraph</Name>
     </ProjectReference>

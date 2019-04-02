@@ -12,7 +12,7 @@ namespace QuickGraph.Algorithms.VertexCover
     /// </summary>
     /// <remarks>
     /// This is a modified version (by Batov Nikita) of the original 
-    /// Mihalis Yannakakis & Fanica Gavril algorithm
+    /// Mihalis Yannakakis and Fanica Gavril algorithm.
     /// </remarks>
     public sealed class MinimumVertexCoverApproxAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>

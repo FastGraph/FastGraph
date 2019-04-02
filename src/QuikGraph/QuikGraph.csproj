@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net45</TargetFrameworks> <!-- TODO -->
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
+
+    <Title>QuikGraph</Title>
+    <RootNamespace>QuickGraph</RootNamespace>
+    <AssemblyName>QuikGraph</AssemblyName>
+
+    <!-- Overridden by CI -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Include PDB files in NuGet for Source Link because symbolsource.org does not support portable PDBs -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+
+    <Copyright>Copyright © 2019</Copyright>
+    <Description>.NET library that provide mainly graphs structures and algorithms for C#.
+
+QuikGraph provides generic directed/undirected graph data structures and algorithms for .NET. It comes with algorithms such as depth first seach, breath first search, A* search, shortest path, k-shortest path, maximum flow, etc...
+
+Supported platforms:
+- .NET Framework 4.5</Description>
+    <Owners>Alexandre Rabérin</Owners>
+    <Authors>Alexandre Rabérin</Authors>
+    <Company>Alexandre Rabérin</Company>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>QuikGraph</PackageId>
+    <PackageReleaseNotes>➟ Release 1.0.0</PackageReleaseNotes>
+    <PackageTags>QuickGraph QuikGraph Graph Algorithm C# .NET Graphviz</PackageTags>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/KeRNeLith/QuickGraph</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuickGraph/master/docs/files/img/logo.png</PackageIconUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Optimization configurations -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <!-- Targets defines -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+    <AssemblyTitle>QuikGraph .NET 4.5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET45;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Dependencies -->
+</Project>

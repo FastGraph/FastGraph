@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QuickGraph.Tests</RootNamespace>
-    <AssemblyName>YC.QuickGraph.Tests</AssemblyName>
+    <AssemblyName>QuikGraph.Tests</AssemblyName>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>
     </SccProjectName>
@@ -517,9 +517,9 @@
       <Project>{1ccafd2c-4a61-4f7f-986c-a2f575086344}</Project>
       <Name>QuickGraphFS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\QuickGraph\QuickGraph.csproj">
+    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj">
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
-      <Name>QuickGraph</Name>
+      <Name>QuikGraph</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

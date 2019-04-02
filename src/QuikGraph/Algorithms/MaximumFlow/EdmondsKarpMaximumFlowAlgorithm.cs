@@ -15,7 +15,6 @@ namespace QuickGraph.Algorithms.MaximumFlow
     /// <typeparam name="TVertex">type of a vertex</typeparam>
     /// <typeparam name="TEdge">type of an edge</typeparam>
     /// <remarks>
-    /// <remarks>
     /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges"/> if TEdge is a value type,
     /// e.g. <see cref="SEdge{TVertex}"/>.
     /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.

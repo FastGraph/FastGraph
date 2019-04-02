@@ -194,7 +194,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuickGraph\QuickGraph.csproj">
+    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj">
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Name>QuickGraph</Name>
     </ProjectReference>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectScaffold", "ProjectScaffold", "{FAAD5B1C-1217-48D6-B1EF-7CAC0440D6A4}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7A2A3C07-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extras", "Extras", "{DD28733B-860A-4FE6-8D68-119EB179F90E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph", "src\QuickGraph\QuickGraph.csproj", "{A9A5C115-0680-44B3-A87E-5ECF4C93814E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikGraph", "src\QuikGraph\QuikGraph.csproj", "{A9A5C115-0680-44B3-A87E-5ECF4C93814E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Data", "src\QuickGraph.Data\QuickGraph.Data.csproj", "{960C14D1-EDBD-40E5-8AE6-25E311551B87}"
 EndProject
@@ -65,10 +65,10 @@ Global
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.DebugContracts|Any CPU.Build.0 = Debug|Any CPU
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release20|Any CPU.ActiveCfg = Release20|Any CPU
-		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release20|Any CPU.Build.0 = Release20|Any CPU
-		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.ReleaseContractsReferences|Any CPU.ActiveCfg = Release20|Any CPU
-		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.ReleaseContractsReferences|Any CPU.Build.0 = Release20|Any CPU
+		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release20|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release20|Any CPU.Build.0 = Release|Any CPU
+		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.ReleaseContractsReferences|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.ReleaseContractsReferences|Any CPU.Build.0 = Release|Any CPU
 		{960C14D1-EDBD-40E5-8AE6-25E311551B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{960C14D1-EDBD-40E5-8AE6-25E311551B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{960C14D1-EDBD-40E5-8AE6-25E311551B87}.DebugContracts|Any CPU.ActiveCfg = Debug|Any CPU
@@ -207,6 +207,9 @@ Global
 		{3BF3542B-4034-429F-9105-197A60625CA3} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{6B141FDE-F5DF-4DFD-B21F-C076BC87CCAF} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{4B220E23-A7E0-4222-83F5-C785F7C66B33} = {2E664E5C-14E3-4AA2-A336-7209544C78F0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C26EFBC1-5149-4422-AFD3-172667AA018F}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = QuickGraph1.vsmdi
