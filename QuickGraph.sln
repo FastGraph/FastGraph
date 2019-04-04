@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7A2A3C07-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extras", "Extras", "{DD28733B-860A-4FE6-8D68-119EB179F90E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuikGraph", "src\QuikGraph\QuikGraph.csproj", "{A9A5C115-0680-44B3-A87E-5ECF4C93814E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph", "src\QuikGraph\QuikGraph.csproj", "{A9A5C115-0680-44B3-A87E-5ECF4C93814E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Data", "src\QuickGraph.Data\QuickGraph.Data.csproj", "{960C14D1-EDBD-40E5-8AE6-25E311551B87}"
 EndProject
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Petri", "src\Qui
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "QuickGraphFS", "src\QuickGraphFS\QuickGraphFS.fsproj", "{1CCAFD2C-4A61-4F7F-986C-A2F575086344}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Tests", "tests\QuickGraph.Tests\QuickGraph.Tests.csproj", "{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Tests", "tests\QuikGraph.Tests\QuikGraph.Tests.csproj", "{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Perf", "tests\QuickGraph.Perf\QuickGraph.Perf.csproj", "{2C35D329-D1F8-4862-8DA2-F2D27E8D4DB7}"
 EndProject
@@ -135,10 +135,10 @@ Global
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.DebugContracts|Any CPU.Build.0 = Debug|Any CPU
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release20|Any CPU.ActiveCfg = Release20|Any CPU
-		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release20|Any CPU.Build.0 = Release20|Any CPU
-		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.ReleaseContractsReferences|Any CPU.ActiveCfg = Release20|Any CPU
-		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.ReleaseContractsReferences|Any CPU.Build.0 = Release20|Any CPU
+		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release20|Any CPU.ActiveCfg = Release|Any CPU
+		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release20|Any CPU.Build.0 = Release|Any CPU
+		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.ReleaseContractsReferences|Any CPU.ActiveCfg = Release|Any CPU
+		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.ReleaseContractsReferences|Any CPU.Build.0 = Release|Any CPU
 		{2C35D329-D1F8-4862-8DA2-F2D27E8D4DB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C35D329-D1F8-4862-8DA2-F2D27E8D4DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C35D329-D1F8-4862-8DA2-F2D27E8D4DB7}.DebugContracts|Any CPU.ActiveCfg = Debug|Any CPU

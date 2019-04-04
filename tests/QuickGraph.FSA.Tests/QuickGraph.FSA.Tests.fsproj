@@ -71,8 +71,8 @@
       <Project>{bd5d18de-1c9d-4314-a777-21aa683eeace}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\QuickGraph\QuickGraph.csproj">
-      <Name>QuickGraph</Name>
+    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj">
+      <Name>QuikGraph</Name>
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -72,8 +72,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuickGraph\QuickGraph.csproj">
-      <Name>QuickGraph</Name>
+    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj">
+      <Name>QuikGraph</Name>
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Private>True</Private>
     </ProjectReference>
