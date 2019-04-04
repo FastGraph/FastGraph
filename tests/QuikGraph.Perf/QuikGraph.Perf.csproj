@@ -3,20 +3,27 @@
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
 
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
 
-    <Title>QuikGraph.Tests</Title>
+    <Title>QuikGraph.Perf</Title>
+    <RootNamespace>QuickGraph.Perf</RootNamespace>
+    <AssemblyName>QuikGraph.Perf</AssemblyName>
 
+    <!-- Overridden by CI -->
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
-    <Copyright>Copyright © 2019</Copyright>
-    <Description>Tests for QuikGraph library.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Include PDB files in NuGet for Source Link because symbolsource.org does not support portable PDBs -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
-    <Authors>Alexandre Rabérin</Authors>
+    <Copyright>Copyright © 2019</Copyright>
+    <Description>Performance graphs for QuikGraph library.</Description>
+	
     <Owners>Alexandre Rabérin</Owners>
+    <Authors>Alexandre Rabérin</Authors>
     <Company>Alexandre Rabérin</Company>
 
     <IsPackable>false</IsPackable>
@@ -27,10 +34,9 @@
     <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
   </PropertyGroup>
 
-  <!-- C# configuration -->
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <!-- Optimization configurations -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -41,37 +47,29 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
 
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <DefineConstants>$(DefineConstants);NET45;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="$(ProjectDir)GraphML\**" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-  
   <!-- Dependencies -->
   <ItemGroup>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-    <PackageReference Include="FSharp.Core" Version="4.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-	<ProjectReference Include="..\..\src\QuickGraph.Data\QuickGraph.Data.csproj" />
-    <ProjectReference Include="..\..\src\QuickGraph.Graphviz\QuickGraph.Graphviz.csproj" />
-    <ProjectReference Include="..\..\src\QuickGraphFS\QuickGraphFS.fsproj" />
     <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
-	<Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Pex\Microsoft.Pex.Framework.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\QuikGraph.Tests\QuikGraph.Tests.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    <Content Include="..\QuikGraph.Tests\GraphML\repro12273.xml">
+      <Link>GraphML\repro12273.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

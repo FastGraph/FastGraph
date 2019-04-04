@@ -6,14 +6,14 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
 
-    <Title>QuikGraph.Tests</Title>
+    <Title>QuikGraph.Samples</Title>
 
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
     <Copyright>Copyright © 2019</Copyright>
-    <Description>Tests for QuikGraph library.</Description>
+    <Description>Samples for QuikGraph library.</Description>
 
     <Authors>Alexandre Rabérin</Authors>
     <Owners>Alexandre Rabérin</Owners>
@@ -53,22 +53,15 @@
   
   <!-- Dependencies -->
   <ItemGroup>
-    <Reference Include="System.Data.DataSetExtensions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-    <PackageReference Include="FSharp.Core" Version="4.6.2" />
   </ItemGroup>
-
+  
   <ItemGroup>
 	<ProjectReference Include="..\..\src\QuickGraph.Data\QuickGraph.Data.csproj" />
     <ProjectReference Include="..\..\src\QuickGraph.Graphviz\QuickGraph.Graphviz.csproj" />
-    <ProjectReference Include="..\..\src\QuickGraphFS\QuickGraphFS.fsproj" />
     <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
-	<Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Pex\Microsoft.Pex.Framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

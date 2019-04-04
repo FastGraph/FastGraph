@@ -26,19 +26,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph", "src\QuikGraph\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Data", "src\QuickGraph.Data\QuickGraph.Data.csproj", "{960C14D1-EDBD-40E5-8AE6-25E311551B87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Samples", "src\QuickGraph.Samples\QuickGraph.Samples.csproj", "{8836CFAC-D2B0-47A5-9A91-03A2218BF6FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Samples", "src\QuikGraph.Samples\QuikGraph.Samples.csproj", "{8836CFAC-D2B0-47A5-9A91-03A2218BF6FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Graphviz", "src\QuickGraph.Graphviz\QuickGraph.Graphviz.csproj", "{595D6322-637A-4A36-97F1-D53F3F9ECEA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Glee", "src\QuickGraph.Glee\QuickGraph.Glee.csproj", "{ACDD0973-E5D9-4C2B-9EAF-B5B5DF44EDDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Petri", "src\QuickGraph.Petri\QuickGraph.Petri.csproj", "{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Petri", "src\QuikGraph.Petri\QuikGraph.Petri.csproj", "{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "QuickGraphFS", "src\QuickGraphFS\QuickGraphFS.fsproj", "{1CCAFD2C-4A61-4F7F-986C-A2F575086344}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Tests", "tests\QuikGraph.Tests\QuikGraph.Tests.csproj", "{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.Perf", "tests\QuickGraph.Perf\QuickGraph.Perf.csproj", "{2C35D329-D1F8-4862-8DA2-F2D27E8D4DB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Perf", "tests\QuikGraph.Perf\QuikGraph.Perf.csproj", "{2C35D329-D1F8-4862-8DA2-F2D27E8D4DB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "YC.FST", "YC.FST", "{2E664E5C-14E3-4AA2-A336-7209544C78F0}"
 EndProject
@@ -115,10 +115,10 @@ Global
 		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.DebugContracts|Any CPU.Build.0 = Debug|Any CPU
 		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.Release20|Any CPU.ActiveCfg = Release20|Any CPU
-		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.Release20|Any CPU.Build.0 = Release20|Any CPU
-		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.ReleaseContractsReferences|Any CPU.ActiveCfg = Release20|Any CPU
-		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.ReleaseContractsReferences|Any CPU.Build.0 = Release20|Any CPU
+		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.Release20|Any CPU.ActiveCfg = Release|Any CPU
+		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.Release20|Any CPU.Build.0 = Release|Any CPU
+		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.ReleaseContractsReferences|Any CPU.ActiveCfg = Release|Any CPU
+		{6C49E8BF-82F4-40D0-AB49-8EA8A655A989}.ReleaseContractsReferences|Any CPU.Build.0 = Release|Any CPU
 		{1CCAFD2C-4A61-4F7F-986C-A2F575086344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1CCAFD2C-4A61-4F7F-986C-A2F575086344}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CCAFD2C-4A61-4F7F-986C-A2F575086344}.DebugContracts|Any CPU.ActiveCfg = Debug|Any CPU
