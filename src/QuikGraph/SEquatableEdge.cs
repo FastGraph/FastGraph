@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -18,9 +16,7 @@ namespace QuickGraph
 #endif
     [DebuggerDisplay(EdgeExtensions.DebuggerDisplayEdgeFormatString)]
     [StructLayout(LayoutKind.Auto)]
-    public struct SEquatableEdge<TVertex>
-        : IEdge<TVertex>
-        , IEquatable<SEquatableEdge<TVertex>>
+    public struct SEquatableEdge<TVertex> : IEdge<TVertex>, IEquatable<SEquatableEdge<TVertex>>
     {
         private readonly TVertex source;
         private readonly TVertex target;

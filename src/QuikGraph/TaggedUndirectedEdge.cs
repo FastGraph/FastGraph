@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Diagnostics;
 
 namespace QuickGraph

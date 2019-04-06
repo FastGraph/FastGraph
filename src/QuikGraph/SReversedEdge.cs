@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -19,9 +17,7 @@ namespace QuickGraph
 #endif
     [StructLayout(LayoutKind.Auto)]
     [DebuggerDisplay("{Source}<-{Target}")]
-    public struct SReversedEdge<TVertex, TEdge> 
-        : IEdge<TVertex>
-        , IEquatable<SReversedEdge<TVertex, TEdge>>
+    public struct SReversedEdge<TVertex, TEdge> : IEdge<TVertex>, IEquatable<SReversedEdge<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         private readonly TEdge originalEdge;

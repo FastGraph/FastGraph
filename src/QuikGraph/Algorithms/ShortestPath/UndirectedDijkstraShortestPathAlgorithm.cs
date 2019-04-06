@@ -79,7 +79,7 @@ namespace QuickGraph.Algorithms.ShortestPath
                 this.OnEdgeNotRelaxed(args.Edge, args.Reversed);
         }
 
-        private void InternalGrayTarget(Object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void InternalGrayTarget(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);

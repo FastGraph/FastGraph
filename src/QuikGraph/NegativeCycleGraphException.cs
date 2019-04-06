@@ -1,5 +1,5 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+﻿using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
 

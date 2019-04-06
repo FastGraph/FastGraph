@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Diagnostics;
 
 namespace QuickGraph
@@ -12,32 +10,33 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("{Source}->{Target}")]
-    public class EquatableEdge<TVertex> 
-        : Edge<TVertex>
-        , IEquatable<EquatableEdge<TVertex>>
+    [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
+    public class EquatableEdge<TVertex> : Edge<TVertex>, IEquatable<EquatableEdge<TVertex>>
     {
         public EquatableEdge(TVertex source, TVertex target)
             : base(source, target)
-        { }
+        {
+        }
 
+        /// <inheritdoc />
         public bool Equals(EquatableEdge<TVertex> other)
         {
-            return
-                (object)other != null &&
-                this.Source.Equals(other.Source) &&
-                this.Target.Equals(other.Target);
+            if (other is null)
+                return false;
+            return Source.Equals(other.Source) 
+                   && Target.Equals(other.Target);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as EquatableEdge<TVertex>);
+            return Equals(obj as EquatableEdge<TVertex>);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
-            return
-                HashCodeHelper.Combine(this.Source.GetHashCode(), this.Target.GetHashCode());
+            return HashCodeHelper.Combine(Source.GetHashCode(), Target.GetHashCode());
         }
     }
 }

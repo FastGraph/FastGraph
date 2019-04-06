@@ -1,50 +1,53 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Diagnostics;
 
 namespace QuickGraph
 {
     /// <summary>
-    /// An equatable term edge implementation
+    /// An equatable term edge implementation.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
+    /// <typeparam name="TVertex">Type of the vertices.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("{Source}->{Target}")]
-    public class EquatableTermEdge<TVertex> 
-        : TermEdge<TVertex>
-        , IEquatable<EquatableTermEdge<TVertex>>
+    [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
+    public class EquatableTermEdge<TVertex> : TermEdge<TVertex>, IEquatable<EquatableTermEdge<TVertex>>
     {
         public EquatableTermEdge(TVertex source, TVertex target, int sourceTerminal, int targetTerminal)
             : base(source, target, sourceTerminal, targetTerminal)
-        { }
+        {
+        }
 
         public EquatableTermEdge(TVertex source, TVertex target)
             : base(source, target)
-        { }
+        {
+        }
 
+        /// <inheritdoc />
         public bool Equals(EquatableTermEdge<TVertex> other)
         {
-            return
-                (object)other != null &&
-                this.Source.Equals(other.Source) &&
-                this.Target.Equals(other.Target) &&
-                this.SourceTerminal.Equals(other.SourceTerminal) &&
-                this.TargetTerminal.Equals(other.TargetTerminal);
+            if (other is null)
+                return false;
+            return Source.Equals(other.Source)
+                   && Target.Equals(other.Target)
+                   && SourceTerminal.Equals(other.SourceTerminal)
+                   && TargetTerminal.Equals(other.TargetTerminal);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as EquatableTermEdge<TVertex>);
+            return Equals(obj as EquatableTermEdge<TVertex>);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
-            return
-                HashCodeHelper.Combine(this.Source.GetHashCode(), this.Target.GetHashCode(),
-                                       this.SourceTerminal.GetHashCode(), this.TargetTerminal.GetHashCode());
+            return HashCodeHelper.Combine(
+                Source.GetHashCode(),
+                Target.GetHashCode(),
+                SourceTerminal.GetHashCode(),
+                TargetTerminal.GetHashCode());
         }
     }
 }

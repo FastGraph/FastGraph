@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ShortestPath

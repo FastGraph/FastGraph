@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -17,16 +15,11 @@ namespace QuickGraph.Collections
         private readonly Func<TVertex, TDistance> distances;
         private readonly BinaryHeap<TDistance, TVertex> heap;
 
-        public BinaryQueue(
-            Func<TVertex, TDistance> distances
-            )
+        public BinaryQueue(Func<TVertex, TDistance> distances)
             : this(distances, Comparer<TDistance>.Default.Compare)
         { }
 
-		public BinaryQueue(
-            Func<TVertex, TDistance> distances,
-            Comparison<TDistance> distanceComparison
-            )
+		public BinaryQueue(Func<TVertex, TDistance> distances, Comparison<TDistance> distanceComparison)
 		{
 #if SUPPORTS_CONTRACTS
             Contract.Requires(distances != null);

@@ -19,8 +19,7 @@ namespace QuickGraph.Algorithms.Observers
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class VertexPredecessorRecorderObserver<TVertex, TEdge> :
-        IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
+    public sealed class VertexPredecessorRecorderObserver<TVertex, TEdge> : IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         private readonly Dictionary<TVertex, TEdge> vertexPredecessors;

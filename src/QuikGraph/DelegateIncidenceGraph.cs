@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 
 namespace QuickGraph
@@ -13,9 +11,7 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class DelegateIncidenceGraph<TVertex, TEdge>
-        : DelegateImplicitGraph<TVertex, TEdge>
-        , IIncidenceGraph<TVertex, TEdge>
+    public class DelegateIncidenceGraph<TVertex, TEdge> : DelegateImplicitGraph<TVertex, TEdge>, IIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>, IEquatable<TEdge>
     {
         public DelegateIncidenceGraph(

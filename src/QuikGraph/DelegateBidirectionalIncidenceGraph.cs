@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -17,9 +15,7 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class DelegateBidirectionalIncidenceGraph<TVertex, TEdge>
-        : DelegateIncidenceGraph<TVertex, TEdge>
-        , IBidirectionalIncidenceGraph<TVertex, TEdge>
+    public class DelegateBidirectionalIncidenceGraph<TVertex, TEdge> : DelegateIncidenceGraph<TVertex, TEdge>, IBidirectionalIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>, IEquatable<TEdge>
     {
         readonly TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges;

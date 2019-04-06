@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
