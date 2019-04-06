@@ -1,9 +1,13 @@
 ﻿using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms
 {
+#if SUPPORTS_CONTRACTS
     [ContractClass(typeof(Contracts.IComputationContract))]
+#endif
     public interface IComputation
     {
         object SyncRoot { get; }

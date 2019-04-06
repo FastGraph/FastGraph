@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IAlgorithm<>))]
+#endif
     abstract class IAlgorithmContract<TGraph>
         : IAlgorithm<TGraph>
     {
@@ -14,9 +18,11 @@ namespace QuickGraph.Algorithms.Contracts
 
         TGraph IAlgorithm<TGraph>.VisitedGraph
         {
-            get 
+            get
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Contract.Result<TGraph>() != null);
+#endif
 
                 return default(TGraph);
             }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -228,9 +230,11 @@ namespace QuickGraph.Algorithms.Search
         /// <param name="depth">current exploration depth</param>
         /// <exception cref="ArgumentNullException">se cannot be null</exception>
         private void Visit(TEdge se, int depth)
-        {            
+        {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(se != null);
             Contract.Requires(depth >= 0);
+#endif
 
             if (depth > this.maxDepth)
                 return;

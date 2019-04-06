@@ -1,15 +1,23 @@
 ﻿using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+
 namespace QuickGraph.Collections
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IVertexEdgeDictionary<,>))]
+#endif
     abstract class IVertexEdgeDictionaryContract<TVertex, TEdge> 
         : IVertexEdgeDictionary<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         IVertexEdgeDictionary<TVertex, TEdge> IVertexEdgeDictionary<TVertex, TEdge>.Clone()
         {
+#if SUPPORTS_CONTRACTS
             Contract.Ensures(Contract.Result<IVertexEdgeDictionary<TVertex, TEdge>>() != null);
+#endif
+
             throw new NotImplementedException();
         }
 
@@ -112,6 +120,7 @@ namespace QuickGraph.Collections
             throw new NotImplementedException();
         }
 #endif
+
         #endregion
     }
 }

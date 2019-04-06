@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Runtime.InteropServices;
 
 namespace QuickGraph
@@ -27,10 +29,12 @@ namespace QuickGraph
         /// <param name="target">The target.</param>
         public SEdge(TVertex source, TVertex target)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
             Contract.Ensures(Contract.ValueAtReturn(out this).Source.Equals(source));
             Contract.Ensures(Contract.ValueAtReturn(out this).Target.Equals(target));
+#endif
 
             this.source = source;
             this.target = target;

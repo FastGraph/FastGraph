@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+#endif
 using QuickGraph.Collections;
-using System.Linq;
+#if SUPPORTS_CONTRACTS
+using QuickGraph.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -69,7 +71,10 @@ namespace QuickGraph
             int capacity, 
             Func<int, IVertexEdgeDictionary<TVertex, TEdge>> vertexEdgesDictionaryFactory)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexEdgesDictionaryFactory != null);
+#endif
+
             this.allowParallelEdges = allowParallelEdges;
             this.vertexInEdges = vertexEdgesDictionaryFactory(capacity);
             this.vertexOutEdges = vertexEdgesDictionaryFactory(capacity);
@@ -77,72 +82,96 @@ namespace QuickGraph
  
         public static Type EdgeType
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return typeof(TEdge); }
         }
 
         public int EdgeCapacity
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.edgeCapacity; }
             set { this.edgeCapacity = value; }
         }
 
         public bool IsDirected
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.isDirected; }
         }
 
         public bool AllowParallelEdges
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.allowParallelEdges; }
         }
 
         public bool IsVerticesEmpty
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.vertexOutEdges.Count == 0; }
         }
 
         public int VertexCount
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.vertexOutEdges.Count; }
         }
 
         public virtual IEnumerable<TVertex> Vertices
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.vertexOutEdges.Keys; }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex v)
         {
             return this.vertexOutEdges.ContainsKey(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsOutEdgesEmpty(TVertex v)
         {
             return this.vertexOutEdges[v].Count == 0;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int OutDegree(TVertex v)
         {
             return this.vertexOutEdges[v].Count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> OutEdges(TVertex v)
         {
             return this.vertexOutEdges[v];
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
         {
             IEdgeList<TVertex, TEdge> list;
@@ -156,7 +185,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
         {
             IEdgeList<TVertex, TEdge> list;
@@ -170,37 +201,49 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge OutEdge(TVertex v, int index)
         {
             return this.vertexOutEdges[v][index];
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsInEdgesEmpty(TVertex v)
         {
             return this.vertexInEdges[v].Count == 0;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int InDegree(TVertex v)
         {
             return this.vertexInEdges[v].Count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> InEdges(TVertex v)
         {
             return this.vertexInEdges[v];
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge InEdge(TVertex v, int index)
         {
             return this.vertexInEdges[v][index];
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int Degree(TVertex v)
         {
             return this.OutDegree(v) + this.InDegree(v);
@@ -229,7 +272,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             IEnumerable<TEdge> outEdges;
@@ -241,7 +286,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetEdge(
             TVertex source,
             TVertex target,
@@ -264,7 +311,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetEdges(
             TVertex source,
             TVertex target,
@@ -287,7 +336,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             IEdgeList<TVertex, TEdge> outEdges;
@@ -440,8 +491,9 @@ namespace QuickGraph
             {
                 this.vertexInEdges[e.Target].Remove(e);
                 this.edgeCount--;
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(this.edgeCount >= 0);
-
+#endif
                 this.OnEdgeRemoved(e);
                 return true;
             }
@@ -554,8 +606,10 @@ namespace QuickGraph
 
         public void MergeVertex(TVertex v, EdgeFactory<TVertex, TEdge> edgeFactory)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(GraphContract.InVertexSet(this, v));
             Contract.Requires(edgeFactory != null);
+#endif
 
             // storing edges in local array
             var inedges = this.vertexInEdges[v];
@@ -582,8 +636,10 @@ namespace QuickGraph
 
         public void MergeVertexIf(VertexPredicate<TVertex> vertexPredicate, EdgeFactory<TVertex, TEdge> edgeFactory)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexPredicate != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             // storing vertices to merge
             var mergeVertices = new VertexList<TVertex>(this.VertexCount / 4);
@@ -615,7 +671,9 @@ namespace QuickGraph
         /// <param name="other"></param>
         public BidirectionalGraph(BidirectionalGraph<TVertex, TEdge> other)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(other != null);
+#endif
 
             this.vertexInEdges = other.vertexInEdges.Clone();
             this.vertexOutEdges = other.vertexOutEdges.Clone();
@@ -633,9 +691,11 @@ namespace QuickGraph
             bool allowParallelEdges
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexInEdges != null);
             Contract.Requires(vertexOutEdges != null);
             Contract.Requires(edgeCount >= 0);
+#endif
 
             this.vertexInEdges = vertexInEdges;
             this.vertexOutEdges = vertexOutEdges;
@@ -658,6 +718,7 @@ namespace QuickGraph
             return this.Clone();
         }
 #endif
+
         #endregion
     }
 }

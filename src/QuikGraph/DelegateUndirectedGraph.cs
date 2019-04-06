@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 
 namespace QuickGraph
 {
@@ -29,12 +30,15 @@ namespace QuickGraph
              bool allowParallelEdges)
             : base(tryGetAdjacentEdges, allowParallelEdges)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
             Contract.Requires(Enumerable.All(vertices, v =>
             {
                 IEnumerable<TEdge> edges;
                 return tryGetAdjacentEdges(v, out edges);
             }));
+#endif
+
             this.vertices = vertices;
         }
 
@@ -69,8 +73,9 @@ namespace QuickGraph
 
         public bool IsEdgesEmpty
         {
-            get {
-                if (this._vertexCount == 0 || 
+            get
+            {
+                if (this._vertexCount == 0 ||
                     this._edgeCount == 0)
                     return true; // no vertices or no edges.
 
@@ -93,7 +98,7 @@ namespace QuickGraph
 
         public virtual IEnumerable<TEdge> Edges
         {
-            get 
+            get
             {
                 foreach (var vertex in this.vertices)
                     foreach (var edge in this.AdjacentEdges(vertex))

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -8,7 +8,9 @@ namespace QuickGraph.Collections
     /// A disjoint-set data structure
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [ContractClass(typeof(QuickGraph.Collections.Contracts.IDisjointSetContract<>))]
+#if SUPPORTS_CONTRACTS
+    [ContractClass(typeof(Contracts.IDisjointSetContract<>))]
+#endif
     public interface IDisjointSet<T>
     {
         /// <summary>
@@ -55,7 +57,9 @@ namespace QuickGraph.Collections
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         bool Contains(T value);
     }
 }

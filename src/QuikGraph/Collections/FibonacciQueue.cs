@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
+using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Linq;
 using QuickGraph.Algorithms;
-using System.Diagnostics;
 
 namespace QuickGraph.Collections
 {
@@ -32,10 +32,12 @@ namespace QuickGraph.Collections
             Comparison<TDistance> distanceComparison
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(valueCount >= 0);
             Contract.Requires(valueCount == 0 || (values != null && valueCount == Enumerable.Count(values)));
             Contract.Requires(distances != null);
             Contract.Requires(distanceComparison != null);
+#endif
 
             this.distances = distances;
             this.cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(valueCount);
@@ -58,8 +60,10 @@ namespace QuickGraph.Collections
             Comparison<TDistance> distanceComparison
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(values != null);
             Contract.Requires(distanceComparison != null);
+#endif
 
             this.distances = AlgorithmExtensions.GetIndexer(values);
             this.cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(values.Count);
@@ -84,15 +88,16 @@ namespace QuickGraph.Collections
         private readonly FibonacciHeap<TDistance, TVertex> heap;
         private readonly Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>> cells;        
         private readonly Func<TVertex, TDistance> distances;
-        #region IQueue<TVertex> Members
+#region IQueue<TVertex> Members
 
-        public int Count
-        {
-            [Pure]
-            get { return this.heap.Count; }
-        }
-
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
+        public int Count => heap.Count;
+
+#if SUPPORTS_CONTRACTS
+        [Pure]
+#endif
         public bool Contains(TVertex value)
         {
             FibonacciHeapCell<TDistance, TVertex> result;
@@ -114,19 +119,26 @@ namespace QuickGraph.Collections
         public TVertex Dequeue()
         {
             var result = heap.Top;
+#if SUPPORTS_CONTRACTS
             Contract.Assert(result != null);
+#endif
+
             heap.Dequeue();            
             return result.Value;
         }
 
         public TVertex Peek()
         {
+#if SUPPORTS_CONTRACTS
             Contract.Assert(this.heap.Top != null);
+#endif
 
             return this.heap.Top.Value;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TVertex[] ToArray()
         {
             TVertex[] result = new TVertex[this.heap.Count];
@@ -135,6 +147,7 @@ namespace QuickGraph.Collections
                 result[i++] = entry.Value;
             return result;
         }
-        #endregion
+
+#endregion
     }
 }

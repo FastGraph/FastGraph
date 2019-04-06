@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Collections;
 using System.Diagnostics;
 using System.IO;
@@ -51,7 +53,9 @@ namespace QuickGraph.Algorithms.ShortestPath
 
             public VertexData(double distance, TVertex predecessor)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(predecessor != null);
+#endif
 
                 this.Distance = distance;
                 this._predecessor = predecessor;
@@ -59,11 +63,13 @@ namespace QuickGraph.Algorithms.ShortestPath
                 this.edgeStored = false;
             }
 
+#if SUPPORTS_CONTRACTS
             [ContractInvariantMethod]
             void ObjectInvariant()
             {
                 Contract.Invariant(this.edgeStored ? this._edge != null : this._predecessor != null);
             }
+#endif
 
             public override string ToString()
             {
@@ -82,8 +88,10 @@ namespace QuickGraph.Algorithms.ShortestPath
             )
             : base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(weights != null);
             Contract.Requires(distanceRelaxer != null);
+#endif
 
             this.weights = weights;
             this.distanceRelaxer = distanceRelaxer;
@@ -96,8 +104,10 @@ namespace QuickGraph.Algorithms.ShortestPath
             IDistanceRelaxer distanceRelaxer)
             : base(visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(weights != null);
             Contract.Requires(distanceRelaxer != null);
+#endif
 
             this.weights =weights;
             this.distanceRelaxer = distanceRelaxer;
@@ -113,8 +123,10 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         public bool TryGetDistance(TVertex source, TVertex target, out double cost)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
+#endif
 
             VertexData value;
             if (this.data.TryGetValue(new SEquatableEdge<TVertex>(source, target), out value))
@@ -134,8 +146,10 @@ namespace QuickGraph.Algorithms.ShortestPath
             TVertex target,
             out IEnumerable<TEdge> path)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
+#endif
 
             if (source.Equals(target))
             {
@@ -155,7 +169,9 @@ namespace QuickGraph.Algorithms.ShortestPath
             while (todo.Count > 0)
             {
                 var current = todo.Pop();
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(!current.Source.Equals(current.Target));
+#endif
                 VertexData data;
                 if (this.data.TryGetValue(current, out data))
                 {
@@ -167,15 +183,19 @@ namespace QuickGraph.Algorithms.ShortestPath
                         TVertex intermediate;
                         if (data.TryGetPredecessor(out intermediate))
                         {
+#if SUPPORTS_CONTRACTS
 #if DEBUG && !SILVERLIGHT
                             Contract.Assert(set.Add(intermediate));
+#endif
 #endif
                             todo.Push(new SEquatableEdge<TVertex>(intermediate, current.Target));
                             todo.Push(new SEquatableEdge<TVertex>(current.Source, intermediate));
                         }
                         else
                         {
+#if SUPPORTS_CONTRACTS
                             Contract.Assert(false);
+#endif
                             path = null;
                             return false;
                         }
@@ -189,8 +209,11 @@ namespace QuickGraph.Algorithms.ShortestPath
                 }
             }
 
+#if SUPPORTS_CONTRACTS
             Contract.Assert(todo.Count == 0);
             Contract.Assert(edges.Count > 0);
+#endif
+
             path = edges.ToArray();
             return true;
         }

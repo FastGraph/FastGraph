@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
-using System.Diagnostics.Contracts;
 using QuickGraph.Algorithms;
 
 namespace QuickGraph.Serialization
@@ -27,9 +27,10 @@ namespace QuickGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(fileName != null);
             Contract.Requires(fileName.Length > 0);
-
+#endif
             var settings = new XmlWriterSettings() { Indent = true, IndentChars = "    " };
             var writer = XmlWriter.Create(fileName, settings);
             SerializeToGraphML<TVertex, TEdge, TGraph>(graph, writer, vertexIdentities, edgeIdentities);
@@ -47,8 +48,10 @@ namespace QuickGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(fileName != null);
             Contract.Requires(fileName.Length > 0);
+#endif
 
             var settings = new XmlWriterSettings() { Indent = true, IndentChars = "    " };
             var writer = XmlWriter.Create(fileName, settings);
@@ -59,7 +62,7 @@ namespace QuickGraph.Serialization
 
 #endif
 
-        public static void SerializeToGraphML<TVertex, TEdge,TGraph>(
+            public static void SerializeToGraphML<TVertex, TEdge,TGraph>(
 #if !NET20
             this 
 #endif
@@ -70,8 +73,10 @@ namespace QuickGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(writer != null);
+#endif
 
             var serializer = new GraphMLSerializer<TVertex, TEdge,TGraph>();
             serializer.Serialize(writer, graph, vertexIdentities, edgeIdentities);
@@ -86,8 +91,10 @@ this
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(writer != null);
+#endif
 
             var vertexIdentity = AlgorithmExtensions.GetVertexIdentity<TVertex>(graph);
             var edgeIdentity = AlgorithmExtensions.GetEdgeIdentity<TVertex, TEdge>(graph);
@@ -114,8 +121,10 @@ this
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(fileName != null);
             Contract.Requires(fileName.Length > 0);
+#endif
 
             var reader = new StreamReader(fileName);
             DeserializeFromGraphML<TVertex, TEdge,TGraph>(graph, reader, vertexFactory, edgeFactory);
@@ -133,10 +142,12 @@ this
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(reader != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             var settings = new XmlReaderSettings();
 #if !SILVERLIGHT
@@ -161,10 +172,12 @@ this
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(reader != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             var serializer = new GraphMLDeserializer<TVertex, TEdge,TGraph>();
             serializer.Deserialize(reader, graph, vertexFactory, edgeFactory);
@@ -182,10 +195,12 @@ this
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(reader != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             var serializer = new GraphMLDeserializer<TVertex, TEdge,TGraph>();
             var settings = new XmlReaderSettings();
@@ -223,5 +238,5 @@ this
                 throw new InvalidOperationException(e.Message);
         }
 #endif
+        }
     }
-}

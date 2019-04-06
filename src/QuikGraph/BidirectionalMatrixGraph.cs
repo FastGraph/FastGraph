@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -24,7 +25,9 @@ namespace QuickGraph
 
         public BidirectionalMatrixGraph(int vertexCount)        
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexCount > 0);
+#endif
 
             this.vertexCount = vertexCount;
             this.edgeCount = 0;
@@ -32,6 +35,7 @@ namespace QuickGraph
         }
 
         #region IGraph
+
         public bool AllowParallelEdges
         {
             get { return false; }
@@ -41,9 +45,11 @@ namespace QuickGraph
         {
             get { return true; }
         }
+
         #endregion
 
         #region IVertexListGraph
+
         public int VertexCount
         {
             get { return this.vertexCount; }
@@ -53,9 +59,11 @@ namespace QuickGraph
         {
             get { return this.VertexCount == 0; }
         }
+
         #endregion
 
         #region IEdgeListGraph
+
         public int EdgeCount
         {
             get { return this.edgeCount; }
@@ -81,10 +89,14 @@ namespace QuickGraph
                 }
             }
         }
+
         #endregion
 
         #region IBidirectionalGraph<int,Edge> Members
+
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsInEdgesEmpty(int v)
         {
             for (int i = 0; i < this.VertexCount; ++i)
@@ -93,7 +105,9 @@ namespace QuickGraph
             return true;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int InDegree(int v)
         {
             int count = 0;
@@ -103,7 +117,9 @@ namespace QuickGraph
             return count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> InEdges(int v)
         {
             for (int i = 0; i < this.VertexCount; ++i)
@@ -114,14 +130,17 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetInEdges(int v, out IEnumerable<TEdge> edges)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Ensures(Contract.Result<bool>() == (0 <= v && v > this.VertexCount));
             Contract.Ensures(
                 Contract.Result<bool>() == 
                 (Contract.ValueAtReturn<IEnumerable<TEdge>>(out edges) != null));
-
+#endif
             if (v > -1 && v < this.vertexCount)
             {
                 edges = this.InEdges(v);
@@ -131,7 +150,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge InEdge(int v, int index)
         {
             int count = 0;
@@ -148,7 +169,9 @@ namespace QuickGraph
             throw new ArgumentOutOfRangeException("index");
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int Degree(int v)
         {
             return this.InDegree(v) + this.OutDegree(v);
@@ -188,7 +211,9 @@ namespace QuickGraph
 
         #region IImplicitGraph<int,Edge> Members
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsOutEdgesEmpty(int v)
         {
             for (int j = 0; j < this.vertexCount; ++j)
@@ -197,7 +222,9 @@ namespace QuickGraph
             return true;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int OutDegree(int v)
         {
             int count = 0;
@@ -207,7 +234,9 @@ namespace QuickGraph
             return count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> OutEdges(int v)
         {
             for (int j = 0; j < this.vertexCount; ++j)
@@ -218,7 +247,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetOutEdges(int v, out IEnumerable<TEdge> edges)
         {
             if (v > -1 && v < this.vertexCount)
@@ -230,7 +261,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge OutEdge(int v, int index)
         {
             int count = 0;
@@ -260,7 +293,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(int vertex)
         {
             return vertex >= 0 && vertex < this.VertexCount;
@@ -269,7 +304,10 @@ namespace QuickGraph
         #endregion
 
         #region IEdgeListGraph<int,Edge> Members
+
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             TEdge e = this.edges[edge.Source, edge.Target];
@@ -283,8 +321,9 @@ namespace QuickGraph
 
         public int RemoveInEdgeIf(int v, EdgePredicate<int, TEdge> edgePredicate)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(0 <= v && v < this.VertexCount);
-
+#endif
             int count = 0;
             for (int i = 0; i < this.VertexCount; ++i)
             {
@@ -300,8 +339,9 @@ namespace QuickGraph
 
         public void ClearInEdges(int v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(0 <= v && v < this.VertexCount);
-
+#endif
             for (int i = 0; i < this.VertexCount; ++i)
             {
                 TEdge e = this.edges[i, v];
@@ -312,7 +352,9 @@ namespace QuickGraph
 
         public void ClearEdges(int v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(0 <= v && v < this.VertexCount);
+#endif
 
             this.ClearInEdges(v);
             this.ClearOutEdges(v);
@@ -324,7 +366,9 @@ namespace QuickGraph
 
         public int RemoveOutEdgeIf(int v, EdgePredicate<int, TEdge> predicate)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(0 <= v && v < this.VertexCount);
+#endif
 
             int count = 0;
             for (int j = 0; j < this.VertexCount; ++j)
@@ -341,7 +385,9 @@ namespace QuickGraph
 
         public void ClearOutEdges(int v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(0 <= v && v < this.VertexCount);
+#endif
 
             for (int j = 0; j < this.VertexCount; ++j)
             {
@@ -354,6 +400,7 @@ namespace QuickGraph
         #endregion
 
         #region IMutableGraph<int,Edge> Members
+
         public void Clear()
         {
             for(int i = 0;i<this.vertexCount;++i)
@@ -361,9 +408,11 @@ namespace QuickGraph
                     this.edges[i,j] = default(TEdge);
             this.edgeCount = 0;
         }
+
         #endregion
 
         #region IMutableEdgeListGraph<int,Edge> Members
+
         public bool AddEdge(TEdge edge)
         {
             if (this.edges[edge.Source, edge.Target]!=null)
@@ -417,19 +466,23 @@ namespace QuickGraph
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         #region ICloneable Members
+
         private BidirectionalMatrixGraph(
             int vertexCount,
             int edgeCount,
             TEdge[,] edges)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexCount > 0);
             Contract.Requires(edgeCount >= 0);
             Contract.Requires(edges != null);
             Contract.Requires(vertexCount == edges.GetLength(0));
             Contract.Requires(vertexCount == edges.GetLength(1));
+#endif
 
             this.vertexCount = vertexCount;
             this.edgeCount = edgeCount;
@@ -451,6 +504,7 @@ namespace QuickGraph
             return this.Clone();
         }
 #endif
+
         #endregion
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.ShortestPath;
 
 namespace QuickGraph.Algorithms.Observers
@@ -30,9 +32,11 @@ namespace QuickGraph.Algorithms.Observers
             IDistanceRelaxer distanceRelaxer,
             IDictionary<TVertex, double> distances)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
             Contract.Requires(distanceRelaxer != null);
             Contract.Requires(distances != null);
+#endif
 
             this.edgeWeights = edgeWeights;
             this.distanceRelaxer = distanceRelaxer;

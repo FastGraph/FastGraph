@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -22,7 +24,9 @@ namespace QuickGraph
         public TaggedEquatableEdge(TVertex source, TVertex target, TTag tag)
             : base(source, target)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Ensures(Object.Equals(this.Tag, tag));
+#endif
 
             this.tag = tag;
         }

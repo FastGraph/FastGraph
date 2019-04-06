@@ -1,6 +1,8 @@
 ﻿using System;
-using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms
 {
@@ -35,7 +37,9 @@ namespace QuickGraph.Algorithms
 
         public void SetRootVertex(TVertex rootVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(rootVertex != null);
+#endif
 
             bool changed = !Comparison<TVertex>.Equals(this.rootVertex, rootVertex);
             this.rootVertex = rootVertex;
@@ -53,7 +57,9 @@ namespace QuickGraph.Algorithms
         public event EventHandler RootVertexChanged;
         protected virtual void OnRootVertexChanged(EventArgs e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
 
             var eh = this.RootVertexChanged;
             if (eh != null)
@@ -62,7 +68,9 @@ namespace QuickGraph.Algorithms
 
         public void Compute(TVertex rootVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(rootVertex != null);
+#endif
 
             this.SetRootVertex(rootVertex);
             this.Compute();

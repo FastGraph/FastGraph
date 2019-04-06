@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -20,7 +21,9 @@ namespace QuickGraph
 
         public UndirectedBidirectionalGraph(IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
+#endif
 
             this.visitedGraph = visitedGraph;
         }
@@ -38,9 +41,11 @@ namespace QuickGraph
             get { return this.visitedGraph; }
         }
 
-        #region IUndirectedGraph<Vertex,Edge> Members
+#region IUndirectedGraph<Vertex,Edge> Members
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> AdjacentEdges(TVertex v)
         {
             foreach (var e in this.VisitedGraph.OutEdges(v))
@@ -55,25 +60,33 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int AdjacentDegree(TVertex v)
         {
             return this.VisitedGraph.Degree(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsAdjacentEdgesEmpty(TVertex v)
         {
             return this.VisitedGraph.IsOutEdgesEmpty(v) && this.VisitedGraph.IsInEdgesEmpty(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge AdjacentEdge(TVertex v, int index)
         {
             throw new NotSupportedException();
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             TEdge edge;
@@ -94,9 +107,10 @@ namespace QuickGraph
             edge = default(TEdge);
             return false;
         }
-        #endregion
 
-        #region IVertexSet<Vertex,Edge> Members
+#endregion
+
+#region IVertexSet<Vertex,Edge> Members
 
         public bool IsVerticesEmpty
         {
@@ -113,15 +127,17 @@ namespace QuickGraph
             get { return this.VisitedGraph.Vertices; }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex vertex)
         {
             return this.VisitedGraph.ContainsVertex(vertex);
         }
 
-        #endregion
+#endregion
 
-        #region IEdgeListGraph<Vertex,Edge> Members
+#region IEdgeListGraph<Vertex,Edge> Members
 
         public bool IsEdgesEmpty
         {
@@ -138,15 +154,17 @@ namespace QuickGraph
             get { return this.VisitedGraph.Edges; }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             return this.VisitedGraph.ContainsEdge(edge);
         }
 
-        #endregion
+#endregion
 
-        #region IGraph<Vertex,Edge> Members
+#region IGraph<Vertex,Edge> Members
 
         public bool IsDirected
         {
@@ -158,6 +176,6 @@ namespace QuickGraph
             get { return this.VisitedGraph.AllowParallelEdges; }
         }
 
-        #endregion
+#endregion
     }
 }

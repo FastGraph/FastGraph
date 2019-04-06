@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using QuickGraph.Algorithms.Observers;
 using QuickGraph.Algorithms.Services;
 using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
-using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Algorithms
 {
@@ -104,7 +104,9 @@ namespace QuickGraph.Algorithms
             public readonly List<TVertex> Vertices;
             public TimeStampObserver(List<TVertex> vertices)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(vertices != null);
+#endif
 
                 this.Vertices = vertices;
             }

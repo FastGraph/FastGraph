@@ -1,18 +1,25 @@
 ﻿using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IComputation))]
+#endif
     abstract class IComputationContract
         : IComputation
     {
-        #region IComputation Members
+#region IComputation Members
         object IComputation.SyncRoot
         {
             get
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Contract.Result<object>() != null);
+#endif
+
                 return null;
             }
         }
@@ -21,7 +28,9 @@ namespace QuickGraph.Algorithms.Contracts
         {
             get 
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Enum.IsDefined(typeof(ComputationState), Contract.Result<ComputationState>()));
+#endif
 
                 return default(ComputationState);
             }
@@ -60,6 +69,6 @@ namespace QuickGraph.Algorithms.Contracts
             remove { throw new NotImplementedException(); }
         }
 
-        #endregion
+#endregion
     }
 }

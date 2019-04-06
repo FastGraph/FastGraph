@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 using QuickGraph.Contracts;
+#endif
 
 namespace QuickGraph
 {
     /// <summary>
-    /// A graph whose edges can be enumerated
+    /// A graph whose edges can be enumerated.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">type of the vertices.</typeparam>
+    /// <typeparam name="TEdge">type of the edges.</typeparam>
+#if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IEdgeListGraphContract<,>))]
-    public interface IEdgeListGraph<TVertex, TEdge> 
+#endif
+    public interface IEdgeListGraph<TVertex, TEdge>
         : IGraph<TVertex, TEdge>
-        , IEdgeSet<TVertex, TEdge>
-        , IVertexSet<TVertex>
+            , IEdgeSet<TVertex, TEdge>
+            , IVertexSet<TVertex>
         where TEdge : IEdge<TVertex>
-    {}
+    {
+    }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Collections;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using System.Linq;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -43,8 +44,10 @@ namespace QuickGraph.Collections
 
         public BinaryHeap(int capacity, Comparison<TPriority> priorityComparison)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(capacity >= 0);
             Contract.Requires(priorityComparison != null);
+#endif
 
             this.items = new KeyValuePair<TPriority, TValue>[capacity];
             this.priorityComparsion = priorityComparison;
@@ -328,32 +331,42 @@ namespace QuickGraph.Collections
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         private bool LessOrEqual(int i, int j)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(
                 i >= 0 & i < this.count &
                 j >= 0 & j < this.count &
                 i != j);
+#endif
 
             return this.priorityComparsion(this.items[i].Key, this.items[j].Key) <= 0;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         private bool Less(int i, int j)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(
                 i >= 0 & i < this.count &
                 j >= 0 & j < this.count);
+#endif
 
             return this.priorityComparsion(this.items[i].Key, this.items[j].Key) < 0;
         }
 
         private void Swap(int i, int j)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(
                 i >= 0 && i < this.count &&
                 j >= 0 && j < this.count);
+#endif
 
             if (i == j)
             {
@@ -385,14 +398,14 @@ namespace QuickGraph.Collections
         }
 #endif
 
-        #region IEnumerable<KeyValuePair<TKey,TValue>> Members
+#region IEnumerable<KeyValuePair<TKey,TValue>> Members
+
         public IEnumerator<KeyValuePair<TPriority, TValue>> GetEnumerator()
         {
             return new Enumerator(this);
         }
 
-        struct Enumerator :
-            IEnumerator<KeyValuePair<TPriority, TValue>>
+        struct Enumerator : IEnumerator<KeyValuePair<TPriority, TValue>>
         {
             BinaryHeap<TPriority, TValue> owner;
             KeyValuePair<TPriority, TValue>[] items;
@@ -417,7 +430,10 @@ namespace QuickGraph.Collections
                         throw new InvalidOperationException();
                     if (this.index < 0 | this.index == this.count)
                         throw new InvalidOperationException();
+#if SUPPORTS_CONTRACTS
                     Contract.Assert(this.index <= this.count);
+#endif
+
                     return this.items[this.index];
                 }
             }
@@ -452,7 +468,7 @@ namespace QuickGraph.Collections
         {
             return this.GetEnumerator();
         }
-        #endregion
 
+#endregion
     }
 }

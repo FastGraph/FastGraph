@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Predicates
 {
@@ -21,13 +23,17 @@ namespace QuickGraph.Predicates
             :base(baseGraph,vertexPredicate,edgePredicate)
         { }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsOutEdgesEmpty(TVertex v)
         {
             return this.OutDegree(v) == 0;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int OutDegree(TVertex v)
         {
             int count =0;
@@ -37,7 +43,9 @@ namespace QuickGraph.Predicates
             return count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> OutEdges(TVertex v)
         {
             foreach (var edge in this.BaseGraph.OutEdges(v))
@@ -45,7 +53,9 @@ namespace QuickGraph.Predicates
                     yield return edge;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
         {
             IEnumerable<TEdge> baseEdges;
@@ -59,7 +69,9 @@ namespace QuickGraph.Predicates
             return true;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge OutEdge(TVertex v, int index)
         {
             throw new NotSupportedException();

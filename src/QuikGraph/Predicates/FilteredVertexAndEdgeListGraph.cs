@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Predicates
 {
@@ -61,7 +63,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             foreach (var e in this.Edges)

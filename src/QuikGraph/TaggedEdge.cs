@@ -1,5 +1,7 @@
 ﻿using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -15,7 +17,9 @@ namespace QuickGraph
         public TaggedEdge(TVertex source, TVertex target, TTag tag)
             :base(source,target)
         {
-            Contract.Ensures(Object.Equals(this.Tag,tag));
+#if SUPPORTS_CONTRACTS
+            Contract.Ensures(Equals(this.Tag,tag));
+#endif
 
             this.tag = tag;
         }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.ShortestPath;
 using QuickGraph.Algorithms.Observers;
-using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Algorithms
 {
@@ -24,9 +25,11 @@ namespace QuickGraph.Algorithms
             IVertexListGraph<TVertex, TEdge> visitedGraph,
             Func<TEdge, double> distances
             )
-            :base(visitedGraph)
+            : base(visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(distances != null);
+#endif
 
             this.dijkstra = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(
                 this.VisitedGraph,

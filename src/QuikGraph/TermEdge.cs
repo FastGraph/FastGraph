@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -29,6 +31,7 @@ namespace QuickGraph
         /// <param name="targetTerminal">The target terminal.</param>
         public TermEdge(TVertex source, TVertex target, int sourceTerminal, int targetTerminal)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
             Contract.Requires(sourceTerminal >= 0);
@@ -37,6 +40,7 @@ namespace QuickGraph
             Contract.Ensures(this.Target.Equals(target));
             Contract.Ensures(this.SourceTerminal.Equals(sourceTerminal));
             Contract.Ensures(this.TargetTerminal.Equals(targetTerminal));
+#endif
 
             this.source = source;
             this.target = target;

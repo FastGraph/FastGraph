@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using System.Linq;
+#endif
 
 namespace QuickGraph
 {
@@ -17,7 +18,10 @@ namespace QuickGraph
         private readonly IBidirectionalGraph<TVertex,TEdge> originalGraph;
         public ReversedBidirectionalGraph(IBidirectionalGraph<TVertex,TEdge> originalGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(originalGraph != null);
+#endif
+
             this.originalGraph = originalGraph;
         }
 
@@ -51,7 +55,9 @@ namespace QuickGraph
         	get { return this.OriginalGraph.Vertices; }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex vertex)
         {
             return this.OriginalGraph.ContainsVertex(vertex);
@@ -101,25 +107,33 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsOutEdgesEmpty(TVertex v)
         {
             return this.OriginalGraph.IsInEdgesEmpty(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int OutDegree(TVertex v)
         {
             return this.OriginalGraph.InDegree(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<SReversedEdge<TVertex, TEdge>> InEdges(TVertex v)
         {
             return EdgeExtensions.ReverseEdges<TVertex, TEdge>(this.OriginalGraph.OutEdges(v));
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public SReversedEdge<TVertex, TEdge> InEdge(TVertex v, int index)
         {
             TEdge edge = this.OriginalGraph.OutEdge(v, index);
@@ -128,25 +142,33 @@ namespace QuickGraph
             return new SReversedEdge<TVertex, TEdge>(edge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsInEdgesEmpty(TVertex v)
         {
             return this.OriginalGraph.IsOutEdgesEmpty(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int InDegree(TVertex v)
         {
             return this.OriginalGraph.OutDegree(v);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<SReversedEdge<TVertex, TEdge>> OutEdges(TVertex v)
         {
             return EdgeExtensions.ReverseEdges<TVertex, TEdge>(this.OriginalGraph.InEdges(v));
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetInEdges(TVertex v, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
         {
             IEnumerable<TEdge> outEdges;
@@ -163,7 +185,9 @@ namespace QuickGraph
 
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetOutEdges(TVertex v, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
         {
             IEnumerable<TEdge> inEdges;
@@ -179,7 +203,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public SReversedEdge<TVertex, TEdge> OutEdge(TVertex v, int index)
         {
             TEdge edge = this.OriginalGraph.InEdge(v, index);
@@ -197,13 +223,17 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(SReversedEdge<TVertex, TEdge> edge)
         {
             return this.OriginalGraph.ContainsEdge(edge.OriginalEdge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int Degree(TVertex v)
         {
             return this.OriginalGraph.Degree(v);

@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IEdge<>))]
+#endif
     abstract class IEdgeContract<TVertex>
         : IEdge<TVertex>
     {
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void IEdgeInvariant()
         {
@@ -15,12 +18,16 @@ namespace QuickGraph.Contracts
             Contract.Invariant(ithis.Source != null);
             Contract.Invariant(ithis.Target != null);
         }
+#endif
 
         TVertex IEdge<TVertex>.Source
         {
             get
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Contract.Result<TVertex>() != null);
+#endif
+
                 return default(TVertex);
             }
         }
@@ -29,7 +36,10 @@ namespace QuickGraph.Contracts
         {
             get
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Contract.Result<TVertex>() != null);
+#endif
+
                 return default(TVertex);
             }
         }

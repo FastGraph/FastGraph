@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Collections;
 
 namespace QuickGraph
@@ -55,7 +57,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             return this.edges.ContainsKey(edge);
@@ -162,7 +166,9 @@ namespace QuickGraph
             bool allowParralelEdges,
             EdgeEdgeDictionary<TVertex, TEdge> edges)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
+#endif
 
             this.isDirected = isDirected;
             this.allowParralelEdges = allowParralelEdges;
@@ -184,16 +190,22 @@ namespace QuickGraph
             return this.Clone();
         }
 #endif
-        #endregion
 
-        #region IVertexSet<TVertex> Members
+#endregion
+
+#region IVertexSet<TVertex> Members
+
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsVerticesEmpty
         {
             get { return this.edges.Count == 0; }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int VertexCount
         {
             get
@@ -202,7 +214,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TVertex> Vertices
         {
             get
@@ -222,7 +236,9 @@ namespace QuickGraph
             return vertices;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex vertex)
         {
             foreach (var e in this.Edges)
@@ -232,6 +248,7 @@ namespace QuickGraph
 
             return false;
         }
-        #endregion
+
+#endregion
     }
 }

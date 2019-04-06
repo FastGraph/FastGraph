@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Collections.Generic;
+using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -26,11 +28,13 @@ namespace QuickGraph
         /// <param name="target">The target.</param>
         public UndirectedEdge(TVertex source, TVertex target)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
             Contract.Requires(Comparer<TVertex>.Default.Compare(source, target) <= 0);
             Contract.Ensures(this.source.Equals(source));
             Contract.Ensures(this.target.Equals(target));
+#endif
 
             this.source = source;
             this.target = target;

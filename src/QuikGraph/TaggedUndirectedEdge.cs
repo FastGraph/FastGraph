@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using System.Collections.Generic;
+#endif
 
 namespace QuickGraph
 {
@@ -9,7 +10,7 @@ namespace QuickGraph
     /// A tagged undirected edge.
     /// </summary>
     /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-    /// <typeparam name="TTag">Type type of the tag</typeparam>
+    /// <typeparam name="TTag">The type of the tag</typeparam>
 #if !SILVERLIGHT
     [Serializable]
 #endif

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.TopologicalSort
@@ -74,7 +76,9 @@ namespace QuickGraph.Algorithms.TopologicalSort
 
         public void Compute(IList<TVertex> vertices)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
+#endif
 
             this.sortedVertices = vertices;
             Compute();
@@ -105,7 +109,11 @@ namespace QuickGraph.Algorithms.TopologicalSort
                         continue;
                     var succ = (direction == TopologicalSortDirection.Forward) ? e.Target : e.Source;
                     this.predCounts[succ]--;
+
+#if SUPPORTS_CONTRACTS
                     Contract.Assert(this.predCounts[succ] >= 0);
+#endif
+
                     this.heap.Update(succ);
                 }
             }

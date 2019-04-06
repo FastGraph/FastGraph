@@ -1,10 +1,11 @@
 ﻿#if !SILVERLIGHT
 using System;
 using System.Collections.Generic;
-
 using QuickGraph.Predicates;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Exploration
 {
@@ -80,7 +81,9 @@ namespace QuickGraph.Algorithms.Exploration
         public event VertexAction<TVertex> DiscoverVertex;
         private void OnDiscoverVertex(TVertex v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
+#endif
 
             this.VisitedGraph.AddVertex(v);
             this.unexploredVertices.Enqueue(v);
@@ -92,7 +95,9 @@ namespace QuickGraph.Algorithms.Exploration
         public event EdgeAction<TVertex,TEdge> TreeEdge;
         private void OnTreeEdge(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
 
             var eh = this.TreeEdge;
             if (eh != null)
@@ -101,7 +106,10 @@ namespace QuickGraph.Algorithms.Exploration
         public event EdgeAction<TVertex, TEdge> BackEdge;
         private void OnBackEdge(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
+
             var eh = this.BackEdge;
             if (eh != null)
                 eh(e);
@@ -109,7 +117,10 @@ namespace QuickGraph.Algorithms.Exploration
         public event EdgeAction<TVertex, TEdge> EdgeSkipped;
         private void OnEdgeSkipped(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
+
             var eh = this.EdgeSkipped;
             if (eh != null)
                 eh(e);

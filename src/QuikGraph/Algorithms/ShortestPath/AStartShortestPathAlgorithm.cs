@@ -4,7 +4,9 @@ using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Collections;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Diagnostics;
 
 namespace QuickGraph.Algorithms.ShortestPath
@@ -58,7 +60,9 @@ namespace QuickGraph.Algorithms.ShortestPath
             )
             : base(host, visitedGraph, weights, distanceRelaxer)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(costHeuristic != null);
+#endif
 
             this.costHeuristic = costHeuristic;
         }
@@ -169,9 +173,11 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         private void ComputeFromRoot(TVertex rootVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(rootVertex != null);
             Contract.Requires(this.VisitedGraph.ContainsVertex(rootVertex));
             Contract.Requires(this.VertexColors[rootVertex] == GraphColor.White);
+#endif
 
             this.VertexColors[rootVertex] = GraphColor.Gray;
             this.Distances[rootVertex] = 0;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -48,7 +50,9 @@ namespace QuickGraph.Algorithms.Search
             )
             :base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(colors != null);
+#endif
 
             this.colors = colors;
         }

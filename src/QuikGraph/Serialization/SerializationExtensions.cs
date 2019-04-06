@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using System.IO;
 using System.Xml;
 #if !SILVERLIGHT
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.XPath;
-using System.Xml.Serialization;
 #endif
 
 namespace QuickGraph.Serialization
@@ -24,15 +23,17 @@ namespace QuickGraph.Serialization
         /// <param name="stream"></param>
         public static void SerializeToBinary<TVertex, TEdge>(
 #if !NET20
-            this 
+            this
 #endif
             IGraph<TVertex, TEdge> graph,
             Stream stream)
             where TEdge : IEdge<TVertex>
-        {            
+        {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(stream != null);
             Contract.Requires(stream.CanWrite);
+#endif
 
             var formatter = new BinaryFormatter();
             formatter.Serialize(stream, graph);
@@ -40,24 +41,26 @@ namespace QuickGraph.Serialization
 #endif
 
 #if !SILVERLIGHT
-        /// <summary>
-        /// Deserializes a graph instance from a stream that was serialized using the .Net serialization binary format.
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TGraph"></typeparam>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
+            /// <summary>
+            /// Deserializes a graph instance from a stream that was serialized using the .Net serialization binary format.
+            /// </summary>
+            /// <typeparam name="TVertex">type of the vertices</typeparam>
+            /// <typeparam name="TEdge">type of the edges</typeparam>
+            /// <typeparam name="TGraph"></typeparam>
+            /// <param name="stream"></param>
+            /// <returns></returns>
+            public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
 #if !NET20
-            this 
+            this
 #endif
             Stream stream)
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(stream != null);
             Contract.Requires(stream.CanRead);
+#endif
 
             var formatter = new BinaryFormatter();
             var result = formatter.Deserialize(stream);
@@ -82,19 +85,20 @@ namespace QuickGraph.Serialization
         /// <returns></returns>
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
 #if !NET20
-            this 
+            this
 #endif
             IXPathNavigable doc,
-            string graphXPath,
-            string verticesXPath,
-            string edgesXPath,
-            Func<XPathNavigator, TGraph> graphFactory,
-            Func<XPathNavigator, TVertex> vertexFactory,
-            Func<XPathNavigator, TEdge> edgeFactory
-            )
-            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
-            where TEdge : IEdge<TVertex>
+        string graphXPath,
+        string verticesXPath,
+        string edgesXPath,
+        Func<XPathNavigator, TGraph> graphFactory,
+        Func<XPathNavigator, TVertex> vertexFactory,
+        Func<XPathNavigator, TEdge> edgeFactory
+        )
+        where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
+        where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(doc != null);
             Contract.Requires(graphXPath != null);
             Contract.Requires(verticesXPath != null);
@@ -102,6 +106,7 @@ namespace QuickGraph.Serialization
             Contract.Requires(graphFactory != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             var graphNode = doc.CreateNavigator().SelectSingleNode(graphXPath);
             if (graphNode == null)
@@ -138,19 +143,20 @@ namespace QuickGraph.Serialization
         /// <returns></returns>
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
 #if !NET20
-this 
+this
 #endif
             XmlReader reader,
-            Predicate<XmlReader> graphPredicate,
-            Predicate<XmlReader> vertexPredicate,
-            Predicate<XmlReader> edgePredicate,
-            Func<XmlReader, TGraph> graphFactory,
-            Func<XmlReader, TVertex> vertexFactory,
-            Func<XmlReader, TEdge> edgeFactory
-            )
-            where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
-            where TEdge : IEdge<TVertex>
+        Predicate<XmlReader> graphPredicate,
+        Predicate<XmlReader> vertexPredicate,
+        Predicate<XmlReader> edgePredicate,
+        Func<XmlReader, TGraph> graphFactory,
+        Func<XmlReader, TVertex> vertexFactory,
+        Func<XmlReader, TEdge> edgeFactory
+        )
+        where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
+        where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(reader != null);
             Contract.Requires(graphPredicate != null);
             Contract.Requires(vertexPredicate != null);
@@ -158,6 +164,7 @@ this
             Contract.Requires(graphFactory != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             // find the graph node
             TGraph g = null;
@@ -214,7 +221,7 @@ this
         /// <returns></returns>
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
 #if !NET20
-            this 
+            this
 #endif
             XmlReader reader,
             string graphElementName,
@@ -228,6 +235,7 @@ this
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(reader != null);
             Contract.Requires(graphElementName != null);
             Contract.Requires(vertexElementName != null);
@@ -235,6 +243,7 @@ this
             Contract.Requires(graphFactory != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             return DeserializeFromXml(
                 reader,
@@ -263,7 +272,7 @@ this
         /// <param name="namespaceUri">The namespace URI.</param>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
 #if !NET20
-this 
+this
 #endif
             TGraph graph,
             XmlWriter writer,
@@ -310,7 +319,7 @@ this
         /// <param name="writeEdgeAttributes">The write edge attributes (optional).</param>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
 #if !NET20
-this 
+this
 #endif
             TGraph graph,
             XmlWriter writer,
@@ -327,6 +336,7 @@ this
             where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(writer != null);
             Contract.Requires(vertexIdentity != null);
@@ -334,6 +344,7 @@ this
             Contract.Requires(!String.IsNullOrEmpty(graphElementName));
             Contract.Requires(!String.IsNullOrEmpty(vertexElementName));
             Contract.Requires(!String.IsNullOrEmpty(edgeElementName));
+#endif
 
             writer.WriteStartElement(graphElementName, namespaceUri);
             if (writeGraphAttributes != null)

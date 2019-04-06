@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -9,12 +11,14 @@ namespace QuickGraph.Collections
     /// </summary>
     /// <typeparam name="TVertex"></typeparam>
     /// <typeparam name="TEdge"></typeparam>
+#if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IEdgeListContract<,>))]
+#endif
     public interface IEdgeList<TVertex, TEdge>
         : IList<TEdge>
-        #if !SILVERLIGHT
+#if !SILVERLIGHT
         , ICloneable
-        #endif
+#endif
         where TEdge : IEdge<TVertex>
     {
         /// <summary>

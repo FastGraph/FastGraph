@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Runtime.InteropServices;
 
 namespace QuickGraph
 {
@@ -25,8 +27,10 @@ namespace QuickGraph
 
         public STaggedEdge(TVertex source, TVertex target, TTag tag)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
+#endif
 
             this.source = source;
             this.target = target;

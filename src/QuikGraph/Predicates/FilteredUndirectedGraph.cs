@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Predicates
 {
@@ -33,7 +34,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> AdjacentEdges(TVertex v)
         {
             if (this.VertexPredicate(v))
@@ -46,7 +49,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int AdjacentDegree(TVertex v)
         {
             int count = 0;
@@ -55,7 +60,9 @@ namespace QuickGraph.Predicates
             return count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsAdjacentEdgesEmpty(TVertex v)
         {
             foreach (var edge in this.AdjacentEdges(v))
@@ -63,7 +70,9 @@ namespace QuickGraph.Predicates
             return true;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge AdjacentEdge(TVertex v, int index)
         {
             if (this.VertexPredicate(v))
@@ -102,7 +111,9 @@ namespace QuickGraph.Predicates
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             TEdge edge;
@@ -140,7 +151,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             if (!this.TestEdge(edge))
@@ -179,7 +192,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex vertex)
         {
             if (!this.VertexPredicate(vertex))

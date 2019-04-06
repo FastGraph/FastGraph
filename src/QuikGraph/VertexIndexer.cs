@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
-    [Pure]
+#if SUPPORTS_CONTRACTS
+        [Pure]
+#endif
     public delegate int VertexIndexer<TVertex>(TVertex v);
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 
 namespace QuickGraph
 {
@@ -27,7 +28,9 @@ namespace QuickGraph
             TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacenyEdges,
             bool allowParallelEdges)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(tryGetAdjacenyEdges != null);
+#endif
 
             this.tryGetAdjacentEdges = tryGetAdjacenyEdges;
             this.allowParallelEdges = allowParallelEdges;

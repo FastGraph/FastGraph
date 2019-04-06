@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+#endif
 using QuickGraph.Collections;
 
 namespace QuickGraph
@@ -86,7 +87,9 @@ namespace QuickGraph
 
         public bool AllowParallelEdges
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get 
             {
                 return wrapped.AllowParallelEdges;
@@ -137,7 +140,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex v)
         {
             return wrapped.ContainsVertex(v);
@@ -171,7 +176,9 @@ namespace QuickGraph
 
         public bool IsEdgesEmpty
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get 
             {
                 return wrapped.IsEdgesEmpty;
@@ -187,34 +194,44 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void ObjectInvariant()
         {
             Contract.Invariant(wrapped.EdgeCount >= 0);
         }
+#endif
 
         public virtual IEnumerable<TEdge> Edges
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get
             {
                 return wrapped.Edges;
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             return wrapped.ContainsEdge(source, target);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             return wrapped.ContainsEdge(edge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetEdge(
             TVertex source,
             TVertex target,
@@ -223,7 +240,9 @@ namespace QuickGraph
             return wrapped.TryGetEdge(source, target, out edge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public virtual bool TryGetEdges(
             TVertex source,
             TVertex target,

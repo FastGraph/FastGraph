@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 
 namespace QuickGraph
 {
@@ -60,7 +61,9 @@ namespace QuickGraph
             IBidirectionalGraph<TVertex, TEdge> visitedGraph
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
+#endif
 
             this.vertexEdges = new Dictionary<TVertex, InOutEdges>(visitedGraph.VertexCount);
             this.edgeCount = visitedGraph.EdgeCount;
@@ -77,14 +80,16 @@ namespace QuickGraph
             int edgeCount
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexEdges != null);
             Contract.Requires(edgeCount >= 0);
+#endif
 
             this.vertexEdges = vertexEdges;
             this.edgeCount = edgeCount;
         }
 
-        #region IIncidenceGraph<TVertex,TEdge> Members
+#region IIncidenceGraph<TVertex,TEdge> Members
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             TEdge edge;
@@ -137,9 +142,9 @@ namespace QuickGraph
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region IImplicitGraph<TVertex,TEdge> Members
+#region IImplicitGraph<TVertex,TEdge> Members
         public bool IsOutEdgesEmpty(TVertex v)
         {
             InOutEdges io;
@@ -190,13 +195,17 @@ namespace QuickGraph
 
             TEdge[] edges;
             if (!io.TryGetOutEdges(out edges))
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(false);
+#else
+                Debug.Assert(false);
+#endif
 
             return edges[index];
         }
-        #endregion
+#endregion
 
-        #region IGraph<TVertex,TEdge> Members
+#region IGraph<TVertex,TEdge> Members
         public bool IsDirected
         {
             get { return true; }
@@ -206,16 +215,16 @@ namespace QuickGraph
         {
             get { return true; }
         }        
-        #endregion
+#endregion
 
-        #region IImplicitVertexSet<TVertex> Members
+#region IImplicitVertexSet<TVertex> Members
         public bool ContainsVertex(TVertex vertex)
         {
             return this.vertexEdges.ContainsKey(vertex);
         }
-        #endregion
+#endregion
 
-        #region IVertexSet<TVertex> Members
+#region IVertexSet<TVertex> Members
         public bool IsVerticesEmpty
         {
             get { return this.vertexEdges.Count == 0; }
@@ -233,9 +242,9 @@ namespace QuickGraph
                 return this.vertexEdges.Keys;
             }
         }
-        #endregion
+#endregion
 
-        #region IEdgeSet<TVertex,TEdge> Members
+#region IEdgeSet<TVertex,TEdge> Members
         public bool IsEdgesEmpty
         {
             get { return this.edgeCount == 0; }
@@ -271,9 +280,9 @@ namespace QuickGraph
                         return true;
             return false;
         }
-        #endregion
+#endregion
 
-        #region ICloneable Members
+#region ICloneable Members
         /// <summary>
         /// Returns self since this class is immutable
         /// </summary>
@@ -289,9 +298,9 @@ namespace QuickGraph
             return this.Clone();
         }
 #endif
-        #endregion
+#endregion
 
-        #region IBidirectionalGraph<TVertex,TEdge> Members
+#region IBidirectionalGraph<TVertex,TEdge> Members
         public bool IsInEdgesEmpty(TVertex v)
         {
             InOutEdges io;
@@ -342,7 +351,11 @@ namespace QuickGraph
 
             TEdge[] edges;
             if (!io.TryGetOutEdges(out edges))
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(false);
+#else
+                Debug.Assert(false);
+#endif
 
             return edges[index];
         }
@@ -351,6 +364,6 @@ namespace QuickGraph
         {
             return InDegree(v) + OutDegree(v);
         }
-        #endregion
+#endregion
     }
 }

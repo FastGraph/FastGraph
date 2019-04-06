@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.MaximumFlow
 {
@@ -10,9 +12,9 @@ namespace QuickGraph.Algorithms.MaximumFlow
     public sealed class GraphBalancerAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private IMutableBidirectionalGraph<TVertex,TEdge> visitedGraph;
+        private IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph;
         private VertexFactory<TVertex> vertexFactory;
-        private EdgeFactory<TVertex,TEdge> edgeFactory;
+        private EdgeFactory<TVertex, TEdge> edgeFactory;
 
         private TVertex source;
         private TVertex sink;
@@ -23,8 +25,8 @@ namespace QuickGraph.Algorithms.MaximumFlow
         private TVertex balancingSink;
         private TEdge balancingSinkEdge;
 
-        private IDictionary<TEdge,double> capacities = new Dictionary<TEdge,double>();
-        private Dictionary<TEdge,int> preFlow = new Dictionary<TEdge,int>();
+        private IDictionary<TEdge, double> capacities = new Dictionary<TEdge, double>();
+        private Dictionary<TEdge, int> preFlow = new Dictionary<TEdge, int>();
         private List<TVertex> surplusVertices = new List<TVertex>();
         private List<TEdge> surplusEdges = new List<TEdge>();
         private List<TVertex> deficientVertices = new List<TVertex>();
@@ -36,9 +38,10 @@ namespace QuickGraph.Algorithms.MaximumFlow
             TVertex source,
             TVertex sink,
             VertexFactory<TVertex> vertexFactory,
-            EdgeFactory<TVertex,TEdge> edgeFactory
+            EdgeFactory<TVertex, TEdge> edgeFactory
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
@@ -46,6 +49,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
             Contract.Requires(visitedGraph.ContainsVertex(source));
             Contract.Requires(sink != null);
             Contract.Requires(visitedGraph.ContainsVertex(sink));
+#endif
 
             this.visitedGraph = visitedGraph;
             this.vertexFactory = vertexFactory;
@@ -65,11 +69,12 @@ namespace QuickGraph.Algorithms.MaximumFlow
         public GraphBalancerAlgorithm(
             IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
             VertexFactory<TVertex> vertexFactory,
-            EdgeFactory<TVertex,TEdge> edgeFactory,
+            EdgeFactory<TVertex, TEdge> edgeFactory,
             TVertex source,
             TVertex sink,
-            IDictionary<TEdge,double> capacities)
+            IDictionary<TEdge, double> capacities)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
@@ -78,6 +83,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
             Contract.Requires(sink != null);
             Contract.Requires(visitedGraph.ContainsVertex(sink));
             Contract.Requires(capacities != null);
+#endif
 
             this.visitedGraph = visitedGraph;
             this.source = source;
@@ -99,12 +105,12 @@ namespace QuickGraph.Algorithms.MaximumFlow
 
         public VertexFactory<TVertex> VertexFactory
         {
-            get { return this.vertexFactory;}
+            get { return this.vertexFactory; }
         }
 
-        public EdgeFactory<TVertex,TEdge> EdgeFactory
+        public EdgeFactory<TVertex, TEdge> EdgeFactory
         {
-            get { return this.edgeFactory;}
+            get { return this.edgeFactory; }
         }
 
         public bool Balanced
@@ -185,7 +191,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
                 return this.deficientEdges;
             }
         }
-        public IDictionary<TEdge,double> Capacities
+        public IDictionary<TEdge, double> Capacities
         {
             get
             {
@@ -207,19 +213,25 @@ namespace QuickGraph.Algorithms.MaximumFlow
             if (eh != null)
                 eh(this.sink);
         }
-        public event EdgeAction<TVertex,TEdge> EdgeAdded;
+        public event EdgeAction<TVertex, TEdge> EdgeAdded;
         private void OnEdgeAdded(TEdge edge)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
+#endif
 
             var eh = this.EdgeAdded;
             if (eh != null)
                 eh(edge);
         }
+
         public event VertexAction<TVertex> SurplusVertexAdded;
         private void OnSurplusVertexAdded(TVertex vertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
+#endif
+
             var eh = this.SurplusVertexAdded;
             if (eh != null)
                 eh(vertex);
@@ -227,7 +239,9 @@ namespace QuickGraph.Algorithms.MaximumFlow
         public event VertexAction<TVertex> DeficientVertexAdded;
         private void OnDeficientVertexAdded(TVertex vertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
+#endif
 
             var eh = this.DeficientVertexAdded;
             if (eh != null)
@@ -236,7 +250,9 @@ namespace QuickGraph.Algorithms.MaximumFlow
 
         public int GetBalancingIndex(TVertex v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
+#endif
 
             int bi = 0;
             foreach (var edge in this.VisitedGraph.OutEdges(v))

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Contracts;
 using QuickGraph.Collections;
 
@@ -30,7 +32,9 @@ namespace QuickGraph
 
         public UndirectedGraph(bool allowParallelEdges, EdgeEqualityComparer<TVertex, TEdge> edgeEqualityComparer)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edgeEqualityComparer != null);
+#endif
 
             this.allowParallelEdges = allowParallelEdges;
             this.edgeEqualityComparer = edgeEqualityComparer;
@@ -50,7 +54,10 @@ namespace QuickGraph
         {
             get
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Contract.Result<EdgeEqualityComparer<TVertex, TEdge>>() != null);
+#endif
+
                 return this.edgeEqualityComparer;
             }
         }
@@ -98,7 +105,9 @@ namespace QuickGraph
             newGraph.AddEdgeRange(this.Edges);
             return newGraph;
         }
+
         #region IGraph<Vertex,Edge> Members
+
         public bool  IsDirected
         {
         	get { return false; }
@@ -108,13 +117,17 @@ namespace QuickGraph
         {
         	get { return this.allowParallelEdges; }
         }
+
         #endregion
 
         #region IMutableUndirected<Vertex,Edge> Members
+
         public event VertexAction<TVertex> VertexAdded;
         protected virtual void OnVertexAdded(TVertex args)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
+#endif
 
             var eh = this.VertexAdded;
             if (eh != null)
@@ -157,7 +170,9 @@ namespace QuickGraph
         public event VertexAction<TVertex> VertexRemoved;
         protected virtual void OnVertexRemoved(TVertex args)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
+#endif
 
             var eh = this.VertexRemoved;
             if (eh != null)
@@ -186,9 +201,11 @@ namespace QuickGraph
                 RemoveVertex(v);
             return vertices.Count;
         }
+
         #endregion
 
         #region IMutableIncidenceGraph<Vertex,Edge> Members
+
         public int RemoveAdjacentEdgeIf(TVertex v, EdgePredicate<TVertex, TEdge> predicate)
         {
             var outEdges = this.adjacentEdges[v];
@@ -201,11 +218,13 @@ namespace QuickGraph
             return edges.Count;
         }
 
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void ObjectInvariant()
         {
             Contract.Invariant(this.edgeCount >= 0);
         }
+#endif
 
         public void ClearAdjacentEdges(TVertex v)
         {
@@ -221,6 +240,7 @@ namespace QuickGraph
                     aEdges.Remove(edge);
             }
         }
+
         #endregion
 
         #region IMutableGraph<Vertex,Edge> Members
@@ -235,6 +255,7 @@ namespace QuickGraph
             this.adjacentEdges.Clear();
             this.edgeCount = 0;
         }
+
         #endregion
 
         #region IUndirectedGraph<Vertex,Edge> Members
@@ -286,15 +307,18 @@ namespace QuickGraph
             get { return this.adjacentEdges.Keys; }
         }
 
-
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex vertex)
         {
             return this.adjacentEdges.ContainsKey(vertex);
         }
+
         #endregion
 
         #region IMutableEdgeListGraph<Vertex,Edge> Members
+
         public bool AddVerticesAndEdge(TEdge edge)
         {
             var sourceEdges = this.AddAndReturnEdges(edge.Source);
@@ -370,7 +394,9 @@ namespace QuickGraph
                 if (!EdgeExtensions.IsSelfEdge<TVertex, TEdge>(edge))
                     this.adjacentEdges[edge.Target].Remove(edge);
                 this.edgeCount--;
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(this.edgeCount >= 0);
+#endif
                 this.OnEdgeRemoved(edge);
                 return true;
             }
@@ -407,9 +433,11 @@ namespace QuickGraph
             }
             return count;
         }
+
         #endregion
 
         #region IEdgeListGraph<Vertex,Edge> Members
+
         public bool IsEdgesEmpty
         {
             get { return this.EdgeCount==0; }
@@ -450,8 +478,10 @@ namespace QuickGraph
 
         private bool ContainsEdgeBetweenVertices(IEnumerable<TEdge> edges, TEdge edge)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
             Contract.Requires(edge != null);
+#endif
 
             var source = edge.Source;
             var target= edge.Target;
@@ -460,9 +490,11 @@ namespace QuickGraph
                     return true;
             return false;
         }
+
         #endregion
 
         #region IUndirectedGraph<Vertex,Edge> Members
+
         public IEnumerable<TEdge> AdjacentEdges(TVertex v)
         {
             return this.adjacentEdges[v];
@@ -477,9 +509,11 @@ namespace QuickGraph
         {
             return this.adjacentEdges[v].Count == 0;
         }
+
         #endregion
 
         #region ICloneable Members
+
         private UndirectedGraph(
             VertexEdgeDictionary<TVertex, TEdge> adjacentEdges,
             EdgeEqualityComparer<TVertex, TEdge> edgeEqualityComparer,
@@ -488,9 +522,11 @@ namespace QuickGraph
             bool allowParallelEdges
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(adjacentEdges != null);
             Contract.Requires(edgeEqualityComparer != null);
             Contract.Requires(edgeCount >= 0);
+#endif
 
             this.adjacentEdges = adjacentEdges;
             this.edgeEqualityComparer = edgeEqualityComparer;
@@ -499,7 +535,9 @@ namespace QuickGraph
             this.allowParallelEdges = allowParallelEdges;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public UndirectedGraph<TVertex, TEdge> Clone()
         {
             return new UndirectedGraph<TVertex, TEdge>(
@@ -517,6 +555,7 @@ namespace QuickGraph
             return this.Clone();
         }
 #endif
+
         #endregion
     }
 }

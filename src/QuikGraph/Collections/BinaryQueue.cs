@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -25,8 +26,10 @@ namespace QuickGraph.Collections
             Comparison<TDistance> distanceComparison
             )
 		{
+#if SUPPORTS_CONTRACTS
             Contract.Requires(distances != null);
             Contract.Requires(distanceComparison != null);
+#endif
 
 			this.distances = distances;
             this.heap = new BinaryHeap<TDistance, TVertex>(distanceComparison);

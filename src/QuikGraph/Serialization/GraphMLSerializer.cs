@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System.Reflection;
-using System.Xml.Serialization;
-using System.Reflection.Emit;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.ComponentModel;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Xml;
 
 namespace QuickGraph.Serialization
 {
@@ -113,7 +110,10 @@ namespace QuickGraph.Serialization
 
         public static bool MoveNextData(XmlReader reader)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(reader != null);
+#endif
+
             return
                 reader.NodeType == XmlNodeType.Element &&
                 reader.Name == "data" &&
@@ -219,7 +219,10 @@ namespace QuickGraph.Serialization
 
                 public static bool TryGetWriteValueMethod(Type valueType, out MethodInfo method)
                 {
+#if SUPPORTS_CONTRACTS
                     Contract.Requires(valueType != null);
+#endif
+
                     var status = WriteValueMethods.TryGetValue(valueType, out method);
                     return status;
                 }
@@ -227,8 +230,10 @@ namespace QuickGraph.Serialization
 
             public static Delegate CreateWriteDelegate(Type nodeType, Type delegateType)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(nodeType != null);
                 Contract.Requires(delegateType != null);
+#endif
 
                 var method = new DynamicMethod(
                     "Write" + delegateType.Name + nodeType.Name,
@@ -331,7 +336,7 @@ namespace QuickGraph.Serialization
                 return method.CreateDelegate(delegateType);
             }
         }
-        #endregion
+#endregion
 
         public void Serialize(
             XmlWriter writer, 
@@ -340,10 +345,12 @@ namespace QuickGraph.Serialization
             EdgeIdentity<TVertex, TEdge> edgeIdentities
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(writer != null);
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexIdentities != null);
             Contract.Requires(edgeIdentities != null);
+#endif
 
             var worker = new WriterWorker(this, writer, visitedGraph, vertexIdentities, edgeIdentities);
             worker.Serialize();
@@ -364,11 +371,13 @@ namespace QuickGraph.Serialization
                 VertexIdentity<TVertex> vertexIdentities,
                 EdgeIdentity<TVertex, TEdge> edgeIdentities)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(serializer != null);
                 Contract.Requires(writer != null);
                 Contract.Requires(visitedGraph != null);
                 Contract.Requires(vertexIdentities != null);
                 Contract.Requires(edgeIdentities != null);
+#endif
 
                 this.serializer = serializer;
                 this.writer = writer;
@@ -556,8 +565,10 @@ namespace QuickGraph.Serialization
 
             private void WriteAttributeDefinitions(string forNode, Type nodeType)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(forNode != null);
                 Contract.Requires(nodeType != null);
+#endif
 
                 foreach (var kv in SerializationHelper.GetAttributeProperties(nodeType))
                 {

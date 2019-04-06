@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
+using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
 using QuickGraph.Algorithms;
 using QuickGraph.Serialization.DirectedGraphML;
-using System.Xml.Serialization;
-using System.IO;
-using System.Diagnostics;
 
 namespace QuickGraph.Serialization
 {
@@ -43,8 +42,11 @@ this
             DirectedGraph graph,
             string fileName)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null); 
             Contract.Requires(!String.IsNullOrEmpty(fileName));
+#endif
+
             using (var stream = File.CreateText(fileName))
                 WriteXml(graph, stream);
         }
@@ -61,8 +63,10 @@ this
             DirectedGraph graph,
             XmlWriter writer)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(writer != null);
+#endif
 
             DirectedGraphSerializer.Serialize(writer, graph);
         }
@@ -79,8 +83,10 @@ this
             DirectedGraph graph,
             Stream stream)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(stream != null);
+#endif
 
             DirectedGraphSerializer.Serialize(stream, graph);
         }
@@ -97,8 +103,10 @@ this
             DirectedGraph graph,
             TextWriter writer)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
             Contract.Requires(writer != null);
+#endif
 
             DirectedGraphSerializer.Serialize(writer, graph);
         }
@@ -117,8 +125,10 @@ this
         IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
+#endif
 
             return ToDirectedGraphML<TVertex, TEdge>(
                 visitedGraph,
@@ -143,9 +153,11 @@ this
         Func<TVertex, GraphColor> vertexColors)
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexColors != null);
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
+#endif
 
             return ToDirectedGraphML<TVertex, TEdge>(
                 visitedGraph,
@@ -186,10 +198,12 @@ this
         EdgeIdentity<TVertex, TEdge> edgeIdentities)
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexIdentities != null);
             Contract.Requires(edgeIdentities != null);
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
+#endif
 
             return ToDirectedGraphML<TVertex, TEdge>(
                 visitedGraph, 
@@ -219,10 +233,12 @@ this
         Action<TEdge, DirectedGraphLink> _formatEdge)
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexIdentities != null);
             Contract.Requires(edgeIdentities != null);
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
+#endif
 
             var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
                 visitedGraph, 
@@ -246,7 +262,9 @@ this
         IVertexAndEdgeListGraph<TVertex, TEdge> graph, string filename)
             where TEdge : IEdge<TVertex>
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
+#endif
 
             if (filename == null) filename = "graph.dgml";
 

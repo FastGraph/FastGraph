@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
+﻿using System.Collections.Generic;
 
 namespace QuickGraph.Algorithms.KernighanLinAlgoritm
 {
@@ -17,8 +12,6 @@ namespace QuickGraph.Algorithms.KernighanLinAlgoritm
             this.A = A;
             this.B = B;
             this.cutCost = cutCost;
-
         }
     }
-
 }

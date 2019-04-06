@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IMutableVertexAndEdgeSet<,>))]
+#endif
     abstract class IMutableVertexAndEdgeSetContract<TVertex, TEdge>
         : IMutableVertexAndEdgeSet<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
@@ -14,10 +17,12 @@ namespace QuickGraph.Contracts
         bool IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdge(TEdge edge)
         {
             IMutableVertexAndEdgeSet<TVertex, TEdge> ithis = this;
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
             Contract.Ensures(ithis.ContainsEdge(edge));
             Contract.Ensures(ithis.AllowParallelEdges || Contract.Result<bool>() == Contract.OldValue(!ithis.ContainsEdge(edge)));
             Contract.Ensures(ithis.EdgeCount == Contract.OldValue(ithis.EdgeCount) + (Contract.Result<bool>() ? 1 : 0));
+#endif
 
             return default(bool);
         }
@@ -25,14 +30,16 @@ namespace QuickGraph.Contracts
         int IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
             IMutableVertexAndEdgeSet<TVertex, TEdge> ithis = this;
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
             Contract.Requires(typeof(TEdge).IsValueType || Enumerable.All(edges, edge => edge != null));
             Contract.Ensures(ithis.EdgeCount == Contract.OldValue(ithis.EdgeCount) + Contract.Result<int>());
+#endif
 
             return default(int);
         }
 
-        #region IVertexSet<TVertex> Members
+#region IVertexSet<TVertex> Members
 
         bool IVertexSet<TVertex>.IsVerticesEmpty
         {
@@ -54,9 +61,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IGraph<TVertex,TEdge> Members
+#region IGraph<TVertex,TEdge> Members
 
         bool IGraph<TVertex, TEdge>.IsDirected
         {
@@ -68,9 +75,9 @@ namespace QuickGraph.Contracts
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
+#endregion
 
-        #region IEdgeSet<TVertex,TEdge> Members
+#region IEdgeSet<TVertex,TEdge> Members
 
         bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty
         {
@@ -92,9 +99,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IMutableVertexSet<TVertex> Members
+#region IMutableVertexSet<TVertex> Members
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexAdded
         {
@@ -128,9 +135,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IMutableEdgeListGraph<TVertex,TEdge> Members
+#region IMutableEdgeListGraph<TVertex,TEdge> Members
 
         bool IMutableEdgeListGraph<TVertex, TEdge>.AddEdge(TEdge edge)
         {
@@ -164,15 +171,15 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IMutableGraph<TVertex,TEdge> Members
+#region IMutableGraph<TVertex,TEdge> Members
 
         void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
     }
 }

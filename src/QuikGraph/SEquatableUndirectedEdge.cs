@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Runtime.InteropServices;
 
 namespace QuickGraph
 {
@@ -29,14 +31,20 @@ namespace QuickGraph
         /// <param name="target">The target.</param>
         public SEquatableUndirectedEdge(TVertex source, TVertex target)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
+#endif
+
             if (Comparer<TVertex>.Default.Compare(source, target) > 0)
             {
                 throw new ArgumentException("source cannot be greater than target in SEquatableUndirectedEdge");
             }
+
+#if SUPPORTS_CONTRACTS
             Contract.Ensures(Contract.ValueAtReturn(out this).Source.Equals(source));
             Contract.Ensures(Contract.ValueAtReturn(out this).Target.Equals(target));
+#endif
 
             this.source = source;
             this.target = target;
@@ -83,11 +91,13 @@ namespace QuickGraph
         /// </returns>
         public bool Equals(SEquatableUndirectedEdge<TVertex> other)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Ensures(
                 Contract.Result<bool>() ==
                 (this.Source.Equals(other.Source) &&
                 this.Target.Equals(other.Target))
                 );
+#endif
 
             return
                 this.source.Equals(other.source) &&

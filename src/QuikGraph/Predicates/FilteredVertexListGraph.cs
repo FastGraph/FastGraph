@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+
 namespace QuickGraph.Predicates
 {
 #if !SILVERLIGHT

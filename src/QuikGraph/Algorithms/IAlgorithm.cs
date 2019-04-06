@@ -1,10 +1,12 @@
-﻿using System;
-using QuickGraph.Algorithms.Services;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms
 {
-   [ContractClass(typeof(Contracts.IAlgorithmContract<>))]
+#if SUPPORTS_CONTRACTS
+    [ContractClass(typeof(Contracts.IAlgorithmContract<>))]
+#endif
     public interface IAlgorithm<TGraph> :
         IComputation
     {

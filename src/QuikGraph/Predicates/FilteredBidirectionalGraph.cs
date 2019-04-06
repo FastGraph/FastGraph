@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Predicates
 {
@@ -21,13 +23,17 @@ namespace QuickGraph.Predicates
             :base(baseGraph,vertexPredicate,edgePredicate)
         { }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool IsInEdgesEmpty(TVertex v)
         {
             return this.InDegree(v) == 0;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int InDegree(TVertex v)
         {
             int count = 0;
@@ -37,7 +43,9 @@ namespace QuickGraph.Predicates
             return count;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public IEnumerable<TEdge> InEdges(TVertex v)
         {
             foreach (var edge in this.BaseGraph.InEdges(v))
@@ -45,7 +53,9 @@ namespace QuickGraph.Predicates
                     yield return edge;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
         {
             if (this.ContainsVertex(v))
@@ -60,7 +70,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public int Degree(TVertex v)
         {
             return this.OutDegree(v) + this.InDegree(v);
@@ -99,7 +111,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             if (!this.TestEdge(edge))
@@ -107,7 +121,9 @@ namespace QuickGraph.Predicates
             return this.BaseGraph.ContainsEdge(edge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public TEdge InEdge(TVertex v, int index)
         {
             throw new NotSupportedException();

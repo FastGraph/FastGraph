@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -83,8 +85,10 @@ namespace QuickGraph.Algorithms.Search
             )
             : base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(colors != null);
             Contract.Requires(adjacentEdgeEnumerator != null);
+#endif
 
             this.colors = colors;
             this.adjacentEdgeEnumerator = adjacentEdgeEnumerator;
@@ -116,7 +120,10 @@ namespace QuickGraph.Algorithms.Search
             }
             set
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(value > 0);
+#endif
+
                 this.maxDepth = value;
             }
         }
@@ -124,7 +131,9 @@ namespace QuickGraph.Algorithms.Search
         public event VertexAction<TVertex> InitializeVertex;
         private void OnInitializeVertex(TVertex v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
+#endif
 
             var eh = this.InitializeVertex;
             if (eh != null)
@@ -134,7 +143,9 @@ namespace QuickGraph.Algorithms.Search
         public event VertexAction<TVertex> StartVertex;
         private void OnStartVertex(TVertex v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
+#endif
 
             var eh = this.StartVertex;
             if (eh != null)
@@ -144,7 +155,9 @@ namespace QuickGraph.Algorithms.Search
         public event VertexAction<TVertex> VertexMaxDepthReached;
         private void OnVertexMaxDepthReached(TVertex v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
+#endif
 
             var eh = this.VertexMaxDepthReached;
             if (eh != null)
@@ -247,9 +260,11 @@ namespace QuickGraph.Algorithms.Search
                 IEnumerator<TEdge> edges, 
                 int depth)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(vertex != null);
                 Contract.Requires(edges != null);
                 Contract.Requires(depth >= 0);
+#endif
 
                 this.Vertex = vertex;
                 this.Edges = edges;
@@ -259,7 +274,9 @@ namespace QuickGraph.Algorithms.Search
 
         public void Visit(TVertex root)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
+#endif
 
             var todo = new Stack<SearchFrame>();
             var oee = this.AdjacentEdgeEnumerator;

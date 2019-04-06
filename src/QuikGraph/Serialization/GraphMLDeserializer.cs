@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.IO;
-using System.Text;
-using System.Reflection;
-using System.Xml.Serialization;
-using System.Reflection.Emit;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.ComponentModel;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Xml;
 
 namespace QuickGraph.Serialization
 {
@@ -224,10 +222,16 @@ namespace QuickGraph.Serialization
 
                 public static bool TryGetReadContentMethod(Type type, out MethodInfo method)
                 {
+#if SUPPORTS_CONTRACTS
                     Contract.Requires(type != null);
+#endif
 
                     bool result = ReadContentMethods.TryGetValue(type, out method);
+
+#if SUPPORTS_CONTRACTS
                     Contract.Assert(!result || method != null, type.FullName);
+#endif
+
                     return result;
                 }
             }
@@ -237,8 +241,10 @@ namespace QuickGraph.Serialization
                 Type elementType
                 )
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(delegateType != null);
                 Contract.Requires(elementType != null);
+#endif
 
                 var method = new DynamicMethod(
                     "Set" + elementType.Name + "Default",
@@ -305,8 +311,10 @@ namespace QuickGraph.Serialization
                 //,params string[] ignoredAttributes
                 )
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(delegateType != null);
                 Contract.Requires(elementType != null);
+#endif
 
                 var method = new DynamicMethod(
                     "Read" + elementType.Name,
@@ -392,7 +400,7 @@ namespace QuickGraph.Serialization
                 return method.CreateDelegate(delegateType);
             }
         }
-        #endregion
+#endregion
 
         public void Deserialize(
             XmlReader reader,
@@ -400,10 +408,12 @@ namespace QuickGraph.Serialization
             IdentifiableVertexFactory<TVertex> vertexFactory,
             IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(reader != null);
             Contract.Requires(visitedGraph != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             var worker = new ReaderWorker(
                 this,
@@ -431,11 +441,13 @@ namespace QuickGraph.Serialization
                 IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory
                 )
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(serializer != null);
                 Contract.Requires(reader != null);
                 Contract.Requires(visitedGraph != null);
                 Contract.Requires(vertexFactory != null);
                 Contract.Requires(edgeFactory != null);
+#endif
 
                 this.serializer = serializer;
                 this.reader = reader;
@@ -490,10 +502,12 @@ namespace QuickGraph.Serialization
 
             private void ReadElements()
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(
                     this.Reader.Name == "graph" &&
                     this.Reader.NamespaceURI == this.graphMLNamespace,
                     "incorrect reader position");
+#endif
 
                 ReadDelegateCompiler.SetGraphDefault(this.VisitedGraph);
 
@@ -526,11 +540,13 @@ namespace QuickGraph.Serialization
 
             private void ReadEdge(Dictionary<string, TVertex> vertices)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(vertices != null);
                 Contract.Assert(
                     this.Reader.NodeType == XmlNodeType.Element &&
                     this.Reader.Name == "edge" &&
                     this.Reader.NamespaceURI == this.graphMLNamespace);
+#endif
 
                 // get subtree
                 using (var subReader = this.Reader.ReadSubtree())
@@ -564,11 +580,13 @@ namespace QuickGraph.Serialization
 
             private void ReadVertex(Dictionary<string, TVertex> vertices)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(vertices != null);
                 Contract.Assert(
                     this.Reader.NodeType == XmlNodeType.Element &&
                     this.Reader.Name == "node" &&
                     this.Reader.NamespaceURI == this.graphMLNamespace);
+#endif
 
                 // get subtree
                 using (var subReader = this.Reader.ReadSubtree())
@@ -595,8 +613,11 @@ namespace QuickGraph.Serialization
 
             private static string ReadAttributeValue(XmlReader reader, string attributeName)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(reader != null);
                 Contract.Requires(attributeName != null);
+#endif
+
                 reader.MoveToAttribute(attributeName);
                 if (!reader.ReadAttributeValue())
                     throw new ArgumentException("missing " + attributeName + " attribute");

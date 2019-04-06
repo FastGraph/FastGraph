@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -46,7 +48,9 @@ namespace QuickGraph.Algorithms.Search
             )
             : base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(colors != null);
+#endif
 
             this.colors = colors;
         }
@@ -180,7 +184,9 @@ namespace QuickGraph.Algorithms.Search
 
         public void Visit(TVertex u, int depth)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(u != null);
+#endif
 
             if (depth > this.maxDepth)
                 return;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.MaximumFlow
 {
@@ -41,8 +43,10 @@ namespace QuickGraph.Algorithms.MaximumFlow
             IMutableVertexAndEdgeListGraph<TVertex,TEdge> visitedGraph,
             EdgeFactory<TVertex,TEdge> edgeFactory)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             this.visitedGraph = visitedGraph;
             this.edgeFactory = edgeFactory;

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Algorithms.Services;
-using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace QuickGraph.Algorithms
 {
@@ -77,7 +78,10 @@ namespace QuickGraph.Algorithms
         public event EdgeAction<TVertex,TEdge> TreeEdge;
         private void OnTreeEdge(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
+
             var eh = this.TreeEdge;
             if (eh != null)
                 eh(e);
@@ -86,7 +90,9 @@ namespace QuickGraph.Algorithms
         public event EdgeAction<TVertex,TEdge> CircuitEdge;
         private void OnCircuitEdge(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
 
             var eh = this.CircuitEdge;
             if (eh != null)
@@ -96,7 +102,9 @@ namespace QuickGraph.Algorithms
         public event EdgeAction<TVertex,TEdge> VisitEdge;
         private void OnVisitEdge(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
 
             var eh = this.VisitEdge;
             if (eh != null)
@@ -105,7 +113,9 @@ namespace QuickGraph.Algorithms
 
         private bool Search(TVertex u)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(u != null);
+#endif
 
             foreach (var e in SelectOutEdgesNotInCircuit(u))
             {
@@ -133,7 +143,7 @@ namespace QuickGraph.Algorithms
         /// <summary>
         /// Looks for a new path to add to the current vertex.
         /// </summary>
-        /// <returns>true if found a new path, false otherwize</returns>
+        /// <returns>true if found a new path, false otherwise</returns>
         private bool Visit()
         {
             // find a vertex that needs to be visited
@@ -160,7 +170,9 @@ namespace QuickGraph.Algorithms
         /// <returns>number of eulerian trails</returns>
         public static int ComputeEulerianPathCount(IVertexAndEdgeListGraph<TVertex,TEdge> g)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(g != null);
+#endif
 
             if (g.EdgeCount < g.VertexCount)
                 return 0;
@@ -403,7 +415,10 @@ namespace QuickGraph.Algorithms
         /// <exception cref="Exception">Eulerian trail not computed yet.</exception>
         public ICollection<ICollection<TEdge>> Trails(TVertex s)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(s != null);
+#endif
+
             if (this.Circuit.Count == 0)
                 throw new InvalidOperationException("Circuit is empty");
 

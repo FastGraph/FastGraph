@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Contracts;
 
 namespace QuickGraph
@@ -10,7 +10,9 @@ namespace QuickGraph
     /// A set of vertices
     /// </summary>
     /// <typeparam name="TVertex">type of the vertices</typeparam>
+#if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IVertexSetContract<>))]
+#endif
     public interface IVertexSet<TVertex>
         : IImplicitVertexSet<TVertex>
     {

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms
@@ -35,7 +34,9 @@ namespace QuickGraph.Algorithms
 
         public void SetGoalVertex(TVertex goalVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(goalVertex != null);
+#endif
 
             bool changed = !Comparison<TVertex>.Equals(this._goalVertex, goalVertex);
             this._goalVertex = goalVertex;
@@ -61,7 +62,9 @@ namespace QuickGraph.Algorithms
         public event EventHandler GoalVertexChanged;
         protected virtual void OnGoalVertexChanged(EventArgs e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
+#endif
 
             var eh = this.GoalVertexChanged;
             if (eh != null)
@@ -70,8 +73,10 @@ namespace QuickGraph.Algorithms
 
         public void Compute(TVertex root, TVertex goal)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
             Contract.Requires(goal != null);
+#endif
 
             this.SetGoalVertex(goal);
             this.Compute(root);

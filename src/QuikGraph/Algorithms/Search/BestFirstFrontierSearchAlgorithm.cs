@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using QuickGraph.Collections;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.ShortestPath;
 
 namespace QuickGraph.Algorithms.Search
@@ -32,8 +34,10 @@ namespace QuickGraph.Algorithms.Search
             IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
             Contract.Requires(distanceRelaxer != null);
+#endif
 
             this.edgeWeights = edgeWeights;
             this.distanceRelaxer = distanceRelaxer;
@@ -106,7 +110,9 @@ namespace QuickGraph.Algorithms.Search
                     }
                     else if (hasColor)
                     {
+#if SUPPORTS_CONTRACTS
                         Contract.Assume(edgeColor == GraphColor.Gray);
+#endif
                         // edge already seen, remove it
                         operators.Remove(edge);
                     }
@@ -139,7 +145,7 @@ namespace QuickGraph.Algorithms.Search
         }
 #endif
 
-        #region ITreeBuilderAlgorithm<TVertex,TEdge> Members
+#region ITreeBuilderAlgorithm<TVertex,TEdge> Members
         public event EdgeAction<TVertex, TEdge> TreeEdge;
         private void OnTreeEdge(TEdge edge)
         {
@@ -147,6 +153,6 @@ namespace QuickGraph.Algorithms.Search
             if (eh != null)
                 eh(edge);
         }
-        #endregion
+#endregion
     }
 }

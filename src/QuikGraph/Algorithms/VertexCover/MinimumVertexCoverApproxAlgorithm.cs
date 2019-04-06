@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-
+#endif
+using System.Linq;
 using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.VertexCover
@@ -46,7 +47,9 @@ namespace QuickGraph.Algorithms.VertexCover
             TVertex target = default(TVertex);
 
             var graph = (UndirectedGraph<TVertex, TEdge>)VisitedGraph;
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
+#endif
 
             while (!graph.IsEdgesEmpty)
             {

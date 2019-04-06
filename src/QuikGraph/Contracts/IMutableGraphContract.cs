@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IMutableGraph<,>))]
+#endif
     abstract class IMutableGraphContract<TVertex, TEdge>
         : IMutableGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        #region IMutableGraph<TVertex,TEdge> Members
+#region IMutableGraph<TVertex,TEdge> Members
         void IMutableGraph<TVertex, TEdge>.Clear()
         {
             IMutableGraph<TVertex, TEdge> ithis = this;
         }
-        #endregion
+#endregion
 
-        #region IGraph<TVertex,TEdge> Members
+#region IGraph<TVertex,TEdge> Members
 
         bool IGraph<TVertex, TEdge>.IsDirected
         {
@@ -28,6 +31,6 @@ namespace QuickGraph.Contracts
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
+#endregion
     }
 }

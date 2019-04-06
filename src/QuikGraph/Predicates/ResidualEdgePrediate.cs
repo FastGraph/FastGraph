@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Predicates
 {
@@ -12,7 +13,9 @@ namespace QuickGraph.Predicates
         public ResidualEdgePredicate(
             IDictionary<TEdge,double> residualCapacities)
 		{
+#if SUPPORTS_CONTRACTS
             Contract.Requires(residualCapacities != null);
+#endif
 
             this.residualCapacities = residualCapacities;
 		}
@@ -27,8 +30,11 @@ namespace QuickGraph.Predicates
 
 		public bool Test(TEdge e)
 		{
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
-			return 0 < this.residualCapacities[e];
+#endif
+
+            return 0 < this.residualCapacities[e];
 		}
     }
 }

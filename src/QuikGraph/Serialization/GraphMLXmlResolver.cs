@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Net;
+using System.Xml;
 
 namespace QuickGraph.Serialization
 {
@@ -24,7 +24,9 @@ namespace QuickGraph.Serialization
 #endif
         public GraphMLXmlResolver(XmlResolver baseResolver)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(baseResolver != null);
+#endif
 
             this.baseResolver = baseResolver;
         }

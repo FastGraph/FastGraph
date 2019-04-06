@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IUndirectedGraph<,>))]
+#endif
     abstract class IUndirectedGraphContract<TVertex, TEdge>
         : IUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        #region IVertexSet<TVertex> Members
+#region IVertexSet<TVertex> Members
 
         bool IVertexSet<TVertex>.IsVerticesEmpty
         {
@@ -33,9 +35,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IGraph<TVertex,TEdge> Members
+#region IGraph<TVertex,TEdge> Members
 
         bool IGraph<TVertex, TEdge>.IsDirected
         {
@@ -47,9 +49,9 @@ namespace QuickGraph.Contracts
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
+#endregion
 
-        #region IEdgeSet<TVertex,TEdge> Members
+#region IEdgeSet<TVertex,TEdge> Members
 
         bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty
         {
@@ -74,7 +76,10 @@ namespace QuickGraph.Contracts
         #endregion
 
         #region IImplicitUndirectedGraph<TVertex,TEdge> Members
+
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         EdgeEqualityComparer<TVertex, TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer
         {
             get
@@ -112,6 +117,7 @@ namespace QuickGraph.Contracts
         {
             throw new NotImplementedException();
         }
-        #endregion
+
+#endregion
     }
 }

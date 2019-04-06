@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Condensation
 {
@@ -19,10 +21,12 @@ namespace QuickGraph.Algorithms.Condensation
                 IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex,TEdge>> condensatedGraph,
                 VertexPredicate<TVertex> vertexPredicate
             )
-            :base(visitedGraph)
+            : base(visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(condensatedGraph != null);
             Contract.Requires(vertexPredicate != null);
+#endif
 
             this.condensatedGraph = condensatedGraph;
             this.vertexPredicate = vertexPredicate;

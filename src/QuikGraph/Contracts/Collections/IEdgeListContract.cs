@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IEdgeList<,>))]
+#endif
     abstract class IEdgeListContract<TVertex,TEdge> 
         : IEdgeList<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         IEdgeList<TVertex, TEdge> IEdgeList<TVertex, TEdge>.Clone()
         {
+#if SUPPORTS_CONTRACTS
             Contract.Ensures(Contract.Result<IEdgeList<TVertex, TEdge>>() != null);
+#endif
             throw new NotImplementedException();
         }
 
         void IEdgeList<TVertex, TEdge>.TrimExcess()
-        { }
+        {
+        }
 
         #region others
+
         int IList<TEdge>.IndexOf(TEdge item)
         {
             throw new NotImplementedException();
@@ -97,6 +105,7 @@ namespace QuickGraph.Collections
             throw new NotImplementedException();
         }
 #endif
+
         #endregion
     }
 }

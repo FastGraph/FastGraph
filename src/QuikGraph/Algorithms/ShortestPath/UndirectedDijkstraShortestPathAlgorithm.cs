@@ -4,7 +4,9 @@ using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Collections;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Diagnostics;
 
 namespace QuickGraph.Algorithms.ShortestPath
@@ -68,7 +70,9 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         private void InternalTreeEdge(Object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
+#endif
 
             bool decreased = Relax(args.Edge, args.Source, args.Target);
             if (decreased)
@@ -79,7 +83,9 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         private void InternalGrayTarget(Object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
+#endif
 
             bool decreased = Relax(args.Edge, args.Source, args.Target);
             if (decreased)
@@ -97,13 +103,18 @@ namespace QuickGraph.Algorithms.ShortestPath
         [Conditional("DEBUG")]
         private void AssertHeap()
         {
-            if (this.vertexQueue.Count == 0) return;
+            if (this.vertexQueue.Count == 0)
+                return;
 
             var top = this.vertexQueue.Peek();
             var vertices = this.vertexQueue.ToArray();
             for (int i = 1; i < vertices.Length; ++i)
                 if (this.Distances[top] > this.Distances[vertices[i]])
+#if SUPPORTS_CONTRACTS
                     Contract.Assert(false);
+#else
+                    Debug.Assert(false);
+#endif
         }
 
         protected override void Initialize()
@@ -135,9 +146,11 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         private void ComputeFromRoot(TVertex rootVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(rootVertex != null);
             Contract.Requires(this.VisitedGraph.ContainsVertex(rootVertex));
             Contract.Requires(this.VertexColors[rootVertex] == GraphColor.White);
+#endif
 
             this.VertexColors[rootVertex] = GraphColor.Gray;
             this.Distances[rootVertex] = 0;
@@ -146,8 +159,10 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         public void ComputeNoInit(TVertex s)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(s != null);
             Contract.Requires(this.VisitedGraph.ContainsVertex(s));
+#endif
 
             UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge> bfs = null;
             try

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using QuickGraph.Algorithms.Search;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using QuickGraph.Algorithms.Search;
 
 namespace QuickGraph.Algorithms.TopologicalSort
 {
@@ -25,7 +26,9 @@ namespace QuickGraph.Algorithms.TopologicalSort
             IList<TVertex> vertices)
             : base(g)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
+#endif
 
             this.vertices = vertices;
         }

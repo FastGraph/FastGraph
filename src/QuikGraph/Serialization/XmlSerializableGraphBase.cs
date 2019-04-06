@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Xml.Serialization;
 
 namespace QuickGraph.Serialization
@@ -33,7 +32,9 @@ namespace QuickGraph.Serialization
 
         public XmlSerializableGraph(TGraph graph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
+#endif
 
             this.graph = graph;
         }
@@ -67,7 +68,9 @@ namespace QuickGraph.Serialization
 
             internal XmlEdgeList(TGraph graph)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(graph != null);
+#endif
 
                 this.graph = graph;
             }
@@ -84,7 +87,9 @@ namespace QuickGraph.Serialization
 
             public void Add(TEdge edge)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(edge != null);
+#endif
 
                 this.graph.AddVerticesAndEdge(edge);
             }

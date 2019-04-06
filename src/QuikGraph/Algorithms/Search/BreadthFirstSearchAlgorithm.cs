@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using QuickGraph.Algorithms.Services;
+using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -57,9 +57,11 @@ namespace QuickGraph.Algorithms.Search
             )
             : base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexQueue != null);
             Contract.Requires(vertexColors != null);
             Contract.Requires(outEdgeEnumerator != null);
+#endif
 
             this.vertexColors = vertexColors;
             this.vertexQueue = vertexQueue;

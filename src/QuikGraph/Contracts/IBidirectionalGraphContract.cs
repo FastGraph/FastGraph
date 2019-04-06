@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IBidirectionalGraph<,>))]
+#endif
     abstract class IBidirectionalGraphContract<TVertex, TEdge>
         : IBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        #region IIncidenceGraph<TVertex,TEdge> Members
+#region IIncidenceGraph<TVertex,TEdge> Members
 
         bool IIncidenceGraph<TVertex, TEdge>.ContainsEdge(TVertex source, TVertex target)
         {
@@ -28,9 +30,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IImplicitGraph<TVertex,TEdge> Members
+#region IImplicitGraph<TVertex,TEdge> Members
 
         bool IImplicitGraph<TVertex, TEdge>.IsOutEdgesEmpty(TVertex v)
         {
@@ -57,9 +59,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IGraph<TVertex,TEdge> Members
+#region IGraph<TVertex,TEdge> Members
 
         bool IGraph<TVertex, TEdge>.IsDirected
         {
@@ -71,18 +73,18 @@ namespace QuickGraph.Contracts
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
+#endregion
 
-        #region IImplicitVertexSet<TVertex> Members
+#region IImplicitVertexSet<TVertex> Members
 
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IVertexSet<TVertex> Members
+#region IVertexSet<TVertex> Members
 
         bool IVertexSet<TVertex>.IsVerticesEmpty
         {
@@ -99,9 +101,9 @@ namespace QuickGraph.Contracts
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
+#endregion
 
-        #region IEdgeSet<TVertex,TEdge> Members
+#region IEdgeSet<TVertex,TEdge> Members
 
         bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty
         {
@@ -123,9 +125,9 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
-        #region IBidirectionalImplicitGraph<TVertex,TEdge> Members
+#region IBidirectionalImplicitGraph<TVertex,TEdge> Members
 
         bool IBidirectionalIncidenceGraph<TVertex, TEdge>.IsInEdgesEmpty(TVertex v)
         {
@@ -157,6 +159,6 @@ namespace QuickGraph.Contracts
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
     }
 }

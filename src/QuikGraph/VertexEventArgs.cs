@@ -1,5 +1,7 @@
 ﻿using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -8,7 +10,10 @@ namespace QuickGraph
         private readonly TVertex vertex;
         public VertexEventArgs(TVertex vertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
+#endif
+
             this.vertex = vertex;
         }
 

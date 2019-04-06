@@ -1,14 +1,19 @@
 ﻿using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IEdgeListGraph<,>))]
+#endif
     abstract class IEdgeListGraphContract<TVertex, TEdge>
         : IEdgeListGraph<TVertex, TEdge>
       where TEdge : IEdge<TVertex>  
     {
         #region IGraph<TVertex,TEdge> Members
+
         bool IGraph<TVertex, TEdge>.IsDirected
         {
             get { throw new NotImplementedException(); }
@@ -42,6 +47,7 @@ namespace QuickGraph.Contracts
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         #region IVertexSet<TVertex> Members

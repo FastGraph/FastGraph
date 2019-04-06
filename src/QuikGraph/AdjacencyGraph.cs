@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+#endif
 using QuickGraph.Collections;
 
 namespace QuickGraph
@@ -65,7 +66,9 @@ namespace QuickGraph
             int edgeCapacity,
             Func<int, IVertexEdgeDictionary<TVertex, TEdge>> vertexEdgesDictionaryFactory)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexEdgesDictionaryFactory != null);
+#endif
             this.allowParallelEdges = allowParallelEdges;
             this.vertexEdges = vertexEdgesDictionaryFactory(capacity);
             this.edgeCapacity = edgeCapacity;
@@ -78,7 +81,9 @@ namespace QuickGraph
 
         public bool AllowParallelEdges
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.allowParallelEdges; }
         }
 
@@ -108,7 +113,9 @@ namespace QuickGraph
             get { return this.vertexEdges.Keys; }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsVertex(TVertex v)
         {
             return this.vertexEdges.ContainsKey(v);
@@ -155,7 +162,9 @@ namespace QuickGraph
         /// </value>
         public bool IsEdgesEmpty
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get { return this.edgeCount == 0; }
         }
 
@@ -171,11 +180,13 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void ObjectInvariant()
         {
             Contract.Invariant(this.edgeCount >= 0);
         }
+#endif
 
         /// <summary>
         /// Gets the edges.
@@ -183,7 +194,9 @@ namespace QuickGraph
         /// <value>The edges.</value>
         public virtual IEnumerable<TEdge> Edges
         {
+#if SUPPORTS_CONTRACTS
             [Pure]
+#endif
             get
             {
                 foreach (var edges in this.vertexEdges.Values)
@@ -192,7 +205,9 @@ namespace QuickGraph
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             IEnumerable<TEdge> outEdges;
@@ -204,7 +219,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             IEdgeList<TVertex, TEdge> edges;
@@ -213,7 +230,9 @@ namespace QuickGraph
                 edges.Contains(edge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool TryGetEdge(
             TVertex source,
             TVertex target,
@@ -236,7 +255,9 @@ namespace QuickGraph
             return false;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public virtual bool TryGetEdges(
             TVertex source,
             TVertex target,
@@ -285,7 +306,9 @@ namespace QuickGraph
         public event VertexAction<TVertex> VertexAdded;
         protected virtual void OnVertexAdded(TVertex args)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
+#endif
 
             var eh = this.VertexAdded;
             if (eh != null)
@@ -324,7 +347,9 @@ namespace QuickGraph
                 }
             }
 
+#if SUPPORTS_CONTRACTS
             Contract.Assert(this.edgeCount >= 0);
+#endif
             this.vertexEdges.Remove(v);
             this.OnVertexRemoved(v);
 
@@ -334,7 +359,9 @@ namespace QuickGraph
         public event VertexAction<TVertex> VertexRemoved;
         protected virtual void OnVertexRemoved(TVertex args)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
+#endif
 
             var eh = this.VertexRemoved;
             if (eh != null)
@@ -382,7 +409,10 @@ namespace QuickGraph
         /// <returns>true if the edge was added; false if it was already part of the graph</returns>
         public virtual bool AddEdge(TEdge e)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Assert(e != null);
+#endif
+
             if (e == null)
             {
                 throw new System.ArgumentException("Edge can not be null.");
@@ -425,7 +455,9 @@ namespace QuickGraph
                 edges.Remove(e))
             {
                 this.edgeCount--;
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(this.edgeCount >= 0);
+#endif
                 this.OnEdgeRemoved(e);
                 return true;
             }
@@ -513,7 +545,8 @@ namespace QuickGraph
             DotParserAdapter.LoadDot(dotSource, createGraph, vertexFunc, edgeFunc);
         }
 
-        #region ICloneable Members
+#region ICloneable Members
+
         private AdjacencyGraph(
             IVertexEdgeDictionary<TVertex, TEdge> vertexEdges,
             int edgeCount,
@@ -521,8 +554,10 @@ namespace QuickGraph
             bool allowParallelEdges
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexEdges != null);
             Contract.Requires(edgeCount >= 0);
+#endif
 
             this.vertexEdges = vertexEdges;
             this.edgeCount = edgeCount;
@@ -530,7 +565,9 @@ namespace QuickGraph
             this.allowParallelEdges = allowParallelEdges;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public AdjacencyGraph<TVertex, TEdge> Clone()
         {
             return new AdjacencyGraph<TVertex, TEdge>(
@@ -547,6 +584,6 @@ namespace QuickGraph
             return this.Clone();
         }
 #endif
-        #endregion
+#endregion
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 using System.Linq;
-using System.Text;
 using QuickGraph.Collections;
 using QuickGraph.Algorithms.Search;
-using System.Diagnostics.Contracts;
 using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms
@@ -48,15 +49,19 @@ namespace QuickGraph.Algorithms
 
         public void SetVertexPairs(IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(pairs != null);
+#endif
 
             this.pairs = new List<SEquatableEdge<TVertex>>(pairs).ToArray();
         }
 
         public void Compute(TVertex root, IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
             Contract.Requires(pairs != null);
+#endif
 
             this.pairs = Enumerable.ToArray(pairs);
             this.Compute(root);

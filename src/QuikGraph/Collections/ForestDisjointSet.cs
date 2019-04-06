@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -41,7 +42,10 @@ namespace QuickGraph.Collections
 
         public ForestDisjointSet(int elementCapacity)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(elementCapacity >= 0 && elementCapacity < int.MaxValue);
+#endif
+
             this.elements = new Dictionary<T, Element>(elementCapacity);
             this.setCount = 0;
         }
@@ -73,7 +77,9 @@ namespace QuickGraph.Collections
             this.setCount++;
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool Contains(T value)
         {
             return this.elements.ContainsKey(value);
@@ -94,11 +100,15 @@ namespace QuickGraph.Collections
             return this.FindSet(left).Equals(this.FindSet(right));
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         private Element FindNoCompression(Element element)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(element != null);
             Contract.Ensures(Contract.Result<Element>() != null);
+#endif
 
             // find root,
             var current = element;
@@ -115,8 +125,10 @@ namespace QuickGraph.Collections
         /// <returns></returns>
         private Element Find(Element element)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(element != null);
             Contract.Ensures(Contract.Result<Element>() != null);
+#endif
 
             var root = this.FindNoCompression(element);            
             CompressPath(element, root);
@@ -125,8 +137,10 @@ namespace QuickGraph.Collections
 
         private static void CompressPath(Element element, Element root)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(element != null);
             Contract.Requires(root != null);
+#endif
 
             // path compression
             var current = element;
@@ -140,6 +154,7 @@ namespace QuickGraph.Collections
 
         private bool Union(Element left, Element right)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(left != null);
             Contract.Requires(right != null);
             Contract.Ensures(
@@ -147,6 +162,7 @@ namespace QuickGraph.Collections
                 ? Contract.OldValue(this.SetCount) - 1 == this.SetCount             
                 : Contract.OldValue(this.SetCount) == this.SetCount);
             Contract.Ensures(this.FindNoCompression(left) == this.FindNoCompression(right));
+#endif
 
             // shortcut when already unioned,
             if (left == right) return false;
@@ -171,11 +187,13 @@ namespace QuickGraph.Collections
             return true;
         }
 
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void ObjectInvariant()
         {
             Contract.Invariant(this.setCount >= 0);
             Contract.Invariant(this.setCount <= this.elements.Count);
         }
+#endif
     }
 }

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-
+#endif
 namespace QuickGraph.Predicates
 {
 #if !SILVERLIGHT
@@ -88,7 +88,9 @@ namespace QuickGraph.Predicates
             }
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         private bool FilterEdge(TEdge edge)
         {
             return this.VertexPredicate(edge.Source)
@@ -96,7 +98,9 @@ namespace QuickGraph.Predicates
                         && this.EdgePredicate(edge);
         }
 
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public bool ContainsEdge(TEdge edge)
         {
             return

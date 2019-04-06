@@ -1,7 +1,9 @@
 ﻿using System;
-using QuickGraph.Algorithms.Services;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms
 {
@@ -21,7 +23,10 @@ namespace QuickGraph.Algorithms
         /// <param name="visitedGraph"></param>
         protected AlgorithmBase(IAlgorithmComponent host, TGraph visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
+#endif
+
             if (host == null)
                 host = this;
             this.visitedGraph = visitedGraph;
@@ -30,7 +35,9 @@ namespace QuickGraph.Algorithms
 
         protected AlgorithmBase(TGraph visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
+#endif
             this.visitedGraph = visitedGraph;
             this.services = new AlgorithmServices(this);
         }
@@ -134,7 +141,10 @@ namespace QuickGraph.Algorithms
 
         protected void BeginComputation()
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(this.State == ComputationState.NotRunning);
+#endif
+
             lock (this.syncRoot)
             {
                 this.state = ComputationState.Running;
@@ -146,9 +156,11 @@ namespace QuickGraph.Algorithms
 
         protected void EndComputation()
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(
                 this.State == ComputationState.Running || 
                 this.State == ComputationState.Aborted);
+#endif
             lock (this.syncRoot)
             {
                 switch (this.state)
@@ -195,7 +207,10 @@ namespace QuickGraph.Algorithms
         Dictionary<Type, object> _services;
         protected virtual bool TryGetService(Type serviceType, out object service)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(serviceType != null);
+#endif
+
             lock (this.SyncRoot)
             {
                 if (this._services == null)

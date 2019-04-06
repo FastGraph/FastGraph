@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -71,8 +73,10 @@ namespace QuickGraph.Collections
 
         public SoftHeap(double maximumErrorRate, TKey keyMaxValue, Comparison<TKey> comparison)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(comparison != null);
             Contract.Requires(0 < maximumErrorRate && maximumErrorRate <= 0.5);
+#endif
 
             this.comparison = comparison;
             this.keyMaxValue = keyMaxValue;
@@ -113,7 +117,9 @@ namespace QuickGraph.Collections
 
         public void Add(TKey key, TValue value)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(this.Comparison(key, this.KeyMaxValue) < 0);
+#endif
 
             var l = new Cell(key, value);
             var q = new Node(l);
@@ -124,14 +130,19 @@ namespace QuickGraph.Collections
 
         private void Meld(Node q)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(q != null);
+#endif
 
             Head toHead = header.Next;
             while (q.Rank > toHead.Rank)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(toHead.Next != null);
+#endif
                 toHead = toHead.Next;
             }
+
             Head prevHead = toHead.Prev;
             while (q.Rank == toHead.Rank)
             {
@@ -167,7 +178,9 @@ namespace QuickGraph.Collections
 
         private void FixMinLinst(Head h)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(h != null);
+#endif
 
             Head tmpmin;
             if (h.Next == tail)
@@ -187,7 +200,9 @@ namespace QuickGraph.Collections
 
         private Node Shift(Node v)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
+#endif
 
             v.IL = null;
             v.ILTail = null;
@@ -304,6 +319,7 @@ namespace QuickGraph.Collections
             return new KeyValuePair<TKey, TValue>(min, value);
         }
 
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void Invariant()
         {
@@ -311,8 +327,10 @@ namespace QuickGraph.Collections
             Contract.Invariant(this.header != null);
             Contract.Invariant(this.tail != null);
         }
+#endif
 
         #region IEnumerable<KeyValuePair<TKey,TValue>> Members
+
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return new Enumerator(this);
@@ -331,7 +349,9 @@ namespace QuickGraph.Collections
 
             public Enumerator(SoftHeap<TKey, TValue> owner)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(owner != null);
+#endif
                 this.owner = owner;
                 this.current = new KeyValuePair<TKey, TValue>();
             }
@@ -348,7 +368,8 @@ namespace QuickGraph.Collections
             }
 
             public void Dispose()
-            { }
+            {
+            }
 
             object System.Collections.IEnumerator.Current
             {
@@ -360,6 +381,7 @@ namespace QuickGraph.Collections
                 throw new NotSupportedException();
             }
         }
+
         #endregion
     }
 }

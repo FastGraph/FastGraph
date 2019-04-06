@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 
 namespace QuickGraph
 {
@@ -26,8 +27,9 @@ namespace QuickGraph
             TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
             :base(tryGetOutEdges)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(tryGetInEdges != null);
-
+#endif
             this.tryGetInEdges = tryGetInEdges;
         }
 
@@ -36,7 +38,7 @@ namespace QuickGraph
             get { return this.tryGetInEdges; }
         }
 
-        #region IBidirectionalImplicitGraph<TVertex,TEdge> Members
+#region IBidirectionalImplicitGraph<TVertex,TEdge> Members
 
         public bool IsInEdgesEmpty(TVertex v)
         {
@@ -72,6 +74,6 @@ namespace QuickGraph
         {
             return this.InDegree(v) + this.OutDegree(v);
         }
-        #endregion
+#endregion
     }
 }

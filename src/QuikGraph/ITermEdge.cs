@@ -1,5 +1,7 @@
-﻿using QuickGraph.Contracts;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+using QuickGraph.Contracts;
+#endif
 
 namespace QuickGraph
 {
@@ -7,7 +9,9 @@ namespace QuickGraph
     /// A directed edge with terminal indices
     /// </summary>
     /// <typeparam name="TVertex">type of the vertices</typeparam>
+#if SUPPORTS_CONTRACTS
     [ContractClass(typeof(ITermEdgeContract<>))]
+#endif
     public interface ITermEdge<TVertex> : IEdge<TVertex>
     {
         /// <summary>

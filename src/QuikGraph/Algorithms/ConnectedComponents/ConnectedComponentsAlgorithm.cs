@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {
@@ -34,7 +35,9 @@ namespace QuickGraph.Algorithms.ConnectedComponents
             IDictionary<TVertex, int> components)
             :base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(components != null);
+#endif
 
             this.components = components;
         }

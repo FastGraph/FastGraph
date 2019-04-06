@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Observers
 {
@@ -28,7 +30,9 @@ namespace QuickGraph.Algorithms.Observers
         public UndirectedVertexPredecessorRecorderObserver(
             IDictionary<TVertex, TEdge> vertexPredecessors)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexPredecessors != null);
+#endif
 
             this.vertexPredecessors = vertexPredecessors;
         }

@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IGraph<,>))]
+#endif
     abstract class IGraphContract<TVertex, TEdge>
         : IGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>

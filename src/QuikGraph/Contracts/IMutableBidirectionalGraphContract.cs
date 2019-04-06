@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Linq;
 
 namespace QuickGraph.Contracts
 {
+#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IMutableBidirectionalGraph<,>))]
+#endif
     abstract class IMutableBidirectionalGraphContract<TVertex, TEdge>
         : IMutableBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
@@ -14,6 +17,7 @@ namespace QuickGraph.Contracts
         int IMutableBidirectionalGraph<TVertex, TEdge>.RemoveInEdgeIf(TVertex v, EdgePredicate<TVertex, TEdge> predicate)
         {
             IMutableBidirectionalGraph<TVertex, TEdge> ithis = this;
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
             Contract.Requires(predicate != null);
             Contract.Requires(ithis.ContainsVertex(v));
@@ -21,6 +25,7 @@ namespace QuickGraph.Contracts
             Contract.Ensures(Enumerable.All(ithis.InEdges(v), e => predicate(e)));
             Contract.Ensures(Contract.Result<int>() == Contract.OldValue(Enumerable.Count(ithis.InEdges(v), e => predicate(e))));
             Contract.Ensures(ithis.InDegree(v) == Contract.OldValue(ithis.InDegree(v)) - Contract.Result<int>());
+#endif
 
             return default(int);
         }
@@ -28,18 +33,22 @@ namespace QuickGraph.Contracts
         void IMutableBidirectionalGraph<TVertex, TEdge>.ClearInEdges(TVertex v)
         {
             IMutableBidirectionalGraph<TVertex, TEdge> ithis = this;
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
             Contract.Requires(ithis.ContainsVertex(v));
             Contract.Ensures(ithis.EdgeCount == Contract.OldValue(ithis.EdgeCount) - Contract.OldValue(ithis.InDegree(v)));
             Contract.Ensures(ithis.InDegree(v) == 0);
+#endif
         }
 
         void IMutableBidirectionalGraph<TVertex, TEdge>.ClearEdges(TVertex v)
         {
             IMutableBidirectionalGraph<TVertex, TEdge> ithis = this;
+#if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
             Contract.Requires(ithis.ContainsVertex(v));
             Contract.Ensures(!ithis.ContainsVertex(v));
+#endif
         }
 
 
@@ -159,124 +168,148 @@ namespace QuickGraph.Contracts
 
         #region IGraph<TVertex,TEdge> Members
 
-        public bool IsDirected {
-          get { throw new NotImplementedException(); }
+        public bool IsDirected
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public bool AllowParallelEdges {
-          get { throw new NotImplementedException(); }
+        public bool AllowParallelEdges
+        {
+            get { throw new NotImplementedException(); }
         }
 
         #endregion
 
         #region IIncidenceGraph<TVertex,TEdge> Members
 
-        public bool ContainsEdge(TVertex source, TVertex target) {
-          throw new NotImplementedException();
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            throw new NotImplementedException();
         }
 
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges) {
-          throw new NotImplementedException();
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        {
+            throw new NotImplementedException();
         }
 
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge) {
-          throw new NotImplementedException();
+        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
 
         #region IImplicitGraph<TVertex,TEdge> Members
 
-        public bool IsOutEdgesEmpty(TVertex v) {
-          throw new NotImplementedException();
+        public bool IsOutEdgesEmpty(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
-        public int OutDegree(TVertex v) {
-          throw new NotImplementedException();
+        public int OutDegree(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<TEdge> OutEdges(TVertex v) {
-          throw new NotImplementedException();
+        public IEnumerable<TEdge> OutEdges(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges) {
-          throw new NotImplementedException();
+        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
+        {
+            throw new NotImplementedException();
         }
 
-        public TEdge OutEdge(TVertex v, int index) {
-          throw new NotImplementedException();
+        public TEdge OutEdge(TVertex v, int index)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
 
         #region IImplicitVertexSet<TVertex> Members
 
-        public bool ContainsVertex(TVertex vertex) {
-          throw new NotImplementedException();
+        public bool ContainsVertex(TVertex vertex)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
 
         #region IVertexSet<TVertex> Members
 
-        public bool IsVerticesEmpty {
-          get { throw new NotImplementedException(); }
+        public bool IsVerticesEmpty
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public int VertexCount {
-          get { throw new NotImplementedException(); }
+        public int VertexCount
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public IEnumerable<TVertex> Vertices {
-          get { throw new NotImplementedException(); }
+        public IEnumerable<TVertex> Vertices
+        {
+            get { throw new NotImplementedException(); }
         }
 
         #endregion
 
         #region IEdgeSet<TVertex,TEdge> Members
 
-        public bool IsEdgesEmpty {
-          get { throw new NotImplementedException(); }
+        public bool IsEdgesEmpty
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public int EdgeCount {
-          get { throw new NotImplementedException(); }
+        public int EdgeCount
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public IEnumerable<TEdge> Edges {
-          get { throw new NotImplementedException(); }
+        public IEnumerable<TEdge> Edges
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public bool ContainsEdge(TEdge edge) {
-          throw new NotImplementedException();
+        public bool ContainsEdge(TEdge edge)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
 
         #region IBidirectionalIncidenceGraph<TVertex,TEdge> Members
 
-        public bool IsInEdgesEmpty(TVertex v) {
-          throw new NotImplementedException();
+        public bool IsInEdgesEmpty(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
-        public int InDegree(TVertex v) {
-          throw new NotImplementedException();
+        public int InDegree(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<TEdge> InEdges(TVertex v) {
-          throw new NotImplementedException();
+        public IEnumerable<TEdge> InEdges(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
-        public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges) {
-          throw new NotImplementedException();
+        public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
+        {
+            throw new NotImplementedException();
         }
 
-        public TEdge InEdge(TVertex v, int index) {
-          throw new NotImplementedException();
+        public TEdge InEdge(TVertex v, int index)
+        {
+            throw new NotImplementedException();
         }
 
-        public int Degree(TVertex v) {
-          throw new NotImplementedException();
+        public int Degree(TVertex v)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

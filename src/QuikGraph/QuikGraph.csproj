@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks> <!-- TODO -->
+    <TargetFrameworks>net40;net45;netstandard2.0</TargetFrameworks> <!-- TODO netstandard2.0 -->
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
@@ -65,10 +65,31 @@ Supported platforms:
   </PropertyGroup>
 
   <!-- Targets defines -->
+  <!-- <PropertyGroup Condition="'$(TargetFramework)'=='net35'"> -->
+    <!-- <AssemblyTitle>QuikGraph .NET 3.0</AssemblyTitle> -->
+    <!-- <DefineConstants>$(DefineConstants);NET30;$(AdditionalConstants)</DefineConstants> -->
+  <!-- </PropertyGroup> -->
+  <!-- <PropertyGroup Condition="'$(TargetFramework)'=='net35'"> -->
+    <!-- <AssemblyTitle>QuikGraph .NET 3.5</AssemblyTitle> -->
+    <!-- <DefineConstants>$(DefineConstants);NET35;$(AdditionalConstants)</DefineConstants> -->
+  <!-- </PropertyGroup> -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <AssemblyTitle>QuikGraph .NET 4.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_CONTRACTS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <AssemblyTitle>QuikGraph .NET 4.5</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET45;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET45;SUPPORTS_CONTRACTS;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <AssemblyTitle>QuikGraph .NET Standard 2.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_CONTRACTS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  
   <!-- Dependencies -->
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+	<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+	<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
 </Project>

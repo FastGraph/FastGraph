@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
 
 namespace QuickGraph
 {
@@ -30,7 +31,9 @@ namespace QuickGraph
         public ArrayUndirectedGraph(
             IUndirectedGraph<TVertex, TEdge> graph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
+#endif
 
             this.edgeEqualityComparer = graph.EdgeEqualityComparer;
             this.edgeCount = graph.EdgeCount;
@@ -42,7 +45,7 @@ namespace QuickGraph
             }
         }
 
-        #region IImplicitUndirectedGraph<TVertex,TEdge> Members
+#region IImplicitUndirectedGraph<TVertex,TEdge> Members
         public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer
         {
             get { return this.edgeEqualityComparer; }
@@ -92,16 +95,16 @@ namespace QuickGraph
             TEdge edge;
             return this.TryGetEdge(source, target, out edge);
         }
-        #endregion
+#endregion
 
-        #region IImplicitVertexSet<TVertex> Members
+#region IImplicitVertexSet<TVertex> Members
         public bool ContainsVertex(TVertex vertex)
         {
             return this.vertexEdges.ContainsKey(vertex);
         }
-        #endregion
+#endregion
 
-        #region IGraph<TVertex,TEdge> Members
+#region IGraph<TVertex,TEdge> Members
         public bool IsDirected
         {
             get { return false; }
@@ -111,9 +114,9 @@ namespace QuickGraph
         {
             get { return true; }
         }
-        #endregion
+#endregion
 
-        #region IEdgeSet<TVertex,TEdge> Members
+#region IEdgeSet<TVertex,TEdge> Members
 
         public bool IsEdgesEmpty
         {
@@ -146,9 +149,9 @@ namespace QuickGraph
                         return true;
             return false;
         }
-        #endregion
+#endregion
 
-        #region IVertexSet<TVertex> Members
+#region IVertexSet<TVertex> Members
 
         public bool IsVerticesEmpty
         {
@@ -164,9 +167,9 @@ namespace QuickGraph
         {
             get { return this.vertexEdges.Keys; }
         }
-        #endregion
+#endregion
 
-        #region ICloneable Members
+#region ICloneable Members
         /// <summary>
         /// Returns self
         /// </summary>
@@ -181,6 +184,6 @@ namespace QuickGraph
             return this;
         }
 #endif
-        #endregion
+#endregion
     }
 }

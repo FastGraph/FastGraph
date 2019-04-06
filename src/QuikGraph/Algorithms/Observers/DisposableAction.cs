@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Observers
 {
@@ -15,7 +17,10 @@ namespace QuickGraph.Algorithms.Observers
 
         public DisposableAction(Action action)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(action != null);
+#endif
+
             this.action = action;
         }
 

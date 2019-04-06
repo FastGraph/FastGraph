@@ -4,7 +4,9 @@ using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Collections;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
@@ -37,8 +39,10 @@ namespace QuickGraph.Algorithms.ShortestPath
             )
             :base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(weights != null);
             Contract.Requires(distanceRelaxer != null);
+#endif
 
             this.weights = weights;
             this.distanceRelaxer = distanceRelaxer;
@@ -59,7 +63,10 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         public bool TryGetDistance(TVertex vertex, out double distance)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
+#endif
+
             return this.distances.TryGetValue(vertex, out distance);
         }
 
@@ -111,6 +118,7 @@ namespace QuickGraph.Algorithms.ShortestPath
 
         protected bool Relax(TEdge e, TVertex source, TVertex target)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(e != null);
             Contract.Requires(source != null);
             Contract.Requires(target != null);
@@ -118,6 +126,7 @@ namespace QuickGraph.Algorithms.ShortestPath
                 (e.Source.Equals(source) && e.Target.Equals(target))
                 || (e.Source.Equals(target) && e.Target.Equals(source))
                 );
+#endif
 
             double du = this.distances[source];
             double dv = this.distances[target];

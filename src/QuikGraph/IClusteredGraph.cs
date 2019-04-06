@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace QuickGraph
 {
@@ -11,8 +6,7 @@ namespace QuickGraph
     {
         IEnumerable Clusters { get; }
 
-        int ClustersCount
-        { get; }
+        int ClustersCount { get; }
 
         bool Colapsed { get; set; }
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using System.Xml;
+#endif
 using QuickGraph.Algorithms;
 using QuickGraph.Serialization.DirectedGraphML;
 
@@ -23,7 +22,10 @@ namespace QuickGraph.Serialization
             EdgeIdentity<TVertex, TEdge> edgeIdentities)
             :base(visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexIdentities != null);
+#endif
+
             this.vertexIdentities = vertexIdentities;
             this.edgeIdentities = edgeIdentities;
         }
@@ -87,8 +89,10 @@ namespace QuickGraph.Serialization
 
         private void OnFormatEdge(TEdge edge, DirectedGraphLink link)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
             Contract.Requires(link != null);
+#endif
 
             var eh = this.FormatEdge;
             if (eh != null)
@@ -102,7 +106,10 @@ namespace QuickGraph.Serialization
 
         private void OnFormatNode(TVertex vertex, DirectedGraphNode node)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(node != null);
+#endif
+
             var eh = this.FormatNode;
             if (eh != null)
                 eh(vertex, node);

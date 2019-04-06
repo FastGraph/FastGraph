@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using QuickGraph.Collections;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.MinimumSpanningTree
@@ -31,7 +33,9 @@ namespace QuickGraph.Algorithms.MinimumSpanningTree
             )
             : base(host, visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
+#endif
 
             this.edgeWeights = edgeWeights;
         }

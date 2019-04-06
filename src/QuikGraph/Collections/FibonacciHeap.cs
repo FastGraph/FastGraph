@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Collections
 {
@@ -80,7 +81,9 @@ namespace QuickGraph.Collections
 
         internal void MergeLists(FibonacciHeapLinkedList<TPriority, TValue> list)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(list != null);
+#endif
 
             if (list.First != null)
             {
@@ -99,7 +102,9 @@ namespace QuickGraph.Collections
 
         internal void AddLast(FibonacciHeapCell<TPriority, TValue> node)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(node != null);
+#endif
 
             if (this.last != null)
             {
@@ -115,7 +120,9 @@ namespace QuickGraph.Collections
 
         internal void Remove(FibonacciHeapCell<TPriority, TValue> node)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(node != null);
+#endif
 
             if (node.Previous != null)
             {
@@ -139,7 +146,7 @@ namespace QuickGraph.Collections
             node.Previous = null;
         }
 
-        #region IEnumerable<FibonacciHeapNode<T,K>> Members
+#region IEnumerable<FibonacciHeapNode<T,K>> Members
 
         public IEnumerator<FibonacciHeapCell<TPriority, TValue>> GetEnumerator()
         {
@@ -150,15 +157,15 @@ namespace QuickGraph.Collections
                 current = current.Next;
             }
         }
-        #endregion
+#endregion
 
-        #region IEnumerable Members
+#region IEnumerable Members
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
 
-        #endregion
+#endregion
     }
 
     public sealed class FibonacciHeapCell<TPriority, TValue>
@@ -298,7 +305,9 @@ namespace QuickGraph.Collections
 
         public void Delete(FibonacciHeapCell<TPriority, TValue> node)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(node != null);
+#endif
 
             ChangeKeyInternal(node, default(TPriority), true);
             Dequeue();            
@@ -306,7 +315,9 @@ namespace QuickGraph.Collections
 
         public void ChangeKey(FibonacciHeapCell<TPriority, TValue> node, TPriority newKey)
         {            
+#if SUPPORTS_CONTRACTS
             Contract.Requires(node != null);
+#endif
 
             ChangeKeyInternal(node, newKey, false);            
         }
@@ -315,7 +326,9 @@ namespace QuickGraph.Collections
             FibonacciHeapCell<TPriority, TValue> node, 
             TPriority NewKey, bool deletingNode)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(node != null);
+#endif
 
             var delta = Math.Sign(this.priorityComparsion(node.Priority, NewKey));
             if (delta == 0)
@@ -392,8 +405,10 @@ namespace QuickGraph.Collections
 
         static int Max<T>(IEnumerable<T> values, Converter<T, int> converter)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(values != null);
             Contract.Requires(converter != null);
+#endif
 
             int max = int.MinValue;
             foreach (var value in values)
@@ -407,13 +422,15 @@ namespace QuickGraph.Collections
 
         /// <summary>
         /// Updates the degree of a node, cascading to update the degree of the
-        /// parents if nessecary
+        /// parents if necessary.
         /// </summary>
         /// <param name="parentNode"></param>
         private void UpdateNodesDegree(
             FibonacciHeapCell<TPriority, TValue> parentNode)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(parentNode != null);
+#endif
 
             var oldDegree = parentNode.Degree;
             parentNode.Degree = 
@@ -456,7 +473,11 @@ namespace QuickGraph.Collections
                     degreeToNode.Remove(next.Degree);
                 }
             }
+
+#if SUPPORTS_CONTRACTS
             Contract.Assert(next.Children != null);
+#endif
+
             foreach (var child in next.Children)
             {
                 child.Parent = null;
@@ -531,8 +552,10 @@ namespace QuickGraph.Collections
             FibonacciHeapCell<TPriority, TValue> parentNode, 
             FibonacciHeapCell<TPriority, TValue> childNode)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(parentNode != null);
             Contract.Requires(childNode != null);
+#endif
 
             this.nodes.Remove(childNode);
             parentNode.Children.AddLast(childNode);
@@ -560,8 +583,10 @@ namespace QuickGraph.Collections
         }
 
         public void Merge(FibonacciHeap<TPriority, TValue> other)
-        {      
+        {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(other != null);
+#endif
 
             if (other.Direction != this.Direction)
             {
@@ -602,11 +627,11 @@ namespace QuickGraph.Collections
             }
         }
 
-        #region IEnumerable Members
+#region IEnumerable Members
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
-        #endregion
+#endregion
     }
 }

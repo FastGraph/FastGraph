@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.Services;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Algorithms.ShortestPath;
@@ -42,15 +44,20 @@ namespace QuickGraph.Algorithms.RankedShortestPath
             IDistanceRelaxer distanceRelaxer)
             :base(host, visitedGraph, distanceRelaxer)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
+#endif
 
             this.edgeWeights = edgeWeights;
         }
 
         public void SetGoalVertex(TVertex goalVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(goalVertex != null);
             Contract.Requires(this.VisitedGraph.ContainsVertex(goalVertex));
+#endif
+
             this.goalVertex = goalVertex;
             this.goalVertexSet = true;
         }
@@ -71,10 +78,12 @@ namespace QuickGraph.Algorithms.RankedShortestPath
 
         public void Compute(TVertex rootVertex, TVertex goalVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(rootVertex != null);
             Contract.Requires(goalVertex != null);
             Contract.Requires(this.VisitedGraph.ContainsVertex(rootVertex));
             Contract.Requires(this.VisitedGraph.ContainsVertex(goalVertex));
+#endif
 
             this.SetRootVertex(rootVertex);
             this.SetGoalVertex(goalVertex);
@@ -119,8 +128,10 @@ namespace QuickGraph.Algorithms.RankedShortestPath
                 int startEdge = path.Count;
                 this.AppendShortestPath(path, successors, deviation.DeviationEdge.Target);
 
+#if SUPPORTS_CONTRACTS
                 Contract.Assert(deviation.Weight == Enumerable.Sum(path, e => edgeWeights(e)));
                 Contract.Assert(path.Count > 0);
+#endif
 
                 // add to list if loopless
                 if (!EdgeExtensions.HasCycles<TVertex, TEdge>(path))
@@ -145,11 +156,13 @@ namespace QuickGraph.Algorithms.RankedShortestPath
             IDictionary<TVertex, double> distances, 
             TVertex root)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(queue != null);
             Contract.Requires(queue.Count == 0);
             Contract.Requires(successors != null);
             Contract.Requires(distances != null);
             Contract.Requires(root != null);
+#endif
 
             var path = new List<TEdge>();
             AppendShortestPath(
@@ -207,6 +220,7 @@ namespace QuickGraph.Algorithms.RankedShortestPath
             int startEdge
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(queue != null);
             Contract.Requires(root != null);
             Contract.Requires(successors != null);
@@ -214,6 +228,7 @@ namespace QuickGraph.Algorithms.RankedShortestPath
             Contract.Requires(path != null);
             Contract.Requires(EdgeExtensions.IsAdjacent<TVertex, TEdge>(path[0], root));
             Contract.Requires(0 <= startEdge && startEdge < path.Length);
+#endif
 
             TVertex previousVertex = root;
             double previousWeight = 0;
@@ -256,9 +271,11 @@ namespace QuickGraph.Algorithms.RankedShortestPath
             Dictionary<TVertex, int> pathVertices
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(queue != null);
             Contract.Requires(distances != null);
             Contract.Requires(path != null);
+#endif
 
             var edge = path[iedge];
             foreach (var deviationEdge in this.VisitedGraph.OutEdges(previousVertex))
@@ -299,10 +316,12 @@ namespace QuickGraph.Algorithms.RankedShortestPath
             IDictionary<TVertex, TEdge> successors, 
             TVertex startVertex)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(path != null);
             Contract.Requires(successors != null);
             Contract.Requires(startVertex != null);
             Contract.Ensures(path[path.Count - 1].Target.Equals(this.goalVertex));
+#endif
 
             var current = startVertex;
             TEdge edge;
@@ -327,10 +346,12 @@ namespace QuickGraph.Algorithms.RankedShortestPath
                 TEdge deviationEdge,
                 double weight)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(parentPath != null);
                 Contract.Requires(0 <= deviationIndex && deviationIndex < parentPath.Length);
                 Contract.Requires(deviationEdge != null);
                 Contract.Requires(weight >= 0);
+#endif
 
                 this.ParentPath = parentPath;
                 this.DeviationIndex = deviationIndex;

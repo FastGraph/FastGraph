@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 using QuickGraph.Algorithms.Observers;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
@@ -26,8 +28,10 @@ namespace QuickGraph.Algorithms.RandomWalks
             IEdgeChain<TVertex,TEdge> edgeChain
             )
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(edgeChain != null);
+#endif
 
             this.visitedGraph = visitedGraph;
             this.edgeChain = edgeChain;
@@ -49,7 +53,9 @@ namespace QuickGraph.Algorithms.RandomWalks
             }
             set
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(value != null);
+#endif
 
                 this.edgeChain = value;
             }
@@ -98,14 +104,18 @@ namespace QuickGraph.Algorithms.RandomWalks
 
         public void Generate(TVertex root)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
+#endif
 
             Generate(root, 100);
         }
 
         public void Generate(TVertex root, int walkCount)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
+#endif
 
             int count = 0;
             TEdge e = default(TEdge);

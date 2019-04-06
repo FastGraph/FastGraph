@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-using QuickGraph.Serialization;
-using QuickGraph.Algorithms.MaximumFlow;
+﻿using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using System.Diagnostics;
+#endif
+using QuickGraph.Algorithms.MaximumFlow;
 
 namespace QuickGraph.Algorithms
 {
@@ -21,8 +19,10 @@ namespace QuickGraph.Algorithms
             )
             : base(visitedGraph)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
+#endif
 
             this.VertexSetA = vertexSetA;
             this.VertexSetB = vertexSetB;

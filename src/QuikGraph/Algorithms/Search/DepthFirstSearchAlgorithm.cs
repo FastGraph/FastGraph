@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -18,16 +20,16 @@ namespace QuickGraph.Algorithms.Search
     [Serializable]
 #endif
     public sealed class DepthFirstSearchAlgorithm<TVertex, TEdge> :
-        RootedAlgorithmBase<TVertex,IVertexListGraph<TVertex, TEdge>>,
-        IDistanceRecorderAlgorithm<TVertex,TEdge>,
-        IVertexColorizerAlgorithm<TVertex,TEdge>,
-        IVertexPredecessorRecorderAlgorithm<TVertex,TEdge>,
-        IVertexTimeStamperAlgorithm<TVertex,TEdge>,
-        ITreeBuilderAlgorithm<TVertex,TEdge>
+        RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>,
+        IDistanceRecorderAlgorithm<TVertex, TEdge>,
+        IVertexColorizerAlgorithm<TVertex, TEdge>,
+        IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>,
+        IVertexTimeStamperAlgorithm<TVertex, TEdge>,
+        ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-		private readonly IDictionary<TVertex,GraphColor> colors;
-		private int maxDepth = int.MaxValue;
+        private readonly IDictionary<TVertex, GraphColor> colors;
+        private int maxDepth = int.MaxValue;
         private readonly Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgeEnumerator;
 
         /// <summary>
@@ -35,8 +37,8 @@ namespace QuickGraph.Algorithms.Search
         /// </summary>
         /// <param name="visitedGraph">visited graph</param>
         public DepthFirstSearchAlgorithm(IVertexListGraph<TVertex, TEdge> visitedGraph)
-            :this(visitedGraph, new Dictionary<TVertex, GraphColor>())
-        {}
+            : this(visitedGraph, new Dictionary<TVertex, GraphColor>())
+        { }
 
         /// <summary>
         /// Initializes a new instance of the algorithm.
@@ -93,22 +95,24 @@ namespace QuickGraph.Algorithms.Search
             IDictionary<TVertex, GraphColor> colors,
             Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgeEnumerator
             )
-            :base(host, visitedGraph)
-		{
+            : base(host, visitedGraph)
+        {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(colors != null);
             Contract.Requires(outEdgeEnumerator != null);
+#endif
 
-			this.colors = colors;
+            this.colors = colors;
             this.outEdgeEnumerator = outEdgeEnumerator;
-		}
+        }
 
-        public IDictionary<TVertex,GraphColor> VertexColors
-		{
-			get
-			{
-				return this.colors;
-			}
-		}
+        public IDictionary<TVertex, GraphColor> VertexColors
+        {
+            get
+            {
+                return this.colors;
+            }
+        }
 
         public Func<IEnumerable<TEdge>, IEnumerable<TEdge>> OutEdgeEnumerator
         {
@@ -120,92 +124,96 @@ namespace QuickGraph.Algorithms.Search
             return this.colors[vertex];
         }
 
-		public int MaxDepth
-		{
-			get
-			{
-				return this.maxDepth;
-			}
-			set
-			{
+        public int MaxDepth
+        {
+            get
+            {
+                return this.maxDepth;
+            }
+            set
+            {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(value > 0);
-				this.maxDepth = value;
-			}
-		}
+#endif
+                this.maxDepth = value;
+            }
+        }
 
+#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
         void ObjectInvariant()
         {
             Contract.Invariant(this.MaxDepth > 0);
         }
+#endif
 
-		public event VertexAction<TVertex> InitializeVertex;
-		private void OnInitializeVertex(TVertex v)
-		{
+        public event VertexAction<TVertex> InitializeVertex;
+        private void OnInitializeVertex(TVertex v)
+        {
             var eh = this.InitializeVertex;
-			if (eh!=null)
-				eh(v);
-		}
+            if (eh != null)
+                eh(v);
+        }
 
-		public event VertexAction<TVertex> StartVertex;
-		private void OnStartVertex(TVertex v)
-		{
+        public event VertexAction<TVertex> StartVertex;
+        private void OnStartVertex(TVertex v)
+        {
             var eh = this.StartVertex;
-			if (eh!=null)
-				eh(v);
-		}
+            if (eh != null)
+                eh(v);
+        }
 
-		public event VertexAction<TVertex> DiscoverVertex;
-		private void OnDiscoverVertex(TVertex v)
-		{
+        public event VertexAction<TVertex> DiscoverVertex;
+        private void OnDiscoverVertex(TVertex v)
+        {
             var eh = this.DiscoverVertex;
-			if (eh!=null)
-				eh(v);
-		}
+            if (eh != null)
+                eh(v);
+        }
 
-		public event EdgeAction<TVertex,TEdge> ExamineEdge;
-		private void OnExamineEdge(TEdge e)
-		{
+        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+        private void OnExamineEdge(TEdge e)
+        {
             var eh = this.ExamineEdge;
-			if (eh!=null)
-				eh(e);
-		}
+            if (eh != null)
+                eh(e);
+        }
 
-		public event EdgeAction<TVertex,TEdge> TreeEdge;
-		private void OnTreeEdge(TEdge e)
-		{
+        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        private void OnTreeEdge(TEdge e)
+        {
             var eh = this.TreeEdge;
-			if (eh!=null)
-				eh(e);
-		}
+            if (eh != null)
+                eh(e);
+        }
 
-		public event EdgeAction<TVertex,TEdge> BackEdge;
-		private void OnBackEdge(TEdge e)
-		{
+        public event EdgeAction<TVertex, TEdge> BackEdge;
+        private void OnBackEdge(TEdge e)
+        {
             var eh = this.BackEdge;
-			if (eh!=null)
-				eh(e);
-		}
+            if (eh != null)
+                eh(e);
+        }
 
-		public event EdgeAction<TVertex,TEdge> ForwardOrCrossEdge;
-		private void OnForwardOrCrossEdge(TEdge e)
-		{
+        public event EdgeAction<TVertex, TEdge> ForwardOrCrossEdge;
+        private void OnForwardOrCrossEdge(TEdge e)
+        {
             var eh = this.ForwardOrCrossEdge;
-			if (eh!=null)
-				eh(e);
-		}
+            if (eh != null)
+                eh(e);
+        }
 
-		public event VertexAction<TVertex> FinishVertex;
-		private void OnFinishVertex(TVertex v)
-		{
+        public event VertexAction<TVertex> FinishVertex;
+        private void OnFinishVertex(TVertex v)
+        {
             var eh = this.FinishVertex;
-			if (eh!=null)
-				eh(v);
-		}
+            if (eh != null)
+                eh(v);
+        }
 
         protected override void InternalCompute()
-		{
-			// if there is a starting vertex, start whith him:
+        {
+            // if there is a starting vertex, start whith him:
             TVertex rootVertex;
             if (this.TryGetRootVertex(out rootVertex))
             {
@@ -227,7 +235,7 @@ namespace QuickGraph.Algorithms.Search
                     }
                 }
             }
-		}
+        }
 
         protected override void Initialize()
         {
@@ -235,11 +243,11 @@ namespace QuickGraph.Algorithms.Search
 
             this.VertexColors.Clear();
             foreach (var u in this.VisitedGraph.Vertices)
-			{
+            {
                 this.VertexColors[u] = GraphColor.White;
                 this.OnInitializeVertex(u);
-			}
-		}
+            }
+        }
 
         struct SearchFrame
         {
@@ -248,18 +256,23 @@ namespace QuickGraph.Algorithms.Search
             public readonly int Depth;
             public SearchFrame(TVertex vertex, IEnumerator<TEdge> edges, int depth)
             {
+#if SUPPORTS_CONTRACTS
                 Contract.Requires(vertex != null);
                 Contract.Requires(edges != null);
                 Contract.Requires(depth >= 0);
+#endif
+
                 this.Vertex = vertex;
                 this.Edges = edges;
                 this.Depth = depth;
             }
         }
 
-		public void Visit(TVertex root)
-		{
+        public void Visit(TVertex root)
+        {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
+#endif
 
             var todo = new Stack<SearchFrame>();
             var oee = this.OutEdgeEnumerator;
@@ -287,7 +300,7 @@ namespace QuickGraph.Algorithms.Search
                     continue;
                 }
 
-                while(edges.MoveNext())
+                while (edges.MoveNext())
                 {
                     TEdge e = edges.Current;
                     if (cancelManager.IsCancelling) return;
@@ -318,6 +331,6 @@ namespace QuickGraph.Algorithms.Search
                 this.VertexColors[u] = GraphColor.Black;
                 this.OnFinishVertex(u);
             }
-		}
+        }
     }
 }

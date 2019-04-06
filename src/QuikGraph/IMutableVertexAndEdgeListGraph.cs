@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using QuickGraph.Contracts;
-using System.Diagnostics.Contracts;
-
-namespace QuickGraph
+﻿namespace QuickGraph
 {
     /// <summary>
     /// A mutable vertex and edge list graph
