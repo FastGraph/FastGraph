@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS

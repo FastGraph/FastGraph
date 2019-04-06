@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
-#endif
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 

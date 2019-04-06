@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -17,8 +15,7 @@ namespace QuickGraph.Algorithms.Observers
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class VertexRecorderObserver<TVertex, TEdge> :
-        IObserver<IVertexTimeStamperAlgorithm<TVertex, TEdge>>
+    public sealed class VertexRecorderObserver<TVertex, TEdge> : IObserver<IVertexTimeStamperAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         private readonly IList<TVertex> vertices;

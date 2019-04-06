@@ -68,7 +68,7 @@ namespace QuickGraph
         /// </returns>
         public override string ToString()
         {
-            return String.Format(
+            return string.Format(
                 EdgeExtensions.UndirectedEdgeFormatString,
                 this.Source,
                 this.Target);

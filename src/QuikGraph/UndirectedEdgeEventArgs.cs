@@ -7,8 +7,7 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class UndirectedEdgeEventArgs<TVertex, TEdge>
-        : EdgeEventArgs<TVertex, TEdge>
+    public class UndirectedEdgeEventArgs<TVertex, TEdge> : EdgeEventArgs<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         private readonly bool reversed;
@@ -36,7 +35,7 @@ namespace QuickGraph
     }
 
     public delegate void UndirectedEdgeAction<TVertex, TEdge>(
-        Object sender,
+        object sender,
         UndirectedEdgeEventArgs<TVertex, TEdge> e)
         where TEdge : IEdge<TVertex>;
 }

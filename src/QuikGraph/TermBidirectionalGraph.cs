@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -9,20 +7,19 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public class TermBidirectionalGraph<TVertex, TEdge>
-        : BidirectionalGraph<TVertex, TEdge>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public class TermBidirectionalGraph<TVertex, TEdge> : BidirectionalGraph<TVertex, TEdge>
         , ITermBidirectionalGraph<TVertex, TEdge>
         , IMutableTermBidirectionalGraph<TVertex, TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
-
          where TEdge : ITermEdge<TVertex>
     {
         public TermBidirectionalGraph()
             : base(true, -1)
-        { }
+        {
+        }
 
         public int OutTerminalCount(TVertex v)
         {

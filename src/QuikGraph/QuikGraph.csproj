@@ -65,6 +65,14 @@ Supported platforms:
   </PropertyGroup>
 
   <!-- Targets defines -->
+  <!-- <PropertyGroup Condition="'$(TargetFramework)'=='net35'"> -->
+    <!-- <AssemblyTitle>QuikGraph .NET 3.0</AssemblyTitle> -->
+    <!-- <DefineConstants>$(DefineConstants);NET30;$(AdditionalConstants)</DefineConstants> -->
+  <!-- </PropertyGroup> -->
+  <!-- <PropertyGroup Condition="'$(TargetFramework)'=='net35'"> -->
+    <!-- <AssemblyTitle>QuikGraph .NET 3.5</AssemblyTitle> -->
+    <!-- <DefineConstants>$(DefineConstants);NET35;$(AdditionalConstants)</DefineConstants> -->
+  <!-- </PropertyGroup> -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
     <AssemblyTitle>QuikGraph .NET 4.0</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NET40;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
@@ -73,17 +81,25 @@ Supported platforms:
     <AssemblyTitle>QuikGraph .NET 4.5</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NET45;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
+    <AssemblyTitle>QuikGraph .NET Standard 1.1</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD1_1;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <AssemblyTitle>QuikGraph .NET Standard 2.0</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   
-  <!-- Dependencies -->  
+  <!-- Dependencies -->
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
+	<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+  </ItemGroup>
+  
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 	<PackageReference Include="System.Drawing.Common" Version="4.5.1" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1' OR '$(TargetFramework)'=='netstandard2.0'">
 	<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
 	<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>

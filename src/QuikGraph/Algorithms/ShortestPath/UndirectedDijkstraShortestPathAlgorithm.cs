@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -66,7 +64,7 @@ namespace QuickGraph.Algorithms.ShortestPath
                 eh(this, new UndirectedEdgeEventArgs<TVertex, TEdge>(e, reversed));
         }
 
-        private void InternalTreeEdge(Object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void InternalTreeEdge(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);

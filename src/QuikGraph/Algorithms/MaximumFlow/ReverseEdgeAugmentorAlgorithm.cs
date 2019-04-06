@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -24,8 +22,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>
-        : IDisposable
+    public sealed class ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> : IDisposable
         where TEdge : IEdge<TVertex>
     {
         private readonly IMutableVertexAndEdgeListGraph<TVertex,TEdge> visitedGraph;
