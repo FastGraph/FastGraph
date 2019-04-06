@@ -13,10 +13,7 @@ namespace QuickGraph
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IEdgeListGraphContract<,>))]
 #endif
-    public interface IEdgeListGraph<TVertex, TEdge>
-        : IGraph<TVertex, TEdge>
-            , IEdgeSet<TVertex, TEdge>
-            , IVertexSet<TVertex>
+    public interface IEdgeListGraph<TVertex, TEdge> : IGraph<TVertex, TEdge>, IEdgeSet<TVertex, TEdge>, IVertexSet<TVertex>
         where TEdge : IEdge<TVertex>
     {
     }

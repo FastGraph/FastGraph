@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -6,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Collections
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class BinaryQueue<TVertex, TDistance> : 

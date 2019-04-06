@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ShortestPath
@@ -16,7 +14,7 @@ namespace QuickGraph.Algorithms.ShortestPath
     /// <reference-ref
     ///     id="boost"
     ///     />
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class DagShortestPathAlgorithm<TVertex, TEdge> :

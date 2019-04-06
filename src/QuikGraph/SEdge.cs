@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -11,7 +13,7 @@ namespace QuickGraph
     /// An struct based <see cref="IEdge&lt;TVertex&gt;"/> implementation.
     /// </summary>
     /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay(EdgeExtensions.DebuggerDisplayEdgeFormatString)]

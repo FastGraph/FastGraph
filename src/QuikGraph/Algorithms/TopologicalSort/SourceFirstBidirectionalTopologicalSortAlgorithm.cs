@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -13,7 +15,7 @@ namespace QuickGraph.Algorithms.TopologicalSort
         Backward
     }
 
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge> :

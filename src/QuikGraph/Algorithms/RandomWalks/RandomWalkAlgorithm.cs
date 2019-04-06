@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-using QuickGraph.Algorithms.Observers;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class RandomWalkAlgorithm<TVertex, TEdge> 

@@ -1,13 +1,13 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using System.Diagnostics;
+using QuickGraph.Algorithms.Search;
+using QuickGraph.Collections;
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
@@ -17,10 +17,8 @@ namespace QuickGraph.Algorithms.ShortestPath
     /// </summary>
     /// <typeparam name="TVertex">type of a vertex</typeparam>
     /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     idref="lawler01combinatorial"
-    ///     />
-#if !SILVERLIGHT
+    /// <reference-ref idref="lawler01combinatorial" />
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class AStarShortestPathAlgorithm<TVertex, TEdge> 

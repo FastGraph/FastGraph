@@ -1,16 +1,16 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
 namespace QuickGraph
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
 	[Serializable]
 #endif
-    public class TaggedEdge<TVertex,TTag> 
-        : Edge<TVertex>
-        , ITagged<TTag>
+    public class TaggedEdge<TVertex,TTag> : Edge<TVertex>, ITagged<TTag>
     {
         private TTag tag;
 

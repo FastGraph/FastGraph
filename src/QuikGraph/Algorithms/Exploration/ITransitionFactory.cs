@@ -1,4 +1,4 @@
-﻿#if !SILVERLIGHT
+﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
 

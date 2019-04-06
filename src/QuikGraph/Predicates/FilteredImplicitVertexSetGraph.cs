@@ -1,11 +1,13 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
 namespace QuickGraph.Predicates
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class FilteredImplicitVertexSet<TVertex, TEdge, TGraph> 

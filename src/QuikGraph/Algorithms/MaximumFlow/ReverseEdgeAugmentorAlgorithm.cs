@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.MaximumFlow
 {
@@ -19,7 +21,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
     /// e.g. <see cref="SEdge{TVertex}"/>.
     /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
     /// </remarks>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
@@ -13,7 +15,7 @@ namespace QuickGraph
     /// </summary>
     /// <typeparam name="TVertex">type of the vertex.</typeparam>
     /// <typeparam name="TTag">type of the tag</typeparam>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay(EdgeExtensions.DebuggerDisplayTaggedUndirectedEdgeFormatString)]

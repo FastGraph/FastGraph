@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Diagnostics;
 
 namespace QuickGraph
@@ -10,7 +9,7 @@ namespace QuickGraph
     /// An equatable term edge implementation
     /// </summary>
     /// <typeparam name="TVertex">type of the vertices</typeparam>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("{Source}->{Target}")]

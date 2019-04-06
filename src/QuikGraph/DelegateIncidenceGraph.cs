@@ -1,7 +1,7 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QuickGraph
 {
@@ -10,7 +10,7 @@ namespace QuickGraph
     /// </summary>
     /// <typeparam name="TVertex">type of the vertices</typeparam>
     /// <typeparam name="TEdge">type of the edges</typeparam>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class DelegateIncidenceGraph<TVertex, TEdge>

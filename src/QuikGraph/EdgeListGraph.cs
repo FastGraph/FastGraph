@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
@@ -8,14 +10,14 @@ using QuickGraph.Collections;
 
 namespace QuickGraph
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("EdgeCount = {EdgeCount}")]
     public class EdgeListGraph<TVertex, TEdge>
         : IEdgeListGraph<TVertex,TEdge>
         , IMutableEdgeListGraph<TVertex,TEdge>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
@@ -184,7 +186,7 @@ namespace QuickGraph
                 );
         }
 
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             return this.Clone();

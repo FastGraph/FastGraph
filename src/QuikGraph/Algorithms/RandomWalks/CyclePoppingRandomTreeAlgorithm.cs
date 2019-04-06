@@ -1,17 +1,19 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Wilson-Propp Cycle-Popping Algorithm for Random Tree Generation.
     /// </summary>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class CyclePoppingRandomTreeAlgorithm<TVertex, TEdge> 

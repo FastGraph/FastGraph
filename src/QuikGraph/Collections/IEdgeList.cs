@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -16,7 +18,7 @@ namespace QuickGraph.Collections
 #endif
     public interface IEdgeList<TVertex, TEdge>
         : IList<TEdge>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
@@ -29,7 +31,7 @@ namespace QuickGraph.Collections
         /// Gets a clone of this list
         /// </summary>
         /// <returns></returns>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         new 
 #endif
         IEdgeList<TVertex, TEdge> Clone();

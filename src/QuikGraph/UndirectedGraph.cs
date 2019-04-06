@@ -1,10 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Contracts;
 using QuickGraph.Collections;
 
 namespace QuickGraph
@@ -12,13 +13,13 @@ namespace QuickGraph
     public delegate bool EdgeEqualityComparer<TVertex, TEdge>(TEdge edge, TVertex source, TVertex target)
         where TEdge : IEdge<TVertex>;
 
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
     public class UndirectedGraph<TVertex, TEdge> 
         : IMutableUndirectedGraph<TVertex,TEdge>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
@@ -549,7 +550,7 @@ namespace QuickGraph
                 );
         }
 
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             return this.Clone();

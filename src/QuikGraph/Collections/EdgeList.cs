@@ -1,16 +1,17 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
-using System.Text;
 
 namespace QuickGraph.Collections
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class EdgeList<TVertex, TEdge>
         : List<TEdge>
         , IEdgeList<TVertex, TEdge>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
@@ -36,7 +37,7 @@ namespace QuickGraph.Collections
             return this.Clone();
         }
 
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             return this.Clone();

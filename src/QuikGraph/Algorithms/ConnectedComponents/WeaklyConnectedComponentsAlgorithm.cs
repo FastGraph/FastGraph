@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using System.Diagnostics;
 using System.Linq;
+using QuickGraph.Algorithms.Search;
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class WeaklyConnectedComponentsAlgorithm<TVertex, TEdge> :

@@ -1,7 +1,6 @@
-﻿#if !SILVERLIGHT
+﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
-using QuickGraph.Predicates;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif

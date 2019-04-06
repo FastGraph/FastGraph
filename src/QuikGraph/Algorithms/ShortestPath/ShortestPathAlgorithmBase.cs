@@ -1,16 +1,15 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public abstract class ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>

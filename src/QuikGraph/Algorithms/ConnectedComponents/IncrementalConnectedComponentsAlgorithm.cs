@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Collections;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Services;
+using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {

@@ -11,10 +11,7 @@ namespace QuickGraph.Algorithms.Search
     /// <summary>
     /// A breath first search algorithm for directed graphs
     /// </summary>
-    /// <reference-ref
-    ///     idref="gross98graphtheory"
-    ///     chapter="4.2"
-    ///     />
+    /// <reference-ref idref="gross98graphtheory" chapter="4.2" />
     public sealed class BreadthFirstSearchAlgorithm<TVertex, TEdge> 
         : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>
         , IVertexPredecessorRecorderAlgorithm<TVertex,TEdge>

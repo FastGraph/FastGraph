@@ -1,25 +1,27 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 
 namespace QuickGraph
 {
     /// <summary>
-    /// Colors used in vertex coloring algorithms
+    /// Colors used in vertex coloring algorithms.
     /// </summary>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public enum GraphColor : byte
     {
         /// <summary>
-        /// Usually initial color,
+        /// Usually initial color.
         /// </summary>
         White = 0,
         /// <summary>
-        /// Usually intermidiate color,
+        /// Usually intermediate color.
         /// </summary>
         Gray,
         /// <summary>
-        /// Usually finished color
+        /// Usually finished color.
         /// </summary>
         Black
     }

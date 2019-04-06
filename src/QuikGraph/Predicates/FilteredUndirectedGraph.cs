@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -6,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Predicates
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class FilteredUndirectedGraph<TVertex,TEdge,TGraph> :

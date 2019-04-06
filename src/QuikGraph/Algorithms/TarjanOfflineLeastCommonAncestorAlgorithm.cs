@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
-using QuickGraph.Collections;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Services;
+using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms
 {

@@ -1,11 +1,13 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 
 namespace QuickGraph.Algorithms
 {
     /// <summary>
     /// The computation state of a graph algorithm
     /// </summary>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public enum ComputationState
@@ -20,11 +22,11 @@ namespace QuickGraph.Algorithms
         Running,
         /// <summary>
         /// An abort has been requested. The algorithm is still running and will cancel as soon as it checks
-        /// the cancelation state
+        /// the cancellation state
         /// </summary>
         PendingAbortion,
         /// <summary>
-        /// The computation is finished succesfully.
+        /// The computation is finished successfully.
         /// </summary>
         Finished,
         /// <summary>

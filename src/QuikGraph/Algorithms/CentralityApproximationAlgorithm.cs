@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -8,7 +10,7 @@ using QuickGraph.Algorithms.Observers;
 
 namespace QuickGraph.Algorithms
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class CentralityApproximationAlgorithm<TVertex, TEdge> :

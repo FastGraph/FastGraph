@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -7,7 +9,7 @@ using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.TopologicalSort
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge> :

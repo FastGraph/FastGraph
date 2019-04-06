@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 
 namespace QuickGraph.Predicates
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class FilteredVertexListGraph<TVertex, TEdge, Graph> 

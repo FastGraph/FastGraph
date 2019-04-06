@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using System.Diagnostics;
+using QuickGraph.Algorithms.Search;
+using QuickGraph.Collections;
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
@@ -20,7 +20,7 @@ namespace QuickGraph.Algorithms.ShortestPath
     /// <reference-ref
     ///     idref="lawler01combinatorial"
     ///     />
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class DijkstraShortestPathAlgorithm<TVertex, TEdge> 

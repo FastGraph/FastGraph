@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
@@ -7,14 +9,14 @@ using System.Diagnostics.Contracts;
 
 namespace QuickGraph
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
     public class BidirectionalMatrixGraph<TEdge> 
         : IBidirectionalGraph<int, TEdge>
         , IMutableEdgeListGraph<int, TEdge>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<int>
@@ -498,7 +500,7 @@ namespace QuickGraph
                 );
         }
 
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             return this.Clone();

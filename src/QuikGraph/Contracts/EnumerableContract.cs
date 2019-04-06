@@ -31,11 +31,12 @@ namespace QuickGraph
 #endif
         public static bool All(int lowerBound, int exclusiveUpperBound, Func<int, bool> predicate)
         {
-          for (int i = lowerBound; i < exclusiveUpperBound; i++)
-          {
-            if (!predicate(i)) return false;
-          }
-          return true;
+            for (int i = lowerBound; i < exclusiveUpperBound; i++)
+            {
+                if (!predicate(i))
+                    return false;
+            }
+            return true;
         }
     }
 }

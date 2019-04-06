@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -99,7 +101,7 @@ namespace QuickGraph.Collections
             throw new NotImplementedException();
         }
 
-#if!SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             throw new NotImplementedException();

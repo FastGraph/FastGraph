@@ -1,11 +1,14 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+
 namespace QuickGraph.Predicates
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class FilteredEdgeListGraph<TVertex, TEdge, TGraph>

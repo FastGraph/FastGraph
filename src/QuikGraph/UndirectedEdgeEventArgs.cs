@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 
 namespace QuickGraph
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class UndirectedEdgeEventArgs<TVertex, TEdge>

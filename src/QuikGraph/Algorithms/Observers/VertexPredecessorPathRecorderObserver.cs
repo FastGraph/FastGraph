@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -11,10 +13,8 @@ namespace QuickGraph.Algorithms.Observers
     /// </summary>
     /// <typeparam name="TVertex">type of a vertex</typeparam>
     /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     idref="boost"
-    ///     />
-#if !SILVERLIGHT
+    /// <reference-ref idref="boost" />
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class VertexPredecessorPathRecorderObserver<TVertex, TEdge> :

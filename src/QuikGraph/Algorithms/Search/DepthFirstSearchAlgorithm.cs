@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -12,11 +14,8 @@ namespace QuickGraph.Algorithms.Search
     /// </summary>
     /// <typeparam name="TVertex">type of a vertex</typeparam>
     /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     idref="gross98graphtheory"
-    ///     chapter="4.2"
-    ///     />
-#if !SILVERLIGHT
+    /// <reference-ref idref="gross98graphtheory" chapter="4.2" />
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class DepthFirstSearchAlgorithm<TVertex, TEdge> :

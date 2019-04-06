@@ -8,8 +8,7 @@ namespace QuickGraph.Contracts
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(ICloneableEdge<,>))]
 #endif
-    abstract class ICloneableEdgeContract<TVertex, TEdge>
-        : ICloneableEdge<TVertex,TEdge>
+    abstract class ICloneableEdgeContract<TVertex, TEdge> : ICloneableEdge<TVertex,TEdge>
         where TEdge : IEdge<TVertex>
     {
         TEdge ICloneableEdge<TVertex, TEdge>.Clone(TVertex source, TVertex target)

@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.Search
 {
@@ -14,11 +16,8 @@ namespace QuickGraph.Algorithms.Search
     /// This is a variant of the classic DFS algorithm where the
     /// edges are color marked instead of the vertices.
     /// </remarks>
-    /// <reference-ref
-    ///     idref="gross98graphtheory"
-    ///     chapter="4.2"
-    ///     />
-#if !SILVERLIGHT
+    /// <reference-ref idref="gross98graphtheory" chapter="4.2" />
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class EdgeDepthFirstSearchAlgorithm<TVertex, TEdge> :

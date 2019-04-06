@@ -13,8 +13,7 @@ namespace QuickGraph
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(ICloneableEdgeContract<,>))]
 #endif
-    public interface ICloneableEdge<TVertex, TEdge> 
-        : IEdge<TVertex>
+    public interface ICloneableEdge<TVertex, TEdge> : IEdge<TVertex>
         where TEdge : IEdge<TVertex>
     {
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -17,8 +19,10 @@ namespace QuickGraph.Collections
 #endif
     public interface IVertexEdgeDictionary<TVertex, TEdge>
         : IDictionary<TVertex, IEdgeList<TVertex, TEdge>>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
+#endif
+#if SUPPORTS_SERIALIZATION
         , ISerializable
 #endif
      where TEdge : IEdge<TVertex>
@@ -27,7 +31,7 @@ namespace QuickGraph.Collections
         /// Gets a clone of the dictionary. The vertices and edges are not cloned.
         /// </summary>
         /// <returns></returns>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         new 
 #endif
         IVertexEdgeDictionary<TVertex, TEdge> Clone();

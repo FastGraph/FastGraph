@@ -1,14 +1,12 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
-using QuickGraph.Contracts;
-using QuickGraph.Collections;
 
 namespace QuickGraph
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
@@ -16,10 +14,11 @@ namespace QuickGraph
         : BidirectionalGraph<TVertex, TEdge>
         , ITermBidirectionalGraph<TVertex, TEdge>
         , IMutableTermBidirectionalGraph<TVertex, TEdge>
-#if !SILVERLIGHT
-, ICloneable
+#if SUPPORTS_CLONEABLE
+        , ICloneable
 #endif
- where TEdge : ITermEdge<TVertex>
+
+         where TEdge : ITermEdge<TVertex>
     {
         public TermBidirectionalGraph()
             : base(true, -1)

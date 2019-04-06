@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public abstract class MarkovEdgeChainBase<TVertex, TEdge> : 

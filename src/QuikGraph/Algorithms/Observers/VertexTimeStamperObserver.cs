@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -14,7 +16,7 @@ namespace QuickGraph.Algorithms.Observers
     /// <reference-ref
     ///     idref="boost"
     ///     />
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class VertexTimeStamperObserver<TVertex, TEdge> :

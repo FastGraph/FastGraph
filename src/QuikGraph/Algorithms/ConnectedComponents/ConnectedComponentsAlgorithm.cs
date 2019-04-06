@@ -1,14 +1,16 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Search;
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class ConnectedComponentsAlgorithm<TVertex, TEdge> :

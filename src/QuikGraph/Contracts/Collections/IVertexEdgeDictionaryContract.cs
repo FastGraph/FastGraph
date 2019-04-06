@@ -1,6 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
+#if SUPPORTS_SERIALIZATION
+using System.Runtime.Serialization;
 #endif
 
 namespace QuickGraph.Collections
@@ -8,8 +13,7 @@ namespace QuickGraph.Collections
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IVertexEdgeDictionary<,>))]
 #endif
-    abstract class IVertexEdgeDictionaryContract<TVertex, TEdge> 
-        : IVertexEdgeDictionary<TVertex, TEdge>
+    abstract class IVertexEdgeDictionaryContract<TVertex, TEdge> : IVertexEdgeDictionary<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         IVertexEdgeDictionary<TVertex, TEdge> IVertexEdgeDictionary<TVertex, TEdge>.Clone()
@@ -109,13 +113,15 @@ namespace QuickGraph.Collections
             throw new NotImplementedException();
         }
 
-#if!SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             throw new NotImplementedException();
         }
+#endif
 
-        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+#if SUPPORTS_SERIALIZATION
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();
         }

@@ -1,14 +1,13 @@
-﻿namespace QuickGraph.Collections
-{
-    using System;
-    using System.Collections.Generic;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 
-#if !SILVERLIGHT
+namespace QuickGraph.Collections
+{
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class Queue<T> : 
-        System.Collections.Generic.Queue<T>,
-        IQueue<T>
+    public sealed class Queue<T> : System.Collections.Generic.Queue<T>, IQueue<T>
     {
     }
 }

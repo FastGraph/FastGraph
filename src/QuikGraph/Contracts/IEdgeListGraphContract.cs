@@ -8,9 +8,8 @@ namespace QuickGraph.Contracts
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IEdgeListGraph<,>))]
 #endif
-    abstract class IEdgeListGraphContract<TVertex, TEdge>
-        : IEdgeListGraph<TVertex, TEdge>
-      where TEdge : IEdge<TVertex>  
+    abstract class IEdgeListGraphContract<TVertex, TEdge> : IEdgeListGraph<TVertex, TEdge>
+      where TEdge : IEdge<TVertex>
     {
         #region IGraph<TVertex,TEdge> Members
 
@@ -52,24 +51,28 @@ namespace QuickGraph.Contracts
 
         #region IVertexSet<TVertex> Members
 
-        public bool IsVerticesEmpty {
-          get { throw new NotImplementedException(); }
+        public bool IsVerticesEmpty
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public int VertexCount {
-          get { throw new NotImplementedException(); }
+        public int VertexCount
+        {
+            get { throw new NotImplementedException(); }
         }
 
-        public System.Collections.Generic.IEnumerable<TVertex> Vertices {
-          get { throw new NotImplementedException(); }
+        public System.Collections.Generic.IEnumerable<TVertex> Vertices
+        {
+            get { throw new NotImplementedException(); }
         }
 
         #endregion
 
         #region IImplicitVertexSet<TVertex> Members
 
-        public bool ContainsVertex(TVertex vertex) {
-          throw new NotImplementedException();
+        public bool ContainsVertex(TVertex vertex)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

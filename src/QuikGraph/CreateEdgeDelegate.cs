@@ -1,10 +1,13 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+
 namespace QuickGraph
 {
     /// <summary>
     /// An edge factory delegate
     /// </summary>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public delegate TEdge CreateEdgeDelegate<TVertex, TEdge>(

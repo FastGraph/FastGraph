@@ -1,11 +1,10 @@
-﻿#if !SILVERLIGHT
+﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
-using QuickGraph.Predicates;
-using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms.Exploration
 {

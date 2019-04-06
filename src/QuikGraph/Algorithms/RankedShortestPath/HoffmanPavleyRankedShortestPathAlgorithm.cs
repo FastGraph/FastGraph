@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using System.Diagnostics;
+using System.Linq;
 using QuickGraph.Algorithms.Services;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Algorithms.ShortestPath;
 using QuickGraph.Collections;
-using System.Diagnostics;
-using System.Linq;
 
 namespace QuickGraph.Algorithms.RankedShortestPath
 {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
@@ -12,7 +14,7 @@ namespace QuickGraph
     /// (http://www.cs.utk.edu/~dongarra/etemplates/node373.html)
     /// </summary>
     /// <typeparam name="TVertex">type of the vertices</typeparam>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
@@ -20,11 +22,11 @@ namespace QuickGraph
         : IVertexSet<TVertex>
         , IEdgeSet<TVertex, SEquatableEdge<TVertex>>
         , IVertexListGraph<TVertex, SEquatableEdge<TVertex>>
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
     {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
         [Serializable]
 #endif
         struct Range
@@ -263,7 +265,7 @@ namespace QuickGraph
             return new CompressedSparseRowGraph<TVertex>(ranges, edges);
         }
 
-#if !SILVERLIGHT
+#if SUPPORTS_CLONEABLE
         object ICloneable.Clone()
         {
             return this.Clone();

@@ -1,14 +1,15 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class RoundRobinEdgeChain<TVertex, TEdge> 
-        : IEdgeChain<TVertex, TEdge>
+    public sealed class RoundRobinEdgeChain<TVertex, TEdge> : IEdgeChain<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         private Dictionary<TVertex, int> outEdgeIndices = new Dictionary<TVertex, int>();

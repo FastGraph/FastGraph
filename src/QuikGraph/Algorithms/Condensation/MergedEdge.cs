@@ -1,10 +1,11 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
-using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.Condensation
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class MergedEdge<TVertex, TEdge> : Edge<TVertex>

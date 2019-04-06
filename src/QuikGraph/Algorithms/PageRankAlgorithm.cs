@@ -1,11 +1,12 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 using QuickGraph.Predicates;
-using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.Ranking
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class PageRankAlgorithm<TVertex, TEdge> :

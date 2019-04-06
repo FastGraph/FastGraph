@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using QuickGraph.Collections;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Predicates;
 using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.Services;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 
 namespace QuickGraph.Algorithms.MaximumFlow
 {
@@ -21,7 +21,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
     /// e.g. <see cref="SEdge{TVertex}"/>.
     /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
     /// </remarks>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>

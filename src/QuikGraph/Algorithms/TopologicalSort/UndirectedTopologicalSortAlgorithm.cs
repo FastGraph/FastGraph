@@ -7,7 +7,7 @@ using QuickGraph.Algorithms.Search;
 
 namespace QuickGraph.Algorithms.TopologicalSort
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class UndirectedTopologicalSortAlgorithm<TVertex, TEdge>

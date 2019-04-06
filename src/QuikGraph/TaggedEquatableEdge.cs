@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
@@ -11,13 +13,11 @@ namespace QuickGraph
     /// </summary>
     /// <typeparam name="TVertex">type of the vertices</typeparam>
     /// <typeparam name="TTag"></typeparam>
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("{Source}->{Target}:{Tag}")]
-    public class TaggedEquatableEdge<TVertex, TTag>
-        : EquatableEdge<TVertex>
-        , ITagged<TTag>
+    public class TaggedEquatableEdge<TVertex, TTag> : EquatableEdge<TVertex>, ITagged<TTag>
     {
         private TTag tag;
 

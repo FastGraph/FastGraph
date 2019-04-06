@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 using QuickGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
@@ -14,11 +16,8 @@ namespace QuickGraph.Algorithms.Search
     /// This is a variant of the classic DFS where the edges are color
     /// marked.
     /// </remarks>
-    /// <reference-ref
-    ///     idref="gross98graphtheory"
-    ///     chapter="4.2"
-    ///     />
-#if !SILVERLIGHT
+    /// <reference-ref idref="gross98graphtheory" chapter="4.2" />
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class ImplicitEdgeDepthFirstSearchAlgorithm<TVertex, TEdge> :

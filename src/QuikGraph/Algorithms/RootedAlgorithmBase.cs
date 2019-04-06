@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -6,7 +8,7 @@ using QuickGraph.Algorithms.Services;
 
 namespace QuickGraph.Algorithms
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public abstract class RootedAlgorithmBase<TVertex,TGraph> 

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using QuickGraph.Algorithms.Services;
+using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
-using System.Diagnostics;
 using System.IO;
+using QuickGraph.Algorithms.Services;
+using QuickGraph.Collections;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {

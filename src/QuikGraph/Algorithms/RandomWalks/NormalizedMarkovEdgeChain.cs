@@ -1,14 +1,15 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-#if !SILVERLIGHT
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class NormalizedMarkovEdgeChain<TVertex, TEdge> :
-        MarkovEdgeChainBase<TVertex, TEdge>
+    public sealed class NormalizedMarkovEdgeChain<TVertex, TEdge> : MarkovEdgeChainBase<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         public override bool TryGetSuccessor(IImplicitGraph<TVertex,TEdge> g, TVertex u, out TEdge successor)
