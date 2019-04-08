@@ -1,4 +1,5 @@
-﻿using System;
+#if SUPPORTS_GRAPHS_SERIALIZATION
+using System;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -11,9 +12,6 @@ namespace QuickGraph.Serialization
 {
     public static class GraphMLExtensions
     {
-
-#if !SILVERLIGHT
-
         // The following use of XmlWriter.Create fails in Silverlight.
 
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
@@ -60,9 +58,7 @@ namespace QuickGraph.Serialization
             writer.Close();
         }
 
-#endif
-
-            public static void SerializeToGraphML<TVertex, TEdge,TGraph>(
+        public static void SerializeToGraphML<TVertex, TEdge,TGraph>(
 #if !NET20
             this 
 #endif
@@ -107,8 +103,6 @@ this
                 );
         }
 
-#if !SILVERLIGHT
-
         public static void DeserializeFromGraphML<TVertex, TEdge,TGraph>(
 #if !NET20
             this 
@@ -150,10 +144,8 @@ this
 #endif
 
             var settings = new XmlReaderSettings();
-#if !SILVERLIGHT
-            //settings.DtdProcessing = DtdProcessing.Prohibit;// settings.ProhibitDtd = false;
             settings.ValidationFlags = XmlSchemaValidationFlags.None;
-#endif
+
             settings.XmlResolver = new GraphMLXmlResolver();
 
             using(var xreader = XmlReader.Create(reader, settings))
@@ -232,11 +224,11 @@ this
                 settings.Schemas.Add(GraphMLXmlResolver.GraphMLNamespace, xsdReader);
         }
 
-        static void ValidationEventHandler(object sender, System.Xml.Schema.ValidationEventArgs e)
+        static void ValidationEventHandler(object sender, ValidationEventArgs args)
         {
-            if(e.Severity == XmlSeverityType.Error)
-                throw new InvalidOperationException(e.Message);
-        }
-#endif
+            if (args.Severity == XmlSeverityType.Error)
+                throw new InvalidOperationException(args.Message);
         }
     }
+}
+#endif

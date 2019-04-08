@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+#if !SUPPORTS_TYPE_FULL_FEATURES
+using System.Reflection;
+#endif
 
 namespace QuickGraph.Contracts
 {
@@ -41,7 +44,13 @@ namespace QuickGraph.Contracts
             IMutableEdgeListGraph<TVertex, TEdge> ithis = this;
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
-            Contract.Requires(typeof(TEdge).IsValueType || Enumerable.All(edges, edge => edge != null));
+            Contract.Requires(
+#if SUPPORTS_TYPE_FULL_FEATURES
+                typeof(TEdge).IsValueType
+#else
+                typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                || Enumerable.All(edges, edge => edge != null));
             Contract.Requires(Enumerable.All(edges, edge =>
                 ithis.ContainsVertex(edge.Source) &&
                 ithis.ContainsVertex(edge.Target)

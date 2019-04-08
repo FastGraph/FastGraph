@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System.ComponentModel;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 using System.Reflection;
 using System.Reflection.Emit;
+#endif
 using System.Xml;
 
 namespace QuickGraph.Serialization
@@ -69,6 +71,7 @@ namespace QuickGraph.Serialization
         }
     }
 
+#if SUPPORTS_GRAPHS_SERIALIZATION
     /// <summary>
     /// A GraphML ( http://graphml.graphdrawing.org/ ) format serializer.
     /// </summary>
@@ -664,4 +667,5 @@ namespace QuickGraph.Serialization
             }
         }
     }
+#endif
 }

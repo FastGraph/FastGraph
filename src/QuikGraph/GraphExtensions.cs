@@ -8,7 +8,7 @@ using System.Linq;
 namespace QuickGraph
 {
     /// <summary>
-    /// Extension methods for populating graph datastructures
+    /// Extension methods for populating graph data structures.
     /// </summary>
     public static class GraphExtensions
     {
@@ -50,8 +50,11 @@ this
 this 
 #endif
             IDictionary<TVertex, TValue> dictionary,
-            Converter<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges
-            )
+#if SUPPORTS_CONVERTER
+            Converter<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+#else
+            Func<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+#endif
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
@@ -252,8 +255,11 @@ this
 this 
 #endif
             IDictionary<TVertex, TValue> dictionary,
-            Converter<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges
-            )
+#if SUPPORTS_CONVERTER
+            Converter<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+#else
+            Func<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+#endif
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS

@@ -3,6 +3,9 @@
 using System.Diagnostics.Contracts;
 using System.Linq;
 #endif
+#if !SUPPORTS_TYPE_FULL_FEATURES
+using System.Reflection;
+#endif
 
 namespace QuickGraph
 {
@@ -29,7 +32,7 @@ namespace QuickGraph
 #endif
         public static bool IsSelfEdge<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             TEdge edge)
             where TEdge : IEdge<TVertex>
@@ -55,7 +58,7 @@ this
 #endif
         public static TVertex GetOtherVertex<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             TEdge edge, TVertex vertex)
             where TEdge : IEdge<TVertex>
@@ -86,7 +89,7 @@ this
 #endif
         public static bool IsAdjacent<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             TEdge edge, TVertex vertex)
             where TEdge : IEdge<TVertex>
@@ -100,7 +103,7 @@ this
 #endif
 
 
-            return edge.Source.Equals(vertex) 
+            return edge.Source.Equals(vertex)
                 || edge.Target.Equals(vertex);
         }
 
@@ -109,14 +112,20 @@ this
 #endif
         public static bool IsPath<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(path != null);
-            Contract.Requires(typeof(TEdge).IsValueType || Enumerable.All(path, e => e != null));
+            Contract.Requires(
+#if SUPPORTS_TYPE_FULL_FEATURES
+                typeof(TEdge).IsValueType
+#else
+                typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                || Enumerable.All(path, e => e != null));
 #endif
 
             bool first = true;
@@ -144,14 +153,20 @@ this
 #endif
         public static bool HasCycles<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(path != null);
-            Contract.Requires(typeof(TEdge).IsValueType || Enumerable.All(path, e => e != null));
+            Contract.Requires(
+#if SUPPORTS_TYPE_FULL_FEATURES
+                typeof(TEdge).IsValueType
+#else
+                typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                || Enumerable.All(path, e => e != null));
 #endif
 
             var vertices = new Dictionary<TVertex, int>();
@@ -182,14 +197,20 @@ this
 #endif
         public static bool IsPathWithoutCycles<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(path != null);
-            Contract.Requires(typeof(TEdge).IsValueType || Enumerable.All(path, e => e != null));
+            Contract.Requires(
+#if SUPPORTS_TYPE_FULL_FEATURES
+                typeof(TEdge).IsValueType
+#else
+                typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                || Enumerable.All(path, e => e != null));
             Contract.Requires(IsPath<TVertex, TEdge>(path));
 #endif
 
@@ -201,7 +222,7 @@ this
                 if (first)
                 {
                     lastTarget = edge.Target;
-                    if (IsSelfEdge<TVertex, TEdge>(edge)) 
+                    if (IsSelfEdge<TVertex, TEdge>(edge))
                         return false;
                     vertices.Add(edge.Source, 0);
                     vertices.Add(lastTarget, 0);
@@ -231,7 +252,7 @@ this
         /// <returns></returns>
         public static SEquatableEdge<TVertex> ToVertexPair<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             TEdge edge)
             where TEdge : IEdge<TVertex>
@@ -256,10 +277,10 @@ this
         /// <returns></returns>
         public static bool IsPredecessor<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
-            IDictionary<TVertex, TEdge> predecessors, 
-            TVertex root, 
+            IDictionary<TVertex, TEdge> predecessors,
+            TVertex root,
             TVertex vertex)
             where TEdge : IEdge<TVertex>
         {
@@ -268,16 +289,20 @@ this
             Contract.Requires(root != null);
             Contract.Requires(vertex != null);
             Contract.Requires(
-                typeof(TEdge).IsValueType || 
-                Enumerable.All(predecessors.Values, e => e != null));
+#if SUPPORTS_TYPE_FULL_FEATURES
+                typeof(TEdge).IsValueType
+#else
+                typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                || Enumerable.All(predecessors.Values, e => e != null));
 #endif
 
             var current = vertex;
-            if (root.Equals(current)) 
+            if (root.Equals(current))
                 return true;
 
             TEdge predecessor;
-            while(predecessors.TryGetValue(current, out predecessor))
+            while (predecessors.TryGetValue(current, out predecessor))
             {
                 var source = GetOtherVertex(predecessor, current);
                 if (current.Equals(source))
@@ -301,7 +326,7 @@ this
         /// <returns></returns>
         public static bool TryGetPath<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             IDictionary<TVertex, TEdge> predecessors,
             TVertex v,
@@ -312,17 +337,21 @@ this
             Contract.Requires(predecessors != null);
             Contract.Requires(v != null);
             Contract.Requires(
-                typeof(TEdge).IsValueType ||
-                Enumerable.All(predecessors.Values, e => e != null));
+#if SUPPORTS_TYPE_FULL_FEATURES
+                typeof(TEdge).IsValueType
+#else
+                typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                || Enumerable.All(predecessors.Values, e => e != null));
             Contract.Ensures(
-                !Contract.Result<bool>() ||
-                (Contract.ValueAtReturn<IEnumerable<TEdge>>(out result) != null &&
-                 (typeof(TEdge).IsValueType ||
-                 Enumerable.All(
-                    Contract.ValueAtReturn<IEnumerable<TEdge>>(out result),
-                    e => e != null))
-                )
-            );
+                !Contract.Result<bool>()
+                || (Contract.ValueAtReturn(out result) != null
+#if SUPPORTS_TYPE_FULL_FEATURES
+                    && (typeof(TEdge).IsValueType
+#else
+                    && (typeof(TEdge).GetTypeInfo().IsValueType
+#endif
+                        || Enumerable.All(Contract.ValueAtReturn(out result), e => e != null))));
 #endif
 
             var path = new List<TEdge>();
@@ -349,7 +378,7 @@ this
         }
 
         /// <summary>
-        /// Returns the most efficient comporer for the particular type of TEdge.
+        /// Returns the most efficient comparer for the particular type of TEdge.
         /// If TEdge implements IUndirectedEdge, then only the (source,target) pair
         /// has to be compared; if not, (source, target) and (target, source) have to be compared.
         /// </summary>
@@ -377,7 +406,7 @@ this
         /// <returns></returns>
         public static bool UndirectedVertexEquality<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
             TEdge edge,
             TVertex source,
@@ -405,7 +434,7 @@ this
         /// <returns></returns>
         public static bool SortedVertexEquality<TVertex, TEdge>(
 #if !NET20
-this 
+this
 #endif
 TEdge edge,
             TVertex source,

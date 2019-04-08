@@ -403,7 +403,11 @@ namespace QuickGraph.Collections
             }
         }
 
+#if SUPPORTS_CONVERTER
         static int Max<T>(IEnumerable<T> values, Converter<T, int> converter)
+#else
+        static int Max<T>(IEnumerable<T> values, Func<T, int> converter)
+#endif
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(values != null);

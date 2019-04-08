@@ -1,4 +1,5 @@
 using System;
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System.Collections.Generic;
 using System.ComponentModel;
 #if SUPPORTS_CONTRACTS
@@ -6,6 +7,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Reflection;
 using System.Reflection.Emit;
+#endif
 using System.Xml;
 
 namespace QuickGraph.Serialization
@@ -75,6 +77,7 @@ namespace QuickGraph.Serialization
         }
     }
 
+#if SUPPORTS_GRAPHS_SERIALIZATION
     /// <summary>
     /// A GraphML ( http://graphml.graphdrawing.org/ ) format deserializer.
     /// </summary>
@@ -103,7 +106,8 @@ namespace QuickGraph.Serialization
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
     {
-        #region Compiler
+    #region Compiler
+
         delegate void ReadVertexAttributesDelegate(
             XmlReader reader,
             string namespaceUri,
@@ -167,14 +171,14 @@ namespace QuickGraph.Serialization
                 public static readonly MethodInfo ReadToFollowingMethod =
                     typeof(XmlReader).GetMethod(
                         "ReadToFollowing",
-                        BindingFlags.Instance | BindingFlags.Public,
+                        BindingFlags.Instance | BindingFlags.Public, 
                         null,
                         new Type[] { typeof(string), typeof(string) },
                         null);
                 public static readonly MethodInfo GetAttributeMethod =
                     typeof(XmlReader).GetMethod(
                         "GetAttribute",
-                        BindingFlags.Instance | BindingFlags.Public,
+                        BindingFlags.Instance | BindingFlags.Public, 
                         null,
                         new Type[] { typeof(string) },
                         null);
@@ -185,7 +189,7 @@ namespace QuickGraph.Serialization
                 public static readonly MethodInfo StringEqualsMethod =
                     typeof(string).GetMethod(
                         "op_Equality",
-                        BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,
+                        BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public, 
                         null,
                         new Type[] { typeof(string), typeof(string) },
                         null);
@@ -399,8 +403,10 @@ namespace QuickGraph.Serialization
                 //let's bake the method
                 return method.CreateDelegate(delegateType);
             }
+
         }
-#endregion
+
+    #endregion
 
         public void Deserialize(
             XmlReader reader,
@@ -438,8 +444,7 @@ namespace QuickGraph.Serialization
                 XmlReader reader,
                 TGraph visitedGraph,
                 IdentifiableVertexFactory<TVertex> vertexFactory,
-                IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory
-                )
+                IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(serializer != null);
@@ -625,4 +630,5 @@ namespace QuickGraph.Serialization
             }
         }
     }
+#endif
 }

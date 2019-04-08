@@ -1,3 +1,4 @@
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -41,7 +42,7 @@ namespace QuickGraph.Serialization
         }
     }
 
-    internal static class SerializationHelper    
+    internal static class SerializationHelper
     {
         public static IEnumerable<PropertySerializationInfo> GetAttributeProperties(Type type)
         {
@@ -108,3 +109,4 @@ namespace QuickGraph.Serialization
         }
     }
 }
+#endif

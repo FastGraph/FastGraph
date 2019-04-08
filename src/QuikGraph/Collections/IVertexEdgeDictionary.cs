@@ -5,7 +5,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
+#endif
 
 namespace QuickGraph.Collections
 {

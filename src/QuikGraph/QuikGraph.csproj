@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net40;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net40;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
 
     <Title>QuikGraph</Title>
     <RootNamespace>QuickGraph</RootNamespace>
@@ -25,7 +25,9 @@
 QuikGraph provides generic directed/undirected graph data structures and algorithms for .NET. It comes with algorithms such as depth first seach, breath first search, A* search, shortest path, k-shortest path, maximum flow, etc...
 
 Supported platforms:
-- .NET Framework 4.5</Description>
+- .NET Standard 1.3+
+- .NET Core 1.0+
+- .NET Framework 4.0+</Description>
     <Owners>Alexandre Rabérin</Owners>
     <Authors>Alexandre Rabérin</Authors>
     <Company>Alexandre Rabérin</Company>
@@ -65,41 +67,34 @@ Supported platforms:
   </PropertyGroup>
 
   <!-- Targets defines -->
-  <!-- <PropertyGroup Condition="'$(TargetFramework)'=='net35'"> -->
-    <!-- <AssemblyTitle>QuikGraph .NET 3.0</AssemblyTitle> -->
-    <!-- <DefineConstants>$(DefineConstants);NET30;$(AdditionalConstants)</DefineConstants> -->
-  <!-- </PropertyGroup> -->
-  <!-- <PropertyGroup Condition="'$(TargetFramework)'=='net35'"> -->
-    <!-- <AssemblyTitle>QuikGraph .NET 3.5</AssemblyTitle> -->
-    <!-- <DefineConstants>$(DefineConstants);NET35;$(AdditionalConstants)</DefineConstants> -->
-  <!-- </PropertyGroup> -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
     <AssemblyTitle>QuikGraph .NET 4.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <AssemblyTitle>QuikGraph .NET 4.5</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET45;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET45;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
-    <AssemblyTitle>QuikGraph .NET Standard 1.1</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD1_1;$(AdditionalConstants)</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <AssemblyTitle>QuikGraph .NET Standard 1.3</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD1_3;SUPPORTS_CONTRACTS;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <AssemblyTitle>QuikGraph .NET Standard 2.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   
   <!-- Dependencies -->
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1'">
-	<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+	<PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
+	<PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+	<PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
+	<PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
+	<PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+	<PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-	<PackageReference Include="System.Drawing.Common" Version="4.5.1" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.1' OR '$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
 	<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
 	<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>

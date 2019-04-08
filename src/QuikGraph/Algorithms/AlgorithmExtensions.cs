@@ -16,6 +16,9 @@ using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.ShortestPath;
 using QuickGraph.Algorithms.TopologicalSort;
 using QuickGraph.Collections;
+#if !SUPPORTS_TYPE_FULL_FEATURES
+using QuickGraph.Utils;
+#endif
 
 namespace QuickGraph.Algorithms
 {
@@ -38,7 +41,7 @@ namespace QuickGraph.Algorithms
             Contract.Ensures(Contract.Result<Func<TKey, TValue>>() != null);
 #endif
 
-#if !SILVERLIGHT
+#if SUPPORTS_TYPE_FULL_FEATURES
             var method = dictionary.GetType().GetProperty("Item").GetGetMethod();
             return (Func<TKey, TValue>)Delegate.CreateDelegate(typeof(Func<TKey, TValue>), dictionary, method, true);
 #else
@@ -66,8 +69,12 @@ this
             Contract.Requires(graph != null);
 #endif
 
-            // simpler identity for primitive types
+            // Simpler identity for primitive types
+#if SUPPORTS_TYPE_FULL_FEATURES
             switch (Type.GetTypeCode(typeof(TVertex)))
+#else
+            switch (TypeUtils.GetTypeCode(typeof(TVertex)))
+#endif
             {
                 case TypeCode.String:
                 case TypeCode.Boolean:
@@ -86,7 +93,7 @@ this
                     return (v) => v.ToString();
             }
 
-            // create dictionary
+            // Create dictionary
             var ids = new Dictionary<TVertex, string>(graph.VertexCount);
             return v =>
                 {
@@ -233,7 +240,7 @@ this
             };
         }
 
-        #region shortest paths
+#region shortest paths
 
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
 #if !NET20
@@ -377,9 +384,9 @@ this
             };
         }
 
-        #endregion
+#endregion
 
-        #region K-Shortest path
+#region K-Shortest path
 
         /// <summary>
         /// Computes the k-shortest path from <paramref name="source"/>
@@ -419,7 +426,7 @@ this
             return algo.ComputedShortestPaths;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Gets the list of sink vertices
