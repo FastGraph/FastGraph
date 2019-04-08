@@ -21,7 +21,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 3), new Tuple<int, int>(3, 1) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsTrue(gAlgo.isEulerian());
+            Assert.IsTrue(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace QuickGraph.Tests.Algorithms
                     new Tuple<int, int>(2, 3), new Tuple<int, int>(3, 4),
                     new Tuple<int, int>(4, 1), new Tuple<int, int>(1, 3)});
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsFalse(gAlgo.isEulerian());
+            Assert.IsFalse(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace QuickGraph.Tests.Algorithms
             g.AddVertex(5);
 
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsTrue(gAlgo.isEulerian());
+            Assert.IsTrue(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace QuickGraph.Tests.Algorithms
                     new Tuple<int, int>(6, 4)});
             g.AddVertex(7);
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsFalse(gAlgo.isEulerian());
+            Assert.IsFalse(gAlgo.IsEulerian());
         }
 
 
@@ -63,7 +63,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsFalse(gAlgo.isEulerian());
+            Assert.IsFalse(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace QuickGraph.Tests.Algorithms
             var g = constructGraph(new Tuple<int, int>[] { });
             g.AddVertex(420);
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsTrue(gAlgo.isEulerian());
+            Assert.IsTrue(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsTrue(gAlgo.isEulerian());
+            Assert.IsTrue(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 1) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsTrue(gAlgo.isEulerian());
+            Assert.IsTrue(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -96,7 +96,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 2) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsFalse(gAlgo.isEulerian());
+            Assert.IsFalse(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1), new Tuple<int, int>(2, 2) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsFalse(gAlgo.isEulerian());
+            Assert.IsFalse(gAlgo.IsEulerian());
         }
 
 
@@ -113,7 +113,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 1) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsTrue(gAlgo.isEulerian());
+            Assert.IsTrue(gAlgo.IsEulerian());
         }
 
         [TestMethod]
@@ -121,7 +121,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2) });
             var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
-            Assert.IsFalse(gAlgo.isEulerian());
+            Assert.IsFalse(gAlgo.IsEulerian());
         }
     }
 }

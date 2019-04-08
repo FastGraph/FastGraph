@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net45</TargetFrameworks><!-- net20 net30;net35;net40;net45;net451;net452;net46;net461;netcoreapp1.0;netcoreapp2.0 -->
 
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
 
     <Title>QuikGraph.Tests</Title>
 
@@ -44,7 +44,7 @@
 
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>$(DefineConstants);NET45;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET45;SUPPORTS_CONTRACTS;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_TUPLE;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,13 +57,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-    <PackageReference Include="FSharp.Core" Version="4.6.2" />
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\..\src\QuickGraph.Data\QuickGraph.Data.csproj" />
-    <ProjectReference Include="..\..\src\QuickGraph.Graphviz\QuickGraph.Graphviz.csproj" />
-    <ProjectReference Include="..\..\src\QuickGraphFS\QuickGraphFS.fsproj" />
     <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
 	<Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
