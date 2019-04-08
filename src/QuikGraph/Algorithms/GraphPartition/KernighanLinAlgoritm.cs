@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if SUPPORTS_KERNIGHANLIN_ALGORITHM
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -192,4 +193,4 @@ namespace QuickGraph.Algorithms.KernighanLinAlgoritm
         }
     }
 }
-
+#endif

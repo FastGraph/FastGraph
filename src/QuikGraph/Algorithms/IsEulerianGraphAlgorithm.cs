@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using QuickGraph.Algorithms.ConnectedComponents;
 
 namespace QuickGraph.Algorithms
@@ -20,10 +19,22 @@ namespace QuickGraph.Algorithms
             this.graph = newGraph;
         }
 
-        private Tuple<int?, int?> firstAndSecondIndexOfTrue(bool[] data)
+        private struct TrueIndexes
         {
-            // if no true elements returns (null, null)
-            // if only one true element, returns (indexOfTrue, null)
+            public TrueIndexes(int? firstIndex, int? secondIndex)
+            {
+                FirstIndex = firstIndex;
+                SecondIndex = secondIndex;
+            }
+
+            public int? FirstIndex { get; }
+            public int? SecondIndex { get; }
+        }
+
+        private TrueIndexes FirstAndSecondIndexOfTrue(bool[] data)
+        {
+            // If no true elements returns (null, null)
+            // If only one true element, returns (indexOfTrue, null)
             int? firstIndex = null, secondIndex = null;
             for (int i = 0; i < data.Length; i++)
             {
@@ -35,14 +46,14 @@ namespace QuickGraph.Algorithms
                     }
                     else
                     {
-                        return new Tuple<int?, int?>(firstIndex, i);
+                        return new TrueIndexes(firstIndex, i);
                     }
                 }
             }
-            return new Tuple<int?, int?>(firstIndex, secondIndex);
+            return new TrueIndexes(firstIndex, secondIndex);
         }
 
-        public ComponentWithEdges checkComponentsWithEdges()
+        public ComponentWithEdges CheckComponentsWithEdges()
         {
             var componentsAlgo = new ConnectedComponentsAlgorithm<TVertex, UndirectedEdge<TVertex>>(this.graph);
             componentsAlgo.Compute();
@@ -52,31 +63,28 @@ namespace QuickGraph.Algorithms
             {
                 hasEdgesInComponent[verticeAndComponent.Value] = !graph.IsAdjacentEdgesEmpty(verticeAndComponent.Key);
             }
-            var t = firstAndSecondIndexOfTrue(hasEdgesInComponent);
-            int? firstIndex = t.Item1, secondIndex = t.Item2;
 
-            if (!firstIndex.HasValue)
-            {
+            TrueIndexes trueIndexes = FirstAndSecondIndexOfTrue(hasEdgesInComponent);
+            if (!trueIndexes.FirstIndex.HasValue)
                 return ComponentWithEdges.NoComponent;
-            }
-            if (secondIndex.HasValue)
-            {
+
+            if (trueIndexes.SecondIndex.HasValue)
                 return ComponentWithEdges.ManyComponents;
-            }
+
             return ComponentWithEdges.OneComponent;
         }
 
-        public bool satisfiesEulerianCondition(TVertex vertex)
+        public bool SatisfiesEulerianCondition(TVertex vertex)
         {
             return graph.AdjacentDegree(vertex) % 2 == 0;
         }
 
-        public bool isEulerian()
+        public bool IsEulerian()
         {
-            switch (checkComponentsWithEdges())
+            switch (CheckComponentsWithEdges())
             {
                 case ComponentWithEdges.OneComponent:
-                    return graph.Vertices.All<TVertex>(satisfiesEulerianCondition);
+                    return graph.Vertices.All<TVertex>(SatisfiesEulerianCondition);
                 case ComponentWithEdges.NoComponent:
                     return graph.VertexCount == 1;
                 case ComponentWithEdges.ManyComponents:
