@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net30;net35;net40;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net20;net35;net40;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
@@ -27,7 +27,7 @@ QuikGraph provides generic directed/undirected graph data structures and algorit
 Supported platforms:
 - .NET Standard 1.3+
 - .NET Core 1.0+
-- .NET Framework 3.0+</Description>
+- .NET Framework 2.0+</Description>
     <Owners>Alexandre Rabérin</Owners>
     <Authors>Alexandre Rabérin</Authors>
     <Company>Alexandre Rabérin</Company>
@@ -67,9 +67,9 @@ Supported platforms:
   </PropertyGroup>
 
   <!-- Targets defines -->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net30'">
-    <AssemblyTitle>QuikGraph .NET 3.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET30;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net20'">
+    <AssemblyTitle>QuikGraph .NET 2.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET20;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <AssemblyTitle>QuikGraph .NET 3.5</AssemblyTitle>
@@ -93,7 +93,7 @@ Supported platforms:
   </PropertyGroup>
   
   <!-- Dependencies -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net30'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net20'">
     <PackageReference Include="System.Core" Version="3.5.21022.801" />
   </ItemGroup>
 

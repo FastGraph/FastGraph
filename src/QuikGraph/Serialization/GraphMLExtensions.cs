@@ -15,10 +15,7 @@ namespace QuickGraph.Serialization
         // The following use of XmlWriter.Create fails in Silverlight.
 
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
+            this TGraph graph,
             string fileName,
             VertexIdentity<TVertex> vertexIdentities,
             EdgeIdentity<TVertex, TEdge> edgeIdentities)
@@ -36,13 +33,7 @@ namespace QuickGraph.Serialization
             writer.Close();
         }
 
-        public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
-            string fileName
-            )
+        public static void SerializeToGraphML<TVertex, TEdge, TGraph>(this TGraph graph, string fileName)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -59,10 +50,7 @@ namespace QuickGraph.Serialization
         }
 
         public static void SerializeToGraphML<TVertex, TEdge,TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
+            this TGraph graph,
             XmlWriter writer,
             VertexIdentity<TVertex> vertexIdentities,
             EdgeIdentity<TVertex, TEdge> edgeIdentities)
@@ -78,12 +66,7 @@ namespace QuickGraph.Serialization
             serializer.Serialize(writer, graph, vertexIdentities, edgeIdentities);
         }
 
-        public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-#if !NET20
-this 
-#endif
-            TGraph graph,
-            XmlWriter writer)
+        public static void SerializeToGraphML<TVertex, TEdge, TGraph>(this TGraph graph, XmlWriter writer)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -104,14 +87,10 @@ this
         }
 
         public static void DeserializeFromGraphML<TVertex, TEdge,TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
+            this TGraph graph,
             string fileName,
             IdentifiableVertexFactory<TVertex> vertexFactory,
-            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory
-            )
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
@@ -125,14 +104,10 @@ this
         }
 
         public static void DeserializeFromGraphML<TVertex, TEdge,TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
+            this TGraph graph,
             TextReader reader,
             IdentifiableVertexFactory<TVertex> vertexFactory,
-            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory
-            )
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
@@ -153,14 +128,10 @@ this
         }
 
         public static void DeserializeFromGraphML<TVertex, TEdge,TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
+            this TGraph graph,
             XmlReader reader,
             IdentifiableVertexFactory<TVertex> vertexFactory,
-            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory
-            )
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
@@ -176,14 +147,10 @@ this
         }
 
         public static void DeserializeAndValidateFromGraphML<TVertex, TEdge,TGraph>(
-#if !NET20
-            this 
-#endif
-            TGraph graph,
+            this TGraph graph,
             TextReader reader,
             IdentifiableVertexFactory<TVertex> vertexFactory,
-            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory
-            )
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
@@ -196,7 +163,7 @@ this
 
             var serializer = new GraphMLDeserializer<TVertex, TEdge,TGraph>();
             var settings = new XmlReaderSettings();
-            // add graphxml schema
+            // Add graphxml schema
             settings.ValidationType = ValidationType.Schema;
             settings.XmlResolver = new GraphMLXmlResolver();
             AddGraphMLSchema<TVertex, TEdge, TGraph>(settings);

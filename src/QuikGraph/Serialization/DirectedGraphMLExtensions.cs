@@ -35,12 +35,7 @@ namespace QuickGraph.Serialization
         /// </summary>
         /// <param name="fileName"/>
         /// <param name="graph"></param>
-        public static void WriteXml(
-#if !NET20
-this 
-#endif
-            DirectedGraph graph,
-            string fileName)
+        public static void WriteXml(this DirectedGraph graph, string fileName)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null); 
@@ -56,12 +51,7 @@ this
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="writer"></param>
-        public static void WriteXml(
-#if !NET20
-this 
-#endif
-            DirectedGraph graph,
-            XmlWriter writer)
+        public static void WriteXml(this DirectedGraph graph, XmlWriter writer)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -76,12 +66,7 @@ this
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="stream"></param>
-        public static void WriteXml(
-#if !NET20
-this 
-#endif
-            DirectedGraph graph,
-            Stream stream)
+        public static void WriteXml(this DirectedGraph graph, Stream stream)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -96,12 +81,7 @@ this
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="writer"></param>
-        public static void WriteXml(
-#if !NET20
-this 
-#endif
-            DirectedGraph graph,
-            TextWriter writer)
+        public static void WriteXml(this DirectedGraph graph, TextWriter writer)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -118,11 +98,7 @@ this
         /// <typeparam name="TEdge"></typeparam>
         /// <param name="visitedGraph"></param>
         /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-        IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -145,12 +121,8 @@ this
         /// <param name="visitedGraph"></param>
         /// <param name="vertexColors"></param>
         /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-        IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-        Func<TVertex, GraphColor> vertexColors)
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph, 
+            Func<TVertex, GraphColor> vertexColors)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -189,13 +161,9 @@ this
         /// <param name="vertexIdentities"></param>
         /// <param name="edgeIdentities"></param>
         /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-        IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-        VertexIdentity<TVertex> vertexIdentities,
-        EdgeIdentity<TVertex, TEdge> edgeIdentities)
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph, 
+            VertexIdentity<TVertex> vertexIdentities, 
+            EdgeIdentity<TVertex, TEdge> edgeIdentities)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -222,15 +190,11 @@ this
         /// <param name="_formatNode"></param>
         /// <param name="_formatEdge"></param>
         /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-        IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-        VertexIdentity<TVertex> vertexIdentities,
-        EdgeIdentity<TVertex, TEdge> edgeIdentities,
-        Action<TVertex, DirectedGraphNode> _formatNode,
-        Action<TEdge, DirectedGraphLink> _formatEdge)
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph, 
+            VertexIdentity<TVertex> vertexIdentities,
+            EdgeIdentity<TVertex, TEdge> edgeIdentities,
+            Action<TVertex, DirectedGraphNode> _formatNode,
+            Action<TEdge, DirectedGraphLink> _formatEdge)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -240,11 +204,12 @@ this
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
 #endif
 
-            var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
-                visitedGraph, 
-                vertexIdentities, 
-                edgeIdentities
-                );
+            var algorithm = 
+                new DirectedGraphMLAlgorithm<TVertex, TEdge>(
+                    visitedGraph, 
+                    vertexIdentities, 
+                    edgeIdentities);
+
             if (_formatNode != null)
                 algorithm.FormatNode += _formatNode;
             if (_formatEdge != null)
@@ -255,24 +220,17 @@ this
         }
 
 
-        public static void OpenAsDGML<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-        IVertexAndEdgeListGraph<TVertex, TEdge> graph, string filename)
+        public static void OpenAsDGML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> graph, string filename)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
 #endif
 
-            if (filename == null) filename = "graph.dgml";
+            if (filename is null)
+                filename = "graph.dgml";
 
-#if NET20
-            WriteXml(ToDirectedGraphML(graph), filename);
-#else
             graph.ToDirectedGraphML().WriteXml(filename); 
-#endif
 
             if (Debugger.IsAttached)
             { 

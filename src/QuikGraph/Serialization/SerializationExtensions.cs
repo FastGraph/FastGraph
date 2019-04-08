@@ -22,10 +22,7 @@ namespace QuickGraph.Serialization
         /// <param name="graph"></param>
         /// <param name="stream"></param>
         public static void SerializeToBinary<TVertex, TEdge>(
-#if !NET20
-            this
-#endif
-            IGraph<TVertex, TEdge> graph,
+            this IGraph<TVertex, TEdge> graph,
             Stream stream)
             where TEdge : IEdge<TVertex>
         {
@@ -48,10 +45,7 @@ namespace QuickGraph.Serialization
         /// <param name="stream"></param>
         /// <returns></returns>
         public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
-#if !NET20
-            this
-#endif
-            Stream stream)
+            this Stream stream)
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
@@ -80,10 +74,7 @@ namespace QuickGraph.Serialization
         /// <param name="edgeFactory">delegate that instantiate an edge instance, given the edge node</param>
         /// <returns></returns>
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-#if !NET20
-            this
-#endif
-            IXPathNavigable doc,
+            this IXPathNavigable doc,
             string graphXPath,
             string verticesXPath,
             string edgesXPath,
@@ -138,10 +129,7 @@ namespace QuickGraph.Serialization
         /// <param name="edgeFactory">delegate that instantiate an edge instance, given the edge node</param>
         /// <returns></returns>
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-#if !NET20
-this
-#endif
-            XmlReader reader,
+            this XmlReader reader,
             Predicate<XmlReader> graphPredicate,
             Predicate<XmlReader> vertexPredicate,
             Predicate<XmlReader> edgePredicate,
@@ -215,10 +203,7 @@ this
         /// <param name="edgeFactory">delegate that instantiate an edge instance, given the edge node</param>
         /// <returns></returns>
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-#if !NET20
-            this
-#endif
-            XmlReader reader,
+            this XmlReader reader,
             string graphElementName,
             string vertexElementName,
             string edgeElementName,
@@ -265,10 +250,7 @@ this
         /// <param name="edgeElementName">Name of the edge element.</param>
         /// <param name="namespaceUri">The namespace URI.</param>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
-#if !NET20
-this
-#endif
-            TGraph graph,
+            this TGraph graph,
             XmlWriter writer,
             VertexIdentity<TVertex> vertexIdentity,
             EdgeIdentity<TVertex, TEdge> edgeIdentity,
@@ -311,10 +293,7 @@ this
         /// <param name="writeVertexAttributes">The write vertex attributes (optional).</param>
         /// <param name="writeEdgeAttributes">The write edge attributes (optional).</param>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
-#if !NET20
-this
-#endif
-            TGraph graph,
+            this TGraph graph,
             XmlWriter writer,
             VertexIdentity<TVertex> vertexIdentity,
             EdgeIdentity<TVertex, TEdge> edgeIdentity,
