@@ -1,8 +1,8 @@
-﻿    using System;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Text;
-    using System.Xml.Serialization;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
+using System.Text;
+using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Xml;
 using QuickGraph.Algorithms;
@@ -10,7 +10,6 @@ using QuickGraph.Serialization;
 
 namespace QuickGraph.Tests.Serialization
 {
-
     #region Enumerations
     /// 
     /// Enumeration of the person's gender
@@ -61,12 +60,14 @@ namespace QuickGraph.Tests.Serialization
 
     #endregion
 
-    /// 
+    /// <summary>
     /// Representation for a single serializable Person.
     /// INotifyPropertyChanged allows properties of the Person class to
     /// participate as source in data bindings.
-    /// 
+    /// </summary>
+#if  SUPPORTS_SERIALIZATION
     [Serializable]
+#endif
     public class Person : INotifyPropertyChanged, IEquatable<Person>, IDataErrorInfo
     {
         #region Fields and Constants
