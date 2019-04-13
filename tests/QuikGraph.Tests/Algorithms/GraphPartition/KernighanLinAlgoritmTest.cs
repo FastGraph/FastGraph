@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using QuickGraph.Algorithms.KernighanLinAlgoritm;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.GraphPartitioning
 {
 
-    [TestClass]
-    public class KernighanLinAlgoritmTest
+    [TestFixture]
+    internal class KernighanLinAlgoritmTest : QuikGraphUnitTests
     {
         private UndirectedGraph<int, TaggedUndirectedEdge<int, double>> createGraph(List<TaggedUndirectedEdge<int, double>> edges)
         {
@@ -26,7 +25,7 @@ namespace QuickGraph.Tests.Algorithms.GraphPartitioning
         }
 
 
-        [TestMethod]
+        [Test]
         public void GraphPartitioningTest1()
         {
             var edges = new List<TaggedUndirectedEdge<int, double>> { new TaggedUndirectedEdge<int,double>(0, 1, 100),
@@ -47,7 +46,7 @@ namespace QuickGraph.Tests.Algorithms.GraphPartitioning
         }
 
         
-        [TestMethod]
+        [Test]
         public void GraphPartitioningTest2()
         {
             var edges = new List<TaggedUndirectedEdge<int, double>> { new TaggedUndirectedEdge<int, double>(0, 1, 1),
@@ -73,7 +72,7 @@ namespace QuickGraph.Tests.Algorithms.GraphPartitioning
         }
 
 
-        [TestMethod]
+        [Test]
         public void GraphPartitioningTest3()
         {
             var edges = new List<TaggedUndirectedEdge<int, double>>{ new TaggedUndirectedEdge<int, double>(0, 1, 1),

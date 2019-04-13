@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Pex.Framework;
+using NUnit.Framework;
 using QuickGraph.Serialization;
-using QuickGraph.Collections;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestClass]
-    public class EulerianTrailAlgorithmTest
+    [TestFixture]
+    internal class EulerianTrailAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
-        [Ignore]
+        [Test]
+        [Ignore("Was already ignored")]
         public void EulerianTrailAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

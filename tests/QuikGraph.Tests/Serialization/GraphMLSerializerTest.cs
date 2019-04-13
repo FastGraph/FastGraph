@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Microsoft.Pex.Framework;
 using System.Xml.XPath;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Collections;
+using Microsoft.Pex.Framework;
+using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Serialization
 {
@@ -91,10 +91,10 @@ namespace QuickGraph.Serialization
         }
     }
 
-    [TestClass, PexClass]
-    public partial class GraphMLSerializerIntegrationTest
+    [TestFixture, PexClass]
+    internal class GraphMLSerializerIntegrationTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void DeserializeFromGraphMLNorth()
         {
             foreach (var graphmlFile in TestGraphFactory.GetFileNames())
@@ -118,7 +118,7 @@ namespace QuickGraph.Serialization
                 // check all nodes are loaded
                 var settings = new XmlReaderSettings();
                 settings.XmlResolver = new GraphMLXmlResolver();
-                settings.ProhibitDtd = false;
+                settings.DtdProcessing = DtdProcessing.Parse;
                 settings.ValidationFlags = System.Xml.Schema.XmlSchemaValidationFlags.None;
                 using(var xreader = XmlReader.Create(graphmlFile, settings))
                 {

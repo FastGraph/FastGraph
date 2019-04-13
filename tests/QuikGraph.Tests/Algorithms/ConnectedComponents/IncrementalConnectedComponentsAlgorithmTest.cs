@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using QuickGraph.Algorithms;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.ConnectedComponents
 {
-    [TestClass]
-    public partial class IncrementalConnectedComponentsAlgorithmTest
+    [TestFixture]
+    internal class IncrementalConnectedComponentsAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void IncrementalConnectedComponent()
         {
             var g = new AdjacencyGraph<int, SEquatableEdge<int>>();

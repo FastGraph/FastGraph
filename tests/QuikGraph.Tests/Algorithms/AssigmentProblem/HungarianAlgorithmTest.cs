@@ -1,12 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using QuickGraph.Algorithms.AssigmentProblem;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.AssigmentProblem
 {
-    [TestClass]
-    public class HungarianAlgorithmTest
+    [TestFixture]
+    internal class HungarianAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void RunCheck()
         {
             var matrix = new[,] { { 1, 2, 3 }, { 3, 3, 3 }, { 3, 3, 2 } };
@@ -17,7 +18,7 @@ namespace QuickGraph.Tests.Algorithms.AssigmentProblem
             Assert.AreEqual(res[2], 2);
         }
 
-        [TestMethod]
+        [Test]
         public void IterationsCheck()
         {
             var matrix = new[,] { { 1, 2, 3 }, { 3, 3, 3 }, { 3, 3, 2 } };

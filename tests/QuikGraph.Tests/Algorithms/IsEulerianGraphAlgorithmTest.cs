@@ -1,10 +1,11 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestClass]
-    public class EulerianGraphTest
+    [TestFixture]
+    internal class EulerianGraphTest : QuikGraphUnitTests
     {
         private UndirectedGraph<int, UndirectedEdge<int>> constructGraph(Tuple<int, int>[] vertices)
         {
@@ -16,7 +17,7 @@ namespace QuickGraph.Tests.Algorithms
             return g;
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianOneComponentTrue()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 3), new Tuple<int, int>(3, 1) });
@@ -24,7 +25,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianOneComponentFalse()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2),
@@ -34,7 +35,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianManyComponentsTrue()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 3), new Tuple<int, int>(3, 1) });
@@ -45,7 +46,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianManyComponentsFalse()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2),
@@ -58,7 +59,7 @@ namespace QuickGraph.Tests.Algorithms
         }
 
 
-        [TestMethod]
+        [Test]
         public void IsEulerianEmpty()
         {
             var g = constructGraph(new Tuple<int, int>[] { });
@@ -66,7 +67,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianOneVertex()
         {
             var g = constructGraph(new Tuple<int, int>[] { });
@@ -75,7 +76,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianOneVertexWithLoop()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1) });
@@ -83,7 +84,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianOneVertexWithTwoLoops()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 1) });
@@ -91,7 +92,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianTwoVertices()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 2) });
@@ -99,7 +100,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianTwoVerticesWithLoops()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1), new Tuple<int, int>(2, 2) });
@@ -108,7 +109,7 @@ namespace QuickGraph.Tests.Algorithms
         }
 
 
-        [TestMethod]
+        [Test]
         public void IsEulerianTwoVerticesTwoEdges()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 1) });
@@ -116,7 +117,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsEulerianTwoVerticesOneEdge()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2) });

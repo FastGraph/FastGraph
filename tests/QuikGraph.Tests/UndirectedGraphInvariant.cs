@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace QuickGraph
 {
-    [TestClass, PexClass]
+    [TestFixture, PexClass]
     public partial class UndirectedGraphTest
     {
         [PexMethod]

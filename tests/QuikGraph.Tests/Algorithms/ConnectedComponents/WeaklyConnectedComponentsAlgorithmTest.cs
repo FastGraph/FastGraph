@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using QuickGraph.Serialization;
-using System.Diagnostics.Contracts;
-using System.Diagnostics;
-using QuickGraph.Algorithms.ConnectedComponents;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {
-    [TestClass, PexClass]
-    public partial class WeaklyConnectedComponentsAlgorithmTest
+    [TestFixture, PexClass]
+    internal class WeaklyConnectedComponentsAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void WeaklyConnectedComponentsAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

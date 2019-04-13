@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Serialization;
+using NUnit.Framework;
 using QuickGraph.Algorithms.TopologicalSort;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestClass, PexClass]
-    public partial class UndirectedFirstTopologicalSortAlgorithmTest
+    [TestFixture, PexClass]
+    internal partial class UndirectedFirstTopologicalSortAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void UndirectedFirstTopologicalSortAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())

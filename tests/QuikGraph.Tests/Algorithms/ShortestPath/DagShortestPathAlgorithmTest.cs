@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Observers;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-    [TestClass, PexClass]
-    public partial class DagShortestPathAlgorithmTest
+    [TestFixture, PexClass]
+    internal class DagShortestPathAlgorithmTest : QuikGraphUnitTests
     {
         [PexMethod]
         public void Compute<TVertex, TEdge>([PexAssumeNotNull]IVertexListGraph<TVertex, TEdge> g)
@@ -37,7 +38,7 @@ namespace QuickGraph.Algorithms.ShortestPath
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DagShortestPathAll()
         {
             foreach(var g in TestGraphFactory.GetAdjacencyGraphs())

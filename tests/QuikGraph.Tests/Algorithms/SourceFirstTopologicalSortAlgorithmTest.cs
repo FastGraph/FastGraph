@@ -1,15 +1,15 @@
-﻿using System;
-using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Serialization;
+﻿using Microsoft.Pex.Framework;
+using NUnit.Framework;
 using QuickGraph.Algorithms.TopologicalSort;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestClass, PexClass]
-    public partial class SourceFirstTopologicalSortAlgorithmTest
+    [TestFixture, PexClass]
+    internal class SourceFirstTopologicalSortAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void SortAll()
         {
             foreach(var g in TestGraphFactory.GetAdjacencyGraphs())
@@ -29,7 +29,7 @@ namespace QuickGraph.Algorithms
             { }
         }
 
-        [TestMethod]
+        [Test]
         public void SortAnotherOne()
         {
             var g = new BidirectionalGraph<int, Edge<int>>();
@@ -45,11 +45,10 @@ namespace QuickGraph.Algorithms
             topo.Compute();
         }
 
-        [TestMethod]
-        [DeploymentItem("GraphML/DCT8.graphml", "GraphML")]
+        [Test]
         public void SortDCT()
         {
-            var g = TestGraphFactory.LoadBidirectionalGraph("GraphML/DCT8.graphml");
+            var g = TestGraphFactory.LoadBidirectionalGraph(GetGraphFilePath("DCT8.graphml"));
 
             var topo = new SourceFirstTopologicalSortAlgorithm<string, Edge<string>>(g);
             topo.Compute();

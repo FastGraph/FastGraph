@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Serialization;
+﻿using System.Collections.Generic;
 using Microsoft.Pex.Framework;
-using System.Diagnostics.Contracts;
+using NUnit.Framework;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.Search
 {
-    [TestClass]
-    public partial class UndirectedDepthFirstAlgorithmSearchTest
+    [TestFixture]
+    internal class UndirectedDepthFirstAlgorithmSearchTest : QuikGraphUnitTests
     {
         private static bool IsDescendant<TVertex>(
             Dictionary<TVertex,TVertex> parents,
@@ -29,7 +28,7 @@ namespace QuickGraph.Algorithms.Search
             return false;
         }
 
-        [TestMethod]
+        [Test]
         public void UndirectedDepthFirstSearchAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())

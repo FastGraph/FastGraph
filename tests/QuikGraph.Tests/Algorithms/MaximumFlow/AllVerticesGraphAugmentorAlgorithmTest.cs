@@ -1,15 +1,14 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Pex.Framework;
+﻿using Microsoft.Pex.Framework;
+using NUnit.Framework;
 using QuickGraph.Serialization;
-using QuickGraph.Collections;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.MaximumFlow
 {
-    [TestClass]
-    public partial class AllVerticesGraphAugmentorAlgorithmTest
+    [TestFixture]
+    internal class AllVerticesGraphAugmentorAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void AugmentAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

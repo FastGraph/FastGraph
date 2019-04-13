@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Pex.Framework;
-using QuickGraph.Serialization;
-using QuickGraph.Algorithms.TSP;
-using System.IO;
-using QuickGraph;
-using QuickGraph.Algorithms;
 using System.Diagnostics;
+using NUnit.Framework;
+using QuickGraph.Algorithms;
+using QuickGraph.Algorithms.TSP;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.TSP
 {
-    [TestClass]
-    public class TSPTest
+    [TestFixture]
+    internal class TSPTest : QuikGraphUnitTests
     {
 
-        [TestMethod]
+        [Test]
         public void UndirectedFullGraph()
         {
             TestCase testCase = new TestCase();
@@ -42,7 +39,7 @@ namespace QuickGraph.Tests.Algorithms.TSP
             Assert.AreEqual(tcp.BestCost, 25);
             Assert.IsFalse(tcp.ResultPath.IsDirectedAcyclicGraph());
         }
-        [TestMethod]
+        [Test]
         public void UndirectedSparseGraph()
         {
             TestCase testCase = new TestCase();
@@ -69,7 +66,7 @@ namespace QuickGraph.Tests.Algorithms.TSP
             Assert.AreEqual(tcp.BestCost, 47);
             Assert.IsFalse(tcp.ResultPath.IsDirectedAcyclicGraph());
         }
-        [TestMethod]
+        [Test]
         public void DirectedSparseGraphWithoutPath()
         {
             TestCase testCase = new TestCase();
@@ -96,7 +93,7 @@ namespace QuickGraph.Tests.Algorithms.TSP
             Assert.AreEqual(tcp.BestCost, Double.PositiveInfinity);
             Assert.IsTrue(tcp.ResultPath == null);
         }
-        [TestMethod]
+        [Test]
         public void DirectedSparseGraph()
         {
             TestCase testCase = new TestCase();
@@ -125,7 +122,7 @@ namespace QuickGraph.Tests.Algorithms.TSP
             Assert.IsFalse(tcp.ResultPath.IsDirectedAcyclicGraph());
         }
 
-        //[TestMethod]
+        //[Test]
         public void performanceTest()
         {
             for (int i = 0; i < 6; ++i)

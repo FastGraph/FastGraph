@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
 using Microsoft.Pex.Framework;
-using QuickGraph.Collections;
+using NUnit.Framework;
 using QuickGraph.Algorithms;
-using QuickGraph.Serialization;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Algorithms.Search;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestClass]
-    public class TarjanOfflineLeastCommonAncestorAlgorithmTest
+    [TestFixture]
+    internal class TarjanOfflineLeastCommonAncestorAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void TarjanOfflineLeastCommonAncestorAlgorithmAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

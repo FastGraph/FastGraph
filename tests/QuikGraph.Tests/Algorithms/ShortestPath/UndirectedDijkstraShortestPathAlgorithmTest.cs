@@ -1,16 +1,16 @@
-using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Observers;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-    [TestClass, PexClass]
-    public partial class UndirectedDijkstraShortestPathAlgorithmTest2
+    [TestFixture, PexClass]
+    internal class UndirectedDijkstraShortestPathAlgorithmTest2 : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void UndirectedDijkstraAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())
@@ -65,8 +65,7 @@ namespace QuickGraph.Algorithms.ShortestPath
             }
         }
 
-        [TestMethod]
-        [WorkItem(42450)]
+        [Test]
         public void Repro42450()
         {
             var ug = new UndirectedGraph<object, Edge<object>>(true);

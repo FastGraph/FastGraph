@@ -2,11 +2,12 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
-using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Xml;
+using System.Xml.Serialization;
+using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Serialization
 {
@@ -807,10 +808,10 @@ namespace QuickGraph.Tests.Serialization
         #endregion
     }
 
-    [TestClass]
-    public class Repro13482Test
+    [TestFixture]
+    internal class Repro13482Test : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void Repro13482()
         {
             var graph = new AdjacencyGraph<Person, TaggedEdge<Person, string>>();

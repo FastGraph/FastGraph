@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using QuickGraph.Serialization;
-using Microsoft.Pex.Framework.Settings;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests
 {
-    [TestClass, PexClass]
-    public partial class DegreeTest
+    [TestFixture, PexClass]
+    internal class DegreeTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void DegreeSumEqualsTwiceEdgeCountAll()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())
@@ -31,7 +28,7 @@ namespace QuickGraph.Tests
             Assert.AreEqual(edgeCount * 2, degCount);
         }
 
-        [TestMethod]
+        [Test]
         public void InDegreeSumEqualsEdgeCountAll()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())
@@ -51,7 +48,7 @@ namespace QuickGraph.Tests
             Assert.AreEqual(edgeCount, degCount);
         }
 
-        [TestMethod]
+        [Test]
         public void OutDegreeSumEqualsEdgeCountAll()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())

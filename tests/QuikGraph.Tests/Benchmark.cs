@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security;
-using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using System.Runtime.InteropServices;
+using System.Security;
 
 namespace QuickGraph.Tests
 {
@@ -35,10 +32,7 @@ namespace QuickGraph.Tests
         /// Gets the frequency.
         /// </summary>
         /// <value>The frequency.</value>
-        public static long Frequency
-        {
-            get { return frequency; }
-        }
+        public static long Frequency => frequency;
 
         /// <summary>
         /// Gets the current ticks value.
@@ -48,8 +42,7 @@ namespace QuickGraph.Tests
         {
             get
             {
-                long startTime;
-                if (!Win32.QueryPerformanceCounter(out startTime))
+                if (!Win32.QueryPerformanceCounter(out long startTime))
                     throw new Win32Exception("QueryPerformanceCounter failed");
                 return startTime;
             }
@@ -61,7 +54,9 @@ namespace QuickGraph.Tests
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public static double ToSeconds(long start, long end)
         {
             Contract.Requires(start >= 0 && end >= 0 && start <= end);
@@ -74,7 +69,9 @@ namespace QuickGraph.Tests
         /// </summary>
         /// <param name="ticks">The ticks.</param>
         /// <returns></returns>
+#if SUPPORTS_CONTRACTS
         [Pure]
+#endif
         public static double ToSeconds(long ticks)
         {
             Contract.Requires(ticks >= 0);

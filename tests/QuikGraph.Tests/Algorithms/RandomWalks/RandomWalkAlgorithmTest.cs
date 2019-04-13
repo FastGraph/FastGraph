@@ -1,16 +1,15 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.Pex.Framework;
+using NUnit.Framework;
 using QuickGraph.Algorithms.Observers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Pex.Framework;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-    [TestClass]
-    public class RandomWalkAlgorithmTest
+    [TestFixture]
+    internal class RandomWalkAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void RoundRobinAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

@@ -1,17 +1,14 @@
-﻿using QuickGraph;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests
 {
-    
-    
     /// <summary>
     ///This is a test class for BidirectionalGraphTest and is intended
     ///to contain all BidirectionalGraphTest Unit Tests
     ///</summary>
-    [TestClass()]
-    public class BidirectionalGraphTest
+    [TestFixture]
+    internal class BidirectionalGraphTest : QuikGraphUnitTests
     {
 
 
@@ -63,7 +60,7 @@ namespace QuickGraph.Tests
         //
         #endregion
 
-        [TestMethod()]
+        [Test]
         public void CloneTest()
         {
             var g = new BidirectionalGraph<int, Edge<int>>();
@@ -96,7 +93,7 @@ namespace QuickGraph.Tests
             Assert.AreEqual(3, g.EdgeCount);
         }
 
-        // [TestMethod()]
+        // [Test]
         //public void LoadGraphFromDot()
         // {
         //     const string dotSource = "digraph { a -> b }";

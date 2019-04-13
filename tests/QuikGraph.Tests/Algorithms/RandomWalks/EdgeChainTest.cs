@@ -1,17 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using QuickGraph.Algorithms.Observers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Microsoft.Pex.Framework;
+using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-    [TestClass]
-    public class EdgeChainTest
+    [TestFixture]
+    internal class EdgeChainTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void GenerateAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

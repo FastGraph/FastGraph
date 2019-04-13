@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Algorithms;
 using Microsoft.Pex.Framework;
+using NUnit.Framework;
+using QuickGraph.Algorithms;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestClass, PexClass(typeof(AlgorithmExtensions))]
-    public partial class AlgorithmExtensionsTest
+    [TestFixture, PexClass(typeof(AlgorithmExtensions))]
+    internal class AlgorithmExtensionsTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void AdjacencyGraphRoots()
         {
             var g = new AdjacencyGraph<string, Edge<string>>();
@@ -28,7 +27,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.AreEqual("A", roots[0]);
         }
 
-        [TestMethod]
+        [Test]
         public void AllAdjacencyGraphRoots()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

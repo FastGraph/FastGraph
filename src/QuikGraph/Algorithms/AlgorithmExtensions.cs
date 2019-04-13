@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 using System.Linq;
+#endif
 using QuickGraph.Algorithms.Condensation;
 using QuickGraph.Algorithms.ConnectedComponents;
 using QuickGraph.Algorithms.MaximumFlow;
@@ -17,7 +17,7 @@ using QuickGraph.Algorithms.ShortestPath;
 using QuickGraph.Algorithms.TopologicalSort;
 using QuickGraph.Collections;
 #if !SUPPORTS_TYPE_FULL_FEATURES
-using QuickGraph.Utils;
+using QuikGraph.Utils;
 #endif
 
 namespace QuickGraph.Algorithms

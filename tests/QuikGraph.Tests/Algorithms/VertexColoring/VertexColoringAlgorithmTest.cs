@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using NUnit.Framework;
 using QuickGraph.Algorithms.GraphColoring.VertexColoring;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.GraphColoring
 {
-    [TestClass]
-    public class VertexColoringAlgorithmTest
+    [TestFixture]
+    internal class VertexColoringAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void VertexColoringComputeSimpleGraph()
         {
             /* 
@@ -67,7 +66,7 @@ namespace QuickGraph.Tests.Algorithms.GraphColoring
             };
         }
 
-        [TestMethod]
+        [Test]
         public void VertexColoringComputeEmptyGraph()
         {
             /* 
@@ -118,7 +117,7 @@ namespace QuickGraph.Tests.Algorithms.GraphColoring
             };
         }
 
-        [TestMethod]
+        [Test]
         public void VertexColoringComputeFullGraph()
         {
             /* 
@@ -187,7 +186,7 @@ namespace QuickGraph.Tests.Algorithms.GraphColoring
             };
         }
 
-        [TestMethod]
+        [Test]
         public void VertexColoringComputeBipartiteGraph()
         {
             /*                                   
@@ -256,7 +255,7 @@ namespace QuickGraph.Tests.Algorithms.GraphColoring
             };
         }
 
-        [TestMethod]
+        [Test]
         public void VertexColoringComputeTestGraph()
         {
             /* 

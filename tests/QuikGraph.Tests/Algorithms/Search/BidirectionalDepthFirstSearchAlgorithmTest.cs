@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Pex.Framework;
+using NUnit.Framework;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.Search
 {
-    [TestClass]
-    public class BidirectionalDepthFirstSearchAlgorithmTest
+    [TestFixture]
+    internal class BidirectionalDepthFirstSearchAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void ComputeAll()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())

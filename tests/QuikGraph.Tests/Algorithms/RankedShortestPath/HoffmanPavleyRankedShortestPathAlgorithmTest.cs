@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Serialization;
 using Microsoft.Pex.Framework;
-using QuickGraph.Algorithms.RankedShortestPath;
-using System.IO;
+using NUnit.Framework;
 using QuickGraph.Algorithms;
-using QuickGraph.Collections;
+using QuickGraph.Algorithms.RankedShortestPath;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.RankedShortestPath
 {
-    [TestClass]
-    public partial class HoffmanPavleyRankedShortestPathAlgorithmTest
+    [TestFixture]
+    internal class HoffmanPavleyRankedShortestPathAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void HoffmanPavleyRankedShortestPathAll()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())
@@ -36,7 +34,7 @@ namespace QuickGraph.Tests.Algorithms.RankedShortestPath
             }
         }
 
-        [TestMethod]
+        [Test]
         public void HoffmanPavleyRankedShortestPathNetwork()
         {
             // create network graph
@@ -133,9 +131,8 @@ namespace QuickGraph.Tests.Algorithms.RankedShortestPath
             return target.ComputedShortestPaths;
         }
 
-        [TestMethod]
-        [WorkItem(12288)]
-        [Ignore]
+        [Test]
+        [Ignore("Was already ignored")]
         [Description("binary data outdated")]
         public void Repro12288()
         {

@@ -1,14 +1,12 @@
-﻿// <copyright file="SoftHeapTKeyTValueTest.cs" company="MSIT">Copyright © MSIT 2008</copyright>
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Microsoft.Pex.Framework;
 using Microsoft.Pex.Framework.Validation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace QuickGraph.Collections
 {
     /// <summary>This class contains parameterized unit tests for SoftHeap`2</summary>
-    [TestClass]
+    [TestFixture]
     [PexClass(typeof(SoftHeap<,>))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
     [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]

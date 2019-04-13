@@ -1,11 +1,11 @@
-﻿using Microsoft.Pex.Framework;
-using Microsoft.Pex.Framework.Using;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Pex.Framework;
 using Microsoft.Pex.Framework.Validation;
 using Microsoft.Pex.Framework.Wizard;
-using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Collections
 {
@@ -143,10 +143,10 @@ namespace QuickGraph.Collections
         }
     }
 
-    [TestClass, PexClass]
-    public partial class BinaryHeapTest
+    [TestFixture, PexClass]
+    internal class BinaryHeapTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void UpdateTest()
         {
             var heap = BinaryHeapFactory.ExampleHeap01();
@@ -156,7 +156,7 @@ namespace QuickGraph.Collections
             heap.AssertInvariants();
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateTestUsingDCT8()
         {
             var heap = BinaryHeapFactory.ExampleHeapFromTopologicalSortOfDCT8();
@@ -165,7 +165,7 @@ namespace QuickGraph.Collections
             heap.AssertInvariants();
         }
 
-        //[TestMethod]
+        //[Test]
         public void RemoveAtTest()
         {
             var heap = BinaryHeapFactory.ExampleHeap01();
@@ -175,7 +175,7 @@ namespace QuickGraph.Collections
             heap.AssertInvariants();
         }
 
-        //[TestMethod]
+        //[Test]
         public void RemoveAtTestUsingDCT8()
         {
             var heap = BinaryHeapFactory.ExampleHeapFromTopologicalSortOfDCT8();
@@ -184,7 +184,7 @@ namespace QuickGraph.Collections
             heap.AssertInvariants();
         }
 
-        [TestMethod]
+        [Test]
         public void RemoveMinimumTest()
         {
             var heap = BinaryHeapFactory.ExampleHeap01();
@@ -194,7 +194,7 @@ namespace QuickGraph.Collections
             heap.AssertInvariants();
         }
 
-        [TestMethod]
+        [Test]
         public void RemoveMinimumTestUsingDCT8()
         {
             var heap = BinaryHeapFactory.ExampleHeapFromTopologicalSortOfDCT8();
@@ -207,11 +207,11 @@ namespace QuickGraph.Collections
     /// <summary>
     /// This class contains parameterized unit tests for BinaryHeap`2
     /// </summary>
-    [TestClass]
+    [TestFixture]
     [PexClass(typeof(BinaryHeap<,>))]
     [PexGenericArguments(typeof(int), typeof(int))]
     [PexAllowedContractRequiresFailureAtTypeUnderTestSurface]
-    public partial class BinaryHeapTPriorityTValueTest
+    internal partial class BinaryHeapTPriorityTValueTest : QuikGraphUnitTests
     {
         /// <summary>
         /// Checks heap invariant
@@ -225,7 +225,7 @@ namespace QuickGraph.Collections
             Assert.IsTrue(target.Count <= target.Capacity);
         }
 
-        [TestMethod]
+        [Test]
         public void Constructor()
         {
             var target = new BinaryHeap<int, int>();
@@ -342,11 +342,10 @@ namespace QuickGraph.Collections
             Assert.AreEqual(0, target.Count);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void RemoveMinimumOnEmpty()
         {
-            new BinaryHeap<int, int>().RemoveMinimum();
+            Assert.Throws<InvalidOperationException>(() => { new BinaryHeap<int, int>().RemoveMinimum(); });
         }
 
         [PexMethod(MaxRuns = 40)]
@@ -374,18 +373,17 @@ namespace QuickGraph.Collections
             AssertInvariant<TPriority, TValue>(target);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void MinimumOnEmpty()
         {
-            new BinaryHeap<int, int>().Minimum();
+            Assert.Throws<InvalidOperationException>(() => { new BinaryHeap<int, int>().Minimum(); });
         }
     }
 
-    [TestClass]
+    [TestFixture]
     [PexClass(typeof(BinaryHeap<,>))]
     [PexGenericArguments(typeof(int), typeof(int))]
-    public partial class BinaryHeapTPriorityTValueEnumeratorTest
+    internal class BinaryHeapTPriorityTValueEnumeratorTest : QuikGraphUnitTests
     {
         [PexMethod(MaxRuns = 20)]
         public void InsertManyAndEnumerateUntyped<TPriority, TValue>(

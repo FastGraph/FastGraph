@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Xml;
+using Microsoft.Pex.Framework;
+using NUnit.Framework;
+using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.MinimumSpanningTree;
 using QuickGraph.Algorithms.Observers;
-using Microsoft.Pex.Framework;
-using QuickGraph.Serialization;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms;
-using System.Xml.Serialization;
-using System.IO;
-using System.Xml.XPath;
-using System.Xml;
-using QuickGraph;
 using QuickGraph.Collections;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
 {
-    [TestClass]
-    public partial class MinimumSpanningTreeTest
+    [TestFixture]
+    internal class MinimumSpanningTreeTest : QuikGraphUnitTests
     {
         private UndirectedGraph<string, TaggedEdge<string, double>> GetUndirectedFullGraph(int vert)
         {
@@ -40,7 +35,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
                     graph.AddEdge(new TaggedEdge<string, double>(i.ToString(), j.ToString(), random.Next(100)));
             return graph;
         }
-        [TestMethod]
+        [Test]
         public void Prim10()
         {
             string m = "";
@@ -51,7 +46,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Prim50()
         {
             string m = "";
@@ -62,7 +57,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Prim100()
         {
             string m = "";
@@ -73,7 +68,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Prim200()
         {
             string m = "";
@@ -84,7 +79,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Prim300()
         {
             string m = "";
@@ -95,7 +90,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Prim400()
         {
             string m = "";
@@ -106,7 +101,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Kruskal10()
         {
             string m = "";
@@ -117,7 +112,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Kruskal50()
         {
             string m = "";
@@ -128,7 +123,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Kruskal100()
         {
             string m = "";
@@ -139,7 +134,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Kruskal200()
         {
             string m = "";
@@ -150,7 +145,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Kruskal300()
         {
             string m = "";
@@ -161,7 +156,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             m += DateTime.Now.ToString() + " " + DateTime.Now.Millisecond + "\n";
             System.Console.Write(m);
         }
-        [TestMethod]
+        [Test]
         public void Kruskal400()
         {
             string m = "";
@@ -173,7 +168,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             System.Console.Write(m);
         }
 
-        [TestMethod]
+        [Test]
         public void KruskalMinimumSpanningTreeAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())
@@ -217,7 +212,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             AssertMinimumSpanningTree<TVertex, TEdge>(g, prim);
         }
 
-        [TestMethod]
+        [Test]
         public void PrimMinimumSpanningTreeAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())
@@ -298,11 +293,11 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
                         "{0} - {1}", kv.Value, right.TryGetValue(kv.Key, out e) ? e.ToString() : "missing");
                 }
 
-                throw new AssertFailedException("comparison failed", ex);
+                Assert.Fail("Comparison failed", ex);
             }
         }
 
-        [TestMethod]
+        [Test]
         public void PrimKruskalMinimumSpanningTreeAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())
@@ -335,8 +330,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             return kruskalCost;
         }
 
-        [TestMethod]
-        [WorkItem(12240)]
+        [Test]
         public void Prim12240()
         {
             var g = new UndirectedGraph<int, Edge<int>>();
@@ -349,8 +343,7 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             Assert.AreEqual(9, cost);
         }
 
-        [TestMethod]
-        [WorkItem(12240)]
+        [Test]
         public void Prim12240WithDelegate()
         {
             var vertices = new int[] { 1, 2, 3, 4 };
@@ -371,12 +364,10 @@ namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
             Assert.AreEqual(9, cost);
         }
 
-        [TestMethod]
-        [WorkItem(12273)]
-        [DeploymentItem("GraphML/repro12273.xml", "GraphML")]
+        [Test]
         public void Prim12273()
         {
-            var ug = XmlReader.Create("GraphML/repro12273.xml").DeserializeFromXml(
+            var ug = XmlReader.Create(GetGraphFilePath("repro12273.xml")).DeserializeFromXml(
                 "graph", "node", "edge", "",
                 reader => new UndirectedGraph<string, TaggedEdge<string, double>>(),
                 reader => reader.GetAttribute("id"),

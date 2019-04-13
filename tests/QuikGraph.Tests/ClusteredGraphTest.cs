@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using QuickGraph;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+﻿using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests
 {
-    [TestClass()]
-    public class ClusteredGraphTest
+    [TestFixture]
+    internal class ClusteredGraphTest : QuikGraphUnitTests
     {
         public bool ContainsVertexParent(ClusteredAdjacencyGraph<int, IEdge<int>> clus,int v)
         {
@@ -21,7 +18,7 @@ namespace QuickGraph.Tests
                    || clus.Parent == null);
         }
 
-        [TestMethod()]
+        [Test]
         public void AddingClustVertexTest1()
         {
             var graph = new AdjacencyGraph<int, IEdge<int>>();
@@ -32,7 +29,7 @@ namespace QuickGraph.Tests
             Assert.IsTrue(a);
         }
 
-        [TestMethod()]
+        [Test]
         public void AddingClustEdgeTest1()
         {
             var graph = new AdjacencyGraph<int, IEdge<int>>();
@@ -46,7 +43,7 @@ namespace QuickGraph.Tests
             Assert.IsTrue(a);
         }
 
-          [TestMethod()]
+          [Test]
           public void RemovingClustEdgeTest1()
           {
               var graph = new AdjacencyGraph<int, IEdge<int>>();
@@ -61,7 +58,7 @@ namespace QuickGraph.Tests
             Assert.IsFalse(ContainsEdgeParent(cluster2, edge));
           }
           
-        [TestMethod()]
+        [Test]
         public void RemovingClustVertexTest1()
         {
             var graph = new AdjacencyGraph<int, IEdge<int>>();

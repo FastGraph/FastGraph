@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Serialization;
+using NUnit.Framework;
 using QuickGraph.Algorithms.ConnectedComponents;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestClass, PexClass]
-    public partial class StronglyConnectedComponentAlgorithmTest
+    [TestFixture, PexClass]
+    internal class StronglyConnectedComponentAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void EmptyGraph()
         {
             var g = new AdjacencyGraph<string, Edge<string>>(true);
@@ -20,7 +20,7 @@ namespace QuickGraph.Algorithms
             checkStrong(strong);
         }
 
-        [TestMethod]
+        [Test]
         public void OneVertex()
         {
             AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
@@ -32,7 +32,7 @@ namespace QuickGraph.Algorithms
             checkStrong(strong);
         }
 
-        [TestMethod]
+        [Test]
         public void TwoVertex()
         {
             AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
@@ -45,7 +45,7 @@ namespace QuickGraph.Algorithms
             checkStrong(strong);
         }
 
-        [TestMethod]
+        [Test]
         public void TwoVertexOnEdge()
         {
             AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
@@ -60,7 +60,7 @@ namespace QuickGraph.Algorithms
         }
 
 
-        [TestMethod]
+        [Test]
         public void TwoVertexCycle()
         {
             AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
@@ -75,7 +75,7 @@ namespace QuickGraph.Algorithms
             checkStrong(strong);
         }
 
-        [TestMethod]
+        [Test]
         public void StronglyConnectedComponentAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

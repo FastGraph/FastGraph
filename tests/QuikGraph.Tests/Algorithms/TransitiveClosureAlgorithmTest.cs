@@ -1,14 +1,14 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using QuickGraph.Algorithms;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestClass]
-    public class TransitiveClosureAlgorithmTest
+    [TestFixture]
+    internal class TransitiveClosureAlgorithmTest : QuikGraphUnitTests
     {
 
-        [TestMethod]
+        [Test]
         public void SmallTest()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
@@ -18,7 +18,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.AreEqual(3, result.EdgeCount);
         }
 
-        [TestMethod]
+        [Test]
         public void Test()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();

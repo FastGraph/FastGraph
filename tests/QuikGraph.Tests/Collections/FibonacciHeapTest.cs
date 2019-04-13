@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using QuickGraph.Collections;
-using System.Diagnostics;
-using QuickGraph.Predicates;
-using QuickGraph.Algorithms.Observers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Pex.Framework;
 using Microsoft.Pex.Framework.Validation;
+using NUnit.Framework;
+using QuickGraph.Collections;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Collections
 {
-    [TestClass, PexClass(typeof(FibonacciHeap<,>))]
+    [TestFixture, PexClass(typeof(FibonacciHeap<,>))]
     [PexGenericArguments(typeof(int), typeof(int))]
-    public partial class FibonacciHeapTests
+    internal class FibonacciHeapTests : QuikGraphUnitTests
     {
         /// <summary>
         /// Checks heap invariant
@@ -119,14 +115,14 @@ namespace QuickGraph.Tests.Collections
             }
         }
 
-        [TestMethod]
+        [Test]
         public void CreateHeap()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             Assert.IsNotNull(heap, "Heap is null!");
         }
 
-        [TestMethod]
+        [Test]
         public void SimpleEnqueDequeIncreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -153,7 +149,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void SimpleEnqueDequeDecreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
@@ -181,7 +177,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void DecreaseKeyOnIncreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -210,7 +206,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void IncreaseKeyOnIncreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -239,7 +235,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void DecreaseKeyOnDecreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
@@ -268,7 +264,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void IncreaseKeyOnDecreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
@@ -297,7 +293,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void ChangeKeyToSelf()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
@@ -326,7 +322,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void IncreasingDecreaseKeyCascadeCut()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -359,7 +355,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void IncreasingIncreaseKeyCascadeCut()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -392,7 +388,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void DeleteKey()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -422,7 +418,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void EnumeratorIncreasing()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -449,7 +445,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void MergeTest()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -479,7 +475,7 @@ namespace QuickGraph.Tests.Collections
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
 
-        [TestMethod]
+        [Test]
         public void NextCutOnLessThan()
         {
             var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -520,7 +516,7 @@ namespace QuickGraph.Tests.Collections
             }
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
-        [TestMethod]
+        [Test]
         public void NextCutOnGreaterThan()
         {
             var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
@@ -561,7 +557,7 @@ namespace QuickGraph.Tests.Collections
             }
             Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
         }
-        [TestMethod]
+        [Test]
         public void RandomTest()
         {
             FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);

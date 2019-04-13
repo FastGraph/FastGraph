@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests
 {
-    [TestClass]
-    public class DataStructureTest
+    [TestFixture]
+    internal class DataStructureTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void DisplayLinkedList()
         {
             var target = new LinkedList<int>();

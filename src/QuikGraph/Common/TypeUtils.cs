@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace QuickGraph.Utils
+namespace QuikGraph.Utils
 {
     internal static class TypeUtils
     {

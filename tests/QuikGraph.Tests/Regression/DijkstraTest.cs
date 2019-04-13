@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using NUnit.Framework;
+using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.ShortestPath;
 using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Regression {
-    [TestClass]
-    public class DijkstraTest 
+namespace QuickGraph.Tests.Regression
+{
+    [TestFixture]
+    internal class DijkstraTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void Scenario() 
         {
             AdjacencyGraph<string, Edge<string>> graph = new AdjacencyGraph<string, Edge<string>>(true);

@@ -1,15 +1,14 @@
 ﻿using System;
-using QuickGraph.Algorithms.RandomWalks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using QuickGraph.Serialization;
-using QuickGraph.Collections;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.RandomWalks
 {
-    [TestClass]
-    public class CyclePoppingRandomTreeAlgorithmTest
+    [TestFixture]
+    internal class CyclePoppingRandomTreeAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void CyclePoppingRandomTreeAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
@@ -22,7 +21,7 @@ namespace QuickGraph.Algorithms.RandomWalks
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Repro13160()
         {
             // create a new graph			
@@ -59,7 +58,7 @@ namespace QuickGraph.Algorithms.RandomWalks
                 Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
         }
 
-        [TestMethod]
+        [Test]
         public void IsolatedVertices()
         {
             var g = new AdjacencyGraph<int, Edge<int>>(true);
@@ -70,7 +69,7 @@ namespace QuickGraph.Algorithms.RandomWalks
             target.RandomTree();
         }
 
-        [TestMethod]
+        [Test]
         public void IsolatedVerticesWithRoot()
         {
             var g = new AdjacencyGraph<int, Edge<int>>(true);
@@ -81,7 +80,7 @@ namespace QuickGraph.Algorithms.RandomWalks
             target.RandomTreeWithRoot(0);
         }
 
-        [TestMethod]
+        [Test]
         public void RootIsNotAccessible()
         {
             AdjacencyGraph<int, Edge<int>> g = new AdjacencyGraph<int, Edge<int>>(true);

@@ -1,18 +1,16 @@
-using System;
-using System.IO;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Condensation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Microsoft.Pex.Framework;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.Condensation
 {
-    [TestClass]
+    [TestFixture]
     [PexClass]
-    public class WeaklyConnectedCondensationGraphAlgorithmTest
+    internal class WeaklyConnectedCondensationGraphAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void WeaklyConnectedCondensatAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

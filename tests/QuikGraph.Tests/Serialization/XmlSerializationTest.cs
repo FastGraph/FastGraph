@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Xml;
 using System.Xml.XPath;
-using System.Xml;
+using NUnit.Framework;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Serialization
 {
-    [TestClass]
-    public class XmlSerializationTest
+    [TestFixture]
+    internal class XmlSerializationTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void DeserializeFromXml()
         {
-            var doc = new XPathDocument("GraphML/repro12273.xml");
+            var doc = new XPathDocument(GetGraphFilePath("repro12273.xml"));
             var ug = SerializationExtensions.DeserializeFromXml(doc,
                 "graph", "node", "edge",
                 nav => new UndirectedGraph<string, TaggedEdge<string, double>>(),
@@ -28,7 +25,7 @@ namespace QuickGraph.Tests.Serialization
                 );
 
             var ug2 = SerializationExtensions.DeserializeFromXml(
-                XmlReader.Create("GraphML/repro12273.xml"),
+                XmlReader.Create(GetGraphFilePath("repro12273.xml")),
                 "graph", "node", "edge", "",
                 reader => new UndirectedGraph<string, TaggedEdge<string, double>>(),
                 reader => reader.GetAttribute("id"),

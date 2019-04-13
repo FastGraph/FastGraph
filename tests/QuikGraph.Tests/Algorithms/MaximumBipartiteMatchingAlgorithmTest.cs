@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Pex.Framework;
-using QuickGraph.Algorithms.MaximumFlow;
+using NUnit.Framework;
 using QuickGraph.Algorithms;
+using QuickGraph.Algorithms.MaximumFlow;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestClass]
-    public class MaximumBipartiteMatchingAlgorithmTest
+    [TestFixture]
+    internal class MaximumBipartiteMatchingAlgorithmTest : QuikGraphUnitTests
     {
 
         private EdgeFactory<string, Edge<string>> EdgeFactory = 
             (source, target) => new Edge<string>(source, target);
 
 
-        [TestMethod]
+        [Test]
         public void BipartiteMaxMatchSimpleTest()
         {
             var integers = Enumerable.Range(0, 100);
@@ -34,7 +35,7 @@ namespace QuickGraph.Tests.Algorithms
 
         }
 
-        [TestMethod]
+        [Test]
         public void BipartiteMaxMatchSimpleReversedEdgesTest()
         {
             var integers = Enumerable.Range(0, 100);
@@ -52,7 +53,7 @@ namespace QuickGraph.Tests.Algorithms
 
         }
 
-        [TestMethod]
+        [Test]
         public void BipartiteMaxMatchTwoFullyConnectedSetsTest()
         {
             var setA = new List<string>();
@@ -85,7 +86,7 @@ namespace QuickGraph.Tests.Algorithms
 
         }
 
-        [TestMethod]
+        [Test]
         public void BipartiteMaxMatchUnequalPartitionsTest()
         {
             var setA = new List<string>();

@@ -1,17 +1,17 @@
-using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Observers;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-    [TestClass, PexClass]
-    public partial class AStartShortestPathAlgorithmTest
+    [TestFixture, PexClass]
+    internal class AStartShortestPathAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
-        [TestCategory(TestCategories.LongRunning)]
+        [Test]
+        [Category(TestCategories.LongRunning)]
         public void AStartAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())

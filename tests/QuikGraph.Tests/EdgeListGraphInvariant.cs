@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Pex.Framework;
+using NUnit.Framework;
 
 namespace QuickGraph
 {
-    [TestClass, PexClass]
+    [TestFixture, PexClass]
     public static class EdgeListGraphTest
     {
         [PexMethod]

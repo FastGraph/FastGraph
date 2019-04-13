@@ -1,12 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestClass]
-    public class IsHamiltonianGraphAlgorithmTest
+    [TestFixture]
+    internal class IsHamiltonianGraphAlgorithmTest : QuikGraphUnitTests
     {
         private UndirectedGraph<int, UndirectedEdge<int>> constructGraph(Tuple<int, int>[] vertices)
         {
@@ -18,7 +19,7 @@ namespace QuickGraph.Tests.Algorithms
             return g;
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianTrue()
         {
             var g = constructGraph(new Tuple<int, int>[] {new Tuple<int, int>(1, 2), new Tuple<int, int>(2, 3),
@@ -27,7 +28,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianFalse()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2),
@@ -36,7 +37,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianEmpty()
         {
             var g = constructGraph(new Tuple<int, int>[] { });
@@ -44,7 +45,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianOneVertexWithCycle()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1) });
@@ -52,7 +53,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianTwoVerticesTrue()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2) });
@@ -60,7 +61,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianTwoVerticesFalse()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1), new Tuple<int, int>(2, 2) });
@@ -68,7 +69,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianWithLoops()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 1),
@@ -79,7 +80,7 @@ namespace QuickGraph.Tests.Algorithms
         }
 
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianWithParallelEdges()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2), new Tuple<int, int>(1, 2),
@@ -88,7 +89,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsFalse(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonian10VerticesDiracsTheorem()
         {
             // This graph is hamiltonian and satisfies Dirac's theorem. This test should work faster
@@ -107,7 +108,7 @@ namespace QuickGraph.Tests.Algorithms
             Assert.IsTrue(gAlgo.IsHamiltonian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonian10VerticesNotDiracsTheorem()
         {
             // This graph is hamiltonian but don't satisfy Dirac's theorem. This test should work slowlier
@@ -149,7 +150,7 @@ namespace QuickGraph.Tests.Algorithms
             return i * Factorial(i - 1);
         }
 
-        [TestMethod]
+        [Test]
         public void IsHamiltonianTestCyclesBuilder()
         {
             var g = constructGraph(new Tuple<int, int>[] { new Tuple<int, int>(1, 2),

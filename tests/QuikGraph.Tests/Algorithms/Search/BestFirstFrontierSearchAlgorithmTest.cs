@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Pex.Framework;
-using QuickGraph.Algorithms.Search;
+using NUnit.Framework;
 using QuickGraph.Algorithms;
-using QuickGraph.Serialization;
 using QuickGraph.Algorithms.Observers;
+using QuickGraph.Algorithms.Search;
 using QuickGraph.Algorithms.ShortestPath;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.Search
 {
-    [TestClass, PexClass(typeof(BestFirstFrontierSearchAlgorithm<,>))]
-    public partial class BestFirstFrontierSearchAlgorithmTest
+    [TestFixture, PexClass(typeof(BestFirstFrontierSearchAlgorithm<,>))]
+    internal class BestFirstFrontierSearchAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void KrokFFig2Example()
         {
             var g = new BidirectionalGraph<char, SEquatableEdge<char>>();
@@ -29,7 +29,7 @@ namespace QuickGraph.Tests.Algorithms.Search
             RunSearch(g);
         }
 
-        [TestMethod]
+        [Test]
         public void BestFirstFrontierSearchAllGraphs()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())
@@ -69,7 +69,7 @@ namespace QuickGraph.Tests.Algorithms.Search
 #endif
         }
 
-        [TestMethod]
+        [Test]
         public void CompareBestFirstFrontierSearchAllGraphs()
         {
             foreach (var g in TestGraphFactory.GetBidirectionalGraphs())

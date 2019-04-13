@@ -1,15 +1,16 @@
 ﻿using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.MaximumFlow;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.MaximumFlow
 {
-    [TestClass]
-    public partial class EdmondsKarpMaximumFlowAlgorithmTest
+    [TestFixture]
+    internal class EdmondsKarpMaximumFlowAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void EdmondsKarpMaxFlowAll()
         {
 

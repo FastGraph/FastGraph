@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.IO;
-using System.Xml;
-using Microsoft.Pex.Framework;
-using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Serialization;
+using Microsoft.Pex.Framework;
+using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Serialization
 {
-    [TestClass, PexClass]
-    public partial class GraphMLSerializerWithArgumentsTest
+    [TestFixture, PexClass]
+    internal class GraphMLSerializerWithArgumentsTest : QuikGraphUnitTests
     {
         public sealed class TestGraph
             : AdjacencyGraph<TestVertex, TestEdge>
@@ -554,7 +555,7 @@ namespace QuickGraph.Serialization
         private static readonly IList<double> DoubleIList = new double[] { 3.14159265, 1.1, 1, 23, -2, 987459, 97239, 234245, 0, -2232, 234.55345 };
         private static readonly IList<string> StringIList = new string[] { "", "Quick", "", "brown", "fox", "jumps", "over", "the", "lazy", "dog", ".", "" };
         
-        [TestMethod]
+        [Test]
         public void WriteVertex()
         {
             TestGraph g = new TestGraph()
@@ -675,7 +676,7 @@ namespace QuickGraph.Serialization
             return newg;
         }
 
-        [TestMethod]
+        [Test]
         public void WriteEdge()
         {
             {

@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using QuickGraph.Algorithms.RankedShortestPath;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Regression
 {
-    [TestClass]
-    public partial class HoffmanPavleyTest
+    [TestFixture]
+    internal class HoffmanPavleyTest : QuikGraphUnitTests
     {
-        [TestMethod]
-        [WorkItem(13526)]
+        [Test]
         public void NotEnoughPaths()
         {
             int ii = 0;
@@ -122,8 +119,7 @@ namespace QuickGraph.Tests.Regression
             }
         }
 
-        [TestMethod]
-        [WorkItem(13111)]
+        [Test]
         public void InfiniteLoop13111()
         {
             int ii = 0;

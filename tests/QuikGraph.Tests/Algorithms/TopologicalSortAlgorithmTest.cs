@@ -1,17 +1,17 @@
-﻿using System;
-using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Serialization;
-using QuickGraph.Algorithms.TopologicalSort;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Collections.Generic;
+using Microsoft.Pex.Framework;
+using NUnit.Framework;
+using QuickGraph.Algorithms.TopologicalSort;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestClass, PexClass]
-    public partial class TopologicalSortAlgorithmTest
+    [TestFixture, PexClass]
+    internal partial class TopologicalSortAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void TopologicalSortAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
@@ -27,17 +27,16 @@ namespace QuickGraph.Algorithms
             topo.Compute();
         }
 
-        [TestMethod]
-        [DeploymentItem("GraphML/DCT8.graphml", "GraphML")]
+        [Test]
         public void SortDCT8()
         {
-            var g = TestGraphFactory.LoadGraph("GraphML/DCT8.graphml");
+            var g = TestGraphFactory.LoadGraph(GetGraphFilePath("DCT8.graphml"));
             var topo = new TopologicalSortAlgorithm<string, Edge<string>>(g);
             Assert.IsFalse(topo.AllowCyclicGraph);
             topo.Compute();
         }
 
-        [TestMethod]
+        [Test]
         public void OneTwo()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
@@ -51,7 +50,7 @@ namespace QuickGraph.Algorithms
         }
 
         // Trying to see if order of vertices affects the topological sort order.
-        [TestMethod]
+        [Test]
         public void TwoOne()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
@@ -65,7 +64,7 @@ namespace QuickGraph.Algorithms
             Assert.AreEqual(2, vertices.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void FacebookSeattleWordPuzzle()
         {
             /* A puzzle from Facebook Seattle opening party:

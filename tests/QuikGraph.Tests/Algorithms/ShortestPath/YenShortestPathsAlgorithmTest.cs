@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Algorithms.GraphColoring.VertexColoring;
+using NUnit.Framework;
 using QuickGraph.Algorithms.ShortestPath.Yen;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.ShortestPath
 {
-  [TestClass]
-  public class YenShortestPathsAlgorithmTest
-  {
+  [TestFixture]
+  internal class YenShortestPathsAlgorithmTest : QuikGraphUnitTests
+    {
 
     /*
      * Attempt to use non existing vertices
      */
-    [TestMethod]
+    [Test]
     public void YenZeroCaseTest()
     {
       var graph = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
@@ -35,7 +35,7 @@ namespace QuickGraph.Tests.Algorithms.ShortestPath
     * Attempt to use for graph that only have one vertex
     * Expecting that Dijkstra’s algorithm couldn't find any ways
     */
-    [TestMethod]
+    [Test]
     public void YenOneVertexCaseTest()
     {
       var graph = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
@@ -58,7 +58,7 @@ namespace QuickGraph.Tests.Algorithms.ShortestPath
     * Attempt to use for loop graph
     * Expecting that Dijkstra’s algorithm couldn't find any ways
     */
-    [TestMethod]
+    [Test]
     public void YenLoopCaseTest()
     {
       var graph = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
@@ -78,7 +78,7 @@ namespace QuickGraph.Tests.Algorithms.ShortestPath
       Assert.AreEqual(exeptionWas, true);
     }
 
-    [TestMethod]
+    [Test]
     public void YenNormalCaseTest()
     {
       var input = GenerateNormalInput();

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using NUnit.Framework;
 using QuickGraph;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Tests
 {
@@ -9,8 +10,8 @@ namespace QuickGraph.Tests
     ///This is a test class for UndirectedGraph and is intended
     ///to contain all UndirectedGraph Unit Tests
     ///</summary>
-    [TestClass()]
-    public class UndirectedGraphTest
+    [TestFixture]
+    internal class UndirectedGraphTest : QuikGraphUnitTests
     {
         private TestContext testContextInstance;
 
@@ -60,7 +61,7 @@ namespace QuickGraph.Tests
         //
         #endregion
 
-        [TestMethod()]
+        [Test]
         public void ContainsEdgeTest1()
         {
             var u = new UndirectedGraph<int, IEdge<int>>();
@@ -83,7 +84,7 @@ namespace QuickGraph.Tests
             ContainsEdgeAssertions(u, e12, f12, null, null);
         }
 
-        [TestMethod()]
+        [Test]
         public void ContainsEdgeTest2()
         {
             var u = new UndirectedGraph<int, IEdge<int>>();

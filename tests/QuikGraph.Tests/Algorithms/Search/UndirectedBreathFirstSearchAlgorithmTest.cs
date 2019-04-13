@@ -1,16 +1,15 @@
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using QuickGraph.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Pex.Framework;
+using NUnit.Framework;
+using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.Search
 {
-    [TestClass]
-    public class UndirectedBreadthFirstAlgorithmSearchTest
+    [TestFixture]
+    internal class UndirectedBreadthFirstAlgorithmSearchTest : QuikGraphUnitTests
     {
-        [TestMethod]
+        [Test]
         public void UndirectedBreadthFirstSearchAll()
         {
             foreach (var g in TestGraphFactory.GetUndirectedGraphs())

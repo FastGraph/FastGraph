@@ -1,20 +1,19 @@
-using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Observers;
 using Microsoft.Pex.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-    [TestClass, PexClass]
-    public partial class DijkstraShortestPathAlgorithmTest
+    [TestFixture, PexClass]
+    internal class DijkstraShortestPathAlgorithmTest : QuikGraphUnitTests
     {
-        [TestMethod]
-        [DeploymentItem("GraphML/repro12359.graphml", "GraphML")]
+        [Test]
         public void Repro12359()
         {
-            var g = TestGraphFactory.LoadGraph("GraphML/repro12359.graphml");
+            var g = TestGraphFactory.LoadGraph(GetGraphFilePath("repro12359.graphml"));
             int i = 0;
             foreach (var v in g.Vertices)
             {
@@ -23,7 +22,7 @@ namespace QuickGraph.Algorithms.ShortestPath
             }
         }
 
-        [TestMethod]
+        [Test]
         public void DijkstraAll()
         {
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
