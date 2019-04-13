@@ -1,12 +1,11 @@
 ﻿using System.Linq;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class ConnectedComponentsAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -23,8 +22,7 @@ namespace QuickGraph.Algorithms.ConnectedComponents
             }
         }
 
-        [PexMethod]
-        public void Compute<TVertex, TEdge>([PexAssumeNotNull]IUndirectedGraph<TVertex, TEdge> g)
+        public void Compute<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> g)
              where TEdge : IEdge<TVertex>
         {
             var dfs = new ConnectedComponentsAlgorithm<TVertex, TEdge>(g);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
@@ -20,7 +19,6 @@ namespace QuickGraph.Algorithms
             }
         }
 
-        [PexMethod]
         public void ComputeTrail<TVertex,TEdge>(
             IMutableVertexAndEdgeListGraph<TVertex,TEdge> g,
             Func<TVertex, TVertex, TEdge> edgeCreator)

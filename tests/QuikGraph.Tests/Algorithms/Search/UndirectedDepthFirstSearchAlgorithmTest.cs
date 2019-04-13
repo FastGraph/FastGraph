@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
@@ -35,8 +34,7 @@ namespace QuickGraph.Algorithms.Search
                 this.UndirectedDepthFirstSearch(g);
         }
 
-        [PexMethod]
-        public void UndirectedDepthFirstSearch<TVertex,TEdge>([PexAssumeNotNull]IUndirectedGraph<TVertex, TEdge> g)
+        public void UndirectedDepthFirstSearch<TVertex,TEdge>(IUndirectedGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TVertex, TVertex>();

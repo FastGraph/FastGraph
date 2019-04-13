@@ -1,13 +1,11 @@
-﻿using Microsoft.Pex.Framework;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace QuickGraph
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     public static class EdgeListGraphTest
     {
-        [PexMethod]
-        public static void Iteration<T,E>([PexAssumeUnderTest]IEdgeListGraph<T, E> g)
+        public static void Iteration<T,E>(IEdgeListGraph<T, E> g)
             where E : IEdge<T>
         {
             int n = g.EdgeCount;
@@ -16,8 +14,7 @@ namespace QuickGraph
                 ++i;
         }
 
-        [PexMethod]
-        public static void Count<T,E>([PexAssumeUnderTest]IEdgeListGraph<T, E> g)
+        public static void Count<T,E>(IEdgeListGraph<T, E> g)
             where E : IEdge<T>
         {
             int n = g.EdgeCount;

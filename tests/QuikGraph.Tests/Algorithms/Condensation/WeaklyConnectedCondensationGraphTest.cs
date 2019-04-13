@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using Microsoft.Pex.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.Condensation
 {
     [TestFixture]
-    [PexClass]
     internal class WeaklyConnectedCondensationGraphAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -17,7 +15,6 @@ namespace QuickGraph.Algorithms.Condensation
                 this.WeaklyConnectedCondensate(g);
         }
 
-        [PexMethod]
         public void WeaklyConnectedCondensate<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
@@ -57,7 +54,7 @@ namespace QuickGraph.Algorithms.Condensation
             CondensationGraphAlgorithm<TVertex,TEdge, AdjacencyGraph<TVertex,TEdge>> algo)
             where TEdge : IEdge<TVertex>
         {
-            // check number of vertices = number of storngly connected components
+            // check number of vertices = number of strongly connected components
             int components = g.WeaklyConnectedComponents<TVertex,TEdge>(new Dictionary<TVertex, int>());
             Assert.AreEqual(components, algo.CondensedGraph.VertexCount, "ComponentCount does not match");
         }

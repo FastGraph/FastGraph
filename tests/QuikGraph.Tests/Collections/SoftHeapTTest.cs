@@ -1,22 +1,17 @@
 ﻿using System;
-using Microsoft.Pex.Framework;
-using Microsoft.Pex.Framework.Validation;
 using NUnit.Framework;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Collections
 {
     /// <summary>This class contains parameterized unit tests for SoftHeap`2</summary>
     [TestFixture]
-    [PexClass(typeof(SoftHeap<,>))]
-    [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
-    [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
-    public partial class SoftHeapTKeyTValueTest
+    internal class SoftHeapTKeyTValueTest : QuikGraphUnitTests
     {
-        [PexMethod(MaxBranches = 160000)]
-        public void Add([PexAssumeNotNull]int[] keys)
+        public void Add(int[] keys)
         {
-            PexAssume.TrueForAll(keys, k => k < int.MaxValue);
-            PexAssume.IsTrue(keys.Length > 0);
+            QuikGraphAssert.TrueForAll(keys, k => k < int.MaxValue);
+            Assert.IsTrue(keys.Length > 0);
 
             var target = new SoftHeap<int, int>(1/4.0, int.MaxValue);
             Console.WriteLine("expected error rate: {0}", target.ErrorRate);

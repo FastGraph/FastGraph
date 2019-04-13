@@ -1,11 +1,10 @@
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ConnectedComponents
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class WeaklyConnectedComponentsAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -15,8 +14,7 @@ namespace QuickGraph.Algorithms.ConnectedComponents
                 this.Compute(g);
         }
 
-        [PexMethod]
-        public void Compute<TVertex,TEdge>([PexAssumeNotNull]IVertexListGraph<TVertex, TEdge> g)
+        public void Compute<TVertex,TEdge>(IVertexListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             var dfs = 

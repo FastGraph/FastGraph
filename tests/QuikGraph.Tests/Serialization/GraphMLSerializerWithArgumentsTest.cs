@@ -6,13 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Serialization
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class GraphMLSerializerWithArgumentsTest : QuikGraphUnitTests
     {
         public sealed class TestGraph

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
@@ -17,7 +16,6 @@ namespace QuickGraph.Algorithms.Search
                     RunBfs(g, v);
         }
 
-        [PexMethod]
         public void RunBfs<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> g, TVertex sourceVertex)
             where TEdge : IEdge<TVertex>
         {

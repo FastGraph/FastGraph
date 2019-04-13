@@ -83,10 +83,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
-	<Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Pex\Microsoft.Pex.Framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

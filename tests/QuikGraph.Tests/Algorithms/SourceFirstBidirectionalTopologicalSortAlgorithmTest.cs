@@ -1,12 +1,11 @@
-﻿using Microsoft.Pex.Framework;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QuickGraph.Algorithms.TopologicalSort;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class SourceFirstBidirectionalTopologicalSortAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -19,8 +18,7 @@ namespace QuickGraph.Algorithms
             }
         }
 
-        [PexMethod]
-        public void Sort<TVertex, TEdge>([PexAssumeNotNull]IBidirectionalGraph<TVertex, TEdge> g, TopologicalSortDirection direction)
+        public void Sort<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> g, TopologicalSortDirection direction)
             where TEdge : IEdge<TVertex>
         {
             var topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(g, direction);

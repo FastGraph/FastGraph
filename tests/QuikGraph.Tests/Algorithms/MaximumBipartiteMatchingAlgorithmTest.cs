@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.MaximumFlow;
@@ -125,9 +124,8 @@ namespace QuickGraph.Tests.Algorithms
                 );
         }
 
-        [PexMethod]
         public MaximumBipartiteMatchingAlgorithm<TVertex, TEdge> MaxBipartiteMatch<TVertex, TEdge>(
-            [PexAssumeNotNull]IMutableVertexAndEdgeListGraph<TVertex, TEdge> g,
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> g,
             IEnumerable<TVertex> vertexSetA,
             IEnumerable<TVertex> vertexSetB,
             VertexFactory<TVertex> vertexFactory,
@@ -135,7 +133,7 @@ namespace QuickGraph.Tests.Algorithms
             int expectedMatchSize)
             where TEdge : IEdge<TVertex>
         {
-            PexAssume.IsTrue(g.VertexCount > 0);
+            Assert.IsTrue(g.VertexCount > 0);
 
             var maxMatch = new MaximumBipartiteMatchingAlgorithm<TVertex, TEdge>(g, 
                 vertexSetA, vertexSetB, vertexFactory, edgeFactory);

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Pex.Framework;
-using Microsoft.Pex.Framework.Validation;
-using Microsoft.Pex.Framework.Wizard;
+using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Tests;
 
@@ -11,7 +9,6 @@ namespace QuickGraph.Collections
 {
     public static class BinaryHeapFactory
     {
-        [PexFactoryMethod(typeof(BinaryHeap<int, int>))]
         public static BinaryHeap<int, int> Create(int capacity)
         {
             var heap = new BinaryHeap<int, int>(capacity, (i, j) => i.CompareTo(j));
@@ -143,7 +140,7 @@ namespace QuickGraph.Collections
         }
     }
 
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class BinaryHeapTest : QuikGraphUnitTests
     {
         [Test]
@@ -208,9 +205,6 @@ namespace QuickGraph.Collections
     /// This class contains parameterized unit tests for BinaryHeap`2
     /// </summary>
     [TestFixture]
-    [PexClass(typeof(BinaryHeap<,>))]
-    [PexGenericArguments(typeof(int), typeof(int))]
-    [PexAllowedContractRequiresFailureAtTypeUnderTestSurface]
     internal partial class BinaryHeapTPriorityTValueTest : QuikGraphUnitTests
     {
         /// <summary>
@@ -232,9 +226,6 @@ namespace QuickGraph.Collections
             AssertInvariant<int, int>(target);
         }
 
-        [PexMethod]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentNullException))]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentOutOfRangeException))]
         public void Constructor<TPriority, TValue>(int capacity)
         {
             var target = new BinaryHeap<TPriority, TValue>(capacity, Comparer<TPriority>.Default.Compare);
@@ -242,11 +233,9 @@ namespace QuickGraph.Collections
             AssertInvariant<TPriority, TValue>(target);
         }
 
-        [PexMethod]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
         public void Operations<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull]KeyValuePair<bool, TPriority>[] values)
+            BinaryHeap<TPriority, TValue> target,
+            KeyValuePair<bool, TPriority>[] values)
         {
             foreach (var value in values)
             {
@@ -260,10 +249,9 @@ namespace QuickGraph.Collections
             }
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void Insert<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             var count = target.Count;
             foreach (var kv in kvs)
@@ -274,10 +262,9 @@ namespace QuickGraph.Collections
             Assert.IsTrue(count + kvs.Length == target.Count);
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertAndIndexOf<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             foreach (var kv in kvs)
                 target.Add(kv.Key, kv.Value);
@@ -285,12 +272,9 @@ namespace QuickGraph.Collections
                 Assert.IsTrue(target.IndexOf(kv.Value) > -1, "target.IndexOf(kv.Value) > -1");
         }
 
-        [PexMethod(MaxRuns = 20)]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentOutOfRangeException))]
         public void InsertAndRemoveAt<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs,
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs,
             int removeAtIndex)
         {
             foreach (var kv in kvs)
@@ -301,10 +285,9 @@ namespace QuickGraph.Collections
             AssertInvariant<TPriority, TValue>(target);
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertAndEnumerate<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             var dic = new Dictionary<TPriority, TValue>();
             foreach (var kv in kvs)
@@ -312,14 +295,13 @@ namespace QuickGraph.Collections
                 target.Add(kv.Key, kv.Value);
                 dic[kv.Key] = kv.Value;
             }
-            PexAssert.TrueForAll(target, kv => dic.ContainsKey(kv.Key));
+
+            QuikGraphAssert.TrueForAll(target, pair => dic.ContainsKey(pair.Key));
         }
 
-        [PexMethod(MaxRuns = 100)]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
         public void InsertAndRemoveMinimum<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             var count = target.Count;
             foreach (var kv in kvs)
@@ -348,13 +330,11 @@ namespace QuickGraph.Collections
             Assert.Throws<InvalidOperationException>(() => { new BinaryHeap<int, int>().RemoveMinimum(); });
         }
 
-        [PexMethod(MaxRuns = 40)]
-        [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
         public void InsertAndMinimum<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
-            PexAssume.IsTrue(kvs.Length > 0);
+            Assert.IsTrue(kvs.Length > 0);
 
             var count = target.Count;
             TPriority minimum = default(TPriority);
@@ -381,107 +361,102 @@ namespace QuickGraph.Collections
     }
 
     [TestFixture]
-    [PexClass(typeof(BinaryHeap<,>))]
-    [PexGenericArguments(typeof(int), typeof(int))]
     internal class BinaryHeapTPriorityTValueEnumeratorTest : QuikGraphUnitTests
     {
-        [PexMethod(MaxRuns = 20)]
         public void InsertManyAndEnumerateUntyped<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             foreach (var kv in kvs)
                 target.Add(kv.Key, kv.Value);
             foreach (KeyValuePair<TPriority, TValue> kv in (IEnumerable)target) ;
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertManyAndDoubleForEach<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             foreach (var kv in kvs)
                 target.Add(kv.Key, kv.Value);
-            PexEnumerablePatterns.DoubleForEach(target);
+            QuikGraphAssert.DoubleForEach(target);
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertManyAndMoveNextAndReset<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
-            [PexAssumeNotNull] KeyValuePair<TPriority, TValue>[] kvs)
+            BinaryHeap<TPriority, TValue> target,
+             KeyValuePair<TPriority, TValue>[] kvs)
         {
             foreach (var kv in kvs)
                 target.Add(kv.Key, kv.Value);
-            PexEnumerablePatterns.MoveNextAndReset(target);
+            QuikGraphAssert.MoveNextAndReset(target);
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertAndMoveNextAndModify<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
+            BinaryHeap<TPriority, TValue> target,
             KeyValuePair<TPriority, TValue> kv)
         {
             target.Add(kv.Key, kv.Value);
-            PexAssert.Throws<InvalidOperationException>(delegate
-            {
-                var enumerator = target.GetEnumerator();
-                target.Add(kv.Key, kv.Value);
-                enumerator.MoveNext();
-            });
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                {
+                    var enumerator = target.GetEnumerator();
+                    target.Add(kv.Key, kv.Value);
+                    enumerator.MoveNext();
+                });
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertAndResetAndModify<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
+            BinaryHeap<TPriority, TValue> target,
             KeyValuePair<TPriority, TValue> kv)
         {
             target.Add(kv.Key, kv.Value);
-            PexAssert.Throws<InvalidOperationException>(delegate
-            {
-                var enumerator = target.GetEnumerator();
-                target.Add(kv.Key, kv.Value);
-                enumerator.Reset();
-            });
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                {
+                    var enumerator = target.GetEnumerator();
+                    target.Add(kv.Key, kv.Value);
+                    enumerator.Reset();
+                });
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void InsertAndCurrentAndModify<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
+            BinaryHeap<TPriority, TValue> target,
             KeyValuePair<TPriority, TValue> kv)
         {
             target.Add(kv.Key, kv.Value);
-            PexAssert.Throws<InvalidOperationException>(delegate
-            {
-                var enumerator = target.GetEnumerator();
-                target.Add(kv.Key, kv.Value);
-                var current = enumerator.Current;
-            });
+            Assert.Throws<InvalidOperationException>(
+                () => 
+                {
+                    var enumerator = target.GetEnumerator();
+                    target.Add(kv.Key, kv.Value);
+                    var current = enumerator.Current;
+                });
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void CurrentAfterMoveNextFinished<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
+            BinaryHeap<TPriority, TValue> target,
             KeyValuePair<TPriority, TValue> kv)
         {
             target.Add(kv.Key, kv.Value);
-            PexAssert.Throws<InvalidOperationException>(delegate
-            {
-                var enumerator = target.GetEnumerator();
-                while (enumerator.MoveNext()) ;
-                var current = enumerator.Current;
-            });
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                {
+                    var enumerator = target.GetEnumerator();
+                    while (enumerator.MoveNext()) ;
+                    var current = enumerator.Current;
+                });
         }
 
-        [PexMethod(MaxRuns = 20)]
         public void CurrentBeforeMoveNext<TPriority, TValue>(
-            [PexAssumeUnderTest]BinaryHeap<TPriority, TValue> target,
+            BinaryHeap<TPriority, TValue> target,
             KeyValuePair<TPriority, TValue> kv)
         {
             target.Add(kv.Key, kv.Value);
-            PexAssert.Throws<InvalidOperationException>(delegate
-            {
-                var enumerator = target.GetEnumerator();
-                var current = enumerator.Current;
-            });
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                {
+                    var enumerator = target.GetEnumerator();
+                    var current = enumerator.Current;
+                });
         }
     }
 }

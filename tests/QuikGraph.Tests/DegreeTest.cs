@@ -1,11 +1,10 @@
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Tests
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class DegreeTest : QuikGraphUnitTests
     {
         [Test]
@@ -15,9 +14,8 @@ namespace QuickGraph.Tests
                 this.DegreeSumEqualsTwiceEdgeCount(g);
         }
 
-        [PexMethod]
         public void DegreeSumEqualsTwiceEdgeCount<TVertex, TEdge>(
-            [PexAssumeNotNull]IBidirectionalGraph<TVertex, TEdge> graph)
+            IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int edgeCount = graph.EdgeCount;
@@ -35,9 +33,8 @@ namespace QuickGraph.Tests
                 this.InDegreeSumEqualsEdgeCount(g);
         }
 
-        [PexMethod]
         public void InDegreeSumEqualsEdgeCount<TVertex,TEdge>(
-            [PexAssumeNotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+             IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int edgeCount = graph.EdgeCount;
@@ -55,9 +52,8 @@ namespace QuickGraph.Tests
                 this.OutDegreeSumEqualsEdgeCount(g);
         }
 
-        [PexMethod]
         public void OutDegreeSumEqualsEdgeCount<TVertex,TEdge>(
-            [PexAssumeNotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+             IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int edgeCount = graph.EdgeCount;

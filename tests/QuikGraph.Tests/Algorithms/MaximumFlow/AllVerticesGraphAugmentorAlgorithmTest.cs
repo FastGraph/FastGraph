@@ -1,5 +1,4 @@
-﻿using Microsoft.Pex.Framework;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
@@ -15,7 +14,6 @@ namespace QuickGraph.Algorithms.MaximumFlow
                 this.Augment(g);
         }
 
-        [PexMethod]
         public void Augment(
             IMutableVertexAndEdgeListGraph<string, Edge<string>> g)
         {

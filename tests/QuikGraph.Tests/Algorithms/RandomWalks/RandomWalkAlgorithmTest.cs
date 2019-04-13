@@ -1,5 +1,4 @@
-﻿using Microsoft.Pex.Framework;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
@@ -16,7 +15,6 @@ namespace QuickGraph.Algorithms.RandomWalks
                 this.RoundRobinTest(g);
         }
 
-        [PexMethod]
         public void RoundRobinTest<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
@@ -32,7 +30,6 @@ namespace QuickGraph.Algorithms.RandomWalks
             }
         }
 
-        [PexMethod]
         public void RoundRobinTestWithVisitor<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
@@ -50,6 +47,5 @@ namespace QuickGraph.Algorithms.RandomWalks
                     walker.Generate(root);
             }
         }
-
     }
 }

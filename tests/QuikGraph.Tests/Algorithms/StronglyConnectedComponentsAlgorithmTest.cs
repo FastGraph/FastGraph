@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms.ConnectedComponents;
 using QuickGraph.Serialization;
@@ -7,7 +6,7 @@ using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class StronglyConnectedComponentAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -82,8 +81,7 @@ namespace QuickGraph.Algorithms
                 this.Compute(g);
         }
 
-        [PexMethod]
-        public void Compute<TVertex,TEdge>([PexAssumeNotNull]AdjacencyGraph<TVertex, TEdge> g)
+        public void Compute<TVertex,TEdge>(AdjacencyGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             var strong = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(g);

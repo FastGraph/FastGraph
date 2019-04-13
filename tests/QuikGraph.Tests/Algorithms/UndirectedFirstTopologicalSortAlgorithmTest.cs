@@ -1,4 +1,3 @@
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms.TopologicalSort;
 using QuickGraph.Serialization;
@@ -6,7 +5,7 @@ using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal partial class UndirectedFirstTopologicalSortAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -16,8 +15,7 @@ namespace QuickGraph.Algorithms
                 this.Compute(g);
         }
 
-        [PexMethod]
-        public void Compute<TVertex, TEdge>([PexAssumeNotNull]IUndirectedGraph<TVertex, TEdge> g)
+        public void Compute<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             var topo =
@@ -25,6 +23,5 @@ namespace QuickGraph.Algorithms
             topo.AllowCyclicGraph = true;
             topo.Compute();
         }
-
     }
 }

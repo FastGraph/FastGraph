@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.Condensation
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal partial class StronglyConnectedCondensationGraphAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -16,9 +15,8 @@ namespace QuickGraph.Algorithms.Condensation
                 this.StronglyConnectedCondensate(g);
         }
 
-        [PexMethod]
         public void StronglyConnectedCondensate<TVertex, TEdge>(
-            [PexAssumeNotNull]IVertexAndEdgeListGraph<TVertex, TEdge> g)
+            IVertexAndEdgeListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             var cg = g.CondensateStronglyConnected<TVertex, TEdge, AdjacencyGraph<TVertex,TEdge>>();
@@ -60,7 +58,7 @@ namespace QuickGraph.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> cg)
             where TEdge : IEdge<TVertex>
         {
-            // check number of vertices = number of storngly connected components
+            // check number of vertices = number of strongly connected components
             IDictionary<TVertex, int> components;
             int componentCount = g.StronglyConnectedComponents(out components);
             Assert.AreEqual(componentCount, cg.VertexCount, "ComponentCount does not match");
@@ -71,7 +69,7 @@ namespace QuickGraph.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> cg)
             where TEdge : IEdge<TVertex>
         {
-            // check it's a dag
+            // Check it's a dag
             try
             {
                 cg.TopologicalSort();
@@ -80,7 +78,6 @@ namespace QuickGraph.Algorithms.Condensation
             {
                 Assert.Fail("Graph is not a DAG.");
             }
-
         }
     }
 }

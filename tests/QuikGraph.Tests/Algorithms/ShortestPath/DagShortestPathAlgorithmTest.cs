@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
@@ -8,11 +7,10 @@ using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class DagShortestPathAlgorithmTest : QuikGraphUnitTests
     {
-        [PexMethod]
-        public void Compute<TVertex, TEdge>([PexAssumeNotNull]IVertexListGraph<TVertex, TEdge> g)
+        public void Compute<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             // is this a dag ?
@@ -48,7 +46,6 @@ namespace QuickGraph.Algorithms.ShortestPath
             }
         }
 
-        [PexMethod]
         public void ComputeCriticalPath<TVertex, TEdge>(
             IVertexListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>

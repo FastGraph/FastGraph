@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Microsoft.Pex.Framework;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
 using QuikGraph.Tests;
@@ -16,7 +15,6 @@ namespace QuickGraph.Algorithms.RandomWalks
                 this.Generate(g);
         }
 
-        [PexMethod]
         public void Generate<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {

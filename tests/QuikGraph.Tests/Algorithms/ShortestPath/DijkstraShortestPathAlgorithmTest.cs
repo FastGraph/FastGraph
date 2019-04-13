@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms.Observers;
 using QuickGraph.Serialization;
@@ -7,7 +6,7 @@ using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms.ShortestPath
 {
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class DijkstraShortestPathAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -30,7 +29,6 @@ namespace QuickGraph.Algorithms.ShortestPath
                     this.Dijkstra(g, root);
         }
 
-        [PexMethod]
         public void Dijkstra<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g, TVertex root)
             where TEdge : IEdge<TVertex>
         {

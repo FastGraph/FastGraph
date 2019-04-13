@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.RankedShortestPath;
@@ -97,10 +96,9 @@ namespace QuickGraph.Tests.Algorithms.RankedShortestPath
             this.HoffmanPavleyRankedShortestPath(g, weights, 9, 1, 10);
         }
 
-        [PexMethod]
         public IEnumerable<IEnumerable<TEdge>> HoffmanPavleyRankedShortestPath<TVertex,TEdge>(
-            [PexAssumeNotNull]IBidirectionalGraph<TVertex, TEdge> g,
-            [PexAssumeNotNull]Dictionary<TEdge, double> edgeWeights,
+            IBidirectionalGraph<TVertex, TEdge> g,
+            Dictionary<TEdge, double> edgeWeights,
             TVertex rootVertex,
             TVertex goalVertex,
             int pathCount
@@ -109,7 +107,7 @@ namespace QuickGraph.Tests.Algorithms.RankedShortestPath
         {
             //GraphConsoleSerializer.DisplayGraph((IEdgeListGraph<TVertex, TEdge>)g);
 
-            PexAssert.TrueForAll(g.Edges, edgeWeights.ContainsKey);
+            QuikGraphAssert.TrueForAll(g.Edges, edgeWeights.ContainsKey);
 
             var target = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(g, e => edgeWeights[e]);
             target.ShortestPathCount = pathCount;

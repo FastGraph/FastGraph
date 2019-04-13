@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.Observers;
@@ -12,7 +11,7 @@ using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms.Search
 {
-    [TestFixture, PexClass(typeof(BestFirstFrontierSearchAlgorithm<,>))]
+    [TestFixture]
     internal class BestFirstFrontierSearchAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
@@ -36,9 +35,8 @@ namespace QuickGraph.Tests.Algorithms.Search
                 RunSearch(g);
         }
 
-        [PexMethod]
         public void RunSearch<TVertex, TEdge>(
-            [PexAssumeNotNull]IBidirectionalGraph<TVertex, TEdge> g)
+            IBidirectionalGraph<TVertex, TEdge> g)
             where TEdge : IEdge<TVertex>
         {
             if (g.VertexCount == 0) return;
@@ -77,28 +75,27 @@ namespace QuickGraph.Tests.Algorithms.Search
                 if (g.VertexCount == 0) continue;
 
                 var root = g.Vertices.First();
-                foreach(var v in g.Vertices)
-                    if(!root.Equals(v))
+                foreach (var v in g.Vertices)
+                    if (!root.Equals(v))
                         CompareSearch(g, root, v);
             }
         }
-        
-        [PexMethod]
+
         public void CompareSearch<TVertex, TEdge>(
-            [PexAssumeNotNull]IBidirectionalGraph<TVertex, TEdge> g,
+            IBidirectionalGraph<TVertex, TEdge> g,
             TVertex root, TVertex target)
-            where TEdge: IEdge<TVertex>
+            where TEdge : IEdge<TVertex>
         {
             Func<TEdge, double> edgeWeights = e => 1;
             var distanceRelaxer = DistanceRelaxers.ShortestDistance;
 
             var search = new BestFirstFrontierSearchAlgorithm<TVertex, TEdge>(
-                null, 
-                g, 
-                edgeWeights, 
+                null,
+                g,
+                edgeWeights,
                 distanceRelaxer);
             var recorder = new VertexDistanceRecorderObserver<TVertex, TEdge>(edgeWeights);
-            using(recorder.Attach(search))
+            using (recorder.Attach(search))
                 search.Compute(root, target);
 
             var dijkstra = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(g, edgeWeights, distanceRelaxer);

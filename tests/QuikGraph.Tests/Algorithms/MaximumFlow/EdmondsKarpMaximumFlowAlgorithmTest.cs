@@ -1,5 +1,4 @@
-﻿using Microsoft.Pex.Framework;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Algorithms.MaximumFlow;
 using QuickGraph.Serialization;
@@ -13,7 +12,6 @@ namespace QuickGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void EdmondsKarpMaxFlowAll()
         {
-
             foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
             {
                 if (g.VertexCount > 0)
@@ -22,12 +20,11 @@ namespace QuickGraph.Tests.Algorithms.MaximumFlow
         }
 
 
-        [PexMethod]
-        public void EdmondsKarpMaxFlow<TVertex, TEdge>([PexAssumeNotNull]IMutableVertexAndEdgeListGraph<TVertex, TEdge> g, 
+        public void EdmondsKarpMaxFlow<TVertex, TEdge>(IMutableVertexAndEdgeListGraph<TVertex, TEdge> g, 
             EdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
         {
-            PexAssume.IsTrue(g.VertexCount > 0);
+            Assert.IsTrue(g.VertexCount > 0);
 
             foreach (var source in g.Vertices)
                 foreach (var sink in g.Vertices)

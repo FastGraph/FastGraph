@@ -1,15 +1,14 @@
 using System;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms.TopologicalSort;
+using QuikGraph.Tests;
 
 namespace QuickGraph.Algorithms
 {
-    [TestFixture, PexClass]
-    public partial class UndirectedTopologicalSortAlgorithmTest
+    [TestFixture]
+    internal class UndirectedTopologicalSortAlgorithmTest : QuikGraphUnitTests
     {
-        [PexMethod]
-        public void Compute([PexAssumeNotNull]IUndirectedGraph<string, Edge<string>> g)
+        public void Compute(IUndirectedGraph<string, Edge<string>> g)
         {
             UndirectedTopologicalSortAlgorithm<string, Edge<string>> topo =
                 new UndirectedTopologicalSortAlgorithm<string, Edge<string>>(g);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.XPath;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuikGraph.Tests;
 
@@ -91,7 +90,7 @@ namespace QuickGraph.Serialization
         }
     }
 
-    [TestFixture, PexClass]
+    [TestFixture]
     internal class GraphMLSerializerIntegrationTest : QuikGraphUnitTests
     {
         [Test]

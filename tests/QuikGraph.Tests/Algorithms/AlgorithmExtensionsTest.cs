@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Pex.Framework;
 using NUnit.Framework;
 using QuickGraph.Algorithms;
 using QuickGraph.Serialization;
@@ -8,7 +7,7 @@ using QuikGraph.Tests;
 
 namespace QuickGraph.Tests.Algorithms
 {
-    [TestFixture, PexClass(typeof(AlgorithmExtensions))]
+    [TestFixture]
     internal class AlgorithmExtensionsTest : QuikGraphUnitTests
     {
         [Test]
@@ -34,7 +33,6 @@ namespace QuickGraph.Tests.Algorithms
                 Roots(g);
         }
 
-        [PexMethod]
         public void Roots<T>(IVertexAndEdgeListGraph<T, Edge<T>> g)
         {
             var roots = new HashSet<T>(g.Roots());
