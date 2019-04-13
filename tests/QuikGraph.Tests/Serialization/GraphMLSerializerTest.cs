@@ -117,7 +117,11 @@ namespace QuickGraph.Serialization
                 // check all nodes are loaded
                 var settings = new XmlReaderSettings();
                 settings.XmlResolver = new GraphMLXmlResolver();
+#if SUPPORTS_XML_DTD_PROCESSING
                 settings.DtdProcessing = DtdProcessing.Parse;
+#else
+                settings.ProhibitDtd = false;
+#endif
                 settings.ValidationFlags = System.Xml.Schema.XmlSchemaValidationFlags.None;
                 using(var xreader = XmlReader.Create(graphmlFile, settings))
                 {

@@ -59,7 +59,9 @@ namespace QuickGraph.Tests
 #endif
         public static double ToSeconds(long start, long end)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(start >= 0 && end >= 0 && start <= end);
+#endif
 
             return (end - start) / (double)frequency;
         }
@@ -74,7 +76,10 @@ namespace QuickGraph.Tests
 #endif
         public static double ToSeconds(long ticks)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(ticks >= 0);
+#endif
+
             return ticks / (double)frequency;
         }
 
@@ -97,7 +102,10 @@ namespace QuickGraph.Tests
 
         public Benchmark(string name)
         {
+#if SUPPORTS_CONTRACTS
             Contract.Requires(!String.IsNullOrEmpty(name));
+#endif
+
             this.name = name;
         }
 
