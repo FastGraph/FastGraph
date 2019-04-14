@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 using QuikGraph.Contracts;
+#endif
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A set of edges
+    /// Represents a set of edges.
     /// </summary>
-    /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-    /// <typeparam name="TEdge">The type of the edge.</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IEdgeSetContract<,>))]
 #endif
@@ -19,32 +20,31 @@ namespace QuikGraph
     {
         /// <summary>
         /// Gets a value indicating whether there are no edges in this set.
+        /// It is true if this edge set is empty, otherwise false.
         /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this set is empty; otherwise, <c>false</c>.
-        /// </value>
         bool IsEdgesEmpty { get; }
+
         /// <summary>
         /// Gets the edge count.
         /// </summary>
-        /// <value>The edge count.</value>
         int EdgeCount { get; }
+
         /// <summary>
         /// Gets the edges.
         /// </summary>
-        /// <value>The edges.</value>
+        [NotNull, ItemNotNull]
         IEnumerable<TEdge> Edges { get; }
+
         /// <summary>
-        /// Determines whether the specified edge contains edge.
+        /// Determines whether this set contains the specified <paramref name="edge"/>.
         /// </summary>
-        /// <param name="edge">The edge.</param>
-        /// <returns>
-        /// 	<c>true</c> if the specified edge contains edge; otherwise, <c>false</c>.
-        /// </returns>
+        /// <param name="edge">Edge to check.</param>
+        /// <returns>True if the specified <paramref name="edge"/> is contained in this set, false otherwise.</returns>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        bool ContainsEdge(TEdge edge);
+        [JetBrains.Annotations.Pure]
+        bool ContainsEdge([NotNull] TEdge edge);
     }
 
 
