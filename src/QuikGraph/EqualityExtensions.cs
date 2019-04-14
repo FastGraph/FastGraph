@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Deep equality methods for collections (arrays, dictionaries) implemented as extension methods.

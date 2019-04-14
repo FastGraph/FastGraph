@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests
+namespace QuikGraph.Tests
 {
     [TestFixture]
     internal class ClusteredGraphTest : QuikGraphUnitTests

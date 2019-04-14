@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     [TestFixture]
     public static class EdgeListGraphTest

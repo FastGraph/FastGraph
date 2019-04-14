@@ -3,9 +3,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.MaximumFlow
+namespace QuikGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/> 

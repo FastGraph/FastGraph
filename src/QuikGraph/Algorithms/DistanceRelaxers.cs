@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public static class DistanceRelaxers
     {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using QuickGraph.Algorithms.ConnectedComponents;
+using QuikGraph.Algorithms.ConnectedComponents;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public enum ComponentWithEdges { NoComponent, OneComponent, ManyComponents }
 

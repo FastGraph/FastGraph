@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     public interface IQueue<T>
     {

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An equatable, tagged, edge

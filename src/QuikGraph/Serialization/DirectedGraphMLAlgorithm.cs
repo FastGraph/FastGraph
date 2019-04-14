@@ -3,10 +3,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms;
-using QuickGraph.Serialization.DirectedGraphML;
+using QuikGraph.Algorithms;
+using QuikGraph.Serialization.DirectedGraphML;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     public sealed class DirectedGraphMLAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IVertexAndEdgeListGraph<TVertex,TEdge>>

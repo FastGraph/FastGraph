@@ -1,4 +1,4 @@
-﻿namespace QuickGraph
+﻿namespace QuikGraph
 {
     /// <summary>
     /// The handler for events involving two edges

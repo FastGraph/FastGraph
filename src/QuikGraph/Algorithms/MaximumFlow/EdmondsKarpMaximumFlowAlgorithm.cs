@@ -2,12 +2,13 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Predicates;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
+using QuikGraph.Predicates;
 
-namespace QuickGraph.Algorithms.MaximumFlow
+namespace QuikGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Edmond and Karp maximum flow algorithm for directed graph with positive capacities and flows.
@@ -133,7 +134,7 @@ namespace QuickGraph.Algorithms.MaximumFlow
                 var vis = new VertexPredecessorRecorderObserver<TVertex, TEdge>(
                     this.Predecessors
                     );
-                var queue = new QuickGraph.Collections.Queue<TVertex>();
+                var queue = new Queue<TVertex>();
                 var bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(
                     this.ResidualGraph,
                     queue,

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Collections;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.ConnectedComponents
+namespace QuikGraph.Algorithms.ConnectedComponents
 {
     public sealed class IncrementalConnectedComponentsAlgorithm<TVertex,TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeSet<TVertex, TEdge>>

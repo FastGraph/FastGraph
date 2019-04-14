@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.RandomWalks
+namespace QuikGraph.Algorithms.RandomWalks
 {
     [TestFixture]
     internal class CyclePoppingRandomTreeAlgorithmTest : QuikGraphUnitTests

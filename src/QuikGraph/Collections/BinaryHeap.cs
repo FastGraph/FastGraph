@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// Binary heap

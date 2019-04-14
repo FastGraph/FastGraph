@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A factory of identifiable edges.

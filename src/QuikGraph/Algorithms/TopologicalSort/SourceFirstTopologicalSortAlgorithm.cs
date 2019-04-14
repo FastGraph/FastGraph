@@ -5,9 +5,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.TopologicalSort
+namespace QuikGraph.Algorithms.TopologicalSort
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

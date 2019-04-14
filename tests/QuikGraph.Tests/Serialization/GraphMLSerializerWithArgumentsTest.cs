@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using NUnit.Framework;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     [TestFixture]
     internal class GraphMLSerializerWithArgumentsTest : QuikGraphUnitTests

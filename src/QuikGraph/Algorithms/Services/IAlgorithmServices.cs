@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.Services
+namespace QuikGraph.Algorithms.Services
 {
     /// <summary>
     /// Common services available to algorithm instances

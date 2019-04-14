@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// Specifies the order in which a Heap will Dequeue items.

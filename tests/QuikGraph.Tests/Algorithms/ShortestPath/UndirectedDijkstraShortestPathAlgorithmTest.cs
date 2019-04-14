@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.ShortestPath
+namespace QuikGraph.Algorithms.ShortestPath
 {
     [TestFixture]
     internal class UndirectedDijkstraShortestPathAlgorithmTest2 : QuikGraphUnitTests
@@ -81,12 +81,12 @@ namespace QuickGraph.Algorithms.ShortestPath
             ug.AddEdge(e3);
 
             var udspa =
-                new UndirectedDijkstraShortestPathAlgorithm<object, QuickGraph.Edge<object>>(ug, edge => (double)1);
+                new UndirectedDijkstraShortestPathAlgorithm<object, Edge<object>>(ug, edge => (double)1);
             var observer =
                 new UndirectedVertexPredecessorRecorderObserver<object, Edge<object>>();
             using (observer.Attach(udspa))
                 udspa.Compute(v1);
-            IEnumerable<QuickGraph.Edge<object>> path;
+            IEnumerable<Edge<object>> path;
             observer.TryGetPath(v3, out path);
         }
     }

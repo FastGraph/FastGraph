@@ -3,9 +3,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public abstract class AlgorithmBase<TGraph> :
         IAlgorithm<TGraph>,

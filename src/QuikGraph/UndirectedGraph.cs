@@ -4,9 +4,9 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public delegate bool EdgeEqualityComparer<TVertex, TEdge>(TEdge edge, TVertex source, TVertex target)
         where TEdge : IEdge<TVertex>;

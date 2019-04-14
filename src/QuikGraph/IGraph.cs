@@ -1,9 +1,10 @@
 ﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+using QuikGraph.Contracts;
+
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A graph with vertices of type <typeparamref name="TVertex"/>

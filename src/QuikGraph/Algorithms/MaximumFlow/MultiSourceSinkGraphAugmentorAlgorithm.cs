@@ -1,7 +1,7 @@
 ﻿using System;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.MaximumFlow
+namespace QuikGraph.Algorithms.MaximumFlow
 {
     public sealed class MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> 
         : GraphAugmentorAlgorithmBase<TVertex, TEdge, IMutableBidirectionalGraph<TVertex, TEdge>>

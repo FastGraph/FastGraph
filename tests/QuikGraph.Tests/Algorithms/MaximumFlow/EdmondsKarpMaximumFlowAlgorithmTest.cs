@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.MaximumFlow;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.MaximumFlow;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.MaximumFlow
+namespace QuikGraph.Tests.Algorithms.MaximumFlow
 {
     [TestFixture]
     internal class EdmondsKarpMaximumFlowAlgorithmTest : QuikGraphUnitTests

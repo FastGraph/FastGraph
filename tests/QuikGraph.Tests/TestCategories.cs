@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public static class TestCategories
     {

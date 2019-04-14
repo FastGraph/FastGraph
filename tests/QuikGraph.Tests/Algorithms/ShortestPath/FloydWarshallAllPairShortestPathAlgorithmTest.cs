@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Serialization;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.ShortestPath;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.ShortestPath;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.ShortestPath
+namespace QuikGraph.Tests.Algorithms.ShortestPath
 {
     [TestFixture]
     internal class BoostFloydWarshallTest : QuikGraphUnitTests

@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests
+namespace QuikGraph.Tests
 {
     /// <summary>
     ///This is a test class for UndirectedBidirectionalGraph and is intended

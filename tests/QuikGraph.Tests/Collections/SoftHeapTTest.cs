@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>This class contains parameterized unit tests for SoftHeap`2</summary>
     [TestFixture]

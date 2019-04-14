@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuickGraph.Predicates;
+using QuikGraph.Predicates;
 
-namespace QuickGraph.Algorithms.Ranking
+namespace QuikGraph.Algorithms.Ranking
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

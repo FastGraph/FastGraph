@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.VertexCover
+namespace QuikGraph.Algorithms.VertexCover
 {
     /// <summary>
     /// A minimum vertex cover approximation algorithm for undirected graphs

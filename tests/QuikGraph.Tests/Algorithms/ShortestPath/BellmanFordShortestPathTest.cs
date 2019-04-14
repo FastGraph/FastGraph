@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
+using QuikGraph.Algorithms;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.ShortestPath
+namespace QuikGraph.Tests.Algorithms.ShortestPath
 {
     [TestFixture]
     internal class BellmanFordShortestPathTest : QuikGraphUnitTests

@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Runtime.InteropServices;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An struct based <see cref="IUndirectedEdge&lt;TVertex&gt;"/> implementation.

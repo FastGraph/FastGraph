@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IVertexEdgeDictionary<,>))]

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using QuickGraph.Algorithms.AssigmentProblem;
+using QuikGraph.Algorithms.AssigmentProblem;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.AssigmentProblem
+namespace QuikGraph.Tests.Algorithms.AssigmentProblem
 {
     [TestFixture]
     internal class HungarianAlgorithmTest : QuikGraphUnitTests

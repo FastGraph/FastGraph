@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.Cliques
+namespace QuikGraph.Algorithms.Cliques
 {
     // under construction
     class BronKerboshMaximumCliqueAlgorithm<TVertex, TEdge>

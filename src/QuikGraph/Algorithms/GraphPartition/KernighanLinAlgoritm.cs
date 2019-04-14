@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickGraph.Algorithms.KernighanLinAlgoritm
+namespace QuikGraph.Algorithms.KernighanLinAlgoritm
 {
     public sealed class KernighanLinAlgoritm<TVertex, TEdge>
         where TEdge : TaggedUndirectedEdge<TVertex, double>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.Observers
+namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
     /// 

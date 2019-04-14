@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
 #if PARALLEL
     using System.Threading.Tasks;

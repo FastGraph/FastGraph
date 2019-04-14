@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public interface IEndPathEdgeRecorderAlgorithm<TVertex,TEdge>
         where TEdge : IEdge<TVertex>

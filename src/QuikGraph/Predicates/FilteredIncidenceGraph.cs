@@ -3,7 +3,7 @@ using System;
 #endif
 using System.Collections.Generic;
 
-namespace QuickGraph.Predicates
+namespace QuikGraph.Predicates
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

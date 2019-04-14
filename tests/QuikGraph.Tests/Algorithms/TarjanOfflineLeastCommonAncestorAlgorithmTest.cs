@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
     [TestFixture]
     internal class TarjanOfflineLeastCommonAncestorAlgorithmTest : QuikGraphUnitTests

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Observers;
 
-namespace QuickGraph.Algorithms.ShortestPath.Yen
+namespace QuikGraph.Algorithms.ShortestPath.Yen
 {
   public class YenShortestPathsAlgorithm<TVertex>
   {

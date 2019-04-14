@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
-using QuickGraph.Algorithms;
+using QuikGraph.Algorithms;
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
     public sealed class FibonacciQueue<TVertex, TDistance> :

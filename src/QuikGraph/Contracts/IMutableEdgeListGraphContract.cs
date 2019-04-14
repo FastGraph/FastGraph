@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 #endif
 
-namespace QuickGraph.Contracts
+namespace QuikGraph.Contracts
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IMutableEdgeListGraph<,>))]

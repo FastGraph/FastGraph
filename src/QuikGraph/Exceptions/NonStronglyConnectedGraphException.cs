@@ -3,7 +3,7 @@
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a non-strongly connected graph.
@@ -11,7 +11,7 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NonStronglyConnectedGraphException : QuickGraphException
+    public class NonStronglyConnectedGraphException : QuikGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/>.

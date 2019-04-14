@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using QuickGraph.Algorithms.RankedShortestPath;
+using QuikGraph.Algorithms.RankedShortestPath;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Regression
+namespace QuikGraph.Tests.Regression
 {
     [TestFixture]
     internal class HoffmanPavleyTest : QuikGraphUnitTests

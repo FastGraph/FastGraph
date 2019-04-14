@@ -4,9 +4,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.Exploration
+namespace QuikGraph.Algorithms.Exploration
 {
     public sealed class TransitionFactoryImplicitGraph<TVertex,TEdge> 
         : IImplicitGraph<TVertex,TEdge>

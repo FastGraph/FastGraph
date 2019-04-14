@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// The default <see cref="IEdge&lt;TVertex&gt;"/> implementation.

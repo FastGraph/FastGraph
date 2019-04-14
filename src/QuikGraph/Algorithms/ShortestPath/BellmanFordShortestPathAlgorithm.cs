@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.ShortestPath
+namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// Bellman Ford shortest path algorithm.

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using QuickGraph.Algorithms;
+using QuikGraph.Algorithms;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
     [TestFixture]
     internal class TransitiveReductionAlgorithmTest : QuikGraphUnitTests

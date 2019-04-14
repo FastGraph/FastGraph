@@ -5,7 +5,7 @@ using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     public static class BinaryHeapFactory
     {

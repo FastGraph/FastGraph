@@ -10,7 +10,7 @@ using System.Reflection.Emit;
 #endif
 using System.Xml;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     public static class XmlWriterExtensions
     {

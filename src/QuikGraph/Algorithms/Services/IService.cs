@@ -1,4 +1,4 @@
-﻿namespace QuickGraph.Algorithms.Services
+﻿namespace QuikGraph.Algorithms.Services
 {
     /// <summary>
     /// Interface implemented by graph services

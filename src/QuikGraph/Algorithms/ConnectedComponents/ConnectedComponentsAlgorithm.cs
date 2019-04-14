@@ -5,10 +5,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.ConnectedComponents
+namespace QuikGraph.Algorithms.ConnectedComponents
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

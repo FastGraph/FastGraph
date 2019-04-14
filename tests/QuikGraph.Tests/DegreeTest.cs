@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests
+namespace QuikGraph.Tests
 {
     [TestFixture]
     internal class DegreeTest : QuikGraphUnitTests

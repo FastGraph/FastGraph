@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using QuikGraph.Contracts;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IIncidenceGraphContract<,>))]

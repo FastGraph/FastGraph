@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public interface IClusteredGraph
     {

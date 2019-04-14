@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.ConnectedComponents;
+using QuikGraph.Collections;
+using QuikGraph.Algorithms.ConnectedComponents;
 
-namespace QuickGraph.Algorithms.Condensation
+namespace QuikGraph.Algorithms.Condensation
 {
     public sealed class CondensationGraphAlgorithm<TVertex,TEdge,TGraph> :
         AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>

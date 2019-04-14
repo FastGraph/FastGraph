@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using QuickGraph.Algorithms;
+using QuikGraph.Algorithms;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.ConnectedComponents
+namespace QuikGraph.Tests.Algorithms.ConnectedComponents
 {
     [TestFixture]
     internal class IncrementalConnectedComponentsAlgorithmTest : QuikGraphUnitTests

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.RankedShortestPath;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.RankedShortestPath;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.RankedShortestPath
+namespace QuikGraph.Tests.Algorithms.RankedShortestPath
 {
     [TestFixture]
     internal class HoffmanPavleyRankedShortestPathAlgorithmTest : QuikGraphUnitTests

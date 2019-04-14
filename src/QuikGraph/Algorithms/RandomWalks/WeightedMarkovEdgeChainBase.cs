@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.RandomWalks
+namespace QuikGraph.Algorithms.RandomWalks
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickGraph.Tests
+namespace QuikGraph.Tests
 {
     /// <summary>
     /// A collection of utility methods for unit tests to use

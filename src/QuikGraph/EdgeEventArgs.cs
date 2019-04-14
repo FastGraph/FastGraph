@@ -3,7 +3,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An event involving an edge.

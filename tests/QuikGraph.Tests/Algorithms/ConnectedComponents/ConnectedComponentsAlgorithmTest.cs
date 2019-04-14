@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.ConnectedComponents
+namespace QuikGraph.Algorithms.ConnectedComponents
 {
     [TestFixture]
     internal class ConnectedComponentsAlgorithmTest : QuikGraphUnitTests

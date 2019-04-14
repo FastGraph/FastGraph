@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace QuickGraph.Algorithms.RandomWalks
+namespace QuikGraph.Algorithms.RandomWalks
 {    
     public interface IEdgeChain<TVertex, TEdge>
         where TEdge : IEdge<TVertex>

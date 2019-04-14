@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph.Algorithms.Services
+namespace QuikGraph.Algorithms.Services
 {
     public interface IAlgorithmComponent
     {

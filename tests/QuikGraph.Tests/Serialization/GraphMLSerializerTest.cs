@@ -6,7 +6,7 @@ using System.Xml.XPath;
 using NUnit.Framework;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
 
     public static class TestGraphFactory

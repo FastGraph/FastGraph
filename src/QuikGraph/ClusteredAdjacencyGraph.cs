@@ -5,9 +5,9 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph
+namespace QuikGraph
 {
 
 #if SUPPORTS_SERIALIZATION

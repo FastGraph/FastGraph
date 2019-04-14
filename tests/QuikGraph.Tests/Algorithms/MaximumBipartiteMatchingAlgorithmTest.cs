@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.MaximumFlow;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.MaximumFlow;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
     [TestFixture]
     internal class MaximumBipartiteMatchingAlgorithmTest : QuikGraphUnitTests

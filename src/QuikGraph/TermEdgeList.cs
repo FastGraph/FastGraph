@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

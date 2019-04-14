@@ -1,7 +1,7 @@
 ﻿#if SUPPORTS_KERNIGHANLIN_ALGORITHM
 using System.Collections.Generic;
 
-namespace QuickGraph.Algorithms.KernighanLinAlgoritm
+namespace QuikGraph.Algorithms.KernighanLinAlgoritm
 {
     public class Partition<TVertex>
     {

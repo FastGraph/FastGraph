@@ -3,11 +3,11 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Computes the dominator map of a directed graph
@@ -98,7 +98,7 @@ namespace QuickGraph.Algorithms
         }
 
         class TimeStampObserver
-            : QuickGraph.Algorithms.Observers.IObserver<IVertexTimeStamperAlgorithm<TVertex, TEdge>>
+            : Observers.IObserver<IVertexTimeStamperAlgorithm<TVertex, TEdge>>
 
         {
             public readonly List<TVertex> Vertices;

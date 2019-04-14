@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms.ShortestPath.Yen;
+using QuikGraph.Algorithms.ShortestPath.Yen;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.ShortestPath
+namespace QuikGraph.Tests.Algorithms.ShortestPath
 {
   [TestFixture]
   internal class YenShortestPathsAlgorithmTest : QuikGraphUnitTests

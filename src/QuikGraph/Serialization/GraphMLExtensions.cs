@@ -6,9 +6,9 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
-using QuickGraph.Algorithms;
+using QuikGraph.Algorithms;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     public static class GraphMLExtensions
     {

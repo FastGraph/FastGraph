@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.MaximumFlow
+namespace QuikGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// This algorithm modifies a bipartite graph into a related graph, where each Vertex in one partition is 

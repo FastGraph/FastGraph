@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public interface IConnectedComponentAlgorithm<TVertex,TEdge,TGraph> : IAlgorithm<TGraph>
         where TGraph : IGraph<TVertex,TEdge>

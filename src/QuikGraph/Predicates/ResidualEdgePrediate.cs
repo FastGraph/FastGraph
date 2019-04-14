@@ -3,7 +3,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Predicates
+namespace QuikGraph.Predicates
 {
     public sealed class ResidualEdgePredicate<TVertex,TEdge>
         where TEdge : IEdge<TVertex>

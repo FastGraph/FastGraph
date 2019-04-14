@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using QuickGraph.Contracts;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
+using QuikGraph.Contracts;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Serialization
+namespace QuikGraph.Tests.Serialization
 {
     [TestFixture]
     internal class SystemSerializationTest : QuikGraphUnitTests

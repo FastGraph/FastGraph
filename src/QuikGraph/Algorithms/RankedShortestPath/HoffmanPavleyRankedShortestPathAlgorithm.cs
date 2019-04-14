@@ -5,12 +5,12 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Diagnostics;
 using System.Linq;
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.ShortestPath;
-using QuickGraph.Collections;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Algorithms.ShortestPath;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.RankedShortestPath
+namespace QuikGraph.Algorithms.RankedShortestPath
 {
     /// <summary>
     /// Hoffman and Pavley K-shortest path algorithm.

@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public static class EnumerableContract
     {

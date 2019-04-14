@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.ShortestPath;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.ShortestPath;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.Search
+namespace QuikGraph.Tests.Algorithms.Search
 {
     [TestFixture]
     internal class BestFirstFrontierSearchAlgorithmTest : QuikGraphUnitTests

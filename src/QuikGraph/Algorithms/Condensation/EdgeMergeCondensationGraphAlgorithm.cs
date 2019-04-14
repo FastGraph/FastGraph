@@ -3,7 +3,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.Condensation
+namespace QuikGraph.Algorithms.Condensation
 {
     public sealed class EdgeMergeCondensationGraphAlgorithm<TVertex,TEdge> :
         AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>

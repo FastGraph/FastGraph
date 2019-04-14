@@ -4,9 +4,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.Exploration
+namespace QuikGraph.Algorithms.Exploration
 {
     public sealed class CloneableVertexGraphExplorerAlgorithm<TVertex,TEdge> 
         : RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeSet<TVertex, TEdge>>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// An algorithm that exposes events to compute a distance map between vertices

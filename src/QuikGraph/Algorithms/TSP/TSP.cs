@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using QuickGraph.Algorithms.ShortestPath;
 using System;
+using QuikGraph.Algorithms.ShortestPath;
 
-namespace QuickGraph.Algorithms.TSP
+namespace QuikGraph.Algorithms.TSP
 {
     public class TSP<TVertex, TEdge, TGraph> : ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>
             , ITreeBuilderAlgorithm<TVertex, TEdge>

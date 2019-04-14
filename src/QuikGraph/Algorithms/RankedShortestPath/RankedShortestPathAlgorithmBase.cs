@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.RankedShortestPath
+namespace QuikGraph.Algorithms.RankedShortestPath
 {
     public abstract class RankedShortestPathAlgorithmBase<TVertex, TEdge, TGraph>
         : RootedAlgorithmBase<TVertex, TGraph>

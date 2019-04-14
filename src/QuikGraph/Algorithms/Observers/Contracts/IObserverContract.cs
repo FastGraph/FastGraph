@@ -3,7 +3,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.Observers.Contracts
+namespace QuikGraph.Algorithms.Observers.Contracts
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IObserver<>))]

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public interface IHierarchy<TVertex,TEdge> : 
         IMutableVertexAndEdgeListGraph<TVertex,TEdge>

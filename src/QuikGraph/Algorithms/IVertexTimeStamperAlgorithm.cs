@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public interface IVertexTimeStamperAlgorithm<TVertex,TEdge>
         where TEdge : IEdge<TVertex>

@@ -1,9 +1,9 @@
 ﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Contracts;
+using QuikGraph.Contracts;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A mutable graph instance

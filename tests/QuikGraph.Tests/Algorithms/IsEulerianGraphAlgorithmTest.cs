@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using QuikGraph.Algorithms;
 using QuikGraph.Tests;
 using QuikGraph.Tests.Algorithms;
 
-namespace QuickGraph.Tests.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
     [TestFixture]
     internal class EulerianGraphTest : QuikGraphUnitTests
@@ -23,7 +24,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianOneComponentTrue()
         {
             var g = constructGraph(new[] { new Vertices(1, 2), new Vertices(2, 3), new Vertices(3, 1) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
@@ -33,7 +34,7 @@ namespace QuickGraph.Tests.Algorithms
             var g = constructGraph(new[] { new Vertices(1, 2),
                     new Vertices(2, 3), new Vertices(3, 4),
                     new Vertices(4, 1), new Vertices(1, 3) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
@@ -44,7 +45,7 @@ namespace QuickGraph.Tests.Algorithms
             g.AddVertex(4);
             g.AddVertex(5);
 
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
@@ -56,7 +57,7 @@ namespace QuickGraph.Tests.Algorithms
                     new Vertices(4, 5), new Vertices(5, 6),
                     new Vertices(6, 4) });
             g.AddVertex(7);
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
@@ -65,7 +66,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianEmpty()
         {
             var g = constructGraph(Enumerable.Empty<Vertices>());
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
@@ -74,7 +75,7 @@ namespace QuickGraph.Tests.Algorithms
         {
             var g = constructGraph(Enumerable.Empty<Vertices>());
             g.AddVertex(420);
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
@@ -82,7 +83,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianOneVertexWithLoop()
         {
             var g = constructGraph(new[] { new Vertices(1, 1) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
@@ -90,7 +91,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianOneVertexWithTwoLoops()
         {
             var g = constructGraph(new[] { new Vertices(1, 1), new Vertices(1, 1) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
@@ -98,7 +99,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianTwoVertices()
         {
             var g = constructGraph(new[] { new Vertices(1, 2), new Vertices(2, 2) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
@@ -106,7 +107,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianTwoVerticesWithLoops()
         {
             var g = constructGraph(new[] { new Vertices(1, 1), new Vertices(2, 2) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsFalse(gAlgo.IsEulerian());
         }
 
@@ -115,7 +116,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianTwoVerticesTwoEdges()
         {
             var g = constructGraph(new[] { new Vertices(1, 2), new Vertices(2, 1) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsEulerian());
         }
 
@@ -123,7 +124,7 @@ namespace QuickGraph.Tests.Algorithms
         public void IsEulerianTwoVerticesOneEdge()
         {
             var g = constructGraph(new[] { new Vertices(1, 2) });
-            var gAlgo = new QuickGraph.Algorithms.IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
+            var gAlgo = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsFalse(gAlgo.IsEulerian());
         }
     }

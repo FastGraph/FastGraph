@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A vertex factory delegate.

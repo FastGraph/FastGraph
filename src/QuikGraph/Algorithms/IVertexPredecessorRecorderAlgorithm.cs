@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public interface IVertexPredecessorRecorderAlgorithm<TVertex,TEdge> 
         : ITreeBuilderAlgorithm<TVertex, TEdge>

@@ -1,10 +1,10 @@
 ﻿using System.Xml;
 using System.Xml.XPath;
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Serialization
+namespace QuikGraph.Tests.Serialization
 {
     [TestFixture]
     internal class XmlSerializationTest : QuikGraphUnitTests

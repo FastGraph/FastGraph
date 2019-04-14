@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuickGraph.Algorithms.AssigmentProblem
+namespace QuikGraph.Algorithms.AssigmentProblem
 {
     public class HungarianAlgorithm
     {

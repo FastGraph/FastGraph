@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Predicates
+namespace QuikGraph.Predicates
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

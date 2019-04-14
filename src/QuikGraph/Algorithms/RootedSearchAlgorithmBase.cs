@@ -2,9 +2,9 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public abstract class RootedSearchAlgorithmBase<TVertex, TGraph>
         : RootedAlgorithmBase<TVertex, TGraph>

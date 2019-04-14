@@ -1,10 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
-using QuickGraph.Algorithms.ConnectedComponents;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms.ConnectedComponents;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     [TestFixture]
     internal class StronglyConnectedComponentAlgorithmTest : QuikGraphUnitTests

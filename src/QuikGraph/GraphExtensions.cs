@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Extension methods for populating graph data structures.

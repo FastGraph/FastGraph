@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public interface IHyperEdge<TVertex>
     {

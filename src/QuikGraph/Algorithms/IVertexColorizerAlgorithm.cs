@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public interface IVertexColorizerAlgorithm<TVertex,TEdge>
         where TEdge : IEdge<TVertex>

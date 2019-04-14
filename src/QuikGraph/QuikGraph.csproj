@@ -7,7 +7,7 @@
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
 
     <Title>QuikGraph</Title>
-    <RootNamespace>QuickGraph</RootNamespace>
+    <RootNamespace>QuikGraph</RootNamespace>
     <AssemblyName>QuikGraph</AssemblyName>
 
     <!-- Overridden by CI -->

@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// A dictionary of vertices to a list of edges

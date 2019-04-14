@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An edge factory delegate

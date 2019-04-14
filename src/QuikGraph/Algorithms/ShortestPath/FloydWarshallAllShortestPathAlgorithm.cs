@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 using System.IO;
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Collections;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.ShortestPath
+namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// Floyd-Warshall all shortest path algorith,

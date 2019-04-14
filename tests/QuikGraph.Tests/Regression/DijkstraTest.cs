@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.ShortestPath;
-using QuickGraph.Algorithms.Observers;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.ShortestPath;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Regression
+namespace QuikGraph.Tests.Regression
 {
     [TestFixture]
     internal class DijkstraTest : QuikGraphUnitTests

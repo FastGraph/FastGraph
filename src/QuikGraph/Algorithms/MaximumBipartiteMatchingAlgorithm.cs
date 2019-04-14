@@ -2,9 +2,9 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.MaximumFlow;
+using QuikGraph.Algorithms.MaximumFlow;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     public sealed class MaximumBipartiteMatchingAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>

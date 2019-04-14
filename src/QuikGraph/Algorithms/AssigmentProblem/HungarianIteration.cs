@@ -1,4 +1,4 @@
-﻿namespace QuickGraph.Algorithms.AssigmentProblem
+﻿namespace QuikGraph.Algorithms.AssigmentProblem
 {
     public class HungarianIteration
     {

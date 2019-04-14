@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.RandomWalks
+namespace QuikGraph.Algorithms.RandomWalks
 {
     [TestFixture]
     internal class EdgeChainTest : QuikGraphUnitTests

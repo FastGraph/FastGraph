@@ -1,10 +1,10 @@
 ﻿#if SUPPORTS_KERNIGHANLIN_ALGORITHM
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Algorithms.KernighanLinAlgoritm;
+using QuikGraph.Algorithms.KernighanLinAlgoritm;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.GraphPartitioning
+namespace QuikGraph.Tests.Algorithms.GraphPartitioning
 {
 
     [TestFixture]

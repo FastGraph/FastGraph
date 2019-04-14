@@ -5,22 +5,23 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 #endif
-using QuickGraph.Algorithms.Condensation;
-using QuickGraph.Algorithms.ConnectedComponents;
-using QuickGraph.Algorithms.MaximumFlow;
-using QuickGraph.Algorithms.MinimumSpanningTree;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.RandomWalks;
-using QuickGraph.Algorithms.RankedShortestPath;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.ShortestPath;
-using QuickGraph.Algorithms.TopologicalSort;
-using QuickGraph.Collections;
+using QuikGraph.Algorithms.Condensation;
+using QuikGraph.Algorithms.ConnectedComponents;
+using QuikGraph.Algorithms.MaximumFlow;
+using QuikGraph.Algorithms.MinimumSpanningTree;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.RandomWalks;
+using QuikGraph.Algorithms.RankedShortestPath;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.ShortestPath;
+using QuikGraph.Algorithms.TopologicalSort;
+using QuikGraph.Collections;
+
 #if !SUPPORTS_TYPE_FULL_FEATURES
 using QuikGraph.Utils;
 #endif
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Various extension methods to build algorithms
@@ -1129,7 +1130,7 @@ namespace QuickGraph.Algorithms
         /// <param name="flowPredecessors">The flow predecessors.</param>
         /// <returns>The maximum flow.</returns>
         /// <remarks>
-        /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges"/> if TEdge is a value type,
+        /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex,TEdge}.AddReversedEdges"/> if TEdge is a value type,
         /// e.g. <see cref="SEdge{TVertex}"/>.
         /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
         /// </remarks>

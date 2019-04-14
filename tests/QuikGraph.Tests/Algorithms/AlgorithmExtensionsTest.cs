@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
     [TestFixture]
     internal class AlgorithmExtensionsTest : QuikGraphUnitTests

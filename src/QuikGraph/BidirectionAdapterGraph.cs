@@ -6,9 +6,9 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Wraps a vertex list graph (out-edges only) and caches the in-edge dictionary.

@@ -1,7 +1,7 @@
 ﻿using System;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.ShortestPath
+namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// A single-source shortest path algorithm for directed acyclic

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickGraph.Algorithms.GraphColoring.VertexColoring
+namespace QuikGraph.Algorithms.GraphColoring.VertexColoring
 {
     public  class InputModel<TVertex, TEdge>
         where TEdge : IEdge<TVertex>

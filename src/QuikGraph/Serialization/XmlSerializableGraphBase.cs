@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Xml.Serialization;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     public class XmlSerializableEdge<TVertex>
         : IEdge<TVertex>

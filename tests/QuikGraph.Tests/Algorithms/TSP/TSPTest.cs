@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.TSP;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.TSP;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.TSP
+namespace QuikGraph.Tests.Algorithms.TSP
 {
     [TestFixture]
     internal class TSPTest : QuikGraphUnitTests

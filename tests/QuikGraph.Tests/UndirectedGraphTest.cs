@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using QuickGraph;
+using QuikGraph;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests
+namespace QuikGraph.Tests
 {
     /// <summary>
     ///This is a test class for UndirectedGraph and is intended

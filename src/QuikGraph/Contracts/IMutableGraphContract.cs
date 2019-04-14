@@ -3,7 +3,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Contracts
+namespace QuikGraph.Contracts
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IMutableGraph<,>))]

@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(Contracts.IAlgorithmContract<>))]

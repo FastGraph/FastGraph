@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An instance holding a tag

@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Observers;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.ShortestPath
+namespace QuikGraph.Algorithms.ShortestPath
 {
     [TestFixture]
     internal class DijkstraShortestPathTestOld : QuikGraphUnitTests

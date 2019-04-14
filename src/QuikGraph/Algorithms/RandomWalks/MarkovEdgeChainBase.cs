@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuickGraph.Algorithms.RandomWalks
+namespace QuikGraph.Algorithms.RandomWalks
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

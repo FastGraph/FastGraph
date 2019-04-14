@@ -3,9 +3,9 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Search;
 
-namespace QuickGraph.Algorithms.TopologicalSort
+namespace QuikGraph.Algorithms.TopologicalSort
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

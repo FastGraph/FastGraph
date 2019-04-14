@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Collections
+namespace QuikGraph.Tests.Collections
 {
     [TestFixture]
     internal class FibonacciHeapTests : QuikGraphUnitTests

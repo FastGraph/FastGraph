@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.MaximumFlow
+namespace QuikGraph.Algorithms.MaximumFlow
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

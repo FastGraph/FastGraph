@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
 
-namespace QuickGraph.Contracts
+namespace QuikGraph.Contracts
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IMutableVertexSet<>))]

@@ -3,11 +3,11 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.ShortestPath
+namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// A single-source shortest path algorithm for undirected graph

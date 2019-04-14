@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An edge factory

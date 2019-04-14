@@ -3,10 +3,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Collections;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
     /// <summary>
     /// A breath first search algorithm for directed graphs
@@ -25,7 +25,7 @@ namespace QuickGraph.Algorithms.Search
         private readonly Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgeEnumerator;
 
         public BreadthFirstSearchAlgorithm(IVertexListGraph<TVertex,TEdge> g)
-            : this(g, new QuickGraph.Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
+            : this(g, new Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
         {}
 
         public BreadthFirstSearchAlgorithm(

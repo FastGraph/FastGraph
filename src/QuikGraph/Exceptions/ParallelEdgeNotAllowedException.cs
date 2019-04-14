@@ -3,7 +3,7 @@
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a parallel edge that is not allowed.
@@ -11,7 +11,7 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class ParallelEdgeNotAllowedException : QuickGraphException
+    public class ParallelEdgeNotAllowedException : QuikGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/>.

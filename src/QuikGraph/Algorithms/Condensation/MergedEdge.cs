@@ -3,7 +3,7 @@ using System;
 #endif
 using System.Collections.Generic;
 
-namespace QuickGraph.Algorithms.Condensation
+namespace QuikGraph.Algorithms.Condensation
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

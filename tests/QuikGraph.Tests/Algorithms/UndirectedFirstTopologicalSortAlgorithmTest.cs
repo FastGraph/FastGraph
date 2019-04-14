@@ -1,9 +1,9 @@
 using NUnit.Framework;
-using QuickGraph.Algorithms.TopologicalSort;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms.TopologicalSort;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     [TestFixture]
     internal partial class UndirectedFirstTopologicalSortAlgorithmTest : QuikGraphUnitTests

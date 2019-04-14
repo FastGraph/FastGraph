@@ -1,11 +1,11 @@
-﻿using QuickGraph.Algorithms.TSP;
-using QuickGraph.Collections;
+﻿using QuikGraph.Algorithms.TSP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.TSP
+namespace QuikGraph.Algorithms.TSP
 {
     class TasksManager<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>

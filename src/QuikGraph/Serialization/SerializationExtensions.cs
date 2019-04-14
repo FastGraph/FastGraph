@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.XPath;
 #endif
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     public static class SerializationExtensions
     {

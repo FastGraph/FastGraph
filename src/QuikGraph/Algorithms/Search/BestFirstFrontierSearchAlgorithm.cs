@@ -3,10 +3,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
     /// <summary>
     /// Best first frontier search

@@ -3,7 +3,7 @@
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm computed a negative weight in a graph.
@@ -11,7 +11,7 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NegativeWeightException : QuickGraphException
+    public class NegativeWeightException : QuikGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NegativeWeightException"/>.

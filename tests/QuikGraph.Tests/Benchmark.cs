@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace QuickGraph.Tests
+namespace QuikGraph.Tests
 {
     public static class PreciseTimer
     {

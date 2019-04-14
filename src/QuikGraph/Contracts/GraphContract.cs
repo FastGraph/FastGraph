@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Contracts
+namespace QuikGraph.Contracts
 {
     /// <summary>
     /// Debug only assertions and assumptions

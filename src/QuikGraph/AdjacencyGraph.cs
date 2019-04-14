@@ -4,9 +4,9 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
+using QuikGraph.Collections;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A mutable directed graph data structure efficient for sparse

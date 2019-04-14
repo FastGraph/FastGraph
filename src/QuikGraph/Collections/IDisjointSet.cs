@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// A disjoint-set data structure

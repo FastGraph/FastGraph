@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
     [TestFixture]
     internal class UndirectedDepthFirstAlgorithmSearchTest : QuikGraphUnitTests

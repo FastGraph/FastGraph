@@ -1,6 +1,6 @@
 using System;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public static class GraphConsoleSerializer
     {

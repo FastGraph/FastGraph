@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Services;
-using QuickGraph.Collections;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Offline least common ancestor in a rooted tre

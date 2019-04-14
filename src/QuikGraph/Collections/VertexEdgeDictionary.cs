@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// The computation state of a graph algorithm

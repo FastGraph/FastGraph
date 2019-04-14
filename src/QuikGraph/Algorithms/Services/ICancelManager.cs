@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace QuickGraph.Algorithms.Services
+namespace QuikGraph.Algorithms.Services
 {
     public interface ICancelManager :
         IService

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public interface ITermBidirectionalGraph<TVertex, TEdge>
         : IBidirectionalGraph<TVertex, TEdge>

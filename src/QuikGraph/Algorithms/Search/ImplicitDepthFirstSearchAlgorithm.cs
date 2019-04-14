@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
     /// <summary>
     /// A depth first search algorithm for implicit directed graphs

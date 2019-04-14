@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms.Condensation
+namespace QuikGraph.Algorithms.Condensation
 {
     [TestFixture]
     internal class WeaklyConnectedCondensationGraphAlgorithmTest : QuikGraphUnitTests

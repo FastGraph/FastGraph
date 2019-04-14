@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Predicates
+namespace QuikGraph.Predicates
 {
     /// <summary>
     /// A vertex predicate that detects vertex with no in or out edges.

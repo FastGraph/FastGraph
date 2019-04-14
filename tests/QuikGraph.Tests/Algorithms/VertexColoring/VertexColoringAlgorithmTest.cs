@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using QuickGraph.Algorithms.GraphColoring.VertexColoring;
+using QuikGraph.Algorithms.GraphColoring.VertexColoring;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.GraphColoring
+namespace QuikGraph.Tests.Algorithms.GraphColoring
 {
     [TestFixture]
     internal class VertexColoringAlgorithmTest : QuikGraphUnitTests

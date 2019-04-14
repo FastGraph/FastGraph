@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using QuickGraph.Serialization;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Serialization
+namespace QuikGraph.Tests.Serialization
 {
     [TestFixture]
     internal class DirectedGraphMLExtensionsTest : QuikGraphUnitTests

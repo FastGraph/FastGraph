@@ -2,10 +2,10 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.MinimumSpanningTree
+namespace QuikGraph.Algorithms.MinimumSpanningTree
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

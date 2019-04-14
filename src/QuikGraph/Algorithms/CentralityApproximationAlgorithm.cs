@@ -3,10 +3,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Algorithms.ShortestPath;
-using QuickGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.ShortestPath;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An equatable edge implementation

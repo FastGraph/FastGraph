@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Algorithms.Search;
+using QuikGraph.Algorithms.Services;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

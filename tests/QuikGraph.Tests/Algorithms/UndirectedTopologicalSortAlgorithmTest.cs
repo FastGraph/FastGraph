@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using QuickGraph.Algorithms.TopologicalSort;
+using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     [TestFixture]
     internal class UndirectedTopologicalSortAlgorithmTest : QuikGraphUnitTests

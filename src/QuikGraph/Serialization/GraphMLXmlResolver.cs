@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Net;
 using System.Xml;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     /// <summary>
     /// A resolver that loads graphML DTD and XSD schemas 

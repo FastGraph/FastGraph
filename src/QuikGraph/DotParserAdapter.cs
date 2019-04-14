@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     using Attributes = IDictionary<string, string>;
 

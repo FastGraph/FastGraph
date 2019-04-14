@@ -6,10 +6,10 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using QuickGraph.Algorithms;
-using QuickGraph.Serialization.DirectedGraphML;
+using QuikGraph.Algorithms;
+using QuikGraph.Serialization.DirectedGraphML;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     /// <summary>
     /// Directed Graph Markup Language extensions

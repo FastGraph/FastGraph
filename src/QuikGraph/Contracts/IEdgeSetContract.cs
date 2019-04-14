@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 #endif
 
-namespace QuickGraph.Contracts
+namespace QuikGraph.Contracts
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IEdgeSet<,>))]

@@ -3,7 +3,7 @@
 using System.Runtime.Serialization;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// QuikGraph base exception.
@@ -11,43 +11,43 @@ namespace QuickGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public abstract class QuickGraphException : Exception
+    public abstract class QuikGraphException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="QuickGraphException"/>.
+        /// Initializes a new instance of <see cref="QuikGraphException"/>.
         /// </summary>
-        protected QuickGraphException()
+        protected QuikGraphException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="QuickGraphException"/> with the given message.
+        /// Initializes a new instance of <see cref="QuikGraphException"/> with the given message.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        protected QuickGraphException(string message)
+        protected QuikGraphException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="QuickGraphException"/> with the given message
+        /// Initializes a new instance of <see cref="QuikGraphException"/> with the given message
         /// and a reference to exception that triggers this one.
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Exception that triggered this exception.</param>
-        protected QuickGraphException(string message, Exception innerException)
+        protected QuikGraphException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
 #if SUPPORTS_SERIALIZATION
         /// <summary>
-        /// Initializes a new instance of <see cref="QuickGraphException"/> with serialized data.
+        /// Initializes a new instance of <see cref="QuikGraphException"/> with serialized data.
         /// </summary>
         /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data
         /// concerning the thrown exception.</param>
         /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
-        protected QuickGraphException(SerializationInfo info, StreamingContext context)
+        protected QuikGraphException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

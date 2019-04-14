@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// An immutable undirected graph data structure based on arrays.

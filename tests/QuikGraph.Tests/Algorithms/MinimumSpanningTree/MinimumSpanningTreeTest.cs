@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using NUnit.Framework;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.MinimumSpanningTree;
-using QuickGraph.Algorithms.Observers;
-using QuickGraph.Collections;
-using QuickGraph.Serialization;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.MinimumSpanningTree;
+using QuikGraph.Algorithms.Observers;
+using QuikGraph.Collections;
+using QuikGraph.Serialization;
 using QuikGraph.Tests;
 
-namespace QuickGraph.Tests.Algorithms.MinimumSpanningTree
+namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
 {
     [TestFixture]
     internal class MinimumSpanningTreeTest : QuikGraphUnitTests

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

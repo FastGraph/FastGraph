@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Runtime.InteropServices;
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A tagged edge as value type.

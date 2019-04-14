@@ -1,4 +1,4 @@
-﻿namespace QuickGraph
+﻿namespace QuikGraph
 {
     /// <summary>
     /// An incidence graph whose edges can be enumerated

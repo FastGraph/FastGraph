@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     public sealed class SoftHeap<TKey, TValue>
         : IEnumerable<KeyValuePair<TKey, TValue>>

@@ -4,7 +4,7 @@
  * 
  * */
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     using System.Collections.Generic;
 

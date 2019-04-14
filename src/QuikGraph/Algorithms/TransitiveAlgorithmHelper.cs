@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     internal class TransitiveAlgorithmHelper<TVertex, TEdge> where TEdge : IEdge<TVertex>
     {

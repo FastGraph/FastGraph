@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     public static class EdgeExtensions
     {

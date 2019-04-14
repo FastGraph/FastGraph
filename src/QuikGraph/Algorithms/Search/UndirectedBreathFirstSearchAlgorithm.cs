@@ -3,10 +3,10 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuickGraph.Collections;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
     /// <summary>
     /// A breath first search algorithm for undirected graphs
@@ -30,7 +30,7 @@ namespace QuickGraph.Algorithms.Search
         private IQueue<TVertex> vertexQueue;
 
         public UndirectedBreadthFirstSearchAlgorithm(IUndirectedGraph<TVertex, TEdge> g)
-            : this(g, new QuickGraph.Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
+            : this(g, new Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
         { }
 
         public UndirectedBreadthFirstSearchAlgorithm(

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using QuickGraph.Algorithms.Services;
+using QuikGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Algorithms.Search
+namespace QuikGraph.Algorithms.Search
 {
     /// <summary>
     /// A edge depth first search algorithm for implicit directed graphs

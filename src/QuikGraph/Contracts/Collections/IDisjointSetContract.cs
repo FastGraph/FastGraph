@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections.Contracts
+namespace QuikGraph.Collections.Contracts
 {
 #if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IDisjointSet<>))]

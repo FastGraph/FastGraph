@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using QuikGraph.Contracts;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using QuickGraph.Contracts;
+
 #endif
 
-namespace QuickGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A mutable vertex and edge set

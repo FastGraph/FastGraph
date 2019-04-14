@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 
-namespace QuickGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// Disjoint-set implementation with path compression and union-by-rank optimizations.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickGraph.Algorithms.TSP
+namespace QuikGraph.Algorithms.TSP
 {
     class Task<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>

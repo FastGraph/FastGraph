@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using System.ComponentModel;
 
-namespace QuickGraph.Serialization
+namespace QuikGraph.Serialization
 {
     internal struct PropertySerializationInfo
     {
