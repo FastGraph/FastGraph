@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
+#endif
 using System.Runtime.InteropServices;
 using System.Security;
 

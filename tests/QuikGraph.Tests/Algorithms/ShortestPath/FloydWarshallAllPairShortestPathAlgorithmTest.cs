@@ -88,6 +88,12 @@ namespace QuickGraph.Tests.Algorithms.ShortestPath
     [TestFixture]
     internal class FloydDijkstraCompareTest : QuikGraphUnitTests
     {
+#if !SUPPORTS_SYSTEM_DELEGATES
+        // System.Core and NUnit both define this delegate that is conflicting
+        // Defining it here allows to use it without conflict.
+        public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
+#endif
+
         [Test]
         public void Boost()
         {

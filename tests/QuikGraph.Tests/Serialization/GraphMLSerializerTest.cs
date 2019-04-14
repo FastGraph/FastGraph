@@ -146,6 +146,4 @@ namespace QuickGraph.Serialization
             }
         }
     }
-
-
 }

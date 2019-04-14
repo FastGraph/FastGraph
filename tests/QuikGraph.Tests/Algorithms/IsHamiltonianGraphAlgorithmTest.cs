@@ -22,7 +22,7 @@ namespace QuickGraph.Tests.Algorithms
         [Test]
         public void IsHamiltonianTrue()
         {
-            var g = constructGraph(new[] {new Vertices(1, 2), new Vertices(2, 3),
+            var g = constructGraph(new[] { new Vertices(1, 2), new Vertices(2, 3),
                     new Vertices(1, 3), new Vertices(2, 4), new Vertices(3, 4)});
             var gAlgo = new QuickGraph.Algorithms.IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(g);
             Assert.IsTrue(gAlgo.IsHamiltonian());
