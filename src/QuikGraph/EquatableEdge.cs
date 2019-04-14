@@ -36,7 +36,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCodeHelper.Combine(Source.GetHashCode(), Target.GetHashCode());
+            return HashCodeHelpers.Combine(Source.GetHashCode(), Target.GetHashCode());
         }
     }
 }

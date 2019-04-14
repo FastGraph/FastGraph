@@ -2,12 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Utils
 {
+    /// <summary>
+    /// Helper to replace type standard utilities when not available in target version.
+    /// </summary>
     internal static class TypeUtils
     {
-        private static readonly Dictionary<Type, TypeCode> _typeCodeMap = new Dictionary<Type, TypeCode>(15)
+        [NotNull]
+        private static readonly Dictionary<Type, TypeCode> TypeCodeMap = new Dictionary<Type, TypeCode>(15)
         {
             { typeof(sbyte), TypeCode.SByte },
             { typeof(byte), TypeCode.Byte },
@@ -32,18 +37,16 @@ namespace QuikGraph.Utils
         /// <remarks>Kind of equivalent to the System function for compatibility, but not really...</remarks>
         /// <param name="type"><see cref="Type"/> to get the <see cref="TypeCode"/>.</param>
         /// <returns>A <see cref="TypeCode"/>.</returns>
-        public static TypeCode GetTypeCode(Type type)
+        public static TypeCode GetTypeCode([CanBeNull] Type type)
         {
             if (type is null)
                 return TypeCode.Empty;
 
-            if (_typeCodeMap.TryGetValue(type, out TypeCode typeCode))
+            if (TypeCodeMap.TryGetValue(type, out TypeCode typeCode))
                 return typeCode;
 
             if (type.GetTypeInfo().IsEnum)
-            {
                 return GetTypeCode(Enum.GetUnderlyingType(type));
-            }
 
             return TypeCode.Object;
         }

@@ -144,7 +144,7 @@ namespace QuikGraph.Algorithms.Condensation
 
             public override int GetHashCode()
             {
-                return HashCodeHelper.Combine(this.SourceID, this.TargetID);
+                return HashCodeHelpers.Combine(this.SourceID, this.TargetID);
             }
         }
     }

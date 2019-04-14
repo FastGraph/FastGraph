@@ -43,7 +43,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCodeHelper.Combine(
+            return HashCodeHelpers.Combine(
                 Source.GetHashCode(),
                 Target.GetHashCode(),
                 SourceTerminal.GetHashCode(),

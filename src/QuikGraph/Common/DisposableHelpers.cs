@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Utils
 {
@@ -12,16 +13,18 @@ namespace QuikGraph.Utils
         /// </summary>
         /// <param name="action">The action to call.</param>
         /// <returns>A <see cref="IDisposable"/> object to give to a using clause.</returns>
-        public static IDisposable Finally(Action action)
+        [NotNull]
+        public static IDisposable Finally([NotNull] Action action)
         {
             return new FinallyScope(action);
         }
 
         private class FinallyScope : IDisposable
         {
+            [NotNull]
             private readonly Action _action;
 
-            public FinallyScope(Action action)
+            public FinallyScope([NotNull] Action action)
             {
                 _action = action ?? throw new ArgumentNullException(nameof(action));
             }
