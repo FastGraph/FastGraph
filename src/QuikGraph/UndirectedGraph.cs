@@ -8,9 +8,6 @@ using QuikGraph.Collections;
 
 namespace QuikGraph
 {
-    public delegate bool EdgeEqualityComparer<TVertex, TEdge>(TEdge edge, TVertex source, TVertex target)
-        where TEdge : IEdge<TVertex>;
-
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif

@@ -13,7 +13,7 @@ namespace QuikGraph
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IEdgeContract<>))]
 #endif
-    public interface IEdge<TVertex>
+    public interface IEdge<out TVertex>
     {
         /// <summary>
         /// Gets the source vertex
