@@ -35,7 +35,7 @@ Supported platforms:
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph</PackageId>
     <PackageReleaseNotes>➟ Release 1.0.0</PackageReleaseNotes>
-    <PackageTags>QuickGraph QuikGraph Graph Algorithm C# .NET Graphviz</PackageTags>
+    <PackageTags>QuickGraph QuikGraph Graph Algorithm C# .NET</PackageTags>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>

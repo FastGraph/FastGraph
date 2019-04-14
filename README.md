@@ -1,25 +1,41 @@
-# QuickGraph [![NuGet Status](http://img.shields.io/nuget/v/YC.QuickGraph.svg?style=flat)](https://www.nuget.org/packages/YC.QuickGraph/)
+| | |
+| --- | --- |
+| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/KeRNeLith/QuikGraph?branch=master&svg=true)](https://ci.appveyor.com/project/KeRNeLith/quikgraph) |
+| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/KeRNeLith/QuikGraph/badge.svg?branch=master)](https://coveralls.io/github/KeRNeLith/quikgraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=quikgraph) | 
+| **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=quikgraph) | 
+| **Nuget** | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) |
+| **License** | MS-PL |
 
-QuickGraph provides generic directed/undirected graph datastructures and algorithms for .NET.
+# QuikGraph
 
-QuickGraph comes with algorithms such as depth first seach, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, etc.
+## What is **QuikGraph**?
 
-*QuickGraph was originally created by Jonathan "Peli" de Halleux in 2003.*
+QuikGraph provides generic directed/undirected graph data structures and algorithms for .NET.
 
-Branch | .NET |
----| ---
-Master | [![master .NET Build Status](https://img.shields.io/appveyor/ci/gsvgit/quickgraph/master.svg)](https://ci.appveyor.com/project/gsvgit/quickgraph) |
-GraphTasks | [![GraphTasks .NET Build Status](https://img.shields.io/appveyor/ci/gsvgit/quickgraph/GraphTasks.svg)](https://ci.appveyor.com/project/gsvgit/quickgraph) |
+QuikGraph comes with algorithms such as depth first search, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, etc.
+
+*QuikGraph was originally created by Jonathan "Peli" de Halleux in 2003 and named QuickGraph.*
+
+---
+
+## Target
+
+- .NET Standard 1.3+
+- .NET Core 1.0+
+- .NET Framework 2.0+
+
+---
 
 ## Contributing
 
 ### Build
 
-* Clone this repo.
-* Install Pex from lib/Pex.
-* Install CodeContracts from lib/DotNet.CodeContracts.
-* Use build.cmd for build.
-* Use Visual Studio 2015 for development.
+* Clone this repository.
+* Open QuikGraph.sln.
+
+### Notes
+
+- It uses NUnit3 for unit testing (not published).
 
 ### Where to go next?
 
@@ -27,4 +43,6 @@ GraphTasks | [![GraphTasks .NET Build Status](https://img.shields.io/appveyor/ci
 
 ### Maintainer(s)
 
-* [@gsvgit](https://github.com/gsvgit)
+* [@KeRNeLith](https://github.com/KeRNeLith)
+
+---

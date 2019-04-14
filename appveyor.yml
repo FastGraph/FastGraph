@@ -1,14 +1,92 @@
+version: '0.0.{build}'
+image: Visual Studio 2017
+
+# Setup environment
+pull_requests:
+  do_not_increment_build_number: true
+
+environment:
+  SONARQUBE_TOKEN:
+    secure: 2I3bluR+2upDl17M1Qmnil/eSAhUFcv4uaW5vvZOveWsFkYY773KQtLmK7H8dcLI
+  NUnitConsoleVersion: 3.10.0
+  OpenCoverVersion: 4.6.519
+  CoverallsVersion: 1.0.0
+  COVERALLS_REPO_TOKEN:
+    secure: V9+BC6iS7KQL2KD+Wo2HrCYWP81uJqeAOH+SM6imJfwAGT4jmFO2K7LebXyZXTKy
+
+# Setup build version
 init:
-  - git config --global core.autocrlf input
-install:
-  - git submodule update --init --recursive  
+- ps: >-
+    if ($env:APPVEYOR_REPO_TAG -eq "true")
+    {
+        $env:Build_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
+    }
+    else
+    {
+        $env:Build_Version = "$($env:APPVEYOR_BUILD_VERSION)";
+    }
+
+# Assembly infos & csproj patching
+assembly_info:
+  patch: true
+  file: '**\\AssemblyInfo.*'
+  assembly_version: '$(Build_Version)'
+  assembly_file_version: '$(Build_Version)'
+  assembly_informational_version: '$(Build_Version)'
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '$(Build_Version)'
+  package_version: '$(Build_Version)'
+  assembly_version: '$(Build_Version)'
+  file_version: '$(Build_Version)'
+  informational_version: '$(Build_Version)'
+
+# Build configurations
+platform:
+  - Any CPU
+
+configuration:
+  - Debug
+  - Release
+
+matrix:
+  fast_finish: true
+
+# Build
 before_build:
-  - cmd: msiexec.exe /i "lib\Pex\pex.academic.x86.msi" /quiet /norestart
-  - cmd: msiexec.exe /i "lib\DotNet.CodeContracts\Contracts.devlab9ts.msi" /quiet /norestart
+# Chocolatey SonarQube
+  - cinst msbuild-sonarqube-runner
+# NuGet restore
+  - nuget restore -verbosity detailed
+
+build:
+  verbosity: normal
+
 build_script:
-  - cmd: build.cmd
+  - ps: $analysisFile = (Convert-Path SonarQube.Analysis.xml).ToString()
+  - ps: SonarScanner.MSBuild.exe begin /k:"quikgraph" /s:$analysisFile /o:"kernelith-github" /d:sonar.host.url="https://sonarcloud.io" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.opencover.reportsPaths="coverage.xml" /d:sonar.login="$env:SONARQUBE_TOKEN"
+  - msbuild
+
+# No test step for now 
 test: off
-version: 0.0.1.{build}
-artifacts:
-  - path: bin
-    name: bin
+
+on_success:
+  - ps: SonarScanner.MSBuild.exe end /d:"sonar.login=$env:SONARQUBE_TOKEN"
+
+# Artifact
+artifacts:  
+  - path: '**\bin\Release\*.nupkg'
+    name: NuGet
+
+# Deploy
+deploy:
+# MyGet
+  - provider: NuGet
+    server: https://www.myget.org/F/kernelith-ci/api/v2/package
+    api_key:
+      secure: ANF+joC2B+NahxCFbLPOjNvEAo36F2F4QJu6zLwoIf2I9KwkxKyCSuNxDpLmJmtU
+    skip_symbols: true
+    on:
+      configuration: Release
