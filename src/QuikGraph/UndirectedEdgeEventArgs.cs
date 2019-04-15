@@ -33,9 +33,4 @@ namespace QuikGraph
             get { return this.reversed ? this.Edge.Source : this.Edge.Target; }
         }
     }
-
-    public delegate void UndirectedEdgeAction<TVertex, TEdge>(
-        object sender,
-        UndirectedEdgeEventArgs<TVertex, TEdge> e)
-        where TEdge : IEdge<TVertex>;
 }

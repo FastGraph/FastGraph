@@ -1,24 +1,39 @@
 ﻿using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// An equatable term edge implementation.
+    /// An <see cref="ITermEdge{TVertex}"/> implementation that supports equality.
     /// </summary>
-    /// <typeparam name="TVertex">Type of the vertices.</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class EquatableTermEdge<TVertex> : TermEdge<TVertex>, IEquatable<EquatableTermEdge<TVertex>>
     {
-        public EquatableTermEdge(TVertex source, TVertex target, int sourceTerminal, int targetTerminal)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EquatableTermEdge{TVertex}"/> class
+        /// using source/target vertices and source/target terminals.
+        /// </summary>
+        /// <param name="source">The source vertex.</param>
+        /// <param name="target">The target vertex.</param>
+        /// <param name="sourceTerminal">The source terminal.</param>
+        /// <param name="targetTerminal">The target terminal.</param>
+        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
             : base(source, target, sourceTerminal, targetTerminal)
         {
         }
 
-        public EquatableTermEdge(TVertex source, TVertex target)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EquatableTermEdge{TVertex}"/> class
+        /// using source/target vertices and zero terminals.
+        /// </summary>
+        /// <param name="source">The source vertex.</param>
+        /// <param name="target">The target vertex.</param>
+        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target)
             : base(source, target)
         {
         }

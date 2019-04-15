@@ -1,19 +1,18 @@
 ﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 using QuikGraph.Contracts;
-
 #endif
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A directed edge with terminal indices
+    /// Represents a directed edge with terminal indexes.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(ITermEdgeContract<>))]
 #endif
-    public interface ITermEdge<TVertex> : IEdge<TVertex>
+    public interface ITermEdge<out TVertex> : IEdge<TVertex>
     {
         /// <summary>
         /// Index of terminal on source vertex to which this edge is attached.

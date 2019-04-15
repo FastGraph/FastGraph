@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// An equatable edge implementation
+    /// An <see cref="IEdge{TVertex}"/> implementation that supports equality.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class EquatableEdge<TVertex> : Edge<TVertex>, IEquatable<EquatableEdge<TVertex>>
     {
-        public EquatableEdge(TVertex source, TVertex target)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EquatableEdge{TVertex}"/> class.
+        /// </summary>
+        /// <param name="source">The source vertex.</param>
+        /// <param name="target">The target vertex.</param>
+        public EquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
             : base(source, target)
         {
         }
@@ -23,8 +29,7 @@ namespace QuikGraph
         {
             if (other is null)
                 return false;
-            return Source.Equals(other.Source) 
-                   && Target.Equals(other.Target);
+            return Source.Equals(other.Source) && Target.Equals(other.Target);
         }
 
         /// <inheritdoc />
