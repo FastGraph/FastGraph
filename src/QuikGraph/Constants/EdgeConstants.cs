@@ -11,6 +11,11 @@ namespace QuikGraph.Constants
         public const string EdgeFormatString = "{0}->{1}";
 
         /// <summary>
+        /// Edge terminals string formatting.
+        /// </summary>
+        public const string EdgeTerminalFormatString = "{0} ({1}) -> {2} ({3})";
+
+        /// <summary>
         /// Edge string formatting (with tag).
         /// </summary>
         public const string TaggedEdgeFormatString = "{0}->{1}:{2}";
