@@ -2,12 +2,18 @@
 using System;
 #endif
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Represents an edge list graph that is filtered with a vertex and an edge predicate.
+    /// This means only vertex and edge matching predicates are "accessible".
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -17,98 +23,47 @@ namespace QuikGraph.Predicates
         where TGraph : IEdgeListGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredEdgeListGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Graph in which applying predicates.</param>
+        /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
+        /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
         public FilteredEdgeListGraph(
-            TGraph baseGraph,
-            VertexPredicate<TVertex> vertexPredicate,
-            EdgePredicate<TVertex, TEdge> edgePredicate
-            )
+            [NotNull] TGraph baseGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate,
+            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
             : base(baseGraph, vertexPredicate, edgePredicate)
-        {}
-
-        public bool IsVerticesEmpty
         {
-            get
-            {
-                foreach (var v in this.BaseGraph.Vertices)
-                    if (this.VertexPredicate(v))
-                        return false;
-                return true;
-            }
         }
 
-        public int VertexCount
-        {
-            get
-            {
-                int count = 0;
-                foreach (var v in this.BaseGraph.Vertices)
-                    if (this.VertexPredicate(v))
-                        count++;
-                return count;
-            }
-        }
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => VertexCount == 0;
 
-        public IEnumerable<TVertex> Vertices
-        {
-            get
-            {
-                foreach (var v in this.BaseGraph.Vertices)
-                    if (this.VertexPredicate(v))
-                        yield return v;
-            }
-        }
+        /// <inheritdoc />
+        public int VertexCount => Vertices.Count();
 
-        public bool IsEdgesEmpty
-        {
-            get
-            {
-                foreach (var edge in this.BaseGraph.Edges)
-                    if (this.FilterEdge(edge))
-                        return false;
-                return true;
-            }
-        }
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => BaseGraph.Vertices.Where(vertex => VertexPredicate(vertex));
 
-        public int EdgeCount
-        {
-            get
-            {
-                int count = 0;
-                foreach (var edge in this.BaseGraph.Edges)
-                    if (this.FilterEdge(edge))
-                        count++;
-                return count;
-            }
-        }
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount == 0;
 
-        public IEnumerable<TEdge> Edges
-        {
-            get
-            {
-                foreach (var edge in this.BaseGraph.Edges)
-                    if (this.FilterEdge(edge))
-                        yield return edge;
-            }
-        }
+        /// <inheritdoc />
+        public int EdgeCount => Edges.Count();
 
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges => BaseGraph.Edges.Where(FilterEdge);
+
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        private bool FilterEdge(TEdge edge)
-        {
-            return this.VertexPredicate(edge.Source)
-                        && this.VertexPredicate(edge.Target)
-                        && this.EdgePredicate(edge);
-        }
-
-#if SUPPORTS_CONTRACTS
         [Pure]
-#endif
         public bool ContainsEdge(TEdge edge)
         {
-            return
-                this.FilterEdge(edge) &&
-                this.BaseGraph.ContainsEdge(edge);
+            return FilterEdge(edge) 
+                   && BaseGraph.ContainsEdge(edge);
         }
     }
 }

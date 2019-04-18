@@ -2,79 +2,80 @@
 using System;
 #endif
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Represents an incidence graph that is filtered with a vertex and an edge predicate.
+    /// This means only vertex and edge matching predicates are "accessible".
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class FilteredIncidenceGraph<TVertex, TEdge, TGraph> 
-        : FilteredImplicitGraph<TVertex,TEdge,TGraph>
-        , IIncidenceGraph<TVertex,TEdge>
+    public class FilteredIncidenceGraph<TVertex, TEdge, TGraph>
+        : FilteredImplicitGraph<TVertex, TEdge, TGraph>
+        , IIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
-        where TGraph : IIncidenceGraph<TVertex,TEdge>
+        where TGraph : IIncidenceGraph<TVertex, TEdge>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredIncidenceGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Graph in which applying predicates.</param>
+        /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
+        /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
         public FilteredIncidenceGraph(
-            TGraph baseGraph,
-            VertexPredicate<TVertex> vertexPredicate,
-            EdgePredicate<TVertex,TEdge> edgePredicate
-            )
-            :base(baseGraph,vertexPredicate,edgePredicate)
-        {}
-
-        public bool ContainsEdge(TVertex source, TVertex target)
+            [NotNull] TGraph baseGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate,
+            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            : base(baseGraph, vertexPredicate, edgePredicate)
         {
-            if (!this.VertexPredicate(source))
-                return false;
-            if (!this.VertexPredicate(target))
-                return false;
-
-            foreach (var edge in this.BaseGraph.OutEdges(source))
-                if (edge.Target.Equals(target) && this.EdgePredicate(edge))
-                    return true;
-            return false;
         }
 
-        public bool TryGetEdge(
-            TVertex source,
-            TVertex target,
-            out TEdge edge)
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
         {
-            IEnumerable<TEdge> unfilteredEdges;
-            if (this.VertexPredicate(source) &&
-                this.VertexPredicate(target) &&
-                this.BaseGraph.TryGetEdges(source, target, out unfilteredEdges))
+            if (!VertexPredicate(source))
+                return false;
+            if (!VertexPredicate(target))
+                return false;
+
+            return BaseGraph.OutEdges(source).FirstOrDefault(
+                       edge => edge.Target.Equals(target) && EdgePredicate(edge)) != null;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            if (VertexPredicate(source)
+                && VertexPredicate(target)
+                && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
             {
-                foreach (var ufe in unfilteredEdges)
-                    if (this.EdgePredicate(ufe))
-                    {
-                        edge = ufe;
-                        return true;
-                    }
+                edge = unfilteredEdges.FirstOrDefault(unfilteredEdge => EdgePredicate(unfilteredEdge));
+                return edge != null;
             }
+
             edge = default(TEdge);
             return false;
         }
 
-        public bool TryGetEdges(
-            TVertex source,
-            TVertex target,
-            out IEnumerable<TEdge> edges)
+        /// <inheritdoc />
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
         {
             edges = null;
-            if (!this.VertexPredicate(source))
+            if (!VertexPredicate(source))
                 return false;
-            if (!this.VertexPredicate(target))
+            if (!VertexPredicate(target))
                 return false;
 
-            IEnumerable<TEdge> unfilteredEdges;
-            if (this.BaseGraph.TryGetEdges(source, target, out unfilteredEdges))
+            if (BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
             {
-                List<TEdge> filtered = new List<TEdge>();
-                foreach (var edge in unfilteredEdges)
-                    if (this.EdgePredicate(edge))
-                        filtered.Add(edge);
-                edges = filtered;
+                edges = unfilteredEdges.Where(edge => EdgePredicate(edge));
                 return true;
             }
 

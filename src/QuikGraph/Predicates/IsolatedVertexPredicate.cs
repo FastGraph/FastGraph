@@ -1,39 +1,52 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// A vertex predicate that detects vertex with no in or out edges.
+    /// Predicate that detects if a vertex is isolated (without any input or output edges).
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
-    public sealed class IsolatedVertexPredicate<TVertex,TEdge>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class IsolatedVertexPredicate<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IBidirectionalGraph<TVertex, TEdge> visitedGraph;
+        [NotNull]
+        private readonly IBidirectionalGraph<TVertex, TEdge> _visitedGraph;
 
-        public IsolatedVertexPredicate(IBidirectionalGraph<TVertex,TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsolatedVertexPredicate{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to consider.</param>
+        public IsolatedVertexPredicate([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph!=null);
+            Contract.Requires(_visitedGraph != null);
 #endif
 
-            this.visitedGraph = visitedGraph;
+            _visitedGraph = visitedGraph;
         }
 
+        /// <summary>
+        /// Checks if the given <paramref name="vertex"/> is isolated.
+        /// </summary>
+        /// <remarks>Check if the implemented predicate is matched.</remarks>
+        /// <param name="vertex">Vertex to check.</param>
+        /// <returns>True if the vertex is isolated, false otherwise.</returns>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public bool Test(TVertex v)
+        [JetBrains.Annotations.Pure]
+        public bool Test(TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(v != null);
+            Contract.Requires(vertex != null);
 #endif
 
-            return this.visitedGraph.IsInEdgesEmpty(v)
-                && this.visitedGraph.IsOutEdgesEmpty(v);
+            return _visitedGraph.IsInEdgesEmpty(vertex)
+                   && _visitedGraph.IsOutEdgesEmpty(vertex);
         }
     }
 }

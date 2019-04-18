@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Represents an implicit graph that is filtered with a vertex and an edge predicate.
+    /// This means only vertex and edge matching predicates are "accessible".
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -15,64 +21,75 @@ namespace QuikGraph.Predicates
         where TEdge : IEdge<TVertex>
         where TGraph : IImplicitGraph<TVertex, TEdge>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredImplicitGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Graph in which applying predicates.</param>
+        /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
+        /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
         public FilteredImplicitGraph(
-            TGraph baseGraph,
-            VertexPredicate<TVertex> vertexPredicate,
-            EdgePredicate<TVertex, TEdge> edgePredicate
-            )
-            :base(baseGraph,vertexPredicate,edgePredicate)
-        { }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsOutEdgesEmpty(TVertex v)
+            [NotNull] TGraph baseGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate,
+            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            : base(baseGraph, vertexPredicate, edgePredicate)
         {
-            return this.OutDegree(v) == 0;
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public int OutDegree(TVertex v)
+        [Pure]
+        public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            int count =0;
-            foreach (var edge in this.BaseGraph.OutEdges(v))
-                if (this.TestEdge(edge))
-                    count++;
-            return count;
+            return OutDegree(vertex) == 0;
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public IEnumerable<TEdge> OutEdges(TVertex v)
+        [Pure]
+        public int OutDegree(TVertex vertex)
         {
-            foreach (var edge in this.BaseGraph.OutEdges(v))
-                if (this.TestEdge(edge))
-                    yield return edge;
+            return OutEdges(vertex).Count();
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
+        [Pure]
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            IEnumerable<TEdge> baseEdges;
-            if (!this.BaseGraph.TryGetOutEdges(v, out baseEdges))
+            return BaseGraph.OutEdges(vertex).Where(FilterEdge);
+        }
+
+        /// <inheritdoc />
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            if (!BaseGraph.TryGetOutEdges(vertex, out _))
             {
                 edges = null;
                 return false;
             }
 
-            edges = this.OutEdges(v);
+            edges = OutEdges(vertex);
             return true;
         }
 
+        /// <summary>
+        /// <see cref="OutEdge"/> is not supported for this kind of graph.
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public TEdge OutEdge(TVertex v, int index)
+        [Pure]
+        public TEdge OutEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
         }

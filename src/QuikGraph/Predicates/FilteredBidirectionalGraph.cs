@@ -1,130 +1,125 @@
 ﻿using System;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Represents a bidirectional graph that is filtered with a vertex and an edge predicate.
+    /// This means only vertex and edge matching predicates are "accessible".
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class FilteredBidirectionalGraph<TVertex, TEdge, TGraph> 
+    public class FilteredBidirectionalGraph<TVertex, TEdge, TGraph>
         : FilteredVertexListGraph<TVertex, TEdge, TGraph>
         , IBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
         where TGraph : IBidirectionalGraph<TVertex, TEdge>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredBidirectionalGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Graph in which applying predicates.</param>
+        /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
+        /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
         public FilteredBidirectionalGraph(
-            TGraph baseGraph,
-            VertexPredicate<TVertex> vertexPredicate,
-            EdgePredicate<TVertex, TEdge> edgePredicate
-            )
-            :base(baseGraph,vertexPredicate,edgePredicate)
-        { }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsInEdgesEmpty(TVertex v)
+            [NotNull] TGraph baseGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate,
+            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            : base(baseGraph, vertexPredicate, edgePredicate)
         {
-            return this.InDegree(v) == 0;
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public int InDegree(TVertex v)
+        [Pure]
+        public bool IsInEdgesEmpty(TVertex vertex)
         {
-            int count = 0;
-            foreach (var edge in this.BaseGraph.InEdges(v))
-                if (this.TestEdge(edge))
-                    count++;
-            return count;
+            return InDegree(vertex) == 0;
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public IEnumerable<TEdge> InEdges(TVertex v)
+        [Pure]
+        public int InDegree(TVertex vertex)
         {
-            foreach (var edge in this.BaseGraph.InEdges(v))
-                if (this.TestEdge(edge))
-                    yield return edge;
+            return InEdges(vertex).Count();
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
+        [Pure]
+        public IEnumerable<TEdge> InEdges(TVertex vertex)
         {
-            if (this.ContainsVertex(v))
+            return BaseGraph.InEdges(vertex).Where(FilterEdge);
+        }
+
+        /// <inheritdoc />
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
+        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            if (ContainsVertex(vertex))
             {
-                edges = this.InEdges(v);
+                edges = InEdges(vertex);
                 return true;
             }
-            else
-            {
-                edges = null;
-                return false;
-            }
+
+            edges = null;
+            return false;
         }
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public int Degree(TVertex v)
+        [Pure]
+        public int Degree(TVertex vertex)
         {
-            return this.OutDegree(v) + this.InDegree(v);
+            return OutDegree(vertex) + InDegree(vertex);
         }
 
-        public bool IsEdgesEmpty
-        {
-            get
-            {
-                foreach (var edge in this.BaseGraph.Edges)
-                    if (TestEdge(edge))
-                        return false;
-                return true;
-            }
-        }
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount == 0;
 
-        public int EdgeCount
-        {
-            get
-            {
-                int count = 0;
-                foreach (var edge in this.BaseGraph.Edges)
-                    if (TestEdge(edge))
-                        count++;
-                return count;
-            }
-        }
+        /// <inheritdoc />
+        public int EdgeCount => Edges.Count();
 
-        public IEnumerable<TEdge> Edges
-        {
-            get
-            {
-                foreach (var edge in this.BaseGraph.Edges)
-                    if (TestEdge(edge))
-                        yield return edge;
-            }
-        }
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges => BaseGraph.Edges.Where(FilterEdge);
 
+        /// <inheritdoc />
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
+        [Pure]
         public bool ContainsEdge(TEdge edge)
         {
-            if (!this.TestEdge(edge))
-                return false;
-            return this.BaseGraph.ContainsEdge(edge);
+            return FilterEdge(edge)
+                && BaseGraph.ContainsEdge(edge);
         }
 
+        /// <summary>
+        /// <see cref="InEdge"/> is not supported for this kind of graph.
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public TEdge InEdge(TVertex v, int index)
+        [Pure]
+        public TEdge InEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
         }

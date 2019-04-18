@@ -4,29 +4,50 @@ using System;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Predicate that tests if a vertex is a root vertex (no input edge).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class SinkVertexPredicate<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IIncidenceGraph<TVertex, TEdge> visitedGraph;
+        [NotNull]
+        private readonly IIncidenceGraph<TVertex, TEdge> _visitedGraph;
 
-        public SinkVertexPredicate(IIncidenceGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SinkVertexPredicate{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to consider.</param>
+        public SinkVertexPredicate([NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(_visitedGraph != null);
 #endif
 
-            this.visitedGraph = visitedGraph;
+            _visitedGraph = visitedGraph;
         }
 
-        public bool Test(TVertex v)
+        /// <summary>
+        /// Checks if the given <paramref name="vertex"/> is a root vertex.
+        /// </summary>
+        /// <remarks>Check if the implemented predicate is matched.</remarks>
+        /// <param name="vertex">Vertex to check.</param>
+        /// <returns>True if the vertex is a root one, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public bool Test([NotNull] TVertex vertex)
         {
-            return this.visitedGraph.IsOutEdgesEmpty(v);
+            return _visitedGraph.IsOutEdgesEmpty(vertex);
         }
     }
 }

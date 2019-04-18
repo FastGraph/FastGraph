@@ -4,9 +4,17 @@ using System;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Represents a graph that is filtered with a vertex and an edge predicate.
+    /// This means only vertex and edge matching predicates are "accessible".
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -14,15 +22,16 @@ namespace QuikGraph.Predicates
         where TEdge : IEdge<TVertex>
         where TGraph : IGraph<TVertex,TEdge>
     {
-        private readonly TGraph baseGraph;
-        private readonly EdgePredicate<TVertex,TEdge> edgePredicate;
-        private readonly VertexPredicate<TVertex> vertexPredicate;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Graph in which applying predicates.</param>
+        /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
+        /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
         public FilteredGraph(
-            TGraph baseGraph,
-            VertexPredicate<TVertex> vertexPredicate,
-            EdgePredicate<TVertex, TEdge> edgePredicate
-            )
+            [NotNull] TGraph baseGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate,
+            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(baseGraph != null);
@@ -30,59 +39,51 @@ namespace QuikGraph.Predicates
             Contract.Requires(edgePredicate != null);
 #endif
 
-            this.baseGraph = baseGraph;
-            this.vertexPredicate = vertexPredicate;
-            this.edgePredicate = edgePredicate;
+            BaseGraph = baseGraph;
+            VertexPredicate = vertexPredicate;
+            EdgePredicate = edgePredicate;
         }
 
         /// <summary>
-        /// Underlying filtered graph
+        /// Underlying graph (graph that is filtered).
         /// </summary>
-        public TGraph BaseGraph
-        {
-            get
-            {
-                return baseGraph;
-            }
-        }
+        [NotNull]
+        public TGraph BaseGraph { get; }
 
         /// <summary>
-        /// Edge predicate used to filter the edges
+        /// Vertex predicate used to filter the vertices.
         /// </summary>
-        public EdgePredicate<TVertex, TEdge> EdgePredicate
-        {
-            get
-            {
-                return edgePredicate;
-            }
-        }
+        [NotNull]
+        public VertexPredicate<TVertex> VertexPredicate { get; }
 
-        public VertexPredicate<TVertex> VertexPredicate
-        {
-            get
-            {
-                return vertexPredicate;
-            }
-        }
+        /// <summary>
+        /// Edge predicate used to filter the edges.
+        /// </summary>
+        [NotNull]
+        public EdgePredicate<TVertex, TEdge> EdgePredicate { get; }
 
-        protected bool TestEdge(TEdge edge)
-        {
-            return this.VertexPredicate(edge.Source)
-                    && this.VertexPredicate(edge.Target)
-                    && this.EdgePredicate(edge);
-        }
+        /// <inheritdoc />
+        public bool IsDirected => BaseGraph.IsDirected;
 
-        public bool IsDirected
-        {
-            get { return this.BaseGraph.IsDirected; }
-        }
+        /// <inheritdoc />
+        public bool AllowParallelEdges => BaseGraph.AllowParallelEdges;
 
-        public bool AllowParallelEdges
+        /// <summary>
+        /// Tests if the given <paramref name="edge"/> matches
+        /// <see cref="VertexPredicate"/> for edge source and target
+        /// and the <see cref="EdgePredicate"/>.
+        /// </summary>
+        /// <param name="edge">Edge to check.</param>
+        /// <returns>True if the <paramref name="edge"/> matches all predicates, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        protected bool FilterEdge([NotNull] TEdge edge)
         {
-            get
-            {
-                return baseGraph.AllowParallelEdges;
-            }
+            return VertexPredicate(edge.Source)
+                   && VertexPredicate(edge.Target)
+                   && EdgePredicate(edge);
         }
     }
 }

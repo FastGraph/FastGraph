@@ -2,57 +2,48 @@
 using System;
 #endif
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Represents a vertex list graph that is filtered with a vertex predicate.
+    /// This means only vertex matching predicates are "accessible".
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class FilteredVertexListGraph<TVertex, TEdge, Graph> 
-        : FilteredIncidenceGraph<TVertex,TEdge,Graph>
-        , IVertexListGraph<TVertex,TEdge>
+    public class FilteredVertexListGraph<TVertex, TEdge, TGraph> 
+        : FilteredIncidenceGraph<TVertex, TEdge, TGraph>
+        , IVertexListGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
-        where Graph : IVertexListGraph<TVertex,TEdge>
+        where TGraph : IVertexListGraph<TVertex, TEdge>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredVertexListGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Graph in which applying predicates.</param>
+        /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
+        /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
         public FilteredVertexListGraph(
-            Graph baseGraph,
-            VertexPredicate<TVertex> vertexPredicate,
-            EdgePredicate<TVertex, TEdge> edgePredicate
-            )
-            :base(baseGraph,vertexPredicate,edgePredicate)
-        { }
-
-        public bool IsVerticesEmpty
+            [NotNull] TGraph baseGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate,
+            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            : base(baseGraph, vertexPredicate, edgePredicate)
         {
-            get 
-            {
-                foreach (var v in this.BaseGraph.Vertices)
-                    if (this.VertexPredicate(v))
-                        return false;
-                return true;
-            }
         }
 
-        public int VertexCount
-        {
-            get 
-            {
-                int count = 0;
-                foreach (var v in this.BaseGraph.Vertices)
-                    if (this.VertexPredicate(v))
-                        count++;
-                return count;
-            }
-        }
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => VertexCount == 0;
 
-        public IEnumerable<TVertex> Vertices
-        {
-            get 
-            {
-                foreach (var v in this.BaseGraph.Vertices)
-                    if (this.VertexPredicate(v))
-                        yield return v;
-            }
-        }
+        /// <inheritdoc />
+        public int VertexCount => Vertices.Count();
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => BaseGraph.Vertices.Where(vertex => VertexPredicate(vertex));
     }
 }

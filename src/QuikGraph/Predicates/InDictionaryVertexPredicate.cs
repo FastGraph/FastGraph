@@ -5,36 +5,54 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
+    /// <summary>
+    /// Predicate that tests if a vertex is a vertex map.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TValue">Type of the value associated to vertices.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class InDictionaryVertexPredicate<TVertex, TValue>
     {
-        private readonly IDictionary<TVertex, TValue> dictionary;
+        [NotNull]
+        private readonly IDictionary<TVertex, TValue> _vertexMap;
 
-        public InDictionaryVertexPredicate(
-            IDictionary<TVertex,TValue> dictionary)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InDictionaryVertexPredicate{TVertex,TValue}"/> class.
+        /// </summary>
+        /// <param name="vertexMap">Vertex map.</param>
+        public InDictionaryVertexPredicate([NotNull] IDictionary<TVertex, TValue> vertexMap)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(dictionary != null);
+            Contract.Requires(_vertexMap != null);
 #endif
 
-            this.dictionary = dictionary;
+            _vertexMap = vertexMap;
         }
 
+        /// <summary>
+        /// Checks if the given <paramref name="vertex"/> is in the vertex map.
+        /// </summary>
+        /// <remarks>Check if the implemented predicate is matched.</remarks>
+        /// <param name="vertex">Vertex to check.</param>
+        /// <returns>True if the vertex is in the vertex map, false otherwise.</returns>
 #if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool Test(TVertex v)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(v != null);
+        [System.Diagnostics.Contracts.Pure]
 #endif
 
-            return this.dictionary.ContainsKey(v);
+        [JetBrains.Annotations.Pure]
+        public bool Test([NotNull] TVertex vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            return _vertexMap.ContainsKey(vertex);
         }
     }
 }

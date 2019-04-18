@@ -2,39 +2,54 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
 {
-    public sealed class ResidualEdgePredicate<TVertex,TEdge>
+    /// <summary>
+    /// Predicate that tests if an edge is residual.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class ResidualEdgePredicate<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-		private readonly IDictionary<TEdge,double> residualCapacities;
-
-        public ResidualEdgePredicate(
-            IDictionary<TEdge,double> residualCapacities)
-		{
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResidualEdgePredicate{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="residualCapacities">Residual capacities per edge.</param>
+        public ResidualEdgePredicate([NotNull] IDictionary<TEdge, double> residualCapacities)
+        {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(residualCapacities != null);
 #endif
 
-            this.residualCapacities = residualCapacities;
-		}
+            ResidualCapacities = residualCapacities;
+        }
 
-		public IDictionary<TEdge,double> ResidualCapacities
-		{
-			get
-			{
-				return this.residualCapacities;
-			}
-		}
+        /// <summary>
+        /// Residual capacities map.
+        /// </summary>
+        [NotNull]
+        public IDictionary<TEdge, double> ResidualCapacities { get; }
 
-		public bool Test(TEdge e)
-		{
+        /// <summary>
+        /// Checks if the given <paramref name="edge"/> is residual.
+        /// </summary>
+        /// <remarks>Check if the implemented predicate is matched.</remarks>
+        /// <param name="edge">Edge to check.</param>
+        /// <returns>True if the edge is residual, false otherwise.</returns>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public bool Test(TEdge edge)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
 #endif
 
-            return 0 < this.residualCapacities[e];
-		}
+            return 0 < ResidualCapacities[edge];
+        }
     }
 }
