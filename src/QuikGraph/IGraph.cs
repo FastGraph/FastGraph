@@ -13,7 +13,7 @@ namespace QuikGraph
     /// <typeparam name="TVertex">type of the vertices.</typeparam>
     /// <typeparam name="TEdge">type of the edges.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IGraphContract<,>))]
+    [ContractClass(typeof(GraphContract<,>))]
 #endif
     public interface IGraph<TVertex,TEdge>
         where TEdge : IEdge<TVertex>

@@ -69,8 +69,8 @@ namespace QuikGraph.Tests.Serialization
             IEdgeListGraph<int, Edge<int>> result)
         {
             // check equal
-            Assert.IsTrue(GraphContract.VertexCountEqual(g, result));
-            Assert.IsTrue(GraphContract.EdgeCountEqual(g, result));
+            Assert.IsTrue(g.VertexCountEqual(result));
+            Assert.IsTrue(g.EdgeCountEqual(result));
             foreach (var v in g.Vertices)
                 Assert.IsTrue(result.ContainsVertex(v));
             //foreach (var e in g.Edges)
