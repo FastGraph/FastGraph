@@ -11,7 +11,7 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IEdgeContract<>))]
+    [ContractClass(typeof(EdgeContract<>))]
 #endif
     public interface IEdge<out TVertex>
     {

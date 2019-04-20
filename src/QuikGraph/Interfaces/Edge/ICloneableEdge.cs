@@ -1,9 +1,8 @@
-﻿
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 using QuikGraph.Contracts;
+#endif
 
 namespace QuikGraph
 {
@@ -13,7 +12,7 @@ namespace QuikGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(ICloneableEdgeContract<,>))]
+    [ContractClass(typeof(CloneableEdgeContract<,>))]
 #endif
     public interface ICloneableEdge<TVertex, out TEdge> : IEdge<TVertex>
         where TEdge : IEdge<TVertex>
