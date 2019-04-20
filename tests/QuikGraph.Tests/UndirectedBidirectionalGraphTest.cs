@@ -124,7 +124,7 @@ namespace QuikGraph.Tests
             // no edge between vertices 2, 1, because the graph is directed.
             Assert.IsFalse(g.ContainsEdge(2, 1));
 
-            // ContainsEdge(1, 3) raises contracts violation in IIncidenceGraphContract, because 3 is not in the graph.
+            // ContainsEdge(1, 3) raises contracts violation in IncidenceGraphContract, because 3 is not in the graph.
             // obviously no edge between vertices 1, 3, as vertex 3 is not even present in the graph.
             // Assert.IsFalse(g.ContainsEdge(1, 3));
         }

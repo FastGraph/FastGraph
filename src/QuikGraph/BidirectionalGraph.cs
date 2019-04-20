@@ -608,7 +608,7 @@ namespace QuikGraph
         public void MergeVertex(TVertex v, EdgeFactory<TVertex, TEdge> edgeFactory)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(GraphContract.InVertexSet(this, v));
+            Contract.Requires(GraphContractHelpers.InVertexSet(this, v));
             Contract.Requires(edgeFactory != null);
 #endif
 
