@@ -1,26 +1,22 @@
 ﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Contracts
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IImplicitVertexSet{TVertex}"/>.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
     [ContractClassFor(typeof(IImplicitVertexSet<>))]
-#endif
-    abstract class IImplicitVertexSetContract<TVertex>
-        : IImplicitVertexSet<TVertex>
+    internal abstract class ImplicitVertexSetContract<TVertex> : IImplicitVertexSet<TVertex>
     {
-#if SUPPORTS_CONTRACTS
         [Pure]
-#endif
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
         {
-            IImplicitVertexSet<TVertex> ithis = this;
-#if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
-#endif
 
             return default(bool);
         }
     }
 }
+#endif

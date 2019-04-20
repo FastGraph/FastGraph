@@ -12,7 +12,7 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IMutableVertexSetContract<>))]
+    [ContractClass(typeof(MutableVertexSetContract<>))]
 #endif
     public interface IMutableVertexSet<TVertex> : IVertexSet<TVertex>
     {
