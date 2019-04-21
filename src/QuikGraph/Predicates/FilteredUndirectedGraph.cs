@@ -95,9 +95,15 @@ namespace QuikGraph.Predicates
                 && VertexPredicate(target))
             {
                 // We need to find the edge
-                edge = Edges.FirstOrDefault(
-                    e => EdgeEqualityComparer(e, source, target) && EdgePredicate(e));
-                return edge != null;
+                foreach (TEdge e in Edges)
+                {
+                    if (EdgeEqualityComparer(e, source, target)
+                        && EdgePredicate(e))
+                    {
+                        edge = e;
+                        return true;
+                    }
+                }
             }
 
             edge = default(TEdge);

@@ -56,8 +56,14 @@ namespace QuikGraph.Predicates
                 && VertexPredicate(target)
                 && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
             {
-                edge = unfilteredEdges.FirstOrDefault(unfilteredEdge => EdgePredicate(unfilteredEdge));
-                return edge != null;
+                foreach (TEdge unfilteredEdge in unfilteredEdges)
+                {
+                    if (EdgePredicate(unfilteredEdge))
+                    {
+                        edge = unfilteredEdge;
+                        return true;
+                    }
+                }
             }
 
             edge = default(TEdge);
