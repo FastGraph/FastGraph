@@ -10,9 +10,7 @@ namespace QuikGraph.Contracts
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_CONTRACTS
     [ContractClassFor(typeof(IUndirectedGraph<,>))]
-#endif
     internal abstract class UndirectedGraphContract<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

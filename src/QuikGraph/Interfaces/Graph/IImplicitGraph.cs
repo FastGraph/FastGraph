@@ -8,16 +8,15 @@ using QuikGraph.Contracts;
 namespace QuikGraph
 {
     /// <summary>
-    /// A implicit directed graph data structure
+    /// An implicit graph with vertices of type <typeparamref name="TVertex"/>
+    /// and edges of type <typeparamref name="TEdge"/>.
     /// </summary>
-    /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-    /// <typeparam name="TEdge">The type of the edge.</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(ImplicitGraphContract<,>))]
 #endif
-    public interface IImplicitGraph<TVertex, TEdge>
-         : IGraph<TVertex, TEdge>
-         , IImplicitVertexSet<TVertex>
+    public interface IImplicitGraph<TVertex, TEdge> : IGraph<TVertex, TEdge>, IImplicitVertexSet<TVertex>
          where TEdge : IEdge<TVertex>
     {
         /// <summary>

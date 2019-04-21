@@ -1,47 +1,48 @@
-﻿using System;
+﻿#if SUPPORTS_CONTRACTS
+using System;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 using System.Linq;
-#endif
 
 namespace QuikGraph.Contracts
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IMutableUndirectedGraph{TVertex, TEdge}"/>.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     [ContractClassFor(typeof(IMutableUndirectedGraph<,>))]
-#endif
-    abstract class IMutableUndirectedGraphContract<TVertex, TEdge>
-        : IMutableUndirectedGraph<TVertex, TEdge>
+    internal abstract class MutableUndirectedGraphContract<TVertex, TEdge> : IMutableUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-#region IMutableUndirectedGraph<TVertex,TEdge> Members
+        #region IMutableUndirectedGraph<TVertex,TEdge> Members
 
-        int IMutableUndirectedGraph<TVertex, TEdge>.RemoveAdjacentEdgeIf(
-            TVertex vertex, 
-            EdgePredicate<TVertex, TEdge> predicate)
+        int IMutableUndirectedGraph<TVertex, TEdge>.RemoveAdjacentEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            IMutableUndirectedGraph<TVertex, TEdge> ithis = this;
-#if SUPPORTS_CONTRACTS
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IMutableUndirectedGraph<TVertex, TEdge> explicitThis = this;
+
             Contract.Requires(vertex != null);
             Contract.Requires(predicate != null);
-            Contract.Ensures(Contract.Result<int>() == Contract.OldValue(Enumerable.Count(ithis.AdjacentEdges(vertex), e => predicate(e))));
-            Contract.Ensures(Enumerable.All(ithis.AdjacentEdges(vertex), v => !predicate(v)));
-#endif
+            Contract.Ensures(
+                Contract.Result<int>() == Contract.OldValue(explicitThis.AdjacentEdges(vertex).Count(e => predicate(e))));
+            Contract.Ensures(explicitThis.AdjacentEdges(vertex).All(v => !predicate(v)));
 
             return default(int);
         }
 
         void IMutableUndirectedGraph<TVertex, TEdge>.ClearAdjacentEdges(TVertex vertex)
         {
-            IMutableUndirectedGraph<TVertex, TEdge> ithis = this;
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-            Contract.Ensures(ithis.AdjacentDegree(vertex) == 0);
-#endif
-        }
-#endregion
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IMutableUndirectedGraph<TVertex, TEdge> explicitThis = this;
 
-#region IMutableEdgeListGraph<TVertex,TEdge> Members
+            Contract.Requires(vertex != null);
+            Contract.Ensures(explicitThis.AdjacentDegree(vertex) == 0);
+        }
+
+        #endregion
+
+        #region IMutableEdgeListGraph<TVertex,TEdge> Members
 
         bool IMutableEdgeListGraph<TVertex, TEdge>.AddEdge(TEdge edge)
         {
@@ -75,18 +76,18 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IMutableGraph<TVertex,TEdge> Members
+        #region IMutableGraph<TVertex,TEdge> Members
 
         void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IGraph<TVertex,TEdge> Members
+        #region IGraph<TVertex,TEdge> Members
 
         bool IGraph<TVertex, TEdge>.IsDirected
         {
@@ -98,9 +99,9 @@ namespace QuikGraph.Contracts
             get { throw new NotImplementedException(); }
         }
 
-#endregion
+        #endregion
 
-#region IEdgeSet<TVertex,TEdge> Members
+        #region IEdgeSet<TVertex,TEdge> Members
 
         bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty
         {
@@ -122,9 +123,9 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IMutableVertexSet<TVertex> Members
+        #region IMutableVertexSet<TVertex> Members
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexAdded
         {
@@ -158,9 +159,9 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IVertexSet<TVertex> Members
+        #region IVertexSet<TVertex> Members
 
         bool IVertexSet<TVertex>.IsVerticesEmpty
         {
@@ -184,7 +185,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-#region IImplicitUndirectedGraph<TVertex,TEdge> Members
+        #region IImplicitUndirectedGraph<TVertex,TEdge> Members
 
 #if SUPPORTS_CONTRACTS
         [Pure]
@@ -226,9 +227,9 @@ namespace QuikGraph.Contracts
         {
             throw new NotImplementedException();
         }
-#endregion
+        #endregion
 
-#region IMutableVertexAndEdgeSet<TVertex,TEdge> Members
+        #region IMutableVertexAndEdgeSet<TVertex,TEdge> Members
 
         bool IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdge(TEdge edge)
         {
@@ -240,6 +241,7 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
     }
 }
+#endif

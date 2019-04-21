@@ -1,18 +1,19 @@
 ﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 using QuikGraph.Contracts;
+#endif
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A directed graph data structure that is efficient
+    /// A directed graph with vertices of type <typeparamref name="TVertex"/>
+    /// and edges of type <typeparamref name="TEdge"/>, that is efficient
     /// to traverse both in and out edges.
     /// </summary>
-    /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-    /// <typeparam name="TEdge">The type of the edge.</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IBidirectionalGraphContract<,>))]
+    [ContractClass(typeof(BidirectionalGraphContract<,>))]
 #endif
     public interface IBidirectionalGraph<TVertex,TEdge> 
         : IVertexAndEdgeListGraph<TVertex,TEdge>

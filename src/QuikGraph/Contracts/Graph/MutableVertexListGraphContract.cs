@@ -1,26 +1,27 @@
-﻿using System;
+﻿#if SUPPORTS_CONTRACTS
+using System;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Contracts
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IMutableVertexListGraph{TVertex, TEdge}"/>.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     [ContractClassFor(typeof(IMutableVertexListGraph<,>))]
-#endif
-    abstract class IMutableVertexListGraphContract<TVertex, TEdge>
-        : IMutableVertexListGraph<TVertex, TEdge>
+    internal abstract class MutableVertexListGraphContract<TVertex, TEdge> : IMutableVertexListGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-#region IMutableIncidenceGraph<TVertex,TEdge> Members
+        #region IMutableIncidenceGraph<TVertex,TEdge>
 
-        int IMutableIncidenceGraph<TVertex, TEdge>.RemoveOutEdgeIf(TVertex v, EdgePredicate<TVertex, TEdge> predicate)
+        int IMutableIncidenceGraph<TVertex, TEdge>.RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
             throw new NotImplementedException();
         }
 
-        void IMutableIncidenceGraph<TVertex, TEdge>.ClearOutEdges(TVertex v)
+        void IMutableIncidenceGraph<TVertex, TEdge>.ClearOutEdges(TVertex vertex)
         {
             throw new NotImplementedException();
         }
@@ -30,32 +31,26 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IMutableGraph<TVertex,TEdge> Members
+        #region IMutableGraph<TVertex,TEdge>
 
         void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IGraph<TVertex,TEdge> Members
+        #region IGraph<TVertex,TEdge> Members
 
-        bool IGraph<TVertex, TEdge>.IsDirected
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
 
-        bool IGraph<TVertex, TEdge>.AllowParallelEdges
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
 
-#endregion
+        #endregion
 
-#region IIncidenceGraph<TVertex,TEdge> Members
+        #region IIncidenceGraph<TVertex,TEdge> Members
 
         bool IIncidenceGraph<TVertex, TEdge>.ContainsEdge(TVertex source, TVertex target)
         {
@@ -72,21 +67,21 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IImplicitGraph<TVertex,TEdge> Members
+        #region IImplicitGraph<TVertex,TEdge>
 
-        bool IImplicitGraph<TVertex, TEdge>.IsOutEdgesEmpty(TVertex v)
+        bool IImplicitGraph<TVertex, TEdge>.IsOutEdgesEmpty(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        int IImplicitGraph<TVertex, TEdge>.OutDegree(TVertex v)
+        int IImplicitGraph<TVertex, TEdge>.OutDegree(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        IEnumerable<TEdge> IImplicitGraph<TVertex, TEdge>.OutEdges(TVertex v)
+        IEnumerable<TEdge> IImplicitGraph<TVertex, TEdge>.OutEdges(TVertex vertex)
         {
             throw new NotImplementedException();
         }
@@ -96,22 +91,22 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-        TEdge IImplicitGraph<TVertex, TEdge>.OutEdge(TVertex v, int index)
+        TEdge IImplicitGraph<TVertex, TEdge>.OutEdge(TVertex vertex, int index)
         {
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IMutableVertexSet<TVertex> Members
+        #region IMutableVertexSet<TVertex>
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexAdded
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
-        bool IMutableVertexSet<TVertex>.AddVertex(TVertex v)
+        bool IMutableVertexSet<TVertex>.AddVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
@@ -123,44 +118,36 @@ namespace QuikGraph.Contracts
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexRemoved
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
-        bool IMutableVertexSet<TVertex>.RemoveVertex(TVertex v)
+        bool IMutableVertexSet<TVertex>.RemoveVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        int IMutableVertexSet<TVertex>.RemoveVertexIf(VertexPredicate<TVertex> pred)
+        int IMutableVertexSet<TVertex>.RemoveVertexIf(VertexPredicate<TVertex> predicate)
         {
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
 
-#region IVertexSet<TVertex> Members
+        #region IVertexSet<TVertex>
 
-        bool IVertexSet<TVertex>.IsVerticesEmpty
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
 
-        int IVertexSet<TVertex>.VertexCount
-        {
-            get { throw new NotImplementedException(); }
-        }
+        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
 
-        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices
-        {
-            get { throw new NotImplementedException(); }
-        }
+        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
 
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
     }
 }
+#endif

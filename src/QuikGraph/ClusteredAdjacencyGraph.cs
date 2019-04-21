@@ -55,7 +55,7 @@ namespace QuikGraph
         }
 
 
-        public bool Colapsed
+        public bool Collapsed
         {
             get
             {
