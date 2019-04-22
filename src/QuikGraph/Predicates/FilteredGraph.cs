@@ -62,11 +62,15 @@ namespace QuikGraph.Predicates
         [NotNull]
         public EdgePredicate<TVertex, TEdge> EdgePredicate { get; }
 
+        #region IGraph<TVertex,TEdge>
+
         /// <inheritdoc />
         public bool IsDirected => BaseGraph.IsDirected;
 
         /// <inheritdoc />
         public bool AllowParallelEdges => BaseGraph.AllowParallelEdges;
+
+        #endregion
 
         /// <summary>
         /// Tests if the given <paramref name="edge"/> matches

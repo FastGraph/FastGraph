@@ -4,83 +4,90 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A delegate-based implicit graph
+    /// A delegate-based implicit graph.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class DelegateImplicitGraph<TVertex, TEdge>
-        : IImplicitGraph<TVertex, TEdge>
+    public class DelegateImplicitGraph<TVertex, TEdge> : IImplicitGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>, IEquatable<TEdge>
     {
-        readonly TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges;
-
-        public DelegateImplicitGraph(
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateImplicitGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="tryGetOutEdges">Getter of out-edges.</param>
+        public DelegateImplicitGraph([NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(tryGetOutEdges != null);
 #endif
 
-            this.tryGetOutEdges = tryGetOutEdges;
+            _tryGetOutEdgesFunc = tryGetOutEdges;
         }
 
-        public TryFunc<TVertex, IEnumerable<TEdge>> TryGetOutEdgesFunc
+        /// <summary>
+        /// Getter of out-edges.
+        /// </summary>
+        [NotNull]
+        private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetOutEdgesFunc;
+
+        #region IGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsDirected => true;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => true;
+
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            get { return this.tryGetOutEdges; }
+            return !OutEdges(vertex).Any();
         }
 
-        public bool IsOutEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
         {
-            foreach (var edge in this.OutEdges(v))
-                return false;
-            return true;
+            return OutEdges(vertex).Count();
         }
 
-        public int OutDegree(TVertex v)
+        /// <inheritdoc />
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            return Enumerable.Count(this.OutEdges(v));
+            if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge> result))
+                return result;
+            return Enumerable.Empty<TEdge>();
         }
 
-        public IEnumerable<TEdge> OutEdges(TVertex v)
+        /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            IEnumerable<TEdge> result;
-            if (!this.tryGetOutEdges(v, out result))
-                return Enumerable.Empty<TEdge>();
-            return result;
+            return _tryGetOutEdgesFunc(vertex, out edges);
         }
 
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
+        /// <inheritdoc />
+        public TEdge OutEdge(TVertex vertex, int index)
         {
-            return this.tryGetOutEdges(v, out edges);
+            return OutEdges(vertex).ElementAt(index);
         }
 
-        public TEdge OutEdge(TVertex v, int index)
-        {
-            return Enumerable.ElementAt(this.OutEdges(v), index);
-        }
-
-        public bool IsDirected
-        {
-            get { return true; }
-        }
-
-        public bool AllowParallelEdges
-        {
-            get { return true; }
-        }
-
+        /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
-            IEnumerable<TEdge> edges;
-            return
-                this.tryGetOutEdges(vertex, out edges);
+            return _tryGetOutEdgesFunc(vertex, out _);
         }
+
+        #endregion
     }
 }

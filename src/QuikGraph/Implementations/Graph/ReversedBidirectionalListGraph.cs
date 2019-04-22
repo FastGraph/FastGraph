@@ -3,252 +3,217 @@ using System;
 #endif
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
 namespace QuikGraph
 {
+    /// <summary>
+    /// Implementation for a reversed bidirectional graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public sealed class ReversedBidirectionalGraph<TVertex, TEdge> : 
-        IBidirectionalGraph<TVertex,SReversedEdge<TVertex,TEdge>>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public sealed class ReversedBidirectionalGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, SReversedEdge<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IBidirectionalGraph<TVertex,TEdge> originalGraph;
-        public ReversedBidirectionalGraph(IBidirectionalGraph<TVertex,TEdge> originalGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReversedBidirectionalGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="originalGraph">Original graph to reverse.</param>
+        public ReversedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(originalGraph != null);
 #endif
 
-            this.originalGraph = originalGraph;
+            OriginalGraph = originalGraph;
         }
 
-        public IBidirectionalGraph<TVertex,TEdge> OriginalGraph
-        {
-            get { return this.originalGraph;}
-        }
-    
-        public bool  IsVerticesEmpty
-        {
-        	get { return this.OriginalGraph.IsVerticesEmpty; }
-        }
+        /// <summary>
+        /// Original graph.
+        /// </summary>
+        public IBidirectionalGraph<TVertex, TEdge> OriginalGraph { get; }
 
-        public bool IsDirected
-        {
-            get { return this.OriginalGraph.IsDirected; }
-        }
+        #region IGraph<TVertex,TEdge>
 
-        public bool AllowParallelEdges
-        {
-            get { return this.OriginalGraph.AllowParallelEdges; }
-        }
+        /// <inheritdoc />
+        public bool IsDirected => OriginalGraph.IsDirected;
 
-        public int  VertexCount
-        {
-        	get { return this.OriginalGraph.VertexCount; }
-        }
+        /// <inheritdoc />
+        public bool AllowParallelEdges => OriginalGraph.AllowParallelEdges;
 
-        public IEnumerable<TVertex> Vertices
-        {
-        	get { return this.OriginalGraph.Vertices; }
-        }
+        #endregion
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => OriginalGraph.IsVerticesEmpty;
+
+        /// <inheritdoc />
+        public int VertexCount => OriginalGraph.VertexCount;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => OriginalGraph.Vertices;
+
+        /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
-            return this.OriginalGraph.ContainsVertex(vertex);
-        }   
+            return OriginalGraph.ContainsVertex(vertex);
+        }
 
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => OriginalGraph.IsEdgesEmpty;
+
+        /// <inheritdoc />
+        public int EdgeCount => OriginalGraph.EdgeCount;
+
+        /// <inheritdoc />
+        public IEnumerable<SReversedEdge<TVertex, TEdge>> Edges =>
+            OriginalGraph.Edges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge));
+
+        /// <inheritdoc />
+        public bool ContainsEdge(SReversedEdge<TVertex, TEdge> edge)
+        {
+            return OriginalGraph.ContainsEdge(edge.OriginalEdge);
+        }
+
+        #endregion
+
+        #region IIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            return this.OriginalGraph.ContainsEdge(target,source);
+            return OriginalGraph.ContainsEdge(target, source);
         }
 
-        public bool TryGetEdge(
-            TVertex source,
-            TVertex target,
-            out SReversedEdge<TVertex, TEdge> edge)
+        /// <inheritdoc />
+        public bool TryGetEdge(TVertex source, TVertex target, out SReversedEdge<TVertex, TEdge> edge)
         {
-            TEdge oedge;
-            if (this.OriginalGraph.TryGetEdge(target, source, out oedge))
+            if (OriginalGraph.TryGetEdge(target, source, out TEdge originalEdge))
             {
-                edge = new SReversedEdge<TVertex, TEdge>(oedge);
+                edge = new SReversedEdge<TVertex, TEdge>(originalEdge);
                 return true;
             }
-            else
-            {
-                edge = default(SReversedEdge<TVertex, TEdge>);
-                return false;
-            }
+
+            edge = default(SReversedEdge<TVertex, TEdge>);
+            return false;
         }
 
-        public bool TryGetEdges(
-            TVertex source,
-            TVertex target,
-            out IEnumerable<SReversedEdge<TVertex,TEdge>> edges)
+        /// <inheritdoc />
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
         {
-            IEnumerable<TEdge> oedges;
-            if (this.OriginalGraph.TryGetEdges(target, source, out oedges))
+            if (OriginalGraph.TryGetEdges(target, source, out IEnumerable<TEdge> originalEdges))
             {
-                List<SReversedEdge<TVertex, TEdge>> list = new List<SReversedEdge<TVertex, TEdge>>();
-                foreach (var oedge in oedges)
-                    list.Add(new SReversedEdge<TVertex, TEdge>(oedge));
-                edges = list;
+                edges = originalEdges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge));
                 return true;
             }
-            else
-            {
-                edges = null;
-                return false;
-            }
+
+            edges = null;
+            return false;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsOutEdgesEmpty(TVertex v)
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            return this.OriginalGraph.IsInEdgesEmpty(v);
+            return OriginalGraph.IsInEdgesEmpty(vertex);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int OutDegree(TVertex v)
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
         {
-            return this.OriginalGraph.InDegree(v);
+            return OriginalGraph.InDegree(vertex);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public IEnumerable<SReversedEdge<TVertex, TEdge>> InEdges(TVertex v)
+        /// <inheritdoc />
+        public IEnumerable<SReversedEdge<TVertex, TEdge>> OutEdges(TVertex vertex)
         {
-            return EdgeExtensions.ReverseEdges<TVertex, TEdge>(this.OriginalGraph.OutEdges(v));
+            return EdgeExtensions.ReverseEdges<TVertex, TEdge>(OriginalGraph.InEdges(vertex));
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public SReversedEdge<TVertex, TEdge> InEdge(TVertex v, int index)
+        /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
         {
-            TEdge edge = this.OriginalGraph.OutEdge(v, index);
-            if (edge == null)
-                return default(SReversedEdge<TVertex,TEdge>);
-            return new SReversedEdge<TVertex, TEdge>(edge);
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsInEdgesEmpty(TVertex v)
-        {
-            return this.OriginalGraph.IsOutEdgesEmpty(v);
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int InDegree(TVertex v)
-        {
-            return this.OriginalGraph.OutDegree(v);
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public IEnumerable<SReversedEdge<TVertex, TEdge>> OutEdges(TVertex v)
-        {
-            return EdgeExtensions.ReverseEdges<TVertex, TEdge>(this.OriginalGraph.InEdges(v));
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool TryGetInEdges(TVertex v, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
-        {
-            IEnumerable<TEdge> outEdges;
-            if (this.OriginalGraph.TryGetOutEdges(v, out outEdges))
-            {
-                edges = EdgeExtensions.ReverseEdges<TVertex, TEdge>(outEdges);
-                return true;
-            }
-            else
-            {
-                edges = null;
-                return false;
-            }
-
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
-        {
-            IEnumerable<TEdge> inEdges;
-            if (this.OriginalGraph.TryGetInEdges(v, out inEdges))
+            if (OriginalGraph.TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
             {
                 edges = EdgeExtensions.ReverseEdges<TVertex, TEdge>(inEdges);
                 return true;
             }
-            else
+
+            edges = null;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public SReversedEdge<TVertex, TEdge> OutEdge(TVertex vertex, int index)
+        {
+            return new SReversedEdge<TVertex, TEdge>(
+                OriginalGraph.InEdge(vertex, index));
+        }
+
+        #endregion
+
+        #region IBidirectionalIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public IEnumerable<SReversedEdge<TVertex, TEdge>> InEdges(TVertex vertex)
+        {
+            return EdgeExtensions.ReverseEdges<TVertex, TEdge>(OriginalGraph.OutEdges(vertex));
+        }
+
+        /// <inheritdoc />
+        public SReversedEdge<TVertex, TEdge> InEdge(TVertex vertex, int index)
+        {
+            return new SReversedEdge<TVertex, TEdge>(
+                OriginalGraph.OutEdge(vertex, index));
+        }
+
+        /// <inheritdoc />
+        public bool IsInEdgesEmpty(TVertex vertex)
+        {
+            return OriginalGraph.IsOutEdgesEmpty(vertex);
+        }
+
+        /// <inheritdoc />
+        public int InDegree(TVertex vertex)
+        {
+            return OriginalGraph.OutDegree(vertex);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetInEdges(TVertex vertex, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
+        {
+            if (OriginalGraph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
             {
-                edges = null;
-                return false;
+                edges = EdgeExtensions.ReverseEdges<TVertex, TEdge>(outEdges);
+                return true;
             }
+
+            edges = null;
+            return false;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public SReversedEdge<TVertex, TEdge> OutEdge(TVertex v, int index)
+        /// <inheritdoc />
+        public int Degree(TVertex vertex)
         {
-            TEdge edge = this.OriginalGraph.InEdge(v, index);
-            if (edge == null)
-                return default(SReversedEdge<TVertex,TEdge>);
-            return new SReversedEdge<TVertex, TEdge>(edge);
+            return OriginalGraph.Degree(vertex);
         }
 
-        public IEnumerable<SReversedEdge<TVertex,TEdge>>  Edges
-        {
-        	get 
-            {
-                foreach(TEdge edge in this.OriginalGraph.Edges)
-                    yield return new SReversedEdge<TVertex,TEdge>(edge);
-            }
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsEdge(SReversedEdge<TVertex, TEdge> edge)
-        {
-            return this.OriginalGraph.ContainsEdge(edge.OriginalEdge);
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int Degree(TVertex v)
-        {
-            return this.OriginalGraph.Degree(v);
-        }
-
-        public bool IsEdgesEmpty
-        {
-            get { return this.OriginalGraph.IsEdgesEmpty; }
-        }
-
-        public int EdgeCount
-        {
-            get { return this.OriginalGraph.EdgeCount; }
-        }
+        #endregion
     }
 }

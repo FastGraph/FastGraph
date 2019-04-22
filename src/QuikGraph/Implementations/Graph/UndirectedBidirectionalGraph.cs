@@ -1,105 +1,144 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
+    /// <summary>
+    /// Implementation for a bidirectional undirected graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public sealed class UndirectedBidirectionalGraph<TVertex, TEdge> :
-        IUndirectedGraph<TVertex,TEdge>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public sealed class UndirectedBidirectionalGraph<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IBidirectionalGraph<TVertex, TEdge> visitedGraph;
-        private readonly EdgeEqualityComparer<TVertex, TEdge> edgeEqualityComparer =
-            EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
-
-        public UndirectedBidirectionalGraph(IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedBidirectionalGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Bidirectional graph.</param>
+        public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
 #endif
 
-            this.visitedGraph = visitedGraph;
+            VisitedGraph = visitedGraph;
         }
 
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer
+        /// <inheritdoc />
+        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; } =
+            EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
+
+        /// <summary>
+        /// Underlying bidirectional graph.
+        /// </summary>
+        public IBidirectionalGraph<TVertex, TEdge> VisitedGraph { get; }
+
+        #region IGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsDirected => false;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => VisitedGraph.AllowParallelEdges;
+
+        #endregion
+
+        #region IVertexSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => VisitedGraph.IsVerticesEmpty;
+
+        /// <inheritdoc />
+        public int VertexCount => VisitedGraph.VertexCount;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => VisitedGraph.Vertices;
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
         {
-            get
-            {
-                return this.edgeEqualityComparer;
-            }
+            return VisitedGraph.ContainsVertex(vertex);
         }
 
-        public IBidirectionalGraph<TVertex, TEdge> VisitedGraph
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => VisitedGraph.IsEdgesEmpty;
+
+        /// <inheritdoc />
+        public int EdgeCount => VisitedGraph.EdgeCount;
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges => VisitedGraph.Edges;
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
         {
-            get { return this.visitedGraph; }
+            return VisitedGraph.ContainsEdge(edge);
         }
 
-#region IUndirectedGraph<Vertex,Edge> Members
+        #endregion
+        
+        #region IUndirectedGraph<TVertex,TEdge>
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public IEnumerable<TEdge> AdjacentEdges(TVertex v)
+        /// <inheritdoc />
+        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
-            foreach (var e in this.VisitedGraph.OutEdges(v))
-                yield return e;
-            foreach (var e in this.VisitedGraph.InEdges(v))
-            {
-                // we skip selfedges here since
-                // we already did those in the outedge run
-                if (e.Source.Equals(e.Target))
-                    continue;
-                yield return e;
-            }
+            return
+                VisitedGraph.OutEdges(vertex)
+                    .Concat(
+                        VisitedGraph.InEdges(vertex)
+                            // We skip self edges here since
+                            // We already did those in the out-edge run
+                            .Where(inEdge => !inEdge.IsSelfEdge<TVertex, TEdge>()));
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int AdjacentDegree(TVertex v)
+        /// <inheritdoc />
+        public int AdjacentDegree(TVertex vertex)
         {
-            return this.VisitedGraph.Degree(v);
+            return VisitedGraph.Degree(vertex);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsAdjacentEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
-            return this.VisitedGraph.IsOutEdgesEmpty(v) && this.VisitedGraph.IsInEdgesEmpty(v);
+            return VisitedGraph.IsOutEdgesEmpty(vertex) && VisitedGraph.IsInEdgesEmpty(vertex);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public TEdge AdjacentEdge(TVertex v, int index)
+        /// <summary>
+        /// <see cref="AdjacentEdge"/> is not supported for this kind of graph.
+        /// </summary>
+        public TEdge AdjacentEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
+        /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            TEdge edge;
-            return this.TryGetEdge(source, target, out edge);
+            return TryGetEdge(source, target, out _);
         }
 
+        /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
-            foreach (var e in this.AdjacentEdges(source))
+            foreach (var adjacentEdge in AdjacentEdges(source))
             {
-                if (this.edgeEqualityComparer(e, source, target))
+                if (EdgeEqualityComparer(adjacentEdge, source, target))
                 {
-                    edge = e;
+                    edge = adjacentEdge;
                     return true;
                 }
             }
@@ -108,74 +147,6 @@ namespace QuikGraph
             return false;
         }
 
-#endregion
-
-#region IVertexSet<Vertex,Edge> Members
-
-        public bool IsVerticesEmpty
-        {
-            get  { return this.VisitedGraph.IsVerticesEmpty; }
-        }
-
-        public int VertexCount
-        {
-            get { return this.VisitedGraph.VertexCount; }
-        }
-
-        public IEnumerable<TVertex> Vertices
-        {
-            get { return this.VisitedGraph.Vertices; }
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsVertex(TVertex vertex)
-        {
-            return this.VisitedGraph.ContainsVertex(vertex);
-        }
-
-#endregion
-
-#region IEdgeListGraph<Vertex,Edge> Members
-
-        public bool IsEdgesEmpty
-        {
-            get { return this.VisitedGraph.IsEdgesEmpty; }
-        }
-
-        public int EdgeCount
-        {
-            get { return this.VisitedGraph.EdgeCount; }
-        }
-
-        public IEnumerable<TEdge> Edges
-        {
-            get { return this.VisitedGraph.Edges; }
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsEdge(TEdge edge)
-        {
-            return this.VisitedGraph.ContainsEdge(edge);
-        }
-
-#endregion
-
-#region IGraph<Vertex,Edge> Members
-
-        public bool IsDirected
-        {
-            get { return false; }
-        }
-
-        public bool AllowParallelEdges
-        {
-            get { return this.VisitedGraph.AllowParallelEdges; }
-        }
-
-#endregion
+        #endregion
     }
 }

@@ -6,114 +6,128 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A functional implicit undirected graph
+    /// A delegate-based implicit undirected graph.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class DelegateImplicitUndirectedGraph<TVertex, TEdge>
-        : IImplicitUndirectedGraph<TVertex, TEdge>
+    public class DelegateImplicitUndirectedGraph<TVertex, TEdge> : IImplicitUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        readonly TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges;
-        readonly bool allowParallelEdges;
-        readonly EdgeEqualityComparer<TVertex, TEdge> edgeEquality =
-            EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateImplicitUndirectedGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="tryGetAdjacentEdges">Getter of adjacent edges.</param>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
         public DelegateImplicitUndirectedGraph(
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacenyEdges,
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,
             bool allowParallelEdges)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(tryGetAdjacenyEdges != null);
+            Contract.Requires(tryGetAdjacentEdges != null);
 #endif
 
-            this.tryGetAdjacentEdges = tryGetAdjacenyEdges;
-            this.allowParallelEdges = allowParallelEdges;
+            _tryGetAdjacencyEdges = tryGetAdjacentEdges;
+            AllowParallelEdges = allowParallelEdges;
         }
 
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer
+        /// <inheritdoc />
+        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; } =
+            EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
+
+        /// <summary>
+        /// Getter of adjacent edges.
+        /// </summary>
+        [NotNull]
+        private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetAdjacencyEdges;
+
+        #region IGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsDirected => false;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges { get; }
+
+        #endregion
+
+        #region IImplicitUndirectedGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
-            get { return this.edgeEquality; }
+            if (_tryGetAdjacencyEdges(vertex, out IEnumerable<TEdge> result))
+                return result;
+            return Enumerable.Empty<TEdge>();
         }
 
-        public TryFunc<TVertex, IEnumerable<TEdge>> TryGetAdjacencyEdgesFunc
+        /// <inheritdoc />
+        public int AdjacentDegree(TVertex vertex)
         {
-            get { return this.tryGetAdjacentEdges; }
+            return AdjacentEdges(vertex).Count();
         }
 
-        public bool IsAdjacentEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
-            foreach (var edge in this.AdjacentEdges(v))
-                return false;
-            return true;
+            return !AdjacentEdges(vertex).Any();
         }
 
-        public int AdjacentDegree(TVertex v)
+        /// <inheritdoc />
+        public TEdge AdjacentEdge(TVertex vertex, int index)
         {
-            return Enumerable.Count(this.AdjacentEdges(v));
+            return AdjacentEdges(vertex).ElementAt(index);
         }
 
-        public IEnumerable<TEdge> AdjacentEdges(TVertex v)
-        {
-            IEnumerable<TEdge> result;
-            if (!this.tryGetAdjacentEdges(v, out result))
-                return Enumerable.Empty<TEdge>();
-            return result;
-        }
-
-        public bool TryGetAdjacentEdges(TVertex v, out IEnumerable<TEdge> edges)
-        {
-            return this.tryGetAdjacentEdges(v, out edges);
-        }
-
-        public TEdge AdjacentEdge(TVertex v, int index)
-        {
-            return Enumerable.ElementAt(this.AdjacentEdges(v), index);
-        }
-
-        public bool IsDirected
-        {
-            get { return false; }
-        }
-
-        public bool AllowParallelEdges
-        {
-            get { return this.allowParallelEdges; }
-        }
-
-        public bool ContainsVertex(TVertex vertex)
-        {
-            IEnumerable<TEdge> edges;
-            return
-                this.tryGetAdjacentEdges(vertex, out edges);
-        }
-
+        /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
-            IEnumerable<TEdge> edges;
-            if (this.TryGetAdjacentEdges(source, out edges))
-                foreach (var e in edges)
-                    if (this.edgeEquality(e, source, target))
+            if (TryGetAdjacentEdges(source, out IEnumerable<TEdge> adjacentEdges))
+            {
+                foreach (var adjacentEdge in adjacentEdges)
+                {
+                    if (EdgeEqualityComparer(adjacentEdge, source, target))
                     {
-                        edge = e;
+                        edge = adjacentEdge;
                         return true;
                     }
+                }
+            }
 
             edge = default(TEdge);
             return false;
         }
 
+        /// <summary>
+        /// Tries to get adjacent edges of the given <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        /// <param name="edges">Edges found, otherwise null.</param>
+        /// <returns>True if at least one edge was found, false otherwise.</returns>
+        public bool TryGetAdjacentEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            return _tryGetAdjacencyEdges(vertex, out edges);
+        }
+
+        /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            TEdge edge;
-            return this.TryGetEdge(source, target, out edge);
+            return TryGetEdge(source, target, out _);
         }
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return _tryGetAdjacencyEdges(vertex, out _);
+        }
+
+        #endregion
     }
 }

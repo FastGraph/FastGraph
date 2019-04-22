@@ -35,63 +35,48 @@ namespace QuikGraph.Predicates
         {
         }
 
+        #region IImplicitGraph<TVertex,TEdge>
+
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool IsOutEdgesEmpty(TVertex vertex)
         {
             return OutDegree(vertex) == 0;
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public int OutDegree(TVertex vertex)
         {
             return OutEdges(vertex).Count();
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
             return BaseGraph.OutEdges(vertex).Where(FilterEdge);
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            if (!BaseGraph.TryGetOutEdges(vertex, out _))
+            if (BaseGraph.TryGetOutEdges(vertex, out _))
             {
-                edges = null;
-                return false;
+                TEdge[] outEdges = OutEdges(vertex).ToArray();
+                edges = outEdges;
+                return outEdges.Length > 0;
             }
 
-            edges = OutEdges(vertex);
-            return true;
+            edges = null;
+            return false;
         }
 
         /// <summary>
         /// <see cref="OutEdge"/> is not supported for this kind of graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public TEdge OutEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
         }
+
+        #endregion
     }
 }

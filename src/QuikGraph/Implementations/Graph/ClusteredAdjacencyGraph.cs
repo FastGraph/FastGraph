@@ -5,432 +5,525 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuikGraph.Collections;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
-
+    /// <summary>
+    /// Implementation for a clustered adjacency graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class ClusteredAdjacencyGraph<TVertex, TEdge>
         : IVertexAndEdgeListGraph<TVertex, TEdge>
         , IEdgeListAndIncidenceGraph<TVertex, TEdge>
         , IClusteredGraph
         where TEdge : IEdge<TVertex>
     {
-        private ClusteredAdjacencyGraph<TVertex, TEdge> parent;
-        private AdjacencyGraph<TVertex, TEdge> wrapped;
-        private ArrayList clusters;
-        private bool colapsed;
-
-        public ClusteredAdjacencyGraph(AdjacencyGraph<TVertex, TEdge> wrapped)
-        {
-            if (wrapped == null)
-                throw new ArgumentNullException("parent");
-            this.parent = null;
-            this.wrapped = wrapped;
-            this.clusters = new ArrayList();
-            this.colapsed = false;
-        }
-
-
-        public ClusteredAdjacencyGraph(ClusteredAdjacencyGraph<TVertex, TEdge> parent)
-        {
-            if (parent == null)
-                throw new ArgumentNullException("parent");
-            this.parent = parent;
-            this.wrapped = new AdjacencyGraph<TVertex, TEdge>(parent.AllowParallelEdges);
-            this.clusters = new ArrayList();
-        }
-
-
-        public ClusteredAdjacencyGraph<TVertex, TEdge> Parent
-        {
-            get
-            {
-                return parent;
-            }
-        }
-
-
-        public bool Collapsed
-        {
-            get
-            {
-                return colapsed;
-            }
-            set
-            {
-                colapsed = value;
-            }
-        }
-
-
-        protected AdjacencyGraph<TVertex, TEdge> Wrapped
-        {
-            get
-            {
-                return wrapped;
-            }
-        }
-
-
-        public bool IsDirected
-        {
-            get 
-            { 
-                return wrapped.IsDirected;
-            }
-        }
-
-        public bool AllowParallelEdges
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClusteredAdjacencyGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="wrappedGraph">Graph to wrap.</param>
+        public ClusteredAdjacencyGraph([NotNull] AdjacencyGraph<TVertex, TEdge> wrappedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            [Pure]
+            Contract.Requires(wrappedGraph != null);
 #endif
-            get 
-            {
-                return wrapped.AllowParallelEdges;
-            }
+
+            Parent = null;
+            Wrapped = wrappedGraph;
+            _clusters = new ArrayList();
+            Collapsed = false;
         }
 
-        public int EdgeCapacity
-        {
-            get 
-            {
-                return wrapped.EdgeCapacity;
-            }
-            set 
-            {
-                wrapped.EdgeCapacity = value; 
-            }
-        }
-
-        public static Type EdgeType
-        {
-            get 
-            {
-                return typeof(TEdge); 
-            }
-        }
-
-        public bool IsVerticesEmpty
-        {
-            get 
-            {
-                return wrapped.IsVerticesEmpty; 
-            }
-        }
-
-        public int VertexCount
-        {
-            get 
-            { 
-                return wrapped.VertexCount; 
-            }
-        }
-
-        public virtual IEnumerable<TVertex> Vertices
-        {
-            get 
-            {
-                return wrapped.Vertices; 
-            }
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsVertex(TVertex v)
-        {
-            return wrapped.ContainsVertex(v);
-        }
-
-        public bool IsOutEdgesEmpty(TVertex v)
-        {
-            return wrapped.IsOutEdgesEmpty(v);
-        }
-
-        public int OutDegree(TVertex v)
-        {
-            return wrapped.OutDegree(v);
-        }
-
-        public virtual IEnumerable<TEdge> OutEdges(TVertex v)
-        {
-            return wrapped.OutEdges(v);
-        }
-
-        public virtual bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
-        {
-            return wrapped.TryGetOutEdges(v, out edges);
-        }
-
-        public TEdge OutEdge(TVertex v, int index)
-        {
-            return wrapped.OutEdge(v, index);
-        }
-
-
-        public bool IsEdgesEmpty
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClusteredAdjacencyGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="parentGraph">Parent graph.</param>
+        public ClusteredAdjacencyGraph([NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> parentGraph)
         {
 #if SUPPORTS_CONTRACTS
-            [Pure]
+            Contract.Requires(parentGraph != null);
 #endif
-            get 
-            {
-                return wrapped.IsEdgesEmpty;
-            }
+
+            Parent = parentGraph;
+            Wrapped = new AdjacencyGraph<TVertex, TEdge>(parentGraph.AllowParallelEdges);
+            _clusters = new ArrayList();
         }
 
+        /// <summary>
+        /// Parent graph.
+        /// </summary>
+        [CanBeNull]
+        public ClusteredAdjacencyGraph<TVertex, TEdge> Parent { get; }
 
-        public int EdgeCount
-        {
-            get
-            {
-                return wrapped.EdgeCount;
-            }
-        }
+        /// <summary>
+        /// Wrapped graph.
+        /// </summary>
+        protected AdjacencyGraph<TVertex, TEdge> Wrapped { get; }
 
 #if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
-        void ObjectInvariant()
+        // ReSharper disable once UnusedMember.Local
+        private void ObjectInvariant()
         {
-            Contract.Invariant(wrapped.EdgeCount >= 0);
+            Contract.Invariant(Wrapped.EdgeCount >= 0);
         }
 #endif
 
-        public virtual IEnumerable<TEdge> Edges
-        {
-#if SUPPORTS_CONTRACTS
-            [Pure]
-#endif
-            get
-            {
-                return wrapped.Edges;
-            }
-        }
+        #region IGraph<TVertex,TEdge>
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            return wrapped.ContainsEdge(source, target);
-        }
+        /// <inheritdoc />
+        public bool IsDirected => Wrapped.IsDirected;
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsEdge(TEdge edge)
-        {
-            return wrapped.ContainsEdge(edge);
-        }
+        /// <inheritdoc />
+        public bool AllowParallelEdges => Wrapped.AllowParallelEdges;
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool TryGetEdge(
-            TVertex source,
-            TVertex target,
-            out TEdge edge)
-        {
-            return wrapped.TryGetEdge(source, target, out edge);
-        }
+        #endregion
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public virtual bool TryGetEdges(
-            TVertex source,
-            TVertex target,
-            out IEnumerable<TEdge> edges)
-        {
-            return wrapped.TryGetEdges(source, target, out edges);
-        }
+        #region IClusteredGraph
 
+        /// <inheritdoc />
+        public bool Collapsed { get; set; }
 
-        public IEnumerable Clusters
-        {
-            get
-            {
-                return clusters;
-            }
-        }
+        [NotNull]
+        private readonly ArrayList _clusters;
 
+        /// <inheritdoc />
+        public IEnumerable Clusters => _clusters;
 
-        public int ClustersCount
-        {
-            get
-            {
-                return clusters.Count;
-            }
-        }
+        /// <inheritdoc />
+        public int ClustersCount => _clusters.Count;
 
-
+        /// <summary>
+        /// Adds a new cluster.
+        /// </summary>
+        /// <returns>The added cluster.</returns>
         public ClusteredAdjacencyGraph<TVertex, TEdge> AddCluster()
         {
-            ClusteredAdjacencyGraph<TVertex, TEdge> cluster = new ClusteredAdjacencyGraph<TVertex, TEdge>(this);
-            clusters.Add(cluster);
+            var cluster = new ClusteredAdjacencyGraph<TVertex, TEdge>(this);
+            _clusters.Add(cluster);
             return cluster;
         }
 
-
+        /// <inheritdoc />
         IClusteredGraph IClusteredGraph.AddCluster()
         {
-            return this.AddCluster();
+            return AddCluster();
         }
 
-
+        /// <inheritdoc />
         public void RemoveCluster(IClusteredGraph cluster)
         {
-            if (cluster == null)
-                throw new ArgumentNullException("cluster");
-            clusters.Remove(cluster);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(cluster != null);
+#endif
+
+            _clusters.Remove(cluster);
         }
 
-        public virtual bool AddVertex(TVertex v)
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => Wrapped.IsVerticesEmpty;
+
+        /// <inheritdoc />
+        public int VertexCount => Wrapped.VertexCount;
+
+        /// <inheritdoc />
+        public virtual IEnumerable<TVertex> Vertices => Wrapped.Vertices;
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
         {
-            if (!(parent == null || parent.ContainsVertex(v)))
+            return Wrapped.ContainsVertex(vertex);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Adds a vertex to this graph.
+        /// </summary>
+        /// <param name="vertex">Vertex to add.</param>
+        /// <returns>True if the vertex was added, false otherwise.</returns>
+        public virtual bool AddVertex([NotNull] TVertex vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            if (!(Parent is null || Parent.ContainsVertex(vertex)))
             {
-                parent.AddVertex(v);
-                return wrapped.AddVertex(v);
+                Parent.AddVertex(vertex);
+                return Wrapped.AddVertex(vertex);
             }
-            else
-                return wrapped.AddVertex(v);
+
+            return Wrapped.AddVertex(vertex);
         }
 
-        public virtual int AddVertexRange(IEnumerable<TVertex> vertices)
+        /// <summary>
+        /// Adds given vertices to this graph.
+        /// </summary>
+        /// <param name="vertices">Vertices to add.</param>
+        /// <returns>The number of vertex added.</returns>
+        public virtual int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertices != null);
+            Contract.Requires(EnumerableContract.ElementsNotNull(vertices));
+#endif
+
             int count = 0;
-            foreach (var v in vertices)
-                if (this.AddVertex(v))
+            foreach (TVertex vertex in vertices)
+            {
+                if (AddVertex(vertex))
                     count++;
+            }
+
             return count;
         }
 
-        private void RemoveChildVertex(TVertex v)
+        /// <summary>
+        /// Removes the given vertex from clusters.
+        /// </summary>
+        /// <param name="vertex">Vertex to remove.</param>
+        private void RemoveChildVertex([NotNull] TVertex vertex)
         {
-            foreach (ClusteredAdjacencyGraph<TVertex, TEdge> el in Clusters)
-                if (el.ContainsVertex(v))
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
+            {
+                if (cluster.ContainsVertex(vertex))
                 {
-                    el.Wrapped.RemoveVertex(v);
-                    el.RemoveChildVertex(v);
+                    cluster.Wrapped.RemoveVertex(vertex);
+                    cluster.RemoveChildVertex(vertex);
                     break;
                 }
+            }
         }
-        public virtual bool RemoveVertex(TVertex v)
+
+        /// <summary>
+        /// Removes the given vertex from this graph.
+        /// </summary>
+        /// <param name="vertex">Vertex to remove.</param>
+        /// <returns>True if the vertex was removed, false otherwise.</returns>
+        public virtual bool RemoveVertex([NotNull] TVertex vertex)
         {
-            if (!wrapped.ContainsVertex(v))
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            if (!Wrapped.ContainsVertex(vertex))
                 return false;
-            RemoveChildVertex(v);
-            wrapped.RemoveVertex(v);
-            if (parent != null)
-                parent.RemoveVertex(v);
+
+            RemoveChildVertex(vertex);
+            Wrapped.RemoveVertex(vertex);
+            Parent?.RemoveVertex(vertex);
+
             return true;
         }
 
-
-
-        public int RemoveVertexIf(VertexPredicate<TVertex> predicate)
+        /// <summary>
+        /// Removes all vertices matching the given <paramref name="predicate"/>.
+        /// </summary>
+        /// <param name="predicate">Predicate to check on each vertex.</param>
+        /// <returns>The number of vertex removed.</returns>
+        public int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate)
         {
-            var vertices = new VertexList<TVertex>();
-            foreach (var v in wrapped.Vertices)
-                if (predicate(v))
-                    vertices.Add(v);
-            foreach (var v in vertices)
-                this.RemoveVertex(v);
-            return vertices.Count;
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(predicate != null);
+#endif
+
+            var verticesToRemove = Vertices
+                .Where(vertex => predicate(vertex))
+                .ToArray();
+
+            foreach (var vertex in verticesToRemove)
+                RemoveVertex(vertex);
+
+            return verticesToRemove.Length;
         }
 
-        public virtual bool AddVerticesAndEdge(TEdge e)
+        /// <summary>
+        /// Gets or sets the edge capacity.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int EdgeCapacity
         {
-            this.AddVertex(e.Source);
-            this.AddVertex(e.Target);
-            return this.AddEdge(e);
+            get => Wrapped.EdgeCapacity;
+            set => Wrapped.EdgeCapacity = value;
         }
 
+        /// <summary>
+        /// Gives the type of edges.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public static Type EdgeType => typeof(TEdge);
 
-        public int AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => Wrapped.IsEdgesEmpty;
+
+        /// <inheritdoc />
+        public int EdgeCount => Wrapped.EdgeCount;
+
+        /// <inheritdoc />
+        public virtual IEnumerable<TEdge> Edges => Wrapped.Edges;
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
         {
+            return Wrapped.ContainsEdge(edge);
+        }
+
+        #endregion
+
+        #region IIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return Wrapped.ContainsEdge(source, target);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            return Wrapped.TryGetEdge(source, target, out edge);
+        }
+
+        /// <inheritdoc />
+        public virtual bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        {
+            return Wrapped.TryGetEdges(source, target, out edges);
+        }
+
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge> 
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
+        {
+            return Wrapped.IsOutEdgesEmpty(vertex);
+        }
+
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
+        {
+            return Wrapped.OutDegree(vertex);
+        }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<TEdge> OutEdges(TVertex vertex)
+        {
+            return Wrapped.OutEdges(vertex);
+        }
+
+        /// <inheritdoc />
+        public virtual bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            return Wrapped.TryGetOutEdges(vertex, out edges);
+        }
+
+        /// <inheritdoc />
+        public TEdge OutEdge(TVertex vertex, int index)
+        {
+            return Wrapped.OutEdge(vertex, index);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Adds <paramref name="edge"/> and its vertices to this graph.
+        /// </summary>
+        /// <param name="edge">The edge to add.</param>
+        /// <returns>True if the edge was added, false otherwise.</returns>
+        public virtual bool AddVerticesAndEdge([NotNull] TEdge edge)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            AddVertex(edge.Source);
+            AddVertex(edge.Target);
+            return AddEdge(edge);
+        }
+
+        /// <summary>
+        /// Adds a set of edges (and it's vertices if necessary).
+        /// </summary>
+        /// <param name="edges">Edges to add.</param>
+        /// <returns>The number of edges added.</returns>
+        public int AddVerticesAndEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edges != null);
+            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
+#endif
+
             int count = 0;
-            foreach (var edge in edges)
-                if (this.AddVerticesAndEdge(edge))
+            foreach (TEdge edge in edges)
+            {
+                if (AddVerticesAndEdge(edge))
                     count++;
+            }
+
             return count;
         }
 
-        public virtual bool AddEdge(TEdge e)
+        /// <summary>
+        /// Adds the <paramref name="edge"/> to this graph.
+        /// </summary>
+        /// <param name="edge">An edge.</param>
+        /// <returns>True if the edge was added, false otherwise.</returns>
+        public virtual bool AddEdge([NotNull] TEdge edge)
         {
-            wrapped.AddEdge(e);
-            if (parent != null && !parent.ContainsEdge(e))
-                parent.AddEdge(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            Wrapped.AddEdge(edge);
+            if (Parent != null && !Parent.ContainsEdge(edge))
+                Parent.AddEdge(edge);
             return true;
         }
 
-        public int AddEdgeRange(IEnumerable<TEdge> edges)
+        /// <summary>
+        /// Adds a set of edges to this graph.
+        /// </summary>
+        /// <param name="edges">Edges to add.</param>
+        /// <returns>The number of edges successfully added to this graph.</returns>
+        public int AddEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edges != null);
+            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
+#endif
+
             int count = 0;
-            foreach (var edge in edges)
-                if (this.AddEdge(edge))
+            foreach (TEdge edge in edges)
+            {
+                if (AddEdge(edge))
                     count++;
+            }
+
             return count;
         }
 
-        private void RemoveChildEdge(TEdge e)
+        private void RemoveChildEdge([NotNull] TEdge edge)
         {
-            foreach (ClusteredAdjacencyGraph<TVertex, TEdge> el in Clusters)
-                if (el.ContainsEdge(e))
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
+            {
+                if (cluster.ContainsEdge(edge))
                 {
-                    el.Wrapped.RemoveEdge(e);
-                    el.RemoveChildEdge(e);
+                    cluster.Wrapped.RemoveEdge(edge);
+                    cluster.RemoveChildEdge(edge);
                     break;
                 }
+            }
         }
 
-        public virtual bool RemoveEdge(TEdge e)
+        /// <summary>
+        /// Removes the <paramref name="edge"/> from this graph.
+        /// </summary>
+        /// <param name="edge">Edge to remove.</param>
+        /// <returns>True if the <paramref name="edge"/> was successfully removed, false otherwise.</returns>
+        public virtual bool RemoveEdge([NotNull] TEdge edge)
         {
-            if (!wrapped.ContainsEdge(e))
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            if (!Wrapped.ContainsEdge(edge))
                 return false;
-            RemoveChildEdge(e);
-            wrapped.RemoveEdge(e);
-            if (parent != null)
-                parent.RemoveEdge(e);
+
+            RemoveChildEdge(edge);
+            Wrapped.RemoveEdge(edge);
+            Parent?.RemoveEdge(edge);
+
             return true;
         }
 
-
-        public int RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
+        /// <summary>
+        /// Removes all edges that match the given <paramref name="predicate"/>.
+        /// </summary>
+        /// <param name="predicate">Predicate to check if an edge should be removed.</param>
+        /// <returns>The number of edges removed.</returns>
+        public int RemoveEdgeIf([NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate)
         {
-            var edges = new EdgeList<TVertex, TEdge>();
-            foreach (var edge in wrapped.Edges)
-                if (predicate(edge))
-                    edges.Add(edge);
-            foreach (var edge in edges)
-                this.RemoveEdge(edge);
-            return edges.Count;
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(predicate != null);
+#endif
+
+            var edgesToRemove = Wrapped.Edges
+                .Where(edge => predicate(edge))
+                .ToArray();
+
+            foreach (TEdge edge in edgesToRemove)
+                RemoveEdge(edge);
+
+            return edgesToRemove.Length;
         }
 
-        public void ClearOutEdges(TVertex v)
+        /// <summary>
+        /// Removes all out-edges of the <paramref name="vertex"/>
+        /// where the <paramref name="predicate"/> is evaluated to true.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        /// <param name="predicate">Predicate to remove edges.</param>
+        /// <returns>The number of removed edges.</returns>
+        public int RemoveOutEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate)
         {
-            wrapped.ClearOutEdges(v);
-        }
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+            Contract.Requires(predicate != null);
+#endif
 
-        public int RemoveOutEdgeIf(TVertex v, EdgePredicate<TVertex, TEdge> predicate)
-        {
-            int edgeToRemoveCount = wrapped.RemoveOutEdgeIf(v, predicate);
-            if (parent != null)
-                parent.RemoveOutEdgeIf(v, predicate);
+            int edgeToRemoveCount = Wrapped.RemoveOutEdgeIf(vertex, predicate);
+            Parent?.RemoveOutEdgeIf(vertex, predicate);
+
             return edgeToRemoveCount;
         }
 
+        /// <summary>
+        /// Trims the out-edges of the given <paramref name="vertex"/>
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        public void ClearOutEdges([NotNull] TVertex vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
 
+            Wrapped.ClearOutEdges(vertex);
+        }
+
+        /// <summary>
+        /// Clears the vertex and edges.
+        /// </summary>
         public void Clear()
         {
-            wrapped.Clear();
-            this.clusters.Clear();
+            Wrapped.Clear();
+            _clusters.Clear();
         }
     }
 }

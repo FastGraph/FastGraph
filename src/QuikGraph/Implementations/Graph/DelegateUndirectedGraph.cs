@@ -6,117 +6,116 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A functional implicit undirected graph
+    /// A delegate-based implicit undirected graph.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class DelegateUndirectedGraph<TVertex, TEdge>
-        : DelegateImplicitUndirectedGraph<TVertex, TEdge>
-        , IUndirectedGraph<TVertex, TEdge>
+    public class DelegateUndirectedGraph<TVertex, TEdge> : DelegateImplicitUndirectedGraph<TVertex, TEdge>, IUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        readonly IEnumerable<TVertex> vertices;
-        int _vertexCount = -1;
-        int _edgeCount = -1;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateUndirectedGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="vertices">Graph vertices.</param>
+        /// <param name="tryGetAdjacentEdges">Getter of adjacent edges.</param>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
         public DelegateUndirectedGraph(
-             IEnumerable<TVertex> vertices,
-             TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,
-             bool allowParallelEdges)
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,
+            bool allowParallelEdges)
             : base(tryGetAdjacentEdges, allowParallelEdges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
-            Contract.Requires(Enumerable.All(vertices, v =>
-            {
-                IEnumerable<TEdge> edges;
-                return tryGetAdjacentEdges(v, out edges);
-            }));
+            Contract.Requires(vertices.All(vertex => tryGetAdjacentEdges(vertex, out _)));
 #endif
 
-            this.vertices = vertices;
+            _vertices = vertices;
         }
 
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
         public bool IsVerticesEmpty
         {
             get
             {
-                // shortcut
-                if (this._vertexCount > -1)
-                    return this._vertexCount == 0;
-                // count
-                foreach (var vertex in this.vertices)
-                    return false;
-                return true;
+                // Shortcut if count is already computed
+                if (_vertexCount > -1)
+                    return _vertexCount == 0;
+                return !_vertices.Any();
             }
         }
 
+        private int _vertexCount = -1;
+
+        /// <inheritdoc />
         public int VertexCount
         {
             get
             {
-                if (this._vertexCount < 0)
-                    this._vertexCount = Enumerable.Count(this.vertices);
-                return this._vertexCount;
+                if (_vertexCount < 0)
+                    _vertexCount = _vertices.Count();
+                return _vertexCount;
             }
         }
 
-        public virtual IEnumerable<TVertex> Vertices
-        {
-            get { return this.vertices; }
-        }
+        [NotNull]
+        private readonly IEnumerable<TVertex> _vertices;
 
+        /// <inheritdoc />
+        public virtual IEnumerable<TVertex> Vertices => _vertices;
+
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        private int _edgeCount = -1;
+
+        /// <inheritdoc />
         public bool IsEdgesEmpty
         {
             get
             {
-                if (this._vertexCount == 0 ||
-                    this._edgeCount == 0)
-                    return true; // no vertices or no edges.
+                if (_vertexCount == 0 || _edgeCount == 0)
+                    return true; // No vertices or no edges
 
-                foreach (var vertex in this.vertices)
-                    foreach (var edge in this.AdjacentEdges(vertex))
-                        return false;
-                return true;
+                return _vertices.All(vertex => !AdjacentEdges(vertex).Any());
             }
         }
 
+        /// <inheritdoc />
         public int EdgeCount
         {
             get
             {
-                if (this._edgeCount < 0)
-                    this._edgeCount = Enumerable.Count(this.Edges);
-                return this._edgeCount;
+                if (_edgeCount < 0)
+                    _edgeCount = Edges.Count();
+                return _edgeCount;
             }
         }
 
-        public virtual IEnumerable<TEdge> Edges
-        {
-            get
-            {
-                foreach (var vertex in this.vertices)
-                    foreach (var edge in this.AdjacentEdges(vertex))
-                        if (edge.Source.Equals(vertex))
-                            yield return edge;
-            }
-        }
+        /// <inheritdoc />
+        public virtual IEnumerable<TEdge> Edges =>
+            _vertices.SelectMany(
+                vertex => AdjacentEdges(vertex).Where(edge => edge.Source.Equals(vertex)));
 
+        /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
-            IEnumerable<TEdge> edges;
-            if (this.TryGetAdjacentEdges(edge.Source, out edges))
-                foreach (var e in edges)
-                    if (e.Equals(edge))
-                        return true;
+            if (TryGetAdjacentEdges(edge.Source, out IEnumerable<TEdge> edges))
+                return edges.Any(e => e.Equals(edge));
             return false;
         }
+
+        #endregion
     }
 }

@@ -39,11 +39,49 @@ namespace QuikGraph.Predicates
         public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; } =
             EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
 
+        #region IVertexSet<TVertex>
+
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
+        public bool IsVerticesEmpty => VertexCount == 0;
+
+        /// <inheritdoc />
+        public int VertexCount => Vertices.Count();
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => BaseGraph.Vertices.Where(vertex => VertexPredicate(vertex));
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return VertexPredicate(vertex)
+                   && BaseGraph.ContainsVertex(vertex);
+        }
+
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount == 0;
+
+        /// <inheritdoc />
+        public int EdgeCount => Edges.Count();
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges => BaseGraph.Edges.Where(FilterEdge);
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
+        {
+            return FilterEdge(edge) 
+                   && BaseGraph.ContainsEdge(edge);
+        }
+
+        #endregion
+
+        #region IImplicitUndirectedGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
         public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
             if (VertexPredicate(vertex))
@@ -52,43 +90,27 @@ namespace QuikGraph.Predicates
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public int AdjacentDegree(TVertex vertex)
         {
             return AdjacentEdges(vertex).Count();
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
             return AdjacentDegree(vertex) == 0;
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public TEdge AdjacentEdge(TVertex vertex, int index)
         {
             if (VertexPredicate(vertex))
                 return AdjacentEdges(vertex).ElementAt(index);
 
-            throw new IndexOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
             if (VertexPredicate(source)
@@ -111,53 +133,11 @@ namespace QuikGraph.Predicates
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             return TryGetEdge(source, target, out _);
         }
 
-        /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount == 0;
-
-        /// <inheritdoc />
-        public int EdgeCount => Edges.Count();
-
-        /// <inheritdoc />
-        public IEnumerable<TEdge> Edges => BaseGraph.Edges.Where(FilterEdge);
-
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public bool ContainsEdge(TEdge edge)
-        {
-            return FilterEdge(edge) 
-                   && BaseGraph.ContainsEdge(edge);
-        }
-
-        /// <inheritdoc />
-        public bool IsVerticesEmpty => VertexCount == 0;
-
-        /// <inheritdoc />
-        public int VertexCount => Vertices.Count();
-
-        /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => BaseGraph.Vertices.Where(vertex => VertexPredicate(vertex));
-
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public bool ContainsVertex(TVertex vertex)
-        {
-            return VertexPredicate(vertex) 
-                   && BaseGraph.ContainsVertex(vertex);
-        }
+        #endregion
     }
 }

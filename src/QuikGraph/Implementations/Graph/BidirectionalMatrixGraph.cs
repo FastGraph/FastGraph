@@ -1,467 +1,501 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using JetBrains.Annotations;
+
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
 namespace QuikGraph
 {
+    /// <summary>
+    /// Implementation for a bidirectional graph data structure based on a matrix.
+    /// </summary>
+    /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public class BidirectionalMatrixGraph<TEdge> 
-        : IBidirectionalGraph<int, TEdge>
-        , IMutableEdgeListGraph<int, TEdge>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public class BidirectionalMatrixGraph<TEdge> : IBidirectionalGraph<int, TEdge>, IMutableEdgeListGraph<int, TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<int>
     {
-        private readonly int vertexCount;
-        private int edgeCount;
-        private readonly TEdge[,] edges;
-
-        public BidirectionalMatrixGraph(int vertexCount)        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BidirectionalMatrixGraph{TEdge}"/> class.
+        /// </summary>
+        /// <param name="vertexCount">Number of vertices.</param>
+        public BidirectionalMatrixGraph(int vertexCount)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexCount > 0);
 #endif
 
-            this.vertexCount = vertexCount;
-            this.edgeCount = 0;
-            this.edges = new TEdge[vertexCount, vertexCount];
+            VertexCount = vertexCount;
+            EdgeCount = 0;
+            _edges = new TEdge[vertexCount, vertexCount];
         }
 
-        #region IGraph
+        #region IGraph<int,TEdge>
 
-        public bool AllowParallelEdges
-        {
-            get { return false; }
-        }
 
-        public bool IsDirected
+        /// <inheritdoc />
+        public bool IsDirected => true;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => false;
+
+        #endregion
+
+        #region IVertexSet<int>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => VertexCount == 0;
+
+        /// <inheritdoc />
+        public int VertexCount { get; }
+
+        /// <inheritdoc />
+        public IEnumerable<int> Vertices => Enumerable.Range(0, VertexCount);
+
+        /// <inheritdoc />
+        public bool ContainsVertex(int vertex)
         {
-            get { return true; }
+            return vertex >= 0 && vertex < VertexCount;
         }
 
         #endregion
 
-        #region IVertexListGraph
+        #region IEdgeSet<int,TEdge>
 
-        public int VertexCount
-        {
-            get { return this.vertexCount; }
-        }
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount == 0;
 
-        public bool IsVerticesEmpty
-        {
-            get { return this.VertexCount == 0; }
-        }
+        /// <inheritdoc />
+        public int EdgeCount { get; private set; }
 
-        #endregion
+        [NotNull]
+        private readonly TEdge[,] _edges;
 
-        #region IEdgeListGraph
-
-        public int EdgeCount
-        {
-            get { return this.edgeCount; }
-        }
-
-        public bool IsEdgesEmpty
-        {
-            get { return this.EdgeCount == 0; }
-        }
-
+        /// <inheritdoc />
         public IEnumerable<TEdge> Edges
         {
             get
             {
-                for (int i = 0; i < this.VertexCount; ++i)
+                for (int i = 0; i < VertexCount; ++i)
                 {
-                    for (int j = 0; j < this.VertexCount; ++j)
+                    for (int j = 0; j < VertexCount; ++j)
                     {
-                        TEdge e = this.edges[i, j];
-                        if (e != null)
-                            yield return e;
+                        TEdge edge = _edges[i, j];
+                        if (edge != null)
+                            yield return edge;
                     }
                 }
             }
         }
 
-        #endregion
-
-        #region IBidirectionalGraph<int,Edge> Members
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsInEdgesEmpty(int v)
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
         {
-            for (int i = 0; i < this.VertexCount; ++i)
-                if (this.edges[i, v] != null)
-                    return false;
-            return true;
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int InDegree(int v)
-        {
-            int count = 0;
-            for (int i = 0; i < this.VertexCount; ++i)
-                if (this.edges[i, v] != null)
-                    count++;
-            return count;
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public IEnumerable<TEdge> InEdges(int v)
-        {
-            for (int i = 0; i < this.VertexCount; ++i)
-            {
-                TEdge e = this.edges[i, v];
-                if (e != null)
-                    yield return e;
-            }
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool TryGetInEdges(int v, out IEnumerable<TEdge> edges)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(Contract.Result<bool>() == (0 <= v && v > this.VertexCount));
-            Contract.Ensures(
-                Contract.Result<bool>() == 
-                (Contract.ValueAtReturn<IEnumerable<TEdge>>(out edges) != null));
-#endif
-            if (v > -1 && v < this.vertexCount)
-            {
-                edges = this.InEdges(v);
-                return true;
-            }
-            edges = null;
-            return false;
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public TEdge InEdge(int v, int index)
-        {
-            int count = 0;
-            for (int i = 0; i < this.VertexCount; ++i)
-            {
-                TEdge e = this.edges[i, v];
-                if (e != null)
-                {
-                    if (count == index)
-                        return e;
-                    count++;
-                }
-            }
-            throw new ArgumentOutOfRangeException("index");
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int Degree(int v)
-        {
-            return this.InDegree(v) + this.OutDegree(v);
+            TEdge e = _edges[edge.Source, edge.Target];
+            return e != null && e.Equals(edge);
         }
 
         #endregion
 
-        #region IIncidenceGraph<int,Edge> Members
+        #region IIncidenceGraph<int,TEdge>
 
+        /// <inheritdoc />
         public bool ContainsEdge(int source, int target)
         {
-            return this.edges[source, target] != null;
+            return _edges[source, target] != null;
         }
 
+        /// <inheritdoc />
         public bool TryGetEdge(int source, int target, out TEdge edge)
         {
-            edge = this.edges[source, target];
+            edge = _edges[source, target];
             return edge != null;
         }
 
+        /// <inheritdoc />
         public bool TryGetEdges(int source, int target, out IEnumerable<TEdge> edges)
         {
-            TEdge edge;
-            if (this.TryGetEdge(source, target, out edge))
+            if (TryGetEdge(source, target, out TEdge edge))
             {
-                edges = new TEdge[] { edge };
+                edges = new[] { edge };
                 return true;
             }
-            else
-            {
-                edges = null;
-                return false;
-            }
-        }
 
-        #endregion
-
-        #region IImplicitGraph<int,Edge> Members
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool IsOutEdgesEmpty(int v)
-        {
-            for (int j = 0; j < this.vertexCount; ++j)
-                if (this.edges[v, j] != null)
-                    return false;
-            return true;
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public int OutDegree(int v)
-        {
-            int count = 0;
-            for (int j = 0; j < this.vertexCount; ++j)
-                if (this.edges[v, j] != null)
-                    count++;
-            return count;
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public IEnumerable<TEdge> OutEdges(int v)
-        {
-            for (int j = 0; j < this.vertexCount; ++j)
-            {
-                TEdge e = this.edges[v, j];
-                if (e != null)
-                    yield return e;
-            }
-        }
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool TryGetOutEdges(int v, out IEnumerable<TEdge> edges)
-        {
-            if (v > -1 && v < this.vertexCount)
-            {
-                edges = this.OutEdges(v);
-                return true;
-            }
             edges = null;
             return false;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public TEdge OutEdge(int v, int index)
-        {
-            int count = 0;
-            for (int j = 0; j < this.vertexCount; ++j)
-            {
-                TEdge e = this.edges[v, j];
-                if (e != null)
-                {
-                    if (count==index)
-                        return e;
-                    count++;
-                }
-            }
-            throw new ArgumentOutOfRangeException("index");
-        }
-
         #endregion
 
-        #region IVertexSet<int,Edge> Members
+        #region IImplicitGraph<int,TEdge>
 
-        public IEnumerable<int> Vertices
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(int vertex)
         {
-            get 
+            for (int j = 0; j < VertexCount; ++j)
             {
-                for (int i = 0; i < this.VertexCount; ++i)
-                    yield return i;
+                if (_edges[vertex, j] != null)
+                    return false;
             }
-        }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsVertex(int vertex)
-        {
-            return vertex >= 0 && vertex < this.VertexCount;
-        }
-
-        #endregion
-
-        #region IEdgeListGraph<int,Edge> Members
-
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool ContainsEdge(TEdge edge)
-        {
-            TEdge e = this.edges[edge.Source, edge.Target];
-            return e!=null && 
-                e.Equals(edge);
-        }
-
-        #endregion
-
-        #region IMutableBidirectionalGraph<int,Edge> Members
-
-        public int RemoveInEdgeIf(int v, EdgePredicate<int, TEdge> edgePredicate)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= v && v < this.VertexCount);
-#endif
-            int count = 0;
-            for (int i = 0; i < this.VertexCount; ++i)
-            {
-                TEdge e = this.edges[i, v];
-                if (e != null && edgePredicate(e))
-                {
-                    this.RemoveEdge(e);
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        public void ClearInEdges(int v)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= v && v < this.VertexCount);
-#endif
-            for (int i = 0; i < this.VertexCount; ++i)
-            {
-                TEdge e = this.edges[i, v];
-                if (e != null)
-                    this.RemoveEdge(e);
-            }
-        }
-
-        public void ClearEdges(int v)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= v && v < this.VertexCount);
-#endif
-
-            this.ClearInEdges(v);
-            this.ClearOutEdges(v);
-        }
-
-        #endregion
-
-        #region IMutableIncidenceGraph<int,Edge> Members
-
-        public int RemoveOutEdgeIf(int v, EdgePredicate<int, TEdge> predicate)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= v && v < this.VertexCount);
-#endif
-
-            int count = 0;
-            for (int j = 0; j < this.VertexCount; ++j)
-            {
-                TEdge e = this.edges[v, j];
-                if (e != null && predicate(e))
-                {
-                    this.RemoveEdge(e);
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        public void ClearOutEdges(int v)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= v && v < this.VertexCount);
-#endif
-
-            for (int j = 0; j < this.VertexCount; ++j)
-            {
-                TEdge e = this.edges[v, j];
-                if (e != null)
-                    this.RemoveEdge(e);
-            }
-        }
-
-        #endregion
-
-        #region IMutableGraph<int,Edge> Members
-
-        public void Clear()
-        {
-            for(int i = 0;i<this.vertexCount;++i)
-                for(int j = 0;j<this.vertexCount;++j)
-                    this.edges[i,j] = default(TEdge);
-            this.edgeCount = 0;
-        }
-
-        #endregion
-
-        #region IMutableEdgeListGraph<int,Edge> Members
-
-        public bool AddEdge(TEdge edge)
-        {
-            if (this.edges[edge.Source, edge.Target]!=null)
-                throw new ParallelEdgeNotAllowedException();
-            this.edges[edge.Source,edge.Target] = edge;
-            this.edgeCount++;
-            this.OnEdgeAdded(edge);
             return true;
         }
 
-        public int AddEdgeRange(IEnumerable<TEdge> edges)
+        /// <inheritdoc />
+        public int OutDegree(int vertex)
         {
             int count = 0;
-            foreach (var edge in edges)
-                if (this.AddEdge(edge))
+            for (int j = 0; j < VertexCount; ++j)
+            {
+                if (_edges[vertex, j] != null)
                     count++;
+            }
+
             return count;
         }
 
-        public event EdgeAction<int, TEdge> EdgeAdded;
-        protected virtual void OnEdgeAdded(TEdge args)
+        /// <inheritdoc />
+        public IEnumerable<TEdge> OutEdges(int vertex)
         {
-            var eh = this.EdgeAdded;
-            if (eh != null)
-                eh(args);
+            for (int j = 0; j < VertexCount; ++j)
+            {
+                TEdge edge = _edges[vertex, j];
+                if (edge != null)
+                    yield return edge;
+            }
         }
 
+        /// <inheritdoc />
+        public bool TryGetOutEdges(int vertex, out IEnumerable<TEdge> edges)
+        {
+            if (vertex > -1 && vertex < VertexCount)
+            {
+                TEdge[] outEdges = OutEdges(vertex).ToArray();
+                edges = outEdges;
+                return outEdges.Length > 0;
+            }
+
+            edges = null;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public TEdge OutEdge(int vertex, int index)
+        {
+            int count = 0;
+            for (int j = 0; j < VertexCount; ++j)
+            {
+                TEdge edge = _edges[vertex, j];
+                if (edge != null)
+                {
+                    if (count == index)
+                        return edge;
+                    count++;
+                }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        #endregion
+
+        #region IBidirectionalGraph<int,TEdge>
+
+        /// <inheritdoc />
+        public bool IsInEdgesEmpty(int vertex)
+        {
+            for (int i = 0; i < VertexCount; ++i)
+            {
+                if (_edges[i, vertex] != null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public int InDegree(int vertex)
+        {
+            int count = 0;
+            for (int i = 0; i < VertexCount; ++i)
+            {
+                if (_edges[i, vertex] != null)
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> InEdges(int vertex)
+        {
+            for (int i = 0; i < VertexCount; ++i)
+            {
+                TEdge edge = _edges[i, vertex];
+                if (edge != null)
+                    yield return edge;
+            }
+        }
+
+        /// <inheritdoc />
+        public bool TryGetInEdges(int vertex, out IEnumerable<TEdge> edges)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Ensures(
+                Contract.Result<bool>() == (0 <= vertex && vertex > VertexCount));
+            Contract.Ensures(
+                Contract.Result<bool>() == (Contract.ValueAtReturn(out edges) != null));
+#endif
+
+            if (vertex > -1 && vertex < VertexCount)
+            {
+                TEdge[] inEdges = InEdges(vertex).ToArray();
+                edges = inEdges;
+                return inEdges.Length > 0;
+            }
+
+            edges = null;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public TEdge InEdge(int vertex, int index)
+        {
+            int count = 0;
+            for (int i = 0; i < VertexCount; ++i)
+            {
+                TEdge edge = _edges[i, vertex];
+                if (edge != null)
+                {
+                    if (count == index)
+                        return edge;
+                    count++;
+                }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        /// <inheritdoc />
+        public int Degree(int vertex)
+        {
+            return InDegree(vertex) + OutDegree(vertex);
+        }
+
+        #endregion
+
+        #region IMutableGraph<int,TEdge>
+
+        /// <inheritdoc />
+        public void Clear()
+        {
+            for (int i = 0; i < VertexCount; ++i)
+                for (int j = 0; j < VertexCount; ++j)
+                    _edges[i, j] = default(TEdge);
+            EdgeCount = 0;
+        }
+
+        #endregion
+
+        #region IMutableBidirectionalGraph<int,TEdge>
+
+        /// <summary>
+        /// Removes in-edges of the given <paramref name="vertex"/> that match
+        /// predicate <paramref name="edgePredicate"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        /// <param name="edgePredicate">Edge predicate.</param>
+        /// <returns>Number of edges removed.</returns>
+        public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> edgePredicate)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(0 <= vertex && vertex < VertexCount);
+#endif
+
+            int count = 0;
+            for (int i = 0; i < VertexCount; ++i)
+            {
+                TEdge edge = _edges[i, vertex];
+                if (edge != null && edgePredicate(edge))
+                {
+                    RemoveEdge(edge);
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Clears in-edges of the given <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        public void ClearInEdges(int vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(0 <= vertex && vertex < VertexCount);
+#endif
+
+            for (int i = 0; i < VertexCount; ++i)
+            {
+                TEdge edge = _edges[i, vertex];
+                if (edge != null)
+                    RemoveEdge(edge);
+            }
+        }
+
+        /// <summary>
+        /// Clears in-edges and out-edges of the given <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        public void ClearEdges(int vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(0 <= vertex && vertex < VertexCount);
+#endif
+
+            ClearInEdges(vertex);
+            ClearOutEdges(vertex);
+        }
+
+        #endregion
+
+        #region IMutableIncidenceGraph<int,TEdge>
+
+        /// <summary>
+        /// Removes all out-edges of the <paramref name="vertex"/>
+        /// where the <paramref name="predicate"/> is evaluated to true.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        /// <param name="predicate">Predicate to remove edges.</param>
+        /// <returns>The number of removed edges.</returns>
+        public int RemoveOutEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(0 <= vertex && vertex < VertexCount);
+#endif
+
+            int count = 0;
+            for (int j = 0; j < VertexCount; ++j)
+            {
+                TEdge edge = _edges[vertex, j];
+                if (edge != null && predicate(edge))
+                {
+                    RemoveEdge(edge);
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Trims the out-edges of the given <paramref name="vertex"/>
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        public void ClearOutEdges(int vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(0 <= vertex && vertex < VertexCount);
+#endif
+
+            for (int j = 0; j < VertexCount; ++j)
+            {
+                TEdge edge = _edges[vertex, j];
+                if (edge != null)
+                    RemoveEdge(edge);
+            }
+        }
+
+        #endregion
+
+        #region IMutableEdgeListGraph<int,TEdge>
+
+        /// <inheritdoc />
+        public bool AddEdge(TEdge edge)
+        {
+            if (_edges[edge.Source, edge.Target] != null)
+                throw new ParallelEdgeNotAllowedException();
+
+            _edges[edge.Source, edge.Target] = edge;
+            EdgeCount++;
+            OnEdgeAdded(edge);
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public int AddEdgeRange(IEnumerable<TEdge> edges)
+        {
+            int count = 0;
+            foreach (TEdge edge in edges)
+            {
+                if (AddEdge(edge))
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <inheritdoc />
+        public event EdgeAction<int, TEdge> EdgeAdded;
+
+        /// <summary>
+        /// Called on each added edge.
+        /// </summary>
+        /// <param name="edge">Added edge.</param>
+        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeAdded?.Invoke(edge);
+        }
+
+        /// <inheritdoc />
         public bool RemoveEdge(TEdge edge)
         {
-            TEdge e = this.edges[edge.Source, edge.Target];
-            this.edges[edge.Source, edge.Target] = default(TEdge);
+            TEdge e = _edges[edge.Source, edge.Target];
+            _edges[edge.Source, edge.Target] = default(TEdge);
             if (!e.Equals(default(TEdge)))
             {
-                this.edgeCount--;
-                this.OnEdgeRemoved(edge);
+                EdgeCount--;
+                OnEdgeRemoved(edge);
                 return true;
             }
-            else
-                return false;
+
+            return false;
         }
 
+        /// <inheritdoc />
         public event EdgeAction<int, TEdge> EdgeRemoved;
-        protected virtual void OnEdgeRemoved(TEdge args)
+
+        /// <summary>
+        /// Called on each removed edge.
+        /// </summary>
+        /// <param name="edge">Removed edge.</param>
+        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
         {
-            var eh = this.EdgeRemoved;
-            if (eh != null)
-                eh(args);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeRemoved?.Invoke(edge);
         }
 
+        /// <summary>
+        /// <see cref="RemoveEdgeIf"/> is not implemented for this kind of graph.
+        /// </summary>
         public int RemoveEdgeIf(EdgePredicate<int, TEdge> predicate)
         {
             throw new NotImplementedException();
@@ -469,12 +503,12 @@ namespace QuikGraph
 
         #endregion
 
-        #region ICloneable Members
+        #region ICloneable
 
         private BidirectionalMatrixGraph(
             int vertexCount,
             int edgeCount,
-            TEdge[,] edges)
+            [NotNull] TEdge[,] edges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexCount > 0);
@@ -484,24 +518,32 @@ namespace QuikGraph
             Contract.Requires(vertexCount == edges.GetLength(1));
 #endif
 
-            this.vertexCount = vertexCount;
-            this.edgeCount = edgeCount;
-            this.edges = edges;
+            VertexCount = vertexCount;
+            EdgeCount = edgeCount;
+            _edges = edges;
         }
 
+        /// <summary>
+        /// Clones this graph.
+        /// </summary>
+        /// <returns>Cloned graph.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public BidirectionalMatrixGraph<TEdge> Clone()
         {
             return new BidirectionalMatrixGraph<TEdge>(
-                this.vertexCount,
-                this.edgeCount,
-                (TEdge[,])this.edges.Clone()
-                );
+                VertexCount,
+                EdgeCount,
+                (TEdge[,])_edges.Clone());
         }
 
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
 #endif
 

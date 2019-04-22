@@ -1,59 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A delegate-based incidence graph
+    /// A delegate-based incidence graph.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class DelegateIncidenceGraph<TVertex, TEdge> : DelegateImplicitGraph<TVertex, TEdge>, IIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>, IEquatable<TEdge>
     {
-        public DelegateIncidenceGraph(
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
-            :base(tryGetOutEdges) {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateIncidenceGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="tryGetOutEdges">Getter of out-edges.</param>
+        public DelegateIncidenceGraph([NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
+            : base(tryGetOutEdges)
+        {
+        }
 
+        #region IIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            TEdge edge;
-            return this.TryGetEdge(source, target, out edge);
+            return TryGetEdge(source, target, out _);
         }
 
+        /// <inheritdoc />
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
         {
-            IEnumerable<TEdge> outEdges;
-            List<TEdge> result = null;
-            if (this.TryGetOutEdges(source, out outEdges))
-                foreach (var e in outEdges)
-                    if (e.Target.Equals(target))
-                    {
-                        if (result == null)
-                            result = new List<TEdge>();
-                        result.Add(e);
-                    }
+            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
+            {
+                edges = outEdges.Where(edge => edge.Target.Equals(target));
+                return edges.Any();
+            }
 
-            edges = result == null ? null : result.ToArray();
-            return edges != null;
+            edges = null;
+            return false;
         }
 
+        /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
-            IEnumerable<TEdge> edges;
-            if (this.TryGetOutEdges(source, out edges))
-                foreach (var e in edges)
-                    if (e.Target.Equals(target))
+            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
+            {
+                foreach (var outEdge in outEdges)
+                {
+                    if (outEdge.Target.Equals(target))
                     {
-                        edge = e;
+                        edge = outEdge;
                         return true;
                     }
+                }
+            }
 
             edge = default(TEdge);
             return false;
         }
+
+        #endregion
     }
 }

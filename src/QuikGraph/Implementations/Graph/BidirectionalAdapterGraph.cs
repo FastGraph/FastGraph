@@ -1,0 +1,208 @@
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using JetBrains.Annotations;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using QuikGraph.Collections;
+
+namespace QuikGraph
+{
+    /// <summary>
+    /// Implementation that wraps a bidirectional graph.
+    /// Vertex list graph for out-edges only and dictionary cache for in-edges.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public class BidirectionalAdapterGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
+        where TEdge : IEdge<TVertex>
+    {
+        private readonly IVertexAndEdgeListGraph<TVertex, TEdge> _baseGraph;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BidirectionalAdapterGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="baseGraph">Wrapped bidirectional graph.</param>
+        public BidirectionalAdapterGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(baseGraph != null);
+#endif
+
+            _baseGraph = baseGraph;
+            _inEdges = new Dictionary<TVertex, EdgeList<TVertex, TEdge>>(_baseGraph.VertexCount);
+            foreach (TEdge edge in _baseGraph.Edges)
+            {
+                if (!_inEdges.TryGetValue(edge.Target, out EdgeList<TVertex, TEdge> edgeList))
+                    _inEdges.Add(edge.Target, edgeList = new EdgeList<TVertex, TEdge>());
+                edgeList.Add(edge);
+            }
+        }
+
+        #region IGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsDirected => _baseGraph.IsDirected;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => _baseGraph.AllowParallelEdges;
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => _baseGraph.IsVerticesEmpty;
+
+        /// <inheritdoc />
+        public int VertexCount => _baseGraph.VertexCount;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => _baseGraph.Vertices;
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return _baseGraph.ContainsVertex(vertex);
+        }
+
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => _baseGraph.IsEdgesEmpty;
+
+        /// <inheritdoc />
+        public int EdgeCount => _baseGraph.EdgeCount;
+
+        /// <inheritdoc />
+        public virtual IEnumerable<TEdge> Edges => _baseGraph.Edges;
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
+        {
+            return _baseGraph.ContainsEdge(edge);
+        }
+
+        #endregion
+
+        #region IIncidenceGraph<TVertex,TEdge> 
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return _baseGraph.ContainsEdge(source, target);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            return _baseGraph.TryGetEdge(source, target, out edge);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        {
+            return _baseGraph.TryGetEdges(source, target, out edges);
+        }
+
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
+        {
+            return _baseGraph.IsOutEdgesEmpty(vertex);
+        }
+
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
+        {
+            return _baseGraph.OutDegree(vertex);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
+        {
+            return _baseGraph.OutEdges(vertex);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            return _baseGraph.TryGetOutEdges(vertex, out edges);
+        }
+
+        /// <inheritdoc />
+        public TEdge OutEdge(TVertex vertex, int index)
+        {
+            return _baseGraph.OutEdge(vertex, index);
+        }
+
+        #endregion
+
+        #region IBidirectionalIncidenceGraph<TVertex,TEdge>
+
+        [NotNull]
+        private readonly Dictionary<TVertex, EdgeList<TVertex, TEdge>> _inEdges;
+
+        /// <inheritdoc />
+        public bool IsInEdgesEmpty(TVertex vertex)
+        {
+            return InDegree(vertex) == 0;
+        }
+
+        /// <inheritdoc />
+        public int InDegree(TVertex vertex)
+        {
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
+                return edges.Count;
+            return 0;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> InEdges(TVertex vertex)
+        {
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
+                return edges;
+            return Enumerable.Empty<TEdge>();
+        }
+
+        /// <inheritdoc />
+        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edgeList))
+            {
+                edges = edgeList;
+                return edgeList.Count > 0;
+            }
+
+            edges = null;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public TEdge InEdge(TVertex vertex, int index)
+        {
+            return _inEdges[vertex][index];
+        }
+
+        /// <inheritdoc />
+        public int Degree(TVertex vertex)
+        {
+            return InDegree(vertex) + OutDegree(vertex);
+        }
+
+        #endregion
+    }
+}

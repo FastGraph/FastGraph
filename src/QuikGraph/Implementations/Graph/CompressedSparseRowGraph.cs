@@ -6,22 +6,20 @@ using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// Directed graph representation using a Compressed Sparse Row representation
+    /// Directed graph representation using a compressed sparse row representation.
     /// (http://www.cs.utk.edu/~dongarra/etemplates/node373.html)
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public sealed class CompressedSparseRowGraph<TVertex>
-        : IVertexSet<TVertex>
-        , IEdgeSet<TVertex, SEquatableEdge<TVertex>>
-        , IVertexListGraph<TVertex, SEquatableEdge<TVertex>>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public sealed class CompressedSparseRowGraph<TVertex> : IEdgeSet<TVertex, SEquatableEdge<TVertex>>, IVertexListGraph<TVertex, SEquatableEdge<TVertex>>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
@@ -29,10 +27,11 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
         [Serializable]
 #endif
-        struct Range
+        private struct Range
         {
             public readonly int Start;
             public readonly int End;
+
             public Range(int start, int end)
             {
 #if SUPPORTS_CONTRACTS
@@ -42,8 +41,8 @@ namespace QuikGraph
                 Contract.Ensures(Contract.ValueAtReturn(out this).End == end);
 #endif
 
-                this.Start = start;
-                this.End = end;
+                Start = start;
+                End = end;
             }
 
             public int Length
@@ -54,31 +53,33 @@ namespace QuikGraph
                     Contract.Ensures(Contract.Result<int>() >= 0);
 #endif
 
-                    return this.End - this.Start;
+                    return End - Start;
                 }
             }
         }
 
-        readonly Dictionary<TVertex, Range> outEdgeStartRanges;
-        readonly TVertex[] outEdges;
-
         private CompressedSparseRowGraph(
-            Dictionary<TVertex, Range> outEdgeStartRanges,
-            TVertex[] outEdges
-            )
+            [NotNull] Dictionary<TVertex, Range> outEdgeStartRanges,
+            [NotNull, ItemNotNull] TVertex[] outEdges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(outEdgeStartRanges != null);
             Contract.Requires(outEdges != null);
 #endif
 
-            this.outEdgeStartRanges = outEdgeStartRanges;
-            this.outEdges = outEdges;
+            _outEdgeStartRanges = outEdgeStartRanges;
+            _outEdges = outEdges;
         }
 
+        /// <summary>
+        /// Converts the given <paramref name="visitedGraph"/> to a <see cref="CompressedSparseRowGraph{TVertex}"/>.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to convert.</param>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <returns>A corresponding <see cref="CompressedSparseRowGraph{TVertex}"/>.</returns>
+        [NotNull]
         public static CompressedSparseRowGraph<TVertex> FromGraph<TEdge>(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph
-            )
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -89,12 +90,11 @@ namespace QuikGraph
             var outEdgeStartRanges = new Dictionary<TVertex, Range>(visitedGraph.VertexCount);
             var outEdges = new TVertex[visitedGraph.EdgeCount];
 
-            int start = 0;
-            int end = 0;
+            const int start = 0;
             int index = 0;
             foreach (var vertex in visitedGraph.Vertices)
             {
-                end = start + visitedGraph.OutDegree(vertex);
+                int end = start + visitedGraph.OutDegree(vertex);
                 var range = new Range(start, end);
                 outEdgeStartRanges.Add(vertex, range);
                 foreach (var edge in visitedGraph.OutEdges(vertex))
@@ -107,97 +107,99 @@ namespace QuikGraph
             Contract.Assert(index == outEdges.Length);
 #endif
 
-            return new CompressedSparseRowGraph<TVertex>(
-                outEdgeStartRanges,
-                outEdges);
+            return new CompressedSparseRowGraph<TVertex>(outEdgeStartRanges, outEdges);
         }
 
-        public bool IsVerticesEmpty
-        {
-            get { return this.outEdgeStartRanges.Count > 0; }
-        }
+        #region IGraph<TVertex,TEdge>
 
-        public int VertexCount
-        {
-            get { return this.outEdgeStartRanges.Count; }
-        }
+        /// <inheritdoc />
+        public bool IsDirected => true;
 
-        public IEnumerable<TVertex> Vertices
-        {
-            get { return this.outEdgeStartRanges.Keys; }
-        }
+        /// <inheritdoc />
+        public bool AllowParallelEdges => false;
 
+        #endregion
+
+        #region IVertexSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => _outEdgeStartRanges.Count > 0;
+
+        /// <inheritdoc />
+        public int VertexCount => _outEdgeStartRanges.Count;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => _outEdgeStartRanges.Keys;
+
+        /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
-            return this.outEdgeStartRanges.ContainsKey(vertex);
+            return _outEdgeStartRanges.ContainsKey(vertex);
         }
 
-        public int EdgeCount
-        {
-            get { return this.outEdges.Length; }
-        }
+        #endregion
 
-        public bool IsEdgesEmpty
-        {
-            get { return this.outEdges.Length > 0; }
-        }
+        #region IEdgeSet<TVertex,TEdge>
 
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => _outEdges.Length > 0;
+
+        /// <inheritdoc />
+        public int EdgeCount => _outEdges.Length;
+
+        [NotNull, ItemNotNull]
+        private readonly TVertex[] _outEdges;
+
+        [NotNull]
+        private readonly Dictionary<TVertex, Range> _outEdgeStartRanges;
+
+        /// <inheritdoc />
         public IEnumerable<SEquatableEdge<TVertex>> Edges
         {
-            get 
+            get
             {
-                foreach (var kv in this.outEdgeStartRanges)
+                foreach (KeyValuePair<TVertex, Range> pair in _outEdgeStartRanges)
                 {
-                    var source = kv.Key;
-                    var range = kv.Value;
+                    TVertex source = pair.Key;
+                    Range range = pair.Value;
                     for (int i = range.Start; i < range.End; ++i)
                     {
-                        var target = this.outEdges[i];
+                        TVertex target = _outEdges[i];
                         yield return new SEquatableEdge<TVertex>(source, target);
                     }
                 }
             }
         }
 
+        /// <inheritdoc />
         public bool ContainsEdge(SEquatableEdge<TVertex> edge)
         {
             return ContainsEdge(edge.Source, edge.Target);
         }
 
+        #endregion
+
+        #region IIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            Range range;
-            if (this.outEdgeStartRanges.TryGetValue(source, out range))
+            if (_outEdgeStartRanges.TryGetValue(source, out Range range))
             {
                 for (int i = range.Start; i < range.End; ++i)
-                    if (this.outEdges[i].Equals(target))
+                {
+                    if (_outEdges[i].Equals(target))
                         return true;
+                }
             }
 
             return false;
         }
 
-        public bool TryGetEdges(
-            TVertex source, 
-            TVertex target, 
-            out IEnumerable<SEquatableEdge<TVertex>> edges)
+        /// <inheritdoc />
+        public bool TryGetEdge(TVertex source, TVertex target, out SEquatableEdge<TVertex> edge)
         {
-            if (this.ContainsEdge(source, target))
-            {
-                edges = new SEquatableEdge<TVertex>[] { new SEquatableEdge<TVertex>(source, target) };
-                return true;
-            }
-
-            edges = null;
-            return false;
-        }
-
-        public bool TryGetEdge(
-            TVertex source, 
-            TVertex target, 
-            out SEquatableEdge<TVertex> edge)
-        {
-            if (this.ContainsEdge(source, target))
+            if (ContainsEdge(source, target))
             {
                 edge = new SEquatableEdge<TVertex>(source, target);
                 return true;
@@ -207,29 +209,50 @@ namespace QuikGraph
             return false;
         }
 
-        public bool IsOutEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<SEquatableEdge<TVertex>> edges)
         {
-            return this.outEdgeStartRanges[v].Length == 0;
+            if (ContainsEdge(source, target))
+            {
+                edges = new[] { new SEquatableEdge<TVertex>(source, target) };
+                return true;
+            }
+
+            edges = null;
+            return false;
         }
 
-        public int OutDegree(TVertex v)
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            return this.outEdgeStartRanges[v].Length;
+            return _outEdgeStartRanges[vertex].Length == 0;
         }
 
-        public IEnumerable<SEquatableEdge<TVertex>> OutEdges(TVertex v)
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
         {
-            var range = this.outEdgeStartRanges[v];
-            for(int i = range.Start;i<range.End;++i)
-                yield return new SEquatableEdge<TVertex>(v, this.outEdges[i]);
+            return _outEdgeStartRanges[vertex].Length;
         }
 
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<SEquatableEdge<TVertex>> edges)
+        /// <inheritdoc />
+        public IEnumerable<SEquatableEdge<TVertex>> OutEdges(TVertex vertex)
         {
-            var range = this.outEdgeStartRanges[v];
+            Range range = _outEdgeStartRanges[vertex];
+            for (int i = range.Start; i < range.End; ++i)
+                yield return new SEquatableEdge<TVertex>(vertex, _outEdges[i]);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<SEquatableEdge<TVertex>> edges)
+        {
+            Range range = _outEdgeStartRanges[vertex];
             if (range.Length > 0)
             {
-                edges = this.OutEdges(v);
+                edges = OutEdges(vertex);
                 return false;
             }
 
@@ -237,39 +260,45 @@ namespace QuikGraph
             return false;
         }
 
-        public SEquatableEdge<TVertex> OutEdge(TVertex v, int index)
+        /// <inheritdoc />
+        public SEquatableEdge<TVertex> OutEdge(TVertex vertex, int index)
         {
-            var range = this.outEdgeStartRanges[v];
-            var targetIndex = range.Start + index;
+            Range range = _outEdgeStartRanges[vertex];
+            int targetIndex = range.Start + index;
 #if SUPPORTS_CONTRACTS
             Contract.Assert(targetIndex < range.End);
 #endif
 
-            return new SEquatableEdge<TVertex>(v, this.outEdges[targetIndex]);
+            return new SEquatableEdge<TVertex>(vertex, _outEdges[targetIndex]);
         }
 
-        public bool IsDirected
-        {
-            get { return true; }
-        }
+        #endregion
 
-        public bool AllowParallelEdges
-        {
-            get { return false; }
-        }
+        #region ICloneable
 
+        /// <summary>
+        /// Clones this graph.
+        /// </summary>
+        /// <returns>Cloned graph.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public CompressedSparseRowGraph<TVertex> Clone()
         {
-            var ranges = new Dictionary<TVertex, Range>(this.outEdgeStartRanges);
-            var edges = (TVertex[])this.outEdges.Clone();
+            var ranges = new Dictionary<TVertex, Range>(_outEdgeStartRanges);
+            var edges = (TVertex[])_outEdges.Clone();
             return new CompressedSparseRowGraph<TVertex>(ranges, edges);
         }
 
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
 #endif
+
+        #endregion
     }
 }

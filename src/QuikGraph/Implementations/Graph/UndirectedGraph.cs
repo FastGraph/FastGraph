@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +27,7 @@ namespace QuikGraph
 #endif
         where TEdge : IEdge<TVertex>
     {
+        [NotNull]
         private readonly VertexEdgeDictionary<TVertex, TEdge> _adjacentEdges =
             new VertexEdgeDictionary<TVertex, TEdge>();
 
@@ -63,6 +66,7 @@ namespace QuikGraph
         {
         }
 
+        [NotNull]
         private readonly EdgeEqualityComparer<TVertex, TEdge> _edgeEqualityComparer;
 
         /// <inheritdoc />
@@ -81,6 +85,9 @@ namespace QuikGraph
         /// <summary>
         /// Gets or sets the edge capacity.
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         public int EdgeCapacity { get; set; } = 4;
 
         /// <summary>
@@ -104,7 +111,16 @@ namespace QuikGraph
             return adjacentVertices;
         }
 
-        #region IGraph<Vertex,Edge>
+#if SUPPORTS_CONTRACTS
+        [ContractInvariantMethod]
+        // ReSharper disable once UnusedMember.Local
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(EdgeCount >= 0);
+        }
+#endif
+
+        #region IGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool IsDirected => false;
@@ -114,7 +130,163 @@ namespace QuikGraph
 
         #endregion
 
-        #region IMutableUndirected<Vertex,Edge>
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => _adjacentEdges.Count == 0;
+
+        /// <inheritdoc />
+        public int VertexCount => _adjacentEdges.Count;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => _adjacentEdges.Keys;
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return _adjacentEdges.ContainsKey(vertex);
+        }
+
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount == 0;
+
+        /// <inheritdoc />
+        public int EdgeCount { get; private set; }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges
+        {
+            get
+            {
+                var edgeColors = new Dictionary<TEdge, GraphColor>(EdgeCount);
+                foreach (IEdgeList<TVertex, TEdge> edges in _adjacentEdges.Values)
+                {
+                    foreach (TEdge edge in edges)
+                    {
+                        if (edgeColors.TryGetValue(edge, out _))
+                            continue;
+
+                        edgeColors.Add(edge, GraphColor.Black);
+                        yield return edge;
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
+        {
+            foreach (var adjacentEdge in AdjacentEdges(edge.Source))
+            {
+                if (adjacentEdge.Equals(edge))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool ContainsEdgeBetweenVertices([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TEdge edge)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edges != null);
+            Contract.Requires(edge != null);
+#endif
+
+            var source = edge.Source;
+            var target = edge.Target;
+            foreach (var e in edges)
+            {
+                if (EdgeEqualityComparer(e, source, target))
+                    return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region IUndirectedGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
+        {
+            return _adjacentEdges[vertex];
+        }
+
+        /// <inheritdoc />
+        public int AdjacentDegree(TVertex vertex)
+        {
+            return _adjacentEdges[vertex].Count;
+        }
+
+        /// <inheritdoc />
+        public bool IsAdjacentEdgesEmpty(TVertex vertex)
+        {
+            return _adjacentEdges[vertex].Count == 0;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            if (Comparer<TVertex>.Default.Compare(source, target) > 0)
+            {
+                TVertex temp = source;
+                source = target;
+                target = temp;
+            }
+
+            foreach (TEdge adjacentEdge in AdjacentEdges(source))
+            {
+                if (_edgeEqualityComparer(adjacentEdge, source, target))
+                {
+                    edge = adjacentEdge;
+                    return true;
+                }
+            }
+
+            edge = default(TEdge);
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
+        /// <inheritdoc />
+        public TEdge AdjacentEdge(TVertex vertex, int index)
+        {
+            return _adjacentEdges[vertex][index];
+        }
+
+        #endregion
+
+        #region IMutableGraph<TVertex,TEdge>
+
+        /// <summary>
+        /// Trims excess storage allocated for edges.
+        /// </summary>
+        public void TrimEdgeExcess()
+        {
+            foreach (IEdgeList<TVertex, TEdge> edges in _adjacentEdges.Values)
+                edges.TrimExcess();
+        }
+
+        /// <inheritdoc />
+        public void Clear()
+        {
+            _adjacentEdges.Clear();
+            EdgeCount = 0;
+        }
+
+        #endregion
+
+        #region IMutableUndirected<TVertex,TEdge>
 
         /// <inheritdoc />
         public event VertexAction<TVertex> VertexAdded;
@@ -207,17 +379,17 @@ namespace QuikGraph
         {
             var verticesToRemove = Vertices
                 .Where(vertex => predicate(vertex))
-                .ToList();
+                .ToArray();
 
             foreach (var vertex in verticesToRemove)
                 RemoveVertex(vertex);
 
-            return verticesToRemove.Count;
+            return verticesToRemove.Length;
         }
 
         #endregion
 
-        #region IMutableIncidenceGraph<Vertex,Edge>
+        #region IMutableIncidenceGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public int RemoveAdjacentEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
@@ -230,14 +402,6 @@ namespace QuikGraph
             RemoveEdges(edges);
             return edges.Count;
         }
-
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(EdgeCount >= 0);
-        }
-#endif
 
         /// <inheritdoc />
         public void ClearAdjacentEdges(TVertex vertex)
@@ -257,81 +421,7 @@ namespace QuikGraph
 
         #endregion
 
-        #region IMutableGraph<Vertex,Edge>
-
-        /// <summary>
-        /// Trims excess storage allocated for edges.
-        /// </summary>
-        public void TrimEdgeExcess()
-        {
-            foreach (IEdgeList<TVertex, TEdge> edges in _adjacentEdges.Values)
-                edges.TrimExcess();
-        }
-
-        /// <inheritdoc />
-        public void Clear()
-        {
-            _adjacentEdges.Clear();
-            EdgeCount = 0;
-        }
-
-        #endregion
-
-        #region IUndirectedGraph<Vertex,Edge>
-
-        /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
-        {
-            if (Comparer<TVertex>.Default.Compare(source, target) > 0)
-            {
-                TVertex temp = source;
-                source = target;
-                target = temp;
-            }
-
-            foreach (TEdge adjacentEdge in AdjacentEdges(source))
-            {
-                if (_edgeEqualityComparer(adjacentEdge, source, target))
-                {
-                    edge = adjacentEdge;
-                    return true;
-                }
-            }
-
-            edge = default(TEdge);
-            return false;
-        }
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            return TryGetEdge(source, target, out _);
-        }
-
-        /// <inheritdoc />
-        public TEdge AdjacentEdge(TVertex vertex, int index)
-        {
-            return _adjacentEdges[vertex][index];
-        }
-
-        /// <inheritdoc />
-        public bool IsVerticesEmpty => _adjacentEdges.Count == 0;
-
-        /// <inheritdoc />
-        public int VertexCount => _adjacentEdges.Count;
-
-        /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => _adjacentEdges.Keys;
-
-        /// <inheritdoc />
-        public bool ContainsVertex(TVertex vertex)
-        {
-            return _adjacentEdges.ContainsKey(vertex);
-        }
-
-        #endregion
-
-        #region IMutableEdgeListGraph<Vertex,Edge>
+        #region IMutableEdgeListGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool AddVerticesAndEdge(TEdge edge)
@@ -459,7 +549,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
         {
-            return RemoveEdges(Edges.Where(edge => predicate(edge)));
+            return RemoveEdges(
+                Edges.Where(edge => predicate(edge)).ToArray());
         }
 
         /// <summary>
@@ -477,88 +568,6 @@ namespace QuikGraph
             }
 
             return count;
-        }
-
-        #endregion
-
-        #region IEdgeListGraph<Vertex,Edge>
-
-        /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount == 0;
-
-        /// <inheritdoc />
-        public int EdgeCount { get; private set; }
-
-        /// <inheritdoc />
-        public IEnumerable<TEdge> Edges
-        {
-            get
-            {
-                var edgeColors = new Dictionary<TEdge, GraphColor>(EdgeCount);
-                foreach (IEdgeList<TVertex, TEdge> edges in _adjacentEdges.Values)
-                {
-                    foreach (TEdge edge in edges)
-                    {
-                        if (edgeColors.TryGetValue(edge, out _))
-                            continue;
-
-                        edgeColors.Add(edge, GraphColor.Black);
-                        yield return edge;
-                    }
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TEdge edge)
-        {
-            foreach (var adjacentEdge in AdjacentEdges(edge.Source))
-            {
-                if (adjacentEdge.Equals(edge))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private bool ContainsEdgeBetweenVertices([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TEdge edge)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(edge != null);
-#endif
-
-            var source = edge.Source;
-            var target = edge.Target;
-            foreach (var e in edges)
-            {
-                if (EdgeEqualityComparer(e, source, target))
-                    return true;
-            }
-
-            return false;
-        }
-
-        #endregion
-
-        #region IUndirectedGraph<Vertex,Edge>
-
-        /// <inheritdoc />
-        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
-        {
-            return _adjacentEdges[vertex];
-        }
-
-        /// <inheritdoc />
-        public int AdjacentDegree(TVertex vertex)
-        {
-            return _adjacentEdges[vertex].Count;
-        }
-
-        /// <inheritdoc />
-        public bool IsAdjacentEdgesEmpty(TVertex vertex)
-        {
-            return _adjacentEdges[vertex].Count == 0;
         }
 
         #endregion
@@ -604,6 +613,7 @@ namespace QuikGraph
         }
 
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();

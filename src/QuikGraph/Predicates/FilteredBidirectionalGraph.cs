@@ -35,62 +35,7 @@ namespace QuikGraph.Predicates
         {
         }
 
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public bool IsInEdgesEmpty(TVertex vertex)
-        {
-            return InDegree(vertex) == 0;
-        }
-
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public int InDegree(TVertex vertex)
-        {
-            return InEdges(vertex).Count();
-        }
-
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public IEnumerable<TEdge> InEdges(TVertex vertex)
-        {
-            return BaseGraph.InEdges(vertex).Where(FilterEdge);
-        }
-
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
-        {
-            if (ContainsVertex(vertex))
-            {
-                edges = InEdges(vertex);
-                return true;
-            }
-
-            edges = null;
-            return false;
-        }
-
-        /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
-        public int Degree(TVertex vertex)
-        {
-            return OutDegree(vertex) + InDegree(vertex);
-        }
+        #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool IsEdgesEmpty => EdgeCount == 0;
@@ -102,26 +47,61 @@ namespace QuikGraph.Predicates
         public IEnumerable<TEdge> Edges => BaseGraph.Edges.Where(FilterEdge);
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool ContainsEdge(TEdge edge)
         {
-            return FilterEdge(edge)
-                && BaseGraph.ContainsEdge(edge);
+            return FilterEdge(edge) && BaseGraph.ContainsEdge(edge);
+        }
+
+        #endregion
+
+        #region IBidirectionalIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsInEdgesEmpty(TVertex vertex)
+        {
+            return InDegree(vertex) == 0;
+        }
+
+        /// <inheritdoc />
+        public int InDegree(TVertex vertex)
+        {
+            return InEdges(vertex).Count();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> InEdges(TVertex vertex)
+        {
+            return BaseGraph.InEdges(vertex).Where(FilterEdge);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            if (ContainsVertex(vertex))
+            {
+                TEdge[] inEdges = InEdges(vertex).ToArray();
+                edges = inEdges;
+                return inEdges.Length > 0;
+            }
+
+            edges = null;
+            return false;
         }
 
         /// <summary>
         /// <see cref="InEdge"/> is not supported for this kind of graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public TEdge InEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
         }
+
+        /// <inheritdoc />
+        public int Degree(TVertex vertex)
+        {
+            return OutDegree(vertex) + InDegree(vertex);
+        }
+
+        #endregion
     }
 }

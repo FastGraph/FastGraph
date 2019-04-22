@@ -7,103 +7,162 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// An immutable directed graph data structure efficient for large sparse
+    /// Implementation for an immutable directed graph data structure efficient for large sparse
     /// graph representation where out-edge need to be enumerated only.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public sealed class ArrayAdjacencyGraph<TVertex, TEdge>
-        : IVertexAndEdgeListGraph<TVertex, TEdge>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public sealed class ArrayAdjacencyGraph<TVertex, TEdge> : IVertexAndEdgeListGraph<TVertex, TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
     {
-        readonly Dictionary<TVertex, TEdge[]> vertexOutEdges;
-        readonly int edgeCount;
-
-        public ArrayAdjacencyGraph(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph
-            )
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArrayAdjacencyGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public ArrayAdjacencyGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
 #endif
 
-            this.vertexOutEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
-            this.edgeCount = visitedGraph.EdgeCount;
-            foreach (var vertex in visitedGraph.Vertices)
+            _vertexOutEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
+            EdgeCount = visitedGraph.EdgeCount;
+            foreach (TVertex vertex in visitedGraph.Vertices)
             {
-                var outEdges = new List<TEdge>(visitedGraph.OutEdges(vertex));
-                this.vertexOutEdges.Add(vertex, outEdges.ToArray());
+                _vertexOutEdges.Add(
+                    vertex,
+                    visitedGraph.OutEdges(vertex).ToArray());
             }
         }
 
-        private ArrayAdjacencyGraph(
-            Dictionary<TVertex, TEdge[]> vertexOutEdges,
-            int edgeCount
-            )
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexOutEdges != null);
-            Contract.Requires(edgeCount >= 0);
-            Contract.Requires(edgeCount == Enumerable.Sum(vertexOutEdges, kv => (kv.Value == null) ? 0 : kv.Value.Length));
-#endif
+        #region IGraph<TVertex,TEdge>
 
-            this.vertexOutEdges = vertexOutEdges;
-            this.edgeCount = edgeCount;
+        /// <inheritdoc />
+        public bool IsDirected => true;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => true;
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => _vertexOutEdges.Count == 0;
+
+        /// <inheritdoc />
+        public int VertexCount => _vertexOutEdges.Count;
+
+        [NotNull]
+        private readonly Dictionary<TVertex, TEdge[]> _vertexOutEdges;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => _vertexOutEdges.Keys;
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return _vertexOutEdges.ContainsKey(vertex);
         }
 
-#region IIncidenceGraph<TVertex,TEdge> Members
-        public bool ContainsEdge(TVertex source, TVertex target)
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount == 0;
+
+        /// <inheritdoc />
+        public int EdgeCount { get; }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges => _vertexOutEdges.Values.SelectMany(edges => edges);
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
         {
-            TEdge edge;
-            return this.TryGetEdge(source, target, out edge);
+            if (_vertexOutEdges.TryGetValue(edge.Source, out TEdge[] edges))
+                return edges.Any(e => e.Equals(edge));
+            return false;
         }
 
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            TEdge[] es;
-            if (this.vertexOutEdges.TryGetValue(source, out es))
+            return OutDegree(vertex) == 0;
+        }
+
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
+        {
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] edges))
+                return edges.Length;
+            return 0;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
+        {
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] edges))
+                return edges;
+            return Enumerable.Empty<TEdge>();
+        }
+
+        /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] outEdges))
             {
-                List<TEdge> _edges = null;
-                for (int i = 0; i < es.Length; i++)
-                {
-                    if (es[i].Target.Equals(target))
-                    {
-                        if (_edges == null)
-                            _edges = new List<TEdge>(es.Length - i);
-                        _edges.Add(es[i]);
-                    }
-                }
-
-                edges = _edges;
-                return edges != null;
+                edges = outEdges;
+                return outEdges.Length > 0;
             }
 
             edges = null;
             return false;
         }
 
+        /// <inheritdoc />
+        public TEdge OutEdge(TVertex vertex, int index)
+        {
+            return _vertexOutEdges[vertex][index];
+        }
+
+        #endregion
+
+        #region IIncidenceGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
+        /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
-            TEdge[] edges;
-            if (this.vertexOutEdges.TryGetValue(source, out edges) &&
-                edges != null)
+            if (_vertexOutEdges.TryGetValue(source, out TEdge[] outEdges))
             {
-                for (int i = 0; i < edges.Length; i++)
+                foreach (TEdge outEdge in outEdges)
                 {
-                    if (edges[i].Target.Equals(target))
+                    if (outEdge.Target.Equals(target))
                     {
-                        edge = edges[i];
+                        edge = outEdge;
                         return true;
                     }
                 }
@@ -113,143 +172,44 @@ namespace QuikGraph
             return false;
         }
 
-#endregion
-
-#region IImplicitGraph<TVertex,TEdge> Members
-        public bool IsOutEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
         {
-            return this.OutDegree(v) == 0;
-        }
-
-        public int OutDegree(TVertex v)
-        {
-            TEdge[] edges;
-            if (this.vertexOutEdges.TryGetValue(v, out edges) &&
-                edges != null)
-                return edges.Length;
-            return 0;
-        }
-
-        public IEnumerable<TEdge> OutEdges(TVertex v)
-        {
-            TEdge[] edges;
-            if (this.vertexOutEdges.TryGetValue(v, out edges) &&
-                edges != null)
-                return edges;
-
-            return Enumerable.Empty<TEdge>();
-        }
-
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
-        {
-            TEdge[] aedges;
-            if (this.vertexOutEdges.TryGetValue(v, out aedges) &&
-                aedges != null)
+            if (_vertexOutEdges.TryGetValue(source, out TEdge[] outEdges))
             {
-                edges = aedges;
-                return true;
+                edges = outEdges.Where(edge => edge.Target.Equals(target));
+                return edges.Any();
             }
 
             edges = null;
             return false;
         }
 
-        public TEdge OutEdge(TVertex v, int index)
-        {
-            return this.vertexOutEdges[v][index];
-        }
-#endregion
+        #endregion
 
-#region IGraph<TVertex,TEdge> Members
-        public bool IsDirected
-        {
-            get { return true; }
-        }
+        #region ICloneable
 
-        public bool AllowParallelEdges
-        {
-            get { return true; }
-        }        
-#endregion
-
-#region IImplicitVertexSet<TVertex> Members
-        public bool ContainsVertex(TVertex vertex)
-        {
-            return this.vertexOutEdges.ContainsKey(vertex);
-        }
-#endregion
-
-#region IVertexSet<TVertex> Members
-        public bool IsVerticesEmpty
-        {
-            get { return this.vertexOutEdges.Count == 0; }
-        }
-
-        public int VertexCount
-        {
-            get { return this.vertexOutEdges.Count; }
-        }
-
-        public IEnumerable<TVertex> Vertices
-        {
-            get 
-            {
-                return this.vertexOutEdges.Keys;
-            }
-        }
-#endregion
-
-#region IEdgeSet<TVertex,TEdge> Members
-        public bool IsEdgesEmpty
-        {
-            get { return this.edgeCount == 0; }
-        }
-
-        public int EdgeCount
-        {
-            get { return this.edgeCount; }
-        }
-
-        public IEnumerable<TEdge> Edges
-        {
-            get             
-            { 
-                foreach(var edges in this.vertexOutEdges.Values)
-                    if (edges != null)
-                        for (int i = 0; i < edges.Length; i++)
-                            yield return edges[i];
-            }
-        }
-
-        public bool ContainsEdge(TEdge edge)
-        {
-            TEdge[] edges;
-            if (this.vertexOutEdges.TryGetValue(edge.Source, out edges) &&
-                edges != null)
-                for (int i = 0; i < edges.Length; i++)
-                    if (edges[i].Equals(edge))
-                        return true;
-            return false;
-        }
-#endregion
-
-#region ICloneable Members
         /// <summary>
-        /// Returns self since this class is immutable
+        /// Clones this graph, returns this instance because this class is immutable.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>This graph.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public ArrayAdjacencyGraph<TVertex, TEdge> Clone()
         {
             return this;
         }
 
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
 #endif
 
-#endregion
+        #endregion
     }
 }

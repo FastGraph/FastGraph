@@ -37,6 +37,8 @@ namespace QuikGraph.Predicates
         {
         }
 
+        #region IVertexSet<TVertex>
+
         /// <inheritdoc />
         public bool IsVerticesEmpty => VertexCount == 0;
 
@@ -45,6 +47,10 @@ namespace QuikGraph.Predicates
 
         /// <inheritdoc />
         public IEnumerable<TVertex> Vertices => BaseGraph.Vertices.Where(vertex => VertexPredicate(vertex));
+
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool IsEdgesEmpty => EdgeCount == 0;
@@ -56,14 +62,11 @@ namespace QuikGraph.Predicates
         public IEnumerable<TEdge> Edges => BaseGraph.Edges.Where(FilterEdge);
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool ContainsEdge(TEdge edge)
         {
-            return FilterEdge(edge) 
-                   && BaseGraph.ContainsEdge(edge);
+            return FilterEdge(edge) && BaseGraph.ContainsEdge(edge);
         }
+
+        #endregion
     }
 }

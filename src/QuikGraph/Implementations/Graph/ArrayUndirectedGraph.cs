@@ -7,183 +7,177 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// An immutable undirected graph data structure based on arrays.
+    /// Implementation for an immutable undirected graph data structure based on arrays.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("VertexCount = {VertexCount}, EdgeCount = {EdgeCount}")]
-    public sealed class ArrayUndirectedGraph<TVertex, TEdge>
-        : IUndirectedGraph<TVertex, TEdge>
+    [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
+    public sealed class ArrayUndirectedGraph<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
     {
-        readonly EdgeEqualityComparer<TVertex, TEdge> edgeEqualityComparer;
-        readonly Dictionary<TVertex, TEdge[]> vertexEdges;
-        readonly int edgeCount;
-
-        public ArrayUndirectedGraph(
-            IUndirectedGraph<TVertex, TEdge> graph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArrayUndirectedGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public ArrayUndirectedGraph([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
+            Contract.Requires(visitedGraph != null);
 #endif
 
-            this.edgeEqualityComparer = graph.EdgeEqualityComparer;
-            this.edgeCount = graph.EdgeCount;
-            this.vertexEdges = new Dictionary<TVertex, TEdge[]>(graph.VertexCount);
-            foreach (var v in graph.Vertices)
+            EdgeEqualityComparer = visitedGraph.EdgeEqualityComparer;
+            EdgeCount = visitedGraph.EdgeCount;
+            _vertexEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
+            foreach (TVertex vertex in visitedGraph.Vertices)
             {
-                var edges = Enumerable.ToArray(graph.AdjacentEdges(v));
-                this.vertexEdges.Add(v, edges);
+                _vertexEdges.Add(
+                    vertex,
+                    visitedGraph.AdjacentEdges(vertex).ToArray());
             }
         }
 
-#region IImplicitUndirectedGraph<TVertex,TEdge> Members
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer
+        /// <inheritdoc />
+        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; }
+
+        #region IGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsDirected => false;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => true;
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool IsVerticesEmpty => _vertexEdges.Count == 0;
+
+        /// <inheritdoc />
+        public int VertexCount => _vertexEdges.Count;
+
+        [NotNull]
+        private readonly Dictionary<TVertex, TEdge[]> _vertexEdges;
+
+        /// <inheritdoc />
+        public IEnumerable<TVertex> Vertices => _vertexEdges.Keys;
+
+        #endregion
+
+        #region IImplicitVertexSet<TVertex>
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
         {
-            get { return this.edgeEqualityComparer; }
+            return _vertexEdges.ContainsKey(vertex);
         }
 
-        public IEnumerable<TEdge> AdjacentEdges(TVertex v)
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsEdgesEmpty => EdgeCount > 0;
+
+        /// <inheritdoc />
+        public int EdgeCount { get; }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> Edges => _vertexEdges.Values.SelectMany(edges => edges);
+
+        /// <inheritdoc />
+        public bool ContainsEdge(TEdge edge)
         {
-            var edges = this.vertexEdges[v];
-            return edges != null ? edges : Enumerable.Empty<TEdge>();
+            if (_vertexEdges.TryGetValue(edge.Source, out TEdge[] edges))
+                return edges.Any(e => e.Equals(edge));
+            return false;
         }
 
-        public int AdjacentDegree(TVertex v)
+        #endregion
+
+        #region IImplicitUndirectedGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
-            var edges = this.vertexEdges[v];
-            return edges != null ? edges.Length : 0;
+            return _vertexEdges[vertex];
         }
 
-        public bool IsAdjacentEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public int AdjacentDegree(TVertex vertex)
         {
-            return this.vertexEdges[v] != null;
+            return _vertexEdges[vertex].Length;
         }
 
-        public TEdge AdjacentEdge(TVertex v, int index)
+        /// <inheritdoc />
+        public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
-            return this.vertexEdges[v][index];
+            return _vertexEdges[vertex].Length == 0;
         }
 
+        /// <inheritdoc />
+        public TEdge AdjacentEdge(TVertex vertex, int index)
+        {
+            return _vertexEdges[vertex][index];
+        }
+
+        /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
-            var edges = this.vertexEdges[source];
-            if (edges != null)
-                for (int i = 0; i < edges.Length; i++)
+            TEdge[] edges = _vertexEdges[source];
+            foreach (TEdge e in edges)
+            {
+                if (EdgeEqualityComparer(e, source, target))
                 {
-                    if (this.edgeEqualityComparer(edges[i], source, target))
-                    {
-                        edge = edges[i];
-                        return true;
-                    }
+                    edge = e;
+                    return true;
                 }
+            }
 
             edge = default(TEdge);
             return false;
         }
 
+        /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            TEdge edge;
-            return this.TryGetEdge(source, target, out edge);
-        }
-#endregion
-
-#region IImplicitVertexSet<TVertex> Members
-        public bool ContainsVertex(TVertex vertex)
-        {
-            return this.vertexEdges.ContainsKey(vertex);
-        }
-#endregion
-
-#region IGraph<TVertex,TEdge> Members
-        public bool IsDirected
-        {
-            get { return false; }
+            return TryGetEdge(source, target, out _);
         }
 
-        public bool AllowParallelEdges
-        {
-            get { return true; }
-        }
-#endregion
+        #endregion
 
-#region IEdgeSet<TVertex,TEdge> Members
+        #region ICloneable
 
-        public bool IsEdgesEmpty
-        {
-            get { return this.edgeCount > 0; }
-        }
-
-        public int EdgeCount
-        {
-            get { return this.edgeCount; }
-        }
-
-        public IEnumerable<TEdge> Edges
-        {
-            get
-            {
-                foreach (var edges in this.vertexEdges.Values)
-                    if (edges != null)
-                        for (int i = 0; i < edges.Length; i++)
-                            yield return edges[i];
-            }
-        }
-
-        public bool ContainsEdge(TEdge edge)
-        {
-            var source = edge.Source;
-            TEdge[] edges;
-            if (this.vertexEdges.TryGetValue(source, out edges))
-                for (int i = 0; i < edges.Length; i++)
-                    if (edges[i].Equals(edge))
-                        return true;
-            return false;
-        }
-#endregion
-
-#region IVertexSet<TVertex> Members
-
-        public bool IsVerticesEmpty
-        {
-            get { return this.vertexEdges.Count == 0; }
-        }
-
-        public int VertexCount
-        {
-            get { return this.vertexEdges.Count; }
-        }
-
-        public IEnumerable<TVertex> Vertices
-        {
-            get { return this.vertexEdges.Keys; }
-        }
-#endregion
-
-#region ICloneable Members
         /// <summary>
-        /// Returns self
+        /// Clones this graph, returns this instance because this class is immutable.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>This graph.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public ArrayUndirectedGraph<TVertex, TEdge> Clone()
         {
             return this;
         }
+
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this;
+            return Clone();
         }
 #endif
         #endregion

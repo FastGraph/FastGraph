@@ -4,74 +4,83 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A delegate based bidirectional implicit graph
+    /// A delegate-based bidirectional implicit graph.
     /// </summary>
-    /// <typeparam name="TVertex"></typeparam>
-    /// <typeparam name="TEdge"></typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class DelegateBidirectionalIncidenceGraph<TVertex, TEdge> : DelegateIncidenceGraph<TVertex, TEdge>, IBidirectionalIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>, IEquatable<TEdge>
     {
-        readonly TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateBidirectionalIncidenceGraph{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="tryGetOutEdges">Getter of out-edges.</param>
+        /// <param name="tryGetInEdges">Getter of in-edges.</param>
         public DelegateBidirectionalIncidenceGraph(
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
-            :base(tryGetOutEdges)
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
+            : base(tryGetOutEdges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(tryGetInEdges != null);
 #endif
-            this.tryGetInEdges = tryGetInEdges;
+            _tryGetInEdgesFunc = tryGetInEdges;
         }
 
-        public TryFunc<TVertex, IEnumerable<TEdge>> TryGetInEdgesFunc
+        /// <summary>
+        /// Getter of in-edges.
+        /// </summary>
+        [NotNull]
+        private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetInEdgesFunc;
+
+        #region IBidirectionalImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsInEdgesEmpty(TVertex vertex)
         {
-            get { return this.tryGetInEdges; }
+            return !InEdges(vertex).Any();
         }
 
-#region IBidirectionalImplicitGraph<TVertex,TEdge> Members
-
-        public bool IsInEdgesEmpty(TVertex v)
+        /// <inheritdoc />
+        public int InDegree(TVertex vertex)
         {
-            foreach (var edge in this.InEdges(v))
-                return false;
-            return true;
+            return InEdges(vertex).Count();
         }
 
-        public int InDegree(TVertex v)
+        /// <inheritdoc />
+        public IEnumerable<TEdge> InEdges(TVertex vertex)
         {
-            return Enumerable.Count(this.InEdges(v));
+            if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge> result))
+                return result;
+            return Enumerable.Empty<TEdge>();
         }
 
-        public IEnumerable<TEdge> InEdges(TVertex v)
+        /// <inheritdoc />
+        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            IEnumerable<TEdge> result;
-            if (!this.tryGetInEdges(v, out result))
-                return Enumerable.Empty<TEdge>();
-            return result;
+            return _tryGetInEdgesFunc(vertex, out edges);
         }
 
-        public bool TryGetInEdges(TVertex v, out IEnumerable<TEdge> edges)
+        /// <inheritdoc />
+        public TEdge InEdge(TVertex vertex, int index)
         {
-            return this.tryGetInEdges(v, out edges);
+            return InEdges(vertex).ElementAt(index);
         }
 
-        public TEdge InEdge(TVertex v, int index)
+        /// <inheritdoc />
+        public int Degree(TVertex vertex)
         {
-            return Enumerable.ElementAt(this.InEdges(v), index);
+            return InDegree(vertex) + OutDegree(vertex);
         }
 
-        public int Degree(TVertex v)
-        {
-            return this.InDegree(v) + this.OutDegree(v);
-        }
-#endregion
+        #endregion
     }
 }

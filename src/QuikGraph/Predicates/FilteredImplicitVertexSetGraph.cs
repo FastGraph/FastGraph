@@ -36,10 +36,6 @@ namespace QuikGraph.Predicates
         }
 
         /// <inheritdoc />
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
-        [Pure]
         public bool ContainsVertex(TVertex vertex)
         {
             return VertexPredicate(vertex)

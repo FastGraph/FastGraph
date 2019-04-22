@@ -81,8 +81,9 @@ namespace QuikGraph.Predicates
 
             if (BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
             {
-                edges = unfilteredEdges.Where(edge => EdgePredicate(edge));
-                return true;
+                TEdge[] filteredEdges = unfilteredEdges.Where(edge => EdgePredicate(edge)).ToArray();
+                edges = filteredEdges;
+                return filteredEdges.Length > 0;
             }
 
             return false;
