@@ -62,7 +62,7 @@ before_build:
   - nuget restore -verbosity detailed
 
 build:
-  verbosity: normal
+  verbosity: minimal
 
 build_script:
   - ps: $analysisFile = (Convert-Path SonarQube.Analysis.xml).ToString()
