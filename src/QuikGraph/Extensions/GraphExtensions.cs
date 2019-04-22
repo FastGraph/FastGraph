@@ -4,49 +4,60 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
+using static QuikGraph.QuikGraphHelpers;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// Extension methods for populating graph data structures.
+    /// Extensions for populating graph data structures.
     /// </summary>
     public static class GraphExtensions
     {
         /// <summary>
-        /// Wraps a dictionary into a vertex and edge list graph
+        /// Wraps a dictionary into a vertex and edge list graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <returns></returns>
-        public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(this IDictionary<TVertex, TValue> dictionary)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TValue">Type of the enumerable of out-edges.</typeparam>
+        /// <param name="dictionary">Vertices and edges mapping.</param>
+        /// <returns>A corresponding <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(
+            [NotNull] this IDictionary<TVertex, TValue> dictionary)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
             where TValue : IEnumerable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(dictionary != null);
-            Contract.Requires(Enumerable.All(dictionary.Values, v => v != null));
+            Contract.Requires(dictionary.Values.All(v => v != null));
 #endif
 
-            return ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(dictionary, kv => kv.Value);
+            return ToVertexAndEdgeListGraph(dictionary, kv => kv.Value);
         }
 
         /// <summary>
-        /// Wraps a dictionary into a vertex and edge list graph
+        /// Wraps a dictionary into a vertex and edge list graph with the given edge conversion.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <param name="keyValueToOutEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TValue">Type of the enumerable of out-edges.</typeparam>
+        /// <param name="dictionary">Vertices and edges mapping.</param>
+        /// <param name="keyValueToOutEdges">Converter of vertex/edge mapping to enumerable of edges.</param>
+        /// <returns>A corresponding <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(
-            this IDictionary<TVertex, TValue> dictionary,
+            [NotNull] this IDictionary<TVertex, TValue> dictionary,
 #if SUPPORTS_CONVERTER
-            Converter<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+            [NotNull] Converter<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
 #else
-            Func<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+            [NotNull] Func<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
 #endif
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
@@ -57,9 +68,9 @@ namespace QuikGraph
 
             return new DelegateVertexAndEdgeListGraph<TVertex, TEdge>(
                 dictionary.Keys,
-                delegate(TVertex key, out IEnumerable<TEdge> edges) {
-                    TValue value;
-                    if (dictionary.TryGetValue(key, out value))
+                (TVertex key, out IEnumerable<TEdge> edges) =>
+                {
+                    if (dictionary.TryGetValue(key, out TValue value))
                     {
                         edges = keyValueToOutEdges(new KeyValuePair<TVertex, TValue>(key, value));
                         return true;
@@ -71,14 +82,18 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
+        /// Creates an instance of <see cref="DelegateIncidenceGraph{TVertex,TEdge}"/> from this getter of out-edges.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="tryGetOutEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="tryGetOutEdges">Getter of out-edges.</param>
+        /// <returns>A corresponding <see cref="DelegateIncidenceGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(
-            this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
+            [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
@@ -89,16 +104,21 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
+        /// Creates an instance of <see cref="DelegateBidirectionalIncidenceGraph{TVertex,TEdge}"/>
+        /// from these getters of edges.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="tryGetOutEdges"></param>
-        /// <param name="tryGetInEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="tryGetOutEdges">Getter of out-edges.</param>
+        /// <param name="tryGetInEdges">Getter of in-edges.</param>
+        /// <returns>A corresponding <see cref="DelegateBidirectionalIncidenceGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateBidirectionalIncidenceGraph<TVertex, TEdge> ToDelegateBidirectionalIncidenceGraph<TVertex, TEdge>(
-            this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
+            [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
@@ -110,13 +130,18 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
+        /// Creates an instance of <see cref="DelegateIncidenceGraph{TVertex,TEdge}"/> from this getter of out-edges.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="getOutEdges"></param>
-        /// <returns></returns>
-        public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(this Func<TVertex, IEnumerable<TEdge>> getOutEdges)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="getOutEdges">Getter of out-edges.</param>
+        /// <returns>A corresponding <see cref="DelegateIncidenceGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(
+            [NotNull] this Func<TVertex, IEnumerable<TEdge>> getOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
@@ -127,67 +152,52 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Converts a Func that returns a reference type into a tryfunc
+        /// Creates an instance of <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>
+        /// from given vertices and edge getter.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static TryFunc<T, TResult> ToTryFunc<T, TResult>(Func<T, TResult> func)
-            where TResult : class
-        {
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="vertices">Enumerable of vertices.</param>
+        /// <param name="tryGetOutEdges">Getter of out-edges.</param>
+        /// <returns>A corresponding <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>.</returns>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(func != null);
+        [System.Diagnostics.Contracts.Pure]
 #endif
-
-            return (T value, out TResult result) =>
-            {
-                result = func(value);
-                return result != null;
-            };
-        }
-
-        /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
-        /// </summary>
-        /// <param name="vertices"></param>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="tryGetOutEdges"></param>
-        /// <returns></returns>
+        [JetBrains.Annotations.Pure]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateVertexAndEdgeListGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
             Contract.Requires(tryGetOutEdges != null);
-            Contract.Requires(Enumerable.All(vertices, v =>
-            {
-                IEnumerable<TEdge> edges;
-                return tryGetOutEdges(v, out edges);
-            }));
+            Contract.Requires(vertices.All(v => tryGetOutEdges(v, out _)));
 #endif
 
             return new DelegateVertexAndEdgeListGraph<TVertex, TEdge>(vertices, tryGetOutEdges);
         }
 
         /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
+        /// Creates an instance of <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>
+        /// from given vertices and edge getter.
         /// </summary>
-        /// <param name="vertices"></param>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="getOutEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="vertices">Enumerable of vertices.</param>
+        /// <param name="getOutEdges">Getter of out-edges.</param>
+        /// <returns>A corresponding <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateVertexAndEdgeListGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            Func<TVertex, IEnumerable<TEdge>> getOutEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
+            [NotNull] Func<TVertex, IEnumerable<TEdge>> getOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null); 
+            Contract.Requires(vertices != null);
             Contract.Requires(getOutEdges != null);
 #endif
 
@@ -195,41 +205,49 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Wraps a dictionary into an undirected list graph
+        /// Wraps a dictionary into an undirected list graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TValue">Type of the enumerable of out-edges.</typeparam>
+        /// <param name="dictionary">Vertices and edges mapping.</param>
+        /// <returns>A corresponding <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge, TValue>(
-            this IDictionary<TVertex, TValue> dictionary)
+            [NotNull] this IDictionary<TVertex, TValue> dictionary)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
             where TValue : IEnumerable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(dictionary != null);
-            Contract.Requires(Enumerable.All(dictionary.Values, v => v != null));
+            Contract.Requires(dictionary.Values.All(v => v != null));
 #endif
 
-            return ToDelegateUndirectedGraph<TVertex, TEdge, TValue>(dictionary, kv => kv.Value);
+            return ToDelegateUndirectedGraph(dictionary, kv => kv.Value);
         }
 
         /// <summary>
-        /// Wraps a dictionary into an undirected graph
+        /// Wraps a dictionary into an undirected list graph with the given edge condition.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <param name="keyValueToOutEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TValue">Type of the enumerable of out-edges.</typeparam>
+        /// <param name="dictionary">Vertices and edges mapping.</param>
+        /// <param name="keyValueToOutEdges">Converter of vertex/edge mapping to enumerable of edges.</param>
+        /// <returns>A corresponding <see cref="DelegateVertexAndEdgeListGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge, TValue>(
-            this IDictionary<TVertex, TValue> dictionary,
+            [NotNull] this IDictionary<TVertex, TValue> dictionary,
 #if SUPPORTS_CONVERTER
-            Converter<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+            [NotNull] Converter<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
 #else
-            Func<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
+            [NotNull] Func<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
 #endif
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
@@ -240,10 +258,9 @@ namespace QuikGraph
 
             return new DelegateVertexAndEdgeListGraph<TVertex, TEdge>(
                 dictionary.Keys,
-                delegate(TVertex key, out IEnumerable<TEdge> edges)
+                delegate (TVertex key, out IEnumerable<TEdge> edges)
                 {
-                    TValue value;
-                    if (dictionary.TryGetValue(key, out value))
+                    if (dictionary.TryGetValue(key, out TValue value))
                     {
                         edges = keyValueToOutEdges(new KeyValuePair<TVertex, TValue>(key, value));
                         return true;
@@ -255,42 +272,48 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
+        /// Creates an instance of <see cref="DelegateUndirectedGraph{TVertex,TEdge}"/>
+        /// from given vertices and edge getter.
         /// </summary>
-        /// <param name="vertices"></param>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="tryGetAdjacentEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="vertices">Enumerable of vertices.</param>
+        /// <param name="tryGetAdjacentEdges">Getter of adjacent edges.</param>
+        /// <returns>A corresponding <see cref="DelegateUndirectedGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateUndirectedGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
             Contract.Requires(tryGetAdjacentEdges != null);
-            Contract.Requires(Enumerable.All(vertices, v =>
-            {
-                IEnumerable<TEdge> edges;
-                return tryGetAdjacentEdges(v, out edges);
-            }));
+            Contract.Requires(vertices.All(v => tryGetAdjacentEdges(v, out _)));
 #endif
 
             return new DelegateUndirectedGraph<TVertex, TEdge>(vertices, tryGetAdjacentEdges, true);
         }
 
         /// <summary>
-        /// Creates an instance of DelegateIncidenceGraph.
+        /// Creates an instance of <see cref="DelegateUndirectedGraph{TVertex,TEdge}"/>
+        /// from given vertices and edge getter.
         /// </summary>
-        /// <param name="vertices"></param>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="getAdjacentEdges"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="vertices">Enumerable of vertices.</param>
+        /// <param name="getAdjacentEdges">Getter of adjacent edges.</param>
+        /// <returns>A corresponding <see cref="DelegateUndirectedGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static DelegateUndirectedGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            Func<TVertex, IEnumerable<TEdge>> getAdjacentEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
+            [NotNull] Func<TVertex, IEnumerable<TEdge>> getAdjacentEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
 #if SUPPORTS_CONTRACTS
@@ -298,19 +321,24 @@ namespace QuikGraph
             Contract.Requires(getAdjacentEdges != null);
 #endif
 
-            return ToDelegateUndirectedGraph(
-                vertices,
-                ToTryFunc(getAdjacentEdges)
-                );
+            return ToDelegateUndirectedGraph(vertices, ToTryFunc(getAdjacentEdges));
         }
 
         /// <summary>
-        /// Converts a jagged array of sources and targets into a graph
+        /// Converts a raw array of sources and targets (2 columns) vertices into a graph.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <param name="edges"></param>
-        /// <returns></returns>
-        public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(this TVertex[][] edges)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <param name="edges">
+        /// Array of vertices defining edges.
+        /// The first items of each column represents the number of vertices following.
+        /// </param>
+        /// <returns>A corresponding <see cref="AdjacencyGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(
+            [NotNull] this TVertex[][] edges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
@@ -331,15 +359,19 @@ namespace QuikGraph
             return ToAdjacencyGraph(edgePairs);
         }
 
-
         /// <summary>
-        /// Creates an immutable array adjacency graph from the input graph
+        /// Creates an immutable <see cref="ArrayAdjacencyGraph{TVertex,TEdge}"/> from the input graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        public static ArrayAdjacencyGraph<TVertex, TEdge> ToArrayAdjacencyGraph<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>A corresponding <see cref="ArrayAdjacencyGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static ArrayAdjacencyGraph<TVertex, TEdge> ToArrayAdjacencyGraph<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -350,13 +382,18 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Creates an immutable array bidirectional graph from the input graph
+        /// Creates an immutable <see cref="ArrayBidirectionalGraph{TVertex,TEdge}"/> from the input graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        public static ArrayBidirectionalGraph<TVertex, TEdge> ToArrayBidirectionalGraph<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> graph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>A corresponding <see cref="ArrayBidirectionalGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static ArrayBidirectionalGraph<TVertex, TEdge> ToArrayBidirectionalGraph<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -367,13 +404,18 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Creates an immutable array undirected graph from the input graph
+        /// Creates an immutable <see cref="ArrayUndirectedGraph{TVertex,TEdge}"/> from the input graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        public static ArrayUndirectedGraph<TVertex, TEdge> ToArrayUndirectedGraph<TVertex, TEdge>(this IUndirectedGraph<TVertex, TEdge> graph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>A corresponding <see cref="ArrayUndirectedGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static ArrayUndirectedGraph<TVertex, TEdge> ToArrayUndirectedGraph<TVertex, TEdge>(
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -384,12 +426,16 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Wraps a adjacency graph (out-edge only) into a bidirectional graph.
+        /// Wraps a adjacency graph (out-edges only) into a bidirectional graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="graph"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>A corresponding <see cref="IBidirectionalGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static IBidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
@@ -397,65 +443,54 @@ namespace QuikGraph
             Contract.Requires(graph != null);
 #endif
 
-            var self = graph as IBidirectionalGraph<TVertex, TEdge>;
-            if (self != null)
+            if (graph is IBidirectionalGraph<TVertex, TEdge> self)
                 return self;
 
-            return new BidirectionAdapterGraph<TVertex,TEdge>(graph);
+            return new BidirectionAdapterGraph<TVertex, TEdge>(graph);
         }
 
         /// <summary>
-        /// Converts a sequence of edges into an undirected graph
+        /// Converts a sequence of edges into an <see cref="UndirectedGraph{TVertex,TEdge}"/>.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="edges"></param>
-        /// <returns></returns>
-        public static UndirectedGraph<TVertex, TEdge> ToUndirectedGraph<TVertex, TEdge>(this IEnumerable<TEdge> edges)
-            where TEdge : IEdge<TVertex>
-        {
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="edges">Set of edges to convert.</param>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
+        /// <returns>A corresponding <see cref="UndirectedGraph{TVertex,TEdge}"/>.</returns>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(Enumerable.All(edges, e => e != null));
+        [System.Diagnostics.Contracts.Pure]
 #endif
-
-            return ToUndirectedGraph<TVertex, TEdge>(edges, true);
-        }
-
-        /// <summary>
-        /// Converts a sequence of edges into an undirected graph
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="edges"></param>
-        /// <param name="allowParralelEdges"></param>
-        /// <returns></returns>
+        [JetBrains.Annotations.Pure]
         public static UndirectedGraph<TVertex, TEdge> ToUndirectedGraph<TVertex, TEdge>(
             this IEnumerable<TEdge> edges,
-            bool allowParralelEdges)
+            bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
-            Contract.Requires(Enumerable.All(edges, e => e != null));
+            Contract.Requires(edges.All(e => e != null));
 #endif
 
-            var g = new UndirectedGraph<TVertex, TEdge>(allowParralelEdges);
-            g.AddVerticesAndEdgeRange(edges);
-            return g;
+            var graph = new UndirectedGraph<TVertex, TEdge>(allowParallelEdges);
+            graph.AddVerticesAndEdgeRange(edges);
+            return graph;
         }
 
         /// <summary>
-        /// Converts a set of edges into a bidirectional graph.
+        /// Converts a set of edges into a <see cref="BidirectionalGraph{TVertex,TEdge}"/>.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="edges">The edges.</param>
-        /// <param name="allowParallelEdges">if set to <c>true</c>, the graph allows parallel edges.</param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="edges">Set of edges to convert.</param>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
+        /// <returns>A corresponding <see cref="BidirectionalGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
-            this IEnumerable<TEdge> edges,
-            bool allowParallelEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TEdge> edges,
+            bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -463,40 +498,26 @@ namespace QuikGraph
             Contract.Requires(EnumerableContract.ElementsNotNull(edges));
 #endif
 
-            var g = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
-            g.AddVerticesAndEdgeRange(edges);
-            return g;
+            var graph = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
+            graph.AddVerticesAndEdgeRange(edges);
+            return graph;
         }
 
         /// <summary>
-        /// Converts a set of edges into a bidirectional graph.
+        /// Converts a set of edges into an <see cref="AdjacencyGraph{TVertex,TEdge}"/>.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="edges">The edges.</param>
-        /// <returns></returns>
-        public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(this IEnumerable<TEdge> edges)
-            where TEdge : IEdge<TVertex>
-        {
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="edges">Set of edges to convert.</param>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
+        /// <returns>A corresponding <see cref="AdjacencyGraph{TVertex,TEdge}"/>.</returns>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
+        [System.Diagnostics.Contracts.Pure]
 #endif
-
-            return ToBidirectionalGraph<TVertex, TEdge>(edges, true);
-        }
-
-        /// <summary>
-        /// Converts a set of edges into an adjacency graph.
-        /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="edges">The edges.</param>
-        /// <param name="allowParallelEdges">if set to <c>true</c>, the graph allows parallel edges.</param>
-        /// <returns></returns>
+        [JetBrains.Annotations.Pure]
         public static AdjacencyGraph<TVertex, TEdge> ToAdjacencyGraph<TVertex, TEdge>(
-            this IEnumerable<TEdge> edges,
-            bool allowParallelEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TEdge> edges,
+            bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -504,44 +525,29 @@ namespace QuikGraph
             Contract.Requires(EnumerableContract.ElementsNotNull(edges));
 #endif
 
-            var g = new AdjacencyGraph<TVertex, TEdge>(allowParallelEdges);
-            g.AddVerticesAndEdgeRange(edges);
-            return g;
+            var graph = new AdjacencyGraph<TVertex, TEdge>(allowParallelEdges);
+            graph.AddVerticesAndEdgeRange(edges);
+            return graph;
         }
 
         /// <summary>
-        /// Converts a set of edges into an adjacency graph.
-        /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="edges">The edges.</param>
-        /// <returns></returns>
-        public static AdjacencyGraph<TVertex, TEdge> ToAdjacencyGraph<TVertex, TEdge>(
-            this IEnumerable<TEdge> edges)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
-#endif
-
-            return ToAdjacencyGraph<TVertex, TEdge>(edges, true);
-        }
-
-        /// <summary>
-        /// Converts a set of vertices into an adjacency graph,
+        /// Converts a set of vertices into an <see cref="AdjacencyGraph{TVertex,TEdge}"/>
         /// using an edge factory.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="vertices">The vertices.</param>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="vertices">Set of vertices to convert.</param>
         /// <param name="outEdgesFactory">The out edges factory.</param>
-        /// <param name="allowParallelEdges">if set to <c>true</c>, the graph allows parallel edges.</param>
-        /// <returns></returns>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
+        /// <returns>A corresponding <see cref="AdjacencyGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static AdjacencyGraph<TVertex, TEdge> ToAdjacencyGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            Func<TVertex, IEnumerable<TEdge>> outEdgesFactory,
-            bool allowParallelEdges)
+            [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
+            [NotNull, InstantHandle] Func<TVertex, IEnumerable<TEdge>> outEdgesFactory,
+            bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -550,45 +556,33 @@ namespace QuikGraph
             Contract.Requires(EnumerableContract.ElementsNotNull(vertices));
 #endif
 
-            var g = new AdjacencyGraph<TVertex, TEdge>(allowParallelEdges);
-            g.AddVertexRange(vertices);
-            foreach (var vertex in g.Vertices)
-                g.AddEdgeRange(outEdgesFactory(vertex));
+            var graph = new AdjacencyGraph<TVertex, TEdge>(allowParallelEdges);
+            graph.AddVertexRange(vertices);
 
-            return g;
+            foreach (var vertex in graph.Vertices)
+                graph.AddEdgeRange(outEdgesFactory(vertex));
+
+            return graph;
         }
 
         /// <summary>
-        /// Converts a set of vertices into an adjacency graph,
+        /// Converts a set of vertices into a <see cref="BidirectionalGraph{TVertex,TEdge}"/>
         /// using an edge factory.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="vertices">The vertices.</param>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="vertices">Set of vertices to convert.</param>
         /// <param name="outEdgesFactory">The out edges factory.</param>
-        /// <returns></returns>
-        public static AdjacencyGraph<TVertex, TEdge> ToAdjacencyGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            Func<TVertex, IEnumerable<TEdge>> outEdgesFactory)
-            where TEdge : IEdge<TVertex>
-        {
-            return ToAdjacencyGraph(vertices, outEdgesFactory, true);
-        }
-
-        /// <summary>
-        /// Converts a set of vertices into a bidirectional graph,
-        /// using an edge factory.
-        /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="vertices">The vertices.</param>
-        /// <param name="outEdgesFactory">The out edges factory.</param>
-        /// <param name="allowParallelEdges">if set to <c>true</c>, the graph allows parallel edges.</param>
-        /// <returns></returns>
+        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
+        /// <returns>A corresponding <see cref="BidirectionalGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            Func<TVertex, IEnumerable<TEdge>> outEdgesFactory,
-            bool allowParallelEdges) 
+            [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
+            [NotNull, InstantHandle] Func<TVertex, IEnumerable<TEdge>> outEdgesFactory,
+            bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -597,90 +591,92 @@ namespace QuikGraph
             Contract.Requires(EnumerableContract.ElementsNotNull(vertices));
 #endif
 
-            var g = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
-            g.AddVertexRange(vertices);
-            foreach (var vertex in g.Vertices)
-                g.AddEdgeRange(outEdgesFactory(vertex));
+            var graph = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
+            graph.AddVertexRange(vertices);
 
-            return g;
+            foreach (var vertex in graph.Vertices)
+                graph.AddEdgeRange(outEdgesFactory(vertex));
+
+            return graph;
         }
 
         /// <summary>
-        /// Converts a set of vertices into a bidirectional graph,
-        /// using an edge factory
+        /// Converts a set of vertex pairs into an <see cref="AdjacencyGraph{TVertex,TEdge}"/>.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="vertices">The vertices.</param>
-        /// <param name="outEdgesFactory">The out edges factory.</param>
-        /// <returns></returns>
-        public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
-            this IEnumerable<TVertex> vertices,
-            Func<TVertex, IEnumerable<TEdge>> outEdgesFactory)
-            where TEdge : IEdge<TVertex>
-        {
-            return ToBidirectionalGraph(vertices, outEdgesFactory, true);
-        }
-
-        /// <summary>
-        /// Converts a sequence of vertex pairs into an adjancency graph
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <param name="vertexPairs"></param>
-        /// <returns></returns>
-        public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <param name="vertexPairs">Set of vertex pairs to convert.</param>
+        /// <returns>A corresponding <see cref="AdjacencyGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(
+            [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexPairs != null);
 #endif
 
-            var g = new AdjacencyGraph<TVertex, SEquatableEdge<TVertex>>();
-            g.AddVerticesAndEdgeRange(vertexPairs);
-            return g;
+            var graph = new AdjacencyGraph<TVertex, SEquatableEdge<TVertex>>();
+            graph.AddVerticesAndEdgeRange(vertexPairs);
+            return graph;
         }
 
         /// <summary>
-        /// Converts a sequence of vertex pairs into an bidirectional graph
+        /// Converts a set of vertex pairs into a <see cref="BidirectionalGraph{TVertex,TEdge}"/>.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <param name="vertexPairs"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <param name="vertexPairs">Set of vertex pairs to convert.</param>
+        /// <returns>A corresponding <see cref="BidirectionalGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static BidirectionalGraph<TVertex, SEquatableEdge<TVertex>> ToBidirectionalGraph<TVertex>(
-            this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
+            [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexPairs != null);
 #endif
 
-            var g = new BidirectionalGraph<TVertex, SEquatableEdge<TVertex>>();
-            g.AddVerticesAndEdgeRange(vertexPairs);
-            return g;
+            var graph = new BidirectionalGraph<TVertex, SEquatableEdge<TVertex>>();
+            graph.AddVerticesAndEdgeRange(vertexPairs);
+            return graph;
         }
 
         /// <summary>
-        /// Converts a sequence of vertex pairs into an bidirectional graph
+        /// Converts a set of vertex pairs into an <see cref="UndirectedGraph{TVertex,TEdge}"/>.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <param name="vertexPairs"></param>
-        /// <returns></returns>
-        public static UndirectedGraph<TVertex, SEquatableEdge<TVertex>> ToUndirectedGraph<TVertex>(this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <param name="vertexPairs">Set of vertex pairs to convert.</param>
+        /// <returns>A corresponding <see cref="UndirectedGraph{TVertex,TEdge}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static UndirectedGraph<TVertex, SEquatableEdge<TVertex>> ToUndirectedGraph<TVertex>(
+            [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexPairs != null);
 #endif
 
-            var g = new UndirectedGraph<TVertex, SEquatableEdge<TVertex>>();
-            g.AddVerticesAndEdgeRange(vertexPairs);
-            return g;
+            var graph = new UndirectedGraph<TVertex, SEquatableEdge<TVertex>>();
+            graph.AddVerticesAndEdgeRange(vertexPairs);
+            return graph;
         }
 
         /// <summary>
-        /// Creates an immutable compressed row graph representation of the visited graph
+        /// Creates an immutable compressed row graph representation of the <paramref name="visitedGraph"/>.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <returns>A corresponding <see cref="CompressedSparseRowGraph{TVertex}"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static CompressedSparseRowGraph<TVertex> ToCompressedRowGraph<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
