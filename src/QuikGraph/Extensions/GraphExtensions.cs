@@ -645,6 +645,23 @@ namespace QuikGraph
         }
 
         /// <summary>
+        /// Creates a <see cref="BidirectionalGraph{TVertex,TEdge}"/> from this graph.
+        /// </summary>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>A corresponding <see cref="BidirectionalGraph{TVertex,TEdge}"/>.</returns>
+        public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
+            [NotNull] this UndirectedGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            var newGraph = new BidirectionalGraph<TVertex, TEdge>();
+
+            newGraph.AddVertexRange(graph.Vertices);
+            newGraph.AddEdgeRange(graph.Edges);
+
+            return newGraph;
+        }
+
+        /// <summary>
         /// Converts a set of vertex pairs into an <see cref="UndirectedGraph{TVertex,TEdge}"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
