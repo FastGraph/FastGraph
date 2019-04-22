@@ -58,6 +58,6 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        bool TryGetEdges([NotNull] TVertex source, [NotNull] TVertex target, out IEnumerable<TEdge> edges);
+        bool TryGetEdges([NotNull] TVertex source, [NotNull] TVertex target, [ItemNotNull] out IEnumerable<TEdge> edges);
     }
 }

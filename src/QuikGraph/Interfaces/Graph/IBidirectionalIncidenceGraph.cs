@@ -64,7 +64,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        bool TryGetInEdges([NotNull] TVertex vertex, out IEnumerable<TEdge> edges);
+        bool TryGetInEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>
         /// Gets the in-edge at location <paramref name="index"/>.

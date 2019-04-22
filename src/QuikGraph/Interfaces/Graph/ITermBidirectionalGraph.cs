@@ -52,7 +52,7 @@ namespace QuikGraph
         /// <param name="terminal">Out terminal index.</param>
         /// <param name="edges">Out-edges found, otherwise null.</param>
         /// <returns>True if out-edges were found, false otherwise.</returns>
-        bool TryGetOutEdgesAt([NotNull] TVertex vertex, int terminal, out IEnumerable<TEdge> edges);
+        bool TryGetOutEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>
         /// Gets the number of in terminals on the given <paramref name="vertex"/>.
@@ -93,6 +93,6 @@ namespace QuikGraph
         /// <param name="terminal">Out terminal index.</param>
         /// <param name="edges">In-edges found, otherwise null.</param>
         /// <returns>True if in-edges were found, false otherwise.</returns>
-        bool TryGetInEdgesAt([NotNull] TVertex vertex, int terminal, out IEnumerable<TEdge> edges);
+        bool TryGetInEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
     }
 }

@@ -63,7 +63,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        bool TryGetOutEdges([NotNull] TVertex vertex, out IEnumerable<TEdge> edges);
+        bool TryGetOutEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>
         /// Gets the out-edge of <paramref name="vertex"/> at position <paramref name="index"/>.
