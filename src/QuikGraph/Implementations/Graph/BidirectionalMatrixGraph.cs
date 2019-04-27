@@ -531,6 +531,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public BidirectionalMatrixGraph<TEdge> Clone()
         {
             return new BidirectionalMatrixGraph<TEdge>(

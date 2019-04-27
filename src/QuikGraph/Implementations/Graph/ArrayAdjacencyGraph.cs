@@ -197,6 +197,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public ArrayAdjacencyGraph<TVertex, TEdge> Clone()
         {
             return this;

@@ -253,6 +253,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public EdgeListGraph<TVertex, TEdge> Clone()
         {
             return new EdgeListGraph<TVertex, TEdge>(

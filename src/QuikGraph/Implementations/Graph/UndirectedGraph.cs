@@ -602,6 +602,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public UndirectedGraph<TVertex, TEdge> Clone()
         {
             return new UndirectedGraph<TVertex, TEdge>(

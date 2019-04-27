@@ -719,6 +719,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public BidirectionalGraph<TVertex, TEdge> Clone()
         {
             return new BidirectionalGraph<TVertex, TEdge>(this);

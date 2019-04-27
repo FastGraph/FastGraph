@@ -250,7 +250,7 @@ namespace QuikGraph
             if (lhs.Count != rhs.Count)
                 return false;
 
-            foreach (var key in lhs.Keys)
+            foreach (TKey key in lhs.Keys)
             {
                 if (!rhs.TryGetValue(key, out TValue rhsValue))
                     return false;

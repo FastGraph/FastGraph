@@ -26,6 +26,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(
             [NotNull] this IDictionary<TVertex, TValue> dictionary)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
@@ -52,6 +53,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(
             [NotNull] this IDictionary<TVertex, TValue> dictionary,
 #if SUPPORTS_CONVERTER
@@ -92,6 +94,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(
             [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
@@ -116,6 +119,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateBidirectionalIncidenceGraph<TVertex, TEdge> ToDelegateBidirectionalIncidenceGraph<TVertex, TEdge>(
             [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
@@ -140,6 +144,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(
             [NotNull] this Func<TVertex, IEnumerable<TEdge>> getOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
@@ -164,6 +169,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateVertexAndEdgeListGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
@@ -191,6 +197,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateVertexAndEdgeListGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] Func<TVertex, IEnumerable<TEdge>> getOutEdges)
@@ -216,6 +223,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge, TValue>(
             [NotNull] this IDictionary<TVertex, TValue> dictionary)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
@@ -242,6 +250,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge, TValue>(
             [NotNull] this IDictionary<TVertex, TValue> dictionary,
 #if SUPPORTS_CONVERTER
@@ -284,6 +293,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateUndirectedGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges)
@@ -311,6 +321,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static DelegateUndirectedGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] Func<TVertex, IEnumerable<TEdge>> getAdjacentEdges)
@@ -337,6 +348,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(
             [NotNull] this TVertex[][] edges)
         {
@@ -370,6 +382,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static ArrayAdjacencyGraph<TVertex, TEdge> ToArrayAdjacencyGraph<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
@@ -392,6 +405,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static ArrayBidirectionalGraph<TVertex, TEdge> ToArrayBidirectionalGraph<TVertex, TEdge>(
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
@@ -414,6 +428,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static ArrayUndirectedGraph<TVertex, TEdge> ToArrayUndirectedGraph<TVertex, TEdge>(
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
@@ -436,7 +451,9 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static IBidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+        [NotNull]
+        public static IBidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -446,7 +463,7 @@ namespace QuikGraph
             if (graph is IBidirectionalGraph<TVertex, TEdge> self)
                 return self;
 
-            return new BidirectionAdapterGraph<TVertex, TEdge>(graph);
+            return new BidirectionalAdapterGraph<TVertex, TEdge>(graph);
         }
 
         /// <summary>
@@ -461,8 +478,9 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static UndirectedGraph<TVertex, TEdge> ToUndirectedGraph<TVertex, TEdge>(
-            this IEnumerable<TEdge> edges,
+            [NotNull, ItemNotNull] this IEnumerable<TEdge> edges,
             bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
@@ -488,6 +506,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TEdge> edges,
             bool allowParallelEdges = true)
@@ -515,6 +534,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static AdjacencyGraph<TVertex, TEdge> ToAdjacencyGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TEdge> edges,
             bool allowParallelEdges = true)
@@ -544,6 +564,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static AdjacencyGraph<TVertex, TEdge> ToAdjacencyGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull, InstantHandle] Func<TVertex, IEnumerable<TEdge>> outEdgesFactory,
@@ -579,6 +600,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull, InstantHandle] Func<TVertex, IEnumerable<TEdge>> outEdgesFactory,
@@ -610,6 +632,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(
             [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
@@ -632,6 +655,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static BidirectionalGraph<TVertex, SEquatableEdge<TVertex>> ToBidirectionalGraph<TVertex>(
             [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
@@ -649,6 +673,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="graph">Graph to convert.</param>
         /// <returns>A corresponding <see cref="BidirectionalGraph{TVertex,TEdge}"/>.</returns>
+        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ToBidirectionalGraph<TVertex, TEdge>(
             [NotNull] this UndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
@@ -671,6 +696,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public static UndirectedGraph<TVertex, SEquatableEdge<TVertex>> ToUndirectedGraph<TVertex>(
             [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
@@ -694,7 +720,9 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static CompressedSparseRowGraph<TVertex> ToCompressedRowGraph<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        [NotNull]
+        public static CompressedSparseRowGraph<TVertex> ToCompressedRowGraph<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS

@@ -168,6 +168,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public ArrayUndirectedGraph<TVertex, TEdge> Clone()
         {
             return this;

@@ -284,6 +284,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [NotNull]
         public CompressedSparseRowGraph<TVertex> Clone()
         {
             var ranges = new Dictionary<TVertex, Range>(_outEdgeStartRanges);
