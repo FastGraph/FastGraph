@@ -15,6 +15,9 @@ namespace QuikGraph
         /// <summary>
         /// Gets the root of the hierarchy.
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         [CanBeNull]
         TVertex Root { get; }
 
@@ -24,6 +27,10 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <returns>The parent vertex if there is one, otherwise null.</returns>
         /// <exception cref="ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         [CanBeNull]
         TVertex GetParent([NotNull] TVertex vertex);
 
@@ -33,6 +40,10 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <returns>The parent vertex edge.</returns>
         /// <exception cref="ArgumentException">The <paramref name="vertex"/> is the root of the graph.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         [CanBeNull]
         TEdge GetParentEdge([NotNull] TVertex vertex);
 
@@ -41,6 +52,10 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">The edge.</param>
         /// <returns>True if the edge is a cross edge, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         bool IsCrossEdge([NotNull] TEdge edge);
 
         /// <summary>
@@ -49,6 +64,10 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">The edge.</param>
         /// <returns>True if it's a real edge, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         bool IsRealEdge([NotNull] TEdge edge);
 
         /// <summary>
@@ -58,6 +77,10 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if the <paramref name="source"/> is a predecessor of <paramref name="target"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         bool IsPredecessorOf([NotNull] TVertex source, [NotNull] TVertex target);
 
         /// <summary>
@@ -68,6 +91,10 @@ namespace QuikGraph
         /// <returns>The number of edge between <paramref name="source"/> and <paramref name="target"/>.</returns>
         /// <exception cref="ArgumentException">The <paramref name="source"/> is a predecessor of
         /// <paramref name="target"/> or the otherway round.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         int InducedEdgeCount([NotNull] TVertex source, [NotNull] TVertex target);
 
         /// <summary>
@@ -75,6 +102,10 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if the <paramref name="vertex"/> is not a leaf, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         bool IsInnerNode([NotNull] TVertex vertex);
 
         /// <summary>
@@ -82,6 +113,10 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Children edges.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> ChildrenEdges([NotNull] TVertex vertex);
 
@@ -90,6 +125,10 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Children vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TVertex> ChildrenVertices([NotNull] TVertex vertex);
     }

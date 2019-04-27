@@ -21,11 +21,17 @@ namespace QuikGraph
         /// <summary>
         /// Gets a value indicating if the graph is directed
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [Pure]
+#endif
         bool IsDirected { get; }
 
         /// <summary>
         /// Gets a value indicating if the graph allows parallel edges
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [Pure]
+#endif
         bool AllowParallelEdges { get; }
     }
 }

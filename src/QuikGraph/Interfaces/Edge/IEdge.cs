@@ -18,12 +18,18 @@ namespace QuikGraph
         /// <summary>
         /// Gets the source vertex.
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         [NotNull]
         TVertex Source { get; }
 
         /// <summary>
         /// Gets the target vertex.
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         [NotNull]
         TVertex Target { get; }
     }

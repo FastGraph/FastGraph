@@ -17,11 +17,17 @@ namespace QuikGraph
         /// <summary>
         /// Index of terminal on source vertex to which this edge is attached.
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [Pure]
+#endif
         int SourceTerminal { get; }
 
         /// <summary>
         /// Index of terminal on target vertex to which this edge is attached.
         /// </summary>
+#if SUPPORTS_CONTRACTS
+        [Pure]
+#endif
         int TargetTerminal { get; }
     }
 }
