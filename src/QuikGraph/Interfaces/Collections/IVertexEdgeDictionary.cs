@@ -2,6 +2,7 @@
 using System;
 #endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -12,15 +13,14 @@ using System.Runtime.Serialization;
 namespace QuikGraph.Collections
 {
     /// <summary>
-    /// A dictionary of vertices to a list of edges
+    /// A cloneable dictionary of vertices associated to their edges.
     /// </summary>
-    /// <typeparam name="TVertex"></typeparam>
-    /// <typeparam name="TEdge"></typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IVertexEdgeDictionaryContract<,>))]
 #endif
-    public interface IVertexEdgeDictionary<TVertex, TEdge>
-        : IDictionary<TVertex, IEdgeList<TVertex, TEdge>>
+    public interface IVertexEdgeDictionary<TVertex, TEdge> : IDictionary<TVertex, IEdgeList<TVertex, TEdge>>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
@@ -32,9 +32,14 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Gets a clone of the dictionary. The vertices and edges are not cloned.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Cloned dictionary.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
 #if SUPPORTS_CLONEABLE
-        new 
+        new
 #endif
         IVertexEdgeDictionary<TVertex, TEdge> Clone();
     }

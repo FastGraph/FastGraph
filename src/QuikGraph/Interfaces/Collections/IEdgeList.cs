@@ -5,34 +5,40 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
     /// <summary>
-    /// A cloneable list of edges
+    /// Represents a cloneable list of edges.
     /// </summary>
-    /// <typeparam name="TVertex"></typeparam>
-    /// <typeparam name="TEdge"></typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IEdgeListContract<,>))]
 #endif
-    public interface IEdgeList<TVertex, TEdge>
-        : IList<TEdge>
+    public interface IEdgeList<TVertex, TEdge> : IList<TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
-        /// Trims excess allocated space
+        /// Trims excess allocated space.
         /// </summary>
         void TrimExcess();
+
         /// <summary>
-        /// Gets a clone of this list
+        /// Gets a clone of this list.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Cloned list.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
 #if SUPPORTS_CLONEABLE
-        new 
+        new
 #endif
         IEdgeList<TVertex, TEdge> Clone();
     }
