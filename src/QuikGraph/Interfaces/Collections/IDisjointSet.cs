@@ -1,6 +1,6 @@
-﻿#if SUPPORTS_CONTRACTS
+﻿using JetBrains.Annotations;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using JetBrains.Annotations;
 using QuikGraph.Collections.Contracts;
 #endif
 
@@ -11,7 +11,7 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IDisjointSetContract<>))]
+    [ContractClass(typeof(DisjointSetContract<>))]
 #endif
     public interface IDisjointSet<T>
     {
@@ -46,6 +46,7 @@ namespace QuikGraph.Collections
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
+        [CanBeNull]
         T FindSet([NotNull] T value);
 
         /// <summary>
@@ -78,6 +79,6 @@ namespace QuikGraph.Collections
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        bool Contains([CanBeNull] T value);
+        bool Contains([NotNull] T value);
     }
 }

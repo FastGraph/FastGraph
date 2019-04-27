@@ -3,7 +3,7 @@
 namespace QuikGraph.Collections
 {
     /// <summary>
-    /// Represents a queue.
+    /// Represents a queue (First in, First out).
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
     public interface IQueue<T>
@@ -52,7 +52,7 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Converts this queue to an array.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Array composed of elements.</returns>
 #if SUPPORTS_CONTRACTS
         [System.Diagnostics.Contracts.Pure]
 #endif

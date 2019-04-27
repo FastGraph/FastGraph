@@ -1,80 +1,67 @@
 ﻿#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Collections.Contracts
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IDisjointSet{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">Element type.</typeparam>
     [ContractClassFor(typeof(IDisjointSet<>))]
-#endif
-    abstract class IDisjointSetContract<T>
-        : IDisjointSet<T>
+    internal abstract class DisjointSetContract<T> : IDisjointSet<T>
     {
-        int IDisjointSet<T>.SetCount
-        {
-            get
-            {
-                return default(int);
-            }
-        }
+        int IDisjointSet<T>.SetCount => default(int);
 
-        int IDisjointSet<T>.ElementCount
-        {
-            get
-            {
-                return default(int);
-            }
-        }
+        int IDisjointSet<T>.ElementCount => default(int);
 
-#if SUPPORTS_CONTRACTS
         [ContractInvariantMethod]
-        void ObjectInvariant()
+        private void ObjectInvariant()
         {
-            IDisjointSet<T> ithis = this;
-            Contract.Invariant(0 <= ithis.SetCount);
-            Contract.Invariant(ithis.SetCount <= ithis.ElementCount);
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IDisjointSet<T> explicitThis = this;
+
+            Contract.Invariant(0 <= explicitThis.SetCount);
+            Contract.Invariant(explicitThis.SetCount <= explicitThis.ElementCount);
         }
-#endif
 
         void IDisjointSet<T>.MakeSet(T value)
         {
-            IDisjointSet<T> ithis = this;
-#if SUPPORTS_CONTRACTS
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IDisjointSet<T> explicitThis = this;
+
             Contract.Requires(value != null);
-            Contract.Requires(!ithis.Contains(value));
-            Contract.Ensures(ithis.Contains(value));
-            Contract.Ensures(ithis.SetCount == Contract.OldValue(ithis.SetCount) + 1);
-            Contract.Ensures(ithis.ElementCount == Contract.OldValue(ithis.ElementCount) + 1);
-#endif
+            Contract.Requires(!explicitThis.Contains(value));
+            Contract.Ensures(explicitThis.Contains(value));
+            Contract.Ensures(
+                explicitThis.SetCount == Contract.OldValue(explicitThis.SetCount) + 1);
+            Contract.Ensures(
+                explicitThis.ElementCount == Contract.OldValue(explicitThis.ElementCount) + 1);
         }
 
         T IDisjointSet<T>.FindSet(T value)
         {
-            IDisjointSet<T> ithis = this;
-#if SUPPORTS_CONTRACTS
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IDisjointSet<T> explicitThis = this;
+
             Contract.Requires(value != null);
-            Contract.Requires(ithis.Contains(value));
-#endif
+            Contract.Requires(explicitThis.Contains(value));
 
             return default(T);
         }
 
         bool IDisjointSet<T>.Union(T left, T right)
         {
-            IDisjointSet<T> ithis = this;
-#if SUPPORTS_CONTRACTS
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IDisjointSet<T> explicitThis = this;
+
             Contract.Requires(left != null);
-            Contract.Requires(ithis.Contains(left));
+            Contract.Requires(explicitThis.Contains(left));
             Contract.Requires(right != null);
-            Contract.Requires(ithis.Contains(right));
-#endif
+            Contract.Requires(explicitThis.Contains(right));
 
             return default(bool);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         bool IDisjointSet<T>.Contains(T value)
         {
             return default(bool);
@@ -82,15 +69,16 @@ namespace QuikGraph.Collections.Contracts
 
         bool IDisjointSet<T>.AreInSameSet(T left, T right)
         {
-            IDisjointSet<T> ithis = this;
-#if SUPPORTS_CONTRACTS
+            // ReSharper disable once RedundantAssignment, Justification: Code contract.
+            IDisjointSet<T> explicitThis = this;
+
             Contract.Requires(left != null);
             Contract.Requires(right != null);
-            Contract.Requires(ithis.Contains(left));
-            Contract.Requires(ithis.Contains(right));
-#endif
+            Contract.Requires(explicitThis.Contains(left));
+            Contract.Requires(explicitThis.Contains(right));
 
             return default(bool);
         }
     }
 }
+#endif

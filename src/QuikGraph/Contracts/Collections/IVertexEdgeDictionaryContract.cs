@@ -1,26 +1,26 @@
-﻿using System;
+﻿#if SUPPORTS_CONTRACTS
+using System;
 using System.Collections;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
 
 namespace QuikGraph.Collections
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IVertexEdgeDictionary{TVertex, TEdge}"/>.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     [ContractClassFor(typeof(IVertexEdgeDictionary<,>))]
-#endif
-    abstract class IVertexEdgeDictionaryContract<TVertex, TEdge> : IVertexEdgeDictionary<TVertex, TEdge>
+    internal abstract class VertexEdgeDictionaryContract<TVertex, TEdge> : IVertexEdgeDictionary<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         IVertexEdgeDictionary<TVertex, TEdge> IVertexEdgeDictionary<TVertex, TEdge>.Clone()
         {
-#if SUPPORTS_CONTRACTS
             Contract.Ensures(Contract.Result<IVertexEdgeDictionary<TVertex, TEdge>>() != null);
-#endif
 
             throw new NotImplementedException();
         }
@@ -79,8 +79,7 @@ namespace QuikGraph.Collections
             throw new NotImplementedException();
         }
 
-        int ICollection<KeyValuePair<TVertex, IEdgeList<TVertex, TEdge>>>.Count
-            => throw new NotImplementedException();
+        int ICollection<KeyValuePair<TVertex, IEdgeList<TVertex, TEdge>>>.Count => throw new NotImplementedException();
 
         bool ICollection<KeyValuePair<TVertex, IEdgeList<TVertex, TEdge>>>.IsReadOnly => throw new NotImplementedException();
 
@@ -116,3 +115,4 @@ namespace QuikGraph.Collections
         #endregion
     }
 }
+#endif

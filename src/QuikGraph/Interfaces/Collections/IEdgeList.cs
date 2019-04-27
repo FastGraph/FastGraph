@@ -15,7 +15,7 @@ namespace QuikGraph.Collections
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IEdgeListContract<,>))]
+    [ContractClass(typeof(EdgeListContract<,>))]
 #endif
     public interface IEdgeList<TVertex, TEdge> : IList<TEdge>
 #if SUPPORTS_CLONEABLE

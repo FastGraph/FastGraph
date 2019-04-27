@@ -1,23 +1,24 @@
-﻿using System;
+﻿#if SUPPORTS_CONTRACTS
+using System;
+using System.Collections;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Collections
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IEdgeList{TVertex, TEdge}"/>.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     [ContractClassFor(typeof(IEdgeList<,>))]
-#endif
-    abstract class IEdgeListContract<TVertex,TEdge> 
-        : IEdgeList<TVertex, TEdge>
+    internal abstract class EdgeListContract<TVertex, TEdge> : IEdgeList<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         IEdgeList<TVertex, TEdge> IEdgeList<TVertex, TEdge>.Clone()
         {
-#if SUPPORTS_CONTRACTS
             Contract.Ensures(Contract.Result<IEdgeList<TVertex, TEdge>>() != null);
-#endif
+
             throw new NotImplementedException();
         }
 
@@ -25,7 +26,7 @@ namespace QuikGraph.Collections
         {
         }
 
-        #region others
+        #region Others
 
         int IList<TEdge>.IndexOf(TEdge item)
         {
@@ -44,14 +45,8 @@ namespace QuikGraph.Collections
 
         TEdge IList<TEdge>.this[int index]
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
         }
 
         void ICollection<TEdge>.Add(TEdge item)
@@ -74,15 +69,9 @@ namespace QuikGraph.Collections
             throw new NotImplementedException();
         }
 
-        int ICollection<TEdge>.Count
-        {
-            get { throw new NotImplementedException(); }
-        }
+        int ICollection<TEdge>.Count => throw new NotImplementedException();
 
-        bool ICollection<TEdge>.IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool ICollection<TEdge>.IsReadOnly => throw new NotImplementedException();
 
         bool ICollection<TEdge>.Remove(TEdge item)
         {
@@ -94,7 +83,7 @@ namespace QuikGraph.Collections
             throw new NotImplementedException();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }
@@ -109,3 +98,4 @@ namespace QuikGraph.Collections
         #endregion
     }
 }
+#endif
