@@ -3,6 +3,7 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
@@ -50,12 +51,11 @@ namespace QuikGraph.Algorithms.Observers
         {
             algorithm.TreeEdge += TreeEdge;
             algorithm.FinishVertex += FinishVertex;
-            return new DisposableAction(
-                () =>
-                {
-                    algorithm.TreeEdge -= TreeEdge;
-                    algorithm.FinishVertex -= FinishVertex;
-                });
+            return Finally(() =>
+            {
+                algorithm.TreeEdge -= TreeEdge;
+                algorithm.FinishVertex -= FinishVertex;
+            });
         }
 
         void TreeEdge(TEdge e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
@@ -66,16 +67,15 @@ namespace QuikGraph.Algorithms.Observers
         public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
         {
             algorithm.DiscoverVertex += DiscoverVertex;
-            if (this._finishTimes != null)
+            if (_finishTimes != null)
                 algorithm.FinishVertex += FinishVertex;
 
-            return new DisposableAction(
-                () =>
-                {
-                    algorithm.DiscoverVertex -= DiscoverVertex;
-                    if (this._finishTimes != null)
-                        algorithm.FinishVertex -= FinishVertex;
-                });
+            return Finally(() =>
+            {
+                algorithm.DiscoverVertex -= DiscoverVertex;
+                if (_finishTimes != null)
+                    algorithm.FinishVertex -= FinishVertex;
+            });
         }
 
         void DiscoverVertex(TVertex v)

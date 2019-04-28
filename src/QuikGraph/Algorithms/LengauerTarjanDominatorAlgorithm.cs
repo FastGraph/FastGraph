@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
+using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms
 {
@@ -114,9 +115,7 @@ namespace QuikGraph.Algorithms
             public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
             {
                 algorithm.DiscoverVertex += algorithm_DiscoverVertex;
-                return new DisposableAction(
-                    () => algorithm.DiscoverVertex -= algorithm_DiscoverVertex
-                    );
+                return Finally(() => algorithm.DiscoverVertex -= algorithm_DiscoverVertex);
             }
 
             void algorithm_DiscoverVertex(TVertex v)

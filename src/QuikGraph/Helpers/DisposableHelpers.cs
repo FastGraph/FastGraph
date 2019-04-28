@@ -19,10 +19,9 @@ namespace QuikGraph.Utils
             return new FinallyScope(action);
         }
 
-        private class FinallyScope : IDisposable
+        private struct FinallyScope : IDisposable
         {
-            [NotNull]
-            private readonly Action _action;
+            private Action _action;
 
             public FinallyScope([NotNull] Action action)
             {
@@ -33,6 +32,7 @@ namespace QuikGraph.Utils
             public void Dispose()
             {
                 _action();
+                _action = null;
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
@@ -44,7 +45,7 @@ namespace QuikGraph.Algorithms.Observers
         public IDisposable Attach(ITreeBuilderAlgorithm<TVertex, TEdge> algorithm)
         {
             algorithm.TreeEdge += TreeEdge;
-            return new DisposableAction(() => algorithm.TreeEdge -= TreeEdge);
+            return Finally(() => algorithm.TreeEdge -= TreeEdge);
         }
 
         void TreeEdge(TEdge e)
