@@ -1,14 +1,33 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms
 {
-    public interface IConnectedComponentAlgorithm<TVertex,TEdge,TGraph> : IAlgorithm<TGraph>
-        where TGraph : IGraph<TVertex,TEdge>
+    /// <summary>
+    /// Represents an algorithm dealing with graph connected components.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
+    public interface IConnectedComponentAlgorithm<TVertex, TEdge, out TGraph> : IAlgorithm<TGraph>
+        where TGraph : IGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        int ComponentCount { get;}
-        IDictionary<TVertex, int> Components { get;}
+        /// <summary>
+        /// Number of components.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        int ComponentCount { get; }
+
+        /// <summary>
+        /// Graph components.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        IDictionary<TVertex, int> Components { get; }
     }
 }

@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 #endif
     public sealed class CyclePoppingRandomTreeAlgorithm<TVertex, TEdge> 
         : RootedAlgorithmBase<TVertex,IVertexListGraph<TVertex,TEdge>>
-        , IVertexColorizerAlgorithm<TVertex, TEdge>
+        , IVertexColorizerAlgorithm<TVertex>
         , ITreeBuilderAlgorithm<TVertex,TEdge>
     where TEdge : IEdge<TVertex>
     {

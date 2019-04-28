@@ -19,9 +19,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 #endif
     public sealed class UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge> 
         : UndirectedShortestPathAlgorithmBase<TVertex, TEdge>
-        , IVertexColorizerAlgorithm<TVertex, TEdge>
+        , IVertexColorizerAlgorithm<TVertex>
         , IUndirectedVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
-        , IDistanceRecorderAlgorithm<TVertex, TEdge>
+        , IDistanceRecorderAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
         private IPriorityQueue<TVertex> vertexQueue;

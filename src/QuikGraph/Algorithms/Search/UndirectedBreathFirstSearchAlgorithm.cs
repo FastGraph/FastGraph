@@ -21,8 +21,8 @@ namespace QuikGraph.Algorithms.Search
     public sealed class UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge> 
         : RootedAlgorithmBase<TVertex, IUndirectedGraph<TVertex, TEdge>>
         , IUndirectedVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
-        , IDistanceRecorderAlgorithm<TVertex, TEdge>
-        , IVertexColorizerAlgorithm<TVertex, TEdge>
+        , IDistanceRecorderAlgorithm<TVertex>
+        , IVertexColorizerAlgorithm<TVertex>
         , IUndirectedTreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

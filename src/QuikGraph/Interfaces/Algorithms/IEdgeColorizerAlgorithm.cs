@@ -1,11 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms
 {
-    public interface IEdgeColorizerAlgorithm<TVertex,TEdge>
+    /// <summary>
+    /// Represents a storage of edges colorization state.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public interface IEdgeColorizerAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        IDictionary<TEdge, GraphColor> EdgeColors { get;}
+        /// <summary>
+        /// Treated edges with their colors (colorized edges).
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        IDictionary<TEdge, GraphColor> EdgeColors { get; }
     }
 }

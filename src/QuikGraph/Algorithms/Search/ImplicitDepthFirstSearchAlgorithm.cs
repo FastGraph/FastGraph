@@ -14,7 +14,7 @@ namespace QuikGraph.Algorithms.Search
     public sealed class ImplicitDepthFirstSearchAlgorithm<TVertex, TEdge> :
         RootedAlgorithmBase<TVertex,IIncidenceGraph<TVertex,TEdge>>,
         IVertexPredecessorRecorderAlgorithm<TVertex,TEdge>,
-        IVertexTimeStamperAlgorithm<TVertex,TEdge>,
+        IVertexTimeStamperAlgorithm<TVertex>,
         ITreeBuilderAlgorithm<TVertex,TEdge>
         where TEdge : IEdge<TVertex>
     {

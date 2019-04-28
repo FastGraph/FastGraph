@@ -1,24 +1,24 @@
-﻿using System;
-#if SUPPORTS_CONTRACTS
+﻿#if SUPPORTS_CONTRACTS
+using System;
 using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Algorithms.Observers.Contracts
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IObserver{TAlgorithm}"/>.
+    /// </summary>
+    /// <typeparam name="TAlgorithm">Algorithm type.</typeparam>
     [ContractClassFor(typeof(IObserver<>))]
-#endif
-    abstract class IObserverContract<TAlgorithm>
-        : IObserver<TAlgorithm>
+    internal abstract class ObserverContract<TAlgorithm> : IObserver<TAlgorithm>
     {
         IDisposable IObserver<TAlgorithm>.Attach(TAlgorithm algorithm)
         { 
-#if SUPPORTS_CONTRACTS
             Contract.Requires(algorithm != null);
             Contract.Ensures(Contract.Result<IDisposable>() != null);
-#endif
 
+            // ReSharper disable once AssignNullToNotNullAttribute, Justification: Contract class.
             return default(IDisposable);
         }
     }
 }
+#endif

@@ -15,8 +15,8 @@ namespace QuikGraph.Algorithms.Search
     public sealed class BreadthFirstSearchAlgorithm<TVertex, TEdge> 
         : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>
         , IVertexPredecessorRecorderAlgorithm<TVertex,TEdge>
-        , IDistanceRecorderAlgorithm<TVertex,TEdge>
-        , IVertexColorizerAlgorithm<TVertex,TEdge>
+        , IDistanceRecorderAlgorithm<TVertex>
+        , IVertexColorizerAlgorithm<TVertex>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

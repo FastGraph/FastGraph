@@ -21,9 +21,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 #endif
     public sealed class AStarShortestPathAlgorithm<TVertex, TEdge> 
         : ShortestPathAlgorithmBase<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
-        , IVertexColorizerAlgorithm<TVertex, TEdge>
+        , IVertexColorizerAlgorithm<TVertex>
         , IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
-        , IDistanceRecorderAlgorithm<TVertex, TEdge>
+        , IDistanceRecorderAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
         private FibonacciQueue<TVertex, double> vertexQueue;

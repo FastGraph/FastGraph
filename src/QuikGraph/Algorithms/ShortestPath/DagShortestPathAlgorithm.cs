@@ -17,9 +17,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 #endif
     public sealed class DagShortestPathAlgorithm<TVertex, TEdge> :
         ShortestPathAlgorithmBase<TVertex,TEdge,IVertexListGraph<TVertex,TEdge>>,
-        IVertexColorizerAlgorithm<TVertex,TEdge>,
+        IVertexColorizerAlgorithm<TVertex>,
         ITreeBuilderAlgorithm<TVertex,TEdge>,
-        IDistanceRecorderAlgorithm<TVertex,TEdge>,
+        IDistanceRecorderAlgorithm<TVertex>,
         IVertexPredecessorRecorderAlgorithm<TVertex,TEdge>
         where TEdge : IEdge<TVertex>
     {

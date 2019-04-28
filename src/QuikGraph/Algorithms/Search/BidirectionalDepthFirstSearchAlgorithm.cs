@@ -22,7 +22,7 @@ namespace QuikGraph.Algorithms.Search
 #endif
     public sealed class BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge> :
         RootedAlgorithmBase<TVertex, IBidirectionalGraph<TVertex, TEdge>>,
-        IVertexColorizerAlgorithm<TVertex, TEdge>,
+        IVertexColorizerAlgorithm<TVertex>,
         ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

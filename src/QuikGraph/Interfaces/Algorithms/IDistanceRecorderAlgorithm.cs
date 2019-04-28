@@ -1,16 +1,19 @@
-﻿using System;
-
-namespace QuikGraph.Algorithms
+﻿namespace QuikGraph.Algorithms
 {
     /// <summary>
-    /// An algorithm that exposes events to compute a distance map between vertices
+    /// An algorithm that exposes events to compute a distance map between vertices.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
-    public interface IDistanceRecorderAlgorithm<TVertex,TEdge>
-        where TEdge : IEdge<TVertex>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    public interface IDistanceRecorderAlgorithm<out TVertex>
     {
+        /// <summary>
+        /// Fired when a vertex is initialized.
+        /// </summary>
         event VertexAction<TVertex> InitializeVertex;
+
+        /// <summary>
+        /// Fired when a vertex is discovered.
+        /// </summary>
         event VertexAction<TVertex> DiscoverVertex;
     }
 }

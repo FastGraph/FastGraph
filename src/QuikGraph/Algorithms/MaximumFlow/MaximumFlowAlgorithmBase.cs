@@ -15,7 +15,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 #endif
     public abstract class MaximumFlowAlgorithm<TVertex, TEdge> :
         AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>,
-        IVertexColorizerAlgorithm<TVertex,TEdge>
+        IVertexColorizerAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
         private TVertex source;

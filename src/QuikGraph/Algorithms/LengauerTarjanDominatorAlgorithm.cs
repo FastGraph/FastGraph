@@ -98,7 +98,7 @@ namespace QuikGraph.Algorithms
         }
 
         class TimeStampObserver
-            : Observers.IObserver<IVertexTimeStamperAlgorithm<TVertex, TEdge>>
+            : Observers.IObserver<IVertexTimeStamperAlgorithm<TVertex>>
 
         {
             public readonly List<TVertex> Vertices;
@@ -111,7 +111,7 @@ namespace QuikGraph.Algorithms
                 this.Vertices = vertices;
             }
 
-            public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex, TEdge> algorithm)
+            public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
             {
                 algorithm.DiscoverVertex += algorithm_DiscoverVertex;
                 return new DisposableAction(

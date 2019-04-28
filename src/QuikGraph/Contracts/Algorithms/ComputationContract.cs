@@ -1,36 +1,33 @@
-﻿using System;
-#if SUPPORTS_CONTRACTS
+﻿#if SUPPORTS_CONTRACTS
+using System;
 using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Algorithms.Contracts
 {
-#if SUPPORTS_CONTRACTS
+    /// <summary>
+    /// Contract class for <see cref="IComputation"/>.
+    /// </summary>
     [ContractClassFor(typeof(IComputation))]
-#endif
-    abstract class IComputationContract
-        : IComputation
+    internal abstract class ComputationContract : IComputation
     {
-#region IComputation Members
+        #region IComputation
+
         object IComputation.SyncRoot
         {
             get
             {
-#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Contract.Result<object>() != null);
-#endif
 
+                // ReSharper disable once AssignNullToNotNullAttribute, Justification: Contract class.
                 return null;
             }
         }
 
         ComputationState IComputation.State
         {
-            get 
+            get
             {
-#if SUPPORTS_CONTRACTS
                 Contract.Ensures(Enum.IsDefined(typeof(ComputationState), Contract.Result<ComputationState>()));
-#endif
 
                 return default(ComputationState);
             }
@@ -38,7 +35,7 @@ namespace QuikGraph.Algorithms.Contracts
 
         void IComputation.Compute()
         {
-            // todo contracts on events
+            // TODO contracts on events
         }
 
         void IComputation.Abort()
@@ -47,28 +44,29 @@ namespace QuikGraph.Algorithms.Contracts
 
         event EventHandler IComputation.StateChanged
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
         event EventHandler IComputation.Started
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
         event EventHandler IComputation.Finished
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
         event EventHandler IComputation.Aborted
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
     }
 }
+#endif

@@ -18,10 +18,10 @@ namespace QuikGraph.Algorithms.Search
 #endif
     public sealed class DepthFirstSearchAlgorithm<TVertex, TEdge> :
         RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>,
-        IDistanceRecorderAlgorithm<TVertex, TEdge>,
-        IVertexColorizerAlgorithm<TVertex, TEdge>,
+        IDistanceRecorderAlgorithm<TVertex>,
+        IVertexColorizerAlgorithm<TVertex>,
         IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>,
-        IVertexTimeStamperAlgorithm<TVertex, TEdge>,
+        IVertexTimeStamperAlgorithm<TVertex>,
         ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
