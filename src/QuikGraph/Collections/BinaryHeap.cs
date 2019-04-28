@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -9,217 +12,251 @@ using System.Diagnostics.Contracts;
 namespace QuikGraph.Collections
 {
     /// <summary>
-    /// Binary heap
+    /// Binary heap.
     /// </summary>
     /// <remarks>
     /// Indexing rules:
     /// 
-    /// parent index: index ¡ 1)/2
+    /// parent index: (index - 1)/2
     /// left child: 2 * index + 1
     /// right child: 2 * index + 2
     /// 
     /// Reference:
     /// http://dotnetslackers.com/Community/files/folders/data-structures-and-algorithms/entry28722.aspx
     /// </remarks>
-    /// <typeparam name="TValue">type of the value</typeparam>
-    /// <typeparam name="TPriority">type of the priority metric</typeparam>
-    [DebuggerDisplay("Count = {Count}")]
-    public class BinaryHeap<TPriority, TValue> 
-        : IEnumerable<KeyValuePair<TPriority, TValue>>
+    /// <typeparam name="TValue">Value type.</typeparam>
+    /// <typeparam name="TPriority">Priority metric type.</typeparam>
+    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+    public class BinaryHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
     {
-        readonly Comparison<TPriority> priorityComparsion;
-        KeyValuePair<TPriority, TValue>[] items;
-        int count;
-        int version;
+        private int _version;
 
-        const int DefaultCapacity = 16;
+        private const int DefaultCapacity = 16;
 
+        [NotNull]
+        private KeyValuePair<TPriority, TValue>[] _items;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryHeap{TPriority,TValue}"/> class.
+        /// </summary>
         public BinaryHeap()
             : this(DefaultCapacity, Comparer<TPriority>.Default.Compare)
-        { }
+        {
+        }
 
-        public BinaryHeap(Comparison<TPriority> priorityComparison)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryHeap{TPriority,TValue}"/> class.
+        /// </summary>
+        /// <param name="priorityComparison">Priority comparer.</param>
+        public BinaryHeap([NotNull] Comparison<TPriority> priorityComparison)
             : this(DefaultCapacity, priorityComparison)
-        { }
+        {
+        }
 
-        public BinaryHeap(int capacity, Comparison<TPriority> priorityComparison)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryHeap{TPriority,TValue}"/> class.
+        /// </summary>
+        /// <param name="capacity">Heap capacity.</param>
+        /// <param name="priorityComparison">Priority comparer.</param>
+        public BinaryHeap(int capacity, [NotNull] Comparison<TPriority> priorityComparison)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(capacity >= 0);
             Contract.Requires(priorityComparison != null);
 #endif
 
-            this.items = new KeyValuePair<TPriority, TValue>[capacity];
-            this.priorityComparsion = priorityComparison;
+            _items = new KeyValuePair<TPriority, TValue>[capacity];
+            PriorityComparison = priorityComparison;
         }
 
-        public Comparison<TPriority> PriorityComparison
+
+#if SUPPORTS_CONTRACTS
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
         {
-            get { return this.priorityComparsion; }
+            Contract.Invariant(_items != null);
+            Contract.Invariant(Count > -1 && Count <= _items.Length);
+            Contract.Invariant(
+                EnumerableContract.All(0, Count, index =>
+                {
+                    int left = 2 * index + 1;
+                    int right = 2 * index + 2;
+                    return (left >= Count || LessOrEqual(index, left))
+                           && (right >= Count || LessOrEqual(index, right));
+                })
+            );
         }
+#endif
 
-        public int Capacity
-        {
-            get { return this.items.Length; }
-        }
+        /// <summary>
+        /// Priority comparer.
+        /// </summary>
+        [NotNull]
+        public Comparison<TPriority> PriorityComparison { get; }
 
-        public int Count
-        {
-            get { return this.count; }
-        }
+        /// <summary>
+        /// Heap capacity.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int Capacity => _items.Length;
 
-        public void Add(TPriority priority, TValue value)
+        /// <summary>
+        /// Number of element.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Adds the given <paramref name="value"/> (with priority) into the heap.
+        /// </summary>
+        /// <param name="priority">Item priority.</param>
+        /// <param name="value">The value.</param>
+        public void Add([NotNull] TPriority priority, [NotNull] TValue value)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("Add({0}, {1})", priority, value);
+            Console.WriteLine($"Add({priority}, {value})");
 #endif
-            this.version++;
-            this.ResizeArray();
-            this.items[this.count++] = new KeyValuePair<TPriority, TValue>(priority, value);
-            this.MinHeapifyDown(this.count - 1);
+
+            _version++;
+            ResizeArray();
+            _items[Count++] = new KeyValuePair<TPriority, TValue>(priority, value);
+            MinHeapifyUp(Count - 1);
+
 #if BINARY_HEAP_DEBUG
             Console.WriteLine("Add: {0}", ToString2());
 #endif
         }
 
-        // TODO: MinHeapifyDown is really MinHeapifyUp.  Do the renaming
-        private void MinHeapifyDown(int start)
+        private void MinHeapifyUp(int start)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("MinHeapifyDown");
+            Console.WriteLine("MinHeapifyUp");
 #endif
             int current = start;
             int parent = (current - 1) / 2;
-            while (current > 0 && this.Less(current, parent))
+            while (current > 0 && Less(current, parent))
             {
-                this.Swap(current, parent);
+                Swap(current, parent);
                 current = parent;
                 parent = (current - 1) / 2;
             }
         }
 
+        /// <summary>
+        /// Gets all heap values.
+        /// </summary>
+        /// <returns>Array of heap values.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public TValue[] ToValueArray()
         {
-            var values = new TValue[this.items.Length];
-            for (int i = 0; i < values.Length; ++i)
-                values[i] = this.items[i].Value;
-            return values;
+            return _items.Select(pair => pair.Value).ToArray();
         }
 
+        /// <summary>
+        /// Gets all values with their priorities.
+        /// </summary>
+        /// <returns>Array of heap priorities and values.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public KeyValuePair<TPriority, TValue>[] ToPriorityValueArray()
         {
-            var array = new KeyValuePair<TPriority, TValue>[this.items.Length];
-            for (int i = 0; i < array.Length; ++i)
-                array[i] = this.items[i];
-            return array;
+            return _items.ToArray();
         }
 
+        /// <summary>
+        /// Checks if this heap is consistent (fulfill indexing rule).
+        /// </summary>
+        /// <returns>True if the heap is consistent, false otherwise.</returns>
         public bool IsConsistent()
         {
             int wrong = -1;
 
-            for (int i = 0; i < this.count; i++)
+            for (int i = 0; i < Count; i++)
             {
-                var l = 2 * i + 1;
-                var r = 2 * i + 2;
-                if (l < this.count && !this.LessOrEqual(i, l))
+                int l = 2 * i + 1;
+                int r = 2 * i + 2;
+                if (l < Count && !LessOrEqual(i, l))
                     wrong = i;
-                if (r < this.count && !this.LessOrEqual(i, r))
+                if (r < Count && !LessOrEqual(i, r))
                     wrong = i;
             }
 
-            var correct = wrong == -1;
+            bool correct = wrong == -1;
             return correct;
         }
 
+        [NotNull]
         private string EntryToString(int i)
         {
-            if (i < 0 || i >= this.count)
+            if (i < 0 || i >= Count)
                 return "null";
 
-            var kvp = this.items[i];
-            var k = kvp.Key;
-            var v = kvp.Value;
+            KeyValuePair<TPriority, TValue> kvp = _items[i];
+            TPriority k = kvp.Key;
+            TValue v = kvp.Value;
 
-            var str = "";
-            str += k.ToString();
-            str += " ";
-            str += v == null ? "null" : v.ToString();
-            return str;
-        }
-
-        public string ToString2()
-        {
-            var status = IsConsistent();
-            var str = status.ToString() + ": ";
-
-            for (int i = 0; i < this.items.Length; i++)
-            {
-                str += EntryToString(i);
-                str += ", ";
-            }
-            return str;
-        }
-
-        public string ToStringTree()
-        {
-            var status = IsConsistent();
-            var str = "Consistent? " + status.ToString();
-
-            for (int i = 0; i < this.count; i++)
-            {
-                var l = 2 * i + 1;
-                var r = 2 * i + 2;
-
-                var s = "index";
-                s += i.ToString();
-                s += ": ";
-                s += EntryToString(i);
-                s += " -> ";
-                s += EntryToString(l);
-                s += " and ";
-                s += EntryToString(r);
-
-                str += "\r\n" + s;
-            }
-            return str;
+            return $"{k.ToString()} {(v == null ? "null" : v.ToString())}";
         }
 
         private void ResizeArray()
         {
-            if (this.count == this.items.Length)
+            if (Count == _items.Length)
             {
-                var newItems = new KeyValuePair<TPriority, TValue>[this.count * 2 + 1];
-                Array.Copy(this.items, newItems, this.count);
-                this.items = newItems;
+                var newItems = new KeyValuePair<TPriority, TValue>[Count * 2 + 1];
+                Array.Copy(_items, newItems, Count);
+                _items = newItems;
             }
         }
 
+        /// <summary>
+        /// Gets the minimum pair.
+        /// </summary>
+        /// <returns>The minimal pair.</returns>
+        /// <exception cref="InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TPriority, TValue> Minimum()
         {
-            if (this.count == 0)
-                throw new InvalidOperationException();
-            return this.items[0];
+            if (Count == 0)
+                throw new InvalidOperationException("Heap is empty.");
+            return _items[0];
         }
 
+        /// <summary>
+        /// Gets and removes the minimal pair.
+        /// </summary>
+        /// <returns>The minimal pair.</returns>
+        /// <exception cref="InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TPriority, TValue> RemoveMinimum()
         {
 #if BINARY_HEAP_DEBUG
             Console.WriteLine("RemoveMinimum");
 #endif
-            if (this.count == 0)
-                throw new InvalidOperationException("heap is empty");
 
-            // shortcut for heap with 1 element.
-            if (this.count == 1)
+            if (Count == 0)
+                throw new InvalidOperationException("Heap is empty.");
+
+            // Shortcut for heap with 1 element.
+            if (Count == 1)
             {
-                this.version++;
-                return this.items[--this.count];
+                ++_version;
+                return _items[--Count];
             }
-            this.Swap(0, this.count - 1);
-            this.count--;
-            this.MinHeapifyUp(0);
-            return this.items[this.count];
+
+            Swap(0, Count - 1);
+            --Count;
+            MinHeapifyDown(0);
+
+            return _items[Count];
         }
 
         /// <summary>
@@ -232,243 +269,292 @@ namespace QuikGraph.Collections
         public KeyValuePair<TPriority, TValue> RemoveAt(int index)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("RemoveAt({0})", index);
+            Console.WriteLine($"RemoveAt({index})");
 #endif
-            if (this.count == 0)
-                throw new InvalidOperationException("heap is empty");
-            if (index < 0 | index >= this.count)
-                throw new ArgumentOutOfRangeException("index");
 
-            this.version++;
-            // shortcut for heap with 1 element.
-            if (this.count == 1)
-                return this.items[--this.count];
+            if (Count == 0)
+                throw new InvalidOperationException("Heap is empty.");
+            if (index < 0 | index >= Count)
+                throw new ArgumentOutOfRangeException(nameof(index));
 
-            this.Swap(index, this.count - 1);
-            this.count--;
-            this.MinHeapifyUp(index);
+            _version++;
+            // Shortcut for heap with 1 element.
+            if (Count == 1)
+                return _items[--Count];
 
-            return this.items[this.count];
+            Swap(index, Count - 1);
+            --Count;
+            MinHeapifyDown(index);
+
+            return _items[Count];
         }
 
-        // TODO: MinHeapifyUp is really MinHeapifyDown.  Do the renaming
-        private void MinHeapifyUp(int index)
+        private void MinHeapifyDown(int index)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("MinHeapifyUp");
+            Console.WriteLine("MinHeapifyDown");
 #endif
+
             while (true)
             {
-                var left = 2 * index + 1;
-                var right = 2 * index + 2;
-                var smallest = index;
-                if (left < this.count && this.Less(left, smallest))
+                int left = 2 * index + 1;
+                int right = 2 * index + 2;
+                int smallest = index;
+                if (left < Count && Less(left, smallest))
                     smallest = left;
-                if (right < this.count && this.Less(right, smallest))
+                if (right < Count && Less(right, smallest))
                     smallest = right;
-                
+
                 if (smallest == index)
                     break;
 
-                this.Swap(smallest, index);
+                Swap(smallest, index);
                 index = smallest;
             }
         }
 
-        public int IndexOf(TValue value)
+        /// <summary>
+        /// Gets the index of the given <paramref name="value"/> in the heap.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Index of the value if found, otherwise -1.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public int IndexOf([CanBeNull] TValue value)
         {
-            for (int i = 0; i < this.count; i++)
+            for (int i = 0; i < Count; i++)
             {
-                if (object.Equals(value, this.items[i].Value))
+                if (Equals(value, _items[i].Value))
                     return i;
             }
+
             return -1;
         }
 
-        public bool MinimumUpdate(TPriority priority, TValue value)
+        /// <summary>
+        /// Updates the <paramref name="value"/> priority if the new priority is lower
+        /// than the current <paramref name="value"/> priority (or add it if not present).
+        /// </summary>
+        /// <param name="priority">The priority.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>True if the heap was updated, false otherwise.</returns>
+        public bool MinimumUpdate([NotNull] TPriority priority, [NotNull] TValue value)
         {
-            // find index
-            var index = IndexOf(value);
-
+            // Find index
+            int index = IndexOf(value);
             if (index >= 0)
             {
-                if (this.priorityComparsion(priority, this.items[index].Key) <= 0)
+                if (PriorityComparison(priority, _items[index].Key) <= 0)
                 {
-                    this.Update(priority, value);
+                    Update(priority, value);
                     return true;
                 }
+
                 return false;
             }
 
-            // not in collection
-            this.Add(priority, value);
+            // Not in collection
+            Add(priority, value);
             return true;
         }
 
-        public void Update(TPriority priority, TValue value)
+        /// <summary>
+        /// Updates the <paramref name="value"/> priority (or add it if not present).
+        /// </summary>
+        /// <param name="priority">The priority.</param>
+        /// <param name="value">The value.</param>
+        public void Update([NotNull] TPriority priority, [NotNull] TValue value)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("Update({0}, {1})", priority, value);
+            Console.WriteLine($"Update({priority}, {value})");
 #endif
-            // find index
-            var index = this.IndexOf(value);
-            
-            // if it exists, update, else add
+
+            // Find index
+            int index = IndexOf(value);
+
+            // If it exists, update, else add
             if (index > -1)
             {
-                var neww = priority;
-                var oldd = this.items[index].Key;
-                this.items[index] = new KeyValuePair<TPriority,TValue>(neww, value);
+                TPriority newPriority = priority;
+                TPriority oldPriority = _items[index].Key;
+                _items[index] = new KeyValuePair<TPriority, TValue>(newPriority, value);
 
-                if (this.priorityComparsion(neww, oldd) > 0)
-                    MinHeapifyUp(index);
-                else if (this.priorityComparsion(neww, oldd) < 0)
+                if (PriorityComparison(newPriority, oldPriority) > 0)
                     MinHeapifyDown(index);
+                else if (PriorityComparison(newPriority, oldPriority) < 0)
+                    MinHeapifyUp(index);
             }
             else
             {
-                this.Add(priority, value);
+                Add(priority, value);
             }
         }
 
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
+        [JetBrains.Annotations.Pure]
         private bool LessOrEqual(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(
-                i >= 0 & i < this.count &
-                j >= 0 & j < this.count &
-                i != j);
+            Contract.Requires(i >= 0 & i < Count
+                              && j >= 0 & j < Count
+                              && i != j);
 #endif
 
-            return this.priorityComparsion(this.items[i].Key, this.items[j].Key) <= 0;
+            return PriorityComparison(_items[i].Key, _items[j].Key) <= 0;
         }
 
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
+        [JetBrains.Annotations.Pure]
         private bool Less(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(
-                i >= 0 & i < this.count &
-                j >= 0 & j < this.count);
+            Contract.Requires(i >= 0 & i < Count
+                              && j >= 0
+                              && j < Count);
 #endif
 
-            return this.priorityComparsion(this.items[i].Key, this.items[j].Key) < 0;
+            return PriorityComparison(_items[i].Key, _items[j].Key) < 0;
         }
 
         private void Swap(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(
-                i >= 0 && i < this.count &&
-                j >= 0 && j < this.count);
+            Contract.Requires(i >= 0
+                              && i < Count
+                              && j >= 0
+                              && j < Count);
 #endif
 
             if (i == j)
-            {
                 return;
-            }
 
-            var kv = this.items[i];
-            this.items[i] = this.items[j];
-            this.items[j] = kv;
+            KeyValuePair<TPriority, TValue> kv = _items[i];
+            _items[i] = _items[j];
+            _items[j] = kv;
         }
 
-#if DEEP_INVARIANT
-        [ContractInvariantMethod]
-        void ObjectInvariant()
+        #region IEnumerable
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            Contract.Invariant(this.items != null);
-            Contract.Invariant(
-                this.count > -1 &
-                this.count <= this.items.Length);
-            Contract.Invariant(
-                EnumerableContract.All(0, this.count, index =>
-                {
-                    var left = 2 * index + 1;
-                    var right = 2 * index + 2;
-                    return  (left >= count || this.LessOrEqual(index, left)) &&
-                            (right >= count || this.LessOrEqual(index, right));
-                })
-            );
+            return GetEnumerator();
         }
-#endif
 
-#region IEnumerable<KeyValuePair<TKey,TValue>> Members
+        #endregion
 
+        #region IEnumerable<KeyValuePair<TKey,TValue>>
+
+        /// <inheritdoc />
         public IEnumerator<KeyValuePair<TPriority, TValue>> GetEnumerator()
         {
             return new Enumerator(this);
         }
 
-        struct Enumerator : IEnumerator<KeyValuePair<TPriority, TValue>>
+        private struct Enumerator : IEnumerator<KeyValuePair<TPriority, TValue>>
         {
-            BinaryHeap<TPriority, TValue> owner;
-            KeyValuePair<TPriority, TValue>[] items;
-            readonly int count;
-            readonly int version;
-            int index;
+            private BinaryHeap<TPriority, TValue> _owner;
 
-            public Enumerator(BinaryHeap<TPriority, TValue> owner)
+            private KeyValuePair<TPriority, TValue>[] _items;
+
+            private readonly int _count;
+            private readonly int _version;
+            private int _index;
+
+            public Enumerator([NotNull] BinaryHeap<TPriority, TValue> owner)
             {
-                this.owner = owner;
-                this.items = owner.items;
-                this.count = owner.count;
-                this.version = owner.version;
-                this.index = -1;
+                _owner = owner;
+                _items = owner._items;
+                _count = owner.Count;
+                _version = owner._version;
+                _index = -1;
             }
 
             public KeyValuePair<TPriority, TValue> Current
             {
                 get
                 {
-                    if (this.version != this.owner.version)
+                    if (_version != _owner._version)
                         throw new InvalidOperationException();
-                    if (this.index < 0 | this.index == this.count)
+                    if (_index < 0 || _index == _count)
                         throw new InvalidOperationException();
 #if SUPPORTS_CONTRACTS
-                    Contract.Assert(this.index <= this.count);
+                    Contract.Assert(_index <= _count);
 #endif
 
-                    return this.items[this.index];
+                    return _items[_index];
                 }
             }
 
             void IDisposable.Dispose()
             {
-                this.owner = null;
-                this.items = null;
+                _owner = null;
+                _items = null;
             }
 
-            object IEnumerator.Current
-            {
-                get { return this.Current; }
-            }
+            object IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
-                if (this.version != this.owner.version)
+                if (_version != _owner._version)
                     throw new InvalidOperationException();
-                return ++this.index < this.count;
+                return ++_index < _count;
             }
 
             public void Reset()
             {
-                if (this.version != this.owner.version)
+                if (_version != _owner._version)
                     throw new InvalidOperationException();
-                this.index = -1;
+                _index = -1;
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        #endregion
+
+        /// <summary>
+        /// Gets a string representation of this heap.
+        /// </summary>
+        /// <returns>String representation.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public string ToString2()
         {
-            return this.GetEnumerator();
+            bool status = IsConsistent();
+            return $"{status}: {string.Join(", ", Enumerable.Range(0, _items.Length).Select(EntryToString).ToArray())}";
         }
 
-#endregion
+        /// <summary>
+        /// Gets a string tree representation of this heap.
+        /// </summary>
+        /// <returns>String representation.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public string ToStringTree()
+        {
+            bool status = IsConsistent();
+            var str = new StringBuilder($"Consistent? {status}");
+
+            for (int i = 0; i < Count; i++)
+            {
+                int l = 2 * i + 1;
+                int r = 2 * i + 2;
+
+                str.Append(
+                    $"{Environment.NewLine}index{i.ToString()} {EntryToString(i)} -> {EntryToString(l)} and {EntryToString(r)}");
+            }
+
+            return str.ToString();
+        }
     }
 }

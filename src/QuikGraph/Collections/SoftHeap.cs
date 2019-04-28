@@ -1,141 +1,212 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
-    public sealed class SoftHeap<TKey, TValue>
-        : IEnumerable<KeyValuePair<TKey, TValue>>
+    /// <summary>
+    /// Soft heap, which aims to has a constant amortized time for
+    /// creation of heap, inserting an element merging two heaps,
+    /// deleting an element and finding the element with minimum key.
+    /// </summary>
+    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TValue">Value type.</typeparam>
+    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+    public sealed class SoftHeap<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        sealed class Cell
+        private sealed class Cell
         {
-            public readonly TKey Key;
-            public readonly TValue Value;
-            public Cell Next = null;
+            [NotNull]
+            public TKey Key { get; }
+
+            public TValue Value { get; }
+
+            public Cell Next { get; internal set; }
 
             public Cell(TKey key, TValue value)
             {
-                this.Key = key;
-                this.Value = value;
+                Key = key;
+                Value = value;
             }
         }
 
-        sealed class Node
+        private sealed class Node
         {
-            public TKey CKey;
-            public int Rank;
-            public Node Next;
-            public Node Child;
-            public Cell IL;
-            public Cell ILTail;
+            [NotNull]
+            public TKey CKey { get; internal set; }
 
-            public Node(Cell cell)
+            public int Rank { get; }
+
+            [CanBeNull]
+            public Node Next { get; internal set; }
+
+            [CanBeNull]
+            public Node Child { get; internal set; }
+
+            // ReSharper disable once InconsistentNaming
+            [CanBeNull]
+            public Cell IL { get; internal set; }
+            
+            // ReSharper disable once InconsistentNaming
+            [CanBeNull]
+            public Cell ILTail { get; internal set; }
+
+            public Node([NotNull] Cell cell)
             {
-                this.Rank = 0;
-                this.CKey = cell.Key;
-                this.IL = cell;
-                this.ILTail = cell;
+                Rank = 0;
+                CKey = cell.Key;
+                IL = cell;
+                ILTail = cell;
             }
 
-            public Node(TKey cKey, int rank, Node next, Node child, Cell il, Cell iltail)
+            public Node(
+                [NotNull] TKey cKey, 
+                int rank, 
+                [NotNull] Node next,
+                [NotNull] Node child,
+                [CanBeNull] Cell il,
+                [CanBeNull] Cell ilTail)
             {
-                this.CKey = cKey;
-                this.Rank = rank;
-                this.Next = next;
-                this.Child = child;
-                this.IL = il;
-                this.ILTail = iltail;
+                CKey = cKey;
+                Rank = rank;
+                Next = next;
+                Child = child;
+                IL = il;
+                ILTail = ilTail;
             }
         }
 
-        sealed class Head
+        private sealed class Head
         {
-            public Node Queue;
-            public Head Next;
-            public Head Prev;
-            public Head SuffixMin;
-            public int Rank;
+            public Node Queue { get; internal set; }
+            public Head Next { get; internal set; }
+            public Head Prev { get; internal set; }
+            public Head SuffixMin { get; internal set; }
+            public int Rank { get; internal set; }
         }
 
-        readonly Comparison<TKey> comparison;
-        readonly TKey keyMaxValue;
-        readonly double errorRate;
-        readonly Head header;
-        readonly Head tail;
-        int count;
-        int r;
+        [NotNull]
+        private readonly Head _header;
 
-        public SoftHeap(double maximumErrorRate, TKey keyMaxValue)
+        [NotNull]
+        private readonly Head _tail;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SoftHeap{TKey,TValue}"/> class.
+        /// </summary>
+        /// <param name="maximumErrorRate">Indicates the maximum error rate to respect.</param>
+        /// <param name="keyMaxValue">Gives the maximum key value.</param>
+        public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue)
             : this(maximumErrorRate, keyMaxValue, Comparer<TKey>.Default.Compare)
-        { }
+        {
+        }
 
-        public SoftHeap(double maximumErrorRate, TKey keyMaxValue, Comparison<TKey> comparison)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SoftHeap{TKey,TValue}"/> class.
+        /// </summary>
+        /// <param name="maximumErrorRate">Indicates the maximum error rate to respect.</param>
+        /// <param name="keyMaxValue">Gives the maximum key value.</param>
+        /// <param name="comparison">Key comparer.</param>
+        public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue, [NotNull] Comparison<TKey> comparison)
         {
 #if SUPPORTS_CONTRACTS
+            Contract.Requires(keyMaxValue != null);
             Contract.Requires(comparison != null);
             Contract.Requires(0 < maximumErrorRate && maximumErrorRate <= 0.5);
 #endif
 
-            this.comparison = comparison;
-            this.keyMaxValue = keyMaxValue;
-            this.header = new Head();
-            this.tail = new Head();
-            this.tail.Rank = int.MaxValue;
-            this.header.Next = tail;
-            this.tail.Prev = header;
-            this.errorRate = maximumErrorRate;
-            this.r = 2 + 2 * (int)Math.Ceiling(Math.Log(1.0 / this.errorRate, 2.0));
-            this.count = 0;
+            KeyComparison = comparison;
+            KeyMaxValue = keyMaxValue;
+            _header = new Head();
+            _tail = new Head { Rank = int.MaxValue };
+            _header.Next = _tail;
+            _tail.Prev = _header;
+            ErrorRate = maximumErrorRate;
+            MinRank = 2 + 2 * (int)Math.Ceiling(Math.Log(1.0 / ErrorRate, 2.0));
+            Count = 0;
         }
 
-        public int MinRank
-        {
-            get { return this.r; }
-        }
-
-        public Comparison<TKey> Comparison
-        {
-            get { return this.comparison; }
-        }
-
-        public double ErrorRate
-        {
-            get { return this.errorRate; }
-        }
-
-        public int Count
-        {
-            get { return this.count; }
-        }
-
-        public TKey KeyMaxValue
-        {
-            get { return this.keyMaxValue; }
-        }
-
-        public void Add(TKey key, TValue value)
-        {
+        /// <summary>
+        /// Minimal rank (based on <see cref="ErrorRate"/>).
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(this.Comparison(key, this.KeyMaxValue) < 0);
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int MinRank { get; }
+
+        /// <summary>
+        /// Key comparer.
+        /// </summary>
+        [NotNull]
+        public Comparison<TKey> KeyComparison { get; }
+
+        /// <summary>
+        /// Maximal authorized key.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public TKey KeyMaxValue { get; }
+
+        /// <summary>
+        /// Error rate.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public double ErrorRate { get; }
+
+        /// <summary>
+        /// Number of element.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int Count { get; private set; }
+
+#if SUPPORTS_CONTRACTS
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(Count > -1);
+            Contract.Invariant(_header != null);
+            Contract.Invariant(_tail != null);
+        }
 #endif
 
-            var l = new Cell(key, value);
-            var q = new Node(l);
-
-            this.Meld(q);
-            this.count++;
-        }
-
-        private void Meld(Node q)
+        /// <summary>
+        /// Adds the given <paramref name="value"/> with the given <paramref name="key"/> into the heap.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value to add.</param>
+        public void Add([NotNull] TKey key, TValue value)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(q != null);
+            Contract.Requires(key != null);
+            Contract.Requires(KeyComparison(key, KeyMaxValue) < 0);
 #endif
 
-            Head toHead = header.Next;
-            while (q.Rank > toHead.Rank)
+            var cell = new Cell(key, value);
+            var node = new Node(cell);
+
+            Meld(node);
+            Count++;
+        }
+
+        private void Meld([NotNull] Node node)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(node != null);
+#endif
+
+            Head toHead = _header.Next;
+            while (node.Rank > toHead.Rank)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Assert(toHead.Next != null);
@@ -144,61 +215,60 @@ namespace QuikGraph.Collections
             }
 
             Head prevHead = toHead.Prev;
-            while (q.Rank == toHead.Rank)
+            while (node.Rank == toHead.Rank)
             {
                 Node top, bottom;
-                if (this.comparison(toHead.Queue.CKey, q.CKey) > 0)
+                if (KeyComparison(toHead.Queue.CKey, node.CKey) > 0)
                 {
-                    top = q;
+                    top = node;
                     bottom = toHead.Queue;
                 }
                 else
                 {
                     top = toHead.Queue;
-                    bottom = q;
+                    bottom = node;
                 }
-                q = new Node(top.CKey, top.Rank + 1, bottom, top, top.IL, top.ILTail);
+
+                node = new Node(top.CKey, top.Rank + 1, bottom, top, top.IL, top.ILTail);
                 toHead = toHead.Next;
             }
 
-            Head h;
-            if (prevHead == toHead.Prev)
-                h = new Head();
-            else
-                h = prevHead.Next;
-            h.Queue = q;
-            h.Rank = q.Rank;
-            h.Prev = prevHead;
-            h.Next = toHead;
-            prevHead.Next = h;
-            toHead.Prev = h;
+            Head head = prevHead == toHead.Prev 
+                ? new Head() 
+                : prevHead.Next;
 
-            FixMinLinst(h);
+            head.Queue = node;
+            head.Rank = node.Rank;
+            head.Prev = prevHead;
+            head.Next = toHead;
+            prevHead.Next = head;
+            toHead.Prev = head;
+
+            FixMinList(head);
         }
 
-        private void FixMinLinst(Head h)
+        private void FixMinList([NotNull] Head head)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(h != null);
+            Contract.Requires(head != null);
 #endif
 
-            Head tmpmin;
-            if (h.Next == tail)
-                tmpmin = h;
-            else
-                tmpmin = h.Next.SuffixMin;
+            Head tmpMin = head.Next == _tail 
+                ? head 
+                : head.Next.SuffixMin;
 
-            while (h != header)
+            while (head != _header)
             {
-                if (this.comparison(tmpmin.Queue.CKey, h.Queue.CKey) > 0)
-                    tmpmin = h;
+                if (KeyComparison(tmpMin.Queue.CKey, head.Queue.CKey) > 0)
+                    tmpMin = head;
 
-                h.SuffixMin = tmpmin;
-                h = h.Prev;
+                head.SuffixMin = tmpMin;
+                head = head.Prev;
             }
         }
 
-        private Node Shift(Node v)
+        [NotNull]
+        private Node Shift([NotNull] Node v)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(v != null);
@@ -206,17 +276,17 @@ namespace QuikGraph.Collections
 
             v.IL = null;
             v.ILTail = null;
-            if (v.Next == null && v.Child == null)
+            if (v.Next is null && v.Child is null)
             {
-                v.CKey = this.keyMaxValue;
+                v.CKey = KeyMaxValue;
                 return v;
             }
 
             v.Next = Shift(v.Next);
-            // restore heap ordering that might be broken by shifting
-            if (this.comparison(v.Next.CKey, v.Child.CKey) > 0)
+            // Restore heap ordering that might be broken by shifting
+            if (KeyComparison(v.Next.CKey, v.Child.CKey) > 0)
             {
-                var tmp = v.Child;
+                Node tmp = v.Child;
                 v.Child = v.Next;
                 v.Next = tmp;
             }
@@ -225,20 +295,20 @@ namespace QuikGraph.Collections
             v.ILTail = v.Next.ILTail;
             v.CKey = v.Next.CKey;
 
-            // softening the heap
-            if (v.Rank > this.r &&
-                (v.Rank % 2 == 1 || v.Child.Rank < v.Rank - 1))
+            // Softening the heap
+            if (v.Rank > MinRank 
+                && (v.Rank % 2 == 1 || v.Child.Rank < v.Rank - 1))
             {
                 v.Next = Shift(v.Next);
-                // restore heap ordering that might be broken by shifting
-                if (this.comparison(v.Next.CKey, v.Child.CKey) > 0)
+                // Restore heap ordering that might be broken by shifting
+                if (KeyComparison(v.Next.CKey, v.Child.CKey) > 0)
                 {
-                    var tmp = v.Child;
+                    Node tmp = v.Child;
                     v.Child = v.Next;
                     v.Next = tmp;
                 }
 
-                if (this.comparison(v.Next.CKey, this.keyMaxValue) != 0 && v.Next.IL != null)
+                if (KeyComparison(v.Next.CKey, KeyMaxValue) != 0 && v.Next.IL != null)
                 {
                     v.Next.ILTail.Next = v.IL;
                     v.IL = v.Next.IL;
@@ -246,11 +316,11 @@ namespace QuikGraph.Collections
                         v.ILTail = v.Next.ILTail;
                     v.CKey = v.Next.CKey;
                 }
-            }  // end second shift
+            } // End second shift
 
-            if (this.comparison(v.Child.CKey, this.keyMaxValue) == 0)
+            if (KeyComparison(v.Child.CKey, KeyMaxValue) == 0)
             {
-                if (this.comparison(v.Next.CKey, this.keyMaxValue) == 0)
+                if (KeyComparison(v.Next.CKey, KeyMaxValue) == 0)
                 {
                     v.Child = null;
                     v.Next = null;
@@ -265,15 +335,19 @@ namespace QuikGraph.Collections
             return v;
         } // Shift
 
+        /// <summary>
+        /// Deletes the element with minimal key.
+        /// </summary>
+        /// <returns>Deleted element.</returns>
         public KeyValuePair<TKey, TValue> DeleteMin()
         {
-            if (this.count == 0)
-                throw new InvalidOperationException();
+            if (Count == 0)
+                throw new InvalidOperationException("Heap is empty.");
 
-            var h = this.header.Next.SuffixMin;
-            while (h.Queue.IL == null)
+            Head head = _header.Next.SuffixMin;
+            while (head.Queue.IL is null)
             {
-                var tmp = h.Queue;
+                Node tmp = head.Queue;
                 int childCount = 0;
                 while (tmp.Next != null)
                 {
@@ -281,12 +355,12 @@ namespace QuikGraph.Collections
                     childCount++;
                 }
 
-                if (childCount < h.Rank / 2)
+                if (childCount < head.Rank / 2)
                 {
-                    h.Prev.Next = h.Next;
-                    h.Next.Prev = h.Prev;
-                    FixMinLinst(h.Prev);
-                    tmp = h.Queue;
+                    head.Prev.Next = head.Next;
+                    head.Next.Prev = head.Prev;
+                    FixMinList(head.Prev);
+                    tmp = head.Queue;
                     while (tmp.Next != null)
                     {
                         Meld(tmp.Child);
@@ -295,65 +369,57 @@ namespace QuikGraph.Collections
                 }
                 else
                 {
-                    h.Queue = Shift(h.Queue);
-                    if (this.comparison(h.Queue.CKey, this.keyMaxValue) == 0)
+                    head.Queue = Shift(head.Queue);
+                    if (KeyComparison(head.Queue.CKey, KeyMaxValue) == 0)
                     {
-                        h.Prev.Next = h.Next;
-                        h.Next.Prev = h.Prev;
-                        h = h.Prev;
+                        head.Prev.Next = head.Next;
+                        head.Next.Prev = head.Prev;
+                        head = head.Prev;
                     }
 
-                    FixMinLinst(h);
+                    FixMinList(head);
                 }
 
-                h = header.Next.SuffixMin;
-            } // end of outer while loop
+                head = _header.Next.SuffixMin;
+            } // End of outer while loop
 
-            var min = h.Queue.IL.Key;
-            var value = h.Queue.IL.Value;
-            h.Queue.IL = h.Queue.IL.Next;
-            if (h.Queue.IL == null)
-                h.Queue.ILTail = null;
+            TKey min = head.Queue.IL.Key;
+            TValue value = head.Queue.IL.Value;
+            head.Queue.IL = head.Queue.IL.Next;
+            if (head.Queue.IL is null)
+                head.Queue.ILTail = null;
 
-            this.count--;
+            Count--;
             return new KeyValuePair<TKey, TValue>(min, value);
         }
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        void Invariant()
+        #region IEnumerable
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            Contract.Invariant(this.count > -1);
-            Contract.Invariant(this.header != null);
-            Contract.Invariant(this.tail != null);
+            return GetEnumerator();
         }
-#endif
 
-        #region IEnumerable<KeyValuePair<TKey,TValue>> Members
+        #endregion
 
+        #region IEnumerable<KeyValuePair<TKey,TValue>>
+
+        /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return new Enumerator(this);
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        private struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            return this.GetEnumerator();
-        }
-
-        struct Enumerator
-            : IEnumerator<KeyValuePair<TKey, TValue>>
-        {
-            readonly SoftHeap<TKey, TValue> owner;
-            KeyValuePair<TKey, TValue> current;
-
-            public Enumerator(SoftHeap<TKey, TValue> owner)
+            public Enumerator([NotNull] SoftHeap<TKey, TValue> owner)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(owner != null);
 #endif
-                this.owner = owner;
-                this.current = new KeyValuePair<TKey, TValue>();
+
+                Current = new KeyValuePair<TKey, TValue>();
             }
 
             public bool MoveNext()
@@ -362,19 +428,13 @@ namespace QuikGraph.Collections
                 return false;
             }
 
-            public KeyValuePair<TKey, TValue> Current
-            {
-                get { return this.current; }
-            }
+            public KeyValuePair<TKey, TValue> Current { get; }
 
             public void Dispose()
             {
             }
 
-            object System.Collections.IEnumerator.Current
-            {
-                get { return this.Current; }
-            }
+            object IEnumerator.Current => Current;
 
             public void Reset()
             {

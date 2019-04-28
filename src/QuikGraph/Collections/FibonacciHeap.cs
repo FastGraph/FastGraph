@@ -1,641 +1,556 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
     /// <summary>
-    /// Specifies the order in which a Heap will Dequeue items.
+    /// Fibonacci heap.
     /// </summary>
-    public enum HeapDirection
+    /// <typeparam name="TValue">Value type.</typeparam>
+    /// <typeparam name="TPriority">Priority metric type.</typeparam>
+    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+    public sealed class FibonacciHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
     {
+        [NotNull]
+        private readonly FibonacciHeapLinkedList<TPriority, TValue> _cells;
+
+        // Used to control the direction of the heap, set to 1 if the Heap is increasing,
+        // -1 if it's decreasing. We use the approach to avoid unnecessary branches.
+        private readonly short _directionMultiplier;
+
         /// <summary>
-        /// Items are Dequeued in Increasing order from least to greatest.
+        /// Initializes a new instance of the <see cref="FibonacciHeap{TPriority,TValue}"/> class.
         /// </summary>
-        Increasing,
-        /// <summary>
-        /// Items are Dequeued in Decreasing order, from greatest to least.
-        /// </summary>
-        Decreasing
-    }
-    
-    internal static class LambdaHelpers
-    {
-        /// <summary>
-        /// Performs an action on each item in a list, used to shortcut a "foreach" loop
-        /// </summary>
-        /// <typeparam name="T">Type contained in List</typeparam>
-        /// <param name="collection">List to enumerate over</param>
-        /// <param name="action">Lambda Function to be performed on all elements in List</param>
-        internal static void ForEach<T>(IList<T> collection, Action<T> action)
-        {
-            for (int i = 0; i < collection.Count; i++)
-            {
-                action(collection[i]);
-            }
-        }
-        /// <summary>
-        /// Performs an action on each item in a list, used to shortcut a "foreach" loop
-        /// </summary>
-        /// <typeparam name="T">Type contained in List</typeparam>
-        /// <param name="collection">List to enumerate over</param>
-        /// <param name="action">Lambda Function to be performed on all elements in List</param>
-        public static void ForEach<T>(IEnumerable<T> collection, Action<T> action)
-        {
-            foreach (T item in collection)
-            {
-                action(item);
-            }
-        }
-
-        public static Stack<T> ToStack<T>(IEnumerable<T> collection)
-        {
-            Stack<T> newStack = new Stack<T>();
-            ForEach(collection, x => newStack.Push(x));
-            return newStack;
-        }
-    }
-
-    public sealed class FibonacciHeapLinkedList<TPriority, TValue> 
-        : IEnumerable<FibonacciHeapCell<TPriority, TValue>>
-    {
-        FibonacciHeapCell<TPriority, TValue> first;
-        FibonacciHeapCell<TPriority, TValue> last;
-
-        public FibonacciHeapCell<TPriority, TValue> First
-        {
-            get
-            {
-                return first;
-            }
-        }
-
-        internal FibonacciHeapLinkedList()
-        {
-            first = null;
-            last = null; 
-        }
-
-        internal void MergeLists(FibonacciHeapLinkedList<TPriority, TValue> list)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(list != null);
-#endif
-
-            if (list.First != null)
-            {
-                if (last != null)
-                {
-                    last.Next = list.first;
-                }
-                list.first.Previous = last;
-                last = list.last;
-                if (first == null)
-                {
-                    first = list.first;
-                }
-            }
-        }
-
-        internal void AddLast(FibonacciHeapCell<TPriority, TValue> node)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
-#endif
-
-            if (this.last != null)
-            {
-                this.last.Next = node;
-            }
-            node.Previous = this.last;
-            this.last = node;
-            if (this.first == null)
-            {
-                this.first = node;
-            }
-        }
-
-        internal void Remove(FibonacciHeapCell<TPriority, TValue> node)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
-#endif
-
-            if (node.Previous != null)
-            {
-                node.Previous.Next = node.Next;
-            }
-            else if (first == node)
-            {
-                this.first = node.Next;
-            }
-
-            if (node.Next != null)
-            {
-                node.Next.Previous = node.Previous;
-            }
-            else if (last == node)
-            {
-                this.last = node.Previous;
-            }
-
-            node.Next = null;
-            node.Previous = null;
-        }
-
-#region IEnumerable<FibonacciHeapNode<T,K>> Members
-
-        public IEnumerator<FibonacciHeapCell<TPriority, TValue>> GetEnumerator()
-        {
-            var current = this.first;
-            while (current != null)
-            {
-                yield return current;
-                current = current.Next;
-            }
-        }
-#endregion
-
-#region IEnumerable Members
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-#endregion
-    }
-
-    public sealed class FibonacciHeapCell<TPriority, TValue>
-    {
-        /// <summary>
-        /// Determines of a Node has had a child cut from it before
-        /// </summary>
-        public bool Marked;
-        /// <summary>
-        /// Determines the depth of a node
-        /// </summary>
-        public int Degree;
-        public TPriority Priority;
-        public TValue Value;
-        public bool Removed;
-        public FibonacciHeapLinkedList<TPriority, TValue> Children;
-        public FibonacciHeapCell<TPriority, TValue> Parent;
-        public FibonacciHeapCell<TPriority, TValue> Next;
-        public FibonacciHeapCell<TPriority, TValue> Previous;
-
-        public KeyValuePair<TPriority, TValue> ToKeyValuePair()
-        {
-            return new KeyValuePair<TPriority, TValue>(this.Priority, this.Value);
-        }
-    }
-
-    [DebuggerDisplay("Count = {Count}")]
-    public sealed class FibonacciHeap<TPriority, TValue> 
-        : IEnumerable<KeyValuePair<TPriority, TValue>>
-    {
         public FibonacciHeap()
             : this(HeapDirection.Increasing, Comparer<TPriority>.Default.Compare)
-        { }
-
-        public FibonacciHeap(HeapDirection Direction)
-            : this(Direction, Comparer<TPriority>.Default.Compare)
-        { }
-        
-        public FibonacciHeap(HeapDirection Direction, Comparison<TPriority> priorityComparison)            
         {
-            nodes = new FibonacciHeapLinkedList<TPriority, TValue>();
-            degreeToNode = new Dictionary<int, FibonacciHeapCell<TPriority, TValue>>();
-            DirectionMultiplier = (short)(Direction == HeapDirection.Increasing ? 1 : -1);
-            this.direction = Direction;
-            this.priorityComparsion = priorityComparison;
-            count = 0;
-        }
-        FibonacciHeapLinkedList<TPriority, TValue> nodes;
-        FibonacciHeapCell<TPriority, TValue> next;
-        private short DirectionMultiplier;  //Used to control the direction of the heap, set to 1 if the Heap is increasing, -1 if it's decreasing
-                                          //We use the approach to avoid unnessecary branches
-        private Dictionary<int, FibonacciHeapCell<TPriority, TValue>> degreeToNode;
-        private readonly Comparison<TPriority> priorityComparsion;
-        private readonly HeapDirection direction;
-        public HeapDirection Direction { get { return direction; } }
-        private int count;
-        public int Count { get { return count; } }
-        //Draws the current heap in a string.  Marked Nodes have a * Next to them
-
-        struct NodeLevel
-        {
-            public readonly FibonacciHeapCell<TPriority, TValue> Node;
-            public readonly int Level;
-            public NodeLevel(FibonacciHeapCell<TPriority, TValue> node, int level)
-            {
-                this.Node = node;
-                this.Level = level;
-            }
         }
 
-        public Comparison<TPriority> PriorityComparison
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FibonacciHeap{TPriority,TValue}"/> class.
+        /// </summary>
+        /// <param name="direction">Heap direction.</param>
+        public FibonacciHeap(HeapDirection direction)
+            : this(direction, Comparer<TPriority>.Default.Compare)
         {
-            get { return this.priorityComparsion; }
         }
 
-        public string DrawHeap()
-        {
-            var lines = new List<string>();
-            var lineNum = 0;
-            var columnPosition = 0;
-            var list = new List<NodeLevel>();
-            foreach (var node in nodes) list.Add(new NodeLevel(node, 0));
-            list.Reverse();
-            var stack = new Stack<NodeLevel>(list);
-            while (stack.Count > 0)
-            {
-                var currentcell = stack.Pop();
-                lineNum = currentcell.Level;
-                if (lines.Count <= lineNum)
-                    lines.Add(String.Empty);
-                var currentLine = lines[lineNum];
-                currentLine = currentLine.PadRight(columnPosition, ' ');
-                var nodeString = currentcell.Node.Priority.ToString() + (currentcell.Node.Marked ? "*" : "") + " ";
-                currentLine += nodeString;
-                if (currentcell.Node.Children != null && currentcell.Node.Children.First != null)
-                {
-                    var children = new List<FibonacciHeapCell<TPriority, TValue>>(currentcell.Node.Children);
-                    children.Reverse();
-                    children.ForEach(x => stack.Push(new NodeLevel(x, currentcell.Level + 1)));
-                }
-                else
-                {
-                    columnPosition += nodeString.Length;
-                }
-                lines[lineNum] = currentLine;
-            }
-            return String.Join(Environment.NewLine, lines.ToArray());
-        }
-
-        public FibonacciHeapCell<TPriority, TValue> Enqueue(TPriority Priority, TValue Value)
-        {
-            var newNode =
-                new FibonacciHeapCell<TPriority, TValue>
-                {
-                    Priority = Priority,
-                    Value = Value,
-                    Marked = false,
-                    Children = new FibonacciHeapLinkedList<TPriority, TValue>(),
-                    Degree = 1,
-                    Next = null,
-                    Previous = null,
-                    Parent = null,
-                    Removed = false
-                };
-
-            //We don't do any book keeping or maintenance of the heap on Enqueue,
-            //We just add this node to the end of the list of Heaps, updating the Next if required
-            this.nodes.AddLast(newNode);
-            if (next == null || 
-                (this.priorityComparsion(newNode.Priority, next.Priority) * DirectionMultiplier) < 0)
-            {
-                next = newNode;
-            }
-            count++;
-            return newNode;            
-        }
-
-        public void Delete(FibonacciHeapCell<TPriority, TValue> node)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FibonacciHeap{TPriority,TValue}"/> class.
+        /// </summary>
+        /// <param name="direction">Heap direction.</param>
+        /// <param name="priorityComparison">Priority comparer.</param>
+        public FibonacciHeap(HeapDirection direction, [NotNull] Comparison<TPriority> priorityComparison)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
+            Contract.Requires(priorityComparison != null);
 #endif
 
-            ChangeKeyInternal(node, default(TPriority), true);
-            Dequeue();            
+            _cells = new FibonacciHeapLinkedList<TPriority, TValue>();
+            _degreeToCell = new Dictionary<int, FibonacciHeapCell<TPriority, TValue>>();
+            _directionMultiplier = (short)(direction == HeapDirection.Increasing ? 1 : -1);
+            Direction = direction;
+            PriorityComparison = priorityComparison;
+            Count = 0;
         }
 
-        public void ChangeKey(FibonacciHeapCell<TPriority, TValue> node, TPriority newKey)
-        {            
+        private readonly Dictionary<int, FibonacciHeapCell<TPriority, TValue>> _degreeToCell;
+
+        /// <summary>
+        /// Priority comparer.
+        /// </summary>
+        [NotNull]
+        public Comparison<TPriority> PriorityComparison { get; }
+
+        /// <summary>
+        /// Heap direction.
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public HeapDirection Direction { get; }
+
+        /// <summary>
+        /// Checks if the heap is empty.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public bool IsEmpty => _cells.First is null;
+
+        /// <summary>
+        /// Number of element.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Top element of the heap.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public FibonacciHeapCell<TPriority, TValue> Top { get; private set; }
+
+        /// <summary>
+        /// Enqueues an element in the queue.
+        /// </summary>
+        /// <param name="priority">Value priority.</param>
+        /// <param name="value">Value to add.</param>
+        public FibonacciHeapCell<TPriority, TValue> Enqueue(TPriority priority, TValue value)
+        {
+            var newCell = new FibonacciHeapCell<TPriority, TValue>
+            {
+                Priority = priority,
+                Value = value,
+                Marked = false,
+                Children = new FibonacciHeapLinkedList<TPriority, TValue>(),
+                Degree = 1,
+                Next = null,
+                Previous = null,
+                Parent = null,
+                Removed = false
+            };
+
+            // We don't do any book keeping or maintenance of the heap on Enqueue,
+            // We just add this cell to the end of the list of Heaps, updating the Next if required
+            _cells.AddLast(newCell);
+            if (Top is null || PriorityComparison(newCell.Priority, Top.Priority) * _directionMultiplier < 0)
+            {
+                Top = newCell;
+            }
+
+            Count++;
+
+            return newCell;
+        }
+
+        /// <summary>
+        /// Deletes the given <paramref name="cell"/> from this heap.
+        /// </summary>
+        /// <param name="cell">Cell to delete.</param>
+        public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(cell != null);
 #endif
 
-            ChangeKeyInternal(node, newKey, false);            
+            ChangeKeyInternal(cell, default(TPriority), true);
+            Dequeue();
+        }
+
+        /// <summary>
+        /// Changes the priority of the given <paramref name="cell"/>.
+        /// </summary>
+        /// <param name="cell">Cell to update the priority.</param>
+        /// <param name="newPriority">New priority.</param>
+        public void ChangeKey([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newPriority)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(cell != null);
+#endif
+
+            ChangeKeyInternal(cell, newPriority, false);
         }
 
         private void ChangeKeyInternal(
-            FibonacciHeapCell<TPriority, TValue> node, 
-            TPriority NewKey, bool deletingNode)
+            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
+            [CanBeNull] TPriority newKey, // Null authorized if deleting the cell
+            bool deletingCell)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
+            Contract.Requires(cell != null);
 #endif
 
-            var delta = Math.Sign(this.priorityComparsion(node.Priority, NewKey));
+            int delta = Math.Sign(PriorityComparison(cell.Priority, newKey));
             if (delta == 0)
                 return;
-            if (delta == this.DirectionMultiplier || deletingNode)
+
+            if (delta == _directionMultiplier || deletingCell)
             {
-                //New value is in the same direciton as the heap
-                node.Priority = NewKey;
-                var parentNode = node.Parent;
-                if (parentNode != null && ((priorityComparsion(NewKey, node.Parent.Priority) * DirectionMultiplier) < 0 || deletingNode))
+                // New value is in the same direction as the heap
+                cell.Priority = newKey;
+                FibonacciHeapCell<TPriority, TValue> parentCell = cell.Parent;
+                if (parentCell != null 
+                    && (PriorityComparison(newKey, parentCell.Priority) * _directionMultiplier < 0 || deletingCell))
                 {
-                    node.Marked = false;
-                    parentNode.Children.Remove(node);
-                    UpdateNodesDegree(parentNode);
-                    node.Parent = null;
-                    nodes.AddLast(node);
-                    //This loop is the cascading cut, we continue to cut
-                    //ancestors of the node reduced until we hit a root 
-                    //or we found an unmarked ancestor
-                    while (parentNode.Marked && parentNode.Parent != null)
+                    cell.Marked = false;
+
+                    // ReSharper disable once PossibleNullReferenceException
+                    // Justification: parentCell must have children because child has parentCell as Parent.
+                    parentCell.Children.Remove(cell);
+                    UpdateCellsDegree(parentCell);
+                    cell.Parent = null;
+                    _cells.AddLast(cell);
+                    
+                    // This loop is the cascading cut, we continue to cut
+                    // ancestors of the cell reduced until we hit a root 
+                    // or we found an unmarked ancestor
+                    while (parentCell.Marked && parentCell.Parent != null)
                     {
-                        parentNode.Parent.Children.Remove(parentNode);
-                        UpdateNodesDegree(parentNode);
-                        parentNode.Marked = false;
-                        nodes.AddLast(parentNode);
-                        var currentParent = parentNode;
-                        parentNode = parentNode.Parent;
+                        // ReSharper disable once PossibleNullReferenceException
+                        // Justification: parentCell must have children because child has parentCell as Parent.
+                        parentCell.Parent.Children.Remove(parentCell);
+                        UpdateCellsDegree(parentCell);
+                        parentCell.Marked = false;
+                        _cells.AddLast(parentCell);
+
+                        FibonacciHeapCell<TPriority, TValue> currentParent = parentCell;
+                        parentCell = parentCell.Parent;
                         currentParent.Parent = null;
                     }
-                    if (parentNode.Parent != null)
+
+                    if (parentCell.Parent != null)
                     {
-                        //We mark this node to note that it's had a child
-                        //cut from it before
-                        parentNode.Marked = true;
+                        // We mark this cell to note that it had a child
+                        // cut from it before
+                        parentCell.Marked = true;
                     }
                 }
-                //Update next
-                if (deletingNode || (priorityComparsion(NewKey, next.Priority) * DirectionMultiplier) < 0)
+
+                // Update next
+                if (deletingCell 
+                    || PriorityComparison(newKey, Top.Priority) * _directionMultiplier < 0)
                 {
-                    next = node;
+                    Top = cell;
                 }
             }
             else
             {
-                //New value is in opposite direction of Heap, cut all children violating heap condition
-                node.Priority = NewKey;
-                if (node.Children != null)
+                // New value is in opposite direction of Heap, cut all children violating heap condition
+                cell.Priority = newKey;
+                if (cell.Children != null)
                 {
-                    List<FibonacciHeapCell<TPriority, TValue>> toupdate = null;
-                    foreach (var child in node.Children)
+                    List<FibonacciHeapCell<TPriority, TValue>> toUpdate = null;
+                    foreach (FibonacciHeapCell<TPriority, TValue> child in cell.Children)
                     {
-                        if ((priorityComparsion(node.Priority, child.Priority) * DirectionMultiplier) > 0)
+                        if (PriorityComparison(cell.Priority, child.Priority) * _directionMultiplier > 0)
                         {
-                            if (toupdate == null)
-                                toupdate = new List<FibonacciHeapCell<TPriority, TValue>>();
-                            toupdate.Add(child);
+                            if (toUpdate is null)
+                                toUpdate = new List<FibonacciHeapCell<TPriority, TValue>>();
+                            toUpdate.Add(child);
                         }
                     }
 
-                    if (toupdate != null)
-                        foreach (var child in toupdate)
+                    if (toUpdate != null)
+                    {
+                        foreach (FibonacciHeapCell<TPriority, TValue> child in toUpdate)
                         {
-                            node.Marked = true;
-                            node.Children.Remove(child);
+                            cell.Marked = true;
+                            cell.Children.Remove(child);
                             child.Parent = null;
                             child.Marked = false;
-                            nodes.AddLast(child);
-                            UpdateNodesDegree(node);
+                            _cells.AddLast(child);
+
+                            UpdateCellsDegree(cell);
                         }
+                    }
                 }
+
                 UpdateNext();
             }
         }
 
-#if SUPPORTS_CONVERTER
-        static int Max<T>(IEnumerable<T> values, Converter<T, int> converter)
-#else
-        static int Max<T>(IEnumerable<T> values, Func<T, int> converter)
-#endif
+        /// <summary>
+        /// Updates the degree of a cell, cascading to update the degree of the
+        /// parents if necessary.
+        /// </summary>
+        /// <param name="cell">Cell to update.</param>
+        private void UpdateCellsDegree([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(values != null);
-            Contract.Requires(converter != null);
+            Contract.Requires(cell != null);
+            Contract.Requires(cell.Children != null);
 #endif
 
-            int max = int.MinValue;
-            foreach (var value in values)
+            int oldDegree = cell.Degree;
+            // ReSharper disable once PossibleNullReferenceException, Justification: checked by contract.
+            cell.Degree = cell.Children.First is null
+                ? 1
+                : cell.Children.Max(x => x.Degree) + 1;
+
+            if (oldDegree != cell.Degree)
             {
-                int v = converter(value);
-                if (max < v)
-                    max = v;
+                if (_degreeToCell.TryGetValue(oldDegree, out FibonacciHeapCell<TPriority, TValue> degreeMapValue) 
+                    && degreeMapValue == cell)
+                {
+                    _degreeToCell.Remove(oldDegree);
+                }
+                else if (cell.Parent != null)
+                {
+                    UpdateCellsDegree(cell.Parent);
+                }
             }
-            return max;
         }
 
         /// <summary>
-        /// Updates the degree of a node, cascading to update the degree of the
-        /// parents if necessary.
+        /// Dequeues an element from the queue.
         /// </summary>
-        /// <param name="parentNode"></param>
-        private void UpdateNodesDegree(
-            FibonacciHeapCell<TPriority, TValue> parentNode)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(parentNode != null);
-#endif
-
-            var oldDegree = parentNode.Degree;
-            parentNode.Degree = 
-                parentNode.Children.First != null
-                ? Max(parentNode.Children, x => x.Degree) + 1 
-                : 1;
-            FibonacciHeapCell<TPriority, TValue> degreeMapValue;
-            if (oldDegree != parentNode.Degree)
-            {
-                if (degreeToNode.TryGetValue(oldDegree, out degreeMapValue) && degreeMapValue == parentNode)
-                {
-                    degreeToNode.Remove(oldDegree);
-                }
-                else if (parentNode.Parent != null)
-                {
-                    UpdateNodesDegree(parentNode.Parent);
-                }
-            }
-        }
-
+        /// <returns>Removed element.</returns>
         public KeyValuePair<TPriority, TValue> Dequeue()
         {
-            if (this.count == 0)
-                throw new InvalidOperationException();
+            if (Count == 0)
+                throw new InvalidOperationException("Heap is empty.");
 
-            var result = new KeyValuePair<TPriority, TValue>(
-                this.next.Priority,
-                this.next.Value);
+            var result = new KeyValuePair<TPriority, TValue>(Top.Priority, Top.Value);
 
-            this.nodes.Remove(next);
-            next.Next = null;
-            next.Parent = null;
-            next.Previous = null;
-            next.Removed = true;
-            FibonacciHeapCell<TPriority, TValue> currentDegreeNode;
-            if (degreeToNode.TryGetValue(next.Degree, out currentDegreeNode))
+            _cells.Remove(Top);
+            Top.Next = null;
+            Top.Parent = null;
+            Top.Previous = null;
+            Top.Removed = true;
+
+            if (_degreeToCell.TryGetValue(
+                Top.Degree, 
+                out FibonacciHeapCell<TPriority, TValue> currentDegreeCell))
             {
-                if (currentDegreeNode == next)
+                if (currentDegreeCell == Top)
                 {
-                    degreeToNode.Remove(next.Degree);
+                    _degreeToCell.Remove(Top.Degree);
                 }
             }
 
 #if SUPPORTS_CONTRACTS
-            Contract.Assert(next.Children != null);
+            Contract.Assert(Top.Children != null);
 #endif
 
-            foreach (var child in next.Children)
+            foreach (FibonacciHeapCell<TPriority, TValue> child in Top.Children)
             {
                 child.Parent = null;
             }
-            nodes.MergeLists(next.Children);
-            next.Children = null;
-            count--;
-            this.UpdateNext();
+
+            _cells.MergeLists(Top.Children);
+            Top.Children = null;
+
+            Count--;
+            UpdateNext();
 
             return result;
         }
 
         /// <summary>
         /// Updates the Next pointer, maintaining the heap
-        /// by folding duplicate heap degrees into eachother
-        /// Takes O(lg(N)) time amortized
+        /// by folding duplicate heap degrees into each other.
+        /// Takes O(log(N)) time amortized.
         /// </summary>
         private void UpdateNext()
         {
-            this.CompressHeap();
-            var node = this.nodes.First;
-            next = this.nodes.First;
-            while (node != null)
+            CompressHeap();
+            FibonacciHeapCell<TPriority, TValue> cell = _cells.First;
+            Top = cell;
+            while (cell != null)
             {
-                if ((this.priorityComparsion(node.Priority, next.Priority) * DirectionMultiplier) < 0)
+                if (PriorityComparison(cell.Priority, Top.Priority) * _directionMultiplier < 0)
                 {
-                    next = node;
+                    Top = cell;
                 }
-                node = node.Next;
+
+                cell = cell.Next;
             }
         }
 
         private void CompressHeap()
         {
-            var node = this.nodes.First;
-            FibonacciHeapCell<TPriority, TValue> currentDegreeNode;
-            while (node != null)
+            FibonacciHeapCell<TPriority, TValue> cell = _cells.First;
+            while (cell != null)
             {
-                var nextNode = node.Next;
-                while (degreeToNode.TryGetValue(node.Degree, out currentDegreeNode) && currentDegreeNode != node)
+                FibonacciHeapCell<TPriority, TValue> nextCell = cell.Next;
+                while (_degreeToCell.TryGetValue(cell.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell) 
+                       && currentDegreeCell != cell)
                 {
-                    degreeToNode.Remove(node.Degree);
-                    if ((this.priorityComparsion(currentDegreeNode.Priority, node.Priority) * DirectionMultiplier) <= 0)
+                    _degreeToCell.Remove(cell.Degree);
+                    if (PriorityComparison(currentDegreeCell.Priority, cell.Priority) * _directionMultiplier <= 0)
                     {
-                        if (node == nextNode)
+                        if (cell == nextCell)
                         {
-                            nextNode = node.Next;
+                            nextCell = cell.Next;
                         }
-                        this.ReduceNodes(currentDegreeNode, node);
-                        node = currentDegreeNode;
+
+                        ReduceCells(currentDegreeCell, cell);
+                        cell = currentDegreeCell;
                     }
                     else
                     {
-                        if (currentDegreeNode == nextNode)
+                        if (currentDegreeCell == nextCell)
                         {
-                            nextNode = currentDegreeNode.Next;
+                            nextCell = currentDegreeCell.Next;
                         }
-                        this.ReduceNodes(node, currentDegreeNode);
+
+                        ReduceCells(cell, currentDegreeCell);
                     }
                 }
-                degreeToNode[node.Degree] = node;
-                node = nextNode;
+
+                _degreeToCell[cell.Degree] = cell;
+                cell = nextCell;
             }
         }
 
         /// <summary>
-        /// Given two nodes, adds the child node as a child of the parent node
+        /// Given two cells, adds the child cell as a child of the parent cell.
         /// </summary>
-        /// <param name="parentNode"></param>
-        /// <param name="childNode"></param>
-        private void ReduceNodes(
-            FibonacciHeapCell<TPriority, TValue> parentNode, 
-            FibonacciHeapCell<TPriority, TValue> childNode)
+        /// <param name="parentCell">Parent cell.</param>
+        /// <param name="childCell">Child cell.</param>
+        private void ReduceCells(
+            [NotNull] FibonacciHeapCell<TPriority, TValue> parentCell,
+            [NotNull] FibonacciHeapCell<TPriority, TValue> childCell)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(parentNode != null);
-            Contract.Requires(childNode != null);
+            Contract.Requires(parentCell != null);
+            Contract.Requires(parentCell.Children != null);
+            Contract.Requires(childCell != null);
 #endif
 
-            this.nodes.Remove(childNode);
-            parentNode.Children.AddLast(childNode);
-            childNode.Parent = parentNode;
-            childNode.Marked = false;
-            if (parentNode.Degree == childNode.Degree)
+            _cells.Remove(childCell);
+            // ReSharper disable once PossibleNullReferenceException, Justification: checked by contract.
+            parentCell.Children.AddLast(childCell);
+            childCell.Parent = parentCell;
+            childCell.Marked = false;
+
+            if (parentCell.Degree == childCell.Degree)
             {
-                parentNode.Degree += 1;
+                parentCell.Degree += 1;
             }
         }
 
-        public bool IsEmpty
-        {
-            get
-            {
-                return nodes.First == null;
-            }
-        }
-        public FibonacciHeapCell<TPriority, TValue> Top
-        {
-            get
-            {
-                return this.next;
-            }
-        }
-
-        public void Merge(FibonacciHeap<TPriority, TValue> other)
+        /// <summary>
+        /// Merges the given <paramref name="heap"/> into this heap.
+        /// </summary>
+        /// <param name="heap">Heap to merge.</param>
+        /// <exception cref="Exception">If the heap is not in the same direction.</exception>
+        public void Merge([NotNull] FibonacciHeap<TPriority, TValue> heap)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(other != null);
+            Contract.Requires(heap != null);
 #endif
 
-            if (other.Direction != this.Direction)
+            if (heap.Direction != Direction)
+                throw new Exception("Error: Heaps must go in the same direction when merging.");
+
+            _cells.MergeLists(heap._cells);
+            if (PriorityComparison(heap.Top.Priority, Top.Priority) * _directionMultiplier < 0)
             {
-                throw new Exception("Error: Heaps must go in the same direction when merging");
+                Top = heap.Top;
             }
-            nodes.MergeLists(other.nodes);
-            if ((priorityComparsion(other.Top.Priority, next.Priority) * DirectionMultiplier) < 0)
-            {
-                next = other.next;
-            }
-            count += other.Count;
+
+            Count += heap.Count;
         }
 
+        #region IEnumerable
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable<KeyValuePair<TKey,TValue>>
+
+        /// <inheritdoc />
         public IEnumerator<KeyValuePair<TPriority, TValue>> GetEnumerator()
         {
-            var tempHeap = new FibonacciHeap<TPriority, TValue>(this.Direction, this.priorityComparsion);
-            var nodeStack = new Stack<FibonacciHeapCell<TPriority, TValue>>();
-            LambdaHelpers.ForEach(nodes, x => nodeStack.Push(x));
-            while (nodeStack.Count > 0)
+            var tempHeap = new FibonacciHeap<TPriority, TValue>(Direction, PriorityComparison);
+            var cellsStack = new Stack<FibonacciHeapCell<TPriority, TValue>>();
+            _cells.ForEach(x => cellsStack.Push(x));
+            while (cellsStack.Count > 0)
             {
-                var topNode = nodeStack.Peek();
-                tempHeap.Enqueue(topNode.Priority, topNode.Value);
-                nodeStack.Pop();
-                LambdaHelpers.ForEach(topNode.Children, x => nodeStack.Push(x));
+                FibonacciHeapCell<TPriority, TValue> topCell = cellsStack.Peek();
+                tempHeap.Enqueue(topCell.Priority, topCell.Value);
+                cellsStack.Pop();
+                topCell.Children?.ForEach(x => cellsStack.Push(x));
             }
+
             while (!tempHeap.IsEmpty)
             {
                 yield return tempHeap.Top.ToKeyValuePair();
                 tempHeap.Dequeue();
             }
         }
+
+        #endregion
+
+        /// <summary>
+        /// Enumerator for this heap that <see cref="Dequeue"/> elements in the same time.
+        /// </summary>
+        /// <returns>Heap elements.</returns>
         public IEnumerable<KeyValuePair<TPriority, TValue>> GetDestructiveEnumerator()
         {
-            while (!this.IsEmpty)
+            while (!IsEmpty)
             {
-                yield return this.Top.ToKeyValuePair();
-                this.Dequeue();
+                yield return Top.ToKeyValuePair();
+                Dequeue();
             }
         }
 
-#region IEnumerable Members
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        #region String representation
+
+        private struct CellLevel
         {
-            return this.GetEnumerator();
+            [NotNull]
+            public FibonacciHeapCell<TPriority, TValue> Cell { get; }
+
+            public int Level { get; }
+
+            public CellLevel([NotNull] FibonacciHeapCell<TPriority, TValue> cell, int level)
+            {
+                Cell = cell;
+                Level = level;
+            }
         }
-#endregion
+
+        /// <summary>
+        /// Draws the current heap in a string. Marked cells have an * next to them.
+        /// </summary>
+        /// <returns>Heap string representation.</returns>
+        public string DrawHeap()
+        {
+            var lines = new List<string>();
+            int columnPosition = 0;
+            var list = new List<CellLevel>();
+            foreach (FibonacciHeapCell<TPriority, TValue> cell in _cells)
+                list.Add(new CellLevel(cell, 0));
+            list.Reverse();
+
+            var stack = new Stack<CellLevel>(list);
+            while (stack.Count > 0)
+            {
+                CellLevel currentCell = stack.Pop();
+                int lineNum = currentCell.Level;
+                if (lines.Count <= lineNum)
+                    lines.Add(string.Empty);
+
+                string currentLine = lines[lineNum];
+                currentLine = currentLine.PadRight(columnPosition, ' ');
+                string cellString = $"{currentCell.Cell.Priority}{(currentCell.Cell.Marked ? "*" : string.Empty)} ";
+                currentLine += cellString;
+
+                if (currentCell.Cell.Children?.First != null)
+                {
+                    var children = new List<FibonacciHeapCell<TPriority, TValue>>(currentCell.Cell.Children);
+                    children.Reverse();
+                    children.ForEach(x => stack.Push(new CellLevel(x, currentCell.Level + 1)));
+                }
+                else
+                {
+                    columnPosition += cellString.Length;
+                }
+
+                lines[lineNum] = currentLine;
+            }
+
+            return string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        #endregion
     }
 }

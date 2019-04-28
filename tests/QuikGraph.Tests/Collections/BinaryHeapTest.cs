@@ -41,7 +41,7 @@ namespace QuikGraph.Collections
             heap.Add(1, 12);
             heap.Add(1, 13);
             heap.Add(1, 14);
-            var str = "True: 1 0, 2 1, 1 2, 2 3, 2 4, 1 5, 1 6, 2 7, 2 8, 2 9, 2 10, 1 11, 1 12, 1 13, 1 14, null, null, null, null, null, ";
+            var str = "True: 1 0, 2 1, 1 2, 2 3, 2 4, 1 5, 1 6, 2 7, 2 8, 2 9, 2 10, 1 11, 1 12, 1 13, 1 14, null, null, null, null, null";
             Assert.AreEqual(str, heap.ToString2());
             Assert.AreEqual(15, heap.Count);
             heap.AssertInvariants();

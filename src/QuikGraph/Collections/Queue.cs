@@ -4,6 +4,7 @@ using System;
 
 namespace QuikGraph.Collections
 {
+    /// <inheritdoc cref="System.Collections.Generic.Queue{T}" />
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif

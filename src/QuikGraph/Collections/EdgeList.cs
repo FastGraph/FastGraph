@@ -2,45 +2,64 @@
 using System;
 #endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
+    /// <summary>
+    /// Stores a list of edges.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class EdgeList<TVertex, TEdge>
-        : List<TEdge>
-        , IEdgeList<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
-        , ICloneable
-#endif
+    public sealed class EdgeList<TVertex, TEdge> : List<TEdge>, IEdgeList<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        public EdgeList() 
-        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeList{TVertex,TEdge}"/> class.
+        /// </summary>
+        public EdgeList()
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeList{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="capacity">List capacity.</param>
         public EdgeList(int capacity)
             : base(capacity)
-        { }
+        {
+        }
 
-        public EdgeList(EdgeList<TVertex, TEdge> list)
-            : base(list)
-        {}
+        /// <inheritdoc />
+        public EdgeList([NotNull] EdgeList<TVertex, TEdge> other)
+            : base(other)
+        {
+        }
 
+        /// <summary>
+        /// Clones this edge list.
+        /// </summary>
+        /// <returns>Cloned list.</returns>
+        [NotNull]
         public EdgeList<TVertex, TEdge> Clone()
         {
             return new EdgeList<TVertex, TEdge>(this);
         }
 
-        IEdgeList<TVertex, TEdge> IEdgeList<TVertex,TEdge>.Clone()
+        /// <inheritdoc />
+        IEdgeList<TVertex, TEdge> IEdgeList<TVertex, TEdge>.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
 
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
 #endif
     }

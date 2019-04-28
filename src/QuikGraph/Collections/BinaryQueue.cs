@@ -1,78 +1,132 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
+    /// <summary>
+    /// Priority queue to sort vertices by distance priority (use <see cref="BinaryHeap{TPriority,TValue}"/>).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TDistance">Distance type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class BinaryQueue<TVertex, TDistance> : 
-        IPriorityQueue<TVertex>
+    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+    public sealed class BinaryQueue<TVertex, TDistance> : IPriorityQueue<TVertex>
     {
-        private readonly Func<TVertex, TDistance> distances;
-        private readonly BinaryHeap<TDistance, TVertex> heap;
+        [NotNull]
+        private readonly Func<TVertex, TDistance> _distanceFunc;
 
-        public BinaryQueue(Func<TVertex, TDistance> distances)
-            : this(distances, Comparer<TDistance>.Default.Compare)
-        { }
+        [NotNull]
+        private readonly BinaryHeap<TDistance, TVertex> _heap;
 
-		public BinaryQueue(Func<TVertex, TDistance> distances, Comparison<TDistance> distanceComparison)
-		{
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryQueue{TVertex,TDistance}"/> class.
+        /// </summary>
+        /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
+        public BinaryQueue([NotNull] Func<TVertex, TDistance> distanceFunc)
+            : this(distanceFunc, Comparer<TDistance>.Default.Compare)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryQueue{TVertex,TDistance}"/> class.
+        /// </summary>
+        /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
+        /// <param name="distanceComparison">Comparer of distances.</param>
+        public BinaryQueue(
+            [NotNull] Func<TVertex, TDistance> distanceFunc, 
+            [NotNull] Comparison<TDistance> distanceComparison)
+        {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(distances != null);
+            Contract.Requires(distanceFunc != null);
             Contract.Requires(distanceComparison != null);
 #endif
 
-			this.distances = distances;
-            this.heap = new BinaryHeap<TDistance, TVertex>(distanceComparison);
-		}
-
-		public void Update(TVertex v)
-		{
-            this.heap.Update(this.distances(v), v);
+            _distanceFunc = distanceFunc;
+            _heap = new BinaryHeap<TDistance, TVertex>(distanceComparison);
         }
 
-        public int Count
-        {
-            get { return this.heap.Count; }
-        }
+        #region IQueue<TVertex>
 
+        /// <inheritdoc />
+        public int Count => _heap.Count;
+
+        /// <inheritdoc />
         public bool Contains(TVertex value)
         {
-            return this.heap.IndexOf(value) > -1;
+            return _heap.IndexOf(value) > -1;
         }
 
-        public void Enqueue(TVertex value)
+        /// <inheritdoc />
+        public void Enqueue([NotNull] TVertex value)
         {
-            this.heap.Add(this.distances(value), value);
+            _heap.Add(_distanceFunc(value), value);
         }
 
+        /// <inheritdoc />
+        [NotNull]
         public TVertex Dequeue()
         {
-            return this.heap.RemoveMinimum().Value;
+            return _heap.RemoveMinimum().Value;
         }
 
+        /// <inheritdoc />
+        [NotNull]
         public TVertex Peek()
         {
-            return this.heap.Minimum().Value;
+            return _heap.Minimum().Value;
         }
 
+        /// <inheritdoc />
         public TVertex[] ToArray()
         {
-            return this.heap.ToValueArray();
+            return _heap.ToValueArray();
         }
 
+        #endregion
+
+        /// <summary>
+        /// Converts this queue to an array of vertices associated to their distances.
+        /// </summary>
+        /// <returns>Array composed of elements.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public KeyValuePair<TDistance, TVertex>[] ToArray2()
         {
-            return heap.ToPriorityValueArray();
+            return _heap.ToPriorityValueArray();
         }
 
+        /// <summary>
+        /// Gets an alternative string representation.
+        /// </summary>
+        /// <returns>String representation.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public string ToString2()
         {
-            return heap.ToString2();
+            return _heap.ToString2();
         }
+
+        #region IPriorityQueue
+
+        /// <inheritdoc />
+        public void Update([NotNull] TVertex value)
+        {
+            _heap.Update(_distanceFunc(value), value);
+        }
+
+        #endregion
     }
 }

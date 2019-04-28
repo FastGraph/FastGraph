@@ -5,50 +5,70 @@ using System.Collections.Generic;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
+    /// <summary>
+    /// Stores association of vertices to edges.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class EdgeEdgeDictionary<TVertex, TEdge>
-        : Dictionary<TEdge, TEdge>
+    public sealed class EdgeEdgeDictionary<TVertex, TEdge> : Dictionary<TEdge, TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
-#if SUPPORTS_SERIALIZATION
-        , ISerializable
-#endif
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeEdgeDictionary{TVertex,TEdge}"/> class.
+        /// </summary>
         public EdgeEdgeDictionary()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeEdgeDictionary{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="capacity">Dictionary capacity.</param>
         public EdgeEdgeDictionary(int capacity)
             : base(capacity)
         {
         }
 
 #if SUPPORTS_SERIALIZATION
-        protected EdgeEdgeDictionary(SerializationInfo info, StreamingContext context)
+        /// <summary>
+        /// Initializes a new instance of <see cref="EdgeEdgeDictionary{TVertex,TEdge}"/> with serialized data.
+        /// </summary>
+        /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data.</param>
+        /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
+        public EdgeEdgeDictionary(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
 #endif
 
+        /// <summary>
+        /// Clones this vertices/edges dictionary.
+        /// </summary>
+        /// <returns>Cloned dictionary.</returns>
+        [NotNull]
         public EdgeEdgeDictionary<TVertex, TEdge> Clone()
         {
-            var clone = new EdgeEdgeDictionary<TVertex, TEdge>(this.Count);
-            foreach (var kv in this)
-                clone.Add(kv.Key, kv.Value);
+            var clone = new EdgeEdgeDictionary<TVertex, TEdge>(Count);
+            foreach (KeyValuePair<TEdge, TEdge> pair in this)
+                clone.Add(pair.Key, pair.Value);
             return clone;
         }
 
 #if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
 #endif
     }
