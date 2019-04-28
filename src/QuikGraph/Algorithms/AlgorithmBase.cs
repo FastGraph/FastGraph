@@ -182,7 +182,6 @@ namespace QuikGraph.Algorithms
         }
 
         public T GetService<T>()
-            where T : IService
         {
             T service;
             if (!this.TryGetService<T>(out service))
@@ -191,7 +190,6 @@ namespace QuikGraph.Algorithms
         }
 
         public bool TryGetService<T>(out T service)
-            where T : IService
         {
             object serviceObject;
             if (this.TryGetService(typeof(T), out serviceObject))
