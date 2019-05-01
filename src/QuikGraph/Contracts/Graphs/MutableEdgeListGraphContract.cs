@@ -106,20 +106,26 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableGraph<TVertex,TEdge>
-
-        void IMutableGraph<TVertex, TEdge>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region IGraph<TVertex,TEdge>
 
         bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
 
         bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
+
+        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
+
+        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
+
+        bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
@@ -138,15 +144,9 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IVertexSet<TVertex>
+        #region IMutableGraph<TVertex,TEdge>
 
-        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
-
-        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
-
-        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
-
-        bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
+        void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }

@@ -14,6 +14,14 @@ namespace QuikGraph.Contracts
     internal abstract class UndirectedGraphContract<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        #region IGraph<TVertex,TEdge>
+
+        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
+
+        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
         #region IVertexSet<TVertex>
 
         bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
@@ -23,14 +31,6 @@ namespace QuikGraph.Contracts
         IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
 
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex) => throw new NotImplementedException();
-
-        #endregion
-
-        #region IGraph<TVertex,TEdge>
-
-        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
-
-        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
 
         #endregion
 

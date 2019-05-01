@@ -42,56 +42,26 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableEdgeListGraph<TVertex,TEdge>
-
-        bool IMutableEdgeListGraph<TVertex, TEdge>.AddEdge(TEdge edge)
-        {
-            throw new NotImplementedException();
-        }
-
-        event EdgeAction<TVertex, TEdge> IMutableEdgeListGraph<TVertex, TEdge>.EdgeAdded
-        {
-            add => throw new NotImplementedException();
-            remove => throw new NotImplementedException();
-        }
-
-        int IMutableEdgeListGraph<TVertex, TEdge>.AddEdgeRange(IEnumerable<TEdge> edges)
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IMutableEdgeListGraph<TVertex, TEdge>.RemoveEdge(TEdge edge)
-        {
-            throw new NotImplementedException();
-        }
-
-        event EdgeAction<TVertex, TEdge> IMutableEdgeListGraph<TVertex, TEdge>.EdgeRemoved
-        {
-            add => throw new NotImplementedException();
-            remove => throw new NotImplementedException();
-        }
-
-        int IMutableEdgeListGraph<TVertex, TEdge>.RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IMutableGraph<TVertex,TEdge>
-
-        void IMutableGraph<TVertex, TEdge>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region IGraph<TVertex,TEdge>
 
         bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
 
         bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
+
+        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
+
+        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
+
+        bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
@@ -104,6 +74,52 @@ namespace QuikGraph.Contracts
         IEnumerable<TEdge> IEdgeSet<TVertex, TEdge>.Edges => throw new NotImplementedException();
 
         bool IEdgeSet<TVertex, TEdge>.ContainsEdge(TEdge edge)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IImplicitUndirectedGraph<TVertex,TEdge>
+
+        EdgeEqualityComparer<TVertex> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer =>
+            throw new NotImplementedException();
+
+        IEnumerable<TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdges(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentDegree(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IImplicitUndirectedGraph<TVertex, TEdge>.IsAdjacentEdgesEmpty(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        TEdge IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdge(TVertex vertex, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IImplicitUndirectedGraph<TVertex, TEdge>.ContainsEdge(TVertex source, TVertex target)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IImplicitUndirectedGraph<TVertex, TEdge>.TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMutableGraph<TVertex,TEdge>
+
+        void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }
@@ -146,52 +162,36 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IVertexSet<TVertex>
+        #region IMutableEdgeListGraph<TVertex,TEdge>
 
-        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
-
-        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
-
-        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
-
-        bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
+        bool IMutableEdgeListGraph<TVertex, TEdge>.AddEdge(TEdge edge)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+        event EdgeAction<TVertex, TEdge> IMutableEdgeListGraph<TVertex, TEdge>.EdgeAdded
+        {
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
+        }
 
-        #region IImplicitUndirectedGraph<TVertex,TEdge>
-
-        EdgeEqualityComparer<TVertex> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer =>
-            throw new NotImplementedException();
-
-        IEnumerable<TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdges(TVertex vertex)
+        int IMutableEdgeListGraph<TVertex, TEdge>.AddEdgeRange(IEnumerable<TEdge> edges)
         {
             throw new NotImplementedException();
         }
 
-        int IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentDegree(TVertex vertex)
+        bool IMutableEdgeListGraph<TVertex, TEdge>.RemoveEdge(TEdge edge)
         {
             throw new NotImplementedException();
         }
 
-        bool IImplicitUndirectedGraph<TVertex, TEdge>.IsAdjacentEdgesEmpty(TVertex vertex)
+        event EdgeAction<TVertex, TEdge> IMutableEdgeListGraph<TVertex, TEdge>.EdgeRemoved
         {
-            throw new NotImplementedException();
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
-        TEdge IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdge(TVertex vertex, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IImplicitUndirectedGraph<TVertex, TEdge>.ContainsEdge(TVertex source, TVertex target)
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IImplicitUndirectedGraph<TVertex, TEdge>.TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        int IMutableEdgeListGraph<TVertex, TEdge>.RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
         {
             throw new NotImplementedException();
         }

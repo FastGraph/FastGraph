@@ -48,20 +48,20 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableGraph<TVertex,TEdge>
-
-        void IMutableGraph<TVertex, TEdge>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region IGraph<TVertex,TEdge>
 
         bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
 
         bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
+        #region IImplicitVertexSet<TVertex>
+
+        bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
@@ -113,9 +113,9 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IImplicitVertexSet<TVertex>
+        #region IMutableGraph<TVertex,TEdge>
 
-        bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
+        void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }

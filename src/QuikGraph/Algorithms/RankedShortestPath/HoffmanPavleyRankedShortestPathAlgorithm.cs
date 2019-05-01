@@ -225,7 +225,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             Contract.Requires(successors != null);
             Contract.Requires(distances != null);
             Contract.Requires(path != null);
-            Contract.Requires(EdgeExtensions.IsAdjacent<TVertex, TEdge>(path[0], root));
+            Contract.Requires(EdgeExtensions.IsAdjacent(path[0], root));
             Contract.Requires(0 <= startEdge && startEdge < path.Length);
 #endif
 
@@ -282,7 +282,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 // skip self edges,
                 // skip equal edges,
                 if (deviationEdge.Equals(edge) ||
-                    EdgeExtensions.IsSelfEdge<TVertex, TEdge>(deviationEdge)) continue;
+                    EdgeExtensions.IsSelfEdge(deviationEdge)) continue;
 
                 // any edge obviously creating a loop
                 var atarget = deviationEdge.Target;

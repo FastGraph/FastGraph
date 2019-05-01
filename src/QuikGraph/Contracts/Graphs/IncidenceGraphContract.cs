@@ -55,6 +55,23 @@ namespace QuikGraph.Contracts
             return default(bool);
         }
 
+        #region IGraph<TVertex,TEdge>
+
+        public bool IsDirected => throw new NotImplementedException();
+
+        public bool AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
+        #region IImplicitVertexSet<TVertex>
+
+        public bool ContainsVertex(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region IImplicitGraph<TVertex,TEdge>
 
         public bool IsOutEdgesEmpty(TVertex vertex)
@@ -78,23 +95,6 @@ namespace QuikGraph.Contracts
         }
 
         public TEdge OutEdge(TVertex vertex, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IGraph<TVertex,TEdge>
-
-        public bool IsDirected => throw new NotImplementedException();
-
-        public bool AllowParallelEdges => throw new NotImplementedException();
-
-        #endregion
-
-        #region IImplicitVertexSet<TVertex>
-
-        public bool ContainsVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }

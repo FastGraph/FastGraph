@@ -57,33 +57,124 @@ namespace QuikGraph.Contracts
             Contract.Ensures(!explicitThis.ContainsVertex(vertex));
         }
 
-        #region IMutableVertexAndEdgeListGraph<TVertex,TEdge>
+        #region IGraph<TVertex,TEdge>
 
-        bool IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdge(TEdge edge)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsDirected => throw new NotImplementedException();
 
-        int IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
+        public bool AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        public bool IsVerticesEmpty => throw new NotImplementedException();
+
+        public int VertexCount => throw new NotImplementedException();
+
+        public IEnumerable<TVertex> Vertices => throw new NotImplementedException();
+
+        #endregion
+
+        #region IImplicitVertexSet<TVertex>
+
+        public bool ContainsVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IMutableIncidenceGraph<TVertex,TEdge>
+        #region IEdgeSet<TVertex,TEdge>
 
-        int IMutableIncidenceGraph<TVertex, TEdge>.RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
+        public bool IsEdgesEmpty => throw new NotImplementedException();
+
+        public int EdgeCount => throw new NotImplementedException();
+
+        public IEnumerable<TEdge> Edges => throw new NotImplementedException();
+
+        public bool ContainsEdge(TEdge edge)
         {
             throw new NotImplementedException();
         }
 
-        void IMutableIncidenceGraph<TVertex, TEdge>.ClearOutEdges(TVertex vertex)
+        #endregion
+
+        #region IIncidenceGraph<TVertex,TEdge>
+
+        public bool ContainsEdge(TVertex source, TVertex target)
         {
             throw new NotImplementedException();
         }
 
-        void IMutableIncidenceGraph<TVertex, TEdge>.TrimEdgeExcess()
+        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IImplicitGraph<TVertex,TEdge>
+
+        public bool IsOutEdgesEmpty(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OutDegree(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TEdge OutEdge(TVertex vertex, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBidirectionalIncidenceGraph<TVertex,TEdge>
+
+        public bool IsInEdgesEmpty(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int InDegree(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<TEdge> InEdges(TVertex vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TEdge InEdge(TVertex vertex, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Degree(TVertex vertex)
         {
             throw new NotImplementedException();
         }
@@ -171,124 +262,33 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IGraph<TVertex,TEdge>
+        #region IMutableVertexAndEdgeListGraph<TVertex,TEdge>
 
-        public bool IsDirected => throw new NotImplementedException();
-
-        public bool AllowParallelEdges => throw new NotImplementedException();
-
-        #endregion
-
-        #region IIncidenceGraph<TVertex,TEdge>
-
-        public bool ContainsEdge(TVertex source, TVertex target)
+        bool IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdge(TEdge edge)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        int IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IImplicitGraph<TVertex,TEdge>
+        #region IMutableIncidenceGraph<TVertex,TEdge>
 
-        public bool IsOutEdgesEmpty(TVertex vertex)
+        int IMutableIncidenceGraph<TVertex, TEdge>.RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public int OutDegree(TVertex vertex)
+        void IMutableIncidenceGraph<TVertex, TEdge>.ClearOutEdges(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<TEdge> OutEdges(TVertex vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TEdge OutEdge(TVertex vertex, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IImplicitVertexSet<TVertex>
-
-        public bool ContainsVertex(TVertex vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IVertexSet<TVertex>
-
-        public bool IsVerticesEmpty => throw new NotImplementedException();
-
-        public int VertexCount => throw new NotImplementedException();
-
-        public IEnumerable<TVertex> Vertices => throw new NotImplementedException();
-
-        #endregion
-
-        #region IEdgeSet<TVertex,TEdge>
-
-        public bool IsEdgesEmpty => throw new NotImplementedException();
-
-        public int EdgeCount => throw new NotImplementedException();
-
-        public IEnumerable<TEdge> Edges => throw new NotImplementedException();
-
-        public bool ContainsEdge(TEdge edge)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IBidirectionalIncidenceGraph<TVertex,TEdge>
-
-        public bool IsInEdgesEmpty(TVertex vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int InDegree(TVertex vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TEdge> InEdges(TVertex vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TEdge InEdge(TVertex vertex, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Degree(TVertex vertex)
+        void IMutableIncidenceGraph<TVertex, TEdge>.TrimEdgeExcess()
         {
             throw new NotImplementedException();
         }

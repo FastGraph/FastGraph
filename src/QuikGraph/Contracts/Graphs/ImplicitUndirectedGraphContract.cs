@@ -115,20 +115,20 @@ namespace QuikGraph.Contracts
         }
         #endregion
 
+        #region IGraph<TVertex,TEdge>
+
+        public bool IsDirected => throw new NotImplementedException();
+
+        public bool AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
         #region IImplicitVertexSet<TVertex>
 
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
-
-        #endregion
-
-        #region IGraph<TVertex,TEdge>
-
-        public bool IsDirected => throw new NotImplementedException();
-
-        public bool AllowParallelEdges => throw new NotImplementedException();
 
         #endregion
     }

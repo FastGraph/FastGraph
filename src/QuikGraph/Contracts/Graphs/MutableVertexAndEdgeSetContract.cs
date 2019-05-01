@@ -53,6 +53,14 @@ namespace QuikGraph.Contracts
             return default(int);
         }
 
+        #region IGraph<TVertex,TEdge>
+
+        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
+
+        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
         #region IVertexSet<TVertex>
 
         bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
@@ -68,14 +76,6 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IGraph<TVertex,TEdge>
-
-        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
-
-        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
-
-        #endregion
-
         #region IEdgeSet<TVertex,TEdge>
 
         bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty => throw new NotImplementedException();
@@ -85,6 +85,15 @@ namespace QuikGraph.Contracts
         IEnumerable<TEdge> IEdgeSet<TVertex, TEdge>.Edges => throw new NotImplementedException();
 
         bool IEdgeSet<TVertex, TEdge>.ContainsEdge(TEdge edge)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMutableGraph<TVertex,TEdge>
+
+        void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }
@@ -157,15 +166,6 @@ namespace QuikGraph.Contracts
         }
 
         int IMutableEdgeListGraph<TVertex, TEdge>.RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IMutableGraph<TVertex,TEdge>
-
-        void IMutableGraph<TVertex, TEdge>.Clear()
         {
             throw new NotImplementedException();
         }

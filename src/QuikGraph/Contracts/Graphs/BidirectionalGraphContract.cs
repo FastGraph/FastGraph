@@ -14,6 +14,39 @@ namespace QuikGraph.Contracts
     internal abstract class BidirectionalGraphContract<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        #region IGraph<TVertex,TEdge>
+
+        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
+
+        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
+
+        #endregion
+
+        #region IVertexSet<TVertex>
+
+        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
+
+        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
+
+        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
+
+        #endregion
+
+        #region IEdgeSet<TVertex,TEdge>
+
+        bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty => throw new NotImplementedException();
+
+        int IEdgeSet<TVertex, TEdge>.EdgeCount => throw new NotImplementedException();
+
+        IEnumerable<TEdge> IEdgeSet<TVertex, TEdge>.Edges => throw new NotImplementedException();
+
+        bool IEdgeSet<TVertex, TEdge>.ContainsEdge(TEdge edge)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region IIncidenceGraph<TVertex,TEdge>
 
         bool IIncidenceGraph<TVertex, TEdge>.ContainsEdge(TVertex source, TVertex target)
@@ -62,42 +95,9 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IGraph<TVertex,TEdge>
-
-        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
-
-        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
-
-        #endregion
-
         #region IImplicitVertexSet<TVertex>
 
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IVertexSet<TVertex>
-
-        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
-
-        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
-
-        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
-
-        #endregion
-
-        #region IEdgeSet<TVertex,TEdge>
-
-        bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty => throw new NotImplementedException();
-
-        int IEdgeSet<TVertex, TEdge>.EdgeCount => throw new NotImplementedException();
-
-        IEnumerable<TEdge> IEdgeSet<TVertex, TEdge>.Edges => throw new NotImplementedException();
-
-        bool IEdgeSet<TVertex, TEdge>.ContainsEdge(TEdge edge)
         {
             throw new NotImplementedException();
         }
