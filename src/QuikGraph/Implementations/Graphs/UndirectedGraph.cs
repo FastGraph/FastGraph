@@ -36,7 +36,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
         /// <param name="edgeEqualityComparer">Equality comparer to use to compare edges.</param>
-        public UndirectedGraph(bool allowParallelEdges, [NotNull] EdgeEqualityComparer<TVertex, TEdge> edgeEqualityComparer)
+        public UndirectedGraph(bool allowParallelEdges, [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(_edgeEqualityComparer != null);
@@ -67,15 +67,15 @@ namespace QuikGraph
         }
 
         [NotNull]
-        private readonly EdgeEqualityComparer<TVertex, TEdge> _edgeEqualityComparer;
+        private readonly EdgeEqualityComparer<TVertex> _edgeEqualityComparer;
 
         /// <inheritdoc />
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer
+        public EdgeEqualityComparer<TVertex> EdgeEqualityComparer
         {
             get
             {
 #if SUPPORTS_CONTRACTS
-                Contract.Ensures(Contract.Result<EdgeEqualityComparer<TVertex, TEdge>>() != null);
+                Contract.Ensures(Contract.Result<EdgeEqualityComparer<TVertex>>() != null);
 #endif
 
                 return _edgeEqualityComparer;
@@ -436,7 +436,7 @@ namespace QuikGraph
             }
 
             sourceEdges.Add(edge);
-            if (!edge.IsSelfEdge<TVertex, TEdge>())
+            if (!edge.IsSelfEdge())
                 targetEdges.Add(edge);
 
             EdgeCount++;
@@ -469,7 +469,7 @@ namespace QuikGraph
             }
 
             sourceEdges.Add(edge);
-            if (!edge.IsSelfEdge<TVertex, TEdge>())
+            if (!edge.IsSelfEdge())
             {
                 IEdgeList<TVertex, TEdge> targetEdges = _adjacentEdges[edge.Target];
                 targetEdges.Add(edge);
@@ -516,7 +516,7 @@ namespace QuikGraph
             bool removed = _adjacentEdges[edge.Source].Remove(edge);
             if (removed)
             {
-                if (!edge.IsSelfEdge<TVertex, TEdge>())
+                if (!edge.IsSelfEdge())
                     _adjacentEdges[edge.Target].Remove(edge);
                 EdgeCount--;
 
@@ -576,7 +576,7 @@ namespace QuikGraph
 
         private UndirectedGraph(
             [NotNull] VertexEdgeDictionary<TVertex, TEdge> adjacentEdges,
-            [NotNull] EdgeEqualityComparer<TVertex, TEdge> edgeEqualityComparer,
+            [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer,
             int edgeCount,
             int edgeCapacity,
             bool allowParallelEdges)

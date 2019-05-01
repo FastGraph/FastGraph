@@ -26,7 +26,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [NotNull]
-        EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; }
+        EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; }
 
         /// <summary>
         /// Gives the enumerable of edges adjacent to the given <paramref name="vertex"/>.

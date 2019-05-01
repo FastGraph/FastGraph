@@ -39,7 +39,7 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; } =
+        public EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; } =
             EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
 
         /// <summary>

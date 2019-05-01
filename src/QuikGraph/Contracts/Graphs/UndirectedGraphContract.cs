@@ -52,7 +52,7 @@ namespace QuikGraph.Contracts
         #region IImplicitUndirectedGraph<TVertex,TEdge>
 
         [Pure]
-        EdgeEqualityComparer<TVertex, TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer => 
+        EdgeEqualityComparer<TVertex> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer => 
             throw new NotImplementedException();
 
         IEnumerable<TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdges(TVertex vertex)

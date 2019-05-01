@@ -35,7 +35,7 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; } =
+        public EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; } =
             EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace QuikGraph
                         VisitedGraph.InEdges(vertex)
                             // We skip self edges here since
                             // We already did those in the out-edge run
-                            .Where(inEdge => !inEdge.IsSelfEdge<TVertex, TEdge>()));
+                            .Where(inEdge => !inEdge.IsSelfEdge()));
         }
 
         /// <inheritdoc />

@@ -92,7 +92,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IImplicitVertexSet<TVertex> Members
+        #region IImplicitVertexSet<TVertex>
 
         public bool ContainsVertex(TVertex vertex)
         {

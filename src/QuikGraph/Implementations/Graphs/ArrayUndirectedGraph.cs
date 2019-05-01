@@ -48,7 +48,7 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public EdgeEqualityComparer<TVertex, TEdge> EdgeEqualityComparer { get; }
+        public EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; }
 
         #region IGraph<TVertex,TEdge>
 

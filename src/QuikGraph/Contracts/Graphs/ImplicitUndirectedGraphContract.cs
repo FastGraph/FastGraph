@@ -18,11 +18,11 @@ namespace QuikGraph.Contracts
         #region IImplicitUndirectedGraph<TVertex,TEdge>
 
         [Pure]
-        EdgeEqualityComparer<TVertex, TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer
+        EdgeEqualityComparer<TVertex> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer
         {
             get
             {
-                Contract.Ensures(Contract.Result<EdgeEqualityComparer<TVertex, TEdge>>() != null);
+                Contract.Ensures(Contract.Result<EdgeEqualityComparer<TVertex>>() != null);
 
                 // ReSharper disable once AssignNullToNotNullAttribute, Justification: Contract class.
                 return null;

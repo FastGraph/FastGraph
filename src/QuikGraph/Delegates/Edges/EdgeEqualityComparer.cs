@@ -6,7 +6,6 @@ namespace QuikGraph
     /// Delegate to compare edge source and target vertex with given ones.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-    /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="edge">Edge to compare.</param>
     /// <param name="source">Source vertex to compare with.</param>
     /// <param name="target">Target vertex to compare with.</param>
@@ -14,9 +13,8 @@ namespace QuikGraph
 #if SUPPORTS_CONTRACTS
     [System.Diagnostics.Contracts.Pure]
 #endif
-    public delegate bool EdgeEqualityComparer<in TVertex, in TEdge>(
-        [NotNull] TEdge edge, 
-        [NotNull] TVertex source, 
-        [NotNull] TVertex target)
-        where TEdge : IEdge<TVertex>;
+    public delegate bool EdgeEqualityComparer<in TVertex>(
+        [NotNull] IEdge<TVertex> edge,
+        [NotNull] TVertex source,
+        [NotNull] TVertex target);
 }

@@ -15,7 +15,7 @@ namespace QuikGraph.Contracts
     internal abstract class MutableUndirectedGraphContract<TVertex, TEdge> : IMutableUndirectedGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        #region IMutableUndirectedGraph<TVertex,TEdge> Members
+        #region IMutableUndirectedGraph<TVertex,TEdge>
 
         int IMutableUndirectedGraph<TVertex, TEdge>.RemoveAdjacentEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
@@ -42,7 +42,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableEdgeListGraph<TVertex,TEdge> Members
+        #region IMutableEdgeListGraph<TVertex,TEdge>
 
         bool IMutableEdgeListGraph<TVertex, TEdge>.AddEdge(TEdge edge)
         {
@@ -51,8 +51,8 @@ namespace QuikGraph.Contracts
 
         event EdgeAction<TVertex, TEdge> IMutableEdgeListGraph<TVertex, TEdge>.EdgeAdded
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
         int IMutableEdgeListGraph<TVertex, TEdge>.AddEdgeRange(IEnumerable<TEdge> edges)
@@ -67,8 +67,8 @@ namespace QuikGraph.Contracts
 
         event EdgeAction<TVertex, TEdge> IMutableEdgeListGraph<TVertex, TEdge>.EdgeRemoved
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
         int IMutableEdgeListGraph<TVertex, TEdge>.RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
@@ -78,7 +78,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableGraph<TVertex,TEdge> Members
+        #region IMutableGraph<TVertex,TEdge>
 
         void IMutableGraph<TVertex, TEdge>.Clear()
         {
@@ -87,36 +87,21 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IGraph<TVertex,TEdge> Members
+        #region IGraph<TVertex,TEdge>
 
-        bool IGraph<TVertex, TEdge>.IsDirected
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
 
-        bool IGraph<TVertex, TEdge>.AllowParallelEdges
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IGraph<TVertex, TEdge>.AllowParallelEdges => throw new NotImplementedException();
 
         #endregion
 
-        #region IEdgeSet<TVertex,TEdge> Members
+        #region IEdgeSet<TVertex,TEdge>
 
-        bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IEdgeSet<TVertex, TEdge>.IsEdgesEmpty => throw new NotImplementedException();
 
-        int IEdgeSet<TVertex, TEdge>.EdgeCount
-        {
-            get { throw new NotImplementedException(); }
-        }
+        int IEdgeSet<TVertex, TEdge>.EdgeCount => throw new NotImplementedException();
 
-        IEnumerable<TEdge> IEdgeSet<TVertex, TEdge>.Edges
-        {
-            get { throw new NotImplementedException(); }
-        }
+        IEnumerable<TEdge> IEdgeSet<TVertex, TEdge>.Edges => throw new NotImplementedException();
 
         bool IEdgeSet<TVertex, TEdge>.ContainsEdge(TEdge edge)
         {
@@ -125,15 +110,15 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableVertexSet<TVertex> Members
+        #region IMutableVertexSet<TVertex>
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexAdded
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
-        bool IMutableVertexSet<TVertex>.AddVertex(TVertex v)
+        bool IMutableVertexSet<TVertex>.AddVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
@@ -145,38 +130,29 @@ namespace QuikGraph.Contracts
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexRemoved
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
-        bool IMutableVertexSet<TVertex>.RemoveVertex(TVertex v)
+        bool IMutableVertexSet<TVertex>.RemoveVertex(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        int IMutableVertexSet<TVertex>.RemoveVertexIf(VertexPredicate<TVertex> pred)
+        int IMutableVertexSet<TVertex>.RemoveVertexIf(VertexPredicate<TVertex> predicate)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IVertexSet<TVertex> Members
+        #region IVertexSet<TVertex>
 
-        bool IVertexSet<TVertex>.IsVerticesEmpty
-        {
-            get { throw new NotImplementedException(); }
-        }
+        bool IVertexSet<TVertex>.IsVerticesEmpty => throw new NotImplementedException();
 
-        int IVertexSet<TVertex>.VertexCount
-        {
-            get { throw new NotImplementedException(); }
-        }
+        int IVertexSet<TVertex>.VertexCount => throw new NotImplementedException();
 
-        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices
-        {
-            get { throw new NotImplementedException(); }
-        }
+        IEnumerable<TVertex> IVertexSet<TVertex>.Vertices => throw new NotImplementedException();
 
         bool IImplicitVertexSet<TVertex>.ContainsVertex(TVertex vertex)
         {
@@ -185,35 +161,27 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IImplicitUndirectedGraph<TVertex,TEdge> Members
+        #region IImplicitUndirectedGraph<TVertex,TEdge>
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        EdgeEqualityComparer<TVertex, TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        EdgeEqualityComparer<TVertex> IImplicitUndirectedGraph<TVertex, TEdge>.EdgeEqualityComparer =>
+            throw new NotImplementedException();
 
-        IEnumerable<TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdges(TVertex v)
+        IEnumerable<TEdge> IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdges(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        int IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentDegree(TVertex v)
+        int IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentDegree(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        bool IImplicitUndirectedGraph<TVertex, TEdge>.IsAdjacentEdgesEmpty(TVertex v)
+        bool IImplicitUndirectedGraph<TVertex, TEdge>.IsAdjacentEdgesEmpty(TVertex vertex)
         {
             throw new NotImplementedException();
         }
 
-        TEdge IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdge(TVertex v, int index)
+        TEdge IImplicitUndirectedGraph<TVertex, TEdge>.AdjacentEdge(TVertex vertex, int index)
         {
             throw new NotImplementedException();
         }
@@ -227,9 +195,10 @@ namespace QuikGraph.Contracts
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
-        #region IMutableVertexAndEdgeSet<TVertex,TEdge> Members
+        #region IMutableVertexAndEdgeSet<TVertex,TEdge>
 
         bool IMutableVertexAndEdgeSet<TVertex, TEdge>.AddVerticesAndEdge(TEdge edge)
         {

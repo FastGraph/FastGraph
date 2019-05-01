@@ -71,7 +71,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IMutableIncidenceGraph<TVertex,TEdge> Members
+        #region IMutableIncidenceGraph<TVertex,TEdge>
 
         int IMutableIncidenceGraph<TVertex, TEdge>.RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {

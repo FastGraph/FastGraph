@@ -42,7 +42,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IGraph<TVertex,TEdge> Members
+        #region IGraph<TVertex,TEdge>
 
         bool IGraph<TVertex, TEdge>.IsDirected => throw new NotImplementedException();
 
@@ -50,7 +50,7 @@ namespace QuikGraph.Contracts
 
         #endregion
 
-        #region IIncidenceGraph<TVertex,TEdge> Members
+        #region IIncidenceGraph<TVertex,TEdge>
 
         bool IIncidenceGraph<TVertex, TEdge>.ContainsEdge(TVertex source, TVertex target)
         {

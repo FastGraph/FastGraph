@@ -52,8 +52,8 @@ namespace QuikGraph.Contracts
 
         event VertexAction<TVertex> IMutableVertexSet<TVertex>.VertexRemoved
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
         }
 
         bool IMutableVertexSet<TVertex>.RemoveVertex(TVertex vertex)

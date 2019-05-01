@@ -19,15 +19,13 @@ namespace QuikGraph
         /// Gets a value indicating if the edge is a self edge.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if edge is a self one, false otherwise.</returns>
 #if SUPPORTS_CONTRACTS
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static bool IsSelfEdge<TVertex, TEdge>([NotNull] this TEdge edge)
-            where TEdge : IEdge<TVertex>
+        public static bool IsSelfEdge<TVertex>([NotNull] this IEdge<TVertex> edge)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -42,7 +40,6 @@ namespace QuikGraph
         /// </summary>
         /// <remarks>The edge must not be a self-edge.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <param name="vertex">The source or target vertex of the <paramref name="edge"/>.</param>
         /// <returns>The other edge vertex.</returns>
@@ -50,8 +47,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static TVertex GetOtherVertex<TVertex, TEdge>([NotNull] this TEdge edge, [NotNull] TVertex vertex)
-            where TEdge : IEdge<TVertex>
+        public static TVertex GetOtherVertex<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -71,7 +67,6 @@ namespace QuikGraph
         /// <paramref name="edge"/> (is the source or target).
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <param name="vertex">Source or target <paramref name="edge"/> vertex.</param>
         /// <returns>True if the <paramref name="vertex"/> is adjacent to this <paramref name="edge"/>, false otherwise.</returns>
@@ -79,8 +74,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static bool IsAdjacent<TVertex, TEdge>([NotNull] this TEdge edge, [NotNull] TVertex vertex)
-            where TEdge : IEdge<TVertex>
+        public static bool IsAdjacent<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -168,7 +162,7 @@ namespace QuikGraph
             {
                 if (first)
                 {
-                    if (edge.Source.Equals(edge.Target)) // Self-edge
+                    if (edge.IsSelfEdge())
                         return true;
                     vertices.Add(edge.Source, 0);
                     vertices.Add(edge.Target, 0);
@@ -214,12 +208,12 @@ namespace QuikGraph
             var vertices = new Dictionary<TVertex, int>();
             bool first = true;
             TVertex lastTarget = default(TVertex);
-            foreach (var edge in path)
+            foreach (TEdge edge in path)
             {
                 if (first)
                 {
                     lastTarget = edge.Target;
-                    if (IsSelfEdge<TVertex, TEdge>(edge))
+                    if (edge.IsSelfEdge())
                         return false;
                     vertices.Add(edge.Source, 0);
                     vertices.Add(lastTarget, 0);
@@ -244,15 +238,13 @@ namespace QuikGraph
         /// Creates a vertex pair (source, target) from this edge.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <returns>A <see cref="SEquatableEdge{TVertex}"/>.</returns>
 #if SUPPORTS_CONTRACTS
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static SEquatableEdge<TVertex> ToVertexPair<TVertex, TEdge>([NotNull] this TEdge edge)
-            where TEdge : IEdge<TVertex>
+        public static SEquatableEdge<TVertex> ToVertexPair<TVertex>([NotNull] this IEdge<TVertex> edge)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -385,8 +377,7 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static EdgeEqualityComparer<TVertex, TEdge> GetUndirectedVertexEquality<TVertex, TEdge>()
-            where TEdge : IEdge<TVertex>
+        public static EdgeEqualityComparer<TVertex> GetUndirectedVertexEquality<TVertex, TEdge>()
         {
             if (typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge)))
                 return SortedVertexEquality;
@@ -399,7 +390,6 @@ namespace QuikGraph
         /// or <paramref name="target"/> and <paramref name="source"/> vertices.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
@@ -409,11 +399,10 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static bool UndirectedVertexEquality<TVertex, TEdge>(
-            [NotNull] this TEdge edge,
+        public static bool UndirectedVertexEquality<TVertex>(
+            [NotNull] this IEdge<TVertex> edge,
             [NotNull] TVertex source,
             [NotNull] TVertex target)
-            where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -430,7 +419,6 @@ namespace QuikGraph
         /// <paramref name="source"/> and <paramref name="target"/> vertices.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
@@ -440,11 +428,10 @@ namespace QuikGraph
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public static bool SortedVertexEquality<TVertex, TEdge>(
-            [NotNull] this TEdge edge, 
+        public static bool SortedVertexEquality<TVertex>(
+            [NotNull] this IEdge<TVertex> edge, 
             [NotNull] TVertex source,
             [NotNull] TVertex target)
-            where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
