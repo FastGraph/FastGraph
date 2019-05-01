@@ -1,127 +1,138 @@
-﻿using System;
-using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
-using static QuikGraph.Utils.DisposableHelpers;
+﻿// TODO: Finish the implementation
+//using System.Collections.Generic;
+//using JetBrains.Annotations;
+//using QuikGraph.Algorithms.Observers;
+//using QuikGraph.Algorithms.Search;
+//using QuikGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms
-{
-    /// <summary>
-    /// Computes the dominator map of a directed graph
-    /// </summary>
-    /// <remarks>
-    /// Thomas Lengauer and Robert Endre Tarjan
-    /// A fast algorithm for finding dominators in a flowgraph
-    /// ACM Transactions on Programming Language and Systems, 1(1):121-141, 1979. 
-    /// </remarks>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
-    class LengauerTarjanDominatorAlgorithm<TVertex, TEdge>
-        : RootedAlgorithmBase<TVertex, IBidirectionalGraph<TVertex, TEdge>>
-        where TEdge : IEdge<TVertex>
-    {
-        public LengauerTarjanDominatorAlgorithm(
-            IAlgorithmComponent host,
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            : base(host, visitedGraph)
-        { }
+//namespace QuikGraph.Algorithms
+//{
+//    /// <summary>
+//    /// Algorithm that computes the domination map of a directed graph.
+//    /// </summary>
+//    /// <remarks>
+//    /// Thomas Lengauer and Robert Endre Tarjan.
+//    /// A fast algorithm for finding dominator in a flow graph.
+//    /// ACM Transactions on Programming Language and Systems, 1(1):121-141, 1979. 
+//    /// </remarks>
+//    /// <typeparam name="TVertex">Vertex type.</typeparam>
+//    /// <typeparam name="TEdge">Edge type.</typeparam>
+//    internal class LengauerTarjanDominatorAlgorithm<TVertex, TEdge> : RootedAlgorithmBase<TVertex, IBidirectionalGraph<TVertex, TEdge>>
+//        where TEdge : IEdge<TVertex>
+//    {
+//        /// <summary>
+//        /// Initializes a new instance of the <see cref="LengauerTarjanDominatorAlgorithm{TVertex,TEdge}"/> class.
+//        /// </summary>
+//        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+//        /// <param name="visitedGraph">Graph to visit.</param>
+//        public LengauerTarjanDominatorAlgorithm(
+//            [CanBeNull] IAlgorithmComponent host,
+//            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+//            : base(host, visitedGraph)
+//        {
+//        }
 
-        public LengauerTarjanDominatorAlgorithm(
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
-        { }
+//        /// <summary>
+//        /// Initializes a new instance of the <see cref="LengauerTarjanDominatorAlgorithm{TVertex,TEdge}"/> class.
+//        /// </summary>
+//        /// <param name="visitedGraph">Graph to visit.</param>
+//        public LengauerTarjanDominatorAlgorithm([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+//            : this(null, visitedGraph)
+//        {
+//        }
 
-        protected override void InternalCompute()
-        {
-            var cancelManager = this.Services.CancelManager;
-            var vertexCount = this.VisitedGraph.VertexCount;
-            var vertices = this.VisitedGraph.Vertices;
+//        #region AlgorithmBase<TGraph>
 
-            var timeStamps = new Dictionary<TVertex, int>(vertexCount);
-            var stamps = new List<TVertex>(vertexCount);
-            var predecessors = new Dictionary<TVertex, TEdge>(vertexCount);
+//        /// <inheritdoc />
+//        protected override void InternalCompute()
+//        {
+//            ICancelManager cancelManager = Services.CancelManager;
+//            int vertexCount = VisitedGraph.VertexCount;
+//            IEnumerable<TVertex> vertices = VisitedGraph.Vertices;
 
-            // phase 1: DFS over the graph and record vertex indices
-            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(this, this.VisitedGraph);
-            using (new TimeStampObserver(stamps).Attach(dfs))
-            using (new VertexTimeStamperObserver<TVertex, TEdge>(timeStamps).Attach(dfs))
-            using (new VertexPredecessorRecorderObserver<TVertex, TEdge>(predecessors).Attach(dfs))
-                dfs.Compute();
+//            var timeStamps = new Dictionary<TVertex, int>(vertexCount);
+//            //var stamps = new List<TVertex>(vertexCount);
+//            var predecessors = new Dictionary<TVertex, TEdge>(vertexCount);
 
-            if (cancelManager.IsCancelling) return;
- 
-            // phase 2: find semidominators
-            var semi = new Dictionary<TVertex, TVertex>(vertexCount);
-            foreach (var v in vertices)
-            {
-                int vtime;
-                TEdge dominatorEdge;
-                if (!timeStamps.TryGetValue(v, out vtime) ||
-                    !predecessors.TryGetValue(v, out dominatorEdge))
-                    continue; // skip unreachable
+//            // Phase 1: DFS over the graph and record vertices indexes
+//            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(this, VisitedGraph);
+//            //using (new TimeStampObserver(stamps).Attach(dfs))
+//            using (new VertexTimeStamperObserver<TVertex, TEdge>(timeStamps).Attach(dfs))
+//            using (new VertexPredecessorRecorderObserver<TVertex, TEdge>(predecessors).Attach(dfs))
+//                dfs.Compute();
 
-                var dominator = dominatorEdge.Source;
-                int dominatorTime;
-                if(!timeStamps.TryGetValue(dominator, out dominatorTime))
-                    continue;
+//            if (cancelManager.IsCancelling)
+//                return;
 
-                foreach (var e in this.VisitedGraph.InEdges(v))
-                {
-                    var u = e.Source;
-                    int utime;
-                    if (!timeStamps.TryGetValue(u, out utime))
-                        continue;
+//            // Phase 2: Find semi dominator
+//            var semi = new Dictionary<TVertex, TVertex>(vertexCount);
+//            foreach (TVertex v in vertices)
+//            {
+//                if (!timeStamps.TryGetValue(v, out int vTime) 
+//                    || !predecessors.TryGetValue(v, out TEdge dominatorEdge))
+//                    continue; // Skip unreachable
 
-                    TVertex candidate;
-                    if (utime < vtime)
-                        candidate = u;
-                    else
-                    {
-                        var ancestor = default(TVertex);
-                        candidate = semi[ancestor];
-                    }
-                    int candidateTime = timeStamps[candidate];
-                    if (candidateTime < dominatorTime)
-                    {
-                        dominator = candidate;
-                        dominatorTime = candidateTime;
-                    }
-                }
+//                TVertex dominator = dominatorEdge.Source;
+//                if (!timeStamps.TryGetValue(dominator, out int dominatorTime))
+//                    continue;
 
-                semi[v] = dominator;
-            }
+//                foreach (TEdge edge in VisitedGraph.InEdges(v))
+//                {
+//                    var u = edge.Source;
+//                    if (!timeStamps.TryGetValue(u, out int uTime))
+//                        continue;
 
-            // phase 3:
-        }
+//                    TVertex candidate;
+//                    if (uTime < vTime)
+//                    {
+//                        candidate = u;
+//                    }
+//                    else
+//                    {
+//                        TVertex ancestor = default(TVertex);
+//                        candidate = semi[ancestor];
+//                    }
 
-        class TimeStampObserver
-            : Observers.IObserver<IVertexTimeStamperAlgorithm<TVertex>>
+//                    int candidateTime = timeStamps[candidate];
+//                    if (candidateTime < dominatorTime)
+//                    {
+//                        dominator = candidate;
+//                        dominatorTime = candidateTime;
+//                    }
+//                }
 
-        {
-            public readonly List<TVertex> Vertices;
-            public TimeStampObserver(List<TVertex> vertices)
-            {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(vertices != null);
-#endif
+//                semi[v] = dominator;
+//            }
 
-                this.Vertices = vertices;
-            }
+//            // Phase 3: TODO
+//        }
 
-            public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
-            {
-                algorithm.DiscoverVertex += algorithm_DiscoverVertex;
-                return Finally(() => algorithm.DiscoverVertex -= algorithm_DiscoverVertex);
-            }
+//        #endregion
 
-            void algorithm_DiscoverVertex(TVertex v)
-            {
-                this.Vertices.Add(v);
-            }
-        }
-    }
-}
+//        private class TimeStampObserver : Observers.IObserver<IVertexTimeStamperAlgorithm<TVertex>>
+//        {
+//            private readonly List<TVertex> _vertices;
+
+//            public TimeStampObserver([NotNull, ItemNotNull] List<TVertex> vertices)
+//            {
+//#if SUPPORTS_CONTRACTS
+//                Contract.Requires(vertices != null);
+//#endif
+
+//                _vertices = vertices;
+//            }
+
+//            /// <inheritdoc />
+//            public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
+//            {
+//                algorithm.DiscoverVertex += OnDiscoveredVertex;
+//                return Finally(() => algorithm.DiscoverVertex -= OnDiscoveredVertex);
+//            }
+
+//            private void OnDiscoveredVertex([NotNull] TVertex vertex)
+//            {
+//                _vertices.Add(vertex);
+//            }
+//        }
+//    }
+//}

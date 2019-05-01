@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -6,80 +7,121 @@ using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
 {
-    public abstract class RootedSearchAlgorithmBase<TVertex, TGraph>
-        : RootedAlgorithmBase<TVertex, TGraph>
+    /// <summary>
+    /// Base class for all graph algorithm performing a search in a graph.
+    /// </summary>
+    /// <remarks>Requires a starting vertex (root).</remarks>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
+    public abstract class RootedSearchAlgorithmBase<TVertex, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
     {
-        private TVertex _goalVertex;
-        private bool hasGoalVertex;
+        private TVertex _target;
+        private bool _hasGoalVertex;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RootedSearchAlgorithmBase{TVertex,TGraph}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
         protected RootedSearchAlgorithmBase(
-            IAlgorithmComponent host,
-            TGraph visitedGraph)
-            :base(host, visitedGraph)
-        {}
-
-        public bool TryGetGoalVertex(out TVertex goalVertex)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] TGraph visitedGraph)
+            : base(host, visitedGraph)
         {
-            if (this.hasGoalVertex)
+        }
+
+        /// <summary>
+        /// Tries to get the target vertex if set.
+        /// </summary>
+        /// <param name="target">Target vertex if set, otherwise null.</param>
+        /// <returns>True if the target vertex was set, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public bool TryGetGoalVertex(out TVertex target)
+        {
+            if (_hasGoalVertex)
             {
-                goalVertex = this._goalVertex;
+                target = _target;
                 return true;
             }
-            else
-            {
-                goalVertex = default(TVertex);
-                return false;
-            }
+
+            target = default(TVertex);
+            return false;
         }
 
-        public void SetGoalVertex(TVertex goalVertex)
+        /// <summary>
+        /// Sets the target vertex.
+        /// </summary>
+        /// <param name="target">Target vertex.</param>
+        public void SetTargetVertex([NotNull] TVertex target)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(goalVertex != null);
+            Contract.Requires(target != null);
 #endif
 
-            bool changed = !Comparison<TVertex>.Equals(this._goalVertex, goalVertex);
-            this._goalVertex = goalVertex;
+            bool changed = !Equals(_target, target);
+            _target = target;
             if (changed)
-                this.OnGoalVertexChanged(EventArgs.Empty);
-            this.hasGoalVertex = true;
+                OnTargetVertexChanged(EventArgs.Empty);
+            _hasGoalVertex = true;
         }
 
-        public void ClearGoalVertex()
+        /// <summary>
+        /// Clears the target vertex.
+        /// </summary>
+        public void ClearTargetVertex()
         {
-            this._goalVertex = default(TVertex);
-            this.hasGoalVertex = false;
+            _target = default(TVertex);
+            _hasGoalVertex = false;
         }
 
-        public event EventHandler GoalReached;
-        protected virtual void OnGoalReached()
-        {
-            var eh = this.GoalReached;
-            if (eh != null)
-                eh(this, EventArgs.Empty);
-        }
+        /// <summary>
+        /// Fired when the target vertex is changed.
+        /// </summary>
+        public event EventHandler TargetVertexChanged;
 
-        public event EventHandler GoalVertexChanged;
-        protected virtual void OnGoalVertexChanged(EventArgs e)
+        /// <summary>
+        /// Called on each target vertex change.
+        /// </summary>
+        /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
+        protected virtual void OnTargetVertexChanged([NotNull] EventArgs args)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(args != null);
 #endif
 
-            var eh = this.GoalVertexChanged;
-            if (eh != null)
-                eh(this, e);
+            TargetVertexChanged?.Invoke(this, args);
         }
 
-        public void Compute(TVertex root, TVertex goal)
+        /// <summary>
+        /// Fired when the target vertex is reached.
+        /// </summary>
+        public event EventHandler TargetReached;
+
+        /// <summary>
+        /// Called when the target vertex is reached.
+        /// </summary>
+        protected virtual void OnTargetReached()
+        {
+            TargetReached?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Runs the algorithm with the given <paramref name="root"/> vertex.
+        /// </summary>
+        /// <param name="root">Root vertex.</param>
+        /// <param name="target">Target vertex.</param>
+        public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
-            Contract.Requires(goal != null);
+            Contract.Requires(target != null);
 #endif
 
-            this.SetGoalVertex(goal);
-            this.Compute(root);
+            SetTargetVertex(target);
+            Compute(root);
         }
     }
 }

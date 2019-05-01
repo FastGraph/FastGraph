@@ -1,177 +1,151 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
+using QuikGraph.Algorithms.Services;
 using QuikGraph.Predicates;
 
 namespace QuikGraph.Algorithms.Ranking
 {
+    /// <summary>
+    /// Algorithm that computes the page rank of a graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class PageRankAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
+    public sealed class PageRankAlgorithm<TVertex, TEdge> : AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex,double> ranks = new Dictionary<TVertex,double>();
-
-        private int maxIterations = 60;
-        private double tolerance = 2 * double.Epsilon;
-        private double damping = 0.85;
-
-        public PageRankAlgorithm(IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            :base(visitedGraph)
-        {}
-
-        public IDictionary<TVertex,double> Ranks
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PageRankAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public PageRankAlgorithm([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+            : base(visitedGraph)
         {
-            get
-            {
-                return this.ranks;
-            }
         }
 
-        public double Damping
-        {
-            get
-            {
-                return this.damping;
-            }
-            set
-            {
-                this.damping = value;
-            }
-        }
+        /// <summary>
+        /// Ranks per vertices.
+        /// </summary>
+        [NotNull]
+        public IDictionary<TVertex, double> Ranks { get; private set; } = new Dictionary<TVertex, double>();
 
-        public double Tolerance
-        {
-            get
-            {
-                return this.tolerance;
-            }
-            set
-            {
-                this.tolerance = value;
-            }
-        }
+        /// <summary>
+        /// Gets or sets the damping rate.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public double Damping { get; set; } = 0.85;
 
-        public int MaxIteration
-        {
-            get
-            {
-                return this.maxIterations;
-            }
-            set
-            {
-                this.maxIterations = value;
-            }
-        }
+        /// <summary>
+        /// Gets or sets the error tolerance (used to stop the algorithm).
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public double Tolerance { get; set; } = 2 * double.Epsilon;
 
+        /// <summary>
+        /// Gets or sets the maximum number of iterations.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int MaxIterations { get; set; } = 60;
+
+        /// <summary>
+        /// Initializes all vertices ranks to 0.
+        /// </summary>
         public void InitializeRanks()
         {
-            this.ranks.Clear();
-            foreach (var v in this.VisitedGraph.Vertices)
+            Ranks.Clear();
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                this.ranks.Add(v, 0);
+                Ranks.Add(vertex, 0);
             }
-//            this.RemoveDanglingLinks();
         }
-/*
-        public void RemoveDanglingLinks()
-        {
-            VertexCollection danglings = new VertexCollection();
-            do
-            {
-                danglings.Clear();
 
-                // create filtered graph
-                IVertexListGraph fg = new FilteredVertexListGraph(
-                    this.VisitedGraph,
-                    new InDictionaryVertexPredicate(this.ranks)
-                    );
-
-                // iterate over of the vertices in the rank map
-                foreach (IVertex v in this.ranks.Keys)
-                {
-                    // if v does not have out-edge in the filtered graph, remove
-                    if (fg.OutDegree(v) == 0)
-                        danglings.Add(v);
-                }
-
-                // remove from ranks
-                foreach (IVertex v in danglings)
-                    this.ranks.Remove(v);
-                // iterate until no dangling was removed
-            } while (danglings.Count != 0);
-        }
-*/
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var cancelManager = this.Services.CancelManager;
+            ICancelManager cancelManager = Services.CancelManager;
             IDictionary<TVertex, double> tempRanks = new Dictionary<TVertex, double>();
 
-            // create filtered graph
-            FilteredBidirectionalGraph<
-                TVertex,
-                TEdge,
-                IBidirectionalGraph<TVertex,TEdge>
-                > fg = new FilteredBidirectionalGraph<TVertex, TEdge, IBidirectionalGraph<TVertex, TEdge>>(
-                this.VisitedGraph,
-                new InDictionaryVertexPredicate<TVertex,double>(this.ranks).Test,
-                e => true
-                );
+            // Create filtered graph
+            var filterGraph = new FilteredBidirectionalGraph<TVertex, TEdge, IBidirectionalGraph<TVertex, TEdge>>(
+                VisitedGraph,
+                new InDictionaryVertexPredicate<TVertex, double>(Ranks).Test,
+                edge => true);
 
-            int iter = 0;
-            double error = 0;
+            int iteration = 0;
+            double error;
             do
             {
                 if (cancelManager.IsCancelling)
                     return;
-                  
-                // compute page ranks
+
+                // Compute page ranks
                 error = 0;
-                foreach (KeyValuePair<TVertex,double> de in this.Ranks)
+                foreach (KeyValuePair<TVertex, double> pair in Ranks)
                 {
                     if (cancelManager.IsCancelling)
                         return;
 
-                    TVertex v = de.Key;
-                    double rank = de.Value;
-                    // compute ARi
+                    TVertex vertex = pair.Key;
+                    double rank = pair.Value;
+
+                    // Compute ARi
                     double r = 0;
-                    foreach (var e in fg.InEdges(v))
+                    foreach (TEdge edge in filterGraph.InEdges(vertex))
                     {
-                        r += this.ranks[e.Source] / fg.OutDegree(e.Source);
+                        r += Ranks[edge.Source] / filterGraph.OutDegree(edge.Source);
                     }
 
-                    // add sourceRank and store
-                    double newRank = (1 - this.damping) + this.damping * r;
-                    tempRanks[v] = newRank;
-                    // compute deviation
+                    // Add sourceRank and store it
+                    double newRank = (1 - Damping) + Damping * r;
+                    tempRanks[vertex] = newRank;
+                    
+                    // Compute deviation
                     error += Math.Abs(rank - newRank);
                 }
 
-                // swap ranks
-                var temp = ranks;
-                ranks = tempRanks;
+                // Swap ranks
+                IDictionary<TVertex, double> temp = Ranks;
+                Ranks = tempRanks;
                 tempRanks = temp;
 
-                iter++;
-            } while (error > this.tolerance && iter < this.maxIterations);
-            Console.WriteLine("{0}, {1}", iter, error);
+                ++iteration;
+            } while (error > Tolerance && iteration < MaxIterations);
         }
 
+        /// <summary>
+        /// Gets the sum of all ranks.
+        /// </summary>
+        /// <returns>Ranks sum.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         public double GetRanksSum()
         {
-            double sum = 0;
-            foreach (double rank in this.ranks.Values)
-            {
-                sum += rank;
-            }
-            return sum;
+            return Ranks.Values.Sum();
         }
 
+        /// <summary>
+        /// Gets the rank average.
+        /// </summary>
+        /// <returns>Rank average.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
         public double GetRanksMean()
         {
-            return GetRanksSum() / this.ranks.Count;
+            return GetRanksSum() / Ranks.Count;
         }
     }
 }

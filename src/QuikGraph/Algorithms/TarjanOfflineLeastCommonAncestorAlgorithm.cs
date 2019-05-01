@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -11,7 +12,7 @@ using QuikGraph.Collections;
 namespace QuikGraph.Algorithms
 {
     /// <summary>
-    /// Offline least common ancestor in a rooted tre
+    /// Off line least common ancestor in a rooted tree.
     /// </summary>
     /// <remarks>
     /// Reference:
@@ -20,95 +21,140 @@ namespace QuikGraph.Algorithms
     /// on theory of Computing STOC '83. ACM, New York, NY, 246-251. 
     /// DOI= http://doi.acm.org/10.1145/800061.808753 
     /// </remarks>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge>
-        : RootedAlgorithmBase<TVertex , IVertexListGraph<TVertex, TEdge>>
+        : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private SEquatableEdge<TVertex>[] pairs;
-        private readonly Dictionary<SEquatableEdge<TVertex>, TVertex> ancestors =
+        [CanBeNull]
+        private SEquatableEdge<TVertex>[] _pairs;
+
+        /// <summary>
+        /// Ancestors of vertices pairs.
+        /// </summary>
+        [NotNull]
+        public IDictionary<SEquatableEdge<TVertex>, TVertex> Ancestors { get; } = 
             new Dictionary<SEquatableEdge<TVertex>, TVertex>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TarjanOfflineLeastCommonAncestorAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public TarjanOfflineLeastCommonAncestorAlgorithm(
-            IVertexListGraph<TVertex, TEdge> visitedGraph)
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
-        { }
-
-        public TarjanOfflineLeastCommonAncestorAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex, TEdge> visitedGraph)
-            : base(host, visitedGraph)
-        { }
-
-        public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
-            pairs = this.pairs;
-            return pairs!=null;
         }
 
-        public void SetVertexPairs(IEnumerable<SEquatableEdge<TVertex>> pairs)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TarjanOfflineLeastCommonAncestorAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public TarjanOfflineLeastCommonAncestorAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+            : base(host, visitedGraph)
+        {
+        }
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+            Ancestors.Clear();
+        }
+
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
+            if (!TryGetRootVertex(out TVertex root))
+                throw new InvalidOperationException("Root vertex not set.");
+            if (_pairs is null)
+                throw new InvalidProgramException("Pairs not set.");
+
+            var graph = _pairs.ToAdjacencyGraph();
+            var disjointSet = new ForestDisjointSet<TVertex>();
+            var verticesAncestors = new Dictionary<TVertex, TVertex>();
+            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(
+                this, 
+                VisitedGraph, 
+                new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount));
+
+            dfs.InitializeVertex += vertex => disjointSet.MakeSet(vertex);
+            dfs.DiscoverVertex += vertex => verticesAncestors[vertex] = vertex;
+            dfs.TreeEdge += edge =>
+            {
+                disjointSet.Union(edge.Source, edge.Target);
+                // ReSharper disable once AssignNullToNotNullAttribute
+                // Justification: must be in the set because unioned just before.
+                verticesAncestors[disjointSet.FindSet(edge.Source)] = edge.Source;
+            };
+            dfs.FinishVertex += vertex =>
+            {
+                foreach (SEquatableEdge<TVertex> edge in graph.OutEdges(vertex))
+                {
+                    if (dfs.VertexColors[edge.Target] == GraphColor.Black)
+                    {
+                        SEquatableEdge<TVertex> pair = edge.ToVertexPair();
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        // Justification: must be present in the set.
+                        Ancestors[pair] = verticesAncestors[disjointSet.FindSet(edge.Target)];
+                    }
+                }
+            };
+
+            // Run DFS
+            dfs.Compute(root);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Tries to get vertices pairs if set.
+        /// </summary>
+        /// <param name="pairs">Vertices pairs if set.</param>
+        /// <returns></returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
+        {
+            pairs = _pairs;
+            return pairs != null;
+        }
+
+        /// <summary>
+        /// Sets vertices pairs.
+        /// </summary>
+        /// <param name="pairs">Vertices pairs.</param>
+        public void SetVertexPairs([NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(pairs != null);
 #endif
 
-            this.pairs = new List<SEquatableEdge<TVertex>>(pairs).ToArray();
+            _pairs = pairs.ToArray();
         }
 
-        public void Compute(TVertex root, IEnumerable<SEquatableEdge<TVertex>> pairs)
+        /// <summary>
+        /// Runs the algorithm with the given <paramref name="root"/> vertex and set of vertices pairs.
+        /// </summary>
+        /// <param name="root">Root vertex.</param>
+        /// <param name="pairs">Vertices pairs.</param>
+        public void Compute([NotNull] TVertex root, [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
             Contract.Requires(pairs != null);
 #endif
 
-            this.pairs = Enumerable.ToArray(pairs);
-            this.Compute(root);
-        }
-
-        public IDictionary<SEquatableEdge<TVertex>, TVertex> Ancestors
-        {
-            get { return this.ancestors; }
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-            this.ancestors.Clear();
-        }
-
-        protected override void InternalCompute()
-        {
-            var cancelManager = this.Services.CancelManager;
-
-            TVertex root;
-            if (!this.TryGetRootVertex(out root))
-                throw new InvalidOperationException("root vertex not set");
-            if (this.pairs == null)
-                throw new InvalidProgramException("pairs not set");
-
-            var gpair = GraphExtensions.ToAdjacencyGraph(this.pairs);
-            var disjointSet = new ForestDisjointSet<TVertex>();
-            var vancestors = new Dictionary<TVertex, TVertex>();
-            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(this, this.VisitedGraph, new Dictionary<TVertex, GraphColor>(this.VisitedGraph.VertexCount));
-
-            dfs.InitializeVertex += v => disjointSet.MakeSet(v);
-            dfs.DiscoverVertex += v => vancestors[v] = v;
-            dfs.TreeEdge += edge =>
-                {
-                    disjointSet.Union(edge.Source, edge.Target);
-                    vancestors[disjointSet.FindSet(edge.Source)] = edge.Source;
-                };
-            dfs.FinishVertex += v =>
-                {
-                    foreach (var e in gpair.OutEdges(v))
-                        if (dfs.VertexColors[e.Target] == GraphColor.Black)
-                            this.ancestors[EdgeExtensions.ToVertexPair<TVertex, SEquatableEdge<TVertex>>(e)] = vancestors[disjointSet.FindSet(e.Target)];
-                };
-
-            // go!
-            dfs.Compute(root);
+            _pairs = pairs.ToArray();
+            Compute(root);
         }
     }
 }

@@ -47,10 +47,8 @@ namespace QuikGraph.Algorithms
 
         #region IComputation
 
-        private volatile object _syncRoot = new object();
-
         /// <inheritdoc />
-        public object SyncRoot => _syncRoot;
+        public object SyncRoot { get; } = new object();
 
         private volatile ComputationState _state = ComputationState.NotRunning;
 
@@ -59,7 +57,7 @@ namespace QuikGraph.Algorithms
         {
             get
             {
-                lock (_syncRoot)
+                lock (SyncRoot)
                 {
                     return _state;
                 }
@@ -89,7 +87,7 @@ namespace QuikGraph.Algorithms
         public void Abort()
         {
             bool raise = false;
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 if (_state == ComputationState.Running)
                 {
@@ -112,6 +110,10 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStateChanged([NotNull] EventArgs args)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(args != null);
+#endif
+
             StateChanged?.Invoke(this, args);
         }
 
@@ -124,6 +126,10 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStarted([NotNull] EventArgs args)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(args != null);
+#endif
+
             Started?.Invoke(this, args);
         }
 
@@ -136,6 +142,10 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnFinished([NotNull] EventArgs args)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(args != null);
+#endif
+
             Finished?.Invoke(this, args);
         }
 
@@ -148,6 +158,10 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnAborted([NotNull] EventArgs args)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(args != null);
+#endif
+
             Aborted?.Invoke(this, args);
         }
 
@@ -233,7 +247,7 @@ namespace QuikGraph.Algorithms
             Contract.Requires(State == ComputationState.NotRunning);
 #endif
 
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 _state = ComputationState.Running;
                 Services.CancelManager.ResetCancel();
@@ -268,7 +282,7 @@ namespace QuikGraph.Algorithms
                 State == ComputationState.Running || State == ComputationState.Aborted);
 #endif
 
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 switch (_state)
                 {

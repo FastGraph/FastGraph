@@ -2,78 +2,113 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
 {
+    /// <summary>
+    /// Base class for all graph algorithm requiring a starting vertex (root).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public abstract class RootedAlgorithmBase<TVertex,TGraph> 
-        : AlgorithmBase<TGraph>
+    public abstract class RootedAlgorithmBase<TVertex, TGraph> : AlgorithmBase<TGraph>
     {
-        private TVertex rootVertex;
-        private bool hasRootVertex;
+        private TVertex _root;
+        private bool _hasRootVertex;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RootedAlgorithmBase{TVertex,TGraph}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
         protected RootedAlgorithmBase(
-            IAlgorithmComponent host,
-            TGraph visitedGraph)
-            :base(host, visitedGraph)
-        {}
-
-        public bool TryGetRootVertex(out TVertex rootVertex)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] TGraph visitedGraph)
+            : base(host, visitedGraph)
         {
-            if (this.hasRootVertex)
+        }
+
+        /// <summary>
+        /// Tries to get the root vertex if set.
+        /// </summary>
+        /// <param name="root">Root vertex if set, otherwise null.</param>
+        /// <returns>True if the root vertex was set, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public bool TryGetRootVertex(out TVertex root)
+        {
+            if (_hasRootVertex)
             {
-                rootVertex = this.rootVertex;
+                root = _root;
                 return true;
             }
-            else
-            {
-                rootVertex = default(TVertex);
-                return false;
-            }
+
+            root = default(TVertex);
+            return false;
         }
 
-        public void SetRootVertex(TVertex rootVertex)
+        /// <summary>
+        /// Sets the root vertex.
+        /// </summary>
+        /// <param name="root">Root vertex.</param>
+        public void SetRootVertex([NotNull] TVertex root)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(rootVertex != null);
+            Contract.Requires(root != null);
 #endif
 
-            bool changed = !Comparison<TVertex>.Equals(this.rootVertex, rootVertex);
-            this.rootVertex = rootVertex;
+            bool changed = !Equals(_root, root);
+            _root = root;
             if (changed)
-                this.OnRootVertexChanged(EventArgs.Empty);
-            this.hasRootVertex = true;
+                OnRootVertexChanged(EventArgs.Empty);
+            _hasRootVertex = true;
         }
 
+        /// <summary>
+        /// Clears the root vertex.
+        /// </summary>
         public void ClearRootVertex()
         {
-            this.rootVertex = default(TVertex);
-            this.hasRootVertex = false;
+            _root = default(TVertex);
+            _hasRootVertex = false;
         }
 
+        /// <summary>
+        /// Fired when the root vertex is changed.
+        /// </summary>
         public event EventHandler RootVertexChanged;
-        protected virtual void OnRootVertexChanged(EventArgs e)
+
+        /// <summary>
+        /// Called on each root vertex change.
+        /// </summary>
+        /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
+        protected virtual void OnRootVertexChanged([NotNull] EventArgs args)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(args != null);
 #endif
 
-            var eh = this.RootVertexChanged;
-            if (eh != null)
-                eh(this, e);
+            RootVertexChanged?.Invoke(this, args);
         }
 
-        public void Compute(TVertex rootVertex)
+        /// <summary>
+        /// Runs the algorithm with the given <paramref name="root"/> vertex.
+        /// </summary>
+        /// <param name="root">Root vertex.</param>
+        public void Compute([NotNull] TVertex root)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(rootVertex != null);
+            Contract.Requires(root != null);
 #endif
 
-            this.SetRootVertex(rootVertex);
-            this.Compute();
+            SetRootVertex(root);
+            Compute();
         }
     }
 }

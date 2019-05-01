@@ -1,74 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QuikGraph.Algorithms
+﻿namespace QuikGraph.Algorithms
 {
+    /// <summary>
+    /// Implementation of several distance relaxers.
+    /// </summary>
     public static class DistanceRelaxers
     {
+        /// <summary>
+        /// Shortest distance relaxer.
+        /// </summary>
         public static readonly IDistanceRelaxer ShortestDistance = new ShortestDistanceRelaxer();
 
-        sealed class ShortestDistanceRelaxer
-            : IDistanceRelaxer
+        private sealed class ShortestDistanceRelaxer : IDistanceRelaxer
         {
-            internal ShortestDistanceRelaxer() { }
+            /// <inheritdoc />
+            public double InitialDistance => double.MaxValue;
 
-            public double InitialDistance
-            {
-                get { return double.MaxValue; }
-            }
-
+            /// <inheritdoc />
             public int Compare(double a, double b)
             {
                 return a.CompareTo(b);
             }
 
+            /// <inheritdoc />
             public double Combine(double distance, double weight)
             {
                 return distance + weight;
             }
         }
 
-        public readonly static IDistanceRelaxer CriticalDistance = new CriticalDistanceRelaxer();
+        /// <summary>
+        /// Critical distance relaxer.
+        /// </summary>
+        public static readonly IDistanceRelaxer CriticalDistance = new CriticalDistanceRelaxer();
 
-        sealed class CriticalDistanceRelaxer :
-            IDistanceRelaxer
+        private sealed class CriticalDistanceRelaxer : IDistanceRelaxer
         {
-            internal CriticalDistanceRelaxer() { }
+            /// <inheritdoc />
+            public double InitialDistance => double.MinValue;
 
-            public double InitialDistance
-            {
-                get { return double.MinValue; }
-            }
-
+            /// <inheritdoc />
             public int Compare(double a, double b)
             {
                 return -a.CompareTo(b);
             }
 
+            /// <inheritdoc />
             public double Combine(double distance, double weight)
             {
                 return distance + weight;
             }
         }
 
-        public readonly static IDistanceRelaxer EdgeShortestDistance = new EdgeDistanceRelaxer();
+        /// <summary>
+        /// Edge shortest distance relaxer.
+        /// </summary>
+        public static readonly IDistanceRelaxer EdgeShortestDistance = new EdgeDistanceRelaxer();
 
-        sealed class EdgeDistanceRelaxer
-            : IDistanceRelaxer
+        private sealed class EdgeDistanceRelaxer : IDistanceRelaxer
         {
+            /// <inheritdoc />
+            public double InitialDistance => 0;
 
-            public double InitialDistance
-            {
-                get { return 0; }
-            }
-
+            /// <inheritdoc />
             public int Compare(double a, double b)
             {
                 return a.CompareTo(b);
             }
 
+            /// <inheritdoc />
             public double Combine(double distance, double weight)
             {
                 return distance + weight;

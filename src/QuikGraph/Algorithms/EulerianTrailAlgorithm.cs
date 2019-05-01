@@ -4,159 +4,187 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
 {
+    /// <summary>
+    /// Algorithm that find Eulerian path in a graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class EulerianTrailAlgorithm<TVertex, TEdge> :
-        RootedAlgorithmBase<TVertex,IMutableVertexAndEdgeListGraph<TVertex, TEdge>>,
-        ITreeBuilderAlgorithm<TVertex,TEdge>
+        RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeListGraph<TVertex, TEdge>>,
+        ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private List<TEdge> circuit;
-        private List<TEdge> temporaryCircuit;
-        private TVertex currentVertex;
-        private List<TEdge> temporaryEdges;
+        [NotNull, ItemNotNull]
+        private readonly List<TEdge> _temporaryCircuit = new List<TEdge>();
 
-        public EulerianTrailAlgorithm(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
-        { }
+        [CanBeNull]
+        private TVertex _currentVertex;
+
+        [NotNull, ItemNotNull]
+        private List<TEdge> _temporaryEdges = new List<TEdge>();
 
         /// <summary>
-        /// Construct an eulerian trail builder
+        /// Initializes a new instance of the <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="host"></param>
-        /// <param name="visitedGraph"></param>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public EulerianTrailAlgorithm(
-            IAlgorithmComponent host,
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
-            :base(host, visitedGraph)
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            : this(null, visitedGraph)
         {
-            this.circuit = new List<TEdge>();
-            this.temporaryCircuit = new List<TEdge>();
-            this.currentVertex = default(TVertex);
-            this.temporaryEdges = new List<TEdge>();
         }
 
-        public List<TEdge> Circuit
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public EulerianTrailAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            : base(host, visitedGraph)
         {
-            get
+            _currentVertex = default(TVertex);
+        }
+
+        /// <summary>
+        /// Circuit.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public List<TEdge> Circuit { get; private set; } = new List<TEdge>();
+
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        private bool NotInCircuit([NotNull] TEdge edge)
+        {
+            return !Circuit.Contains(edge)
+                   && !_temporaryCircuit.Contains(edge);
+        }
+
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        private IEnumerable<TEdge> SelectOutEdgesNotInCircuit([NotNull] TVertex vertex)
+        {
+            return VisitedGraph.OutEdges(vertex).Where(NotInCircuit);
+        }
+
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [CanBeNull]
+        private TEdge SelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex)
+        {
+            IEnumerable<TEdge> edgesNotInCircuit = SelectOutEdgesNotInCircuit(vertex);
+            using (IEnumerator<TEdge> enumerator = edgesNotInCircuit.GetEnumerator())
             {
-                return circuit;
+                if (!enumerator.MoveNext())
+                    return default(TEdge);
+                return enumerator.Current;
             }
         }
 
-        private bool NotInCircuit(TEdge edge)
-        {
-            return !this.circuit.Contains(edge) 
-                && !this.temporaryCircuit.Contains(edge);
-        }
+        /// <inheritdoc />
+        public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private IEnumerable<TEdge> SelectOutEdgesNotInCircuit(TVertex v)
-        {
-            foreach (var edge in VisitedGraph.OutEdges(v))
-                if (this.NotInCircuit(edge))
-                    yield return edge;
-        }
-
-        private TEdge SelectSingleOutEdgeNotInCircuit(TVertex v)
-        {
-            IEnumerable<TEdge> en = this.SelectOutEdgesNotInCircuit(v);
-            IEnumerator<TEdge> eor = en.GetEnumerator();
-            if (!eor.MoveNext())
-                return default(TEdge);
-            else
-                return eor.Current;
-        }
-
-        public event EdgeAction<TVertex,TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge e)
+        private void OnTreeEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(e);
+            TreeEdge?.Invoke(edge);
         }
 
-        public event EdgeAction<TVertex,TEdge> CircuitEdge;
-        private void OnCircuitEdge(TEdge e)
+        /// <summary>
+        /// Fired when an edge is added to the circuit.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> CircuitEdge;
+
+        private void OnCircuitEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.CircuitEdge;
-            if (eh != null)
-                eh(e);
+            CircuitEdge?.Invoke(edge);
         }
 
-        public event EdgeAction<TVertex,TEdge> VisitEdge;
-        private void OnVisitEdge(TEdge e)
+        /// <summary>
+        /// Fired when an edge is visited.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> VisitEdge;
+
+        private void OnVisitEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.VisitEdge;
-            if (eh != null)
-                eh(e);
+            VisitEdge?.Invoke(edge);
         }
 
-        private bool Search(TVertex u)
+        private bool Search([NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(u != null);
+            Contract.Requires(vertex != null);
 #endif
 
-            foreach (var e in SelectOutEdgesNotInCircuit(u))
+            foreach (TEdge edge in SelectOutEdgesNotInCircuit(vertex))
             {
-                OnTreeEdge(e);
-                TVertex v = e.Target;
-                // add edge to temporary path
-                this.temporaryCircuit.Add(e);
-                // e.Target should be equal to CurrentVertex.
-                if (e.Target.Equals(this.currentVertex))
+                OnTreeEdge(edge);
+
+                TVertex target = edge.Target;
+                // Add edge to temporary path
+                _temporaryCircuit.Add(edge);
+
+                // edge.Target should be equal to CurrentVertex.
+                if (edge.Target.Equals(_currentVertex))
                     return true;
 
-                // continue search
-                if (Search(v))
+                // Continue search
+                if (Search(target))
                     return true;
-                else
-                    // remove edge
-                    this.temporaryCircuit.Remove(e);
+
+                // Remove edge
+                _temporaryCircuit.Remove(edge);
             }
 
-            // it's a dead end.
+            // It's a dead end.
             return false;
         }
-
 
         /// <summary>
         /// Looks for a new path to add to the current vertex.
         /// </summary>
-        /// <returns>true if found a new path, false otherwise</returns>
+        /// <returns>True a new path was found, false otherwise.</returns>
         private bool Visit()
         {
-            // find a vertex that needs to be visited
-            foreach (var e in Circuit)
+            // Find a vertex that needs to be visited
+            foreach (TEdge edge in Circuit)
             {
-                TEdge fe = SelectSingleOutEdgeNotInCircuit(e.Source);
-                if (fe != null)
-                {
-                    OnVisitEdge(fe);
-                    this.currentVertex = e.Source;
-                    if (Search(currentVertex))
-                        return true;
-                }
+                TEdge foundEdge = SelectSingleOutEdgeNotInCircuit(edge.Source);
+                if (foundEdge == null)
+                    continue;
+
+                OnVisitEdge(foundEdge);
+                _currentVertex = edge.Source;
+                if (Search(_currentVertex))
+                    return true;
             }
 
             // Could not augment circuit
@@ -164,172 +192,185 @@ namespace QuikGraph.Algorithms
         }
 
         /// <summary>
-        /// Computes the number of eulerian trail in the graph.
+        /// Computes the number of Eulerian trails in the graph.
         /// </summary>
-        /// <param name="g"></param>
-        /// <returns>number of eulerian trails</returns>
-        public static int ComputeEulerianPathCount(IVertexAndEdgeListGraph<TVertex,TEdge> g)
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Number of Eulerian trails.</returns>
+        public static int ComputeEulerianPathCount(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
 #endif
 
-            if (g.EdgeCount < g.VertexCount)
+            if (graph.EdgeCount < graph.VertexCount)
                 return 0;
 
-            int odd = AlgorithmExtensions.OddVertices(g).Count;
+            int odd = graph.OddVertices().Count();
             if (odd == 0)
                 return 1;
-            else if (odd % 2 != 0)
+            if (odd % 2 != 0)
                 return 0;
-            else
-                return odd / 2;
+            return odd / 2;
         }
 
         /// <summary>
-        /// Merges the temporary circuit with the current circuit
+        /// Merges the temporary circuit with the current circuit.
         /// </summary>
-        /// <returns>true if all the graph edges are in the circuit</returns>
+        /// <returns>True if all the graph edges are in the circuit.</returns>
         private bool CircuitAugmentation()
         {
-            List<TEdge> newC = new List<TEdge>(this.circuit.Count + this.temporaryCircuit.Count);
+            var newCircuit = new List<TEdge>(Circuit.Count + _temporaryCircuit.Count);
             int i, j;
 
-            // follow C until w is found
-            for (i = 0; i < this.Circuit.Count; ++i)
+            // Follow C until w is found
+            for (i = 0; i < Circuit.Count; ++i)
             {
-                TEdge e = this.Circuit[i];
-                if (e.Source.Equals(currentVertex))
+                TEdge edge = Circuit[i];
+                if (edge.Source.Equals(_currentVertex))
                     break;
-                newC.Add(e);
+                newCircuit.Add(edge);
             }
 
-            // follow D until w is found again
-            for (j = 0; j < this.temporaryCircuit.Count; ++j)
+            // Follow D until W is found again
+            for (j = 0; j < _temporaryCircuit.Count; ++j)
             {
-                TEdge e = this.temporaryCircuit[j];
-                newC.Add(e);
-                OnCircuitEdge(e);
-                if (e.Target.Equals(this.currentVertex))
+                TEdge edge = _temporaryCircuit[j];
+                newCircuit.Add(edge);
+                OnCircuitEdge(edge);
+                if (edge.Target.Equals(_currentVertex))
                     break;
             }
-            this.temporaryCircuit.Clear();
+            _temporaryCircuit.Clear();
 
-            // continue C
+            // Continue C
             for (; i < Circuit.Count; ++i)
             {
-                TEdge e = this.Circuit[i];
-                newC.Add(e);
+                TEdge edge = Circuit[i];
+                newCircuit.Add(edge);
             }
 
-            // set as new circuit
-            circuit = newC;
+            // Set as new circuit
+            Circuit = newCircuit;
 
-            // check if contains all edges
-            if (this.circuit.Count == this.VisitedGraph.EdgeCount)
+            // Check if contains all edges
+            if (Circuit.Count == VisitedGraph.EdgeCount)
                 return true;
 
             return false;
         }
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (this.VisitedGraph.VertexCount == 0)
+            if (VisitedGraph.VertexCount == 0)
                 return;
 
-            TVertex rootVertex;
-            if (!this.TryGetRootVertex(out rootVertex))
-                rootVertex = Enumerable.First(this.VisitedGraph.Vertices);
+            if (!TryGetRootVertex(out TVertex rootVertex))
+                rootVertex = VisitedGraph.Vertices.First();
 
-            this.currentVertex = rootVertex;
-            // start search
-            Search(this.currentVertex);
+            _currentVertex = rootVertex;
+
+            // Start search
+            // ReSharper disable once AssignNullToNotNullAttribute, Justification: Found vertex cannot be null
+            Search(_currentVertex);
             if (CircuitAugmentation())
-                return; // circuit is found
+                return; // Circuit is found
 
             do
             {
                 if (!Visit())
-                    break; // visit edges and build path
+                    break; // Visit edges and build path
                 if (CircuitAugmentation())
-                    break; // circuit is found
+                    break; // Circuit is found
             } while (true);
         }
+
+        #endregion
 
         /// <summary>
         /// Adds temporary edges to the graph to make all vertex even.
         /// </summary>
-        /// <param name="edgeFactory"></param>
-        /// <returns></returns>
-        public List<TEdge> AddTemporaryEdges(EdgeFactory<TVertex,TEdge> edgeFactory)
+        /// <param name="edgeFactory">Edge factory method.</param>
+        /// <returns>Temporary edges list.</returns>
+        [NotNull, ItemNotNull]
+        public List<TEdge> AddTemporaryEdges([NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-            // first gather odd edges.
-            var oddVertices = AlgorithmExtensions.OddVertices(this.VisitedGraph);
+            // First gather odd edges
+            var oddVertices = VisitedGraph.OddVertices().ToList();
 
-            // check that there are an even number of them
+            // Check that there are an even number of them
             if (oddVertices.Count % 2 != 0)
-                throw new Exception("number of odd vertices in not even!");
+                throw new InvalidOperationException("Number of odd vertices in not even!");
 
-            // add temporary edges to create even edges:
-            this.temporaryEdges = new List<TEdge>();
+            // Add temporary edges to create even edges
+            _temporaryEdges = new List<TEdge>();
 
-            bool found, foundbe, foundadjacent;
             while (oddVertices.Count > 0)
             {
                 TVertex u = oddVertices[0];
-                // find adjacent odd vertex.
-                found = false;
-                foundadjacent = false;
-                foreach (var e in this.VisitedGraph.OutEdges(u))
+                // Find adjacent odd vertex
+                bool found = false;
+                bool foundAdjacent = false;
+                foreach (TEdge edge in VisitedGraph.OutEdges(u))
                 {
-                    TVertex v = e.Target;
+                    TVertex v = edge.Target;
                     if (!v.Equals(u) && oddVertices.Contains(v))
                     {
-                        foundadjacent = true;
-                        // check that v does not have an out-edge towards u
-                        foundbe = false;
-                        foreach (var be in this.VisitedGraph.OutEdges(v))
+                        foundAdjacent = true;
+                        // Check that v does not have an out-edge towards u
+                        bool foundEdge = false;
+                        foreach (TEdge be in VisitedGraph.OutEdges(v))
                         {
                             if (be.Target.Equals(u))
                             {
-                                foundbe = true;
+                                foundEdge = true;
                                 break;
                             }
                         }
-                        if (foundbe)
+
+                        if (foundEdge)
                             continue;
-                        // add temporary edge
+
+                        // Add temporary edge
                         TEdge tempEdge = edgeFactory(v, u);
-                        if (!this.VisitedGraph.AddEdge(tempEdge))
+                        if (!VisitedGraph.AddEdge(tempEdge))
                             throw new InvalidOperationException();
-                        // add to collection
-                        temporaryEdges.Add(tempEdge);
-                        // remove u,v from oddVertices
+
+                        // Add to collection
+                        _temporaryEdges.Add(tempEdge);
+
+                        // Remove u,v from oddVertices
                         oddVertices.Remove(u);
                         oddVertices.Remove(v);
-                        // set u to null
+
+                        // Set u to null
                         found = true;
                         break;
                     }
                 }
 
-                if (!foundadjacent)
+                if (!foundAdjacent)
                 {
-                    // pick another vertex
+                    // Pick another vertex
                     if (oddVertices.Count < 2)
-                        throw new Exception("Eulerian trail failure");
+                        throw new InvalidOperationException("Eulerian trail failure.");
                     TVertex v = oddVertices[1];
                     TEdge tempEdge = edgeFactory(u, v);
-                    if (!this.VisitedGraph.AddEdge(tempEdge))
+                    if (!VisitedGraph.AddEdge(tempEdge))
                         throw new InvalidOperationException();
-                    // add to collection
-                    temporaryEdges.Add(tempEdge);
-                    // remove u,v from oddVertices
+
+                    // Add to temporary edges
+                    _temporaryEdges.Add(tempEdge);
+
+                    // Remove u,v from oddVertices
                     oddVertices.Remove(u);
                     oddVertices.Remove(v);
-                    // set u to null
-                    found = true;
 
+                    // Set u to null
+                    found = true;
                 }
 
                 if (!found)
@@ -338,63 +379,63 @@ namespace QuikGraph.Algorithms
                     oddVertices.Add(u);
                 }
             }
-            return this.temporaryEdges;
+
+            return _temporaryEdges;
         }
 
         /// <summary>
-        /// Removes temporary edges
+        /// Removes temporary edges.
         /// </summary>
         public void RemoveTemporaryEdges()
         {
-            // remove from graph
-            foreach (var e in temporaryEdges)
-                this.VisitedGraph.RemoveEdge(e);
-            this.temporaryEdges.Clear();
+            // Remove from graph
+            foreach (TEdge edge in _temporaryEdges)
+                VisitedGraph.RemoveEdge(edge);
+            _temporaryEdges.Clear();
         }
 
         /// <summary>
-        /// Computes the set of eulerian trails that traverse the edge set.
+        /// Computes the set of Eulerian trails that traverse the edge set.
         /// </summary>
         /// <remarks>
-        /// This method returns a set of disjoint eulerian trails. This set
+        /// This method returns a set of disjoint Eulerian trails. This set
         /// of trails spans the entire set of edges.
         /// </remarks>
-        /// <returns>Eulerian trail set</returns>
-        public ICollection<ICollection<TEdge>> Trails()
+        /// <returns>Eulerian trail set.</returns>
+        [NotNull, ItemNotNull]
+        public IEnumerable<ICollection<TEdge>> Trails()
         {
-            List<ICollection<TEdge>> trails = new List<ICollection<TEdge>>();
-
-            List<TEdge> trail = new List<TEdge>();
-            foreach (var e in this.Circuit)
+            var trail = new List<TEdge>();
+            foreach (TEdge edge in Circuit)
             {
-                if (this.temporaryEdges.Contains(e))
+                if (_temporaryEdges.Contains(edge))
                 {
-                    // store previous trail and start new one.
+                    // Store previous trail and start new one
                     if (trail.Count != 0)
-                        trails.Add(trail);
-                    // start new trail
+                        yield return trail;
+
+                    // Start new trail
                     trail = new List<TEdge>();
                 }
                 else
-                    trail.Add(e);
+                    trail.Add(edge);
             }
-            if (trail.Count != 0)
-                trails.Add(trail);
 
-            return trails;
+            if (trail.Count != 0)
+                yield return trail;
         }
 
         /// <summary>
-        /// Computes a set of eulerian trail, starting at <paramref name="s"/>
+        /// Computes a set of Eulerian trails, starting at <paramref name="startingVertex"/>
         /// that spans the entire graph.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method computes a set of eulerian trail starting at <paramref name="s"/>
-        /// that spans the entire graph.The algorithm outline is as follows:
+        /// This method computes a set of Eulerian trails starting at <paramref name="startingVertex"/>
+        /// that spans the entire graph. The algorithm outline is as follows:
         /// </para>
         /// <para>
-        /// The algorithms iterates throught the Eulerian circuit of the augmented
+        /// The algorithms iterates through the Eulerian circuit of the augmented
         /// graph (the augmented graph is the graph with additional edges to make
         /// the number of odd vertices even).
         /// </para>
@@ -404,95 +445,92 @@ namespace QuikGraph.Algorithms
         /// <para>
         /// If the current edge is temporary, the current trail is finished and
         /// added to the trail collection. The shortest path between the 
-        /// start vertex <paramref name="s"/> and the target vertex of the
+        /// start vertex <paramref name="startingVertex"/> and the target vertex of the
         /// temporary edge is then used to start the new trail. This shortest
-        /// path is computed using the BreadthFirstSearchAlgorithm.
+        /// path is computed using the <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/>.
         /// </para>
         /// </remarks>
-        /// <param name="s">start vertex</param>
-        /// <returns>eulerian trail set, all starting at s</returns>
-        /// <exception cref="ArgumentNullException">s is a null reference.</exception>
-        /// <exception cref="Exception">Eulerian trail not computed yet.</exception>
-        public ICollection<ICollection<TEdge>> Trails(TVertex s)
+        /// <param name="startingVertex">Starting vertex.</param>
+        /// <returns>Eulerian trail set, all starting at <paramref name="startingVertex"/>.</returns>
+        /// <exception cref="InvalidOperationException">Eulerian trail not computed yet.</exception>
+        public IEnumerable<ICollection<TEdge>> Trails([NotNull] TVertex startingVertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(s != null);
+            Contract.Requires(startingVertex != null);
 #endif
 
-            if (this.Circuit.Count == 0)
-                throw new InvalidOperationException("Circuit is empty");
+            if (Circuit.Count == 0)
+                throw new InvalidOperationException("Circuit is empty.");
 
-            // find the first edge in the circuit.
-            int i = 0;
-            for (i = 0; i < this.Circuit.Count; ++i)
+            // Find the first edge in the circuit.
+            int i;
+            for (i = 0; i < Circuit.Count; ++i)
             {
-                TEdge e = this.Circuit[i];
-                if (this.temporaryEdges.Contains(e))
+                TEdge edge = Circuit[i];
+                if (_temporaryEdges.Contains(edge))
                     continue;
-                if (e.Source.Equals(s))
+                if (edge.Source.Equals(startingVertex))
                     break;
             }
-            if (i == this.Circuit.Count)
-                throw new Exception("Did not find vertex in eulerian trail?");
 
-            // create collections
-            List<ICollection<TEdge>> trails = new List<ICollection<TEdge>>();
-            List<TEdge> trail = new List<TEdge>();
-            BreadthFirstSearchAlgorithm<TVertex,TEdge> bfs =
-                new BreadthFirstSearchAlgorithm<TVertex,TEdge>(VisitedGraph);
-            VertexPredecessorRecorderObserver<TVertex,TEdge> vis = 
-                new VertexPredecessorRecorderObserver<TVertex,TEdge>();
-            vis.Attach(bfs);
-            bfs.Compute(s);
+            if (i == Circuit.Count)
+                throw new InvalidOperationException("Did not find vertex in Eulerian trail?");
 
-            // go throught the edges and build the predecessor table.
-            int start = i;
-            for (; i < this.Circuit.Count; ++i)
+            // Create collections
+            var trail = new List<TEdge>();
+            var bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(VisitedGraph);
+            var vis = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
+            using (vis.Attach(bfs))
             {
-                TEdge e = this.Circuit[i];
-                if (this.temporaryEdges.Contains(e))
+                bfs.Compute(startingVertex);
+
+                // Go through the edges and build the predecessor table
+                int start = i;
+                for (; i < Circuit.Count; ++i)
                 {
-                    // store previous trail and start new one.
-                    if (trail.Count != 0)
-                        trails.Add(trail);
-                    // start new trail
-                    // take the shortest path from the start vertex to
-                    // the target vertex
-                    IEnumerable<TEdge> path;
-                    if (!vis.TryGetPath(e.Target, out path))
-                        throw new InvalidOperationException();
-                    trail = new List<TEdge>(path);
+                    TEdge edge = Circuit[i];
+                    if (_temporaryEdges.Contains(edge))
+                    {
+                        // Store previous trail and start new one
+                        if (trail.Count != 0)
+                            yield return trail;
+
+                        // Start new trail
+                        // Take the shortest path from the start vertex to
+                        // the target vertex
+                        if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge> path))
+                            throw new InvalidOperationException();
+                        trail = new List<TEdge>(path);
+                    }
+                    else
+                        trail.Add(edge);
                 }
-                else
-                    trail.Add(e);
+
+                // Starting again on the circuit
+                for (i = 0; i < start; ++i)
+                {
+                    TEdge edge = Circuit[i];
+                    if (_temporaryEdges.Contains(edge))
+                    {
+                        // Store previous trail and start new one
+                        if (trail.Count != 0)
+                            yield return trail;
+
+                        // Start new trail
+                        // Take the shortest path from the start vertex to
+                        // the target vertex
+                        if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge> path))
+                            throw new InvalidOperationException();
+                        trail = new List<TEdge>(path);
+                    }
+                    else
+                        trail.Add(edge);
+                }
             }
 
-            // starting again on the circuit
-            for (i = 0; i < start; ++i)
-            {
-                TEdge e = this.Circuit[i];
-                if (this.temporaryEdges.Contains(e))
-                {
-                    // store previous trail and start new one.
-                    if (trail.Count != 0)
-                        trails.Add(trail);
-                    // start new trail
-                    // take the shortest path from the start vertex to
-                    // the target vertex
-                    IEnumerable<TEdge> path;
-                    if (!vis.TryGetPath(e.Target, out path))
-                        throw new InvalidOperationException();
-                    trail = new List<TEdge>(path);
-                }
-                else
-                    trail.Add(e);
-            }
-
-            // adding the last element
+            // Adding the last element
             if (trail.Count != 0)
-                trails.Add(trail);
-
-            return trails;
+                yield return trail;
         }
     }
 }

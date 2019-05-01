@@ -52,7 +52,7 @@ namespace QuikGraph.Algorithms.Search
             // little shortcut
             if (root.Equals(goal))
             {
-                this.OnGoalReached();
+                this.OnTargetReached();
                 return; // found it
             }
 
@@ -78,7 +78,7 @@ namespace QuikGraph.Algorithms.Search
                 // (4) if node n is a goal node, terminate with success
                 if (n.Equals(goal))
                 {
-                    this.OnGoalReached();
+                    this.OnTargetReached();
                     return;
                 }
 
@@ -87,7 +87,7 @@ namespace QuikGraph.Algorithms.Search
                 // compute their cost and delete node n
                 foreach (var edge in g.OutEdges(n))
                 {
-                    if (EdgeExtensions.IsSelfEdge<TVertex, TEdge>(edge)) 
+                    if (EdgeExtensions.IsSelfEdge(edge)) 
                         continue; // skip self-edges
 
                     GraphColor edgeColor;

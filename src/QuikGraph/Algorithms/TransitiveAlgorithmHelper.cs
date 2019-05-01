@@ -1,54 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms
 {
-    internal class TransitiveAlgorithmHelper<TVertex, TEdge> where TEdge : IEdge<TVertex>
+    /// <summary>
+    /// Helper for transitive algorithms.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    internal class TransitiveAlgorithmHelper<TVertex, TEdge>
+        where TEdge : IEdge<TVertex>
     {
-        internal TransitiveAlgorithmHelper(
-        BidirectionalGraph<TVertex, TEdge> initialGraph
-        )
+        [NotNull]
+        private readonly BidirectionalGraph<TVertex, TEdge> _graph;
+
+        internal TransitiveAlgorithmHelper([NotNull] BidirectionalGraph<TVertex, TEdge> initialGraph)
         {
             _graph = initialGraph;
         }
 
-        readonly BidirectionalGraph<TVertex, TEdge> _graph;
-
-        public void InternalCompute(Action<BidirectionalGraph<TVertex, TEdge>, TVertex, TVertex, TEdge> action)
+        /// <summary>
+        /// Runs through the graph and calls <paramref name="action"/>
+        /// for each couple of indirect ancestor vertex of a given vertex.
+        /// </summary>
+        public void InternalCompute(
+            [NotNull, InstantHandle] Action<BidirectionalGraph<TVertex, TEdge>, TVertex, TVertex, TEdge> action)
         {
 
-            // Iterate in topo order, track indirect ancestors and remove edges from them to the visited vertex
-            var ancestorsOfVertices = new Dictionary<TVertex, HashSet<TVertex>>();
-            foreach (var vertexId in _graph.TopologicalSort().ToList()) //making sure we do not mess enumerator or smthn
+            // Iterate in topological order, track indirect ancestors and remove edges from them to the visited vertex
+            var verticesAncestors = new Dictionary<TVertex, HashSet<TVertex>>();
+            foreach (TVertex vertexId in _graph.TopologicalSort().ToList()) // Making sure we do not mess enumerator or something
             {
-                //TODO think of some heuristic value here. Like (verticesCount / 2) or (verticesCount / 3)
-                var thisVertexPredecessors = new List<TVertex>();
-                var thisVertexAncestors = new HashSet<TVertex>();
-                ancestorsOfVertices[vertexId] = thisVertexAncestors;
+                // TODO think of some heuristic value here. Like (verticesCount / 2) or (verticesCount / 3)
+                var vertexPredecessors = new List<TVertex>();
+                var vertexAncestors = new HashSet<TVertex>();
+                verticesAncestors[vertexId] = vertexAncestors;
 
                 // Get indirect ancestors
-                foreach (var inEdge in _graph.InEdges(vertexId))
+                foreach (TEdge inEdge in _graph.InEdges(vertexId))
                 {
-                    var predecessor = inEdge.Source;
-                    thisVertexPredecessors.Add(predecessor);
+                    TVertex predecessor = inEdge.Source;
+                    vertexPredecessors.Add(predecessor);
 
-                    // Add all the ancestors of the predeccessors
-                    thisVertexAncestors.UnionWith(ancestorsOfVertices[predecessor]);
+                    // Add all the ancestors of the predecessors
+                    vertexAncestors.UnionWith(verticesAncestors[predecessor]);
                 }
 
                 // Add indirect edges
-                foreach (var indirectAncestor in thisVertexAncestors)
+                foreach (TVertex indirectAncestor in vertexAncestors)
                 {
-                    TEdge foundIndirectEdge;
-                    var exists = _graph.TryGetEdge(indirectAncestor, vertexId, out foundIndirectEdge);
+                    _graph.TryGetEdge(
+                        indirectAncestor, 
+                        vertexId, 
+                        out TEdge foundIndirectEdge);
+
                     action(_graph, indirectAncestor, vertexId, foundIndirectEdge);
                 }
 
                 // Add predecessors to ancestors list
-                thisVertexAncestors.UnionWith(thisVertexPredecessors);
+                vertexAncestors.UnionWith(vertexPredecessors);
             }
         }
-
     }
 }

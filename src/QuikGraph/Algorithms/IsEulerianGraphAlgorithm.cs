@@ -1,22 +1,45 @@
-﻿using System.Linq;
+﻿
+using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.ConnectedComponents;
 
 namespace QuikGraph.Algorithms
 {
-    public enum ComponentWithEdges { NoComponent, OneComponent, ManyComponents }
-
-    public class IsEulerianGraphAlgorithm<TVertex, TEdge> where TEdge : IUndirectedEdge<TVertex>
+    /// <summary>
+    /// Algorithm that checks if a graph is Eulerian.
+    /// (has a path use all edges one and only one time).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public class IsEulerianGraphAlgorithm<TVertex, TEdge>
+        where TEdge : IUndirectedEdge<TVertex>
     {
-        private UndirectedGraph<TVertex, UndirectedEdge<TVertex>> graph;
+        [NotNull]
+        private readonly UndirectedGraph<TVertex, TEdge> _graph;
 
-        public IsEulerianGraphAlgorithm(UndirectedGraph<TVertex, UndirectedEdge<TVertex>> graph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsEulerianGraphAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to check.</param>
+        public IsEulerianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
         {
-            var newGraph = new UndirectedGraph<TVertex, UndirectedEdge<TVertex>>(false, graph.EdgeEqualityComparer);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+#endif
+
+            // Create new graph without parallel edges
+            var newGraph = new UndirectedGraph<TVertex, TEdge>(
+                false,
+                graph.EdgeEqualityComparer);
             newGraph.AddVertexRange(graph.Vertices);
             newGraph.AddEdgeRange(graph.Edges);
-            EdgePredicate<TVertex, UndirectedEdge<TVertex>> isLoop = e => e.Source.Equals(e.Target);
-            newGraph.RemoveEdgeIf(isLoop);
-            this.graph = newGraph;
+            newGraph.RemoveEdgeIf(edge => edge.IsSelfEdge());
+
+            _graph = newGraph;
         }
 
         private struct TrueIndexes
@@ -31,11 +54,15 @@ namespace QuikGraph.Algorithms
             public int? SecondIndex { get; }
         }
 
-        private TrueIndexes FirstAndSecondIndexOfTrue(bool[] data)
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        private static TrueIndexes FirstAndSecondIndexOfTrue([NotNull] bool[] data)
         {
             // If no true elements returns (null, null)
             // If only one true element, returns (indexOfTrue, null)
-            int? firstIndex = null, secondIndex = null;
+            int? firstIndex = null;
             for (int i = 0; i < data.Length; i++)
             {
                 if (data[i])
@@ -50,18 +77,27 @@ namespace QuikGraph.Algorithms
                     }
                 }
             }
-            return new TrueIndexes(firstIndex, secondIndex);
+
+            return new TrueIndexes(firstIndex, null);
         }
 
+        /// <summary>
+        /// Gets the component state of the current graph.
+        /// </summary>
+        /// <returns><see cref="ComponentWithEdges"/> state.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public ComponentWithEdges CheckComponentsWithEdges()
         {
-            var componentsAlgo = new ConnectedComponentsAlgorithm<TVertex, UndirectedEdge<TVertex>>(this.graph);
-            componentsAlgo.Compute();
+            var componentsAlgorithm = new ConnectedComponentsAlgorithm<TVertex, TEdge>(_graph);
+            componentsAlgorithm.Compute();
 
-            bool[] hasEdgesInComponent = new bool[componentsAlgo.ComponentCount];
-            foreach (var verticeAndComponent in componentsAlgo.Components)
+            bool[] hasEdgesInComponent = new bool[componentsAlgorithm.ComponentCount];
+            foreach (KeyValuePair<TVertex, int> verticesAndComponent in componentsAlgorithm.Components)
             {
-                hasEdgesInComponent[verticeAndComponent.Value] = !graph.IsAdjacentEdgesEmpty(verticeAndComponent.Key);
+                hasEdgesInComponent[verticesAndComponent.Value] = !_graph.IsAdjacentEdgesEmpty(verticesAndComponent.Key);
             }
 
             TrueIndexes trueIndexes = FirstAndSecondIndexOfTrue(hasEdgesInComponent);
@@ -74,23 +110,60 @@ namespace QuikGraph.Algorithms
             return ComponentWithEdges.OneComponent;
         }
 
-        public bool SatisfiesEulerianCondition(TVertex vertex)
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        private bool SatisfiesEulerianCondition([NotNull] TVertex vertex)
         {
-            return graph.AdjacentDegree(vertex) % 2 == 0;
+            return _graph.AdjacentDegree(vertex) % 2 == 0;
         }
 
+        /// <summary>
+        /// Returns true if the graph is Eulerian, otherwise false.
+        /// </summary>
+        /// <returns>True if the graph is Eulerian, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public bool IsEulerian()
         {
             switch (CheckComponentsWithEdges())
             {
                 case ComponentWithEdges.OneComponent:
-                    return graph.Vertices.All<TVertex>(SatisfiesEulerianCondition);
+                    return _graph.Vertices.All(SatisfiesEulerianCondition);
                 case ComponentWithEdges.NoComponent:
-                    return graph.VertexCount == 1;
-                case ComponentWithEdges.ManyComponents:
+                    return _graph.VertexCount == 1;
+                // Many components
                 default:
                     return false;
             }
+        }
+    }
+
+    /// <summary>
+    /// Algorithm that checks if a graph is Eulerian.
+    /// (has a path use all edges one and only one time).
+    /// </summary>
+    public static class IsEulerianGraphAlgorithm
+    {
+        /// <summary>
+        /// Returns true if the <paramref name="graph"/> is Eulerian, otherwise false.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to check.</param>
+        /// <returns>True if the <paramref name="graph"/> is Eulerian, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static bool IsEulerian<TVertex, TEdge>(
+            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            where TEdge : IUndirectedEdge<TVertex>
+        {
+            return new IsEulerianGraphAlgorithm<TVertex, TEdge>(graph).IsEulerian();
         }
     }
 }
