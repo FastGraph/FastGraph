@@ -1,73 +1,107 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Algorithms.TSP
 {
+    /// <summary>
+    /// Algorithm to answer the TSP (Travelling Salesman Problem), meaning finding a path that best link
+    /// every vertices.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
+    // ReSharper disable once InconsistentNaming
     public class TSP<TVertex, TEdge, TGraph> : ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>
-            , ITreeBuilderAlgorithm<TVertex, TEdge>
-        where TGraph : BidirectionalGraph<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>
+        where TGraph : BidirectionalGraph<TVertex, TEdge>
     {
-        private TasksManager<TVertex, TEdge> taskManager = new TasksManager<TVertex, TEdge>();
+        [NotNull]
+        private readonly TasksManager<TVertex, TEdge> _taskManager = new TasksManager<TVertex, TEdge>();
 
-        public BidirectionalGraph<TVertex, TEdge> ResultPath;
-        public double BestCost = Double.PositiveInfinity;
+        /// <summary>
+        /// Shortest path found, otherwise null.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [CanBeNull]
+        public BidirectionalGraph<TVertex, TEdge> ResultPath { get; private set; }
 
-        public TSP(TGraph visitedGraph, Func<TEdge, double> weights)
-            : base(null, visitedGraph, weights, DistanceRelaxers.ShortestDistance)
+        /// <summary>
+        /// Best cost found to answer the problem.
+        /// </summary>
+        public double BestCost { get; private set; } = double.PositiveInfinity;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TSP{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        public TSP(
+            [NotNull] TGraph visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : base(null, visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
-            BidirectionalGraph<TVertex, TEdge> path = new BidirectionalGraph<TVertex, TEdge>();
+            var path = new BidirectionalGraph<TVertex, TEdge>();
             path.AddVertexRange(visitedGraph.Vertices);
-            taskManager.AddTask(new Task<TVertex, TEdge>(visitedGraph, buildWeightsDict(visitedGraph, weights), path, 0));
+
+            _taskManager.AddTask(
+                new Task<TVertex, TEdge>(
+                    visitedGraph,
+                    BuildWeightsDictionary(visitedGraph, edgeWeights),
+                    path,
+                    0));
         }
 
-        private Dictionary<EquatableEdge<TVertex>, double> buildWeightsDict(TGraph visitedGraph, Func<TEdge, double> weights)
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
+        [NotNull]
+        private static Dictionary<EquatableEdge<TVertex>, double> BuildWeightsDictionary(
+            [NotNull] TGraph visitedGraph,
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights)
         {
-            var dict = new Dictionary<EquatableEdge<TVertex>, double>();
-            foreach (var edge in visitedGraph.Edges) {
-                dict[edge] = weights(edge);
+            var weights = new Dictionary<EquatableEdge<TVertex>, double>();
+            foreach (TEdge edge in visitedGraph.Edges)
+            {
+                weights[edge] = edgeWeights(edge);
             }
-            return dict;
-        }
-        protected override void Initialize()
-        {
-            base.Initialize();
+
+            return weights;
         }
 
-        protected override void Clean()
-        {
-            base.Clean();
-        }
+        #region AlgorithmBase<TGraph>
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            while(taskManager.HasTasks())
+            while (_taskManager.HasTasks())
             {
                 if (State == ComputationState.Aborted)
-                {
                     return;
-                }
-                Task<TVertex, TEdge> task = taskManager.GetTask();
+
+                Task<TVertex, TEdge> task = _taskManager.GetTask();
+
                 if (task.IsResultReady())
                 {
                     BestCost = task.MinCost;
                     ResultPath = task.Path;
                     return;
                 }
-                else
+
+                if (task.Split(
+                    out Task<TVertex, TEdge> task1,
+                    out Task<TVertex, TEdge> task2))
                 {
-                    Task<TVertex, TEdge> task1;
-                    Task<TVertex, TEdge> task2;
-                    if (task.Split(out task1, out task2))
-                    {
-                        taskManager.AddTask(task1);
-                        taskManager.AddTask(task2);
-                    }
+                    _taskManager.AddTask(task1);
+                    _taskManager.AddTask(task2);
                 }
             }
-            
         }
 
+        #endregion
     }
 }

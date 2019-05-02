@@ -2,85 +2,123 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.MinimumSpanningTree
 {
+    /// <summary>
+    /// Kruskal minimum spanning tree algorithm implementation.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class KruskalMinimumSpanningTreeAlgorithm<TVertex, TEdge> 
-        : AlgorithmBase<IUndirectedGraph<TVertex,TEdge>>
+    public sealed class KruskalMinimumSpanningTreeAlgorithm<TVertex, TEdge>
+        : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        readonly Func<TEdge, double> edgeWeights;
+        [NotNull]
+        private readonly Func<TEdge, double> _edgeWeights;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KruskalMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public KruskalMinimumSpanningTreeAlgorithm(
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights
-            )
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
             : this(null, visitedGraph, edgeWeights)
-        {}
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KruskalMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public KruskalMinimumSpanningTreeAlgorithm(
-            IAlgorithmComponent host,
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights
-            )
-            :base(host, visitedGraph)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
 #endif
 
-            this.edgeWeights = edgeWeights;
+            _edgeWeights = edgeWeights;
         }
 
+        /// <summary>
+        /// Fired when an edge is going to be analyzed.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
-        private void OnExamineEdge(TEdge edge)
+
+        private void OnExamineEdge([NotNull] TEdge edge)
         {
-            var eh = this.ExamineEdge;
-            if (eh != null)
-                eh(edge);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ExamineEdge?.Invoke(edge);
         }
 
+        #region ITreeBuilderAlgorithm<TVertex,TEdge>
+
+        /// <inheritdoc />
         public event EdgeAction<TVertex, TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge edge)
+
+        private void OnTreeEdge([NotNull] TEdge edge)
         {
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(edge);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            TreeEdge?.Invoke(edge);
         }
 
+        #endregion
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var cancelManager = this.Services.CancelManager;
-            var ds = new ForestDisjointSet<TVertex>(this.VisitedGraph.VertexCount);
-            foreach (var v in this.VisitedGraph.Vertices)
-                ds.MakeSet(v);
+            ICancelManager cancelManager = Services.CancelManager;
+
+            var sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+                sets.MakeSet(vertex);
 
             if (cancelManager.IsCancelling)
                 return;
 
-            var queue = new BinaryQueue<TEdge, double>(this.edgeWeights);
-            foreach (var e in this.VisitedGraph.Edges)
-                queue.Enqueue(e);
+            var queue = new BinaryQueue<TEdge, double>(_edgeWeights);
+            foreach (TEdge edge in VisitedGraph.Edges)
+                queue.Enqueue(edge);
 
             if (cancelManager.IsCancelling)
                 return;
 
             while (queue.Count > 0)
             {
-                var e = queue.Dequeue();
-                this.OnExamineEdge(e);
-                if (!ds.AreInSameSet(e.Source, e.Target))
+                TEdge edge = queue.Dequeue();
+                OnExamineEdge(edge);
+
+                if (!sets.AreInSameSet(edge.Source, edge.Target))
                 {
-                    this.OnTreeEdge(e);
-                    ds.Union(e.Source, e.Target);
+                    OnTreeEdge(edge);
+                    sets.Union(edge.Source, edge.Target);
                 }
             }
         }
+
+        #endregion
     }
 }

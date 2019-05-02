@@ -1,123 +1,171 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.MinimumSpanningTree
 {
+    /// <summary>
+    /// Prim minimum spanning tree algorithm implementation.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class PrimMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
-        , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
+            , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        readonly Func<TEdge, double> edgeWeights;
+        [NotNull]
+        private readonly Func<TEdge, double> _edgeWeights;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PrimMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public PrimMinimumSpanningTreeAlgorithm(
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights
-            )
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
             : this(null, visitedGraph, edgeWeights)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PrimMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public PrimMinimumSpanningTreeAlgorithm(
-            IAlgorithmComponent host,
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights
-            )
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
             : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
 #endif
 
-            this.edgeWeights = edgeWeights;
+            _edgeWeights = edgeWeights;
         }
 
+        /// <summary>
+        /// Fired when an edge is going to be analyzed.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
-        private void OnExamineEdge(TEdge edge)
+
+        private void OnExamineEdge([NotNull] TEdge edge)
         {
-            var eh = this.ExamineEdge;
-            if (eh != null)
-                eh(edge);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ExamineEdge?.Invoke(edge);
         }
 
+        #region ITreeBuilderAlgorithm<TVertex,TEdge>
+
+        /// <inheritdoc />
         public event EdgeAction<TVertex, TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge edge)
+
+        private void OnTreeEdge([NotNull] TEdge edge)
         {
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(edge);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            TreeEdge?.Invoke(edge);
         }
 
+        #endregion
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var dic = new Dictionary<TVertex, HashSet<TEdge>>();
-            var cancelManager = this.Services.CancelManager;
-            var visetedVert = new HashSet<TVertex>();
+            ICancelManager cancelManager = Services.CancelManager;
+
+            var verticesEdges = new Dictionary<TVertex, HashSet<TEdge>>();
+            var visitedVertices = new HashSet<TVertex>();
             var edges = new HashSet<TEdge>();
-            var queue = new BinaryQueue<TEdge, double>(this.edgeWeights);
-            var ds = new ForestDisjointSet<TVertex>(this.VisitedGraph.VertexCount);
-            foreach (var v in this.VisitedGraph.Vertices)
+            var queue = new BinaryQueue<TEdge, double>(_edgeWeights);
+            var sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (visetedVert.Count == 0)
+                if (visitedVertices.Count == 0)
                 {
-                    visetedVert.Add(v);
+                    visitedVertices.Add(vertex);
                 }
-                ds.MakeSet(v);
-                dic.Add(v, new HashSet<TEdge>());
+
+                sets.MakeSet(vertex);
+                verticesEdges.Add(vertex, new HashSet<TEdge>());
             }
-            foreach (var e in this.VisitedGraph.Edges)
+
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                dic[e.Source].Add(e);
-                dic[e.Target].Add(e);
+                verticesEdges[edge.Source].Add(edge);
+                verticesEdges[edge.Target].Add(edge);
             }
 
             if (cancelManager.IsCancelling)
                 return;
-            var enumerator = visetedVert.GetEnumerator();
-            enumerator.MoveNext();
-            var lastVert = enumerator.Current;
-            foreach (var edge in dic[lastVert])
+
+            TVertex lastVertex = visitedVertices.First();
+            foreach (TEdge edge in verticesEdges[lastVertex])
+            {
                 if (!edges.Contains(edge))
                 {
                     edges.Add(edge);
                     queue.Enqueue(edge);
                 }
+            }
+
             if (cancelManager.IsCancelling)
                 return;
 
-            while (edges.Count > 0 && visetedVert.Count < VisitedGraph.VertexCount)
+            while (edges.Count > 0 && visitedVertices.Count < VisitedGraph.VertexCount)
             {
-                var mined = queue.Dequeue();
-                this.OnExamineEdge(mined);
-                if (!ds.AreInSameSet(mined.Source, mined.Target))
+                TEdge minEdge = queue.Dequeue();
+                OnExamineEdge(minEdge);
+
+                if (!sets.AreInSameSet(minEdge.Source, minEdge.Target))
                 {
-                    this.OnTreeEdge(mined);
-                    ds.Union(mined.Source, mined.Target);
-                    if (visetedVert.Contains(mined.Source))
+                    OnTreeEdge(minEdge);
+                    sets.Union(minEdge.Source, minEdge.Target);
+
+                    if (visitedVertices.Contains(minEdge.Source))
                     {
-                        lastVert = mined.Target;
-                        visetedVert.Add(mined.Target);
+                        lastVertex = minEdge.Target;
+                        visitedVertices.Add(minEdge.Target);
                     }
                     else
                     {
-                        lastVert = mined.Source;
-                        visetedVert.Add(mined.Source);
+                        lastVertex = minEdge.Source;
+                        visitedVertices.Add(minEdge.Source);
                     }
-                    foreach (var edge in dic[lastVert])
-                        if (!edges.Contains(edge))
-                        {
-                            edges.Add(edge);
-                            queue.Enqueue(edge);
-                        }
+
+                    foreach (TEdge edge in verticesEdges[lastVertex])
+                    {
+                        if (edges.Contains(edge))
+                            continue;
+
+                        edges.Add(edge);
+                        queue.Enqueue(edge);
+                    }
                 }
             }
         }
+
+        #endregion
     }
 }
