@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
-    /// 
+    /// Recorder of vertices predecessors paths.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref idref="boost" />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -20,69 +21,97 @@ namespace QuikGraph.Algorithms.Observers
         IObserver<IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IDictionary<TVertex, TEdge> vertexPredecessors;
-        private readonly List<TVertex> endPathVertices = new List<TVertex>();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexPredecessorPathRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
         public VertexPredecessorPathRecorderObserver()
-            :this(new Dictionary<TVertex,TEdge>())
-        {}
+            : this(new Dictionary<TVertex, TEdge>())
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexPredecessorPathRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="verticesPredecessors">Vertices predecessors.</param>
         public VertexPredecessorPathRecorderObserver(
-            IDictionary<TVertex, TEdge> vertexPredecessors)
+            [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexPredecessors != null);
+            Contract.Requires(verticesPredecessors != null);
 #endif
 
-            this.vertexPredecessors = vertexPredecessors;
+            VerticesPredecessors = verticesPredecessors;
         }
 
-        public IDictionary<TVertex, TEdge> VertexPredecessors
+        /// <summary>
+        /// Vertex predecessors.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
+
+        /// <summary>
+        /// Path ending vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public ICollection<TVertex> EndPathVertices { get; } = new List<TVertex>();
+
+        /// <summary>
+        /// Gets all paths.
+        /// </summary>
+        /// <returns>Enumerable of paths.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public IEnumerable<IEnumerable<TEdge>> AllPaths()
         {
-            get { return this.vertexPredecessors; }
+            return EndPathVertices
+                .Select(vertex =>
+                {
+                    if (VerticesPredecessors.TryGetPath(vertex, out IEnumerable<TEdge> path))
+                        return path;
+                    return null;
+                })
+                .Where(path => path != null);
         }
 
-        public ICollection<TVertex> EndPathVertices
-        {
-            get { return this.endPathVertices; }
-        }
+        #region IObserver<TAlgorithm>
 
+        /// <inheritdoc />
         public IDisposable Attach(IVertexPredecessorRecorderAlgorithm<TVertex, TEdge> algorithm)
         {
-            algorithm.TreeEdge += TreeEdge;
-            algorithm.FinishVertex += FinishVertex;
+            algorithm.TreeEdge += OnEdgeDiscovered;
+            algorithm.FinishVertex += OnVertexFinished;
             return Finally(() =>
             {
-                algorithm.TreeEdge -= TreeEdge;
-                algorithm.FinishVertex -= FinishVertex;
+                algorithm.TreeEdge -= OnEdgeDiscovered;
+                algorithm.FinishVertex -= OnVertexFinished;
             });
         }
 
-        void TreeEdge(TEdge e)
+        #endregion
+
+        private void OnEdgeDiscovered([NotNull] TEdge edge)
         {
-            VertexPredecessors[e.Target] = e;
+            VerticesPredecessors[edge.Target] = edge;
         }
 
-        void FinishVertex(TVertex v)
+        private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            foreach (var edge in this.VertexPredecessors.Values)
+            foreach (TEdge edge in VerticesPredecessors.Values)
             {
-                if (edge.Source.Equals(v))
+                if (edge.Source.Equals(vertex))
                     return;
             }
-            this.endPathVertices.Add(v);
-        }
 
-        public IEnumerable<IEnumerable<TEdge>> AllPaths()
-        {
-            List<IEnumerable<TEdge>> es = new List<IEnumerable<TEdge>>();
-            foreach (var v in this.EndPathVertices)
-            {
-                IEnumerable<TEdge> path;
-                if (EdgeExtensions.TryGetPath(this.vertexPredecessors, v, out path))
-                    es.Add(path);
-            }
-            return es;
+            EndPathVertices.Add(vertex);
         }
     }
 }

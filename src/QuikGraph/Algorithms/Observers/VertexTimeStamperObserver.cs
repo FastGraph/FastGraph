@@ -3,89 +3,108 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
-    /// 
+    /// Recorder of vertices discover timestamps.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     idref="boost"
-    ///     />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class VertexTimeStamperObserver<TVertex, TEdge> :
-        IObserver<IVertexTimeStamperAlgorithm<TVertex>>
-        where TEdge : IEdge<TVertex>
+    public sealed class VertexTimeStamperObserver<TVertex> : IObserver<IVertexTimeStamperAlgorithm<TVertex>>
     {
-        private readonly Dictionary<TVertex, int> discoverTimes;
-        private readonly Dictionary<TVertex, int> _finishTimes;
-        private int currentTime = 0;
+        private int _currentTime;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexTimeStamperObserver{TVertex}"/> class.
+        /// </summary>
         public VertexTimeStamperObserver()
-            :this(new Dictionary<TVertex,int>(), new Dictionary<TVertex,int>())
-        {}
+            : this(new Dictionary<TVertex, int>(), new Dictionary<TVertex, int>())
+        {
+        }
 
-        public VertexTimeStamperObserver(Dictionary<TVertex, int> discoverTimes)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexTimeStamperObserver{TVertex}"/> class.
+        /// </summary>
+        /// <param name="discoverTimes">Vertices discover times.</param>
+        public VertexTimeStamperObserver([NotNull] IDictionary<TVertex, int> discoverTimes)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(discoverTimes != null);
 #endif
 
-            this.discoverTimes = discoverTimes;
-            this._finishTimes = null;
+            DiscoverTimes = discoverTimes;
+            FinishTimes = null;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexTimeStamperObserver{TVertex}"/> class.
+        /// </summary>
+        /// <param name="discoverTimes">Vertices discover times.</param>
+        /// <param name="finishTimes">Vertices fully treated times.</param>
         public VertexTimeStamperObserver(
-            Dictionary<TVertex, int> discoverTimes,
-            Dictionary<TVertex, int> finishTimes)
+            [NotNull] IDictionary<TVertex, int> discoverTimes,
+            [NotNull] IDictionary<TVertex, int> finishTimes)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(discoverTimes != null);
             Contract.Requires(finishTimes != null);
 #endif
 
-            this.discoverTimes = discoverTimes;
-            this._finishTimes = finishTimes;
+            DiscoverTimes = discoverTimes;
+            FinishTimes = finishTimes;
         }
 
-        public IDictionary<TVertex, int> DiscoverTimes
-        {
-            get { return this.discoverTimes; }
-        }
+        /// <summary>
+        /// Times of vertices discover.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, int> DiscoverTimes { get; }
 
-        public IDictionary<TVertex, int> FinishTimes
-        {
-            get { return this._finishTimes; }
-        }
+        /// <summary>
+        /// Times of vertices fully treated.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [CanBeNull]
+        public IDictionary<TVertex, int> FinishTimes { get; }
 
+        #region IObserver<TAlgorithm>
+
+        /// <inheritdoc />
         public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
         {
-            algorithm.DiscoverVertex += DiscoverVertex;
-            if (_finishTimes != null)
-                algorithm.FinishVertex += FinishVertex;
+            algorithm.DiscoverVertex += OnVertexDiscovered;
+            if (FinishTimes != null)
+                algorithm.FinishVertex += OnVertexFinished;
 
             return Finally(() =>
             {
-                algorithm.DiscoverVertex -= DiscoverVertex;
-                if (_finishTimes != null)
-                    algorithm.FinishVertex -= FinishVertex;
+                algorithm.DiscoverVertex -= OnVertexDiscovered;
+                if (FinishTimes != null)
+                    algorithm.FinishVertex -= OnVertexFinished;
             });
         }
 
-        void DiscoverVertex(TVertex v)
+        #endregion
+
+        private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
-            this.discoverTimes[v] = this.currentTime++;
+            DiscoverTimes[vertex] = _currentTime++;
         }
 
-        void FinishVertex(TVertex v)
+        private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            this._finishTimes[v] = this.currentTime++;
+            // ReSharper disable once PossibleNullReferenceException, Justification: not null if the handler is attached
+            FinishTimes[vertex] = _currentTime++;
         }
     }
 }

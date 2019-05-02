@@ -3,34 +3,41 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
-    /// A distance recorder for directed tree builder algorithms
+    /// A distance recorder for <see cref="ITreeBuilderAlgorithm{TVertex,TEdge}"/> algorithms.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class VertexDistanceRecorderObserver<TVertex, TEdge>
-        : IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
+    public sealed class VertexDistanceRecorderObserver<TVertex, TEdge> : IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IDistanceRelaxer distanceRelaxer;
-        private readonly Func<TEdge, double> edgeWeights;
-        private readonly IDictionary<TVertex, double> distances;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexDistanceRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public VertexDistanceRecorderObserver(Func<TEdge, double> edgeWeights)
             : this(edgeWeights, DistanceRelaxers.EdgeShortestDistance, new Dictionary<TVertex, double>())
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexDistanceRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <param name="distances">Distances per vertex.</param>
         public VertexDistanceRecorderObserver(
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer,
-            IDictionary<TVertex, double> distances)
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer,
+            [NotNull] IDictionary<TVertex, double> distances)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edgeWeights != null);
@@ -38,41 +45,56 @@ namespace QuikGraph.Algorithms.Observers
             Contract.Requires(distances != null);
 #endif
 
-            this.edgeWeights = edgeWeights;
-            this.distanceRelaxer = distanceRelaxer;
-            this.distances = distances;
+            EdgeWeights = edgeWeights;
+            DistanceRelaxer = distanceRelaxer;
+            Distances = distances;
         }
 
-        public IDistanceRelaxer DistanceRelaxer
-        {
-            get { return this.distanceRelaxer; }
-        }
+        /// <summary>
+        /// Distance relaxer.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDistanceRelaxer DistanceRelaxer { get; }
 
-        public Func<TEdge, double> EdgeWeights
-        {
-            get { return this.edgeWeights; }
-        }
+        /// <summary>
+        /// Function that computes the weight for a given edge.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Func<TEdge, double> EdgeWeights { get; }
 
-        public IDictionary<TVertex, double> Distances
-        {
-            get { return this.distances; }
-        }
+        /// <summary>
+        /// Distances per vertex.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, double> Distances { get; }
 
+        #region IObserver<TAlgorithm>
+
+        /// <inheritdoc />
         public IDisposable Attach(ITreeBuilderAlgorithm<TVertex, TEdge> algorithm)
         {
-            algorithm.TreeEdge += TreeEdge;
-            return Finally(() => algorithm.TreeEdge -= TreeEdge);
+            algorithm.TreeEdge += OnEdgeDiscovered;
+            return Finally(() => algorithm.TreeEdge -= OnEdgeDiscovered);
         }
 
-        private void TreeEdge(TEdge edge)
-        {
-            var source = edge.Source;
-            var target = edge.Target;
+        #endregion
 
-            double sourceDistance;
-            if (!this.distances.TryGetValue(source, out sourceDistance))
-                this.distances[source] = sourceDistance = this.distanceRelaxer.InitialDistance;
-            this.distances[target] = this.DistanceRelaxer.Combine(sourceDistance, this.edgeWeights(edge));
+        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        {
+            TVertex source = edge.Source;
+
+            if (!Distances.TryGetValue(source, out double sourceDistance))
+                Distances[source] = sourceDistance = DistanceRelaxer.InitialDistance;
+            Distances[edge.Target] = DistanceRelaxer.Combine(sourceDistance, EdgeWeights(edge));
         }
     }
 }

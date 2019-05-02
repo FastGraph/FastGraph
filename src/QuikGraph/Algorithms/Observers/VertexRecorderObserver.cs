@@ -1,55 +1,70 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
-    /// 
+    /// Recorder of encountered vertices.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref idref="boost" />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class VertexRecorderObserver<TVertex, TEdge> : IObserver<IVertexTimeStamperAlgorithm<TVertex>>
-        where TEdge : IEdge<TVertex>
+    public sealed class VertexRecorderObserver<TVertex> : IObserver<IVertexTimeStamperAlgorithm<TVertex>>
     {
-        private readonly IList<TVertex> vertices;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexRecorderObserver{TVertex}"/> class.
+        /// </summary>
         public VertexRecorderObserver()
             : this(new List<TVertex>())
-        { }
+        {
+        }
 
-        public VertexRecorderObserver(IList<TVertex> vertices)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VertexRecorderObserver{TVertex}"/> class.
+        /// </summary>
+        /// <param name="vertices">Set of vertices.</param>
+        public VertexRecorderObserver([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
 #endif
 
-            this.vertices = vertices;
+            _vertices = vertices.ToList();
         }
 
-        public IEnumerable<TVertex> Vertices
-        {
-            get
-            {
-                return this.vertices;
-            }
-        }
+        [NotNull, ItemNotNull]
+        private readonly IList<TVertex> _vertices;
 
+        /// <summary>
+        /// Encountered vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public IEnumerable<TVertex> Vertices => _vertices.AsEnumerable();
+
+        #region IObserver<TAlgorithm>
+
+        /// <inheritdoc />
         public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
         {
-            algorithm.DiscoverVertex += algorithm_DiscoverVertex;
-            return Finally(() => algorithm.DiscoverVertex -= algorithm_DiscoverVertex);
+            algorithm.DiscoverVertex += OnVertexDiscovered;
+            return Finally(() => algorithm.DiscoverVertex -= OnVertexDiscovered);
         }
 
-        void algorithm_DiscoverVertex(TVertex v)
+        #endregion
+
+        private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
-            this.vertices.Add(v);
+            _vertices.Add(vertex);
         }
     }
 }

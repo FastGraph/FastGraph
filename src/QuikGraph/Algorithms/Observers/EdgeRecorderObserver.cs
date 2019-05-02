@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -8,55 +10,63 @@ using static QuikGraph.Utils.DisposableHelpers;
 namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
-    /// 
+    /// Recorder of encountered edges.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     idref="boost"
-    ///     />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class EdgeRecorderObserver<TVertex, TEdge> : IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IList<TEdge> edges;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
         public EdgeRecorderObserver()
-            :this(new List<TEdge>())
-        {}
+            : this(new List<TEdge>())
+        {
+        }
 
-        public EdgeRecorderObserver(IList<TEdge> edges)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edges">Set of edges.</param>
+        public EdgeRecorderObserver([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
 #endif
 
-            this.edges = edges;
+            _edges = edges.ToList();
         }
 
-        public IList<TEdge> Edges
-        {
-            get
-            {
-                return this.edges;
-            }
-        }
+        [NotNull, ItemNotNull]
+        private readonly IList<TEdge> _edges;
 
+        /// <summary>
+        /// Encountered edges.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public IEnumerable<TEdge> Edges => _edges.AsEnumerable();
+
+        #region IObserver<TAlgorithm>
+
+        /// <inheritdoc />
         public IDisposable Attach(ITreeBuilderAlgorithm<TVertex, TEdge> algorithm)
         {
-            algorithm.TreeEdge += RecordEdge;
-            return Finally(() => algorithm.TreeEdge -= RecordEdge);
+            algorithm.TreeEdge += OnEdgeDiscovered;
+            return Finally(() => algorithm.TreeEdge -= OnEdgeDiscovered);
         }
 
-        private void RecordEdge(TEdge args)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+        #endregion
 
-            this.Edges.Add(args);
+        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        {
+            _edges.Add(edge);
         }
     }
 }

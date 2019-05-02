@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -8,151 +10,196 @@ using static QuikGraph.Utils.DisposableHelpers;
 namespace QuikGraph.Algorithms.Observers
 {
     /// <summary>
-    /// 
+    /// Recorder of edges predecessors.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     idref="boost"
-    ///     />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class EdgePredecessorRecorderObserver<TVertex, TEdge> :
-        IObserver<IEdgePredecessorRecorderAlgorithm<TVertex, TEdge>>
+    public sealed class EdgePredecessorRecorderObserver<TVertex, TEdge> : IObserver<IEdgePredecessorRecorderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TEdge,TEdge> edgePredecessors;
-        private IList<TEdge> endPathEdges;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgePredecessorRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
         public EdgePredecessorRecorderObserver()
-            :this(new Dictionary<TEdge,TEdge>(), new List<TEdge>())
-        {}
+            : this(new Dictionary<TEdge, TEdge>(), new List<TEdge>())
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgePredecessorRecorderObserver{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edgesPredecessors">Edges predecessors.</param>
+        /// <param name="endPathEdges">Path ending edges.</param>
         public EdgePredecessorRecorderObserver(
-            IDictionary<TEdge,TEdge> edgePredecessors,
-            IList<TEdge> endPathEdges
-            )
+            [NotNull] IDictionary<TEdge, TEdge> edgesPredecessors,
+            [NotNull, ItemNotNull] ICollection<TEdge> endPathEdges)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(edgePredecessors != null);
+            Contract.Requires(edgesPredecessors != null);
             Contract.Requires(endPathEdges != null);
 #endif
 
-            this.edgePredecessors = edgePredecessors;
-            this.endPathEdges = endPathEdges;
+            EdgesPredecessors = edgesPredecessors;
+            EndPathEdges = endPathEdges;
         }
 
-        public IDictionary<TEdge,TEdge> EdgePredecessors
-        {
-            get
-            {
-                return edgePredecessors;
-            }
-        }
+        /// <summary>
+        /// Edges predecessors.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TEdge, TEdge> EdgesPredecessors { get; }
 
-        public IList<TEdge> EndPathEdges
-        {
-            get
-            {
-                return endPathEdges;
-            }
-        }
+        /// <summary>
+        /// Path ending edges.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public ICollection<TEdge> EndPathEdges { get; }
 
+        #region IObserver<TAlgorithm>
+
+        /// <inheritdoc />
         public IDisposable Attach(IEdgePredecessorRecorderAlgorithm<TVertex, TEdge> algorithm)
         {
-            algorithm.DiscoverTreeEdge += DiscoverTreeEdge;
-            algorithm.FinishEdge += FinishEdge;
+            algorithm.DiscoverTreeEdge += OnEdgeDiscovered;
+            algorithm.FinishEdge += OnEdgeFinished;
 
             return Finally(() =>
             {
-                algorithm.DiscoverTreeEdge -= DiscoverTreeEdge;
-                algorithm.FinishEdge -= FinishEdge;
+                algorithm.DiscoverTreeEdge -= OnEdgeDiscovered;
+                algorithm.FinishEdge -= OnEdgeFinished;
             });
         }
 
-        public ICollection<TEdge> Path(TEdge se)
-        {
-            List<TEdge> path = new List<TEdge>();
+        #endregion
 
-            TEdge ec = se;
-            path.Insert(0, ec);
-            TEdge e;
-            while (EdgePredecessors.TryGetValue(ec, out e))
+        /// <summary>
+        /// Gets a path starting with <paramref name="startingEdge"/>.
+        /// </summary>
+        /// <param name="startingEdge">Starting edge.</param>
+        /// <returns>Edge path.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public ICollection<TEdge> Path(TEdge startingEdge)
+        {
+            var path = new List<TEdge>();
+
+            TEdge currentEdge = startingEdge;
+            path.Insert(0, currentEdge);
+            while (EdgesPredecessors.TryGetValue(currentEdge, out TEdge edge))
             {
-                path.Insert(0, e);
-                ec = e;
+                path.Insert(0, edge);
+                currentEdge = edge;
             }
+
             return path;
         }
 
-        public ICollection<ICollection<TEdge>> AllPaths()
+        /// <summary>
+        /// Gets all paths.
+        /// </summary>
+        /// <returns>Enumerable of paths.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public IEnumerable<ICollection<TEdge>> AllPaths()
         {
-            IList<ICollection<TEdge>> es = new List<ICollection<TEdge>>();
-
-            foreach (var e in EndPathEdges)
-                es.Add(Path(e));
-
-            return es;
+            return EndPathEdges.Select(Path);
         }
 
-        public ICollection<TEdge> MergedPath(TEdge se, IDictionary<TEdge,GraphColor> colors)
+        /// <summary>
+        /// Merges the path starting at <paramref name="startingEdge"/> with remaining edges.
+        /// </summary>
+        /// <param name="startingEdge">Starting edge.</param>
+        /// <param name="colors">Edges colors mapping.</param>
+        /// <returns>Merged path.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public ICollection<TEdge> MergedPath(
+            [NotNull] TEdge startingEdge,
+            [NotNull] IDictionary<TEdge, GraphColor> colors)
         {
-            List<TEdge> path = new List<TEdge>();
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(startingEdge != null);
+            Contract.Requires(colors != null);
+#endif
 
-            TEdge ec = se;
-            GraphColor c = colors[ec];
-            if (c != GraphColor.White)
+            var path = new List<TEdge>();
+
+            TEdge currentEdge = startingEdge;
+            GraphColor color = colors[currentEdge];
+            if (color != GraphColor.White)
                 return path;
-            else
-                colors[ec] = GraphColor.Black;
+            colors[currentEdge] = GraphColor.Black;
 
-            path.Insert(0, ec);
-            TEdge e;
-            while (EdgePredecessors.TryGetValue(ec, out e))
+            path.Insert(0, currentEdge);
+            while (EdgesPredecessors.TryGetValue(currentEdge, out TEdge edge))
             {
-                c = colors[e];
-                if (c != GraphColor.White)
+                color = colors[edge];
+                if (color != GraphColor.White)
                     return path;
-                else
-                    colors[e] = GraphColor.Black;
+                colors[edge] = GraphColor.Black;
 
-                path.Insert(0, e);
-                ec = e;
+                path.Insert(0, edge);
+                currentEdge = edge;
             }
+
             return path;
         }
 
-        public ICollection<ICollection<TEdge>> AllMergedPaths()
+        /// <summary>
+        /// Gets all merged path.
+        /// </summary>
+        /// <returns>Enumerable of merged paths.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public IEnumerable<ICollection<TEdge>> AllMergedPaths()
         {
-            List<ICollection<TEdge>> es = new List<ICollection<TEdge>>(EndPathEdges.Count);
-            IDictionary<TEdge,GraphColor> colors = new Dictionary<TEdge,GraphColor>();
+            var colors = new Dictionary<TEdge, GraphColor>();
 
-            foreach (KeyValuePair<TEdge,TEdge> de in EdgePredecessors)
+            foreach (KeyValuePair<TEdge, TEdge> pair in EdgesPredecessors)
             {
-                colors[de.Key] = GraphColor.White;
-                colors[de.Value] = GraphColor.White;
+                colors[pair.Key] = GraphColor.White;
+                colors[pair.Value] = GraphColor.White;
             }
 
-            for (int i = 0; i < EndPathEdges.Count; ++i)
-                es.Add(MergedPath(EndPathEdges[i], colors));
-
-            return es;
+            return EndPathEdges.Select(edge => MergedPath(edge, colors));
         }
 
-        private void DiscoverTreeEdge(TEdge edge, TEdge targetEdge)
+        private void OnEdgeDiscovered([NotNull] TEdge edge, [NotNull] TEdge targetEdge)
         {
             if (!edge.Equals(targetEdge))
-                this.EdgePredecessors[targetEdge] = edge;
+                EdgesPredecessors[targetEdge] = edge;
         }
 
-        private void FinishEdge(TEdge args)
+        private void OnEdgeFinished([NotNull] TEdge finishedEdge)
         {
-            foreach (var edge in this.EdgePredecessors.Values)
-                if (edge.Equals(args))
+            foreach (TEdge edge in EdgesPredecessors.Values)
+            {
+                if (finishedEdge.Equals(edge))
                     return;
+            }
 
-            this.EndPathEdges.Add(args);
+            EndPathEdges.Add(finishedEdge);
         }
     }
 }

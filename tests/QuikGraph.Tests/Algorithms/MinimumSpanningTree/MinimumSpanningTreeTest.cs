@@ -237,7 +237,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             using (edgeRecorder.Attach(algorithm))
                 algorithm.Compute();
 
-            Console.WriteLine("tree cost: {0}", edgeRecorder.Edges.Count);
+            Console.WriteLine("tree cost: {0}", edgeRecorder.Edges.Count());
             AssertSpanningTree<TVertex, TEdge>(g, edgeRecorder.Edges);
         }
 
