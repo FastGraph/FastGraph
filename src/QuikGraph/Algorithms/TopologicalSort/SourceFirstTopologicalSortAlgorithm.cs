@@ -2,127 +2,145 @@
 using System;
 #endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using QuikGraph.Algorithms.Services;
+using QuikGraph.Collections;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TopologicalSort
 {
+    /// <summary>
+    /// Topological sort algorithm (can be performed on an acyclic graph).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class SourceFirstTopologicalSortAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+    public sealed class SourceFirstTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex, int> inDegrees = new Dictionary<TVertex, int>();
-        private BinaryQueue<TVertex,int> heap;
-        private IList<TVertex> sortedVertices = new List<TVertex>();
+        [NotNull]
+        private readonly BinaryQueue<TVertex, int> _heap;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SourceFirstTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public SourceFirstTopologicalSortAlgorithm(
-            IVertexAndEdgeListGraph<TVertex,TEdge> visitedGraph
-            )
-            :base(visitedGraph)
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            : base(visitedGraph)
         {
-            this.heap = new BinaryQueue<TVertex,int>(e => this.inDegrees[e]);
+            _heap = new BinaryQueue<TVertex, int>(vertex => InDegrees[vertex]);
         }
 
-        public ICollection<TVertex> SortedVertices
+        /// <summary>
+        /// Sorted vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public ICollection<TVertex> SortedVertices { get; private set; } = new List<TVertex>();
+
+        /// <summary>
+        /// Vertices in degrees.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, int> InDegrees { get; } = new Dictionary<TVertex, int>();
+
+        /// <summary>
+        /// Fired when a vertex is added to the set of sorted vertices.
+        /// </summary>
+        public event VertexAction<TVertex> VertexAdded;
+
+        private void OnVertexAdded([NotNull] TVertex vertex)
         {
-            get
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            VertexAdded?.Invoke(vertex);
+        }
+
+        private void InitializeInDegrees()
+        {
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                return this.sortedVertices;
+                InDegrees.Add(vertex, 0);
+            }
+
+            foreach (TEdge edge in VisitedGraph.Edges)
+            {
+                if (edge.IsSelfEdge())
+                    continue;
+
+                ++InDegrees[edge.Target];
+            }
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                _heap.Enqueue(vertex);
             }
         }
 
-        public BinaryQueue<TVertex,int> Heap
-        {
-            get
-            {
-                return this.heap;
-            }
-        }
-
-        public IDictionary<TVertex,int> InDegrees
-        {
-            get
-            {
-                return this.inDegrees;
-            }
-        }
-
-        public event VertexAction<TVertex> AddVertex;
-        private void OnAddVertex(TVertex v)
-        {
-            var eh = this.AddVertex;
-            if (eh != null)
-                eh(v);
-        }
-
-        public void Compute(IList<TVertex> vertices)
+        /// <summary>
+        /// Runs the topological sort and puts the result in the provided list.
+        /// </summary>
+        /// <param name="vertices">Set of sorted vertices.</param>
+        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
 #endif
 
-            this.sortedVertices = vertices;
+            SortedVertices = vertices;
+            SortedVertices.Clear();
             Compute();
         }
 
+        #region AlgorithmBase<TGraph>
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var cancelManager = this.Services.CancelManager;
-            this.InitializeInDegrees();
+            ICancelManager cancelManager = Services.CancelManager;
+            InitializeInDegrees();
 
-            while (this.heap.Count != 0)
+            while (_heap.Count != 0)
             {
-                if (cancelManager.IsCancelling) break;
+                if (cancelManager.IsCancelling)
+                    break;
 
-                TVertex v = this.heap.Dequeue();
-                if (this.inDegrees[v] != 0)
+                TVertex vertex = _heap.Dequeue();
+                if (InDegrees[vertex] != 0)
                     throw new NonAcyclicGraphException();
 
-                this.sortedVertices.Add(v);
-                this.OnAddVertex(v);
+                SortedVertices.Add(vertex);
+                OnVertexAdded(vertex);
 
-                // update the count of it's adjacent vertices
-                foreach (var e in this.VisitedGraph.OutEdges(v))
+                // Update the count of its adjacent vertices
+                foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
                 {
-                    if (e.Source.Equals(e.Target))
+                    if (edge.IsSelfEdge())
                         continue;
 
-                    this.inDegrees[e.Target]--;
+                    --InDegrees[edge.Target];
 
 #if SUPPORTS_CONTRACTS
-                    Contract.Assert(this.inDegrees[e.Target] >= 0);
+                    Contract.Assert(InDegrees[edge.Target] >= 0);
 #endif
 
-                    this.heap.Update(e.Target);
+                    _heap.Update(edge.Target);
                 }
             }
         }
 
-        private void InitializeInDegrees()
-        {
-            foreach (var v in this.VisitedGraph.Vertices)
-            {
-                this.inDegrees.Add(v, 0);         
-            }
-
-            foreach (var e in this.VisitedGraph.Edges)
-            {
-                if (e.Source.Equals(e.Target))
-                    continue;
-                this.inDegrees[e.Target]++;
-            }
-
-            foreach (var v in this.VisitedGraph.Vertices)
-            {
-                this.heap.Enqueue(v);
-            }
-
-        }
+        #endregion
     }
 }

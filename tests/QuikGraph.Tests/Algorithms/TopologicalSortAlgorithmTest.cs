@@ -28,10 +28,9 @@ namespace QuikGraph.Algorithms
         [Test]
         public void SortDCT8()
         {
-            var g = TestGraphFactory.LoadGraph(GetGraphFilePath("DCT8.graphml"));
-            var topo = new TopologicalSortAlgorithm<string, Edge<string>>(g);
-            Assert.IsFalse(topo.AllowCyclicGraph);
-            topo.Compute();
+            var graph = TestGraphFactory.LoadGraph(GetGraphFilePath("DCT8.graphml"));
+            var topologicalSort = new TopologicalSortAlgorithm<string, Edge<string>>(graph);
+            topologicalSort.Compute();
         }
 
         [Test]

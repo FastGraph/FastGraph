@@ -2,6 +2,7 @@
 using System;
 #endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -9,60 +10,82 @@ using QuikGraph.Algorithms.Search;
 
 namespace QuikGraph.Algorithms.TopologicalSort
 {
+    /// <summary>
+    /// Topological sort algorithm (can be performed on an acyclic graph).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class TopologicalSortAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
+    public sealed class TopologicalSortAlgorithm<TVertex, TEdge>
+        : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
+        , IVertexTimeStamperAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        private IList<TVertex> vertices = new List<TVertex>();
-        private bool allowCyclicGraph = false;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TopologicalSortAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public TopologicalSortAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+            : this(visitedGraph, new List<TVertex>())
+        {
+        }
 
-        public TopologicalSortAlgorithm(IVertexListGraph<TVertex, TEdge> g)
-            : this(g, new List<TVertex>())
-        { }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TopologicalSortAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="vertices">Set of sorted vertices.</param>
         public TopologicalSortAlgorithm(
-            IVertexListGraph<TVertex, TEdge> g,
-            IList<TVertex> vertices)
-            : base(g)
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull, ItemNotNull] IList<TVertex> vertices)
+            : base(visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
 #endif
 
-            this.vertices = vertices;
+            SortedVertices = vertices;
         }
 
+        /// <summary>
+        /// Sorted vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public IList<TVertex> SortedVertices { get; private set; }
 
-        public IList<TVertex> SortedVertices
+        private static void OnBackEdge([NotNull] TEdge args)
         {
-            get
-            {
-                return vertices;
-            }
+            throw new NonAcyclicGraphException();
         }
 
-        public bool AllowCyclicGraph
+        private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            get { return this.allowCyclicGraph; }
+            SortedVertices.Insert(0, vertex);
         }
 
-        private void BackEdge(TEdge args)
+        /// <summary>
+        /// Runs the topological sort and puts the result in the provided list.
+        /// </summary>
+        /// <param name="vertices">Set of sorted vertices.</param>
+        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
-            if (!this.AllowCyclicGraph)
-                throw new NonAcyclicGraphException();
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertices != null);
+#endif
+
+            SortedVertices = vertices;
+            SortedVertices.Clear();
+            Compute();
         }
 
-        private void VertexFinished(TVertex v)
-        {
-            vertices.Insert(0, v);
-        }
+        #region AlgorithmBase<TGraph>
 
-        public event VertexAction<TVertex> DiscoverVertex;
-        public event VertexAction<TVertex> FinishVertex;
-
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
             DepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
@@ -70,11 +93,10 @@ namespace QuikGraph.Algorithms.TopologicalSort
             {
                 dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(
                     this,
-                    this.VisitedGraph,
-                    new Dictionary<TVertex, GraphColor>(this.VisitedGraph.VertexCount)
-                    );
-                dfs.BackEdge += BackEdge;
-                dfs.FinishVertex += VertexFinished;
+                    VisitedGraph,
+                    new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount));
+                dfs.BackEdge += OnBackEdge;
+                dfs.FinishVertex += OnVertexFinished;
                 dfs.DiscoverVertex += DiscoverVertex;
                 dfs.FinishVertex += FinishVertex;
 
@@ -84,19 +106,24 @@ namespace QuikGraph.Algorithms.TopologicalSort
             {
                 if (dfs != null)
                 {
-                    dfs.BackEdge -= BackEdge;
-                    dfs.FinishVertex -= VertexFinished;
+                    dfs.BackEdge -= OnBackEdge;
+                    dfs.FinishVertex -= OnVertexFinished;
                     dfs.DiscoverVertex -= DiscoverVertex;
                     dfs.FinishVertex -= FinishVertex;
                 }
             }
         }
 
-        public void Compute(IList<TVertex> vertices)
-        {
-            this.vertices = vertices;
-            this.vertices.Clear();
-            this.Compute();
-        }
+        #endregion
+
+        #region IVertexTimeStamperAlgorithm<TVertex>
+
+        /// <inheritdoc />
+        public event VertexAction<TVertex> DiscoverVertex;
+
+        /// <inheritdoc />
+        public event VertexAction<TVertex> FinishVertex;
+
+        #endregion
     }
 }

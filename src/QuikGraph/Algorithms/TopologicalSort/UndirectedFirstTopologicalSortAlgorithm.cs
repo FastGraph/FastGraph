@@ -3,118 +3,134 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
+using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TopologicalSort
 {
+    /// <summary>
+    /// Undirected topological sort algorithm.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+    public sealed class UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex, int> degrees = new Dictionary<TVertex, int>();
-        private BinaryQueue<TVertex, int> heap;
-        private IList<TVertex> sortedVertices = new List<TVertex>();
-        private bool allowCyclicGraph = false;
+        [NotNull]
+        private readonly BinaryQueue<TVertex, int> _heap;
 
-        public UndirectedFirstTopologicalSortAlgorithm(
-            IUndirectedGraph<TVertex, TEdge> visitedGraph
-            )
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedFirstTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public UndirectedFirstTopologicalSortAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
-            this.heap = new BinaryQueue<TVertex, int>(e => this.degrees[e]);
+            _heap = new BinaryQueue<TVertex, int>(vertex => Degrees[vertex]);
         }
 
-        public ICollection<TVertex> SortedVertices
+        /// <summary>
+        /// Sorted vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public ICollection<TVertex> SortedVertices { get; private set; } = new List<TVertex>();
+
+        /// <summary>
+        /// Vertices degrees.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, int> Degrees { get; } = new Dictionary<TVertex, int>();
+
+        /// <summary>
+        /// Gets or sets the flag that indicates if cyclic graph are supported or not.
+        /// </summary>
+        public bool AllowCyclicGraph { get; set; }
+
+        /// <summary>
+        /// Fired when a vertex is added to the set of sorted vertices.
+        /// </summary>
+        public event VertexAction<TVertex> VertexAdded;
+
+        private void OnVertexAdded([NotNull] TVertex vertex)
         {
-            get
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            VertexAdded?.Invoke(vertex);
+        }
+
+        private void InitializeInDegrees()
+        {
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                return this.sortedVertices;
+                Degrees.Add(vertex, VisitedGraph.AdjacentDegree(vertex));
+                _heap.Enqueue(vertex);
             }
         }
 
-        public BinaryQueue<TVertex, int> Heap
-        {
-            get
-            {
-                return this.heap;
-            }
-        }
-
-        public IDictionary<TVertex, int> Degrees
-        {
-            get
-            {
-                return this.degrees;
-            }
-        }
-
-
-        public bool AllowCyclicGraph
-        {
-            get { return this.allowCyclicGraph; }
-            set { this.allowCyclicGraph = value; }
-        }
-
-        public event VertexAction<TVertex> AddVertex;
-        private void OnAddVertex(TVertex v)
-        {
-            var eh = AddVertex;
-            if (eh != null)
-                eh(v);
-        }
-
-        public void Compute(IList<TVertex> vertices)
+        /// <summary>
+        /// Runs the topological sort and puts the result in the provided list.
+        /// </summary>
+        /// <param name="vertices">Set of sorted vertices.</param>
+        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
 #endif
 
-            this.sortedVertices = vertices;
+            SortedVertices = vertices;
+            SortedVertices.Clear();
             Compute();
         }
 
+        #region AlgorithmBase<TGraph>
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            this.InitializeInDegrees();
-            var cancelManager = this.Services.CancelManager;
+            ICancelManager cancelManager = Services.CancelManager;
+            InitializeInDegrees();
 
-            while (this.heap.Count != 0)
+            while (_heap.Count != 0)
             {
-                if (cancelManager.IsCancelling) return;
+                if (cancelManager.IsCancelling)
+                    return;
 
-                TVertex v = this.heap.Dequeue();
-                if (this.degrees[v] != 0 && !this.AllowCyclicGraph)
+                TVertex vertex = _heap.Dequeue();
+                if (Degrees[vertex] != 0 && !AllowCyclicGraph)
                     throw new NonAcyclicGraphException();
 
-                this.sortedVertices.Add(v);
-                this.OnAddVertex(v);
+                SortedVertices.Add(vertex);
+                OnVertexAdded(vertex);
 
-                // update the count of it's adjacent vertices
-                foreach (var e in this.VisitedGraph.AdjacentEdges(v))
+                // Update the count of its adjacent vertices
+                foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex))
                 {
-                    if (e.Source.Equals(e.Target))
+                    if (edge.IsSelfEdge())
                         continue;
 
-                    this.degrees[e.Target]--;
-                    if (this.degrees[e.Target] < 0 && !this.AllowCyclicGraph)
-                        throw new InvalidOperationException("Degree is negative, and cannot be");
-                    if (this.heap.Contains(e.Target))
-                        this.heap.Update(e.Target);
+                    --Degrees[edge.Target];
+
+                    if (Degrees[edge.Target] < 0 && !AllowCyclicGraph)
+                        throw new InvalidOperationException("Degree is negative, and cannot be.");
+
+                    if (_heap.Contains(edge.Target))
+                        _heap.Update(edge.Target);
                 }
             }
         }
 
-        private void InitializeInDegrees()
-        {
-            foreach (var v in this.VisitedGraph.Vertices)
-            {
-                this.degrees.Add(v, this.VisitedGraph.AdjacentDegree(v));
-                this.heap.Enqueue(v);
-            }
-        }
+        #endregion
     }
 }

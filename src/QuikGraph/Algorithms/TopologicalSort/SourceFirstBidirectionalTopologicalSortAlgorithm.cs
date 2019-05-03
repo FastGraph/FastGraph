@@ -2,6 +2,8 @@
 using System;
 #endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using QuikGraph.Algorithms.Services;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -9,12 +11,11 @@ using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TopologicalSort
 {
-    public enum TopologicalSortDirection
-    {
-        Forward,
-        Backward
-    }
-
+    /// <summary>
+    /// Topological sort algorithm (can be performed on an acyclic bidirectional graph).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -22,124 +23,152 @@ namespace QuikGraph.Algorithms.TopologicalSort
         AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex, int> predCounts = new Dictionary<TVertex, int>();
-        private BinaryQueue<TVertex, int> heap;
-        private IList<TVertex> sortedVertices = new List<TVertex>();
-        private TopologicalSortDirection direction = TopologicalSortDirection.Forward;
+        [NotNull]
+        private readonly BinaryQueue<TVertex, int> _heap;
 
+        private readonly TopologicalSortDirection _direction;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SourceFirstBidirectionalTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public SourceFirstBidirectionalTopologicalSortAlgorithm(
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph
-            )
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, TopologicalSortDirection.Forward)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SourceFirstBidirectionalTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="direction">Sort direction.</param>
         public SourceFirstBidirectionalTopologicalSortAlgorithm(
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            TopologicalSortDirection direction
-            )
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            TopologicalSortDirection direction)
             : base(visitedGraph)
         {
-            this.direction = direction;
-            this.heap = new BinaryQueue<TVertex, int>(e => this.predCounts[e]);
+            _direction = direction;
+            _heap = new BinaryQueue<TVertex, int>(vertex => InDegrees[vertex]);
         }
 
-        public ICollection<TVertex> SortedVertices
+        /// <summary>
+        /// Sorted vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public ICollection<TVertex> SortedVertices { get; private set; } = new List<TVertex>();
+
+        /// <summary>
+        /// Vertices in degrees.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, int> InDegrees { get; } = new Dictionary<TVertex, int>();
+
+        /// <summary>
+        /// Fired when a vertex is added to the set of sorted vertices.
+        /// </summary>
+        public event VertexAction<TVertex> VertexAdded;
+
+        private void OnVertexAdded([NotNull] TVertex vertex)
         {
-            get
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            VertexAdded?.Invoke(vertex);
+        }
+
+        private void InitializeInDegrees()
+        {
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                return this.sortedVertices;
+                InDegrees.Add(vertex, 0);
+            }
+
+            foreach (TEdge edge in VisitedGraph.Edges)
+            {
+                if (edge.IsSelfEdge())
+                    continue;
+
+                TVertex successor = _direction == TopologicalSortDirection.Forward
+                    ? edge.Target
+                    : edge.Source;
+
+                ++InDegrees[successor];
+            }
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                _heap.Enqueue(vertex);
             }
         }
 
-        public BinaryQueue<TVertex, int> Heap
-        {
-            get
-            {
-                return this.heap;
-            }
-        }
-
-        public IDictionary<TVertex, int> InDegrees
-        {
-            get
-            {
-                return this.predCounts;
-            }
-        }
-
-        public event VertexAction<TVertex> AddVertex;
-        private void OnAddVertex(TVertex v)
-        {
-            var eh = this.AddVertex;
-            if (eh != null)
-                eh(v);
-        }
-
-        public void Compute(IList<TVertex> vertices)
+        /// <summary>
+        /// Runs the topological sort and puts the result in the provided list.
+        /// </summary>
+        /// <param name="vertices">Set of sorted vertices.</param>
+        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertices != null);
 #endif
 
-            this.sortedVertices = vertices;
+            SortedVertices = vertices;
+            SortedVertices.Clear();
             Compute();
         }
 
+        #region AlgorithmBase<TGraph>
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var cancelManager = this.Services.CancelManager;
-            this.InitializeInDegrees();
+            ICancelManager cancelManager = Services.CancelManager;
+            InitializeInDegrees();
 
-            while (this.heap.Count != 0)
+            while (_heap.Count != 0)
             {
-                if (cancelManager.IsCancelling) break;
+                if (cancelManager.IsCancelling)
+                    break;
 
-                TVertex v = this.heap.Dequeue();
-                if (this.predCounts[v] != 0)
+                TVertex vertex = _heap.Dequeue();
+                if (InDegrees[vertex] != 0)
                     throw new NonAcyclicGraphException();
 
-                this.sortedVertices.Add(v);
-                this.OnAddVertex(v);
+                SortedVertices.Add(vertex);
+                OnVertexAdded(vertex);
 
-                // update the count of its successor vertices
-                var succEdges = (this.direction == TopologicalSortDirection.Forward) ? this.VisitedGraph.OutEdges(v) : this.VisitedGraph.InEdges(v);
-                foreach (var e in succEdges)
+                // Update the count of its successor vertices
+                IEnumerable<TEdge> successorEdges = _direction == TopologicalSortDirection.Forward
+                    ? VisitedGraph.OutEdges(vertex)
+                    : VisitedGraph.InEdges(vertex);
+
+                foreach (TEdge edge in successorEdges)
                 {
-                    if (e.Source.Equals(e.Target))
+                    if (edge.IsSelfEdge())
                         continue;
-                    var succ = (direction == TopologicalSortDirection.Forward) ? e.Target : e.Source;
-                    this.predCounts[succ]--;
+
+                    TVertex successor = _direction == TopologicalSortDirection.Forward
+                        ? edge.Target
+                        : edge.Source;
+
+                    --InDegrees[successor];
 
 #if SUPPORTS_CONTRACTS
-                    Contract.Assert(this.predCounts[succ] >= 0);
+                    Contract.Assert(InDegrees[successor] >= 0);
 #endif
 
-                    this.heap.Update(succ);
+                    _heap.Update(successor);
                 }
             }
         }
 
-        private void InitializeInDegrees()
-        {
-            foreach (var v in this.VisitedGraph.Vertices)
-            {
-                this.predCounts.Add(v, 0);
-            }
-
-            foreach (var e in this.VisitedGraph.Edges)
-            {
-                if (e.Source.Equals(e.Target))
-                    continue;
-                var succ = (direction == TopologicalSortDirection.Forward) ? e.Target : e.Source;
-                this.predCounts[succ]++;
-            }
-
-            foreach (var v in this.VisitedGraph.Vertices)
-            {
-                this.heap.Enqueue(v);
-            }
-        }
+        #endregion
     }
 }
