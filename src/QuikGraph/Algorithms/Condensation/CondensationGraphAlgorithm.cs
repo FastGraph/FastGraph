@@ -1,150 +1,174 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuikGraph.Collections;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.ConnectedComponents;
+using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Condensation
 {
-    public sealed class CondensationGraphAlgorithm<TVertex,TEdge,TGraph> :
-        AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+    /// <summary>
+    /// Algorithm that condensate a graph with strongly (or not) components.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
+    public sealed class CondensationGraphAlgorithm<TVertex, TEdge, TGraph> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
     {
-        private bool stronglyConnected = true;
-
-        private IMutableBidirectionalGraph<
-            TGraph,
-            CondensedEdge<TVertex, TEdge, TGraph>
-            > condensedGraph;
-
-        public CondensationGraphAlgorithm(IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
-            :base(visitedGraph)
-        {}
-
-        public IMutableBidirectionalGraph<
-            TGraph,
-            CondensedEdge<TVertex, TEdge,TGraph>
-            > CondensedGraph
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CondensationGraphAlgorithm{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public CondensationGraphAlgorithm([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            : base(visitedGraph)
         {
-            get { return this.condensedGraph; }
         }
 
-        public bool StronglyConnected
-        {
-            get { return this.stronglyConnected; }
-            set { this.stronglyConnected = value; }
-        }
+        /// <summary>
+        /// Condensed graph.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensedGraph { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the strongly connected components flag.
+        /// Indicates if the algorithm should do strongly connected components or not.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public bool StronglyConnected { get; set; } = true;
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            // create condensated graph
-            this.condensedGraph = new BidirectionalGraph<
-                TGraph,
-                CondensedEdge<TVertex, TEdge, TGraph>
-                >(false);
-            if (this.VisitedGraph.VertexCount == 0)
+            // Create condensed graph
+            CondensedGraph = new BidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>(false);
+            if (VisitedGraph.VertexCount == 0)
                 return;
 
-            // compute strongly connected components
-            var components = new Dictionary<TVertex, int>(this.VisitedGraph.VertexCount);
+            // Compute strongly connected components
+            var components = new Dictionary<TVertex, int>(VisitedGraph.VertexCount);
             int componentCount = ComputeComponentCount(components);
 
-            var cancelManager = this.Services.CancelManager;
-            if (cancelManager.IsCancelling) return;
+            ICancelManager cancelManager = Services.CancelManager;
+            if (cancelManager.IsCancelling)
+                return;
 
-            // create list vertices
-            var condensatedVertices = new Dictionary<int, TGraph>(componentCount);
+            // Create vertices list
+            var condensedVertices = new Dictionary<int, TGraph>(componentCount);
             for (int i = 0; i < componentCount; ++i)
             {
-                TGraph v = new TGraph();
-                condensatedVertices.Add(i, v);
-                this.condensedGraph.AddVertex(v);
+                var vertex = new TGraph();
+                condensedVertices.Add(i, vertex);
+                CondensedGraph.AddVertex(vertex);
             }
 
-            // addingvertices
-            foreach (var v in this.VisitedGraph.Vertices)
+            // Adding vertices
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                condensatedVertices[components[v]].AddVertex(v);
+                condensedVertices[components[vertex]].AddVertex(vertex);
             }
-            if (cancelManager.IsCancelling) return;
 
-            // condensated edges
-            var condensatedEdges = new Dictionary<EdgeKey, CondensedEdge<TVertex, TEdge, TGraph>>(componentCount);
+            if (cancelManager.IsCancelling)
+                return;
 
-            // iterate over edges and condensate graph
-            foreach (var edge in this.VisitedGraph.Edges)
+            // Condensed edges
+            var condensedEdges = new Dictionary<EdgeKey, CondensedEdge<TVertex, TEdge, TGraph>>(componentCount);
+
+            // Iterate over edges and condensate graph
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                // get component ids
+                // Get component ids
                 int sourceID = components[edge.Source];
                 int targetID = components[edge.Target];
 
-                // get vertices
-                TGraph sources = condensatedVertices[sourceID];
+                // Get vertices
+                TGraph sources = condensedVertices[sourceID];
                 if (sourceID == targetID)
                 {
                     sources.AddEdge(edge);
                     continue;
                 }
 
-                // at last add edge
+                // At last add edge
                 var edgeKey = new EdgeKey(sourceID, targetID);
-                CondensedEdge<TVertex, TEdge, TGraph> condensatedEdge;
-                if (!condensatedEdges.TryGetValue(edgeKey, out condensatedEdge))
+                if (!condensedEdges.TryGetValue(edgeKey, out CondensedEdge<TVertex, TEdge, TGraph> condensedEdge))
                 {
-                    var targets = condensatedVertices[targetID];
+                    TGraph targets = condensedVertices[targetID];
 
-                    condensatedEdge = new CondensedEdge<TVertex, TEdge, TGraph>(sources, targets);
-                    condensatedEdges.Add(edgeKey, condensatedEdge);
-                    this.condensedGraph.AddEdge(condensatedEdge);
+                    condensedEdge = new CondensedEdge<TVertex, TEdge, TGraph>(sources, targets);
+                    condensedEdges.Add(edgeKey, condensedEdge);
+                    CondensedGraph.AddEdge(condensedEdge);
                 }
-                condensatedEdge.Edges.Add(edge);
+
+                condensedEdge.Edges.Add(edge);
             }
         }
 
-        private int ComputeComponentCount(Dictionary<TVertex, int> components)
+        #endregion
+
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
+        private int ComputeComponentCount([NotNull] IDictionary<TVertex, int> components)
         {
             IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>> componentAlgorithm;
-            if (this.StronglyConnected)
+            if (StronglyConnected)
+            {
                 componentAlgorithm = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(
                     this,
-                    this.VisitedGraph,
+                    VisitedGraph,
                     components);
+            }
             else
+            {
                 componentAlgorithm = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(
                     this,
-                    this.VisitedGraph,
+                    VisitedGraph,
                     components);
+            }
+
             componentAlgorithm.Compute();
+
             return componentAlgorithm.ComponentCount;
         }
 
-        struct EdgeKey 
-            : IEquatable<EdgeKey>
+        private struct EdgeKey : IEquatable<EdgeKey>
         {
-            readonly int SourceID;
-            readonly int TargetID;
+            private readonly int _sourceID;
+            private readonly int _targetID;
 
             public EdgeKey(int sourceID, int targetID)
             {
-                SourceID = sourceID;
-                TargetID = targetID;
+                _sourceID = sourceID;
+                _targetID = targetID;
             }
 
+            /// <inheritdoc />
             public bool Equals(EdgeKey other)
             {
-                return 
-                    SourceID == other.SourceID 
-                    && TargetID == other.TargetID;
+                return _sourceID == other._sourceID
+                       && _targetID == other._targetID;
             }
 
+            /// <inheritdoc />
             public override bool Equals(object obj)
             {
-                return obj is EdgeKey && Equals((EdgeKey)obj);
+                return obj is EdgeKey edgeKey
+                       && Equals(edgeKey);
             }
 
+            /// <inheritdoc />
             public override int GetHashCode()
             {
-                return HashCodeHelpers.Combine(this.SourceID, this.TargetID);
+                return HashCodeHelpers.Combine(_sourceID, _targetID);
             }
         }
     }

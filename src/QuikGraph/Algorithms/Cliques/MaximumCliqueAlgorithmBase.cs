@@ -1,21 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Cliques
 {
-    public abstract class MaximumCliqueAlgorithmBase<TVertex, TEdge>
-        : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+    /// <summary>
+    /// Base class for all maximum clique graph algorithm.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public abstract class MaximumCliqueAlgorithmBase<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        protected MaximumCliqueAlgorithmBase(IAlgorithmComponent host, IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaximumCliqueAlgorithmBase{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        protected MaximumCliqueAlgorithmBase(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
-        {}
+        {
+        }
 
-        protected MaximumCliqueAlgorithmBase(IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaximumCliqueAlgorithmBase{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        protected MaximumCliqueAlgorithmBase([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
-        {}
+        {
+        }
     }
 }

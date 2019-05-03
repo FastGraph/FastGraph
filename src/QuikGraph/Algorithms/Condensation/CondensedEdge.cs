@@ -2,9 +2,16 @@
 using System;
 #endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Condensation
 {
+    /// <summary>
+    /// An edge connecting two graphs.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -12,14 +19,20 @@ namespace QuikGraph.Algorithms.Condensation
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
     {
-        private List<TEdge> edges = new List<TEdge>();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CondensedEdge{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="source">The source graph.</param>
+        /// <param name="target">The target graph.</param>
         public CondensedEdge(TGraph source, TGraph target)
-            :base(source,target)
-        { }
-
-        public IList<TEdge> Edges
+            : base(source, target)
         {
-            get { return this.edges; }
         }
+
+        /// <summary>
+        /// Edges between source and target graphs.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public IList<TEdge> Edges { get; } = new List<TEdge>();
     }
 }

@@ -1,90 +1,155 @@
 ﻿using System;
 using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.AssigmentProblem
+namespace QuikGraph.Algorithms.Assignment
 {
-    public class HungarianAlgorithm
+    /// <summary>
+    /// A combinatorial optimization algorithm that solves the assignment problem, meaning
+    /// finding, in a weighted bipartite graph, a matching in which the sum of weights of the
+    /// edges is as large as possible.
+    /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
+    public sealed class HungarianAlgorithm
     {
-        public enum Steps { Init, Step1, Step2, Step3, Step4, End }
-        public int[] AgentsTasks;
+        /// <summary>
+        /// Hungarian algorithm steps.
+        /// </summary>
+        /// <remarks>See https://en.wikipedia.org/wiki/Hungarian_algorithm </remarks>
+        public enum Steps
+        {
+            /// <summary>
+            /// Initialization step.
+            /// </summary>
+            Init,
 
-        private Steps _step;
-        private int[,] _costs;
+            /// <summary>
+            /// Step 1.
+            /// </summary>
+            Step1,
+
+            /// <summary>
+            /// Step 2.
+            /// </summary>
+            Step2,
+
+            /// <summary>
+            /// Step 3.
+            /// </summary>
+            Step3,
+
+            /// <summary>
+            /// Step 4.
+            /// </summary>
+            Step4,
+
+            /// <summary>
+            /// End step.
+            /// </summary>
+            End
+        }
+
+        [NotNull]
+        private readonly int[,] _costs;
+
+        private int _width;
+        private int _height;
+
         private byte[,] _masks;
         private bool[] _rowsCovered;
         private bool[] _colsCovered;
-        private int _width;
-        private int _height;
+
+        private Steps _step;
+
+        /// <summary>
+        /// Computed assignments.
+        /// </summary>
+        public int[] AgentsTasks { get; private set; }
+
         private Location _pathStart;
         private Location[] _path;
 
-        public HungarianAlgorithm(int[,] costs)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HungarianAlgorithm"/> class.
+        /// </summary>
+        /// <param name="costs">Costs matrix.</param>
+        public HungarianAlgorithm([NotNull] int[,] costs)
         {
-            this._costs = costs;
-            this._step = Steps.Init;
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(costs != null);
+#endif
+
+            _costs = costs;
+            _step = Steps.Init;
         }
 
         /// <summary>
-        /// Returns assigments without visualisation
+        /// Returns assignments (without visualization).
         /// </summary>
-        /// <returns>Array of assigments</returns>
-        public int[] Run()
+        /// <returns>Array of assignments.</returns>
+        [NotNull]
+        public int[] Compute()
         {
-            while (DoStep() != Steps.End){}
+            while (DoStep() != Steps.End) { }
             return AgentsTasks;
         }
 
         /// <summary>
-        /// Returns iterations that can be used to visualise the algorithm
+        /// Returns iterations that can be used to visualize the algorithm.
         /// </summary>
-        /// <returns>List of iterations of algorithm</returns>
-        public List<HungarianIteration> GetIterations()
+        /// <returns>An enumerable of algorithm iterations.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public IEnumerable<HungarianIteration> GetIterations()
         {
-            var list = new List<HungarianIteration>();
-            var step = Steps.Init;
+            Steps step = Steps.Init;
 
             while (step != Steps.End)
             {
                 step = DoStep();
-                list.Add(new HungarianIteration
-                {
-                    Matrix = (int[,])_costs.Clone(),
-                    Mask = (byte[,])_masks.Clone(),
-                    RowsCovered = (bool[])_rowsCovered.Clone(),
-                    ColsCovered = (bool[])_colsCovered.Clone(),
-                    Step = step
-                });
+
+                yield return new HungarianIteration(
+                    (int[,])_costs.Clone(),
+                    (byte[,])_masks.Clone(),
+                    (bool[])_rowsCovered.Clone(),
+                    (bool[])_colsCovered.Clone(),
+                    step);
             }
-            return list;
         }
-
-
 
         private Steps DoStep()
         {
-
             if (_step == Steps.Init)
             {
                 _height = _costs.GetLength(0);
                 _width = _costs.GetLength(1);
 
-                //Reduse by rows
-                for (var i = 0; i < _height; i++)
+                // Reduce by rows
+                for (int i = 0; i < _height; ++i)
                 {
-                    var min = int.MaxValue;
-                    for (var j = 0; j < _width; j++)
+                    int min = int.MaxValue;
+                    for (int j = 0; j < _width; ++j)
                         min = Math.Min(min, _costs[i, j]);
-                    for (var j = 0; j < _width; j++)
+                    for (int j = 0; j < _width; ++j)
                         _costs[i, j] -= min;
                 }
-                //Set 1 where job assigned
+
+                // Set 1 where job assigned
                 _masks = new byte[_height, _width];
                 _rowsCovered = new bool[_height];
                 _colsCovered = new bool[_width];
 
-                for (var i = 0; i < _height; i++)
+                for (int i = 0; i < _height; ++i)
                 {
-                    for (var j = 0; j < _width; j++)
+                    for (int j = 0; j < _width; ++j)
                     {
                         if (_costs[i, j] == 0 && !_rowsCovered[i] && !_colsCovered[j])
                         {
@@ -100,8 +165,10 @@ namespace QuikGraph.Algorithms.AssigmentProblem
                 _path = new Location[_width * _height];
                 _pathStart = default(Location);
                 _step = Steps.Step1;
+
                 return Steps.Init;
             }
+
             if (_step != Steps.End)
             {
                 switch (_step)
@@ -131,12 +198,15 @@ namespace QuikGraph.Algorithms.AssigmentProblem
                             return currentStep;
                         }
                 }
+
                 return Steps.End;
             }
+
             AgentsTasks = new int[_height];
-            for (var i = 0; i < _height; i++)
+
+            for (int i = 0; i < _height; ++i)
             {
-                for (var j = 0; j < _width; j++)
+                for (int j = 0; j < _width; ++j)
                 {
                     if (_masks[i, j] == 1)
                     {
@@ -145,41 +215,53 @@ namespace QuikGraph.Algorithms.AssigmentProblem
                     }
                 }
             }
+
             return Steps.End;
         }
 
-        private Steps RunStep1(byte[,] masks, bool[] colsCovered, int w, int h)
+        private static Steps RunStep1(
+            [NotNull] byte[,] masks,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height)
         {
-            for (var i = 0; i < h; i++)
+            for (int i = 0; i < height; ++i)
             {
-                for (var j = 0; j < w; j++)
+                for (int j = 0; j < width; ++j)
                 {
                     if (masks[i, j] == 1)
                         colsCovered[j] = true;
                 }
             }
-            var colsCoveredCount = 0;
-            for (var j = 0; j < w; j++)
+
+            int colsCoveredCount = 0;
+            for (int j = 0; j < width; ++j)
             {
                 if (colsCovered[j])
                     colsCoveredCount++;
             }
-            return colsCoveredCount == h ? Steps.End : Steps.Step2;
+
+            return colsCoveredCount == height ? Steps.End : Steps.Step2;
         }
 
-
-        private Steps RunStep2(int[,] costs, byte[,] masks, bool[] rowsCovered, bool[] colsCovered, int w, int h,
+        private static Steps RunStep2(
+            [NotNull] int[,] costs,
+            [NotNull] byte[,] masks,
+            [NotNull] bool[] rowsCovered,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height,
             ref Location pathStart)
         {
-            // Search for another assigment
-            var loc = FindZero(costs, rowsCovered, colsCovered, w, h);
+            // Search for another assignment
+            Location loc = FindZero(costs, rowsCovered, colsCovered, width, height);
+
             // If there is not another options we should change matrix
             if (loc.Row == -1)
-            {
                 return Steps.Step4;
-            }
+
             masks[loc.Row, loc.Column] = 2;
-            var starCol = FindStarInRow(masks, w, loc.Row);
+            int starCol = FindStarInRow(masks, width, loc.Row);
             if (starCol != -1)
             {
                 rowsCovered[loc.Row] = true;
@@ -190,37 +272,52 @@ namespace QuikGraph.Algorithms.AssigmentProblem
                 pathStart = loc;
                 return Steps.Step3;
             }
+
             return Steps.Step2;
         }
 
 
-        private Steps RunStep3(byte[,] masks, bool[] rowsCovered, bool[] colsCovered, int w, int h,
-            Location[] path, Location pathStart)
+        private static Steps RunStep3(
+            [NotNull] byte[,] masks,
+            [NotNull] bool[] rowsCovered,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height,
+            [NotNull] Location[] path,
+            Location pathStart)
         {
-            var pathIndex = 0;
+            int pathIndex = 0;
             path[0] = pathStart;
-            var row = FindStarInColumn(masks, h, path[pathIndex].Column);
+            int row = FindStarInColumn(masks, height, path[pathIndex].Column);
             while (row != -1)
             {
-                pathIndex++;
+                ++pathIndex;
                 path[pathIndex] = new Location(row, path[pathIndex - 1].Column);
-                var col = FindPrimeInRow(masks, w, path[pathIndex].Row);
-                pathIndex++;
+                int col = FindPrimeInRow(masks, width, path[pathIndex].Row);
+
+                ++pathIndex;
                 path[pathIndex] = new Location(path[pathIndex - 1].Row, col);
-                row = FindStarInColumn(masks, h, path[pathIndex].Column);
+                row = FindStarInColumn(masks, height, path[pathIndex].Column);
             }
+
             ConvertPath(masks, path, pathIndex + 1);
-            ClearCovers(rowsCovered, colsCovered, w, h);
-            ClearPrimes(masks, w, h);
+            ClearCovers(rowsCovered, colsCovered, width, height);
+            ClearPrimes(masks, width, height);
+
             return Steps.Step1;
         }
 
-        private Steps RunStep4(int[,] costs, bool[] rowsCovered, bool[] colsCovered, int w, int h)
+        private static Steps RunStep4(
+            [NotNull] int[,] costs,
+            [NotNull] bool[] rowsCovered,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height)
         {
-            var minValue = FindMinimum(costs, rowsCovered, colsCovered, w, h);
-            for (var i = 0; i < h; i++)
+            int minValue = FindMinimum(costs, rowsCovered, colsCovered, width, height);
+            for (int i = 0; i < height; ++i)
             {
-                for (var j = 0; j < w; j++)
+                for (int j = 0; j < width; ++j)
                 {
                     if (rowsCovered[i])
                         costs[i, j] += minValue;
@@ -228,12 +325,16 @@ namespace QuikGraph.Algorithms.AssigmentProblem
                         costs[i, j] -= minValue;
                 }
             }
+
             return Steps.Step2;
         }
 
-        private void ConvertPath(byte[,] masks, Location[] path, int pathLength)
+        private static void ConvertPath(
+            [NotNull] byte[,] masks,
+            [NotNull] Location[] path,
+            int pathLength)
         {
-            for (var i = 0; i < pathLength; i++)
+            for (int i = 0; i < pathLength; ++i)
             {
                 switch (masks[path[i].Row, path[i].Column])
                 {
@@ -247,78 +348,108 @@ namespace QuikGraph.Algorithms.AssigmentProblem
             }
         }
 
-        private Location FindZero(int[,] costs, bool[] rowsCovered, bool[] colsCovered,
-            int w, int h)
+        private static Location FindZero(
+            [NotNull] int[,] costs,
+            [NotNull] bool[] rowsCovered,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height)
         {
-            for (var i = 0; i < h; i++)
+            for (int i = 0; i < height; ++i)
             {
-                for (var j = 0; j < w; j++)
+                for (int j = 0; j < width; ++j)
                 {
                     if (costs[i, j] == 0 && !rowsCovered[i] && !colsCovered[j])
                         return new Location(i, j);
                 }
             }
-            return new Location(-1, -1);
+
+            return Location.InvalidLocation;
         }
 
-        private int FindMinimum(int[,] costs, bool[] rowsCovered, bool[] colsCovered, int w, int h)
+        private static int FindMinimum(
+            [NotNull] int[,] costs,
+            [NotNull] bool[] rowsCovered,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height)
         {
-            var minValue = int.MaxValue;
-            for (var i = 0; i < h; i++)
+            int minValue = int.MaxValue;
+            for (int i = 0; i < height; ++i)
             {
-                for (var j = 0; j < w; j++)
+                for (int j = 0; j < width; ++j)
                 {
                     if (!rowsCovered[i] && !colsCovered[j])
                         minValue = Math.Min(minValue, costs[i, j]);
                 }
             }
+
             return minValue;
         }
 
-        private int FindStarInRow(byte[,] masks, int w, int row)
+        private static int FindStarInRow(
+            [NotNull] byte[,] masks,
+            int width,
+            int row)
         {
-            for (var j = 0; j < w; j++)
+            for (int j = 0; j < width; ++j)
             {
                 if (masks[row, j] == 1)
                     return j;
             }
+
             return -1;
         }
 
-        private int FindStarInColumn(byte[,] masks, int h, int col)
+        private static int FindStarInColumn(
+            [NotNull] byte[,] masks,
+            int height,
+            int column)
         {
-            for (var i = 0; i < h; i++)
+            for (int i = 0; i < height; ++i)
             {
-                if (masks[i, col] == 1)
+                if (masks[i, column] == 1)
                     return i;
             }
+
             return -1;
         }
 
-        private int FindPrimeInRow(byte[,] masks, int w, int row)
+        private static int FindPrimeInRow(
+            [NotNull] byte[,] masks,
+            int width,
+            int row)
         {
-            for (var j = 0; j < w; j++)
+            for (int j = 0; j < width; ++j)
             {
                 if (masks[row, j] == 2)
                     return j;
             }
+
             return -1;
         }
 
 
-        private void ClearCovers(bool[] rowsCovered, bool[] colsCovered, int w, int h)
+        private static void ClearCovers(
+            [NotNull] bool[] rowsCovered,
+            [NotNull] bool[] colsCovered,
+            int width,
+            int height)
         {
-            for (var i = 0; i < h; i++)
+            for (int i = 0; i < height; ++i)
                 rowsCovered[i] = false;
-            for (var j = 0; j < w; j++)
+            for (int j = 0; j < width; ++j)
                 colsCovered[j] = false;
         }
 
-        private void ClearPrimes(byte[,] masks, int w, int h)
+        private static void ClearPrimes(
+            [NotNull] byte[,] masks,
+            int width,
+            int height)
         {
-            for (var i = 0; i < h; i++)
+            for (int i = 0; i < height; ++i)
             {
-                for (var j = 0; j < w; j++)
+                for (int j = 0; j < width; ++j)
                 {
                     if (masks[i, j] == 2)
                         masks[i, j] = 0;
@@ -327,17 +458,19 @@ namespace QuikGraph.Algorithms.AssigmentProblem
         }
 
         ///<summary>
-        ///Represents coordinates: raw and column number
+        /// Represents coordinates: raw and column number.
         /// </summary>
         private struct Location
         {
-            public int Row;
-            public int Column;
+            public static readonly Location InvalidLocation = new Location(-1, -1);
+
+            public int Row { get; }
+            public int Column { get; }
 
             public Location(int row, int col)
             {
-                this.Row = row;
-                this.Column = col;
+                Row = row;
+                Column = col;
             }
         }
     }

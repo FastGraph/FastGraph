@@ -2,105 +2,116 @@
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Condensation
 {
-    public sealed class EdgeMergeCondensationGraphAlgorithm<TVertex,TEdge> :
-        AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
+    /// <summary>
+    /// Algorithm that condensate edges of a graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class EdgeMergeCondensationGraphAlgorithm<TVertex, TEdge> : AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IMutableBidirectionalGraph<
-            TVertex, 
-            MergedEdge<TVertex,TEdge>
-            > condensatedGraph;
-        private VertexPredicate<TVertex> vertexPredicate;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeMergeCondensationGraphAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="condensedGraph">Graph that will contains the condensation of the <paramref name="visitedGraph"/>.</param>
+        /// <param name="vertexPredicate">Vertex predicate used to filter the vertices to put in the condensed graph.</param>
         public EdgeMergeCondensationGraphAlgorithm(
-                IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-                IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex,TEdge>> condensatedGraph,
-                VertexPredicate<TVertex> vertexPredicate
-            )
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate)
             : base(visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(condensatedGraph != null);
+            Contract.Requires(condensedGraph != null);
             Contract.Requires(vertexPredicate != null);
 #endif
 
-            this.condensatedGraph = condensatedGraph;
-            this.vertexPredicate = vertexPredicate;
+            CondensedGraph = condensedGraph;
+            VertexPredicate = vertexPredicate;
         }
 
-        public IMutableBidirectionalGraph<TVertex,
-            MergedEdge<TVertex,TEdge>
-            > CondensatedGraph
-        {
-            get { return this.condensatedGraph; }
-        }
+        /// <summary>
+        /// Condensed graph.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensedGraph { get; }
 
-        public VertexPredicate<TVertex> VertexPredicate
-        {
-            get { return this.vertexPredicate; }
-        }
+        /// <summary>
+        /// Vertex predicate used to filter the vertices to put in the condensed graph.
+        /// </summary>
+        [NotNull]
+        public VertexPredicate<TVertex> VertexPredicate { get; }
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            // adding vertices to the new graph
-            // and pusing filtered vertices in queue
-            Queue<TVertex> filteredVertices = new Queue<TVertex>();
-            foreach (var v in this.VisitedGraph.Vertices)
+            // Adding vertices to the new graph
+            // and pushing filtered vertices in queue
+            var filteredVertices = new Queue<TVertex>();
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                this.CondensatedGraph.AddVertex(v);
-                if (!this.VertexPredicate(v))
-                    filteredVertices.Enqueue(v);
+                CondensedGraph.AddVertex(vertex);
+                if (!VertexPredicate(vertex))
+                    filteredVertices.Enqueue(vertex);
             }
 
-            // adding all edges
-            foreach (var edge in this.VisitedGraph.Edges)
+            // Adding all edges
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                MergedEdge<TVertex, TEdge> mergedEdge = new MergedEdge<TVertex, TEdge>(edge.Source, edge.Target);
+                var mergedEdge = new MergedEdge<TVertex, TEdge>(edge.Source, edge.Target);
                 mergedEdge.Edges.Add(edge);
 
-                this.CondensatedGraph.AddEdge(mergedEdge);
+                CondensedGraph.AddEdge(mergedEdge);
             }
 
-            // remove vertices
+            // Remove vertices
             while (filteredVertices.Count > 0)
             {
                 TVertex filteredVertex = filteredVertices.Dequeue();
 
-                // do the cross product between inedges and outedges
+                // Do the cross product between in-edges and out-edges
                 MergeVertex(filteredVertex);
             }
         }
 
-        private void MergeVertex(TVertex v)
+        #endregion
+
+        private void MergeVertex([NotNull] TVertex vertex)
         {
-            // get in edges and outedge
-            List<MergedEdge<TVertex, TEdge>> inEdges =
-                new List<MergedEdge<TVertex, TEdge>>(this.CondensatedGraph.InEdges(v));
-            List<MergedEdge<TVertex, TEdge>> outEdges =
-                new List<MergedEdge<TVertex, TEdge>>(this.CondensatedGraph.OutEdges(v));
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
 
-            // remove vertex
-            this.CondensatedGraph.RemoveVertex(v);
+            // Get in-edges and out-edges
+            var inEdges = new List<MergedEdge<TVertex, TEdge>>(CondensedGraph.InEdges(vertex));
+            var outEdges = new List<MergedEdge<TVertex, TEdge>>(CondensedGraph.OutEdges(vertex));
 
-            // add condensated edges
-            for (int i = 0; i < inEdges.Count; ++i)
+            // Remove vertex
+            CondensedGraph.RemoveVertex(vertex);
+
+            // Add condensed edges
+            foreach (MergedEdge<TVertex, TEdge> inEdge in inEdges)
             {
-                MergedEdge<TVertex, TEdge> inEdge = inEdges[i];
-                if (inEdge.Source.Equals(v))
+                if (inEdge.Source.Equals(vertex))
                     continue;
 
-                for (int j = 0; j < outEdges.Count; ++j)
+                foreach (MergedEdge<TVertex, TEdge> outEdge in outEdges)
                 {
-                    MergedEdge<TVertex, TEdge> outEdge = outEdges[j];
-                    if (outEdge.Target.Equals(v))
+                    if (outEdge.Target.Equals(vertex))
                         continue;
 
-                    MergedEdge<TVertex, TEdge> newEdge =
-                        MergedEdge<TVertex, TEdge>.Merge(inEdge, outEdge);
-                    this.CondensatedGraph.AddEdge(newEdge);
+                    var newEdge = MergedEdge<TVertex, TEdge>.Merge(inEdge, outEdge);
+                    CondensedGraph.AddEdge(newEdge);
                 }
             }
         }
