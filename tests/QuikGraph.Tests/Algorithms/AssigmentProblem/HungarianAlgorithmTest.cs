@@ -1,34 +1,34 @@
-﻿using NUnit.Framework;
-using QuikGraph.Algorithms.AssigmentProblem;
-using QuikGraph.Tests;
+﻿using System.Linq;
+using NUnit.Framework;
+using QuikGraph.Algorithms.Assignment;
 
-namespace QuikGraph.Tests.Algorithms.AssigmentProblem
+namespace QuikGraph.Tests.Algorithms.Assignment
 {
     [TestFixture]
     internal class HungarianAlgorithmTest : QuikGraphUnitTests
     {
         [Test]
-        public void RunCheck()
+        public void Compute()
         {
-            var matrix = new[,] { { 1, 2, 3 }, { 3, 3, 3 }, { 3, 3, 2 } };
+            int[,] matrix = { { 1, 2, 3 }, { 3, 3, 3 }, { 3, 3, 2 } };
             var algorithm = new HungarianAlgorithm(matrix);
-            var res = algorithm.Run();
+            int[] res = algorithm.Compute();
             Assert.AreEqual(res[0], 0);
             Assert.AreEqual(res[1], 1);
             Assert.AreEqual(res[2], 2);
         }
 
         [Test]
-        public void IterationsCheck()
+        public void GetIterations()
         {
-            var matrix = new[,] { { 1, 2, 3 }, { 3, 3, 3 }, { 3, 3, 2 } };
+            int[,] matrix = { { 1, 2, 3 }, { 3, 3, 3 }, { 3, 3, 2 } };
             var algorithm = new HungarianAlgorithm(matrix);
-            var iterations = algorithm.GetIterations();
-            var res = algorithm.AgentsTasks;
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+            int[] res = algorithm.AgentsTasks;
             Assert.AreEqual(res[0], 0);
             Assert.AreEqual(res[1], 1);
             Assert.AreEqual(res[2], 2);
-            Assert.AreEqual(iterations.Count, 3);
+            Assert.AreEqual(iterations.Length, 3);
         }
     }
 }
