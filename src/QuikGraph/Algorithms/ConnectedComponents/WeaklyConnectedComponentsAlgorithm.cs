@@ -4,11 +4,22 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.ConnectedComponents
 {
+    /// <summary>
+    /// Algorithm that computes weakly connected components of a graph.
+    /// </summary>
+    /// <remarks>
+    /// A weakly connected component is a maximal sub graph of a graph such that for
+    /// every pair of vertices (u,v) in the sub graph, there is an undirected path from u to v
+    /// and a directed path from v to u.
+    /// </remarks>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -17,66 +28,75 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly IDictionary<TVertex, int> components;
-        private readonly Dictionary<int, int> componentEquivalences = new Dictionary<int, int>();
-        private int componentCount = 0;
-        private int currentComponent = 0;
-        private List<BidirectionalGraph<TVertex, TEdge>> graphs;
+        [NotNull]
+        private readonly Dictionary<int, int> _componentEquivalences = new Dictionary<int, int>();
 
-        public WeaklyConnectedComponentsAlgorithm(IVertexListGraph<TVertex, TEdge> visitedGraph)
+        private int _currentComponent;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeaklyConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public WeaklyConnectedComponentsAlgorithm(
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeaklyConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="components">Graph components.</param>
         public WeaklyConnectedComponentsAlgorithm(
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, int> components)
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, int> components)
             : this(null, visitedGraph, components)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeaklyConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="components">Graph components.</param>
         public WeaklyConnectedComponentsAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, int> components)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(components != null);
 #endif
 
-            this.components = components;
+            Components = components;
         }
 
-        public IDictionary<TVertex, int> Components
-        {
-            get { return this.components; }
-        }
+        [ItemNotNull]
+        private List<BidirectionalGraph<TVertex, TEdge>> _graphs;
 
-        public int ComponentCount
-        {
-            get { return this.componentCount; }
-        }
-
-        protected override void Initialize()
-        {
-            this.componentCount = 0;
-            this.currentComponent = 0;
-            this.componentEquivalences.Clear();
-            this.components.Clear();
-        }
-
+        /// <summary>
+        /// Weakly connected components.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
         public List<BidirectionalGraph<TVertex, TEdge>> Graphs
         {
             get
             {
-                int i;
-                graphs = new List<BidirectionalGraph<TVertex, TEdge>>(componentCount + 1);
-                for (i = 0; i < componentCount; i++)
+                _graphs = new List<BidirectionalGraph<TVertex, TEdge>>(ComponentCount + 1);
+                for (int i = 0; i < ComponentCount; ++i)
                 {
-                    graphs.Add(new BidirectionalGraph<TVertex, TEdge>());
+                    _graphs.Add(new BidirectionalGraph<TVertex, TEdge>());
                 }
-                foreach (TVertex componentName in components.Keys)
+
+                foreach (TVertex componentName in Components.Keys)
                 {
-                    graphs[components[componentName]].AddVertex(componentName);
+                    _graphs[Components[componentName]].AddVertex(componentName);
                 }
 
                 foreach (TVertex vertex in VisitedGraph.Vertices)
@@ -84,118 +104,145 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                     foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
                     {
 
-                        if (components[vertex] == components[edge.Target])
+                        if (Components[vertex] == Components[edge.Target])
                         {
-                            graphs[components[vertex]].AddEdge(edge);
+                            _graphs[Components[vertex]].AddEdge(edge);
                         }
                     }
                 }
-                return graphs;
+
+                return _graphs;
             }
 
         }
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            ComponentCount = 0;
+            _currentComponent = 0;
+            _componentEquivalences.Clear();
+            Components.Clear();
+        }
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Ensures(0 <= this.ComponentCount && this.ComponentCount <= this.VisitedGraph.VertexCount);
-            Contract.Ensures(Enumerable.All(this.VisitedGraph.Vertices,
-                v => 0 <= this.Components[v] && this.Components[v] < this.ComponentCount));
+            Contract.Ensures(
+                0 <= ComponentCount && ComponentCount <= VisitedGraph.VertexCount);
+            Contract.Ensures(VisitedGraph.Vertices.All(
+                vertex => 0 <= Components[vertex] && Components[vertex] < ComponentCount));
 #endif
 
-            // shortcut for empty graph
-            if (this.VisitedGraph.IsVerticesEmpty)
+            // Shortcut for empty graph
+            if (VisitedGraph.IsVerticesEmpty)
                 return;
 
-            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(this.VisitedGraph);
+            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(VisitedGraph);
             try
             {
-                dfs.StartVertex += dfs_StartVertex;
-                dfs.TreeEdge += dfs_TreeEdge;
-                dfs.ForwardOrCrossEdge += dfs_ForwardOrCrossEdge;
+                dfs.StartVertex += OnVertexStarted;
+                dfs.TreeEdge += OnEdgeDiscovered;
+                dfs.ForwardOrCrossEdge += OnForwardOrCrossEdge;
 
                 dfs.Compute();
             }
             finally
             {
-                dfs.StartVertex -= dfs_StartVertex;
-                dfs.TreeEdge -= dfs_TreeEdge;
-                dfs.ForwardOrCrossEdge -= dfs_ForwardOrCrossEdge;
+                dfs.StartVertex -= OnVertexStarted;
+                dfs.TreeEdge -= OnEdgeDiscovered;
+                dfs.ForwardOrCrossEdge -= OnForwardOrCrossEdge;
             }
 
-            // updating component numbers
-            foreach (var v in this.VisitedGraph.Vertices)
+            // Updating component numbers
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                int component = this.components[v];
-                int equivalent = this.GetComponentEquivalence(component);
+                int component = Components[vertex];
+                int equivalent = GetComponentEquivalence(component);
                 if (component != equivalent)
-                    this.components[v] = equivalent;
+                    Components[vertex] = equivalent;
             }
-            this.componentEquivalences.Clear();
+            _componentEquivalences.Clear();
         }
 
-        void dfs_StartVertex(TVertex v)
+        #endregion
+
+        #region IConnectedComponentAlgorithm<TVertex,TEdge,TGraph>
+
+        /// <inheritdoc />
+        public int ComponentCount { get; private set; }
+
+        /// <inheritdoc />
+        public IDictionary<TVertex, int> Components { get; }
+
+        #endregion
+
+        private void OnVertexStarted([NotNull] TVertex vertex)
         {
-            // we are looking on a new tree
-            this.currentComponent = this.componentEquivalences.Count;
-            this.componentEquivalences.Add(this.currentComponent, this.currentComponent);
-            this.componentCount++;
-            this.components.Add(v, this.currentComponent);
+            // We are looking on a new tree
+            _currentComponent = _componentEquivalences.Count;
+            _componentEquivalences.Add(_currentComponent, _currentComponent);
+            ++ComponentCount;
+            Components.Add(vertex, _currentComponent);
         }
 
-        void dfs_TreeEdge(TEdge e)
+        private void OnEdgeDiscovered([NotNull] TEdge edge)
         {
-            // new edge, we store with the current component number
-            this.components.Add(e.Target, this.currentComponent);
+            // New edge, we store with the current component number
+            Components.Add(edge.Target, _currentComponent);
+        }
+
+        private void OnForwardOrCrossEdge([NotNull] TEdge edge)
+        {
+            // We have touched another tree, updating count and current component
+            int otherComponent = GetComponentEquivalence(Components[edge.Target]);
+            if (otherComponent != _currentComponent)
+            {
+                --ComponentCount;
+
+#if SUPPORTS_CONTRACTS
+                Contract.Assert(ComponentCount > 0);
+#endif
+                if (_currentComponent > otherComponent)
+                {
+                    _componentEquivalences[_currentComponent] = otherComponent;
+                    _currentComponent = otherComponent;
+                }
+                else
+                {
+                    _componentEquivalences[otherComponent] = _currentComponent;
+                }
+            }
         }
 
         private int GetComponentEquivalence(int component)
         {
             int equivalent = component;
-            int temp = this.componentEquivalences[equivalent];
+            int temp = _componentEquivalences[equivalent];
             bool compress = false;
             while (temp != equivalent)
             {
                 equivalent = temp;
-                temp = this.componentEquivalences[equivalent];
+                temp = _componentEquivalences[equivalent];
                 compress = true;
             }
 
-            // path compression
+            // Path compression
             if (compress)
             {
                 int c = component;
-                temp = this.componentEquivalences[c];
+                temp = _componentEquivalences[c];
                 while (temp != equivalent)
                 {
-                    temp = this.componentEquivalences[c];
-                    this.componentEquivalences[c] = equivalent;
+                    temp = _componentEquivalences[c];
+                    _componentEquivalences[c] = equivalent;
                 }
             }
 
             return equivalent;
-        }
-
-        void dfs_ForwardOrCrossEdge(TEdge e)
-        {
-            // we have touched another tree, updating count and current component
-            int otherComponent = this.GetComponentEquivalence(this.components[e.Target]);
-            if (otherComponent != this.currentComponent)
-            {
-                this.componentCount--;
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(this.componentCount > 0);
-#endif
-                if (this.currentComponent > otherComponent)
-                {
-                    this.componentEquivalences[this.currentComponent] = otherComponent;
-                    this.currentComponent = otherComponent;
-                }
-                else
-                {
-                    this.componentEquivalences[otherComponent] = this.currentComponent;
-                }
-            }
         }
     }
 }

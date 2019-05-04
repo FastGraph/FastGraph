@@ -1,233 +1,304 @@
 ﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Exploration
 {
-    public sealed class CloneableVertexGraphExplorerAlgorithm<TVertex,TEdge> 
+    /// <summary>
+    /// Algorithm that explores a graph starting from a given vertex.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeSet<TVertex, TEdge>>
-        , ITreeBuilderAlgorithm<TVertex,TEdge>
+        , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TVertex : ICloneable, IComparable<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        private IList<ITransitionFactory<TVertex, TEdge>> transitionFactories = new List<ITransitionFactory<TVertex, TEdge>>();
-
-        private Queue<TVertex> unexploredVertices = new Queue<TVertex>();
-
-        private VertexPredicate<TVertex> addVertexPredicate = v => true;
-        private VertexPredicate<TVertex> exploreVertexPredicate = v => true;
-        private EdgePredicate<TVertex, TEdge> addEdgePredicate = e => true;
-        private Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> finishedPredicate =
-            new DefaultFinishedPredicate().Test;
-        private bool finishedSuccessfully;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CloneableVertexGraphExplorerAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public CloneableVertexGraphExplorerAlgorithm(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph
-            )
+            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CloneableVertexGraphExplorerAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public CloneableVertexGraphExplorerAlgorithm(
-            IAlgorithmComponent host,
-            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph
-            )
-            :base(host, visitedGraph)
-        {}
-
-        public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            : base(host, visitedGraph)
         {
-            get { return this.transitionFactories; }
         }
 
-        public VertexPredicate<TVertex> AddVertexPredicate
-        {
-            get { return this.addVertexPredicate; }
-            set { this.addVertexPredicate = value; }
-        }
+        /// <summary>
+        /// Transitions factories.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories { get; } =
+            new List<ITransitionFactory<TVertex, TEdge>>();
 
-        public VertexPredicate<TVertex> ExploreVertexPredicate
-        {
-            get { return this.exploreVertexPredicate; }
-            set { this.exploreVertexPredicate = value; }
-        }
+        /// <summary>
+        /// Predicate that a vertex must match to be added in the graph.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public VertexPredicate<TVertex> AddVertexPredicate { get; set; } = vertex => true;
 
-        public EdgePredicate<TVertex, TEdge> AddEdgePredicate
-        {
-            get { return this.addEdgePredicate; }
-            set { this.addEdgePredicate = value; }
-        }
+        /// <summary>
+        /// Predicate that checks if a given vertex should be explored or ignored.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public VertexPredicate<TVertex> ExploreVertexPredicate { get; set; } = vertex => true;
 
-        public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate
-        {
-            get { return this.finishedPredicate; }
-            set { this.finishedPredicate = value; }
-        }
+        /// <summary>
+        /// Predicate that an edge must match to be added in the graph.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public EdgePredicate<TVertex, TEdge> AddEdgePredicate { get; set; } = edge => true;
 
-        public IEnumerable<TVertex> UnexploredVertices
-        {
-            get { return this.unexploredVertices; }
-        }
+        /// <summary>
+        /// Predicate that checks if the exploration is finished or not.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate { get; set; } =
+            new DefaultFinishedPredicate().Test;
 
-        public bool FinishedSuccessfully
-        {
-            get { return this.finishedSuccessfully; }
-        }
+        [NotNull, ItemNotNull]
+        private readonly Queue<TVertex> _unExploredVertices = new Queue<TVertex>();
 
+        /// <summary>
+        /// Gets the enumeration of unexplored vertices.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public IEnumerable<TVertex> UnExploredVertices => _unExploredVertices.AsEnumerable();
+
+        /// <summary>
+        /// Indicates if the algorithm finished successfully or not.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public bool FinishedSuccessfully { get; private set; }
+
+        #region Events
+
+        /// <summary>
+        /// Fired when a vertex is discovered.
+        /// </summary>
         public event VertexAction<TVertex> DiscoverVertex;
-        private void OnDiscoverVertex(TVertex v)
+
+        private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(v != null);
+            Contract.Requires(vertex != null);
 #endif
 
-            this.VisitedGraph.AddVertex(v);
-            this.unexploredVertices.Enqueue(v);
+            VisitedGraph.AddVertex(vertex);
+            _unExploredVertices.Enqueue(vertex);
 
-            var eh = this.DiscoverVertex;
-            if (eh != null)
-                eh(v);
+            DiscoverVertex?.Invoke(vertex);
         }
-        public event EdgeAction<TVertex,TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge e)
+
+        /// <summary>
+        /// Fired when an edge is encountered.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> TreeEdge;
+
+        private void OnTreeEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(e);
+            TreeEdge?.Invoke(edge);
         }
+
+        /// <summary>
+        /// Fired when a back edge is encountered.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> BackEdge;
-        private void OnBackEdge(TEdge e)
+
+        private void OnBackEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.BackEdge;
-            if (eh != null)
-                eh(e);
+            BackEdge?.Invoke(edge);
         }
+
+        /// <summary>
+        /// Fired when an edge was skipped from exploration due to failed vertex or edge predicate check.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> EdgeSkipped;
-        private void OnEdgeSkipped(TEdge e)
+
+        private void OnEdgeSkipped([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.EdgeSkipped;
-            if (eh != null)
-                eh(e);
+            EdgeSkipped?.Invoke(edge);
         }
 
-        protected override void  InternalCompute()
+        #endregion
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void InternalCompute()
         {
-            TVertex rootVertex;
-            if (!this.TryGetRootVertex(out rootVertex))
-                throw new InvalidOperationException("RootVertex is not specified");
+            if (!TryGetRootVertex(out TVertex rootVertex))
+                throw new InvalidOperationException("RootVertex is not specified.");
 
-            this.VisitedGraph.Clear();
-            this.unexploredVertices.Clear();
-            this.finishedSuccessfully = false;
+            VisitedGraph.Clear();
+            _unExploredVertices.Clear();
+            FinishedSuccessfully = false;
 
-            if (!this.AddVertexPredicate(rootVertex))
-                throw new ArgumentException("StartVertex does not satisfy AddVertexPredicate");
-            this.OnDiscoverVertex(rootVertex);
+            if (!AddVertexPredicate(rootVertex))
+                throw new ArgumentException($"StartVertex does not satisfy the {nameof(AddVertexPredicate)}.");
+            OnDiscoverVertex(rootVertex);
 
-            while (unexploredVertices.Count > 0)
+            while (_unExploredVertices.Count > 0)
             {
-                // are we done yet ?
-                if (!this.FinishedPredicate(this))
+                // Are we done yet?
+                if (!FinishedPredicate(this))
                 {
-                    this.finishedSuccessfully = false;
+                    FinishedSuccessfully = false;
                     return;
                 }
 
-                TVertex current = unexploredVertices.Dequeue();
+                TVertex current = _unExploredVertices.Dequeue();
                 TVertex clone = (TVertex)current.Clone();
 
-                // let's make sure we want to explore this one
-                if (!this.ExploreVertexPredicate(clone))
+                // Let's make sure we want to explore this one
+                if (!ExploreVertexPredicate(clone))
                     continue;
 
-                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in this.TransitionFactories)
+                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in TransitionFactories)
                 {
                     GenerateFromTransitionFactory(clone, transitionFactory);
                 }
             }
 
-            this.finishedSuccessfully = true;
+            FinishedSuccessfully = true;
         }
 
+        #endregion
+
         private void GenerateFromTransitionFactory(
-            TVertex current,
-            ITransitionFactory<TVertex, TEdge> transitionFactory
-            )
+            [NotNull] TVertex current,
+            [NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(current != null);
+            Contract.Requires(transitionFactory != null);
+#endif
+
             if (!transitionFactory.IsValid(current))
                 return;
 
-            foreach (var transition in transitionFactory.Apply(current))
+            foreach (TEdge transition in transitionFactory.Apply(current))
             {
-                if (    
-                    !this.AddVertexPredicate(transition.Target)
-                 || !this.AddEdgePredicate(transition))
+                if (!AddVertexPredicate(transition.Target)
+                    || !AddEdgePredicate(transition))
                 {
-                    this.OnEdgeSkipped(transition);
+                    OnEdgeSkipped(transition);
                     continue;
                 }
 
-                bool backEdge = this.VisitedGraph.ContainsVertex(transition.Target);
+                bool backEdge = VisitedGraph.ContainsVertex(transition.Target);
                 if (!backEdge)
-                    this.OnDiscoverVertex(transition.Target);
+                    OnDiscoverVertex(transition.Target);
 
-                this.VisitedGraph.AddEdge(transition);
+                VisitedGraph.AddEdge(transition);
                 if (backEdge)
-                    this.OnBackEdge(transition);
+                    OnBackEdge(transition);
                 else
-                    this.OnTreeEdge(transition);
+                    OnTreeEdge(transition);
             }
         }
 
+        /// <summary>
+        /// Default implementation of the finished predicate.
+        /// </summary>
         public sealed class DefaultFinishedPredicate
         {
-            private int maxVertexCount = 1000;
-            private int maxEdgeCount = 1000;
-
+            /// <summary>
+            /// Initializes a new instance of the <see cref="DefaultFinishedPredicate"/> class.
+            /// </summary>
             public DefaultFinishedPredicate()
-            { }
-
-            public DefaultFinishedPredicate(
-                int maxVertexCount,
-                int maxEdgeCount)
             {
-                this.maxVertexCount = maxVertexCount;
-                this.maxEdgeCount = maxEdgeCount;
             }
 
-            public int MaxVertexCount
+            /// <summary>
+            /// Initializes a new instance of the <see cref="DefaultFinishedPredicate"/> class.
+            /// </summary>
+            /// <param name="maxVertexCount">Maximum number of vertices.</param>
+            /// <param name="maxEdgeCount">Maximum number of edges.</param>
+            public DefaultFinishedPredicate(int maxVertexCount, int maxEdgeCount)
             {
-                get { return this.maxVertexCount; }
-                set { this.maxVertexCount = value; }
+                MaxVertexCount = maxVertexCount;
+                MaxEdgeCount = maxEdgeCount;
             }
 
-            public int MaxEdgeCount
-            {
-                get { return this.maxEdgeCount; }
-                set { this.maxEdgeCount = value; }
-            }
+            /// <summary>
+            /// Maximum number of vertices (for exploration).
+            /// </summary>
+            public int MaxVertexCount { get; set; } = 1000;
 
-            public bool Test(CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> t)
+            /// <summary>
+            /// Maximum number of edges (for exploration).
+            /// </summary>
+            public int MaxEdgeCount { get; set; } = 1000;
+
+            /// <summary>
+            /// Checks if the given <paramref name="algorithm"/> explorer has finished or not.
+            /// </summary>
+            /// <param name="algorithm">Algorithm explorer to check.</param>
+            /// <returns>True if the explorer can continue to explore, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+            [System.Diagnostics.Contracts.Pure]
+#endif
+            [JetBrains.Annotations.Pure]
+            public bool Test(CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
             {
-                if (t.VisitedGraph.VertexCount > this.MaxVertexCount)
+                if (algorithm.VisitedGraph.VertexCount > MaxVertexCount)
                     return false;
-                if (t.VisitedGraph.EdgeCount > this.MaxEdgeCount)
+
+                if (algorithm.VisitedGraph.EdgeCount > MaxEdgeCount)
                     return false;
+
                 return true;
             }
         }

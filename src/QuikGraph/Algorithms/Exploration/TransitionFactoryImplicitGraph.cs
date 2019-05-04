@@ -1,132 +1,136 @@
 ﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.Exploration
 {
-    public sealed class TransitionFactoryImplicitGraph<TVertex,TEdge> 
-        : IImplicitGraph<TVertex,TEdge>
+    /// <summary>
+    /// Implementation for a graph data structure that support growth
+    /// by transitions made by out edges of its vertices.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
+    public sealed class TransitionFactoryImplicitGraph<TVertex, TEdge> : IImplicitGraph<TVertex, TEdge>
         where TVertex : ICloneable
         where TEdge : IEdge<TVertex>
     {
-        private readonly VertexEdgeDictionary<TVertex, TEdge> vertedEdges =
+        [NotNull]
+        private readonly VertexEdgeDictionary<TVertex, TEdge> _verticesEdgesCache =
             new VertexEdgeDictionary<TVertex, TEdge>();
-        private readonly List<ITransitionFactory<TVertex, TEdge>> transitionFactories
-            = new List<ITransitionFactory<TVertex, TEdge>>();
-        private VertexPredicate<TVertex> successorVertexPredicate
-            = v => true;
-        private EdgePredicate<TVertex, TEdge> successorEdgePredicate
-            = e => true;
 
-        public TransitionFactoryImplicitGraph()
-        {}
-
-        public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories
-        {
-            get { return this.transitionFactories; }
-        }
-
-        public VertexPredicate<TVertex> SuccessorVertexPredicate
-        {
-            get { return this.successorVertexPredicate; }
-            set { this.successorVertexPredicate = value; }
-        }
-
-        public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate
-        {
-            get { return this.successorEdgePredicate; }
-            set { this.successorEdgePredicate = value; }
-        }
-
+        /// <summary>
+        /// Transitions factories.
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public bool IsOutEdgesEmpty(TVertex v)
-        {
-            return this.OutDegree(v) == 0;
-        }
+        [NotNull, ItemNotNull]
+        public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories { get; } =
+            new List<ITransitionFactory<TVertex, TEdge>>();
 
+        /// <summary>
+        /// Predicate that a vertex must match to be the successor (target) of an edge.
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
-        public int OutDegree(TVertex v)
-        {
-            int i = 0;
-            foreach(TEdge edge in this.OutEdges(v))
-                i++;
-            return i;
-        }
+        [NotNull]
+        public VertexPredicate<TVertex> SuccessorVertexPredicate { get; set; } = vertex => true;
 
+        /// <summary>
+        /// Predicate that an edge must match to be the successor of a source vertex.
+        /// </summary>
 #if SUPPORTS_CONTRACTS
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
 #endif
+        [NotNull]
+        public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate { get; set; } = edge => true;
+
+        #region IGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsDirected => true;
+
+        /// <inheritdoc />
+        public bool AllowParallelEdges => true;
+
+        #endregion
+
+        /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
-            return this.vertedEdges.ContainsKey(vertex);
+            return _verticesEdgesCache.ContainsKey(vertex);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public IEnumerable<TEdge> OutEdges(TVertex v)
+        #region IImplicitGraph<TVertex,TEdge>
+
+        /// <inheritdoc />
+        public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            IEdgeList<TVertex, TEdge> edges;
-            if (!this.vertedEdges.TryGetValue(v, out edges))
+            return OutDegree(vertex) == 0;
+        }
+
+        /// <inheritdoc />
+        public int OutDegree(TVertex vertex)
+        {
+            return OutEdges(vertex).Count();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
+        {
+            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
             {
                 edges = new EdgeList<TVertex, TEdge>();
-                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory
-                    in this.TransitionFactories)
+                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in TransitionFactories)
                 {
-                    if (!transitionFactory.IsValid(v))
+                    if (!transitionFactory.IsValid(vertex))
                         continue;
 
-                    foreach (var edge in transitionFactory.Apply(v))
+                    foreach (TEdge edge in transitionFactory.Apply(vertex))
                     {
-                        if (this.SuccessorVertexPredicate(edge.Target) &&
-                            this.SuccessorEdgePredicate(edge))
+                        if (SuccessorVertexPredicate(edge.Target)
+                            && SuccessorEdgePredicate(edge))
+                        {
                             edges.Add(edge);
+                        }
                     }
                 }
-                this.vertedEdges[v] = edges;
+
+                _verticesEdgesCache[vertex] = edges;
             }
+
             return edges;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public bool TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
+        /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            edges = this.OutEdges(v);
-            return true;
+            TEdge[] outEdges = OutEdges(vertex).ToArray();
+            edges = outEdges;
+            return outEdges.Length > 0;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
-        public TEdge OutEdge(TVertex v, int index)
+        /// <inheritdoc />
+        public TEdge OutEdge(TVertex vertex, int index)
         {
             int i = 0;
-            foreach (var e in this.OutEdges(v))
+            foreach (TEdge edge in OutEdges(vertex))
+            {
                 if (i++ == index)
-                    return e;
-            throw new ArgumentOutOfRangeException("index");
+                    return edge;
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
-        public bool IsDirected
-        {
-            get { return true; }
-        }
-
-        public bool AllowParallelEdges
-        {
-            get { return true; }
-        }
-
+        #endregion
     }
 }
 #endif

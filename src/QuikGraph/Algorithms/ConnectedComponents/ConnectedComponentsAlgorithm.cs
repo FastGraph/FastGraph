@@ -5,100 +5,121 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.ConnectedComponents
 {
+    /// <summary>
+    /// Algorithm that computes connected components of a graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class ConnectedComponentsAlgorithm<TVertex, TEdge> :
         AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>,
-        IConnectedComponentAlgorithm<TVertex,TEdge,IUndirectedGraph<TVertex,TEdge>>
+        IConnectedComponentAlgorithm<TVertex, TEdge, IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex, int> components;
-        private int componentCount=0;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public ConnectedComponentsAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            : this(visitedGraph, new Dictionary<TVertex, int>())
+        {
+        }
 
-        public ConnectedComponentsAlgorithm(IUndirectedGraph<TVertex, TEdge> g)
-            :this(g, new Dictionary<TVertex, int>())
-        { }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="components">Graph components.</param>
         public ConnectedComponentsAlgorithm(
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, int> components)
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, int> components)
             : this(null, visitedGraph, components)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="components">Graph components.</param>
         public ConnectedComponentsAlgorithm(
-            IAlgorithmComponent host,
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, int> components)
-            :base(host, visitedGraph)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, int> components)
+            : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(components != null);
 #endif
 
-            this.components = components;
+            Components = components;
         }
 
-        public IDictionary<TVertex,int> Components
-        {
-            get
-            {
-                return this.components;
-            }
-        }
+        #region AlgorithmBase<TGraph>
 
-        public int ComponentCount
-        {
-            get { return this.componentCount; }
-        }
-
-        private void StartVertex(TVertex v)
-        {
-            ++this.componentCount;
-        }
-
-        private void DiscoverVertex(TVertex v)
-        {
-            this.Components[v] = this.componentCount;
-        }
-
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            this.components.Clear();
-            if (this.VisitedGraph.VertexCount == 0)
+            Components.Clear();
+            if (VisitedGraph.VertexCount == 0)
             {
-                this.componentCount = 0;
+                ComponentCount = 0;
                 return;
             }
 
-            this.componentCount = -1;
+            ComponentCount = -1;
             UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
             try
             {
                 dfs = new UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>(
                     this,
-                    this.VisitedGraph,
-                    new Dictionary<TVertex, GraphColor>(this.VisitedGraph.VertexCount)
-                    );
+                    VisitedGraph,
+                    new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount));
 
-                dfs.StartVertex += StartVertex;
-                dfs.DiscoverVertex += DiscoverVertex;
+                dfs.StartVertex += OnVertexStarted;
+                dfs.DiscoverVertex += OnVertexDiscovered;
                 dfs.Compute();
-                ++this.componentCount;
+                ++ComponentCount;
             }
             finally
             {
                 if (dfs != null)
                 {
-                    dfs.StartVertex -= StartVertex;
-                    dfs.DiscoverVertex -= DiscoverVertex;
+                    dfs.StartVertex -= OnVertexStarted;
+                    dfs.DiscoverVertex -= OnVertexDiscovered;
                 }
             }
+        }
+
+        #endregion
+
+        #region IConnectedComponentAlgorithm<TVertex,TEdge,TGraph>
+
+        /// <inheritdoc />
+        public int ComponentCount { get; private set; }
+
+        /// <inheritdoc />
+        public IDictionary<TVertex, int> Components { get; }
+
+        #endregion
+
+        private void OnVertexStarted([NotNull] TVertex vertex)
+        {
+            ++ComponentCount;
+        }
+
+        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        {
+            Components[vertex] = ComponentCount;
         }
     }
 }

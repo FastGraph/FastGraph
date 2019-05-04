@@ -3,104 +3,162 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.ConnectedComponents
 {
-    public sealed class IncrementalConnectedComponentsAlgorithm<TVertex,TEdge>
+    /// <summary>
+    /// Algorithm that incrementally computes connected components of a growing graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeSet<TVertex, TEdge>>
+        , IDisposable
         where TEdge : IEdge<TVertex>
     {
-        ForestDisjointSet<TVertex> ds;
+        private ForestDisjointSet<TVertex> _sets;
 
-        public IncrementalConnectedComponentsAlgorithm(IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+        private bool _hooked;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IncrementalConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public IncrementalConnectedComponentsAlgorithm(
+            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
-        { }
-
-        public IncrementalConnectedComponentsAlgorithm(IAlgorithmComponent host, IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
-            : base(host, visitedGraph)
-        { }
-
-        protected override void InternalCompute()
         {
-            this.ds = new ForestDisjointSet<TVertex>(this.VisitedGraph.VertexCount);
-            // initialize 1 set per vertex
-            foreach (var v in this.VisitedGraph.Vertices)
-                this.ds.MakeSet(v);
-
-            // join existing edges
-            foreach (var e in this.VisitedGraph.Edges)
-                this.ds.Union(e.Source, e.Target);
-
-            // unhook/hook to graph event
-            this.VisitedGraph.EdgeAdded += new EdgeAction<TVertex, TEdge>(VisitedGraph_EdgeAdded);
-            this.VisitedGraph.EdgeRemoved += new EdgeAction<TVertex, TEdge>(VisitedGraph_EdgeRemoved);
-            this.VisitedGraph.VertexAdded += new VertexAction<TVertex>(VisitedGraph_VertexAdded);
-            this.VisitedGraph.VertexRemoved += new VertexAction<TVertex>(VisitedGraph_VertexRemoved);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IncrementalConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public IncrementalConnectedComponentsAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            : base(host, visitedGraph)
+        {
+        }
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
+            _sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
+
+            // Initialize one set per vertex
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+                _sets.MakeSet(vertex);
+
+            // Join existing edges
+            foreach (TEdge edge in VisitedGraph.Edges)
+                _sets.Union(edge.Source, edge.Target);
+
+            // Hook to graph event
+            if (_hooked)
+                return;
+
+            VisitedGraph.EdgeAdded += OnEdgeAdded;
+            VisitedGraph.EdgeRemoved += OnEdgeRemoved;
+            VisitedGraph.VertexAdded += OnVertexAdded;
+            VisitedGraph.VertexRemoved += OnVertexRemoved;
+
+            _hooked = true;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Number of components.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         public int ComponentCount
         {
             get
             {
 #if SUPPORTS_CONTRACTS
-                Contract.Assert(this.ds != null);
+                Contract.Assert(_sets != null);
 #endif
-                return this.ds.SetCount;
+                return _sets.SetCount;
             }
         }
 
-        Dictionary<TVertex, int> components;
+        private Dictionary<TVertex, int> _components;
+
         /// <summary>
         /// Gets a copy of the connected components. Key is the number of components,
         /// Value contains the vertex -> component index map.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Number of components associated to components vertex mapping.</returns>
         public KeyValuePair<int, IDictionary<TVertex, int>> GetComponents()
         {
 #if SUPPORTS_CONTRACTS
             Contract.Ensures(
-                Contract.Result<KeyValuePair<int, IDictionary<TVertex, int>>>().Key == this.ComponentCount);
+                Contract.Result<KeyValuePair<int, IDictionary<TVertex, int>>>().Key == ComponentCount);
             Contract.Ensures(
-                Contract.Result<KeyValuePair<int, IDictionary<TVertex, int>>>().Value.Count == this.VisitedGraph.VertexCount);
+                Contract.Result<KeyValuePair<int, IDictionary<TVertex, int>>>().Value.Count == VisitedGraph.VertexCount);
             // TODO: more contracts
-            Contract.Assert(this.ds != null);
+            Contract.Assert(_sets != null);
 #endif
 
-            var representatives = new Dictionary<TVertex, int>(this.ds.SetCount);
-            if (this.components == null)
-                this.components = new Dictionary<TVertex, int>(this.VisitedGraph.VertexCount);
-            foreach (var v in this.VisitedGraph.Vertices)
+            var representatives = new Dictionary<TVertex, int>(_sets.SetCount);
+            if (_components is null)
+                _components = new Dictionary<TVertex, int>(VisitedGraph.VertexCount);
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                var representative = this.ds.FindSet(v);
-                int index;
-                if (!representatives.TryGetValue(representative, out index))
+                TVertex representative = _sets.FindSet(vertex);
+                // ReSharper disable once AssignNullToNotNullAttribute, Justification: All graph vertices are in a set
+                if (!representatives.TryGetValue(representative, out int index))
                     representatives[representative] = index = representatives.Count;
-                components[v] = index;
+                _components[vertex] = index;
             }
 
-            return new KeyValuePair<int, IDictionary<TVertex, int>>(this.ds.SetCount, components);
+            return new KeyValuePair<int, IDictionary<TVertex, int>>(_sets.SetCount, _components);
         }
 
-        void VisitedGraph_VertexAdded(TVertex v)
+        private void OnVertexAdded([NotNull] TVertex vertex)
         {
-            this.ds.MakeSet(v);
+            _sets.MakeSet(vertex);
         }
 
-        void VisitedGraph_EdgeAdded(TEdge e)
+        private void OnEdgeAdded([NotNull] TEdge edge)
         {
-            this.ds.Union(e.Source, e.Target);
+            _sets.Union(edge.Source, edge.Target);
         }
 
-        void VisitedGraph_VertexRemoved(TVertex e)
+        private static void OnVertexRemoved([NotNull] TVertex vertex)
         {
-            throw new InvalidOperationException("vertex removal not supported for incremental connected components");
+            throw new InvalidOperationException("Vertex removal is not supported for incremental connected components.");
         }
 
-        void VisitedGraph_EdgeRemoved(TEdge e)
+        private static void OnEdgeRemoved([NotNull] TEdge edge)
         {
-            throw new InvalidOperationException("edge removal not supported for incremental connected components");
+            throw new InvalidOperationException("Edge removal is not supported for incremental connected components.");
         }
+
+        #region IDisposable
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            // Unhook from graph event
+            if (!_hooked)
+                return;
+
+            VisitedGraph.EdgeAdded -= OnEdgeAdded;
+            VisitedGraph.EdgeRemoved -= OnEdgeRemoved;
+            VisitedGraph.VertexAdded -= OnVertexAdded;
+            VisitedGraph.VertexRemoved -= OnVertexRemoved;
+        }
+
+        #endregion
     }
 }
