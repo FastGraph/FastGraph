@@ -1,4 +1,6 @@
-﻿#if SUPPORTS_CONTRACTS
+﻿
+using System;
+#if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 using JetBrains.Annotations;
@@ -30,6 +32,6 @@ namespace QuikGraph.Algorithms.Services
 
         /// <inheritdoc />
         public ICancelManager CancelManager => 
-            _cancelManager ?? (_cancelManager = _host.GetService<ICancelManager>());
+            (_cancelManager ?? (_cancelManager = _host.GetService<ICancelManager>())) ?? throw new InvalidOperationException("No cancel manager service registered.");
     }
 }

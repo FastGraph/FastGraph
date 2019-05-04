@@ -118,13 +118,13 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public void RemoveCluster(IClusteredGraph cluster)
+        public void RemoveCluster(IClusteredGraph graph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(cluster != null);
+            Contract.Requires(graph != null);
 #endif
 
-            _clusters.Remove(cluster);
+            _clusters.Remove(graph);
         }
 
         #endregion

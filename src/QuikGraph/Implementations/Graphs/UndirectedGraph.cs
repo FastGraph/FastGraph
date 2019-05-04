@@ -561,7 +561,7 @@ namespace QuikGraph
         public int RemoveEdges([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
             int count = 0;
-            foreach (var edge in edges)
+            foreach (TEdge edge in edges)
             {
                 if (RemoveEdge(edge))
                     count++;

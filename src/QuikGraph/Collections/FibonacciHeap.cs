@@ -273,7 +273,7 @@ namespace QuikGraph.Collections
 #endif
 
             int oldDegree = cell.Degree;
-            // ReSharper disable once PossibleNullReferenceException, Justification: checked by contract.
+            // ReSharper disable once PossibleNullReferenceException, Justification: Checked by contract.
             cell.Degree = cell.Children.First is null
                 ? 1
                 : cell.Children.Max(x => x.Degree) + 1;
@@ -410,7 +410,7 @@ namespace QuikGraph.Collections
 #endif
 
             _cells.Remove(childCell);
-            // ReSharper disable once PossibleNullReferenceException, Justification: checked by contract.
+            // ReSharper disable once PossibleNullReferenceException, Justification: Checked by contract.
             parentCell.Children.AddLast(childCell);
             childCell.Parent = parentCell;
             childCell.Marked = false;

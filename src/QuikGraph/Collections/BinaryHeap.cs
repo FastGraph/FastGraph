@@ -274,7 +274,7 @@ namespace QuikGraph.Collections
 
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty.");
-            if (index < 0 | index >= Count)
+            if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
             _version++;
@@ -399,8 +399,8 @@ namespace QuikGraph.Collections
         private bool LessOrEqual(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(i >= 0 & i < Count
-                              && j >= 0 & j < Count
+            Contract.Requires(i >= 0 && i < Count
+                              && j >= 0 && j < Count 
                               && i != j);
 #endif
 
@@ -414,9 +414,8 @@ namespace QuikGraph.Collections
         private bool Less(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(i >= 0 & i < Count
-                              && j >= 0
-                              && j < Count);
+            Contract.Requires(i >= 0 && i < Count
+                              && j >= 0 && j < Count);
 #endif
 
             return PriorityComparison(_items[i].Key, _items[j].Key) < 0;
@@ -425,10 +424,8 @@ namespace QuikGraph.Collections
         private void Swap(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(i >= 0
-                              && i < Count
-                              && j >= 0
-                              && j < Count);
+            Contract.Requires(i >= 0 && i < Count
+                              && j >= 0 && j < Count);
 #endif
 
             if (i == j)

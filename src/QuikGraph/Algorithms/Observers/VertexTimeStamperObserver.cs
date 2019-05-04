@@ -103,7 +103,7 @@ namespace QuikGraph.Algorithms.Observers
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            // ReSharper disable once PossibleNullReferenceException, Justification: not null if the handler is attached
+            // ReSharper disable once PossibleNullReferenceException, Justification: Not null if the handler is attached
             FinishTimes[vertex] = _currentTime++;
         }
     }

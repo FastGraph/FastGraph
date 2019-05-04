@@ -310,12 +310,12 @@ namespace QuikGraph
 
         /// <summary>
         /// Removes in-edges of the given <paramref name="vertex"/> that match
-        /// predicate <paramref name="edgePredicate"/>.
+        /// predicate <paramref name="predicate"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="edgePredicate">Edge predicate.</param>
+        /// <param name="predicate">Edge predicate.</param>
         /// <returns>Number of edges removed.</returns>
-        public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> edgePredicate)
+        public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(0 <= vertex && vertex < VertexCount);
@@ -325,7 +325,7 @@ namespace QuikGraph
             for (int i = 0; i < VertexCount; ++i)
             {
                 TEdge edge = _edges[i, vertex];
-                if (edge != null && edgePredicate(edge))
+                if (edge != null && predicate(edge))
                 {
                     RemoveEdge(edge);
                     count++;

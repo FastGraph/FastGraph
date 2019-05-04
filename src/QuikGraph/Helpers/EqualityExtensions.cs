@@ -310,16 +310,16 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public bool Equals(T[] lhs, T[] rhs)
+        public bool Equals(T[] x, T[] y)
         {
-            return lhs.Equals1(rhs, ElementEqualityComparer);
+            return x.Equals1(y, ElementEqualityComparer);
         }
 
         /// <inheritdoc />
-        public int GetHashCode(T[] array)
+        public int GetHashCode(T[] obj)
         {
             var hashcode = 0;
-            foreach (var elem in array)
+            foreach (T elem in obj)
             {
                 hashcode ^= ElementEqualityComparer.GetHashCode(elem);
             }
@@ -366,9 +366,9 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public int GetHashCode(float x)
+        public int GetHashCode(float obj)
         {
-            return x.GetHashCode();
+            return obj.GetHashCode();
         }
     }
 
@@ -411,9 +411,9 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public int GetHashCode(double x)
+        public int GetHashCode(double obj)
         {
-            return x.GetHashCode();
+            return obj.GetHashCode();
         }
     }
 
@@ -436,9 +436,9 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public override bool Equals(T lhs, T rhs)
+        public override bool Equals(T x, T y)
         {
-            return ReferenceEquals(lhs, rhs);
+            return ReferenceEquals(x, y);
         }
 
         /// <inheritdoc />

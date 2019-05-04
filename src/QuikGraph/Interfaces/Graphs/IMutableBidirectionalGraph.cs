@@ -22,12 +22,12 @@ namespace QuikGraph
     {
         /// <summary>
         /// Removes in-edges of the given <paramref name="vertex"/> that match
-        /// predicate <paramref name="edgePredicate"/>.
+        /// predicate <paramref name="predicate"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="edgePredicate">Edge predicate.</param>
+        /// <param name="predicate">Edge predicate.</param>
         /// <returns>Number of edges removed.</returns>
-        int RemoveInEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> edgePredicate);
+        int RemoveInEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate);
 
         /// <summary>
         /// Clears in-edges of the given <paramref name="vertex"/>.

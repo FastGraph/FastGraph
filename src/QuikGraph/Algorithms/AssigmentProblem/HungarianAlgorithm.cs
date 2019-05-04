@@ -95,7 +95,11 @@ namespace QuikGraph.Algorithms.Assignment
         [NotNull]
         public int[] Compute()
         {
-            while (DoStep() != Steps.End) { }
+            while (DoStep() != Steps.End)
+            {
+                // Nothing to do there
+            }
+
             return AgentsTasks;
         }
 

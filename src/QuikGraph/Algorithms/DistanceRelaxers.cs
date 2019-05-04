@@ -16,9 +16,9 @@
             public double InitialDistance => double.MaxValue;
 
             /// <inheritdoc />
-            public int Compare(double a, double b)
+            public int Compare(double x, double y)
             {
-                return a.CompareTo(b);
+                return x.CompareTo(y);
             }
 
             /// <inheritdoc />
@@ -39,9 +39,9 @@
             public double InitialDistance => double.MinValue;
 
             /// <inheritdoc />
-            public int Compare(double a, double b)
+            public int Compare(double x, double y)
             {
-                return -a.CompareTo(b);
+                return -x.CompareTo(y);
             }
 
             /// <inheritdoc />
@@ -62,9 +62,9 @@
             public double InitialDistance => 0;
 
             /// <inheritdoc />
-            public int Compare(double a, double b)
+            public int Compare(double x, double y)
             {
-                return a.CompareTo(b);
+                return x.CompareTo(y);
             }
 
             /// <inheritdoc />

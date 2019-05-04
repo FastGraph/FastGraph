@@ -92,7 +92,7 @@ namespace QuikGraph.Contracts
             throw new NotImplementedException();
         }
 
-        bool IImplicitGraph<TVertex, TEdge>.TryGetOutEdges(TVertex v, out IEnumerable<TEdge> edges)
+        bool IImplicitGraph<TVertex, TEdge>.TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
             throw new NotImplementedException();
         }
