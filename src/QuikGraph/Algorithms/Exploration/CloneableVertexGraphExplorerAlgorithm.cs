@@ -117,7 +117,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// </summary>
         public event VertexAction<TVertex> DiscoverVertex;
 
-        private void OnDiscoverVertex([NotNull] TVertex vertex)
+        private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
@@ -178,16 +178,16 @@ namespace QuikGraph.Algorithms.Exploration
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex rootVertex))
+            if (!TryGetRootVertex(out TVertex root))
                 throw new InvalidOperationException("RootVertex is not specified.");
 
             VisitedGraph.Clear();
             _unExploredVertices.Clear();
             FinishedSuccessfully = false;
 
-            if (!AddVertexPredicate(rootVertex))
+            if (!AddVertexPredicate(root))
                 throw new ArgumentException($"StartVertex does not satisfy the {nameof(AddVertexPredicate)}.");
-            OnDiscoverVertex(rootVertex);
+            OnVertexDiscovered(root);
 
             while (_unExploredVertices.Count > 0)
             {
@@ -239,7 +239,7 @@ namespace QuikGraph.Algorithms.Exploration
 
                 bool backEdge = VisitedGraph.ContainsVertex(transition.Target);
                 if (!backEdge)
-                    OnDiscoverVertex(transition.Target);
+                    OnVertexDiscovered(transition.Target);
 
                 VisitedGraph.AddEdge(transition);
                 if (backEdge)

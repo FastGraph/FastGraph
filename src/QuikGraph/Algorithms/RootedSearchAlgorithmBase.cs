@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms
     public abstract class RootedSearchAlgorithmBase<TVertex, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
     {
         private TVertex _target;
-        private bool _hasGoalVertex;
+        private bool _hasTargetVertex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RootedSearchAlgorithmBase{TVertex,TGraph}"/> class.
@@ -41,7 +41,7 @@ namespace QuikGraph.Algorithms
         [JetBrains.Annotations.Pure]
         public bool TryGetGoalVertex(out TVertex target)
         {
-            if (_hasGoalVertex)
+            if (_hasTargetVertex)
             {
                 target = _target;
                 return true;
@@ -65,7 +65,7 @@ namespace QuikGraph.Algorithms
             _target = target;
             if (changed)
                 OnTargetVertexChanged(EventArgs.Empty);
-            _hasGoalVertex = true;
+            _hasTargetVertex = true;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace QuikGraph.Algorithms
         public void ClearTargetVertex()
         {
             _target = default(TVertex);
-            _hasGoalVertex = false;
+            _hasTargetVertex = false;
         }
 
         /// <summary>
