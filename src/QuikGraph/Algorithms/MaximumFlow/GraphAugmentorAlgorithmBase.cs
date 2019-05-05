@@ -3,151 +3,216 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
-    public abstract class GraphAugmentorAlgorithmBase<TVertex,TEdge,TGraph> 
-        : AlgorithmBase<TGraph>
-        , IDisposable
+    /// <summary>
+    /// Base class for all graph augmentor algorithms.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
+    public abstract class GraphAugmentorAlgorithmBase<TVertex, TEdge, TGraph> : AlgorithmBase<TGraph>, IDisposable
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
     {
-        private bool augmented = false;
-        private List<TEdge> augmentedEdges = new List<TEdge>();
-        private readonly VertexFactory<TVertex> vertexFactory;
-        private readonly EdgeFactory<TVertex, TEdge> edgeFactory;
-
-        private TVertex superSource = default(TVertex);
-        private TVertex superSink = default(TVertex);
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphAugmentorAlgorithmBase{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="vertexFactory">Vertex factory method.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
         protected GraphAugmentorAlgorithmBase(
-            IAlgorithmComponent host,
-            TGraph visitedGraph,
-            VertexFactory<TVertex> vertexFactory,
-            EdgeFactory<TVertex,TEdge> edgeFactory
-            )
-            :base(host, visitedGraph)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] TGraph visitedGraph,
+            [NotNull] VertexFactory<TVertex> vertexFactory,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
 #endif
 
-            this.vertexFactory = vertexFactory;
-            this.edgeFactory = edgeFactory;
+            VertexFactory = vertexFactory;
+            EdgeFactory = edgeFactory;
         }
 
-        public VertexFactory<TVertex> VertexFactory
-        {
-            get { return this.vertexFactory; }
-        }
+        /// <summary>
+        /// Vertex factory method.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public VertexFactory<TVertex> VertexFactory { get; }
 
-        public EdgeFactory<TVertex, TEdge> EdgeFactory
-        {
-            get { return this.edgeFactory; }
-        }
+        /// <summary>
+        /// Edge factory method.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
-        public TVertex SuperSource
-        {
-            get { return this.superSource; }
-        }
+        /// <summary>
+        /// Gets the flow source vertex.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public TVertex SuperSource { get; private set; }
 
-        public TVertex SuperSink
-        {
-            get { return this.superSink; }
-        }
+        /// <summary>
+        /// Gets the flow sink vertex.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public TVertex SuperSink { get; private set; }
 
-        public bool Augmented
-        {
-            get { return this.augmented; }
-        }
+        /// <summary>
+        /// Indicates if the graph has been augmented or not.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public bool Augmented { get; private set; }
 
-        public ICollection<TEdge> AugmentedEdges
-        {
-            get { return this.augmentedEdges; }
-        }
+        /// <summary>
+        /// Gets the collections of edges added to augment the graph.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public ICollection<TEdge> AugmentedEdges { get; } = new List<TEdge>();
 
+        /// <summary>
+        /// Fired when the super source vertex is added.
+        /// </summary>
         public event VertexAction<TVertex> SuperSourceAdded;
-        private void OnSuperSourceAdded(TVertex v)
+
+        private void OnSuperSourceAdded([NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(v != null);
+            Contract.Requires(vertex != null);
 #endif
 
-            var eh = this.SuperSourceAdded;
-            if (eh != null)
-                eh(v);
+            SuperSourceAdded?.Invoke(vertex);
         }
 
+        /// <summary>
+        /// Fired when the super sink vertex is added.
+        /// </summary>
         public event VertexAction<TVertex> SuperSinkAdded;
-        private void OnSuperSinkAdded(TVertex v)
+
+        private void OnSuperSinkAdded([NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(v != null);
+            Contract.Requires(vertex != null);
 #endif
 
-            var eh = this.SuperSinkAdded;
-            if (eh != null)
-                eh(v);
+            SuperSinkAdded?.Invoke(vertex);
         }
 
+        /// <summary>
+        /// Fired when an edge is added.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> EdgeAdded;
-        private void OnEdgeAdded(TEdge e)
+
+        private void OnEdgeAdded([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
 #endif
 
-            var eh = this.EdgeAdded;
-            if (eh != null)
-                eh(e);
+            EdgeAdded?.Invoke(edge);
         }
 
+        #region Algorithm<TGraph>
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (this.Augmented)
-                throw new InvalidOperationException("Graph already augmented");
+            if (Augmented)
+                throw new InvalidOperationException("Graph already augmented.");
 
-            this.superSource = this.VertexFactory();
-            this.VisitedGraph.AddVertex(this.superSource);
-            this.OnSuperSourceAdded(this.SuperSource);
+            SuperSource = VertexFactory();
+            VisitedGraph.AddVertex(SuperSource);
+            OnSuperSourceAdded(SuperSource);
 
-            this.superSink = this.VertexFactory();
-            this.VisitedGraph.AddVertex(this.superSink);
-            this.OnSuperSinkAdded(this.SuperSink);
+            SuperSink = VertexFactory();
+            VisitedGraph.AddVertex(SuperSink);
+            OnSuperSinkAdded(SuperSink);
 
-            this.AugmentGraph();
-            this.augmented = true;
+            AugmentGraph();
+            Augmented = true;
         }
 
+        #endregion
+
+        /// <summary>
+        /// Rollbacks the graph augmentation.
+        /// </summary>
         public virtual void Rollback()
         {
-            if (!this.Augmented)
+            if (!Augmented)
                 return;
 
-            this.augmented = false;
-            this.VisitedGraph.RemoveVertex(this.SuperSource);
-            this.VisitedGraph.RemoveVertex(this.SuperSink);
-            this.superSource = default(TVertex);
-            this.superSink = default(TVertex);
-            this.augmentedEdges.Clear();
+            Augmented = false;
+            VisitedGraph.RemoveVertex(SuperSource);
+            VisitedGraph.RemoveVertex(SuperSink);
+            SuperSource = default(TVertex);
+            SuperSink = default(TVertex);
+            AugmentedEdges.Clear();
         }
 
-        public void Dispose()
-        {
-            this.Rollback();
-        }
-
+        /// <summary>
+        /// Augments the graph.
+        /// </summary>
         protected abstract void AugmentGraph();
 
-        protected void AddAugmentedEdge(TVertex source, TVertex target)
+        /// <summary>
+        /// Creates and adds an augmented edge between <paramref name="source"/> and <paramref name="target"/>.
+        /// </summary>
+        /// <param name="source">Source vertex.</param>
+        /// <param name="target">Target vertex.</param>
+        protected void AddAugmentedEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
-            TEdge edge = this.EdgeFactory(source, target);
-            this.augmentedEdges.Add(edge);
-            this.VisitedGraph.AddEdge(edge);
-            this.OnEdgeAdded(edge);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(source != null);
+            Contract.Requires(target != null);
+#endif
+
+            TEdge edge = EdgeFactory(source, target);
+            AugmentedEdges.Add(edge);
+            VisitedGraph.AddEdge(edge);
+            OnEdgeAdded(edge);
         }
+
+        #region IDisposable
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Called when the object is disposed or finalized.
+        /// </summary>
+        /// <param name="disposing">True if called when disposing, otherwise false.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Rollback();
+            }
+        }
+
+        #endregion
     }
 }

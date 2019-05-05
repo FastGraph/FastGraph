@@ -122,7 +122,6 @@ namespace QuikGraph.Algorithms
 
                 // Adding reverse edges
                 reverser = new ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>(
-                    this,
                     VisitedGraph,
                     EdgeFactory);
                 reverser.AddReversedEdges();

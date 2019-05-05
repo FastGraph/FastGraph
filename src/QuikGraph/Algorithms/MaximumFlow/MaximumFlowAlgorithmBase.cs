@@ -3,97 +3,179 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
     /// <summary>
-    /// Abstract base class for maximum flow algorithms.
+    /// Base class for all maximum flow algorithms.
     /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public abstract class MaximumFlowAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>,
-        IVertexColorizerAlgorithm<TVertex>
+    public abstract class MaximumFlowAlgorithm<TVertex, TEdge> 
+        : AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
+        , IVertexColorizerAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        private TVertex source;
-        private TVertex sink;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaximumFlowAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
         protected MaximumFlowAlgorithm(
-            IAlgorithmComponent host,
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> capacities,
-            EdgeFactory<TVertex, TEdge> edgeFactory
-            )
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> capacities,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(capacities != null);
 #endif
 
-            this.Capacities = capacities;
-            this.Predecessors = new Dictionary<TVertex, TEdge>();
-            this.EdgeFactory = edgeFactory;
-            this.ResidualCapacities = new Dictionary<TEdge, double>();
-            this.VertexColors = new Dictionary<TVertex, GraphColor>();
+            Capacities = capacities;
+            EdgeFactory = edgeFactory;
         }
 
-#region Properties
+        #region Properties
 
-        public Dictionary<TVertex,TEdge> Predecessors { get; private set; }
+        /// <summary>
+        /// Flow vertices predecessors.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Dictionary<TVertex, TEdge> Predecessors { get; } = new Dictionary<TVertex, TEdge>();
 
-        public Func<TEdge,double> Capacities { get; private set; }
-       
-        public Dictionary<TEdge,double> ResidualCapacities { get; private set; }
+        /// <summary>
+        /// Function that given an edge return the capacity of this edge.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Func<TEdge, double> Capacities { get; }
 
-        public EdgeFactory<TVertex, TEdge> EdgeFactory { get; private set; }
+        /// <summary>
+        /// Residual capacities per edge.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Dictionary<TEdge, double> ResidualCapacities { get; } = new Dictionary<TEdge, double>();
 
+        /// <summary>
+        /// Edge factory method.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
+
+        /// <summary>
+        /// Graph reversed edges.
+        /// </summary>
+        /// <remarks>Should be not null but may be empty.</remarks>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         public Dictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
 
-        public Dictionary<TVertex,GraphColor> VertexColors { get; private set; }
+        private TVertex _source;
 
-        public GraphColor GetVertexColor(TVertex vertex)
-        {
-            return this.VertexColors[vertex];
-        }
-
+        /// <summary>
+        /// Flow source vertex.
+        /// </summary>
+        /// <remarks>Must not be null to run the algorithm.</remarks>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         public TVertex Source
         {
-            get { return this.source; }
-            set 
+            get => _source;
+            set
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(value != null);
 #endif
 
-                this.source = value; 
+                _source = value;
             }
         }
 
+        private TVertex _sink;
+
+        /// <summary>
+        /// Flow sink vertex.
+        /// </summary>
+        /// <remarks>Must not be null to run the algorithm.</remarks>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
         public TVertex Sink
         {
-            get { return this.sink; }
-            set 
+            get => _sink;
+            set
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(value != null);
 #endif
-                this.sink = value; 
+                _sink = value;
             }
         }
 
-        public double MaxFlow { get; set; }
+        /// <summary>
+        /// Maximal flow value.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public double MaxFlow { get; protected set; }
 
-#endregion
+        /// <summary>
+        /// Stores vertices associated to their colors (treatment state).
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Dictionary<TVertex, GraphColor> VertexColors { get; } = new Dictionary<TVertex, GraphColor>();
 
-        public double Compute(TVertex source, TVertex sink)
+        #region IVertexColorizerAlgorithm<TVertex>
+
+        /// <inheritdoc />
+        public GraphColor GetVertexColor(TVertex vertex)
         {
-            this.Source = source;
-            this.Sink = sink;
-            this.Compute();
-            return this.MaxFlow;
+            return VertexColors[vertex];
+        }
+
+        #endregion
+
+        #endregion
+
+        /// <summary>
+        /// Compute the maximum flow value.
+        /// </summary>
+        /// <param name="source">Flow source vertex.</param>
+        /// <param name="sink">Flow sink vertex.</param>
+        /// <returns>Maximum flow value.</returns>
+        public double Compute([NotNull] TVertex source, [NotNull] TVertex sink)
+        {
+            Source = source;
+            Sink = sink;
+
+            Compute();
+
+            return MaxFlow;
         }
     }
 

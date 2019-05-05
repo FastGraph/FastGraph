@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
-using QuikGraph.Algorithms.Services;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
@@ -12,8 +13,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
     /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex, TEdge}.InternalCompute()"/>. 
     /// Remember to call <see cref="RemoveReversedEdges()"/> to remove auxiliary edges.
     /// </summary>
-    /// <typeparam name="TVertex">The type of vertex.</typeparam>
-    /// <typeparam name="TEdge">The type of edge.</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <remarks>
     /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges"/> if TEdge is a value type,
     /// e.g. <see cref="SEdge{TVertex}"/>.
@@ -25,75 +26,80 @@ namespace QuikGraph.Algorithms.MaximumFlow
     public sealed class ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> : IDisposable
         where TEdge : IEdge<TVertex>
     {
-        private readonly IMutableVertexAndEdgeListGraph<TVertex,TEdge> visitedGraph;
-        private readonly EdgeFactory<TVertex, TEdge> edgeFactory;
-        private IList<TEdge> augmentedEgdes = new List<TEdge>();
-        private Dictionary<TEdge,TEdge> reversedEdges = new Dictionary<TEdge,TEdge>();
-        private bool augmented = false;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReversedEdgeAugmentorAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
         public ReversedEdgeAugmentorAlgorithm(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            EdgeFactory<TVertex, TEdge> edgeFactory)
-            : this(null, visitedGraph, edgeFactory)
-        { }
-
-        public ReversedEdgeAugmentorAlgorithm(
-            IAlgorithmComponent host,
-            IMutableVertexAndEdgeListGraph<TVertex,TEdge> visitedGraph,
-            EdgeFactory<TVertex,TEdge> edgeFactory)
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(visitedGraph != null);
             Contract.Requires(edgeFactory != null);
 #endif
 
-            this.visitedGraph = visitedGraph;
-            this.edgeFactory = edgeFactory;
+            VisitedGraph = visitedGraph;
+            EdgeFactory = edgeFactory;
         }
 
-        public IMutableVertexAndEdgeListGraph<TVertex,TEdge> VisitedGraph
-        {
-            get
-            {
-                return this.visitedGraph;
-            }
-        }
+        /// <summary>
+        /// Gets the graph to visit with this algorithm.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IMutableVertexAndEdgeListGraph<TVertex, TEdge> VisitedGraph { get; }
 
-        public EdgeFactory<TVertex, TEdge> EdgeFactory
-        {
-            get { return this.edgeFactory; }
-        }
+        /// <summary>
+        /// Edge factory method.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
-        public ICollection<TEdge> AugmentedEdges
-        {
-            get
-            {
-                return this.augmentedEgdes;
-            }
-        }
+        [NotNull, ItemNotNull]
+        private readonly List<TEdge> _augmentedEdges = new List<TEdge>();
 
-        public Dictionary<TEdge,TEdge> ReversedEdges
-        {
-            get
-            {
-                return this.reversedEdges;
-            }
-        }
+        /// <summary>
+        /// Edges added to the initial graph (augmented ones).
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
+        public IEnumerable<TEdge> AugmentedEdges => _augmentedEdges.AsEnumerable();
 
-        public bool Augmented
-        {
-            get
-            {
-                return this.augmented;
-            }
-        }
+        /// <summary>
+        /// Edges associated to their reversed edges.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Dictionary<TEdge, TEdge> ReversedEdges { get; } = new Dictionary<TEdge, TEdge>();
 
-        public event EdgeAction<TVertex,TEdge> ReversedEdgeAdded;
-        private void OnReservedEdgeAdded(TEdge e)
+        /// <summary>
+        /// Gets the state augmented or not of the graph (reversed edges added or not).
+        /// </summary>
+        public bool Augmented { get; private set; }
+
+        /// <summary>
+        /// Fired when a reversed edge is added.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> ReversedEdgeAdded;
+
+        private void OnReservedEdgeAdded([NotNull] TEdge edge)
         {
-            var eh = this.ReversedEdgeAdded;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ReversedEdgeAdded?.Invoke(edge);
         }
 
         /// <summary>
@@ -105,84 +111,113 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </remarks>
         public void AddReversedEdges()
         {
-            if (this.Augmented)
-                throw new InvalidOperationException("Graph already augmented");
-            // step 1, find edges that need reversing
-            IList<TEdge> notReversedEdges = new List<TEdge>();
-            foreach (var edge in this.VisitedGraph.Edges)
+            if (Augmented)
+                throw new InvalidOperationException("Graph already augmented.");
+
+            // Step 1, find edges that need reversing
+            var notReversedEdges = new List<TEdge>();
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                // if reversed already found, continue
-                if (this.reversedEdges.ContainsKey(edge))
+                // If reversed already found, continue
+                if (ReversedEdges.ContainsKey(edge))
                     continue;
 
-                TEdge reversedEdge = this.FindReversedEdge(edge);
-                if (reversedEdge != null)
+                if (FindReversedEdge(edge, out TEdge reversedEdge))
                 {
-                    // setup edge
-                    this.reversedEdges[edge] = reversedEdge;
-                    // setup reversed if needed
-                    if (!this.reversedEdges.ContainsKey(reversedEdge))
-                        this.reversedEdges[reversedEdge] = edge;
+                    // Setup edge
+                    ReversedEdges[edge] = reversedEdge;
+
+                    // Setup reversed if needed
+                    if (!ReversedEdges.ContainsKey(reversedEdge))
+                        ReversedEdges[reversedEdge] = edge;
+
                     continue;
                 }
 
-                // this edge has no reverse
+                // This edge has no reverse
                 notReversedEdges.Add(edge);
             }
 
-            // step 2, go over each not reversed edge, add reverse
-            foreach (var edge in notReversedEdges)
+            // Step 2, go over each not reversed edge, add reverse
+            foreach (TEdge edge in notReversedEdges)
             {
-                if (this.reversedEdges.ContainsKey(edge))
+                if (ReversedEdges.ContainsKey(edge))
                     continue;
 
-                // already been added
-                TEdge reversedEdge = this.FindReversedEdge(edge);
-                if (reversedEdge != null)
+                // Already been added
+                if (FindReversedEdge(edge, out TEdge reversedEdge))
                 {
-                    this.reversedEdges[edge] = reversedEdge;
+                    ReversedEdges[edge] = reversedEdge;
                     continue;
                 }
 
-                // need to create one
-                reversedEdge = this.edgeFactory(edge.Target, edge.Source);
-                if (!this.VisitedGraph.AddEdge(reversedEdge))
-                    throw new InvalidOperationException("We should not be here");
-                this.augmentedEgdes.Add(reversedEdge);
-                this.reversedEdges[edge] = reversedEdge;
-                this.reversedEdges[reversedEdge] = edge;
-                this.OnReservedEdgeAdded(reversedEdge);
+                // Need to create one
+                reversedEdge = EdgeFactory(edge.Target, edge.Source);
+                if (!VisitedGraph.AddEdge(reversedEdge))
+                    throw new InvalidOperationException("Cannot add the reversed edge, this should not arrive...");
+
+                _augmentedEdges.Add(reversedEdge);
+                ReversedEdges[edge] = reversedEdge;
+                ReversedEdges[reversedEdge] = edge;
+
+                OnReservedEdgeAdded(reversedEdge);
             }
 
-            this.augmented = true;
+            Augmented = true;
         }
 
+        /// <summary>
+        /// Removes reversed edges that were added.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">If the graph was not augmented yet.</exception>
         public void RemoveReversedEdges()
         {
-            if (!this.Augmented)
-                throw new InvalidOperationException("Graph is not yet augmented");
+            if (!Augmented)
+                throw new InvalidOperationException("Graph is not yet augmented.");
 
-            foreach (var edge in this.augmentedEgdes)
-                this.VisitedGraph.RemoveEdge(edge);
+            foreach (TEdge edge in _augmentedEdges)
+                VisitedGraph.RemoveEdge(edge);
 
-            this.augmentedEgdes.Clear();
-            this.reversedEdges.Clear();
+            _augmentedEdges.Clear();
+            ReversedEdges.Clear();
 
-            this.augmented = false;
+            Augmented = false;
         }
 
-        private TEdge FindReversedEdge(TEdge edge)
+        /// <summary>
+        /// Finds the reversed edge of the given one.
+        /// </summary>
+        /// <param name="edge">Edge to find its corresponding reversed one.</param>
+        /// <param name="foundReversedEdge">Found reversed edge.</param>
+        /// <returns>True if the reversed edge was found, false otherwise.</returns>
+        private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
         {
-            foreach (var redge in this.VisitedGraph.OutEdges(edge.Target))
-                if (redge.Target.Equals(edge.Source))
-                    return redge;
-            return default(TEdge);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            foreach (TEdge reversedEdge in VisitedGraph.OutEdges(edge.Target))
+            {
+                if (reversedEdge.Target.Equals(edge.Source))
+                {
+                    foundReversedEdge = reversedEdge;
+                    return true;
+                }
+            }
+
+            foundReversedEdge = default(TEdge);
+            return false;
         }
 
+        #region IDisposable
+
+        /// <inheritdoc />
         void IDisposable.Dispose()
         {
-            if(this.Augmented)
-                this.RemoveReversedEdges();
+            if (Augmented)
+                RemoveReversedEdges();
         }
+
+        #endregion
     }
 }

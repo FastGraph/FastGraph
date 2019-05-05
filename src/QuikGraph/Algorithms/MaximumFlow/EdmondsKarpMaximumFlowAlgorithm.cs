@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -13,8 +14,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
     /// <summary>
     /// Edmond and Karp maximum flow algorithm for directed graph with positive capacities and flows.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <remarks>
     /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges"/> if TEdge is a value type,
     /// e.g. <see cref="SEdge{TVertex}"/>.
@@ -23,137 +24,128 @@ namespace QuikGraph.Algorithms.MaximumFlow
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>
-        : MaximumFlowAlgorithm<TVertex,TEdge>
+    public sealed class EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge> : MaximumFlowAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
+        /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
         public EdmondsKarpMaximumFlowAlgorithm(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> g,
-            Func<TEdge, double> capacities,
-            EdgeFactory<TVertex, TEdge> edgeFactory,
-            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm
-            )
-            : this(null, g, capacities, edgeFactory, reversedEdgeAugmentorAlgorithm)
-        { }
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> capacities,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
+            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            : this(null, visitedGraph, capacities, edgeFactory, reversedEdgeAugmentorAlgorithm)
+        {
+        }
 
-		public EdmondsKarpMaximumFlowAlgorithm(
-            IAlgorithmComponent host,
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> g,
-			Func<TEdge,double> capacities,
-            EdgeFactory<TVertex, TEdge> edgeFactory,
-            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
+        /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge augmenting the graph (creating missing reversed edges).</param>
+        public EdmondsKarpMaximumFlowAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> capacities,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
+            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            : base(host, visitedGraph, capacities, edgeFactory)
+        {
+            ReversedEdges = reversedEdgeAugmentorAlgorithm.ReversedEdges;
+        }
 
-            )
-            : base(host, g, capacities, edgeFactory)
-		{
-		    ReversedEdges = reversedEdgeAugmentorAlgorithm.ReversedEdges;
-		}
-	
-		private IVertexListGraph<TVertex,TEdge> ResidualGraph
-		{
-			get
-			{
-				return new FilteredVertexListGraph<
-                        TVertex,
-                        TEdge,
-                        IVertexListGraph<TVertex,TEdge>
-                        >(
-        					VisitedGraph,
-                            v => true,
-				        	new ResidualEdgePredicate<TVertex,TEdge>(ResidualCapacities).Test
-    					);
-			}
-		}
+        [NotNull]
+        private IVertexListGraph<TVertex, TEdge> ResidualGraph =>
+            new FilteredVertexListGraph<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>(
+                VisitedGraph,
+                vertex => true,
+                new ResidualEdgePredicate<TVertex, TEdge>(ResidualCapacities).Test);
 
-	
-		private void Augment(
-			TVertex source,
-			TVertex sink
-			)
-		{
+        private void Augment([NotNull] TVertex source, [NotNull] TVertex sink)
+        {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(sink != null);
 #endif
 
-			TEdge e;
-			TVertex u;
-
-			// find minimum residual capacity along the augmenting path
-			double delta = double.MaxValue;
-            u = sink;
+            // Find minimum residual capacity along the augmenting path
+            double delta = double.MaxValue;
+            TVertex u = sink;
+            TEdge e;
             do
-			{
+            {
                 e = Predecessors[u];
                 delta = Math.Min(delta, ResidualCapacities[e]);
                 u = e.Source;
-			} while (!u.Equals(source));
+            } while (!u.Equals(source));
 
-			// push delta units of flow along the augmenting path
+            // Push delta units of flow along the augmenting path
             u = sink;
-            do 
-			{
+            do
+            {
                 e = Predecessors[u];
                 ResidualCapacities[e] -= delta;
                 if (ReversedEdges != null && ReversedEdges.ContainsKey(e))
                 {
                     ResidualCapacities[ReversedEdges[e]] += delta;
                 }
-				u = e.Source;
-			} while (!u.Equals(source));
-		}
-    
-		/// <summary>
-		/// Computes the maximum flow between Source and Sink.
-		/// </summary>
-		/// <returns></returns>
+                u = e.Source;
+            } while (!u.Equals(source));
+        }
+
+        /// <summary>
+        /// Computes the maximum flow between Source and Sink.
+        /// </summary>
         protected override void InternalCompute()
         {
-            if (this.Source == null)
-                throw new InvalidOperationException("Source is not specified");
-            if (this.Sink == null)
-                throw new InvalidOperationException("Sink is not specified");
+            if (Source == null)
+                throw new InvalidOperationException("Source is not specified.");
+            if (Sink == null)
+                throw new InvalidOperationException("Sink is not specified.");
 
-
-            if (this.Services.CancelManager.IsCancelling)
+            if (Services.CancelManager.IsCancelling)
                 return;
 
-            var g = this.VisitedGraph;
-            foreach (var u in g.Vertices)
-                foreach (var e in g.OutEdges(u))
-                {
-                    var capacity = this.Capacities(e);
-                    if (capacity < 0)
-                        throw new InvalidOperationException("negative edge capacity");
-                    this.ResidualCapacities[e] = capacity;
-                }
-
-            this.VertexColors[Sink] = GraphColor.Gray;
-            while (this.VertexColors[Sink] != GraphColor.White)
+            var graph = VisitedGraph;
+            foreach (TVertex vertex in graph.Vertices)
             {
-                var vis = new VertexPredecessorRecorderObserver<TVertex, TEdge>(
-                    this.Predecessors
-                    );
+                foreach (TEdge edge in graph.OutEdges(vertex))
+                {
+                    double capacity = Capacities(edge);
+                    if (capacity < 0)
+                        throw new InvalidOperationException("Negative edge capacity.");
+                    ResidualCapacities[edge] = capacity;
+                }
+            }
+
+            VertexColors[Sink] = GraphColor.Gray;
+            while (VertexColors[Sink] != GraphColor.White)
+            {
+                var verticesPredecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>(Predecessors);
                 var queue = new Queue<TVertex>();
                 var bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(
-                    this.ResidualGraph,
+                    ResidualGraph,
                     queue,
-                    this.VertexColors
-                    );
-                using (vis.Attach(bfs))
-                    bfs.Compute(this.Source);
+                    VertexColors);
 
-                if (this.VertexColors[this.Sink] != GraphColor.White)
-                    this.Augment(this.Source, this.Sink);
-            } // while
+                using (verticesPredecessors.Attach(bfs))
+                    bfs.Compute(Source);
 
-            this.MaxFlow = 0;
-            foreach (var e in g.OutEdges(Source))
-                this.MaxFlow += (this.Capacities(e) - this.ResidualCapacities[e]);
+                if (VertexColors[Sink] != GraphColor.White)
+                    Augment(Source, Sink);
+            }
 
-
-           
+            MaxFlow = 0;
+            foreach (TEdge edge in graph.OutEdges(Source))
+                MaxFlow += (Capacities(edge) - ResidualCapacities[edge]);
         }
-	}
-
+    }
 }

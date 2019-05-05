@@ -1,41 +1,64 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
-    public sealed class MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> 
+    /// <summary>
+    /// Multi source and sink graph augmentor algorithm.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge>
         : GraphAugmentorAlgorithmBase<TVertex, TEdge, IMutableBidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MultiSourceSinkGraphAugmentorAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="vertexFactory">Vertex factory method.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
         public MultiSourceSinkGraphAugmentorAlgorithm(
-            IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            VertexFactory<TVertex> vertexFactory,
-            EdgeFactory<TVertex,TEdge> edgeFactory)
-            :this(null, visitedGraph, vertexFactory, edgeFactory)
-        {}
+            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] VertexFactory<TVertex> vertexFactory,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            : this(null, visitedGraph, vertexFactory, edgeFactory)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MultiSourceSinkGraphAugmentorAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="vertexFactory">Vertex factory method.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
         public MultiSourceSinkGraphAugmentorAlgorithm(
-            IAlgorithmComponent host,
-            IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            VertexFactory<TVertex> vertexFactory,
-            EdgeFactory<TVertex,TEdge> edgeFactory)
-            :base(host, visitedGraph,vertexFactory,edgeFactory)
-        {}
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] VertexFactory<TVertex> vertexFactory,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            : base(host, visitedGraph, vertexFactory, edgeFactory)
+        {
+        }
 
+        /// <inheritdoc />
         protected override void AugmentGraph()
         {
-            var cancelManager = this.Services.CancelManager;
-            foreach (var v in this.VisitedGraph.Vertices)
+            ICancelManager cancelManager = Services.CancelManager;
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling) break;
+                if (cancelManager.IsCancelling)
+                    break;
 
-                // is source
-                if (this.VisitedGraph.IsInEdgesEmpty(v))
-                    this.AddAugmentedEdge(this.SuperSource, v);
+                // Is source
+                if (VisitedGraph.IsInEdgesEmpty(vertex))
+                    AddAugmentedEdge(SuperSource, vertex);
 
-                // is sink
-                if (this.VisitedGraph.IsOutEdgesEmpty(v))
-                    this.AddAugmentedEdge(v,this.SuperSink);
+                // Is sink
+                if (VisitedGraph.IsOutEdgesEmpty(vertex))
+                    AddAugmentedEdge(vertex, SuperSink);
             }
         }
     }
