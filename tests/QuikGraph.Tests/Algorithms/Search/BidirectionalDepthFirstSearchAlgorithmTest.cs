@@ -23,8 +23,8 @@ namespace QuikGraph.Algorithms.Search
             // let's make sure
             foreach (var v in g.Vertices)
             {
-                Assert.IsTrue(dfs.VertexColors.ContainsKey(v));
-                Assert.AreEqual(dfs.VertexColors[v], GraphColor.Black);
+                Assert.IsTrue(dfs.VerticesColors.ContainsKey(v));
+                Assert.AreEqual(dfs.VerticesColors[v], GraphColor.Black);
             }
         }
     }

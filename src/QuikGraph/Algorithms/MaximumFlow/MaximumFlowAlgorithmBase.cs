@@ -148,14 +148,14 @@ namespace QuikGraph.Algorithms.MaximumFlow
         [System.Diagnostics.Contracts.Pure]
 #endif
         [NotNull]
-        public IDictionary<TVertex, GraphColor> VertexColors { get; } = new Dictionary<TVertex, GraphColor>();
+        public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 
         #region IVertexColorizerAlgorithm<TVertex>
 
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VertexColors[vertex];
+            return VerticesColors[vertex];
         }
 
         #endregion

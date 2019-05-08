@@ -5,232 +5,309 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Search
 {
     /// <summary>
-    /// A depth and height first search algorithm for directed graphs
+    /// A depth and height first search algorithm for directed graphs.
     /// </summary>
     /// <remarks>
     /// This is a modified version of the classic DFS algorithm
     /// where the search is performed both in depth and height.
     /// </remarks>
-    /// <reference-ref idref="gross98graphtheory" chapter="4.2" />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge> :
-        RootedAlgorithmBase<TVertex, IBidirectionalGraph<TVertex, TEdge>>,
-        IVertexColorizerAlgorithm<TVertex>,
-        ITreeBuilderAlgorithm<TVertex, TEdge>
+    public sealed class BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge>
+        : RootedAlgorithmBase<TVertex, IBidirectionalGraph<TVertex, TEdge>>
+        , IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
+        , IDistanceRecorderAlgorithm<TVertex>
+        , IVertexColorizerAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex, GraphColor> colors;
-        private int maxDepth = int.MaxValue;
-
-        public BidirectionalDepthFirstSearchAlgorithm(IBidirectionalGraph<TVertex, TEdge> g)
-            : this(g, new Dictionary<TVertex, GraphColor>())
-        { }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BidirectionalDepthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
         public BidirectionalDepthFirstSearchAlgorithm(
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, GraphColor> colors
-            )
-            : this(null, visitedGraph, colors)
-        { }
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+            : this(visitedGraph, new Dictionary<TVertex, GraphColor>())
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BidirectionalDepthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
         public BidirectionalDepthFirstSearchAlgorithm(
-            IAlgorithmComponent host,
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, GraphColor> colors
-            )
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
+            : this(null, visitedGraph, verticesColors)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BidirectionalDepthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
+        public BidirectionalDepthFirstSearchAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
             : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(colors != null);
+            Contract.Requires(verticesColors != null);
 #endif
 
-            this.colors = colors;
+            VerticesColors = verticesColors;
         }
 
-        public IDictionary<TVertex, GraphColor> VertexColors
-        {
-            get
-            {
-                return this.colors;
-            }
-        }
+        /// <summary>
+        /// Gets or sets the maximum exploration depth, from the start vertex.
+        /// </summary>
+        /// <remarks>
+        /// Defaulted at <see cref="int.MaxValue"/>.
+        /// </remarks>
+        /// <value>
+        /// Maximum exploration depth.
+        /// </value>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public int MaxDepth { get; set; } = int.MaxValue;
 
-        public GraphColor GetVertexColor(TVertex vertex)
-        {
-            return this.colors[vertex];
-        }
+        #region Events
 
-        public int MaxDepth
-        {
-            get
-            {
-                return this.maxDepth;
-            }
-            set
-            {
-                this.maxDepth = value;
-            }
-        }
-
+        /// <inheritdoc />
         public event VertexAction<TVertex> InitializeVertex;
-        private void OnInitializeVertex(TVertex v)
+
+        private void OnVertexInitialized([NotNull] TVertex vertex)
         {
-            var eh = this.InitializeVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            InitializeVertex?.Invoke(vertex);
         }
 
+        /// <inheritdoc />
         public event VertexAction<TVertex> StartVertex;
-        private void OnStartVertex(TVertex v)
+
+        private void OnStartVertex([NotNull] TVertex vertex)
         {
-            var eh = this.StartVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            StartVertex?.Invoke(vertex);
         }
 
+        /// <summary>
+        /// Fired when a vertex is discovered and under treatment.
+        /// </summary>
         public event VertexAction<TVertex> DiscoverVertex;
-        private void OnDiscoverVertex(TVertex v)
+
+        private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-            var eh = this.DiscoverVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            DiscoverVertex?.Invoke(vertex);
         }
 
+        /// <summary>
+        /// Fired when an edge is going to be analyzed.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
-        private void OnExamineEdge(TEdge e)
+
+        private void OnExamineEdge([NotNull] TEdge edge)
         {
-            var eh = this.ExamineEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ExamineEdge?.Invoke(edge);
         }
 
+        /// <summary>
+        /// Fired when an edge is going to be treated when coming from a white vertex.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge e)
+
+        private void OnTreeEdge([NotNull] TEdge edge)
         {
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            TreeEdge?.Invoke(edge);
         }
 
+        /// <summary>
+        /// Fired when an edge is going to be treated when coming from a gray vertex.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> BackEdge;
-        private void OnBackEdge(TEdge e)
+
+        private void OnBackEdge([NotNull] TEdge edge)
         {
-            var eh = this.BackEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            BackEdge?.Invoke(edge);
         }
 
+        /// <summary>
+        /// Fired when an edge is going to be treated when coming from a black vertex.
+        /// </summary>
         public event EdgeAction<TVertex, TEdge> ForwardOrCrossEdge;
-        private void OnForwardOrCrossEdge(TEdge e)
+
+        private void OnForwardOrCrossEdge([NotNull] TEdge edge)
         {
-            var eh = this.ForwardOrCrossEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ForwardOrCrossEdge?.Invoke(edge);
         }
 
+        /// <inheritdoc />
         public event VertexAction<TVertex> FinishVertex;
-        private void OnFinishVertex(TVertex v)
+
+        private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            var eh = this.FinishVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            FinishVertex?.Invoke(vertex);
         }
 
-        protected override void InternalCompute()
-        {
-            // put all vertex to white
-            Initialize();
+        #endregion
 
-            // if there is a starting vertex, start whith him:
-            TVertex rootVertex;
-            if (this.TryGetRootVertex(out rootVertex))
-            {
-                OnStartVertex(rootVertex);
-                Visit(rootVertex, 0);
-            }
+        #region AlgorithmBase<TGraph>
 
-            // process each vertex 
-            var cancelManager = this.Services.CancelManager;
-            foreach (var u in VisitedGraph.Vertices)
-            {
-                if (cancelManager.IsCancelling) return;
-                if (VertexColors[u] == GraphColor.White)
-                {
-                    OnStartVertex(u);
-                    Visit(u, 0);
-                }
-            }
-        }
-
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.VertexColors.Clear();
-            foreach (var u in VisitedGraph.Vertices)
+            // Put all vertex to white
+            VerticesColors.Clear();
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                VertexColors[u] = GraphColor.White;
-                OnInitializeVertex(u);
+                VerticesColors[vertex] = GraphColor.White;
+                OnVertexInitialized(vertex);
             }
         }
 
-        public void Visit(TVertex u, int depth)
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
+            // If there is a starting vertex, start with him
+            if (TryGetRootVertex(out TVertex root))
+            {
+                OnStartVertex(root);
+                Visit(root, 0);
+            }
+
+            // Process each vertex 
+            ICancelManager cancelManager = Services.CancelManager;
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                if (cancelManager.IsCancelling)
+                    return;
+
+                if (VerticesColors[vertex] == GraphColor.White)
+                {
+                    OnStartVertex(vertex);
+                    Visit(vertex, 0);
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Stores vertices associated to their colors (treatment state).
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, GraphColor> VerticesColors { get; }
+
+        #region IVertexColorizerAlgorithm<TVertex>
+
+        /// <inheritdoc />
+        public GraphColor GetVertexColor(TVertex vertex)
+        {
+            return VerticesColors[vertex];
+        }
+
+        #endregion
+
+        private void Visit([NotNull] TVertex u, int depth)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(u != null);
 #endif
 
-            if (depth > this.maxDepth)
+            if (depth > MaxDepth)
                 return;
 
-            VertexColors[u] = GraphColor.Gray;
+            VerticesColors[u] = GraphColor.Gray;
             OnDiscoverVertex(u);
 
-            var cancelManager = this.Services.CancelManager;
-            foreach (var e in VisitedGraph.OutEdges(u))
+            ICancelManager cancelManager = Services.CancelManager;
+            foreach (TEdge edge in VisitedGraph.OutEdges(u))
             {
-                if (cancelManager.IsCancelling) return;
+                if (cancelManager.IsCancelling)
+                    return;
 
-                OnExamineEdge(e);
-                var v = e.Target;
-                ProcessEdge(depth, v, e);
+                OnExamineEdge(edge);
+                TVertex v = edge.Target;
+                ProcessEdge(depth, v, edge);
             }
 
-            foreach (var e in VisitedGraph.InEdges(u))
+            foreach (TEdge edge in VisitedGraph.InEdges(u))
             {
-                if (cancelManager.IsCancelling) return;
+                if (cancelManager.IsCancelling)
+                    return;
 
-                OnExamineEdge(e);
-                var v = e.Source;
-                ProcessEdge(depth, v, e);
+                OnExamineEdge(edge);
+                TVertex v = edge.Source;
+                ProcessEdge(depth, v, edge);
             }
 
-            VertexColors[u] = GraphColor.Black;
-            OnFinishVertex(u);
+            VerticesColors[u] = GraphColor.Black;
+            OnVertexFinished(u);
         }
 
-        private void ProcessEdge(int depth, TVertex v, TEdge e)
+        private void ProcessEdge(int depth, [NotNull] TVertex vertex, [NotNull] TEdge edge)
         {
-            GraphColor c = VertexColors[v];
-            if (c == GraphColor.White)
+            GraphColor color = VerticesColors[vertex];
+            if (color == GraphColor.White)
             {
-                OnTreeEdge(e);
-                Visit(v, depth + 1);
+                OnTreeEdge(edge);
+                Visit(vertex, depth + 1);
             }
-            else if (c == GraphColor.Gray)
+            else if (color == GraphColor.Gray)
             {
-                OnBackEdge(e);
+                OnBackEdge(edge);
             }
             else
             {
-                OnForwardOrCrossEdge(e);
+                OnForwardOrCrossEdge(edge);
             }
         }
     }

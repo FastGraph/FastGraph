@@ -97,7 +97,7 @@ namespace QuikGraph.Algorithms
             {
                 foreach (SEquatableEdge<TVertex> edge in graph.OutEdges(vertex))
                 {
-                    if (dfs.VertexColors[edge.Target] == GraphColor.Black)
+                    if (dfs.VerticesColors[edge.Target] == GraphColor.Black)
                     {
                         SEquatableEdge<TVertex> pair = edge.ToVertexPair();
                         // ReSharper disable once AssignNullToNotNullAttribute

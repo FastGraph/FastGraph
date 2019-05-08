@@ -85,7 +85,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                     VisitedGraph,
                     new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount));
 
-                dfs.StartVertex += OnVertexStarted;
+                dfs.StartVertex += OnStartVertex;
                 dfs.DiscoverVertex += OnVertexDiscovered;
                 dfs.Compute();
                 ++ComponentCount;
@@ -94,7 +94,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             {
                 if (dfs != null)
                 {
-                    dfs.StartVertex -= OnVertexStarted;
+                    dfs.StartVertex -= OnStartVertex;
                     dfs.DiscoverVertex -= OnVertexDiscovered;
                 }
             }
@@ -112,7 +112,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         #endregion
 
-        private void OnVertexStarted([NotNull] TVertex vertex)
+        private void OnStartVertex([NotNull] TVertex vertex)
         {
             ++ComponentCount;
         }

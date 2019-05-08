@@ -18,6 +18,6 @@ namespace QuikGraph.Algorithms
         [System.Diagnostics.Contracts.Pure]
 #endif
         [NotNull]
-        IDictionary<TEdge, GraphColor> EdgeColors { get; }
+        IDictionary<TEdge, GraphColor> EdgesColors { get; }
     }
 }

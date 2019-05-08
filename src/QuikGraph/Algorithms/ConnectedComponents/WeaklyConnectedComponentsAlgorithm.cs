@@ -144,7 +144,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(VisitedGraph);
             try
             {
-                dfs.StartVertex += OnVertexStarted;
+                dfs.StartVertex += OnStartVertex;
                 dfs.TreeEdge += OnEdgeDiscovered;
                 dfs.ForwardOrCrossEdge += OnForwardOrCrossEdge;
 
@@ -152,7 +152,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             }
             finally
             {
-                dfs.StartVertex -= OnVertexStarted;
+                dfs.StartVertex -= OnStartVertex;
                 dfs.TreeEdge -= OnEdgeDiscovered;
                 dfs.ForwardOrCrossEdge -= OnForwardOrCrossEdge;
             }
@@ -180,7 +180,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         #endregion
 
-        private void OnVertexStarted([NotNull] TVertex vertex)
+        private void OnStartVertex([NotNull] TVertex vertex)
         {
             // We are looking on a new tree
             _currentComponent = _componentEquivalences.Count;

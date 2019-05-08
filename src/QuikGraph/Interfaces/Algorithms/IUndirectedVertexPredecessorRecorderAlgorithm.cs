@@ -10,7 +10,7 @@
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
-        /// Fired when a vertex starts to be treated.
+        /// Fired on a starting vertex once before the start of the search from it.
         /// </summary>
         event VertexAction<TVertex> StartVertex;
 

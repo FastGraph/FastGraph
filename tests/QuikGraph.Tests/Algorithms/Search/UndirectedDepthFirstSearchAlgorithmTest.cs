@@ -45,45 +45,45 @@ namespace QuikGraph.Algorithms.Search
 
             dfs.StartVertex += args =>
             {
-                Assert.AreEqual(dfs.VertexColors[args], GraphColor.White);
+                Assert.AreEqual(dfs.VerticesColors[args], GraphColor.White);
                 Assert.IsFalse(parents.ContainsKey(args));
                 parents[args] = args;
             };
 
             dfs.DiscoverVertex += args =>
             {
-                Assert.AreEqual(dfs.VertexColors[args], GraphColor.Gray);
-                Assert.AreEqual(dfs.VertexColors[parents[args]], GraphColor.Gray);
+                Assert.AreEqual(dfs.VerticesColors[args], GraphColor.Gray);
+                Assert.AreEqual(dfs.VerticesColors[parents[args]], GraphColor.Gray);
 
                 discoverTimes[args] = time++;
             };
 
             dfs.ExamineEdge += (sender, args) =>
             {
-                Assert.AreEqual(dfs.VertexColors[args.Source], GraphColor.Gray);
+                Assert.AreEqual(dfs.VerticesColors[args.Source], GraphColor.Gray);
             };
 
             dfs.TreeEdge += (sender, args) =>
             {
                 var source = args.Source;
                 var target = args.Target;
-                Assert.AreEqual(dfs.VertexColors[target], GraphColor.White);
+                Assert.AreEqual(dfs.VerticesColors[target], GraphColor.White);
                 parents[target] = source;
             };
 
             dfs.BackEdge += (sender, args) =>
             {
-                Assert.AreEqual(dfs.VertexColors[args.Target], GraphColor.Gray);
+                Assert.AreEqual(dfs.VerticesColors[args.Target], GraphColor.Gray);
             };
 
             dfs.ForwardOrCrossEdge += (sender, args) =>
             {
-                Assert.AreEqual(dfs.VertexColors[args.Target], GraphColor.Black);
+                Assert.AreEqual(dfs.VerticesColors[args.Target], GraphColor.Black);
             };
 
             dfs.FinishVertex += args =>
             {
-                Assert.AreEqual(dfs.VertexColors[args], GraphColor.Black);
+                Assert.AreEqual(dfs.VerticesColors[args], GraphColor.Black);
                 finishTimes[args] = time++;
             };
 
@@ -93,8 +93,8 @@ namespace QuikGraph.Algorithms.Search
             // all vertices should be black
             foreach (var v in g.Vertices)
             {
-                Assert.IsTrue(dfs.VertexColors.ContainsKey(v));
-                Assert.AreEqual(dfs.VertexColors[v], GraphColor.Black);
+                Assert.IsTrue(dfs.VerticesColors.ContainsKey(v));
+                Assert.AreEqual(dfs.VerticesColors[v], GraphColor.Black);
             }
 
             foreach (var u in g.Vertices)

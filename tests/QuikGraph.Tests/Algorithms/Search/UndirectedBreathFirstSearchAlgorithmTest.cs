@@ -27,12 +27,12 @@ namespace QuikGraph.Algorithms.Search
 
             algo.InitializeVertex += u =>
             {
-                Assert.AreEqual(algo.VertexColors[u], GraphColor.White);
+                Assert.AreEqual(algo.VerticesColors[u], GraphColor.White);
             };
 
             algo.DiscoverVertex += u =>
             {
-                Assert.AreEqual(algo.VertexColors[u], GraphColor.Gray);
+                Assert.AreEqual(algo.VerticesColors[u], GraphColor.Gray);
                 if (u.Equals(sourceVertex))
                     currentVertex = sourceVertex;
                 else
@@ -66,14 +66,14 @@ namespace QuikGraph.Algorithms.Search
             {
                 var u = args.Edge.Source;
                 var v = args.Edge.Target;
-                if (algo.VertexColors[v] == GraphColor.Gray)
+                if (algo.VerticesColors[v] == GraphColor.Gray)
                 {
                     var temp = u;
                     u = v;
                     v = temp;
                 }
 
-                Assert.AreEqual(algo.VertexColors[v], GraphColor.White);
+                Assert.AreEqual(algo.VerticesColors[v], GraphColor.White);
                 Assert.AreEqual(distances[u], currentDistance);
                 parents[v] = u;
                 distances[v] = distances[u] + 1;
@@ -82,14 +82,14 @@ namespace QuikGraph.Algorithms.Search
             {
                 var u = args.Edge.Source;
                 var v = args.Edge.Target;
-                if (algo.VertexColors[v] != GraphColor.White)
+                if (algo.VerticesColors[v] != GraphColor.White)
                 {
                     var temp = u;
                     u = v;
                     v = temp;
                 }
 
-                Assert.IsFalse(algo.VertexColors[v] == GraphColor.White);
+                Assert.IsFalse(algo.VerticesColors[v] == GraphColor.White);
 
                 if (algo.VisitedGraph.IsDirected)
                 {
@@ -121,7 +121,7 @@ namespace QuikGraph.Algorithms.Search
 
             algo.FinishVertex += args =>
             {
-                Assert.AreEqual(algo.VertexColors[args], GraphColor.Black);
+                Assert.AreEqual(algo.VerticesColors[args], GraphColor.Black);
             };
 
 
@@ -140,7 +140,7 @@ namespace QuikGraph.Algorithms.Search
             // All white vertices should be unreachable from the source.
             foreach (var v in g.Vertices)
             {
-                if (algo.VertexColors[v] == GraphColor.White)
+                if (algo.VerticesColors[v] == GraphColor.White)
                 {
                     //!IsReachable(start,u,g);
                 }

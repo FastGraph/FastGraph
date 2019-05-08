@@ -39,7 +39,7 @@ namespace QuikGraph.Algorithms
         [System.Diagnostics.Contracts.Pure]
 #endif
         [JetBrains.Annotations.Pure]
-        public bool TryGetGoalVertex(out TVertex target)
+        public bool TryGetTargetVertex(out TVertex target)
         {
             if (_hasTargetVertex)
             {

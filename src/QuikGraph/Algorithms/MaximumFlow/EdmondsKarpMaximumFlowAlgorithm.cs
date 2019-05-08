@@ -126,20 +126,20 @@ namespace QuikGraph.Algorithms.MaximumFlow
                 }
             }
 
-            VertexColors[Sink] = GraphColor.Gray;
-            while (VertexColors[Sink] != GraphColor.White)
+            VerticesColors[Sink] = GraphColor.Gray;
+            while (VerticesColors[Sink] != GraphColor.White)
             {
                 var verticesPredecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>(Predecessors);
                 var queue = new Queue<TVertex>();
                 var bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(
                     ResidualGraph,
                     queue,
-                    VertexColors);
+                    VerticesColors);
 
                 using (verticesPredecessors.Attach(bfs))
                     bfs.Compute(Source);
 
-                if (VertexColors[Sink] != GraphColor.White)
+                if (VerticesColors[Sink] != GraphColor.White)
                     Augment(Source, Sink);
             }
 
