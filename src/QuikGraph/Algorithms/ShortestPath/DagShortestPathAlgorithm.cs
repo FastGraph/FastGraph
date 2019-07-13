@@ -1,150 +1,214 @@
 ﻿using System;
+using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
-    /// A single-source shortest path algorithm for directed acyclic
-    /// graph.
+    /// A single source shortest path algorithm for directed acyclic graphs.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <reference-ref
-    ///     id="boost"
-    ///     />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class DagShortestPathAlgorithm<TVertex, TEdge> :
-        ShortestPathAlgorithmBase<TVertex,TEdge,IVertexListGraph<TVertex,TEdge>>,
-        IVertexColorizerAlgorithm<TVertex>,
-        ITreeBuilderAlgorithm<TVertex,TEdge>,
-        IDistanceRecorderAlgorithm<TVertex>,
-        IVertexPredecessorRecorderAlgorithm<TVertex,TEdge>
+    public sealed class DagShortestPathAlgorithm<TVertex, TEdge>
+        : ShortestPathAlgorithmBase<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
+        , IDistanceRecorderAlgorithm<TVertex>
+        , IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public DagShortestPathAlgorithm(
-            IVertexListGraph<TVertex, TEdge> g,
-            Func<TEdge, double> weights
-            )
-            : this(g, weights, DistanceRelaxers.ShortestDistance)
-        { }
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
         public DagShortestPathAlgorithm(
-            IVertexListGraph<TVertex, TEdge> g,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            : this(null, g, weights, distanceRelaxer)
-        { }
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
         public DagShortestPathAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex, TEdge> g,
-            Func<TEdge,double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            :base(host, g,weights, distanceRelaxer)
-        {}
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : base(host, visitedGraph, edgeWeights, distanceRelaxer)
+        {
+        }
 
+        #region Events
+
+        /// <inheritdoc />
         public event VertexAction<TVertex> InitializeVertex;
-        private void OnInitializeVertex(TVertex v)
+
+        private void OnVertexInitialized([NotNull] TVertex vertex)
         {
-            var eh = this.InitializeVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            InitializeVertex?.Invoke(vertex);
         }
 
+        /// <inheritdoc />
         public event VertexAction<TVertex> StartVertex;
-        private void OnStartVertex(TVertex v)
+
+        private void OnStartVertex([NotNull] TVertex vertex)
         {
-            var eh = this.StartVertex;
-            if (eh!=null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            StartVertex?.Invoke(vertex);
         }
 
+        /// <inheritdoc />
         public event VertexAction<TVertex> DiscoverVertex;
-        private void OnDiscoverVertex(TVertex v)
+
+        private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-            var eh = this.DiscoverVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            DiscoverVertex?.Invoke(vertex);
         }
 
+        /// <summary>
+        /// Fired when a vertex is going to be analyzed.
+        /// </summary>
         public event VertexAction<TVertex> ExamineVertex;
-        private void OnExamineVertex(TVertex v)
+
+        private void OnExamineVertex([NotNull] TVertex vertex)
         {
-            var eh = this.ExamineVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            ExamineVertex?.Invoke(vertex);
         }
 
-        public event EdgeAction<TVertex,TEdge> ExamineEdge;
-        private void OnExamineEdge(TEdge e)
+        /// <summary>
+        /// Fired when an edge is going to be analyzed.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+
+        private void OnExamineEdge([NotNull] TEdge edge)
         {
-            var eh = this.ExamineEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ExamineEdge?.Invoke(edge);
         }
 
-        public event EdgeAction<TVertex,TEdge> EdgeNotRelaxed;
-        private void OnEdgeNotRelaxed(TEdge e)
+        /// <summary>
+        /// Fired when relax of an edge does not decrease distance.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> EdgeNotRelaxed;
+
+        private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-            var eh = this.EdgeNotRelaxed;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeNotRelaxed?.Invoke(edge);
         }
 
+        /// <inheritdoc />
         public event VertexAction<TVertex> FinishVertex;
-        private void OnFinishVertex(TVertex v)
+
+        private void OnFinishVertex([NotNull] TVertex vertex)
         {
-            var eh = this.FinishVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            FinishVertex?.Invoke(vertex);
         }
 
+        #endregion
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
-            // init color, distance
-            var initialDistance = this.DistanceRelaxer.InitialDistance;
-            foreach (var u in VisitedGraph.Vertices)
+
+            // Initialize colors and distances
+            double initialDistance = DistanceRelaxer.InitialDistance;
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                this.VertexColors.Add(u, GraphColor.White);
-                this.Distances.Add(u, initialDistance);
-                this.OnInitializeVertex(u);
+                VerticesColors.Add(vertex, GraphColor.White);
+                Distances.Add(vertex, initialDistance);
+                OnVertexInitialized(vertex);
             }
         }
-        
-        protected override void  InternalCompute()
-        {
-            TVertex rootVertex;
-            if (!this.TryGetRootVertex(out rootVertex))
-                throw new InvalidOperationException("RootVertex not initialized");
 
-            VertexColors[rootVertex] = GraphColor.Gray;
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
+            if (!TryGetRootVertex(out TVertex rootVertex))
+                throw new InvalidOperationException("Root vertex not set.");
+
+            VerticesColors[rootVertex] = GraphColor.Gray;
             Distances[rootVertex] = 0;
             ComputeNoInit(rootVertex);
         }
 
-        public void ComputeNoInit(TVertex s)
-        {
-            var orderedVertices = AlgorithmExtensions.TopologicalSort(this.VisitedGraph);
+        #endregion
 
-            OnDiscoverVertex(s);
-            foreach (var v in orderedVertices)
+        private void ComputeNoInit([NotNull] TVertex root)
+        {
+            IEnumerable<TVertex> orderedVertices = VisitedGraph.TopologicalSort();
+
+            OnDiscoverVertex(root);
+            foreach (TVertex vertex in orderedVertices)
             {
-                OnExamineVertex(v);
-                foreach (var e in VisitedGraph.OutEdges(v))
+                OnStartVertex(vertex);
+                OnExamineVertex(vertex);
+                foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
                 {
-                    OnDiscoverVertex(e.Target);
-                    bool decreased = Relax(e);
+                    OnExamineEdge(edge);
+                    OnDiscoverVertex(edge.Target);
+
+                    bool decreased = Relax(edge);
                     if (decreased)
-                        OnTreeEdge(e);
+                        OnTreeEdge(edge);
                     else
-                        OnEdgeNotRelaxed(e);
+                        OnEdgeNotRelaxed(edge);
                 }
-                OnFinishVertex(v);
+                OnFinishVertex(vertex);
             }
         }
     }

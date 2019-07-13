@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -11,15 +11,14 @@ using QuikGraph.Collections;
 namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
-    /// Dijkstra single source shortest path algorithm for directed graph
-    /// with positive distance.
+    /// A* single source shortest path algorithm for directed graph with positive distance.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class DijkstraShortestPathAlgorithm<TVertex, TEdge>
+    public sealed class AStarShortestPathAlgorithm<TVertex, TEdge>
         : ShortestPathAlgorithmBase<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         , IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
         , IDistanceRecorderAlgorithm<TVertex>
@@ -27,66 +26,69 @@ namespace QuikGraph.Algorithms.ShortestPath
     {
         private FibonacciQueue<TVertex, double> _vertexQueue;
 
+        private Dictionary<TVertex, double> _costs;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// Initializes a new instance of the <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
-        public DijkstraShortestPathAlgorithm(
+        /// <param name="costHeuristic">Function that computes a cost for a given vertex.</param>
+        public AStarShortestPathAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
-            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] Func<TVertex, double> costHeuristic)
+            : this(visitedGraph, edgeWeights, costHeuristic, DistanceRelaxers.ShortestDistance)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// Initializes a new instance of the <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="costHeuristic">Function that computes a cost for a given vertex.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
-        public DijkstraShortestPathAlgorithm(
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer)
-            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+        public AStarShortestPathAlgorithm(
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] Func<TVertex, double> costHeuristic,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : this(null, visitedGraph, edgeWeights, costHeuristic, distanceRelaxer)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// Initializes a new instance of the <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="costHeuristic">Function that computes a cost for a given vertex.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
-        public DijkstraShortestPathAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer)
+        public AStarShortestPathAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] Func<TVertex, double> costHeuristic,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
-        }
-
-        [Conditional("DEBUG")]
-        private void AssertHeap()
-        {
-            if (_vertexQueue.Count == 0)
-                return;
-
-            TVertex top = _vertexQueue.Peek();
-            TVertex[] vertices = _vertexQueue.ToArray();
-            for (int i = 1; i < vertices.Length; ++i)
-            {
-                if (Distances[top] > Distances[vertices[i]])
 #if SUPPORTS_CONTRACTS
-                    Contract.Assert(false);
-#else
-                    Debug.Assert(false);
+            Contract.Requires(costHeuristic != null);
 #endif
-            }
+
+            CostHeuristic = costHeuristic;
         }
+
+        /// <summary>
+        /// Function that computes a cost for a given vertex.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Func<TVertex, double> CostHeuristic { get; }
 
         #region Events
 
@@ -99,6 +101,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         public event VertexAction<TVertex> StartVertex;
 
+        /// <inheritdoc />
+        public event VertexAction<TVertex> FinishVertex;
+
         /// <summary>
         /// Fired when a vertex is going to be analyzed.
         /// </summary>
@@ -108,9 +113,6 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// Fired when an edge is going to be analyzed.
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
-
-        /// <inheritdoc />
-        public event VertexAction<TVertex> FinishVertex;
 
         /// <summary>
         /// Fired when relax of an edge does not decrease distance.
@@ -126,7 +128,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             EdgeNotRelaxed?.Invoke(edge);
         }
 
-        private void InternalExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -136,7 +138,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                 throw new NegativeWeightException();
         }
 
-        private void OnDijkstraTreeEdge([NotNull] TEdge edge)
+        private void OnAStarTreeEdge([NotNull] TEdge edge)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
@@ -144,14 +146,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             bool decreased = Relax(edge);
             if (decreased)
-            {
                 OnTreeEdge(edge);
-                AssertHeap();
-            }
             else
-            {
                 OnEdgeNotRelaxed(edge);
-            }
         }
 
         private void OnGrayTarget([NotNull] TEdge edge)
@@ -163,9 +160,35 @@ namespace QuikGraph.Algorithms.ShortestPath
             bool decreased = Relax(edge);
             if (decreased)
             {
-                _vertexQueue.Update(edge.Target);
-                AssertHeap();
+                TVertex target = edge.Target;
+                double distance = Distances[target];
+
+                _costs[target] = DistanceRelaxer.Combine(distance, CostHeuristic(target));
+                _vertexQueue.Update(target);
                 OnTreeEdge(edge);
+            }
+            else
+            {
+                OnEdgeNotRelaxed(edge);
+            }
+        }
+
+        private void OnBlackTarget([NotNull] TEdge edge)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            bool decreased = Relax(edge);
+            if (decreased)
+            {
+                TVertex target = edge.Target;
+                double distance = Distances[target];
+
+                OnTreeEdge(edge);
+                _costs[target] = DistanceRelaxer.Combine(distance, CostHeuristic(target));
+                _vertexQueue.Enqueue(target);
+                VerticesColors[target] = GraphColor.Gray;
             }
             else
             {
@@ -182,15 +205,19 @@ namespace QuikGraph.Algorithms.ShortestPath
         {
             base.Initialize();
 
+            VerticesColors.Clear();
+            _costs = new Dictionary<TVertex, double>(VisitedGraph.VertexCount);
+
             // Initialize colors and distances
             double initialDistance = DistanceRelaxer.InitialDistance;
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 VerticesColors.Add(vertex, GraphColor.White);
                 Distances.Add(vertex, initialDistance);
+                _costs.Add(vertex, initialDistance);
             }
 
-            _vertexQueue = new FibonacciQueue<TVertex, double>(DistancesIndexGetter());
+            _vertexQueue = new FibonacciQueue<TVertex, double>(_costs, DistanceRelaxer.Compare);
         }
 
         /// <inheritdoc />
@@ -241,15 +268,13 @@ namespace QuikGraph.Algorithms.ShortestPath
                 bfs.DiscoverVertex += DiscoverVertex;
                 bfs.StartVertex += StartVertex;
                 bfs.ExamineEdge += ExamineEdge;
-#if SUPERDEBUG
-                bfs.ExamineEdge += edge => this.AssertHeap();
-#endif
                 bfs.ExamineVertex += ExamineVertex;
                 bfs.FinishVertex += FinishVertex;
 
-                bfs.ExamineEdge += InternalExamineEdge;
-                bfs.TreeEdge += OnDijkstraTreeEdge;
+                bfs.ExamineEdge += OnExamineEdge;
+                bfs.TreeEdge += OnAStarTreeEdge;
                 bfs.GrayTarget += OnGrayTarget;
+                bfs.BlackTarget += OnBlackTarget;
 
                 bfs.Visit(root);
             }
@@ -261,13 +286,13 @@ namespace QuikGraph.Algorithms.ShortestPath
                     bfs.DiscoverVertex -= DiscoverVertex;
                     bfs.StartVertex -= StartVertex;
                     bfs.ExamineEdge -= ExamineEdge;
-
                     bfs.ExamineVertex -= ExamineVertex;
                     bfs.FinishVertex -= FinishVertex;
 
-                    bfs.ExamineEdge -= InternalExamineEdge;
-                    bfs.TreeEdge -= OnDijkstraTreeEdge;
+                    bfs.ExamineEdge -= OnExamineEdge;
+                    bfs.TreeEdge -= OnAStarTreeEdge;
                     bfs.GrayTarget -= OnGrayTarget;
+                    bfs.BlackTarget -= OnBlackTarget;
                 }
             }
         }

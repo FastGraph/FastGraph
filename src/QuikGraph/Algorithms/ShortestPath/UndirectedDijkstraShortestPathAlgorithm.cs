@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -10,61 +11,122 @@ using QuikGraph.Collections;
 namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
-    /// A single-source shortest path algorithm for undirected graph
-    /// with positive distance.
+    /// A single source shortest path algorithm for undirected graph
+    /// with positive distances.
     /// </summary>
-    /// <reference-ref idref="lawler01combinatorial" />
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge> 
+    public sealed class UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>
         : UndirectedShortestPathAlgorithmBase<TVertex, TEdge>
-        , IVertexColorizerAlgorithm<TVertex>
         , IUndirectedVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
         , IDistanceRecorderAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        private IPriorityQueue<TVertex> vertexQueue;
+        private IPriorityQueue<TVertex> _vertexQueue;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public UndirectedDijkstraShortestPathAlgorithm(
             IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights)
-            : this(visitedGraph, weights, DistanceRelaxers.ShortestDistance)
-        { }
+            Func<TEdge, double> edgeWeights)
+            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
         public UndirectedDijkstraShortestPathAlgorithm(
             IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            : this(null, visitedGraph, weights, distanceRelaxer)
-        { }
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
+            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
         public UndirectedDijkstraShortestPathAlgorithm(
             IAlgorithmComponent host,
             IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            : base(host, visitedGraph, weights, distanceRelaxer)
-        { }
-
-        public event VertexAction<TVertex> InitializeVertex;
-        public event VertexAction<TVertex> StartVertex;
-        public event VertexAction<TVertex> DiscoverVertex;
-        public event VertexAction<TVertex> ExamineVertex;
-        public event EdgeAction<TVertex, TEdge> ExamineEdge;
-        public event VertexAction<TVertex> FinishVertex;
-
-        public event UndirectedEdgeAction<TVertex, TEdge> EdgeNotRelaxed;
-        private void OnEdgeNotRelaxed(TEdge e, bool reversed)
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
+            : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
-            var eh = EdgeNotRelaxed;
-            if (eh != null)
-                eh(this, new UndirectedEdgeEventArgs<TVertex, TEdge>(e, reversed));
         }
 
-        private void InternalTreeEdge(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        [Conditional("DEBUG")]
+        private void AssertHeap()
+        {
+            if (_vertexQueue.Count == 0)
+                return;
+
+            TVertex top = _vertexQueue.Peek();
+            TVertex[] vertices = _vertexQueue.ToArray();
+            for (int i = 1; i < vertices.Length; ++i)
+            {
+                if (Distances[top] > Distances[vertices[i]])
+#if SUPPORTS_CONTRACTS
+                    Contract.Assert(false);
+#else
+                    Debug.Assert(false);
+#endif
+            }
+        }
+
+        #region Events
+
+        /// <inheritdoc />
+        public event VertexAction<TVertex> InitializeVertex;
+
+        /// <inheritdoc />
+        public event VertexAction<TVertex> StartVertex;
+
+        /// <inheritdoc />
+        public event VertexAction<TVertex> DiscoverVertex;
+
+        /// <summary>
+        /// Fired when a vertex is going to be analyzed.
+        /// </summary>
+        public event VertexAction<TVertex> ExamineVertex;
+
+        /// <summary>
+        /// Fired when an edge is going to be analyzed.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+
+        /// <inheritdoc />
+        public event VertexAction<TVertex> FinishVertex;
+
+        /// <summary>
+        /// Fired when relax of an edge does not decrease distance.
+        /// </summary>
+        public event UndirectedEdgeAction<TVertex, TEdge> EdgeNotRelaxed;
+
+        private void OnEdgeNotRelaxed([NotNull] TEdge edge, bool reversed)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeNotRelaxed?.Invoke(this, new UndirectedEdgeEventArgs<TVertex, TEdge>(edge, reversed));
+        }
+
+        private void OnDijkstraTreeEdge(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
@@ -72,12 +134,12 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             bool decreased = Relax(args.Edge, args.Source, args.Target);
             if (decreased)
-                this.OnTreeEdge(args.Edge, args.Reversed);
+                OnTreeEdge(args.Edge, args.Reversed);
             else
-                this.OnEdgeNotRelaxed(args.Edge, args.Reversed);
+                OnEdgeNotRelaxed(args.Edge, args.Reversed);
         }
 
-        private void InternalGrayTarget(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void OnGrayTarget(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(args != null);
@@ -86,8 +148,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             bool decreased = Relax(args.Edge, args.Source, args.Target);
             if (decreased)
             {
-                this.vertexQueue.Update(args.Target);
-                this.AssertHeap();
+                _vertexQueue.Update(args.Target);
+                AssertHeap();
                 OnTreeEdge(args.Edge, args.Reversed);
             }
             else
@@ -96,68 +158,63 @@ namespace QuikGraph.Algorithms.ShortestPath
             }
         }
 
-        [Conditional("DEBUG")]
-        private void AssertHeap()
-        {
-            if (this.vertexQueue.Count == 0)
-                return;
+        #endregion
 
-            var top = this.vertexQueue.Peek();
-            var vertices = this.vertexQueue.ToArray();
-            for (int i = 1; i < vertices.Length; ++i)
-                if (this.Distances[top] > this.Distances[vertices[i]])
-#if SUPPORTS_CONTRACTS
-                    Contract.Assert(false);
-#else
-                    Debug.Assert(false);
-#endif
-        }
+        #region AlgorithmBase<TGraph>
 
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
 
-            var initialDistance = this.DistanceRelaxer.InitialDistance;
-            // init color, distance
-            foreach (var u in VisitedGraph.Vertices)
+            double initialDistance = DistanceRelaxer.InitialDistance;
+            // Initialize colors and distances
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                this.VertexColors.Add(u, GraphColor.White);
-                this.Distances.Add(u, initialDistance);
+                VerticesColors.Add(vertex, GraphColor.White);
+                Distances.Add(vertex, initialDistance);
             }
-            this.vertexQueue = new FibonacciQueue<TVertex, double>(this.DistancesIndexGetter());
+
+            _vertexQueue = new FibonacciQueue<TVertex, double>(DistancesIndexGetter());
         }
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            TVertex rootVertex;
-            if (this.TryGetRootVertex(out rootVertex))
-                this.ComputeFromRoot(rootVertex);
+            if (TryGetRootVertex(out TVertex rootVertex))
+            {
+                ComputeFromRoot(rootVertex);
+            }
             else
             {
-                foreach (var v in this.VisitedGraph.Vertices)
-                    if (this.VertexColors[v] == GraphColor.White)
-                        this.ComputeFromRoot(v);
+                foreach (TVertex vertex in VisitedGraph.Vertices)
+                {
+                    if (VerticesColors[vertex] == GraphColor.White)
+                        ComputeFromRoot(vertex);
+                }
             }
         }
 
-        private void ComputeFromRoot(TVertex rootVertex)
+        #endregion
+
+        private void ComputeFromRoot([NotNull] TVertex rootVertex)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(rootVertex != null);
-            Contract.Requires(this.VisitedGraph.ContainsVertex(rootVertex));
-            Contract.Requires(this.VertexColors[rootVertex] == GraphColor.White);
+            Contract.Requires(VisitedGraph.ContainsVertex(rootVertex));
+            Contract.Requires(VerticesColors[rootVertex] == GraphColor.White);
 #endif
 
-            this.VertexColors[rootVertex] = GraphColor.Gray;
-            this.Distances[rootVertex] = 0;
-            this.ComputeNoInit(rootVertex);
+            VerticesColors[rootVertex] = GraphColor.Gray;
+            Distances[rootVertex] = 0;
+            ComputeNoInit(rootVertex);
         }
 
-        public void ComputeNoInit(TVertex s)
+        private void ComputeNoInit([NotNull] TVertex root)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(s != null);
-            Contract.Requires(this.VisitedGraph.ContainsVertex(s));
+            Contract.Requires(root != null);
+            Contract.Requires(VisitedGraph.ContainsVertex(root));
 #endif
 
             UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge> bfs = null;
@@ -165,39 +222,38 @@ namespace QuikGraph.Algorithms.ShortestPath
             {
                 bfs = new UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge>(
                     this,
-                    this.VisitedGraph,
-                    this.vertexQueue,
-                    VertexColors
-                    );
+                    VisitedGraph,
+                    _vertexQueue,
+                    VerticesColors);
 
-                bfs.InitializeVertex += this.InitializeVertex;
-                bfs.DiscoverVertex += this.DiscoverVertex;
-                bfs.StartVertex += this.StartVertex;
-                bfs.ExamineEdge += this.ExamineEdge;
+                bfs.InitializeVertex += InitializeVertex;
+                bfs.DiscoverVertex += DiscoverVertex;
+                bfs.StartVertex += StartVertex;
+                bfs.ExamineEdge += ExamineEdge;
 #if DEBUG
-                bfs.ExamineEdge += e => this.AssertHeap();
+                bfs.ExamineEdge += edge => AssertHeap();
 #endif
-                bfs.ExamineVertex += this.ExamineVertex;
-                bfs.FinishVertex += this.FinishVertex;
+                bfs.ExamineVertex += ExamineVertex;
+                bfs.FinishVertex += FinishVertex;
 
-                bfs.TreeEdge += this.InternalTreeEdge;
-                bfs.GrayTarget += this.InternalGrayTarget;
+                bfs.TreeEdge += OnDijkstraTreeEdge;
+                bfs.GrayTarget += OnGrayTarget;
 
-                bfs.Visit(s);
+                bfs.Visit(root);
             }
             finally
             {
                 if (bfs != null)
                 {
-                    bfs.InitializeVertex -= this.InitializeVertex;
-                    bfs.DiscoverVertex -= this.DiscoverVertex;
-                    bfs.StartVertex -= this.StartVertex;
-                    bfs.ExamineEdge -= this.ExamineEdge;
-                    bfs.ExamineVertex -= this.ExamineVertex;
-                    bfs.FinishVertex -= this.FinishVertex;
+                    bfs.InitializeVertex -= InitializeVertex;
+                    bfs.DiscoverVertex -= DiscoverVertex;
+                    bfs.StartVertex -= StartVertex;
+                    bfs.ExamineEdge -= ExamineEdge;
+                    bfs.ExamineVertex -= ExamineVertex;
+                    bfs.FinishVertex -= FinishVertex;
 
-                    bfs.TreeEdge -= this.InternalTreeEdge;
-                    bfs.GrayTarget -= this.InternalGrayTarget;
+                    bfs.TreeEdge -= OnDijkstraTreeEdge;
+                    bfs.GrayTarget -= OnGrayTarget;
                 }
             }
         }

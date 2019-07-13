@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms.ShortestPath.Yen;
+using QuikGraph.Algorithms.ShortestPath;
 using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Algorithms.ShortestPath

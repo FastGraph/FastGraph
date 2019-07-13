@@ -1,5 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+#if SUPPORTS_CONTRACTS
+using System.Diagnostics.Contracts;
+#endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.ShortestPath
@@ -10,239 +13,238 @@ namespace QuikGraph.Algorithms.ShortestPath
     /// <remarks>
     /// <para>
     /// The Bellman-Ford algorithm solves the single-source shortest paths 
-    /// problem for a graph with both positive and negative edge weights. 
+    /// problem for a graph with both positive and negative edge weights.
     /// </para>
     /// <para>
     /// If you only need to solve the shortest paths problem for positive 
     /// edge weights, Dijkstra's algorithm provides a more efficient 
-    /// alternative. 
+    /// alternative.
     /// </para>
     /// <para>
     /// If all the edge weights are all equal to one then breadth-first search 
-    /// provides an even more efficient alternative. 
+    /// provides an even more efficient alternative.
     /// </para>
     /// </remarks>
-    /// <reference-ref
-    ///     idref="shi03datastructures"
-    ///     />
-    public sealed class BellmanFordShortestPathAlgorithm<TVertex, TEdge> 
-        : ShortestPathAlgorithmBase<TVertex,TEdge
-        , IVertexAndEdgeListGraph<TVertex,TEdge>>
-        , ITreeBuilderAlgorithm<TVertex, TEdge>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class BellmanFordShortestPathAlgorithm<TVertex, TEdge>
+        : ShortestPathAlgorithmBase<TVertex, TEdge
+        , IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly Dictionary<TVertex,TVertex> predecessors;
-        private bool foundNegativeCycle;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public BellmanFordShortestPathAlgorithm(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights
-            )
-            : this(visitedGraph, weights, DistanceRelaxers.ShortestDistance)
-        { }
-
-        public BellmanFordShortestPathAlgorithm(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            : this(null, visitedGraph, weights, distanceRelaxer)
-        { }
-
-        public BellmanFordShortestPathAlgorithm(
-            IAlgorithmComponent host,
-            IVertexAndEdgeListGraph<TVertex,TEdge> visitedGraph,
-            Func<TEdge,double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            :base(host, visitedGraph, weights, distanceRelaxer)
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
-            this.predecessors = new Dictionary<TVertex,TVertex>();
-        }
-
-        public bool FoundNegativeCycle
-        {
-            get { return this.foundNegativeCycle;}
         }
 
         /// <summary>
-        /// Invoked on each vertex in the graph before the start of the 
-        /// algorithm.
+        /// Initializes a new instance of the <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
+        public BellmanFordShortestPathAlgorithm(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
+        public BellmanFordShortestPathAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : base(host, visitedGraph, edgeWeights, distanceRelaxer)
+        {
+        }
+
+        /// <summary>
+        /// Indicates if a negative cycle was found in the graph.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public bool FoundNegativeCycle { get; private set; }
+
+        #region Events
+
+        /// <summary>
+        /// Fired on each vertex in the graph before the start of the algorithm.
         /// </summary>
         public event VertexAction<TVertex> InitializeVertex;
 
-        /// <summary>
-        /// Raises the <see cref="InitializeVertex"/> event.
-        /// </summary>
-        /// <param name="v">vertex that raised the event</param>
-        private void OnInitializeVertex(TVertex v)
+        private void OnInitializeVertex([NotNull] TVertex vertex)
         {
-            var eh = this.InitializeVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            InitializeVertex?.Invoke(vertex);
         }
 
         /// <summary>
-        /// Invoked on every edge in the graph |V| times.
+        /// Fired on every edge in the graph (|V| times).
         /// </summary>
-        public event EdgeAction<TVertex,TEdge> ExamineEdge;
+        public event EdgeAction<TVertex, TEdge> ExamineEdge;
 
-        /// <summary>
-        /// Raises the <see cref="ExamineEdge"/> event.
-        /// </summary>
-        /// <param name="e">edge that raised the event</param>
-        private void OnExamineEdge(TEdge e)
+        private void OnExamineEdge([NotNull] TEdge edge)
         {
-            var eh = this.ExamineEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            ExamineEdge?.Invoke(edge);
         }
 
         /// <summary>
-        ///  Invoked if the distance label for the target vertex is not 
-        ///  decreased.
+        /// Fired if the distance label for a target vertex is not decreased.
         /// </summary>
-        public event EdgeAction<TVertex,TEdge> EdgeNotRelaxed;
+        public event EdgeAction<TVertex, TEdge> EdgeNotRelaxed;
 
-        /// <summary>
-        /// Raises the <see cref="EdgeNotRelaxed"/> event.
-        /// </summary>
-        /// <param name="e">edge that raised the event</param>
-        private void OnEdgeNotRelaxed(TEdge e)
+        private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-            var eh = this.EdgeNotRelaxed;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeNotRelaxed?.Invoke(edge);
         }
 
         /// <summary>
-        ///  Invoked during the second stage of the algorithm, 
-        ///  during the test of whether each edge was minimized. 
-        ///  
-        ///  If the edge is minimized then this function is invoked.
+        /// Fired during the second stage of the algorithm,
+        /// during the test of whether each edge was minimized.
+        /// If the edge is minimized then this event is raised.
         /// </summary>
-        public event EdgeAction<TVertex,TEdge> EdgeMinimized;
+        public event EdgeAction<TVertex, TEdge> EdgeMinimized;
 
-
-        /// <summary>
-        /// Raises the <see cref="EdgeMinimized"/> event.
-        /// </summary>
-        /// <param name="e">edge that raised the event</param>
-        private void OnEdgeMinimized(TEdge e)
+        private void OnEdgeMinimized([NotNull] TEdge edge)
         {
-            var eh = this.EdgeMinimized;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeMinimized?.Invoke(edge);
         }
 
         /// <summary>
-        /// Invoked during the second stage of the algorithm, 
-        /// during the test of whether each edge was minimized. 
-        /// 
-        /// If the edge was not minimized, this function is invoked. 
-        /// This happens when there is a negative cycle in the graph. 
+        /// Fired during the second stage of the algorithm,
+        /// during the test of whether each edge was minimized.
+        /// If the edge was not minimized, this event is raised.
+        /// This happens when there is a negative cycle in the graph.
         /// </summary>
-        public event EdgeAction<TVertex,TEdge> EdgeNotMinimized;
+        public event EdgeAction<TVertex, TEdge> EdgeNotMinimized;
 
-
-        /// <summary>
-        /// Raises the <see cref="EdgeNotMinimized"/> event.
-        /// </summary>
-        /// <param name="e">edge that raised the event</param>
-        private void OnEdgeNotMinimized(TEdge e)
+        private void OnEdgeNotMinimized([NotNull] TEdge edge)
         {
-            var eh = this.EdgeNotMinimized;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            EdgeNotMinimized?.Invoke(edge);
         }
 
-        /// <summary>
-        /// Constructed predecessor map
-        /// </summary>
-        public IDictionary<TVertex,TVertex> Predecessors
-        {
-            get
-            {
-                return predecessors;
-            }
-        }
+        #endregion
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.foundNegativeCycle = false;
-            // init color, distance
-            this.VertexColors.Clear();
-            foreach (var u in VisitedGraph.Vertices)
+            FoundNegativeCycle = false;
+
+            // Initialize colors and distances
+            VerticesColors.Clear();
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                this.VertexColors[u] = GraphColor.White;
-                this.Distances[u] = double.PositiveInfinity;
-                this.OnInitializeVertex(u);
+                VerticesColors[vertex] = GraphColor.White;
+                Distances[vertex] = double.PositiveInfinity;
+                OnInitializeVertex(vertex);
             }
 
-            TVertex root;
-            if (!this.TryGetRootVertex(out root))
-                foreach (var v in this.VisitedGraph.Vertices)
+            if (!TryGetRootVertex(out TVertex root))
+            {
+                foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
-                    root = v;
+                    root = vertex;
                     break;
                 }
+            }
 
-            this.Distances[root] = 0;
+            Distances[root] = 0;
         }
 
         /// <summary>
-        /// Applies the Bellman Ford algorithm
+        /// Applies the Bellman Ford algorithm.
         /// </summary>
         /// <remarks>
         /// Does not initialize the predecessor and distance map.
         /// </remarks>
-        /// <returns>true if successful, false if there was a negative cycle.</returns>
         protected override void InternalCompute()
         {
-            // getting the number of 
-            int N = this.VisitedGraph.VertexCount;
-            for (int k = 0; k < N; ++k)
+            // Getting the number of vertices
+            int nbVertices = VisitedGraph.VertexCount;
+            for (int k = 0; k < nbVertices; ++k)
             {
                 bool atLeastOneTreeEdge = false;
-                foreach (var e in this.VisitedGraph.Edges)
+                foreach (TEdge edge in VisitedGraph.Edges)
                 {
-                    this.OnExamineEdge(e);
+                    OnExamineEdge(edge);
 
-                    if (Relax(e))
+                    if (Relax(edge))
                     {
                         atLeastOneTreeEdge = true;
-                        OnTreeEdge(e);
+                        OnTreeEdge(edge);
                     }
                     else
-                        this.OnEdgeNotRelaxed(e);
+                    {
+                        OnEdgeNotRelaxed(edge);
+                    }
                 }
+
                 if (!atLeastOneTreeEdge)
                     break;
             }
 
-            var relaxer = this.DistanceRelaxer;
-            foreach (var e in this.VisitedGraph.Edges)
+            IDistanceRelaxer relaxer = DistanceRelaxer;
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                var edgeWeight = Weights(e);
+                var edgeWeight = Weights(edge);
                 if (edgeWeight < 0)
-                    throw new InvalidOperationException("non negative edge weight");
+                    throw new InvalidOperationException("Non negative edge weight.");
+
                 if (relaxer.Compare(
-                        relaxer.Combine(
-                            this.Distances[e.Source], edgeWeight),
-                            this.Distances[e.Target]
-                        ) < 0
-                    )
+                        relaxer.Combine(Distances[edge.Source], edgeWeight),
+                        Distances[edge.Target]) < 0)
                 {
-                    this.OnEdgeMinimized(e);
-                    this.foundNegativeCycle = true;
+                    OnEdgeMinimized(edge);
+                    FoundNegativeCycle = true;
                     return;
                 }
-                else
-                    this.OnEdgeNotMinimized(e);
+
+                OnEdgeNotMinimized(edge);
             }
-            this.foundNegativeCycle = false;
+
+            FoundNegativeCycle = false;
         }
+
+        #endregion
     }
 }

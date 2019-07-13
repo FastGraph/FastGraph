@@ -3,141 +3,202 @@ using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.ShortestPath
 {
+    /// <summary>
+    /// Base class for all shortest path finder algorithms in undirected graphs.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public abstract class UndirectedShortestPathAlgorithmBase<TVertex, TEdge>
-        : RootedAlgorithmBase<TVertex, IUndirectedGraph<TVertex,TEdge>>
+        : RootedAlgorithmBase<TVertex, IUndirectedGraph<TVertex, TEdge>>
+        , IVertexColorizerAlgorithm<TVertex>
         , IUndirectedTreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly Func<TEdge, double> weights;
-        private readonly IDistanceRelaxer distanceRelaxer;
-        private Dictionary<TVertex, GraphColor> vertexColors;
-        private Dictionary<TVertex, double> distances;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedShortestPathAlgorithmBase{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         protected UndirectedShortestPathAlgorithmBase(
-            IAlgorithmComponent host,
-            IUndirectedGraph<TVertex,TEdge> visitedGraph,
-            Func<TEdge, double> weights
-            )
-            :this(host, visitedGraph, weights, DistanceRelaxers.ShortestDistance)
-        {}
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : this(host, visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UndirectedShortestPathAlgorithmBase{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
         protected UndirectedShortestPathAlgorithmBase(
-            IAlgorithmComponent host,
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
-            :base(host, visitedGraph)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(weights != null);
+            Contract.Requires(Weights != null);
             Contract.Requires(distanceRelaxer != null);
 #endif
 
-            this.weights = weights;
-            this.distanceRelaxer = distanceRelaxer;
+            Weights = edgeWeights;
+            DistanceRelaxer = distanceRelaxer;
         }
 
-        public Dictionary<TVertex, GraphColor> VertexColors
-        {
-            get
-            {
-                return this.vertexColors;
-            }
-        }
-
-        public GraphColor GetVertexColor(TVertex vertex)
-        {
-            return this.vertexColors[vertex];
-        }
-
-        public bool TryGetDistance(TVertex vertex, out double distance)
+        /// <summary>
+        /// Tries to get the distance associated to the given <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        /// <param name="distance">Associated distance.</param>
+        /// <returns>True if the distance was found, false otherwise.</returns>
+        public bool TryGetDistance([NotNull] TVertex vertex, out double distance)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertex != null);
 #endif
 
-            return this.distances.TryGetValue(vertex, out distance);
-        }
-
-        public Dictionary<TVertex, double> Distances
-        {
-            get { return this.distances; }
-        }
-
-        protected Func<TVertex, double> DistancesIndexGetter()
-        {
-            return AlgorithmExtensions.GetIndexer<TVertex, double>(this.distances);
-        }
-
-        public Func<TEdge, double> Weights
-        {
-            get { return this.weights; }
-        }
-
-        public IDistanceRelaxer DistanceRelaxer
-        {
-            get { return this.distanceRelaxer; }
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-            this.vertexColors = new Dictionary<TVertex, GraphColor>(this.VisitedGraph.VertexCount);
-            this.distances = new Dictionary<TVertex, double>(this.VisitedGraph.VertexCount);
+            return Distances.TryGetValue(vertex, out distance);
         }
 
         /// <summary>
-        /// Invoked when the distance label for the target vertex is decreased. 
-        /// The edge that participated in the last relaxation for vertex v is 
+        /// Vertices distances.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public IDictionary<TVertex, double> Distances { get; private set; }
+
+        /// <summary>
+        /// Gets the function that gives access to distances from a vertex.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        protected Func<TVertex, double> DistancesIndexGetter()
+        {
+            return AlgorithmExtensions.GetIndexer(Distances);
+        }
+
+        /// <summary>
+        /// Function that given an edge return the weight of this edge.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public Func<TEdge, double> Weights { get; }
+
+        /// <summary>
+        /// Distance relaxer.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDistanceRelaxer DistanceRelaxer { get; }
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            VerticesColors = new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount);
+            Distances = new Dictionary<TVertex, double>(VisitedGraph.VertexCount);
+        }
+
+        #endregion
+
+        #region IVertexColorizerAlgorithm<TVertex>
+
+        /// <summary>
+        /// Stores vertices associated to their colors (treatment state).
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public IDictionary<TVertex, GraphColor> VerticesColors { get; private set; }
+
+        /// <inheritdoc />
+        public GraphColor GetVertexColor(TVertex vertex)
+        {
+            return VerticesColors[vertex];
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Fired when the distance label for the target vertex is decreased.
+        /// The edge that participated in the last relaxation for vertex v is
         /// an edge in the shortest paths tree.
         /// </summary>
         public event UndirectedEdgeAction<TVertex, TEdge> TreeEdge;
 
         /// <summary>
-        /// Raises the <see cref="TreeEdge"/> event.
+        /// Called on each <see cref="TreeEdge"/> event.
         /// </summary>
-        /// <param name="e">edge that raised the event</param>
-        /// <param name="reversed"></param>
-        protected virtual void OnTreeEdge(TEdge e, bool reversed)
-        {
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(this, new UndirectedEdgeEventArgs<TVertex, TEdge>(e, reversed));
-        }
-
-        protected bool Relax(TEdge e, TVertex source, TVertex target)
+        /// <param name="edge">Concerned edge.</param>
+        /// <param name="reversed">Indicates if the edge is reversed.</param>
+        protected virtual void OnTreeEdge([NotNull] TEdge edge, bool reversed)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(e != null);
+            Contract.Requires(edge != null);
+#endif
+
+            TreeEdge?.Invoke(
+                this,
+                new UndirectedEdgeEventArgs<TVertex, TEdge>(edge, reversed));
+        }
+
+        /// <summary>
+        /// Runs the relaxation algorithm on the given <paramref name="edge"/>.
+        /// </summary>
+        /// <param name="edge">Edge to relax.</param>
+        /// <param name="source">Source vertex.</param>
+        /// <param name="target">Target vertex.</param>
+        /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
+        protected bool Relax(TEdge edge, TVertex source, TVertex target)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
             Contract.Requires(source != null);
             Contract.Requires(target != null);
             Contract.Requires(
-                (e.Source.Equals(source) && e.Target.Equals(target))
-                || (e.Source.Equals(target) && e.Target.Equals(source))
-                );
+                (edge.Source.Equals(source) && edge.Target.Equals(target))
+                ||
+                (edge.Source.Equals(target) && edge.Target.Equals(source)));
 #endif
 
-            double du = this.distances[source];
-            double dv = this.distances[target];
-            double we = this.Weights(e);
+            double du = Distances[source];
+            double dv = Distances[target];
+            double we = Weights(edge);
 
-            var relaxer = this.DistanceRelaxer;
-            var duwe = relaxer.Combine(du, we);
+            IDistanceRelaxer relaxer = DistanceRelaxer;
+            double duwe = relaxer.Combine(du, we);
             if (relaxer.Compare(duwe, dv) < 0)
             {
-                this.distances[target] = duwe;
+                Distances[target] = duwe;
                 return true;
             }
-            else
-                return false;
+
+            return false;
         }
     }
 }

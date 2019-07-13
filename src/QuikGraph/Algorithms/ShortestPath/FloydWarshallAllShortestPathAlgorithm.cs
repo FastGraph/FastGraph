@@ -5,144 +5,178 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 #endif
 using System.IO;
+using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.ShortestPath
 {
     /// <summary>
-    /// Floyd-Warshall all shortest path algorith,
+    /// Floyd-Warshall all shortest path algorithm.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
-    public class FloydWarshallAllShortestPathAlgorithm<TVertex, TEdge> 
-        : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public class FloydWarshallAllShortestPathAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        private readonly Func<TEdge, double> weights;
-        private readonly IDistanceRelaxer distanceRelaxer;
-        private readonly Dictionary<SEquatableEdge<TVertex>, VertexData> data;
+        [NotNull] 
+        private readonly Func<TEdge, double> _weights;
 
-        struct VertexData
+        [NotNull]
+        private readonly IDistanceRelaxer _distanceRelaxer;
+
+        [NotNull]
+        private readonly Dictionary<SEquatableEdge<TVertex>, VertexData> _data;
+
+        private struct VertexData
         {
-            public readonly double Distance;
-            readonly TVertex _predecessor;
-            readonly TEdge _edge;
-            readonly bool edgeStored;
+            public double Distance { get; }
 
-            public bool TryGetPredecessor(out TVertex predecessor)
+            private readonly TVertex _predecessor;
+            private readonly TEdge _edge;
+
+            private readonly bool _edgeStored;
+
+            // Null edge for self edge data
+            public VertexData(double distance, [CanBeNull] TEdge edge)
             {
-                predecessor = this._predecessor;
-                return !this.edgeStored;
+                Distance = distance;
+                _predecessor = default(TVertex);
+                _edge = edge;
+                _edgeStored = true;
             }
 
-            public bool TryGetEdge(out TEdge _edge)
-            {
-                _edge = this._edge;
-                return this.edgeStored;
-            }
-
-            public VertexData(double distance, TEdge _edge)
-            {
-                this.Distance = distance;
-                this._predecessor = default(TVertex);
-                this._edge = _edge;
-                this.edgeStored = true;
-            }
-
-            public VertexData(double distance, TVertex predecessor)
+            public VertexData(double distance, [NotNull] TVertex predecessor)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(predecessor != null);
 #endif
 
-                this.Distance = distance;
-                this._predecessor = predecessor;
-                this._edge = default(TEdge);
-                this.edgeStored = false;
+                Distance = distance;
+                _predecessor = predecessor;
+                _edge = default(TEdge);
+                _edgeStored = false;
             }
 
 #if SUPPORTS_CONTRACTS
             [ContractInvariantMethod]
-            void ObjectInvariant()
+            private void ObjectInvariant()
             {
-                Contract.Invariant(this.edgeStored ? this._edge != null : this._predecessor != null);
+                Contract.Invariant(_edgeStored 
+                    ? _edge != null 
+                    : _predecessor != null);
             }
 #endif
+
+            [JetBrains.Annotations.Pure]
+            public bool TryGetPredecessor(out TVertex predecessor)
+            {
+                predecessor = _predecessor;
+                return !_edgeStored;
+            }
+
+            [JetBrains.Annotations.Pure]
+            public bool TryGetEdge(out TEdge edge)
+            {
+                edge = _edge;
+                return _edgeStored;
+            }
 
             public override string ToString()
             {
-                if (this.edgeStored)
-                    return String.Format("e:{0}-{1}", this.Distance, this._edge);
-                else
-                    return String.Format("p:{0}-{1}", this.Distance, this._predecessor);
+                if (_edgeStored)
+                    return $"e:{Distance}-{_edge}";
+                return $"p:{Distance}-{_predecessor}";
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public FloydWarshallAllShortestPathAlgorithm(
-            IAlgorithmComponent host,
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer
-            )
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
+        public FloydWarshallAllShortestPathAlgorithm(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
+        public FloydWarshallAllShortestPathAlgorithm(
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(weights != null);
+            Contract.Requires(edgeWeights != null);
             Contract.Requires(distanceRelaxer != null);
 #endif
 
-            this.weights = weights;
-            this.distanceRelaxer = distanceRelaxer;
-            this.data = new Dictionary<SEquatableEdge<TVertex>, VertexData>();
+            _weights = edgeWeights;
+            _distanceRelaxer = distanceRelaxer;
+            _data = new Dictionary<SEquatableEdge<TVertex>, VertexData>();
         }
 
-        public FloydWarshallAllShortestPathAlgorithm(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights,
-            IDistanceRelaxer distanceRelaxer)
-            : base(visitedGraph)
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(weights != null);
-            Contract.Requires(distanceRelaxer != null);
-#endif
-
-            this.weights =weights;
-            this.distanceRelaxer = distanceRelaxer;
-            this.data = new Dictionary<SEquatableEdge<TVertex>, VertexData>();
-        }
-
-        public FloydWarshallAllShortestPathAlgorithm(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights)
-            : this(visitedGraph, weights, DistanceRelaxers.ShortestDistance)
-        {
-        }
-
-        public bool TryGetDistance(TVertex source, TVertex target, out double cost)
+        /// <summary>
+        /// Tries to get the distance (<paramref name="cost"/>) between
+        /// <paramref name="source"/> and <paramref name="target"/>.
+        /// </summary>
+        /// <param name="source">Source vertex.</param>
+        /// <param name="target">Target vertex.</param>
+        /// <param name="cost">Associated distance (cost).</param>
+        /// <returns>True if the distance was found, false otherwise.</returns>
+        public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double cost)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(source != null);
             Contract.Requires(target != null);
 #endif
 
-            VertexData value;
-            if (this.data.TryGetValue(new SEquatableEdge<TVertex>(source, target), out value))
+            if (_data.TryGetValue(new SEquatableEdge<TVertex>(source, target), out VertexData data))
             {
-                cost = value.Distance;
+                cost = data.Distance;
                 return true;
             }
-            else
-            {
-                cost = -1;
-                return false;
-            }
+
+            cost = -1;
+            return false;
         }
 
+        /// <summary>
+        /// Tries to get the path that links both <paramref name="source"/>
+        /// and <paramref name="target"/> vertices.
+        /// </summary>
+        /// <param name="source">Source vertex.</param>
+        /// <param name="target">Target vertex.</param>
+        /// <param name="path">The found path, otherwise null.</param>
+        /// <returns>True if a path linking both vertices was found, false otherwise.</returns>
         public bool TryGetPath(
-            TVertex source,
-            TVertex target,
+            [NotNull] TVertex source,
+            [NotNull] TVertex target,
             out IEnumerable<TEdge> path)
         {
 #if SUPPORTS_CONTRACTS
@@ -156,10 +190,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                 return false;
             }
 
-#if DEBUG && !SILVERLIGHT
-            var set = new HashSet<TVertex>();
-            set.Add(source); 
-            set.Add(target);
+#if DEBUG && !NET20
+            var set = new HashSet<TVertex> { source, target };
 #endif
 
             var edges = new EdgeList<TVertex, TEdge>();
@@ -167,42 +199,41 @@ namespace QuikGraph.Algorithms.ShortestPath
             todo.Push(new SEquatableEdge<TVertex>(source, target));
             while (todo.Count > 0)
             {
-                var current = todo.Pop();
+                SEquatableEdge<TVertex> current = todo.Pop();
 #if SUPPORTS_CONTRACTS
                 Contract.Assert(!current.Source.Equals(current.Target));
 #endif
-                VertexData data;
-                if (this.data.TryGetValue(current, out data))
+
+                if (_data.TryGetValue(current, out VertexData data))
                 {
-                    TEdge edge;
-                    if (data.TryGetEdge(out edge))
+                    if (data.TryGetEdge(out TEdge edge))
+                    {
                         edges.Add(edge);
+                    }
                     else
                     {
-                        TVertex intermediate;
-                        if (data.TryGetPredecessor(out intermediate))
+                        if (data.TryGetPredecessor(out TVertex intermediate))
                         {
-#if SUPPORTS_CONTRACTS
-#if DEBUG && !SILVERLIGHT
+#if SUPPORTS_CONTRACTS && DEBUG && !NET20
                             Contract.Assert(set.Add(intermediate));
 #endif
-#endif
+
                             todo.Push(new SEquatableEdge<TVertex>(intermediate, current.Target));
                             todo.Push(new SEquatableEdge<TVertex>(current.Source, intermediate));
                         }
                         else
                         {
 #if SUPPORTS_CONTRACTS
-                            Contract.Assert(false);
+                            Contract.Assert(false, "Cannot find predecessor.");
+#else
+                            throw new InvalidOperationException("Cannot find predecessor.");
 #endif
-                            path = null;
-                            return false;
                         }
                     }
                 }
                 else
                 {
-                    // no path found
+                    // No path found
                     path = null;
                     return false;
                 }
@@ -213,90 +244,108 @@ namespace QuikGraph.Algorithms.ShortestPath
             Contract.Assert(edges.Count > 0);
 #endif
 
-            path = edges.ToArray();
+            path = edges;
             return true;
         }
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            // Matrix i,j -> path
+            _data.Clear();
+
+            // Prepare the matrix with initial costs
+            // Walk each edge and add entry in cost dictionary
+            foreach (TEdge edge in VisitedGraph.Edges)
+            {
+                SEquatableEdge<TVertex> ij = edge.ToVertexPair();
+                double cost = _weights(edge);
+                if (!_data.TryGetValue(ij, out VertexData data))
+                    _data[ij] = new VertexData(cost, edge);
+                else if (cost < data.Distance)
+                    _data[ij] = new VertexData(cost, edge);
+            }
+        }
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var cancelManager = this.Services.CancelManager;
-            // matrix i,j -> path
-            this.data.Clear();
+            ICancelManager cancelManager = Services.CancelManager;
+            if (cancelManager.IsCancelling)
+                return;
 
-            var vertices = this.VisitedGraph.Vertices;
-            var edges = this.VisitedGraph.Edges;
+            TVertex[] vertices = VisitedGraph.Vertices.ToArray();
 
-            // prepare the matrix with initial costs
-            // walk each edge and add entry in cost dictionary
-            foreach (var edge in edges)
+            // Walk each vertices and make sure cost self-cost 0
+            foreach (TVertex vertex in vertices)
+                _data[new SEquatableEdge<TVertex>(vertex, vertex)] = new VertexData(0, default(TEdge));
+
+            if (cancelManager.IsCancelling)
+                return;
+
+            // Iterate k, i, j
+            foreach (TVertex vk in vertices)
             {
-                var ij = EdgeExtensions.ToVertexPair(edge);
-                var cost = this.weights(edge);
-                VertexData value;
-                if (!data.TryGetValue(ij, out value))
-                    data[ij] = new VertexData(cost, edge);
-                else if (cost < value.Distance)
-                    data[ij] = new VertexData(cost, edge);
-            }
-            if (cancelManager.IsCancelling) return;
+                if (cancelManager.IsCancelling)
+                    return;
 
-            // walk each vertices and make sure cost self-cost 0
-            foreach (var v in vertices)
-                data[new SEquatableEdge<TVertex>(v, v)] = new VertexData(0, default(TEdge));
-
-            if (cancelManager.IsCancelling) return;
-
-            // iterate k, i, j
-            foreach (var vk in vertices)
-            {
-                if (cancelManager.IsCancelling) return;
-                foreach (var vi in vertices)
+                foreach (TVertex vi in vertices)
                 {
                     var ik = new SEquatableEdge<TVertex>(vi, vk);
-                    VertexData pathik;
-                    if(data.TryGetValue(ik, out pathik))
-                        foreach (var vj in vertices)
+                    if(_data.TryGetValue(ik, out VertexData pathIk))
+                    {
+                        foreach (TVertex vj in vertices)
                         {
                             var kj = new SEquatableEdge<TVertex>(vk, vj);
-
-                            VertexData pathkj;
-                            if (data.TryGetValue(kj, out pathkj))
+                            if (_data.TryGetValue(kj, out VertexData pathKj))
                             {
-                                double combined = this.distanceRelaxer.Combine(pathik.Distance, pathkj.Distance);
+                                double combined = _distanceRelaxer.Combine(
+                                    pathIk.Distance, 
+                                    pathKj.Distance);
+
                                 var ij = new SEquatableEdge<TVertex>(vi, vj);
-                                VertexData pathij;
-                                if (data.TryGetValue(ij, out pathij))
+                                if (_data.TryGetValue(ij, out VertexData pathIj))
                                 {
-                                    if (this.distanceRelaxer.Compare(combined, pathij.Distance) < 0)
-                                        data[ij] = new VertexData(combined, vk);
+                                    if (_distanceRelaxer.Compare(combined, pathIj.Distance) < 0)
+                                        _data[ij] = new VertexData(combined, vk);
                                 }
                                 else
-                                    data[ij] = new VertexData(combined, vk);
+                                {
+                                    _data[ij] = new VertexData(combined, vk);
+                                }
                             }
                         }
+                    }
                 }
             }
 
-            // check negative cycles
-            foreach (var vi in vertices)
+            // Check negative cycles
+            foreach (TVertex vi in vertices)
             {
                 var ii = new SEquatableEdge<TVertex>(vi, vi);
-                VertexData value;
-                if (data.TryGetValue(ii, out value) &&
-                    value.Distance < 0)
+                if (_data.TryGetValue(ii, out VertexData data) && data.Distance < 0)
                     throw new NegativeCycleGraphException();
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Dumps current data state to stream <paramref name="writer"/>.
+        /// </summary>
         [Conditional("DEBUG")]
-        public void Dump(TextWriter writer)
+        public void Dump([NotNull] TextWriter writer)
         {
             writer.WriteLine("data:");
-            foreach (var kv in this.data)
-                writer.WriteLine("{0}->{1}: {2}", 
-                    kv.Key.Source, 
-                    kv.Key.Target, 
-                    kv.Value.ToString());
+            foreach (KeyValuePair<SEquatableEdge<TVertex>, VertexData> kv in _data)
+            {
+                writer.WriteLine(
+                    $"{kv.Key.Source}->{kv.Key.Target}: {kv.Value.ToString()}");
+            }
         }
     }
 }

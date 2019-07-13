@@ -21,7 +21,7 @@ namespace QuikGraph
         /// <param name="edge">The edge.</param>
         /// <param name="reversed">Indicates if the edge should be reversed or not.</param>
         public UndirectedEdgeEventArgs(TEdge edge, bool reversed)
-            :base(edge)
+            : base(edge)
         {
             Reversed = reversed;
         }
