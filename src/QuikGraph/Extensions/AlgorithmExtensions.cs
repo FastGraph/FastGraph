@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Reflection;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
-using System.Linq;
 #endif
+using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Condensation;
 using QuikGraph.Algorithms.ConnectedComponents;
 using QuikGraph.Algorithms.MaximumFlow;
@@ -16,7 +17,6 @@ using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.ShortestPath;
 using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Collections;
-
 #if !SUPPORTS_TYPE_FULL_FEATURES
 using QuikGraph.Utils;
 #endif
@@ -24,18 +24,23 @@ using QuikGraph.Utils;
 namespace QuikGraph.Algorithms
 {
     /// <summary>
-    /// Various extension methods to build algorithms
+    /// Extensions related to algorithms, to run them.
     /// </summary>
     public static class AlgorithmExtensions
     {
         /// <summary>
         /// Returns the method that implement the access indexer.
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <returns></returns>
-        public static Func<TKey, TValue> GetIndexer<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+        /// <typeparam name="TKey">Key type.</typeparam>
+        /// <typeparam name="TValue">Value type.</typeparam>
+        /// <param name="dictionary">Dictionary on which getting the key access method.</param>
+        /// <returns>A function allowing key indexed access.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public static Func<TKey, TValue> GetIndexer<TKey, TValue>([NotNull] IDictionary<TKey, TValue> dictionary)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(dictionary != null);
@@ -43,7 +48,9 @@ namespace QuikGraph.Algorithms
 #endif
 
 #if SUPPORTS_TYPE_FULL_FEATURES
-            var method = dictionary.GetType().GetProperty("Item").GetGetMethod();
+            // ReSharper disable once PossibleNullReferenceException, Justification: Dictionary has the [] operator called "Item".
+            MethodInfo method = dictionary.GetType().GetProperty("Item").GetGetMethod();
+            // ReSharper disable once AssignNullToNotNullAttribute, Justification: Throws if the method is not found.
             return (Func<TKey, TValue>)Delegate.CreateDelegate(typeof(Func<TKey, TValue>), dictionary, method, true);
 #else
             return key => dictionary[key];
@@ -55,12 +62,17 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <remarks>
         /// Returns more efficient methods for primitive types,
-        /// otherwise builds a dictionary
+        /// otherwise builds a dictionary.
         /// </remarks>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <param name="graph">The graph.</param>
-        /// <returns></returns>
-        public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>(this IVertexSet<TVertex> graph)
+        /// <returns>A function that computes a vertex identity for the given <paramref name="graph"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>([NotNull] this IVertexSet<TVertex> graph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -87,28 +99,32 @@ namespace QuikGraph.Algorithms
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
-                    return (v) => v.ToString();
+                    return vertex => vertex.ToString();
             }
 
             // Create dictionary
             var ids = new Dictionary<TVertex, string>(graph.VertexCount);
-            return v =>
-                {
-                    string id;
-                    if (!ids.TryGetValue(v, out id))
-                        ids[v] = id = ids.Count.ToString();
-                    return id;
-                };
+            return vertex =>
+            {
+                if (!ids.TryGetValue(vertex, out string id))
+                    ids[vertex] = id = ids.Count.ToString();
+                return id;
+            };
         }
 
         /// <summary>
         /// Gets the edge identity.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph.</param>
-        /// <returns></returns>
-        public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>(this IEdgeSet<TVertex, TEdge> graph)
+        /// <returns>A function that computes an edge identity for the given <paramref name="graph"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>([NotNull] this IEdgeSet<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -117,232 +133,342 @@ namespace QuikGraph.Algorithms
 
             // Create dictionary
             var ids = new Dictionary<TEdge, string>(graph.EdgeCount);
-            return e =>
+            return edge =>
             {
-                string id;
-                if (!ids.TryGetValue(e, out id))
-                    ids[e] = id = ids.Count.ToString();
+                if (!ids.TryGetValue(edge, out string id))
+                    ids[edge] = id = ids.Count.ToString();
                 return id;
             };
         }
 
-        public static TryFunc<TVertex, IEnumerable<TEdge>> TreeBreadthFirstSearch<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph,
-            TVertex root)
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        private static TryFunc<TVertex, IEnumerable<TEdge>> RunDirectedRootedAlgorithm<TVertex, TEdge, TAlgorithm>(
+            [NotNull] TVertex source,
+            [NotNull] TAlgorithm algorithm)
             where TEdge : IEdge<TVertex>
+            where TAlgorithm : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>, ITreeBuilderAlgorithm<TVertex, TEdge>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(root != null);
-            Contract.Requires(visitedGraph.ContainsVertex(root));
-            Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
+            Contract.Requires(algorithm != null);
 #endif
 
-            var algo = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(visitedGraph);
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessorRecorder.Attach(algo))
-                algo.Compute(root);
+            using (predecessorRecorder.Attach(algorithm))
+                algorithm.Compute(source);
 
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VertexPredecessors;
+            return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
         /// <summary>
-        /// Computes a depth first tree.
+        /// Computes a breadth first tree and gets a function that allow to get edges
+        /// connected to a vertex in a directed graph.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="visitedGraph">The visited graph.</param>
-        /// <param name="root">The root.</param>
-        /// <returns></returns>
+        /// <remarks>Use <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public static TryFunc<TVertex, IEnumerable<TEdge>> TreeBreadthFirstSearch<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex root)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+            Contract.Requires(root != null);
+            Contract.Requires(graph.ContainsVertex(root));
+            Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
+#endif
+
+            var algorithm = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(graph);
+            return RunDirectedRootedAlgorithm<TVertex, TEdge, BreadthFirstSearchAlgorithm<TVertex, TEdge>>(
+                root,
+                algorithm);
+        }
+
+        /// <summary>
+        /// Computes a depth first tree and gets a function that allow to get edges
+        /// connected to a vertex in a directed graph.
+        /// </summary>
+        /// <remarks>Use <see cref="DepthFirstSearchAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeDepthFirstSearch<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph,
-            TVertex root)
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(root != null);
-            Contract.Requires(visitedGraph.ContainsVertex(root));
+            Contract.Requires(graph.ContainsVertex(root));
             Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
 #endif
 
-            var algo = new DepthFirstSearchAlgorithm<TVertex, TEdge>(visitedGraph);
-            var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessorRecorder.Attach(algo))
-                algo.Compute(root);
-
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            var algorithm = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
+            return RunDirectedRootedAlgorithm<TVertex, TEdge, DepthFirstSearchAlgorithm<TVertex, TEdge>>(
+                root,
+                algorithm);
         }
 
+        /// <summary>
+        /// Computes a cycle popping tree and gets a function that allow to get edges
+        /// connected to a vertex in a directed graph.
+        /// </summary>
+        /// <remarks>Use <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> algorithm and
+        /// <see cref="NormalizedMarkovEdgeChain{TVertex,TEdge}"/>.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph,
-            TVertex root)
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(root != null);
-            Contract.Requires(visitedGraph.ContainsVertex(root));
-            Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
-#endif
-
-            return TreeCyclePoppingRandom(visitedGraph, root, new NormalizedMarkovEdgeChain<TVertex, TEdge>());
+            return TreeCyclePoppingRandom(graph, root, new NormalizedMarkovEdgeChain<TVertex, TEdge>());
         }
 
+        /// <summary>
+        /// Computes a cycle popping tree and gets a function that allow to get edges
+        /// connected to a vertex in a directed graph.
+        /// </summary>
+        /// <remarks>Use <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <param name="edgeChain">Edge chain handler.</param>
+        /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph,
-            TVertex root,
-            IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex root,
+            [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(root != null);
-            Contract.Requires(visitedGraph.ContainsVertex(root));
+            Contract.Requires(edgeChain != null);
+            Contract.Requires(graph.ContainsVertex(root));
             Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
 #endif
-            var algo = new CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>(visitedGraph, edgeChain);
-            var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessorRecorder.Attach(algo))
-                algo.Compute(root);
 
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            var algorithm = new CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>(graph, edgeChain);
+            return RunDirectedRootedAlgorithm<TVertex, TEdge, CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>>(
+                root,
+                algorithm);
         }
 
-        #region shortest paths
+        #region Shortest paths
 
+        /// <summary>
+        /// Computes shortest path with the Dijkstra algorithm and gets a function that allows
+        /// to get paths in a directed graph.
+        /// </summary>
+        /// <remarks>Use <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            TVertex source)
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(edgeWeights != null);
-            Contract.Requires(source != null);
+            Contract.Requires(root != null);
 #endif
 
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, edgeWeights);
+            var algorithm = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
+            return RunDirectedRootedAlgorithm<TVertex, TEdge, DijkstraShortestPathAlgorithm<TVertex, TEdge>>(
+                root,
+                algorithm);
+        }
+
+        /// <summary>
+        /// Computes shortest path with the Dijkstra algorithm and gets a function that allows
+        /// to get paths in an undirected graph.
+        /// </summary>
+        /// <remarks>Use <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] TVertex root)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+            Contract.Requires(edgeWeights != null);
+            Contract.Requires(root != null);
+#endif
+
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
-                algorithm.Compute(source);
+                algorithm.Compute(root);
 
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VertexPredecessors;
+            return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
+        /// <summary>
+        /// Computes shortest path with the A* algorithm and gets a function that allows
+        /// to get paths in a directed graph.
+        /// </summary>
+        /// <remarks>Use <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="costHeuristic">Function that computes a cost for a given vertex.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsAStar<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            Func<TVertex, double> costHeuristic,
-            TVertex source)
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] Func<TVertex, double> costHeuristic,
+            [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(edgeWeights != null);
             Contract.Requires(costHeuristic != null);
-            Contract.Requires(source != null);
+            Contract.Requires(root != null);
 #endif
 
-            var algorithm = new AStarShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, edgeWeights, costHeuristic);
-            var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessorRecorder.Attach(algorithm))
-                algorithm.Compute(source);
-
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            var algorithm = new AStarShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights, costHeuristic);
+            return RunDirectedRootedAlgorithm<TVertex, TEdge, AStarShortestPathAlgorithm<TVertex, TEdge>>(
+                root,
+                algorithm);
         }
 
-        public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            TVertex source)
-            where TEdge : IEdge<TVertex>
-        {
+        /// <summary>
+        /// Computes shortest path with the Bellman Ford algorithm and gets a function that allows
+        /// to get paths in a directed graph.
+        /// </summary>
+        /// <remarks>Use <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(source != null);
+        [System.Diagnostics.Contracts.Pure]
 #endif
-
-            var algorithm = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, edgeWeights);
-            var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessorRecorder.Attach(algorithm))
-                algorithm.Compute(source);
-
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
-        }
-
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsBellmanFord<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            TVertex source)
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(edgeWeights != null);
-            Contract.Requires(source != null);
+            Contract.Requires(root != null);
 #endif
 
-            var algorithm = new BellmanFordShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, edgeWeights);
+            var algorithm = new BellmanFordShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
-                algorithm.Compute(source);
+                algorithm.Compute(root);
 
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VertexPredecessors;
+            return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
+        /// <summary>
+        /// Computes shortest path with an algorithm made for DAG (Directed ACyclic graph) and gets a function
+        /// that allows to get paths.
+        /// </summary>
+        /// <remarks>Use <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDag<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            TVertex source)
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(edgeWeights != null);
-            Contract.Requires(source != null);
+            Contract.Requires(root != null);
 #endif
 
-            var algorithm = new DagShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, edgeWeights);
-            var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessorRecorder.Attach(algorithm))
-                algorithm.Compute(source);
-
-            var predecessors = predecessorRecorder.VertexPredecessors;
-            return delegate (TVertex v, out IEnumerable<TEdge> edges)
-            {
-                return EdgeExtensions.TryGetPath(predecessors, v, out edges);
-            };
+            var algorithm = new DagShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
+            return RunDirectedRootedAlgorithm<TVertex, TEdge, DagShortestPathAlgorithm<TVertex, TEdge>>(
+                root,
+                algorithm);
         }
 
         #endregion
@@ -350,630 +476,679 @@ namespace QuikGraph.Algorithms
         #region K-Shortest path
 
         /// <summary>
-        /// Computes the k-shortest path from <paramref name="source"/>
-        /// <paramref name="target"/> using Hoffman-Pavley algorithm.
+        /// Computes k-shortest path with the Hoffman Pavley algorithm and gets those paths.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="edgeWeights"></param>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
-        /// <param name="pathCount"></param>
-        /// <returns></returns>
+        /// <remarks>Use <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">The graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <param name="target">Target vertex.</param>
+        /// <param name="maxCount">Maximal number of path to search.</param>
+        /// <returns>ENumeration of paths to go from <paramref name="root"/> vertex to <paramref name="target"/>.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
         public static IEnumerable<IEnumerable<TEdge>> RankedShortestPathHoffmanPavley<TVertex, TEdge>(
-            this IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            TVertex source,
-            TVertex target,
-            int pathCount)
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] TVertex root,
+            [NotNull] TVertex target,
+            int maxCount)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(edgeWeights != null);
-            Contract.Requires(source != null && visitedGraph.ContainsVertex(source));
-            Contract.Requires(target != null && visitedGraph.ContainsVertex(target));
-            Contract.Requires(pathCount > 1);
+            Contract.Requires(root != null && graph.ContainsVertex(root));
+            Contract.Requires(target != null && graph.ContainsVertex(target));
+            Contract.Requires(maxCount > 1);
 #endif
 
-            var algo = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, edgeWeights);
-            algo.ShortestPathCount = pathCount;
-            algo.Compute(source, target);
+            var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights)
+            {
+                ShortestPathCount = maxCount
+            };
+            algorithm.Compute(root, target);
 
-            return algo.ComputedShortestPaths;
+            return algorithm.ComputedShortestPaths;
         }
 
         #endregion
 
         /// <summary>
-        /// Gets the list of sink vertices
+        /// Gets set of sink vertices.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        public static IEnumerable<TVertex> Sinks<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> visitedGraph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Sink vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> Sinks<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
 #endif
 
-            return SinksIterator<TVertex, TEdge>(visitedGraph);
-        }
-
-        [DebuggerHidden]
-        private static IEnumerable<TVertex> SinksIterator<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-            foreach (var v in visitedGraph.Vertices)
-                if (visitedGraph.IsOutEdgesEmpty(v))
-                    yield return v;
+            return graph.Vertices.Where(graph.IsOutEdgesEmpty);
         }
 
         /// <summary>
-        /// Gets the list of root vertices
+        /// Gets set of root vertices.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        public static IEnumerable<TVertex> Roots<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Root vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
 #endif
 
-            return RootsIterator(visitedGraph);
-        }
-
-        [DebuggerHidden]
-        private static IEnumerable<TVertex> RootsIterator<TVertex, TEdge>(
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-            foreach (var v in visitedGraph.Vertices)
-                if (visitedGraph.IsInEdgesEmpty(v))
-                    yield return v;
-        }
-
-        /// <summary>
-        /// Gets the list of isolated vertices (no incoming or outcoming vertices)
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        public static IEnumerable<TVertex> IsolatedVertices<TVertex, TEdge>(this IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
-
-            return IsolatedVerticesIterator(visitedGraph);
-        }
-
-        [DebuggerHidden]
-        private static IEnumerable<TVertex> IsolatedVerticesIterator<TVertex, TEdge>(
-            IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-            foreach (var v in visitedGraph.Vertices)
-                if (visitedGraph.Degree(v) == 0)
-                    yield return v;
-        }
-
-        /// <summary>
-        /// Gets the list of roots
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        public static IEnumerable<TVertex> Roots<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
-
-            return RootsIterator<TVertex, TEdge>(visitedGraph);
-        }
-
-        [DebuggerHidden]
-        private static IEnumerable<TVertex> RootsIterator<TVertex, TEdge>(
-            IVertexListGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-            var notRoots = new Dictionary<TVertex, bool>(visitedGraph.VertexCount);
-            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(visitedGraph);
-            dfs.ExamineEdge += e => notRoots[e.Target] = false;
+            var notRoots = new Dictionary<TVertex, bool>(graph.VertexCount);
+            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
+            dfs.ExamineEdge += edge => notRoots[edge.Target] = false;
             dfs.Compute();
 
-            foreach (var vertex in visitedGraph.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                bool value;
-                if (!notRoots.TryGetValue(vertex, out value))
+                if (!notRoots.TryGetValue(vertex, out _))
                     yield return vertex;
             }
         }
 
         /// <summary>
-        /// Creates a topological sort of a undirected
-        /// acyclic graph.
+        /// Gets set of root vertices.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        /// <exception cref="NonAcyclicGraphException">the input graph
-        /// has a cycle</exception>
-        public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(this IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Root vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var vertices = new List<TVertex>(visitedGraph.VertexCount);
-            TopologicalSort(visitedGraph, vertices);
-            return vertices;
+            return graph.Vertices.Where(graph.IsInEdgesEmpty);
         }
 
-
         /// <summary>
-        /// Creates a topological sort of a undirected
-        /// acyclic graph.
+        /// Gets set of isolated vertices (no incoming nor outcoming vertices).
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="vertices"></param>
-        /// <returns></returns>
-        /// <exception cref="NonAcyclicGraphException">the input graph
-        /// has a cycle</exception>
-        public static void TopologicalSort<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            IList<TVertex> vertices)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Root vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> IsolatedVertices<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertices != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var topo = new UndirectedTopologicalSortAlgorithm<TVertex, TEdge>(visitedGraph);
-            topo.Compute(vertices);
+            return graph.Vertices.Where(vertex => graph.Degree(vertex) == 0);
         }
 
+        #region Topological sorts
+
         /// <summary>
-        /// Creates a topological sort of a directed
-        /// acyclic graph.
+        /// Creates a topological sort of an undirected acyclic graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        /// <exception cref="NonAcyclicGraphException">the input graph
-        /// has a cycle</exception>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph)
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var vertices = new List<TVertex>(visitedGraph.VertexCount);
-            TopologicalSort(visitedGraph, vertices);
-            return vertices;
+            var vertices = new List<TVertex>(graph.VertexCount);
+            TopologicalSort(graph, vertices);
+            return vertices.AsEnumerable();
         }
 
         /// <summary>
-        /// Creates a topological sort of a directed
-        /// acyclic graph.
+        /// Creates a topological sort of an undirected acyclic graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="vertices"></param>
-        /// <returns></returns>
-        /// <exception cref="NonAcyclicGraphException">the input graph
-        /// has a cycle</exception>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         public static void TopologicalSort<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph,
-            IList<TVertex> vertices)
+            this IUndirectedGraph<TVertex, TEdge> graph,
+            [NotNull, ItemNotNull] IList<TVertex> vertices)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(vertices != null);
 #endif
 
-            var topo = new TopologicalSortAlgorithm<TVertex, TEdge>(visitedGraph);
-            topo.Compute(vertices);
-        }
-
-        public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
-
-            var vertices = new List<TVertex>(visitedGraph.VertexCount);
-            SourceFirstTopologicalSort(visitedGraph, vertices);
-            return vertices;
-        }
-
-        public static void SourceFirstTopologicalSort<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            IList<TVertex> vertices)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertices != null);
-#endif
-
-            var topo = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(visitedGraph);
-            topo.Compute(vertices);
-        }
-
-        public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            this IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            TopologicalSortDirection direction)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
-
-            var vertices = new List<TVertex>(visitedGraph.VertexCount);
-            SourceFirstBidirectionalTopologicalSort(visitedGraph, vertices, direction);
-            return vertices;
-        }
-
-        public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            this IBidirectionalGraph<TVertex, TEdge> visitedGraph)
-            where TEdge : IEdge<TVertex>
-        {
-            return SourceFirstBidirectionalTopologicalSort(visitedGraph, TopologicalSortDirection.Forward);
-        }
-
-        public static void SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            this IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            IList<TVertex> vertices,
-            TopologicalSortDirection direction)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertices != null);
-#endif
-
-            var topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(visitedGraph, direction);
-            topo.Compute(vertices);
-        }
-
-        public static void SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            this IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            IList<TVertex> vertices)
-            where TEdge : IEdge<TVertex>
-        {
-            SourceFirstBidirectionalTopologicalSort(visitedGraph, vertices, TopologicalSortDirection.Forward);
+            var algorithm = new UndirectedTopologicalSortAlgorithm<TVertex, TEdge>(graph);
+            algorithm.Compute(vertices);
         }
 
         /// <summary>
-        /// Computes the connected components of a graph
+        /// Creates a topological sort of a directed acyclic graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="g"></param>
-        /// <param name="components"></param>
-        /// <returns>number of components</returns>
-        public static int ConnectedComponents<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> g,
-            IDictionary<TVertex, int> components)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
+#endif
+
+            var vertices = new List<TVertex>(graph.VertexCount);
+            TopologicalSort(graph, vertices);
+            return vertices.AsEnumerable();
+        }
+
+        /// <summary>
+        /// Creates a topological sort of a directed acyclic graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+        public static void TopologicalSort<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull, ItemNotNull] IList<TVertex> vertices)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+            Contract.Requires(vertices != null);
+#endif
+
+            var algorithm = new TopologicalSortAlgorithm<TVertex, TEdge>(graph);
+            algorithm.Compute(vertices);
+        }
+
+        /// <summary>
+        /// Creates a topological sort (source first) of a directed acyclic graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+#endif
+
+            var vertices = new List<TVertex>(graph.VertexCount);
+            SourceFirstTopologicalSort(graph, vertices);
+            return vertices.AsEnumerable();
+        }
+
+        /// <summary>
+        /// Creates a topological sort (source first) of a directed acyclic graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+        public static void SourceFirstTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull, ItemNotNull] IList<TVertex> vertices)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+            Contract.Requires(vertices != null);
+#endif
+
+            var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph);
+            algorithm.Compute(vertices);
+        }
+
+        /// <summary>
+        /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="direction">Topological sort direction.</param>
+        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
+            TopologicalSortDirection direction)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+#endif
+
+            var vertices = new List<TVertex>(graph.VertexCount);
+            SourceFirstBidirectionalTopologicalSort(graph, vertices, direction);
+            return vertices.AsEnumerable();
+        }
+
+        /// <summary>
+        /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
+        /// Uses the <see cref="TopologicalSortDirection.Forward"/> direction.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            return SourceFirstBidirectionalTopologicalSort(graph, TopologicalSortDirection.Forward);
+        }
+
+        /// <summary>
+        /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <param name="direction">Topological sort direction.</param>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+        public static void SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
+            [NotNull, ItemNotNull] IList<TVertex> vertices,
+            TopologicalSortDirection direction)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+            Contract.Requires(vertices != null);
+#endif
+
+            var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction);
+            algorithm.Compute(vertices);
+        }
+
+        /// <summary>
+        /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
+        /// Uses the <see cref="TopologicalSortDirection.Forward"/> direction.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+        public static void SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
+            [NotNull, ItemNotNull] IList<TVertex> vertices)
+            where TEdge : IEdge<TVertex>
+        {
+            SourceFirstBidirectionalTopologicalSort(graph, vertices, TopologicalSortDirection.Forward);
+        }
+
+        #endregion
+
+        #region Connected components
+
+        /// <summary>
+        /// Computes the connected components of an undirected graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="components">Found components.</param>
+        /// <returns>Number of component found.</returns>
+        public static int ConnectedComponents<TVertex, TEdge>(
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
+            [NotNull] IDictionary<TVertex, int> components)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
             Contract.Requires(components != null);
 #endif
 
-            var conn = new ConnectedComponentsAlgorithm<TVertex, TEdge>(g, components);
-            conn.Compute();
-            return conn.ComponentCount;
+            var algorithm = new ConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
+            algorithm.Compute();
+            return algorithm.ComponentCount;
         }
 
         /// <summary>
         /// Computes the incremental connected components for a growing graph (edge added only).
         /// Each call to the delegate re-computes the component dictionary. The returned dictionary
-        /// is shared accross multiple calls of the method.
+        /// is shared across multiple calls of the method.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="g"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>A function retrieve components of the <paramref name="graph"/>.</returns>
+        [NotNull]
         public static Func<KeyValuePair<int, IDictionary<TVertex, int>>> IncrementalConnectedComponents<TVertex, TEdge>(
-            this IMutableVertexAndEdgeSet<TVertex, TEdge> g)
+            [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var incrementalComponents = new IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>(g);
+            var incrementalComponents = new IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             incrementalComponents.Compute();
 
             return () => incrementalComponents.GetComponents();
         }
 
         /// <summary>
-        /// Computes the weakly connected components of a graph
+        /// Computes the strongly connected components of a directed graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="g"></param>
-        /// <param name="components"></param>
-        /// <returns>number of components</returns>
-        public static int WeaklyConnectedComponents<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> g,
-            IDictionary<TVertex, int> components)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="components">Found components.</param>
+        /// <returns>Number of component found.</returns>
+        public static int StronglyConnectedComponents<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] IDictionary<TVertex, int> components)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
+            Contract.Ensures(components != null);
+#endif
+
+            var algorithm = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
+            algorithm.Compute();
+            return algorithm.ComponentCount;
+        }
+
+        /// <summary>
+        /// Computes the weakly connected components of a directed graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="components">Found components.</param>
+        /// <returns>Number of component found.</returns>
+        public static int WeaklyConnectedComponents<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] IDictionary<TVertex, int> components)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
             Contract.Requires(components != null);
 #endif
 
-            var conn = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(g, components);
-            conn.Compute();
-            return conn.ComponentCount;
+            var algorithm = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
+            algorithm.Compute();
+            return algorithm.ComponentCount;
         }
 
         /// <summary>
-        /// Computes the strongly connected components of a graph
+        /// Condensates the strongly connected components of a directed graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="g"></param>
-        /// <param name="components"></param>
-        /// <returns>number of components</returns>
-        public static int StronglyConnectedComponents<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> g,
-            out IDictionary<TVertex, int> components)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
-            Contract.Ensures(Contract.ValueAtReturn(out components) != null);
-#endif
-
-            components = new Dictionary<TVertex, int>();
-            var conn = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(g, components);
-            conn.Compute();
-            return conn.ComponentCount;
-        }
-
-        /// <summary>
-        /// Clones a graph to another graph
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="g"></param>
-        /// <param name="vertexCloner"></param>
-        /// <param name="edgeCloner"></param>
-        /// <param name="clone"></param>
-        public static void Clone<TVertex, TEdge>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> g,
-            Func<TVertex, TVertex> vertexCloner,
-            Func<TEdge, TVertex, TVertex, TEdge> edgeCloner,
-            IMutableVertexAndEdgeSet<TVertex, TEdge> clone)
-            where TEdge : IEdge<TVertex>
-        {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
-            Contract.Requires(vertexCloner != null);
-            Contract.Requires(edgeCloner != null);
-            Contract.Requires(clone != null);
-#endif
-
-            var vertexClones = new Dictionary<TVertex, TVertex>(g.VertexCount);
-            foreach (var v in g.Vertices)
-            {
-                var vc = vertexCloner(v);
-                clone.AddVertex(vc);
-                vertexClones.Add(v, vc);
-            }
-
-            foreach (var edge in g.Edges)
-            {
-                var ec = edgeCloner(
-                    edge,
-                    vertexClones[edge.Source],
-                    vertexClones[edge.Target]);
-                clone.AddEdge(ec);
-            }
-        }
-
-        /// <summary>
-        /// Condensates the strongly connected components of a directed graph
-        /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TGraph"></typeparam>
-        /// <param name="g"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TGraph">Graph type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>The condensed graph.</returns>
+        [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateStronglyConnected<TVertex, TEdge, TGraph>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> g)
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var condensator = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(g);
-            condensator.Compute();
-            return condensator.CondensedGraph;
+            var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(graph)
+            {
+                StronglyConnected = true
+            };
+            algorithm.Compute();
+            return algorithm.CondensedGraph;
         }
 
         /// <summary>
-        /// Condensates the weakly connected components of a graph
+        /// Condensates the weakly connected components of a directed graph.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <typeparam name="TGraph"></typeparam>
-        /// <param name="g"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TGraph">Graph type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>The condensed graph.</returns>
+        [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateWeaklyConnected<TVertex, TEdge, TGraph>(
-            this IVertexAndEdgeListGraph<TVertex, TEdge> g)
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var condensator = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(g);
-            condensator.StronglyConnected = false;
-            condensator.Compute();
-            return condensator.CondensedGraph;
+            var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(graph)
+            {
+                StronglyConnected = false
+            };
+            algorithm.Compute();
+            return algorithm.CondensedGraph;
         }
 
+        /// <summary>
+        /// Condensates the given bidirectional directed graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="vertexPredicate">Vertex predicate used to filter the vertices to put in the condensed graph.</param>
+        /// <returns>The condensed graph.</returns>
+        [NotNull]
         public static IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensateEdges<TVertex, TEdge>(
-            this IBidirectionalGraph<TVertex, TEdge> visitedGraph, 
-            VertexPredicate<TVertex> vertexPredicate) 
+            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
+            [NotNull] VertexPredicate<TVertex> vertexPredicate)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(vertexPredicate != null);
 #endif
 
-            var condensated = new BidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>>();
-            var condensator = new EdgeMergeCondensationGraphAlgorithm<TVertex, TEdge>(
-                visitedGraph,
-                condensated,
+            var condensedGraph = new BidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>>();
+            var algorithm = new EdgeMergeCondensationGraphAlgorithm<TVertex, TEdge>(
+                graph,
+                condensedGraph,
                 vertexPredicate);
-            condensator.Compute();
+            algorithm.Compute();
 
-            return condensated;
+            return condensedGraph;
         }
 
+        #endregion
 
         /// <summary>
-        /// Create a collection of odd vertices
+        /// Gets odd vertices of the given <paramref name="graph"/>.
         /// </summary>
-        /// <param name="g">graph to visit</param>
-        /// <returns>collection of odd vertices</returns>
-        /// <exception cref="ArgumentNullException">g is a null reference</exception>
-        public static List<TVertex> OddVertices<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> g)
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Enumerable of odd vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> OddVertices<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var counts = new Dictionary<TVertex, int>(g.VertexCount);
-            foreach (var v in g.Vertices)
-                counts.Add(v, 0);
+            var counts = new Dictionary<TVertex, int>(graph.VertexCount);
+            foreach (TVertex vertex in graph.Vertices)
+                counts.Add(vertex, 0);
 
-            foreach (var e in g.Edges)
+            foreach (TEdge edge in graph.Edges)
             {
-                ++counts[e.Source];
-                --counts[e.Target];
+                ++counts[edge.Source];
+                --counts[edge.Target];
             }
 
-            var odds = new List<TVertex>();
-            foreach (var de in counts)
-            {
-                if (de.Value % 2 != 0)
-                    odds.Add(de.Key);
-            }
-
-            return odds;
+            // Odds
+            return counts
+                .Where(pair => pair.Value % 2 == 0)
+                .Select(pair => pair.Key);
         }
 
         /// <summary>
-        /// Gets a value indicating whether the graph is acyclic
+        /// Checks whether the graph is acyclic or not.
         /// </summary>
         /// <remarks>
         /// Performs a depth first search to look for cycles.
         /// </remarks>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="g"></param>
-        /// <returns></returns>
-        public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> g)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>True if the graph contains a cycle, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
+            Contract.Requires(graph != null);
 #endif
 
-            return new DagTester<TVertex, TEdge>().IsDag(g);
+            return new DagTester<TVertex, TEdge>().IsDag(graph);
         }
 
-        class DagTester<TVertex, TEdge>
+        private class DagTester<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            private bool isDag = true;
+            private bool _isDag = true;
 
-            public bool IsDag(IVertexListGraph<TVertex, TEdge> g)
+            [JetBrains.Annotations.Pure]
+            public bool IsDag([NotNull] IVertexListGraph<TVertex, TEdge> graph)
             {
-                var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(g);
+                var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
                 try
                 {
-                    dfs.BackEdge += dfs_BackEdge;
-                    isDag = true;
+                    dfs.BackEdge += DfsBackEdge;
+                    _isDag = true;
                     dfs.Compute();
-                    return isDag;
+                    return _isDag;
                 }
                 finally
                 {
-                    dfs.BackEdge -= dfs_BackEdge;
+                    dfs.BackEdge -= DfsBackEdge;
                 }
             }
 
-            void dfs_BackEdge(TEdge e)
+            private void DfsBackEdge([NotNull] TEdge edge)
             {
-                isDag = false;
+                _isDag = false;
             }
         }
 
         /// <summary>
-        /// Given a edge cost map, computes 
-        /// the predecessor cost.
+        /// Given a edge cost map, computes the corresponding predecessor costs.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="predecessors"></param>
-        /// <param name="edgeCosts"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="predecessors">Predecessors map.</param>
+        /// <param name="edgeCosts">Costs map.</param>
+        /// <param name="target">Target vertex.</param>
+        /// <returns>The predecessors cost.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
         public static double ComputePredecessorCost<TVertex, TEdge>(
-            IDictionary<TVertex, TEdge> predecessors,
-            IDictionary<TEdge, double> edgeCosts,
-            TVertex target)
+            [NotNull] IDictionary<TVertex, TEdge> predecessors,
+            [NotNull] IDictionary<TEdge, double> edgeCosts,
+            [NotNull] TVertex target)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(predecessors != null);
             Contract.Requires(edgeCosts != null);
+            Contract.Requires(target != null);
 #endif
 
             double cost = 0;
             TVertex current = target;
-            TEdge edge;
-
-            while (predecessors.TryGetValue(current, out edge))
+            while (predecessors.TryGetValue(current, out TEdge edge))
             {
                 cost += edgeCosts[edge];
                 current = edge.Source;
@@ -982,47 +1157,64 @@ namespace QuikGraph.Algorithms
             return cost;
         }
 
+        /// <summary>
+        /// Computes disjoint sets of the given <paramref name="graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Found disjoint sets.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static IDisjointSet<TVertex> ComputeDisjointSet<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
 #endif
 
-            var ds = new ForestDisjointSet<TVertex>(visitedGraph.VertexCount);
-            foreach (var v in visitedGraph.Vertices)
-                ds.MakeSet(v);
-            foreach (var e in visitedGraph.Edges)
-                ds.Union(e.Source, e.Target);
+            var sets = new ForestDisjointSet<TVertex>(graph.VertexCount);
+            foreach (TVertex vertex in graph.Vertices)
+                sets.MakeSet(vertex);
+            foreach (TEdge edge in graph.Edges)
+                sets.Union(edge.Source, edge.Target);
 
-            return ds;
+            return sets;
         }
 
         /// <summary>
-        /// Computes the minimum spanning tree using Prim's algorithm.
-        /// Prim's algorithm is simply implemented by calling Dijkstra shortest path.
+        /// Computes the minimum spanning tree using Prim algorithm.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="weights"></param>
-        /// <returns></returns>
+        /// <remarks>Prim algorithm is simply implemented by calling Dijkstra shortest path.</remarks>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <returns>Edges part of the minimum spanning tree.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreePrim<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights)
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(weights != null);
+            Contract.Requires(graph != null);
+            Contract.Requires(edgeWeights != null);
 #endif
 
-            if (visitedGraph.VertexCount == 0)
-                return new TEdge[0];
+            if (graph.VertexCount == 0)
+                return Enumerable.Empty<TEdge>();
 
-            var distanceRelaxer = PrimRelaxer.Instance;
-            var dijkstra = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(visitedGraph, weights, distanceRelaxer);
+            IDistanceRelaxer distanceRelaxer = DistanceRelaxers.Prim;
+            var dijkstra = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights, distanceRelaxer);
             var edgeRecorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (edgeRecorder.Attach(dijkstra))
                 dijkstra.Compute();
@@ -1030,48 +1222,33 @@ namespace QuikGraph.Algorithms
             return edgeRecorder.VertexPredecessors.Values;
         }
 
-        class PrimRelaxer : IDistanceRelaxer
-        {
-            public static readonly IDistanceRelaxer Instance = new PrimRelaxer();
-
-            public double InitialDistance
-            {
-                get { return double.MaxValue; }
-            }
-
-            public int Compare(double a, double b)
-            {
-                return a.CompareTo(b);
-            }
-
-            public double Combine(double distance, double weight)
-            {
-                return weight;
-            }
-        }
-
         /// <summary>
-        /// Computes the minimum spanning tree using Kruskal's algorithm.
+        /// Computes the minimum spanning tree using Kruskal algorithm.
         /// </summary>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="weights"></param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <returns>Edges part of the minimum spanning tree.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreeKruskal<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> weights)
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeWeights)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(weights != null);
+            Contract.Requires(graph != null);
+            Contract.Requires(edgeWeights != null);
 #endif
 
-            if (visitedGraph.VertexCount == 0)
-                return new TEdge[0];
+            if (graph.VertexCount == 0)
+                return Enumerable.Empty<TEdge>();
 
-            var kruskal = new KruskalMinimumSpanningTreeAlgorithm<TVertex, TEdge>(visitedGraph, weights);
+            var kruskal = new KruskalMinimumSpanningTreeAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var edgeRecorder = new EdgeRecorderObserver<TVertex, TEdge>();
             using (edgeRecorder.Attach(kruskal))
                 kruskal.Compute();
@@ -1080,114 +1257,186 @@ namespace QuikGraph.Algorithms
         }
 
         /// <summary>
-        /// Computes the offline least common ancestor between pairs of vertices in a rooted tree
-        /// using Tarjan algorithm.
+        /// Computes the offline least common ancestor between pairs of vertices in a
+        /// rooted tree using Tarjan algorithm.
         /// </summary>
         /// <remarks>
         /// Reference:
-        /// Gabow, H. N. and Tarjan, R. E. 1983. A linear-time algorithm for a special case of disjoint set union. In Proceedings of the Fifteenth Annual ACM Symposium on theory of Computing STOC '83. ACM, New York, NY, 246-251. DOI= http://doi.acm.org/10.1145/800061.808753 
+        /// Gabow, H. N. and Tarjan, R. E. 1983. A linear-time algorithm for a special case of disjoint set union.
+        /// In Proceedings of the Fifteenth Annual ACM Symposium on theory of Computing STOC '83. ACM, New York, NY, 246-251.
+        /// DOI= http://doi.acm.org/10.1145/800061.808753 
         /// </remarks>
-        /// <typeparam name="TVertex">type of the vertices</typeparam>
-        /// <typeparam name="TEdge">type of the edges</typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="root"></param>
-        /// <param name="pairs"></param>
-        /// <returns></returns>
-        public static TryFunc<SEquatableEdge<TVertex>, TVertex> OfflineLeastCommonAncestorTarjan<TVertex, TEdge>(
-            this IVertexListGraph<TVertex, TEdge> visitedGraph,
-            TVertex root,
-            IEnumerable<SEquatableEdge<TVertex>> pairs)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="root">Starting vertex.</param>
+        /// <param name="pairs">Vertices pairs.</param>
+        /// <returns>A function that allow to get least common ancestor for a pair of vertices.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
+        public static TryFunc<SEquatableEdge<TVertex>, TVertex> OfflineLeastCommonAncestor<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex root,
+            [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(root != null);
             Contract.Requires(pairs != null);
-            Contract.Requires(visitedGraph.ContainsVertex(root));
-            Contract.Requires(Enumerable.All(pairs, p => visitedGraph.ContainsVertex(p.Source)));
-            Contract.Requires(Enumerable.All(pairs, p => visitedGraph.ContainsVertex(p.Target)));
+            Contract.Requires(graph.ContainsVertex(root));
+            Contract.Requires(pairs.All(pair => graph.ContainsVertex(pair.Source)));
+            Contract.Requires(pairs.All(pair => graph.ContainsVertex(pair.Target)));
 #endif
 
-            var algo = new TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge>(visitedGraph);
-            algo.Compute(root, pairs);
-            var ancestors = algo.Ancestors;
+            var algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge>(graph);
+            algorithm.Compute(root, pairs);
 
-            return delegate (SEquatableEdge<TVertex> pair, out TVertex value)
-            {
-                return ancestors.TryGetValue(pair, out value);
-            };
+            var ancestors = algorithm.Ancestors;
+            return (SEquatableEdge<TVertex> pair, out TVertex vertex) => ancestors.TryGetValue(pair, out vertex);
         }
 
         /// <summary>
-        /// Computes the Edmonds-Karp maximums flow for a graph with positive capacities and flows.
+        /// Computes the maximum flow for a graph with positive capacities and flows
+        /// using Edmonds-Karp algorithm.
         /// </summary>
-        /// <typeparam name="TVertex">The type of the vertex.</typeparam>
-        /// <typeparam name="TEdge">The type of the edge.</typeparam>
-        /// <param name="visitedGraph">The visited graph.</param>
-        /// <param name="edgeCapacities">The edge capacity delegate.</param>
-        /// <param name="source">The source.</param>
-        /// <param name="sink">The sink.</param>
-        /// <param name="flowPredecessors">The flow predecessors.</param>
-        /// <returns>The maximum flow.</returns>
         /// <remarks>
         /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex,TEdge}.AddReversedEdges"/> if TEdge is a value type,
         /// e.g. <see cref="SEdge{TVertex}"/>.
         /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
         /// </remarks>
-        public static double MaximumFlowEdmondsKarp<TVertex, TEdge>(
-            this IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeCapacities,
-            TVertex source,
-            TVertex sink,
-            out TryFunc<TVertex, TEdge> flowPredecessors,
-            EdgeFactory<TVertex, TEdge> edgeFactory,
-            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <param name="edgeCapacities">Function that given an edge return the capacity of this edge.</param>
+        /// <param name="source">The source vertex.</param>
+        /// <param name="sink">The sink vertex.</param>
+        /// <param name="flowPredecessors">Function that allow to retrieve flow predecessors.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
+        /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
+        /// <returns>The maximum flow.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        public static double MaximumFlow<TVertex, TEdge>(
+            [NotNull] this IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TEdge, double> edgeCapacities,
+            [NotNull] TVertex source,
+            [NotNull] TVertex sink,
+            [NotNull] out TryFunc<TVertex, TEdge> flowPredecessors,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
+            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(edgeCapacities != null);
             Contract.Requires(source != null);
             Contract.Requires(sink != null);
             Contract.Requires(!source.Equals(sink));
+            Contract.Requires(edgeFactory != null);
+            Contract.Requires(reversedEdgeAugmentorAlgorithm != null);
 #endif
 
-            // compute maxflow
+            // Compute maximum flow
             var flow = new EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>(
-                visitedGraph,
+                graph,
                 edgeCapacities,
                 edgeFactory,
-                reversedEdgeAugmentorAlgorithm
-                );
+                reversedEdgeAugmentorAlgorithm);
             flow.Compute(source, sink);
             flowPredecessors = flow.Predecessors.TryGetValue;
+
             return flow.MaxFlow;
         }
 
-
-        /*
-         * Code by Yoad Snapir <yoadsn@gmail.com>
-         * Taken from https://github.com/yoadsn/ArrowDiagramGenerator because PR was not opened
-         * 
-         * */
-
+        /// <summary>
+        /// Computes the transitive reduction of the given <paramref name="graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to compute the reduction.</param>
+        /// <returns>Transitive graph reduction.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveReduction<TVertex, TEdge>(
-            this BidirectionalGraph<TVertex, TEdge> visitedGraph
-            ) where TEdge : IEdge<TVertex>
+            [NotNull] this BidirectionalGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
         {
-            var algo = new TransitiveReductionAlgorithm<TVertex, TEdge>(visitedGraph);
-            algo.Compute();
-            return algo.TransitiveReduction;
+            var algorithm = new TransitiveReductionAlgorithm<TVertex, TEdge>(graph);
+            algorithm.Compute();
+            return algorithm.TransitiveReduction;
         }
 
+        /// <summary>
+        /// Computes the transitive close of the given <paramref name="graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to compute the closure.</param>
+        /// <param name="createEdge">Function that create an edge between the 2 given vertices.</param>
+        /// <returns>Transitive graph closure.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [JetBrains.Annotations.Pure]
+        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveClosure<TVertex, TEdge>(
-            this BidirectionalGraph<TVertex, TEdge> visitedGraph,
-            Func<TVertex, TVertex, TEdge> createEdge
-            ) where TEdge : IEdge<TVertex>
+            [NotNull] this BidirectionalGraph<TVertex, TEdge> graph,
+            [NotNull] Func<TVertex, TVertex, TEdge> createEdge)
+            where TEdge : IEdge<TVertex>
         {
-            var algo = new TransitiveClosureAlgorithm<TVertex, TEdge>(visitedGraph, createEdge);
-            algo.Compute();
-            return algo.TransitiveClosure;
+            var algorithm = new TransitiveClosureAlgorithm<TVertex, TEdge>(graph, createEdge);
+            algorithm.Compute();
+            return algorithm.TransitiveClosure;
+        }
+
+        /// <summary>
+        /// Clones a graph to another graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to clone.</param>
+        /// <param name="vertexCloner">Delegate to clone a vertex.</param>
+        /// <param name="edgeCloner">Delegate to clone an edge.</param>
+        /// <param name="clone">Cloned graph.</param>
+        public static void Clone<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull, InstantHandle] Func<TVertex, TVertex> vertexCloner,
+            [NotNull, InstantHandle] Func<TEdge, TVertex, TVertex, TEdge> edgeCloner,
+            IMutableVertexAndEdgeSet<TVertex, TEdge> clone)
+            where TEdge : IEdge<TVertex>
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(graph != null);
+            Contract.Requires(vertexCloner != null);
+            Contract.Requires(edgeCloner != null);
+            Contract.Requires(clone != null);
+#endif
+
+            var vertexClones = new Dictionary<TVertex, TVertex>(graph.VertexCount);
+            foreach (TVertex vertex in graph.Vertices)
+            {
+                TVertex clonedVertex = vertexCloner(vertex);
+                clone.AddVertex(clonedVertex);
+                vertexClones.Add(vertex, clonedVertex);
+            }
+
+            foreach (TEdge edge in graph.Edges)
+            {
+                TEdge clonedEdge = edgeCloner(
+                    edge,
+                    vertexClones[edge.Source],
+                    vertexClones[edge.Target]);
+                clone.AddEdge(clonedEdge);
+            }
         }
     }
 }

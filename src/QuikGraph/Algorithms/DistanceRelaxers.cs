@@ -1,4 +1,6 @@
-﻿namespace QuikGraph.Algorithms
+﻿using JetBrains.Annotations;
+
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Implementation of several distance relaxers.
@@ -8,6 +10,7 @@
         /// <summary>
         /// Shortest distance relaxer.
         /// </summary>
+        [NotNull]
         public static readonly IDistanceRelaxer ShortestDistance = new ShortestDistanceRelaxer();
 
         private sealed class ShortestDistanceRelaxer : IDistanceRelaxer
@@ -31,6 +34,7 @@
         /// <summary>
         /// Critical distance relaxer.
         /// </summary>
+        [NotNull]
         public static readonly IDistanceRelaxer CriticalDistance = new CriticalDistanceRelaxer();
 
         private sealed class CriticalDistanceRelaxer : IDistanceRelaxer
@@ -54,6 +58,7 @@
         /// <summary>
         /// Edge shortest distance relaxer.
         /// </summary>
+        [NotNull]
         public static readonly IDistanceRelaxer EdgeShortestDistance = new EdgeDistanceRelaxer();
 
         private sealed class EdgeDistanceRelaxer : IDistanceRelaxer
@@ -71,6 +76,27 @@
             public double Combine(double distance, double weight)
             {
                 return distance + weight;
+            }
+        }
+
+        /// <summary>
+        /// Prim relaxer.
+        /// </summary>
+        [NotNull]
+        internal static readonly IDistanceRelaxer Prim = new PrimRelaxer();
+
+        internal class PrimRelaxer : IDistanceRelaxer
+        {
+            public double InitialDistance => double.MaxValue;
+
+            public int Compare(double a, double b)
+            {
+                return a.CompareTo(b);
+            }
+
+            public double Combine(double distance, double weight)
+            {
+                return weight;
             }
         }
     }

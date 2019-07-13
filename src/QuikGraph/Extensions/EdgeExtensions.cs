@@ -158,7 +158,7 @@ namespace QuikGraph
 
             var vertices = new Dictionary<TVertex, int>();
             bool first = true;
-            foreach (var edge in path)
+            foreach (TEdge edge in path)
             {
                 if (first)
                 {

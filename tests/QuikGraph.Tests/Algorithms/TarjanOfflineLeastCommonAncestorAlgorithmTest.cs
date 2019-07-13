@@ -43,7 +43,7 @@ namespace QuikGraph.Tests.Algorithms
             )
             where TEdge : IEdge<TVertex>
         {
-            var lca = g.OfflineLeastCommonAncestorTarjan(root, pairs);
+            var lca = g.OfflineLeastCommonAncestor(root, pairs);
             var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(g);
             using(predecessors.Attach(dfs))

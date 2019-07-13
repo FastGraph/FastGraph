@@ -40,20 +40,15 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             var reversedEdgeAugmentorAlgorithm = new ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>(g, edgeFactory);
             reversedEdgeAugmentorAlgorithm.AddReversedEdges();
 
-            TryFunc<TVertex, TEdge> flowPredecessors;
-            var flow = AlgorithmExtensions.MaximumFlowEdmondsKarp<TVertex, TEdge>(
-                g,
-                e => 1,
+            var flow = g.MaximumFlow(edge => 1,
                 source, sink,
-                out flowPredecessors,
+                out _,
                 edgeFactory,
-                reversedEdgeAugmentorAlgorithm
-                );
+                reversedEdgeAugmentorAlgorithm);
 
             reversedEdgeAugmentorAlgorithm.RemoveReversedEdges();
 
             return flow;
         }
-
     }
 }

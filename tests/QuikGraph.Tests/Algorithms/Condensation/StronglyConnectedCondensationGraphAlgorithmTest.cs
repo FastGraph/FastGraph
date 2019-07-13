@@ -59,8 +59,8 @@ namespace QuikGraph.Algorithms.Condensation
             where TEdge : IEdge<TVertex>
         {
             // check number of vertices = number of strongly connected components
-            IDictionary<TVertex, int> components;
-            int componentCount = g.StronglyConnectedComponents(out components);
+            var components = new Dictionary<TVertex, int>();
+            int componentCount = g.StronglyConnectedComponents(components);
             Assert.AreEqual(componentCount, cg.VertexCount, "ComponentCount does not match");
         }
 

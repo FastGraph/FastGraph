@@ -38,7 +38,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> capacities,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
             : this(null, visitedGraph, capacities, edgeFactory, reversedEdgeAugmentorAlgorithm)
         {
         }
@@ -56,7 +56,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> capacities,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
             : base(host, visitedGraph, capacities, edgeFactory)
         {
             ReversedEdges = reversedEdgeAugmentorAlgorithm.ReversedEdges;

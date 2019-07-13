@@ -28,8 +28,7 @@ namespace QuikGraph.Algorithms.ShortestPath
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class BellmanFordShortestPathAlgorithm<TVertex, TEdge>
-        : ShortestPathAlgorithmBase<TVertex, TEdge
-        , IVertexAndEdgeListGraph<TVertex, TEdge>>
+        : ShortestPathAlgorithmBase<TVertex, TEdge, IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
