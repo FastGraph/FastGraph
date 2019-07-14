@@ -11,8 +11,8 @@ namespace QuikGraph
     /// An incident graph with vertices of type <typeparamref name="TVertex"/>
     /// and edges of type <typeparamref name="TEdge"/>.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices.</typeparam>
-    /// <typeparam name="TEdge">type of the edges.</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_CONTRACTS
     [ContractClass(typeof(IncidenceGraphContract<,>))]
 #endif

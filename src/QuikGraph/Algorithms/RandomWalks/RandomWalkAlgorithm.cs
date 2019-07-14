@@ -1,54 +1,64 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Random walk algorithm (using edge chain).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class RandomWalkAlgorithm<TVertex, TEdge> 
-        : ITreeBuilderAlgorithm<TVertex,TEdge>
+    public sealed class RandomWalkAlgorithm<TVertex, TEdge>
+        : RootedAlgorithmBase<TVertex, IImplicitGraph<TVertex, TEdge>>
+        , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private IImplicitGraph<TVertex,TEdge> visitedGraph;
-        private EdgePredicate<TVertex,TEdge> endPredicate;
-        private IEdgeChain<TVertex,TEdge> edgeChain;
+        private IEdgeChain<TVertex, TEdge> _edgeChain;
 
-        public RandomWalkAlgorithm(IImplicitGraph<TVertex,TEdge> visitedGraph)
-            :this(visitedGraph,new NormalizedMarkovEdgeChain<TVertex,TEdge>())
-        {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public RandomWalkAlgorithm([NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph)
+            : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeChain">Edge chain strategy to use.</param>
         public RandomWalkAlgorithm(
-            IImplicitGraph<TVertex,TEdge> visitedGraph,
-            IEdgeChain<TVertex,TEdge> edgeChain
-            )
+            [NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
+            : base(null, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
             Contract.Requires(edgeChain != null);
 #endif
 
-            this.visitedGraph = visitedGraph;
-            this.edgeChain = edgeChain;
+            _edgeChain = edgeChain;
         }
 
-        public IImplicitGraph<TVertex,TEdge> VisitedGraph
+        /// <summary>
+        /// Edge chain strategy for the random walk.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IEdgeChain<TVertex, TEdge> EdgeChain
         {
             get
             {
-                return this.visitedGraph;
-            }
-        }
-
-        public IEdgeChain<TVertex,TEdge> EdgeChain
-        {
-            get
-            {
-                return this.edgeChain;
+                return _edgeChain;
             }
             set
             {
@@ -56,86 +66,126 @@ namespace QuikGraph.Algorithms.RandomWalks
                 Contract.Requires(value != null);
 #endif
 
-                this.edgeChain = value;
+                _edgeChain = value;
             }
         }
 
-        public EdgePredicate<TVertex,TEdge> EndPredicate
-        {
-            get
-            {
-                return this.endPredicate;
-            }
-            set
-            {
-                this.endPredicate = value;
-            }
-        }
+        /// <summary>
+        /// Predicate to prematurely ends the walk.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [CanBeNull]
+        public EdgePredicate<TVertex, TEdge> EndPredicate { get; set; }
 
+        /// <summary>
+        /// Fired on a starting vertex once before the start of the walk from it.
+        /// </summary>
         public event VertexAction<TVertex> StartVertex;
-        private void OnStartVertex(TVertex v)
-        {
-            var eh = this.StartVertex;
-            if (eh != null)
-                eh(v);
-        }
 
-        public event VertexAction<TVertex> EndVertex;
-        private void OnEndVertex(TVertex v)
-        {
-            var eh = this.EndVertex;
-            if (eh != null)
-                eh(v);
-        }
-
-        public event EdgeAction<TVertex,TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge e)
-        {
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(e);
-        }
-
-        private bool TryGetSuccessor(TVertex u, out TEdge successor)
-        {
-            return this.EdgeChain.TryGetSuccessor(this.VisitedGraph, u, out successor);
-        }
-
-        public void Generate(TVertex root)
+        private void OnStartVertex([NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
+            Contract.Requires(vertex != null);
 #endif
 
+            StartVertex?.Invoke(vertex);
+        }
+
+        /// <summary>
+        /// Fired when the walk ends.
+        /// </summary>
+        public event VertexAction<TVertex> EndVertex;
+
+        private void OnEndVertex(TVertex vertex)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            EndVertex?.Invoke(vertex);
+        }
+
+        /// <summary>
+        /// Fired when an edge is encountered.
+        /// </summary>
+        public event EdgeAction<TVertex, TEdge> TreeEdge;
+
+        private void OnTreeEdge([NotNull] TEdge edge)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            TreeEdge?.Invoke(edge);
+        }
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
+            if (!TryGetRootVertex(out TVertex root))
+                throw new InvalidOperationException("Root vertex not set.");
+
+            OnStartVertex(root);
+            Generate(root);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Generates a random walk with 100 steps.
+        /// </summary>
+        /// <param name="root">Root vertex.</param>
+        public void Generate([NotNull] TVertex root)
+        {
             Generate(root, 100);
         }
 
-        public void Generate(TVertex root, int walkCount)
+        /// <summary>
+        /// Generates a random walk with <paramref name="walkCount"/> steps.
+        /// </summary>
+        /// <param name="root">Root vertex.</param>
+        /// <param name="walkCount">Number of steps for the random walk.</param>
+        public void Generate([NotNull] TVertex root, int walkCount)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
 #endif
 
             int count = 0;
-            TEdge e = default(TEdge);
-            TVertex v = root;
+            TVertex current = root;
 
             OnStartVertex(root);
-            while (count < walkCount && this.TryGetSuccessor(v, out e))
+            while (count < walkCount && TryGetSuccessor(current, out TEdge edge))
             {
-                // if dead end stop
-                if (e==null)
+                // If dead end stop
+                if (edge == null)
                     break;
-                // if end predicate, test
-                if (this.endPredicate != null && this.endPredicate(e))
+
+                // If end predicate
+                if (EndPredicate != null && EndPredicate(edge))
                     break;
-                OnTreeEdge(e);
-                v = e.Target;
-                // upgrade count
+
+                OnTreeEdge(edge);
+                current = edge.Target;
+
+                // Upgrade count
                 ++count;
             }
-            OnEndVertex(v);
-        }
 
+            OnEndVertex(current);
+
+            #region Local function
+
+            bool TryGetSuccessor(TVertex vertex, out TEdge successor)
+            {
+                return EdgeChain.TryGetSuccessor(VisitedGraph, vertex, out successor);
+            }
+
+            #endregion
+        }
     }
 }

@@ -2,93 +2,94 @@
 using System;
 #endif
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Markov chain with weight vanishing based on a factor.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class VanishingWeightedMarkovEdgeChain<TVertex, TEdge> :
-        WeightedMarkovEdgeChainBase<TVertex,TEdge>
+    public sealed class VanishingWeightedMarkovEdgeChain<TVertex, TEdge> : WeightedMarkovEdgeChainBase<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-		private double factor;
-
-		public VanishingWeightedMarkovEdgeChain(IDictionary<TEdge,double> weights)
-            :this(weights,0.2)
-        {}
-
-		public VanishingWeightedMarkovEdgeChain(IDictionary<TEdge,double> weights, double factor)
-			:base(weights)
-		{
-			this.factor = factor;
-		}
-
-		public double Factor
-		{
-			get
-			{
-				return this.factor;
-			}
-            set 
-            {
-                this.factor = value;
-            }
-		}
-
-        public override bool TryGetSuccessor(IImplicitGraph<TVertex,TEdge> g, TVertex u, out TEdge successor)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VanishingWeightedMarkovEdgeChain{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edgeWeights">Map that contains edge weights.</param>
+        public VanishingWeightedMarkovEdgeChain([NotNull] IDictionary<TEdge, double> edgeWeights)
+            : this(edgeWeights, 0.2)
         {
-            if (!g.IsOutEdgesEmpty(u))
-            {
-                // get outweight
-                double outWeight = GetOutWeight(g, u);
-                // get succesor
-                TEdge s;
-                if (this.TryGetSuccessor(g, u, this.Rand.NextDouble() * outWeight, out s))
-                {
-                    // update probabilities
-                    this.Weights[s] *= this.Factor;
+        }
 
-                    // normalize
-                    foreach (TEdge e in g.OutEdges(u))
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VanishingWeightedMarkovEdgeChain{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edgeWeights">Map that contains edge weights.</param>
+        /// <param name="factor">Vanishing factor.</param>
+        public VanishingWeightedMarkovEdgeChain([NotNull] IDictionary<TEdge, double> edgeWeights, double factor)
+            : base(edgeWeights)
+        {
+            Factor = factor;
+        }
+
+        /// <summary>
+        /// Vanishing factor.
+        /// </summary>
+        public double Factor { get; set; }
+
+        /// <inheritdoc />
+        public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
+        {
+            if (!graph.IsOutEdgesEmpty(vertex))
+            {
+                // Get out weight
+                double outWeight = GetOutWeight(graph, vertex);
+
+                // Get successor
+                if (TryGetSuccessor(graph, vertex, Rand.NextDouble() * outWeight, out successor))
+                {
+                    // Update probabilities
+                    Weights[successor] *= Factor;
+
+                    // Normalize
+                    foreach (TEdge edge in graph.OutEdges(vertex))
                     {
-                        checked
-                        {
-                            this.Weights[e] /= outWeight;
-                        }
+                        Weights[edge] /= outWeight;
                     }
 
-                    successor = s;
                     return true;
                 }
             }
 
             successor = default(TEdge);
             return false;
-		}
+        }
 
-        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex u, out TEdge successor)
+        /// <inheritdoc />
+        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
         {
-            // get outweight
-            double outWeight = this.GetWeights(edges);
-            // get succesor
-            TEdge s;
-            if (this.TryGetSuccessor(edges, this.Rand.NextDouble() * outWeight, out s))
-            {
-                // update probabilities
-                this.Weights[s] *= this.Factor;
+            // Get out weight
+            TEdge[] edgeArray = edges.ToArray();
+            double outWeight = GetWeights(edgeArray);
 
-                // normalize
-                foreach (var e in edges)
+            // Get successor
+            if (TryGetSuccessor(edgeArray, Rand.NextDouble() * outWeight, out successor))
+            {
+                // Update probabilities
+                Weights[successor] *= Factor;
+
+                // Normalize
+                foreach (TEdge edge in edgeArray)
                 {
-                    checked
-                    {
-                        this.Weights[e] /= outWeight;
-                    }
+                    Weights[edge] /= outWeight;
                 }
 
-
-                successor = s;
                 return true;
             }
 

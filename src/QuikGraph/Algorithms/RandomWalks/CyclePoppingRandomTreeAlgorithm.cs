@@ -4,83 +4,104 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 #endif
 using System.Linq;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
     /// <summary>
-    /// Wilson-Propp Cycle-Popping Algorithm for Random Tree Generation.
+    /// Wilson-Propp Cycle-Popping algorithm for Random Tree Generation.
     /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class CyclePoppingRandomTreeAlgorithm<TVertex, TEdge> 
-        : RootedAlgorithmBase<TVertex,IVertexListGraph<TVertex,TEdge>>
+    public sealed class CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>
+        : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>
         , IVertexColorizerAlgorithm<TVertex>
-        , ITreeBuilderAlgorithm<TVertex,TEdge>
-    where TEdge : IEdge<TVertex>
+        , ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TVertex, GraphColor> vertexColors = new Dictionary<TVertex, GraphColor>();
-        private IMarkovEdgeChain<TVertex,TEdge> edgeChain = new NormalizedMarkovEdgeChain<TVertex,TEdge>();
-        private IDictionary<TVertex, TEdge> successors = new Dictionary<TVertex, TEdge>();
-        private Random rnd = new Random((int)DateTime.Now.Ticks);
-
-        public CyclePoppingRandomTreeAlgorithm(
-            IVertexListGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        public CyclePoppingRandomTreeAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeChain">Edge chain strategy to use.</param>
         public CyclePoppingRandomTreeAlgorithm(
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             : this(null, visitedGraph, edgeChain)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="host">Host to use if set, otherwise use this reference.</param>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeChain">Edge chain strategy to use.</param>
         public CyclePoppingRandomTreeAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex,TEdge> visitedGraph,
-            IMarkovEdgeChain<TVertex,TEdge> edgeChain
-            )
-            :base(host, visitedGraph)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            : base(host, visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edgeChain != null);
 #endif
-            this.edgeChain = edgeChain;
-        }
-
-        public IDictionary<TVertex,GraphColor> VertexColors
-        {
-            get
-            {
-                return this.vertexColors;
-            }
-        }
-
-        public GraphColor GetVertexColor(TVertex v)
-        {
-            return this.vertexColors[v];
-        }
-
-        public IMarkovEdgeChain<TVertex,TEdge> EdgeChain
-        {
-            get
-            {
-                return this.edgeChain;
-            }
+            EdgeChain = edgeChain;
         }
 
         /// <summary>
-        /// Gets or sets the random number generator used in <c>RandomTree</c>.
+        /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        /// <value>
-        /// <see cref="Random"/> number generator
-        /// </value>
-        public Random Rnd
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
+
+        #region IVertexColorizerAlgorithm<TVertex>
+
+        /// <inheritdoc />
+        public GraphColor GetVertexColor(TVertex vertex)
+        {
+            return VerticesColors[vertex];
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Edge chain strategy for the random walk.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IMarkovEdgeChain<TVertex, TEdge> EdgeChain { get; }
+
+        [NotNull]
+        private Random _rand = new Random((int)DateTime.Now.Ticks);
+
+        /// <summary>
+        /// Gets or sets the random number generator used in <see cref="RandomTree"/>.
+        /// </summary>
+        [NotNull]
+        public Random Rand
         {
             get
             {
-                return this.rnd;
+                return _rand;
             }
             set
             {
@@ -88,96 +109,169 @@ namespace QuikGraph.Algorithms.RandomWalks
                 Contract.Requires(value != null);
 #endif
 
-                this.rnd = value;
+                _rand = value;
             }
         }
 
-        public IDictionary<TVertex,TEdge> Successors
-        {
-            get
-            {
-                return this.successors;
-            }
-        }
+        /// <summary>
+        /// Map vertices associated to their edge successors.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TVertex, TEdge> Successors { get; } = new Dictionary<TVertex, TEdge>();
 
+        #region Events
+
+        /// <summary>
+        /// Fired when a vertex is initialized.
+        /// </summary>
         public event VertexAction<TVertex> InitializeVertex;
-        private void OnInitializeVertex(TVertex v)
+
+        private void OnInitializeVertex([NotNull] TVertex vertex)
         {
-            var eh = this.InitializeVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            InitializeVertex?.Invoke(vertex);
         }
 
+        /// <summary>
+        /// Fired when a vertex is treated and considered as in the random tree.
+        /// </summary>
         public event VertexAction<TVertex> FinishVertex;
-        private void OnFinishVertex(TVertex v)
+
+        private void OnFinishVertex([NotNull] TVertex vertex)
         {
-            var eh = this.FinishVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            FinishVertex?.Invoke(vertex);
         }
 
-        public event EdgeAction<TVertex,TEdge> TreeEdge;
-        private void OnTreeEdge(TEdge e)
+        /// <inheritdoc />
+        public event EdgeAction<TVertex, TEdge> TreeEdge;
+
+        private void OnTreeEdge([NotNull] TEdge edge)
         {
-            var eh = this.TreeEdge;
-            if (eh != null)
-                eh(e);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(edge != null);
+#endif
+
+            TreeEdge?.Invoke(edge);
         }
 
+        /// <summary>
+        /// Fired when a vertex is removed from the random tree.
+        /// </summary>
         public event VertexAction<TVertex> ClearTreeVertex;
-        private void OnClearTreeVertex(TVertex v)
+
+        private void OnClearTreeVertex([NotNull] TVertex vertex)
         {
-            var eh = this.ClearTreeVertex;
-            if (eh != null)
-                eh(v);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+#endif
+
+            ClearTreeVertex?.Invoke(vertex);
         }
 
+        #endregion
+
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.successors.Clear();
-            this.vertexColors.Clear();
-            foreach (var v in this.VisitedGraph.Vertices)
+            Successors.Clear();
+            VerticesColors.Clear();
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                this.vertexColors.Add(v,GraphColor.White);
-                OnInitializeVertex(v);
+                VerticesColors.Add(vertex, GraphColor.White);
+                OnInitializeVertex(vertex);
             }
         }
 
-        private bool NotInTree(TVertex u)
+        /// <inheritdoc />
+        protected override void InternalCompute()
         {
-            GraphColor color = this.vertexColors[u];
-            return color == GraphColor.White;
+            if (!TryGetRootVertex(out TVertex rootVertex))
+                throw new InvalidOperationException("Root vertex not set.");
+
+            ICancelManager cancelManager = Services.CancelManager;
+            // Process root
+            ClearTree(rootVertex);
+            SetInTree(rootVertex);
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                if (cancelManager.IsCancelling)
+                    break;
+
+                // First pass: exploration 
+                {
+                    var visitedEdges = new Dictionary<TEdge, int>();
+                    TVertex current = vertex;
+                    while (NotInTree(current) && TryGetSuccessor(visitedEdges, current, out TEdge successor))
+                    {
+                        visitedEdges[successor] = 0;
+                        Tree(current, successor);
+                        if (!TryGetNextInTree(current, out current))
+                            break;
+                    }
+                }
+
+                // Second pass: coloration
+                {
+                    TVertex current = vertex;
+                    while (NotInTree(current))
+                    {
+                        SetInTree(current);
+                        if (!TryGetNextInTree(current, out current))
+                            break;
+                    }
+                }
+            }
         }
 
-        private void SetInTree(TVertex u)
+        #endregion
+
+        private bool NotInTree([NotNull] TVertex vertex)
         {
-            this.vertexColors[u] = GraphColor.Black;
-            OnFinishVertex(u);
+            return VerticesColors[vertex] == GraphColor.White;
         }
 
-        private bool TryGetSuccessor(Dictionary<TEdge, int> visited, TVertex u, out TEdge successor)
+        private void SetInTree([NotNull] TVertex vertex)
         {
-            var outEdges = this.VisitedGraph.OutEdges(u);
-            var edges = Enumerable.Where(outEdges, e => !visited.ContainsKey(e));
-            return this.EdgeChain.TryGetSuccessor(edges, u, out successor);
+            VerticesColors[vertex] = GraphColor.Black;
+            OnFinishVertex(vertex);
         }
 
-        private void Tree(TVertex u, TEdge next)
+        private bool TryGetSuccessor([NotNull] IDictionary<TEdge, int> visited, [NotNull] TVertex vertex, out TEdge successor)
+        {
+            IEnumerable<TEdge> outEdges = VisitedGraph.OutEdges(vertex);
+            IEnumerable<TEdge> edges = outEdges.Where(edge => !visited.ContainsKey(edge));
+            return EdgeChain.TryGetSuccessor(edges, vertex, out successor);
+        }
+
+        private void Tree([NotNull] TVertex vertex, [NotNull] TEdge next)
         {
 #if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
             Contract.Requires(next != null);
 #endif
 
-            this.successors[u] = next;
+            Successors[vertex] = next;
             OnTreeEdge(next);
         }
 
-        private bool TryGetNextInTree(TVertex u, out TVertex next)
+        private bool TryGetNextInTree([NotNull] TVertex vertex, out TVertex next)
         {
-            TEdge nextEdge;
-            if (this.successors.TryGetValue(u, out nextEdge))
+            if (Successors.TryGetValue(vertex, out TEdge nextEdge))
             {
                 next = nextEdge.Target;
                 return true;
@@ -189,77 +283,43 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private bool Chance(double eps)
         {
-            return this.rnd.NextDouble() <= eps;
+            return Rand.NextDouble() <= eps;
         }
 
-        private void ClearTree(TVertex u)
+        private void ClearTree([NotNull] TVertex vertex)
         {
-            this.successors[u] = default(TEdge);
-            OnClearTreeVertex(u);
+            Successors[vertex] = default(TEdge);
+            OnClearTreeVertex(vertex);
         }
 
-        public void RandomTreeWithRoot(TVertex root)
+        /// <summary>
+        /// Runs a random tree generation starting at <paramref name="root"/> vertex.
+        /// </summary>
+        /// <param name="root">Tree starting vertex.</param>
+        public void RandomTreeWithRoot([NotNull] TVertex root)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(root != null);
-            Contract.Requires(this.VisitedGraph.ContainsVertex(root));
+            Contract.Requires(VisitedGraph.ContainsVertex(root));
 #endif
 
-            this.SetRootVertex(root);
-            this.Compute();
-        }
-        
-        protected override void  InternalCompute()
-        {
-            TVertex rootVertex;
-            if (!this.TryGetRootVertex(out rootVertex))
-                throw new InvalidOperationException("RootVertex not specified");
-
-            var cancelManager = this.Services.CancelManager;
-            // process root
-            ClearTree(rootVertex);
-            SetInTree(rootVertex);
-
-            foreach (var i in this.VisitedGraph.Vertices)
-            {
-                if (cancelManager.IsCancelling) break;
-                // first pass exploring
-                {
-                    var visited = new Dictionary<TEdge, int>();
-                    TVertex u = i;
-                    TEdge successor;
-                    while (NotInTree(u) &&
-                           this.TryGetSuccessor(visited, u, out successor))
-                    {
-                        visited[successor] = 0;
-                        Tree(u, successor);
-                        if (!this.TryGetNextInTree(u, out u))
-                            break;
-                    }
-                }
-
-                // second pass, coloring
-                {
-                    TVertex u = i;
-                    while (NotInTree(u))
-                    {
-                        SetInTree(u);
-                        if (!this.TryGetNextInTree(u, out u))
-                            break;
-                    }
-                }
-            }
+            SetRootVertex(root);
+            Compute();
         }
 
+        /// <summary>
+        /// Runs a random tree generation.
+        /// </summary>
         public void RandomTree()
         {
-            var cancelManager = this.Services.CancelManager;
+            ICancelManager cancelManager = Services.CancelManager;
 
             double eps = 1;
             bool success;
             do
             {
-                if (cancelManager.IsCancelling) break;
+                if (cancelManager.IsCancelling)
+                    break;
 
                 eps /= 2;
                 success = Attempt(eps);
@@ -270,50 +330,52 @@ namespace QuikGraph.Algorithms.RandomWalks
         {
             Initialize();
             int numRoots = 0;
-            var cancelManager = this.Services.CancelManager;
+            ICancelManager cancelManager = Services.CancelManager;
 
-            foreach (var i in this.VisitedGraph.Vertices)
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling) break;
+                if (cancelManager.IsCancelling)
+                    break;
 
-                // first pass exploring
+                // First pass: exploration
                 {
                     var visited = new Dictionary<TEdge, int>();
-                    TEdge successor;
-                    var u = i;
-                    while (NotInTree(u))
+                    TVertex current = vertex;
+                    while (NotInTree(current))
                     {
                         if (Chance(eps))
                         {
-                            ClearTree(u);
-                            SetInTree(u);
+                            ClearTree(current);
+                            SetInTree(current);
                             ++numRoots;
                             if (numRoots > 1)
                                 return false;
                         }
                         else
                         {
-                            if (!this.TryGetSuccessor(visited, u, out successor))
+                            if (!TryGetSuccessor(visited, current, out TEdge successor))
                                 break;
+
                             visited[successor] = 0;
-                            Tree(u, successor);
-                            if (!this.TryGetNextInTree(u, out u))
+                            Tree(current, successor);
+                            if (!TryGetNextInTree(current, out current))
                                 break;
                         }
                     }
                 }
 
-                // second pass, coloring
+                // Second pass: coloration
                 {
-                    var u = i;
-                    while (NotInTree(u))
+                    TVertex current = vertex;
+                    while (NotInTree(current))
                     {
-                        SetInTree(u);
-                        if (!this.TryGetNextInTree(u, out u))
+                        SetInTree(current);
+                        if (!TryGetNextInTree(current, out current))
                             break;
                     }
                 }
             }
+
             return true;
         }
     }

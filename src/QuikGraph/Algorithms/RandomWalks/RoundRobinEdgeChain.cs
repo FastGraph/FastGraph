@@ -3,32 +3,40 @@ using System;
 #endif
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Round Robin chain implementation.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class RoundRobinEdgeChain<TVertex, TEdge> : IEdgeChain<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private Dictionary<TVertex, int> outEdgeIndices = new Dictionary<TVertex, int>();
+        [NotNull]
+        private readonly Dictionary<TVertex, int> _outEdgeIndices = new Dictionary<TVertex, int>();
 
-        public bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> g, TVertex u, out TEdge successor)
+        /// <inheritdoc />
+        public bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
         {
-            int outDegree = g.OutDegree(u);
+            int outDegree = graph.OutDegree(vertex);
             if (outDegree > 0)
             {
-                int index;
-                if (!outEdgeIndices.TryGetValue(u, out index))
+                if (!_outEdgeIndices.TryGetValue(vertex, out int index))
                 {
                     index = 0;
-                    outEdgeIndices.Add(u, index);
+                    _outEdgeIndices.Add(vertex, index);
                 }
-                TEdge e = g.OutEdge(u, index);
-                this.outEdgeIndices[u] = (++index) % outDegree;
 
-                successor = e;
+                TEdge edge = graph.OutEdge(vertex, index);
+                _outEdgeIndices[vertex] = ++index % outDegree;
+
+                successor = edge;
                 return true;
             }
 
@@ -36,23 +44,25 @@ namespace QuikGraph.Algorithms.RandomWalks
             return false;
         }
 
-        public bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex u, out TEdge successor)
+        /// <inheritdoc />
+        public bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
         {
-            var edgeCount = Enumerable.Count(edges);
-
-            if (edgeCount > 0)
+            TEdge[] edgeArray = edges.ToArray();
+            if (edgeArray.Any())
             {
-                int index;
-                if (!outEdgeIndices.TryGetValue(u, out index))
+                if (!_outEdgeIndices.TryGetValue(vertex, out int index))
                 {
                     index = 0;
-                    outEdgeIndices.Add(u, index);
+                    _outEdgeIndices.Add(vertex, index);
                 }
-                var e = Enumerable.ElementAt(edges, index);
-                this.outEdgeIndices[u] = (++index) % edgeCount;
-                successor = e;
+
+                TEdge edge = edgeArray[index];
+                _outEdgeIndices[vertex] = ++index % edgeArray.Length;
+
+                successor = edge;
                 return true;
             }
+
             successor = default(TEdge);
             return false;
         }

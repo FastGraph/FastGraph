@@ -6,19 +6,25 @@ using System.Linq;
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Normalized Markov chain implementation.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class NormalizedMarkovEdgeChain<TVertex, TEdge> : MarkovEdgeChainBase<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        public override bool TryGetSuccessor(IImplicitGraph<TVertex,TEdge> g, TVertex u, out TEdge successor)
+        /// <inheritdoc />
+        public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
         {
-            int outDegree = g.OutDegree(u);
+            int outDegree = graph.OutDegree(vertex);
             if (outDegree > 0)
             {
-                int index = this.Rand.Next(0, outDegree);
-                successor = g.OutEdge(u, index);
+                int index = Rand.Next(0, outDegree);
+                successor = graph.OutEdge(vertex, index);
                 return true;
             }
 
@@ -26,14 +32,14 @@ namespace QuikGraph.Algorithms.RandomWalks
             return false;
         }
 
-        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex u, out TEdge successor)
+        /// <inheritdoc />
+        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
         {
-            var edgeCount = Enumerable.Count(edges);
-
-            if (edgeCount > 0)
+            TEdge[] edgeArray = edges.ToArray();
+            if (edgeArray.Any())
             {
-                int index = this.Rand.Next(0, edgeCount);
-                successor = Enumerable.ElementAt(edges, index);
+                int index = Rand.Next(0, edgeArray.Length);
+                successor = edgeArray[index];
                 return true;
             }
 

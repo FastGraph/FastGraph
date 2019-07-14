@@ -2,78 +2,112 @@
 using System;
 #endif
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
+
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Base class for Markov chain with weight.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public abstract class WeightedMarkovEdgeChainBase<TVertex, TEdge> :
-        MarkovEdgeChainBase<TVertex, TEdge>
+    public abstract class WeightedMarkovEdgeChainBase<TVertex, TEdge> : MarkovEdgeChainBase<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private IDictionary<TEdge, double> weights;
-        public WeightedMarkovEdgeChainBase(IDictionary<TEdge, double> weights)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeightedMarkovEdgeChainBase{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="edgeWeights">Map that contains edge weights.</param>
+        protected WeightedMarkovEdgeChainBase([NotNull] IDictionary<TEdge, double> edgeWeights)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(weights != null);
+            Contract.Requires(edgeWeights != null);
 #endif
 
-            this.weights = weights;
+            Weights = edgeWeights;
         }
 
-        public IDictionary<TEdge, double> Weights
-        {
-            get { return this.weights; }
-            set { this.weights = value; }
-        }
+        /// <summary>
+        /// Map of edge weights.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
+        public IDictionary<TEdge, double> Weights { get; }
 
-        protected double GetOutWeight(IImplicitGraph<TVertex, TEdge> g, TVertex u)
+        /// <summary>
+        /// Gets the weight of the given <paramref name="vertex"/> out edges.
+        /// </summary>
+        /// <param name="graph">Graph to consider.</param>
+        /// <param name="vertex">Vertex to get out weight.</param>
+        /// <returns>Out weight.</returns>
+        protected double GetOutWeight([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
         {
-            var edges = g.OutEdges(u);
+            IEnumerable<TEdge> edges = graph.OutEdges(vertex);
             return GetWeights(edges);
         }
 
-        protected double GetWeights(IEnumerable<TEdge> edges)
+        /// <summary>
+        /// Gets the weight corresponding to all given <paramref name="edges"/>.
+        /// </summary>
+        /// <param name="edges">Edges to get total weight.</param>
+        /// <returns>Edges weight.</returns>
+        protected double GetWeights([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
-            double outWeight = 0;
-            foreach (var e in edges)
-            {
-                outWeight += this.weights[e];
-            }
-            return outWeight;
+            return edges.Sum(edge => Weights[edge]);
         }
 
-        protected bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> g, TVertex u, double position, out TEdge successor)
+        /// <summary>
+        /// Tries to get the successor of the given <paramref name="vertex"/> in the given <paramref name="graph"/>.
+        /// </summary>
+        /// <param name="graph">The graph to search in.</param>
+        /// <param name="vertex">The vertex.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="successor">Found successor, otherwise null.</param>
+        /// <returns>True if a successor was found, false otherwise.</returns>
+        protected bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, double position, out TEdge successor)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(g != null);
-            Contract.Requires(u != null);
+            Contract.Requires(graph != null);
+            Contract.Requires(vertex != null);
 #endif
 
-            var edges = g.OutEdges(u);
+            IEnumerable<TEdge> edges = graph.OutEdges(vertex);
             return TryGetSuccessor(edges, position, out successor);
         }
 
-        protected bool TryGetSuccessor(IEnumerable<TEdge> edges, double position, out TEdge successor)
+        /// <summary>
+        /// Tries to get the successor at the given <paramref name="position"/> in the given set of <paramref name="edges"/>.
+        /// </summary>
+        /// <param name="edges">Edge set in which searching.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="successor">Found successor, otherwise null.</param>
+        /// <returns>True if a successor was found, false otherwise.</returns>
+        protected bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, double position, out TEdge successor)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edges != null);
 #endif
 
             double pos = 0;
-            double nextPos = 0;
-            foreach (var e in edges)
+            foreach (TEdge edge in edges)
             {
-                nextPos = pos + this.weights[e];
+                double nextPos = pos + Weights[edge];
                 if (position >= pos && position <= nextPos)
                 {
-                    successor = e;
+                    successor = edge;
                     return true;
                 }
+
                 pos = nextPos;
             }
 
