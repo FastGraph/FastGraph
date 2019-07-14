@@ -40,7 +40,7 @@ Supported platforms:
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/KeRNeLith/QuickGraph</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuickGraph/master/docs/files/img/logo.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuickGraph/master/docs/images/quikgraph_logo.png</PackageIconUrl>
     <RepositoryType>GitHub</RepositoryType>
     <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
   </PropertyGroup>

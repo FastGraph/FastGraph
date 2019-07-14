@@ -8,11 +8,16 @@ pull_requests:
 environment:
   SONARQUBE_TOKEN:
     secure: 2I3bluR+2upDl17M1Qmnil/eSAhUFcv4uaW5vvZOveWsFkYY773KQtLmK7H8dcLI
+  DocFXVersion: 2.42.4
   NUnitConsoleVersion: 3.10.0
   OpenCoverVersion: 4.7.922
   CoverallsVersion: 1.0.0
   COVERALLS_REPO_TOKEN:
     secure: V9+BC6iS7KQL2KD+Wo2HrCYWP81uJqeAOH+SM6imJfwAGT4jmFO2K7LebXyZXTKy
+  GITHUB_ACCESS_TOKEN:
+    secure: fLTTmcGOM55kigJC4vErpObFmybCtzQtwb4QN55BTNq3GDGaOCoHDoIPxexzO59d
+  GITHUB_EMAIL:
+    secure: wcfqCHOmeRLZf/BX6u6qQSV89Q4jFs9fHNDgMpKAcqE=
 
 # Setup build version
 init:
@@ -58,6 +63,8 @@ matrix:
 before_build:
 # Chocolatey SonarQube
   - cinst msbuild-sonarqube-runner
+# Chocolatey DocFX
+  - ps: cinst docfx --version $env:DocFXVersion
 # NuGet restore
   - nuget restore -verbosity detailed
 
@@ -82,8 +89,7 @@ after_test:
   - ps: $opencover = (Resolve-Path "tools\OpenCover.*\tools\OpenCover.Console.exe").ToString()
   - ps: $nunitConsole = (Resolve-Path "tools\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").ToString()
   - ps: $coveralls = (Resolve-Path "tools\csmacnz.Coveralls.exe").ToString()
-# Assemblies to test (only consider .NET Framework 4.5, because if taking those from target netcoreapp1.0 coverage fails)
-  - ps: $testAssemblies = (ls tests\*.Tests\bin\$env:Configuration\net45\*Tests.dll | % FullName | sort-object -Unique)
+  - ps: $testAssemblies = (ls src\*.Tests\bin\$env:Configuration\*\*Tests.dll | Where-Object { $_ -Match "net*" -and $_ -NotMatch "netcoreapp*" } | % FullName | sort-object -Unique)
 # Generate coverage report
   - ps: >-
       & $opencover -register:user -filter:"+[*]* -[*.Test*]* -[*]JetBrains.Annotations*" -target:"$nunitConsole" -targetargs:"$testAssemblies" -log:Warn -output:coverage.xml
@@ -91,13 +97,14 @@ after_test:
   - ps: >-
       & $coveralls --opencover -i coverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --useRelativePaths --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_BUILD_NUMBER --serviceName appveyor
 
-on_success:
-  - ps: SonarScanner.MSBuild.exe end /d:"sonar.login=$env:SONARQUBE_TOKEN"
-
 # Artifact
 artifacts:  
   - path: '**\bin\Release\*.nupkg'
     name: NuGet
+
+# Documentation
+before_deploy:
+  - ps: ./releaseDoc.ps1
 
 # Deploy
 deploy:
