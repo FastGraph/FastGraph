@@ -1,35 +1,30 @@
 <?xml version="1.0"?>
 
-<xs:schema   
-             targetNamespace="http://graphml.graphdrawing.org/xmlns"
+<xs:schema targetNamespace="http://graphml.graphdrawing.org/xmlns"
+           xmlns="http://graphml.graphdrawing.org/xmlns"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
 
-             xmlns="http://graphml.graphdrawing.org/xmlns"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema"
-
-             elementFormDefault="qualified"
-             attributeFormDefault="unqualified"
->
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
 
   <xs:annotation>
     <xs:documentation 
         source="http://graphml.graphdrawing.org/"
         xml:lang="en">
-     This document defines the GraphML language including GraphML attributes and GraphML parseinfo.
+      This document defines the GraphML language including GraphML attributes and GraphML parseinfo.
     </xs:documentation>
   </xs:annotation>
 
 
 <xs:redefine schemaLocation="http://graphml.graphdrawing.org/xmlns/1.0/graphml-structure.xsd">
 
-  <!--redefinition as in graphml-attributes.xsd -->
-
+  <!-- redefinition as in graphml-attributes.xsd -->
   <xs:attributeGroup name="key.extra.attrib">
     <xs:attributeGroup ref="key.extra.attrib"/>
     <xs:attributeGroup ref="key.attributes.attrib"/>
   </xs:attributeGroup>
 
-  <!--redefinition as in graphml-parseinfo.xsd -->
-
+  <!-- redefinition as in graphml-parseinfo.xsd -->
   <xs:attributeGroup name="graph.extra.attrib">
     <xs:attributeGroup ref="graph.extra.attrib"/>
     <xs:attributeGroup ref="graph.parseinfo.attrib"/>
@@ -43,8 +38,7 @@
 </xs:redefine>
 
 
-  <!--types as in graphml-attributes.xsd -->
-
+<!-- types as in graphml-attributes.xsd -->
 <xs:simpleType name="key.name.type" final="#all">
 
   <xs:annotation>
@@ -108,7 +102,7 @@
   <xs:attribute name="attr.type" type="key.type.type" use="optional"/>
 </xs:attributeGroup>
 
-  <!--types as in graphml-parseinfo.xsd -->
+  <!-- types as in graphml-parseinfo.xsd -->
 
   <xs:annotation>
     <xs:documentation 

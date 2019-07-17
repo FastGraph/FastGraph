@@ -1,5 +1,5 @@
-using System;
 #if SUPPORTS_GRAPHS_SERIALIZATION
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 #if SUPPORTS_CONTRACTS
@@ -7,88 +7,23 @@ using System.Diagnostics.Contracts;
 #endif
 using System.Reflection;
 using System.Reflection.Emit;
-#endif
 using System.Xml;
+using System.Xml.Serialization;
+using JetBrains.Annotations;
+using static QuikGraph.Serialization.XmlConstants;
 
 namespace QuikGraph.Serialization
 {
-    public static class XmlReaderExtensions
-    {
-        public static Boolean[] ReadElementContentAsBooleanArray(XmlReader xmlReader, string localName, string namespaceURI)
-        {
-            return ReadElementContentAsArray(xmlReader, localName, namespaceURI, s => Convert.ToBoolean(s));
-        }
-
-        public static Int32[] ReadElementContentAsInt32Array(XmlReader xmlReader, string localName, string namespaceURI)
-        {
-            return ReadElementContentAsArray(xmlReader, localName, namespaceURI, s => Convert.ToInt32(s));
-        }
-
-        public static Int64[] ReadElementContentAsInt64Array(XmlReader xmlReader, string localName, string namespaceURI)
-        {
-            return ReadElementContentAsArray(xmlReader, localName, namespaceURI, s => Convert.ToInt64(s));
-        }
-
-        public static Single[] ReadElementContentAsSingleArray(XmlReader xmlReader, string localName, string namespaceURI)
-        {
-            return ReadElementContentAsArray(xmlReader, localName, namespaceURI, s => Convert.ToSingle(s));
-        }
-
-        public static Double[] ReadElementContentAsDoubleArray(XmlReader xmlReader, string localName, string namespaceURI)
-        {
-            return ReadElementContentAsArray(xmlReader, localName, namespaceURI, s => Convert.ToDouble(s));
-        }
-
-        public static String[] ReadElementContentAsStringArray(XmlReader xmlReader, string localName, string namespaceURI)
-        {
-            return ReadElementContentAsArray(xmlReader, localName, namespaceURI, s => s);
-        }
-
-        /// <summary>
-        /// Read contents of an XML element as an array of type T.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="xmlReader"></param>
-        /// <param name="localName"></param>
-        /// <param name="namespaceURI"></param>
-        /// <param name="stringToT"></param>
-        /// <returns></returns>
-        public static T[] ReadElementContentAsArray<T>(XmlReader xmlReader, string localName, string namespaceURI,
-                                                        Func<string, T> stringToT)
-        {
-            var str = xmlReader.ReadElementContentAsString(localName, namespaceURI);
-
-            if (str == "null")
-                return null;
-
-            if (str.Length > 0 && str[str.Length - 1] == ' ')
-            {
-                str = str.Remove(str.Length - 1);
-            }
-
-            var strArray = str.Split(new char[1] { ' ' });
-
-            var array = new T[strArray.Length];
-            for (int i = 0; i < strArray.Length; i++)
-            {
-                array[i] = stringToT(strArray[i]);
-            }
-            return array;
-        }
-    }
-
-#if SUPPORTS_GRAPHS_SERIALIZATION
     /// <summary>
-    /// A GraphML ( http://graphml.graphdrawing.org/ ) format deserializer.
+    /// A GraphML (http://graphml.graphdrawing.org/) format deserializer.
     /// </summary>
-    /// <typeparam name="TVertex">type of a vertex</typeparam>
-    /// <typeparam name="TEdge">type of an edge</typeparam>
-    /// <typeparam name="TGraph">type of the graph</typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
     /// <remarks>
     /// <para>
     /// Custom vertex, edge and graph attributes can be specified by 
-    /// using the <see cref="System.Xml.Serialization.XmlAttributeAttribute"/>
-    /// attribute on properties (field not suppored).
+    /// using the <see cref="XmlAttributeAttribute"/> attribute on properties (field not supported).
     /// </para>
     /// <para>
     /// The serializer uses LCG (lightweight code generation) to generate the 
@@ -98,37 +33,49 @@ namespace QuikGraph.Serialization
     /// will have to bake that method.
     /// </para>
     /// <para>
-    /// Hyperedge, nodes, nested graphs not supported.
+    /// Hyper edge, nodes, nested graphs not supported.
     /// </para>
     /// </remarks>
-    public sealed class GraphMLDeserializer<TVertex, TEdge, TGraph>
-        : SerializerBase<TVertex, TEdge>
+    public sealed class GraphMLDeserializer<TVertex, TEdge, TGraph> : SerializerBase<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
     {
-    #region Compiler
+        #region Compiler
 
-        delegate void ReadVertexAttributesDelegate(
-            XmlReader reader,
-            string namespaceUri,
-            TVertex v);
-        delegate void ReadEdgeAttributesDelegate(
-            XmlReader reader,
-            string namespaceUri,
-            TEdge e);
-        delegate void ReadGraphAttributesDelegate(
-            XmlReader reader,
-            string namespaceUri,
-            TGraph g);
+        private delegate void ReadVertexAttributesDelegate(
+            [NotNull] XmlReader reader,
+            [NotNull] string namespaceUri,
+            [NotNull] TVertex vertex);
 
-        static class ReadDelegateCompiler
+        private delegate void ReadEdgeAttributesDelegate(
+            [NotNull] XmlReader reader,
+            [NotNull] string namespaceUri,
+            [NotNull] TEdge edge);
+
+        private delegate void ReadGraphAttributesDelegate(
+            [NotNull] XmlReader reader,
+            [NotNull] string namespaceUri,
+            [NotNull] TGraph graph);
+
+        private static class ReadDelegateCompiler
         {
-            public static readonly ReadVertexAttributesDelegate VertexAttributesReader;
-            public static readonly ReadEdgeAttributesDelegate EdgeAttributesReader;
-            public static readonly ReadGraphAttributesDelegate GraphAttributesReader;
-            public static readonly Action<TVertex> SetVertexDefault;
-            public static readonly Action<TEdge> SetEdgeDefault;
-            public static readonly Action<TGraph> SetGraphDefault; 
+            [NotNull]
+            public static ReadVertexAttributesDelegate VertexAttributesReader { get; }
+
+            [NotNull]
+            public static ReadEdgeAttributesDelegate EdgeAttributesReader { get; }
+
+            [NotNull]
+            public static ReadGraphAttributesDelegate GraphAttributesReader { get; }
+
+            [NotNull]
+            public static Action<TVertex> SetVertexDefault { get; }
+
+            [NotNull]
+            public static Action<TEdge> SetEdgeDefault { get; }
+
+            [NotNull]
+            public static Action<TGraph> SetGraphDefault { get; }
 
             static ReadDelegateCompiler()
             {
@@ -138,27 +85,32 @@ namespace QuikGraph.Serialization
                     typeof(TVertex)
                     //,"id"
                     );
+
                 EdgeAttributesReader =
                     (ReadEdgeAttributesDelegate)CreateReadDelegate(
                     typeof(ReadEdgeAttributesDelegate),
                     typeof(TEdge)
                     //,"id", "source", "target"
                     );
+
                 GraphAttributesReader =
                     (ReadGraphAttributesDelegate)CreateReadDelegate(
                     typeof(ReadGraphAttributesDelegate),
                     typeof(TGraph)
                     );
+
                 SetVertexDefault =
                     (Action<TVertex>)CreateSetDefaultDelegate(
                         typeof(Action<TVertex>),
                         typeof(TVertex)
                     );
+
                 SetEdgeDefault =
                     (Action<TEdge>)CreateSetDefaultDelegate(
                         typeof(Action<TEdge>),
                         typeof(TEdge)
                     );
+
                 SetGraphDefault =
                     (Action<TGraph>)CreateSetDefaultDelegate(
                         typeof(Action<TGraph>),
@@ -166,84 +118,10 @@ namespace QuikGraph.Serialization
                     );
             }
 
-            static class Metadata
-            {
-                public static readonly MethodInfo ReadToFollowingMethod =
-                    typeof(XmlReader).GetMethod(
-                        "ReadToFollowing",
-                        BindingFlags.Instance | BindingFlags.Public, 
-                        null,
-                        new Type[] { typeof(string), typeof(string) },
-                        null);
-                public static readonly MethodInfo GetAttributeMethod =
-                    typeof(XmlReader).GetMethod(
-                        "GetAttribute",
-                        BindingFlags.Instance | BindingFlags.Public, 
-                        null,
-                        new Type[] { typeof(string) },
-                        null);
-                public static readonly PropertyInfo NameProperty =
-                    typeof(XmlReader).GetProperty("Name");
-                public static readonly PropertyInfo NamespaceUriProperty =
-                    typeof(XmlReader).GetProperty("NamespaceUri");
-                public static readonly MethodInfo StringEqualsMethod =
-                    typeof(string).GetMethod(
-                        "op_Equality",
-                        BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public, 
-                        null,
-                        new Type[] { typeof(string), typeof(string) },
-                        null);
-                public static readonly ConstructorInfo ArgumentExceptionCtor =
-                    typeof(ArgumentException).GetConstructor(new Type[] { typeof(string) });
-
-                private static readonly Dictionary<Type, MethodInfo> ReadContentMethods;
-
-                static Metadata()
-                {
-                    ReadContentMethods = new Dictionary<Type, MethodInfo>();
-                    ReadContentMethods.Add(typeof(bool), typeof(XmlReader).GetMethod("ReadElementContentAsBoolean", new Type[] { typeof(string), typeof(string) }));
-                    ReadContentMethods.Add(typeof(int), typeof(XmlReader).GetMethod("ReadElementContentAsInt", new Type[] { typeof(string), typeof(string) }));
-                    ReadContentMethods.Add(typeof(long), typeof(XmlReader).GetMethod("ReadElementContentAsLong", new Type[] { typeof(string), typeof(string) }));
-                    ReadContentMethods.Add(typeof(float), typeof(XmlReader).GetMethod("ReadElementContentAsFloat", new Type[] { typeof(string), typeof(string) }));
-                    ReadContentMethods.Add(typeof(double), typeof(XmlReader).GetMethod("ReadElementContentAsDouble", new Type[] { typeof(string), typeof(string) }));
-                    ReadContentMethods.Add(typeof(string), typeof(XmlReader).GetMethod("ReadElementContentAsString", new Type[] { typeof(string), typeof(string) }));
-
-                    var readerExtensions = typeof(XmlReaderExtensions);
-                    ReadContentMethods.Add(typeof(Boolean[]), readerExtensions.GetMethod("ReadElementContentAsBooleanArray"));
-                    ReadContentMethods.Add(typeof(Int32[]), readerExtensions.GetMethod("ReadElementContentAsInt32Array"));
-                    ReadContentMethods.Add(typeof(Int64[]), readerExtensions.GetMethod("ReadElementContentAsInt64Array"));
-                    ReadContentMethods.Add(typeof(Single[]), readerExtensions.GetMethod("ReadElementContentAsSingleArray"));
-                    ReadContentMethods.Add(typeof(Double[]), readerExtensions.GetMethod("ReadElementContentAsDoubleArray"));
-                    ReadContentMethods.Add(typeof(String[]), readerExtensions.GetMethod("ReadElementContentAsStringArray"));
-
-                    ReadContentMethods.Add(typeof(IList<Boolean>), readerExtensions.GetMethod("ReadElementContentAsBooleanArray"));
-                    ReadContentMethods.Add(typeof(IList<Int32>), readerExtensions.GetMethod("ReadElementContentAsInt32Array"));
-                    ReadContentMethods.Add(typeof(IList<Int64>), readerExtensions.GetMethod("ReadElementContentAsInt64Array"));
-                    ReadContentMethods.Add(typeof(IList<Single>), readerExtensions.GetMethod("ReadElementContentAsSingleArray"));
-                    ReadContentMethods.Add(typeof(IList<Double>), readerExtensions.GetMethod("ReadElementContentAsDoubleArray"));
-                    ReadContentMethods.Add(typeof(IList<String>), readerExtensions.GetMethod("ReadElementContentAsStringArray"));
-                }
-
-                public static bool TryGetReadContentMethod(Type type, out MethodInfo method)
-                {
-#if SUPPORTS_CONTRACTS
-                    Contract.Requires(type != null);
-#endif
-
-                    bool result = ReadContentMethods.TryGetValue(type, out method);
-
-#if SUPPORTS_CONTRACTS
-                    Contract.Assert(!result || method != null, type.FullName);
-#endif
-
-                    return result;
-                }
-            }
-
-            public static Delegate CreateSetDefaultDelegate(
-                Type delegateType,
-                Type elementType
-                )
+            [NotNull]
+            private static Delegate CreateSetDefaultDelegate(
+                [NotNull] Type delegateType,
+                [NotNull] Type elementType)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(delegateType != null);
@@ -251,69 +129,75 @@ namespace QuikGraph.Serialization
 #endif
 
                 var method = new DynamicMethod(
-                    "Set" + elementType.Name + "Default",
+                    $"{DynamicMethodPrefix}Set{elementType.Name}Default",
                     typeof(void),
-                    new Type[] { elementType },
-                    elementType.Module
-                    );
-                var gen = method.GetILGenerator();
+                    new[] { elementType },
+                    elementType.Module);
+                ILGenerator generator = method.GetILGenerator();
 
-                // we need to create the swicth for each property
-                foreach (var kv in SerializationHelper.GetAttributeProperties(elementType))
+                // We need to create the switch for each property
+                foreach (PropertySerializationInfo info in SerializationHelper.GetAttributeProperties(elementType))
                 {
-                    var property = kv.Property;
-                    var defaultValueAttribute = Attribute.GetCustomAttribute(property, typeof(DefaultValueAttribute))
-                        as DefaultValueAttribute;
-                    if (defaultValueAttribute == null)
+                    PropertyInfo property = info.Property;
+
+                    var defaultValueAttribute = Attribute.GetCustomAttribute(property, typeof(DefaultValueAttribute)) as DefaultValueAttribute;
+                    if (defaultValueAttribute is null)
                         continue;
-                    var setMethod = property.GetSetMethod();
-                    if (setMethod == null)
-                        throw new InvalidOperationException("property " + property.Name + " is not settable");
+
+                    MethodInfo setMethod = property.GetSetMethod();
+                    if (setMethod is null)
+                        throw new InvalidOperationException($"Property {property.Name} is not settable.");
                     if (property.PropertyType.IsArray)
-                    {
-                        throw new NotImplementedException("Default values for array types are not implemented");
-                    }                    
-                    var value = defaultValueAttribute.Value;
-                    if (value != null &&
-                        value.GetType() != property.PropertyType)
-                        throw new InvalidOperationException("invalid default value type of property " + property.Name);
-                    gen.Emit(OpCodes.Ldarg_0);
+                        throw new NotSupportedException("Default values for array types are not implemented.");
+                    object value = defaultValueAttribute.Value;
+                    if (value is null)
+                        throw new NotSupportedException($"Null default value is not supported for property {property.Name}.");
+                    if (value.GetType() != property.PropertyType)
+                        throw new InvalidOperationException($"Invalid default value type for property {property.Name}.");
+
+                    generator.Emit(OpCodes.Ldarg_0);
                     switch (Type.GetTypeCode(property.PropertyType))
                     {
                         case TypeCode.Int32:
-                            gen.Emit(OpCodes.Ldc_I4, (int)value);
+                            generator.Emit(OpCodes.Ldc_I4, (int)value);
                             break;
                         case TypeCode.Int64:
-                            gen.Emit(OpCodes.Ldc_I8, (long)value);
+                            generator.Emit(OpCodes.Ldc_I8, (long)value);
                             break;
                         case TypeCode.Single:
-                            gen.Emit(OpCodes.Ldc_R4, (float)value);
+                            generator.Emit(OpCodes.Ldc_R4, (float)value);
                             break;
                         case TypeCode.Double:
-                            gen.Emit(OpCodes.Ldc_R8, (double)value);
+                            generator.Emit(OpCodes.Ldc_R8, (double)value);
                             break;
                         case TypeCode.String:
-                            gen.Emit(OpCodes.Ldstr, (string)value);
+                            generator.Emit(OpCodes.Ldstr, (string)value);
                             break;
                         case TypeCode.Boolean:
-                            gen.Emit((bool)value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
+                            generator.Emit((bool)value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
                             break;
                         default:
-                            throw new InvalidOperationException("unsupported type " + property.PropertyType);
+                            throw new NotSupportedException($"Unsupported type {property.PropertyType.FullName}.");
                     }
-                    gen.EmitCall(setMethod.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, setMethod, null);
-                }
-                gen.Emit(OpCodes.Ret);
 
-                //let's bake the method
+                    generator.EmitCall(
+                        setMethod.IsVirtual
+                            ? OpCodes.Callvirt
+                            : OpCodes.Call,
+                        setMethod,
+                        null);
+                }
+
+                generator.Emit(OpCodes.Ret);
+
+                // Let's bake the method
                 return method.CreateDelegate(delegateType);
             }
 
-            public static Delegate CreateReadDelegate(
-                Type delegateType,
-                Type elementType
-                //,params string[] ignoredAttributes
-                )
+            [NotNull]
+            private static Delegate CreateReadDelegate(
+                [NotNull] Type delegateType,
+                [NotNull] Type elementType)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(delegateType != null);
@@ -321,302 +205,288 @@ namespace QuikGraph.Serialization
 #endif
 
                 var method = new DynamicMethod(
-                    "Read" + elementType.Name,
+                    $"{DynamicMethodPrefix}Read{elementType.Name}",
                     typeof(void),
-                    //          reader, namespaceUri
-                    new Type[] { typeof(XmlReader), typeof(string), elementType },
-                    elementType.Module
-                    );
-                var gen = method.GetILGenerator();
+                    // reader, namespaceUri
+                    new[] { typeof(XmlReader), typeof(string), elementType },
+                    elementType.Module);
+                ILGenerator generator = method.GetILGenerator();
 
-                var key = gen.DeclareLocal(typeof(string));
+                generator.DeclareLocal(typeof(string));
 
-                gen.Emit(OpCodes.Ldarg_0);
-                gen.Emit(OpCodes.Ldstr, "key");
-                gen.EmitCall(OpCodes.Callvirt, Metadata.GetAttributeMethod, null);
-                gen.Emit(OpCodes.Stloc_0);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldstr, "key");
+                generator.EmitCall(OpCodes.Callvirt, Metadata.GetAttributeMethod, null);
+                generator.Emit(OpCodes.Stloc_0);
 
-                //// if (String.Equals(key, "id")) continue;
-                //foreach (string ignoredAttribute in ignoredAttributes)
-                //{
-                //    gen.Emit(OpCodes.Ldloc_0);
-                //    gen.Emit(OpCodes.Ldstr, ignoredAttribute);
-                //    gen.EmitCall(OpCodes.Call, Metadata.StringEqualsMethod, null);
-                //    gen.Emit(OpCodes.Brtrue, doWhile);
-                //}
-
-                // we need to create the swicth for each property
-                var next = gen.DefineLabel();
-                var @return = gen.DefineLabel();
+                // We need to create the switch for each property
+                Label next = generator.DefineLabel();
+                Label @return = generator.DefineLabel();
                 bool first = true;
-                foreach (var kv in SerializationHelper.GetAttributeProperties(elementType))
+                foreach (PropertySerializationInfo info in SerializationHelper.GetAttributeProperties(elementType))
                 {
-                    var property = kv.Property;
-
+                    PropertyInfo property = info.Property;
                     if (!first)
                     {
-                        gen.MarkLabel(next);
-                        next = gen.DefineLabel();
+                        generator.MarkLabel(next);
+                        next = generator.DefineLabel();
                     }
                     first = false;
 
-                    // if (!key.Equals("foo"))
-                    gen.Emit(OpCodes.Ldloc_0);
-                    gen.Emit(OpCodes.Ldstr, kv.Name);
-                    gen.EmitCall(OpCodes.Call, Metadata.StringEqualsMethod, null);
-                    // if false jump to next
-                    gen.Emit(OpCodes.Brfalse, next);
+                    generator.Emit(OpCodes.Ldloc_0);
+                    generator.Emit(OpCodes.Ldstr, info.Name);
+                    generator.EmitCall(OpCodes.Call, Metadata.StringEqualsMethod, null);
 
-                    // do our stuff
-                    MethodInfo readMethod = null;
-                    if (!Metadata.TryGetReadContentMethod(property.PropertyType, out readMethod))
-                        throw new ArgumentException(String.Format("Property {0} has a non-supported type", property.Name));
+                    // If false jump to next
+                    generator.Emit(OpCodes.Brfalse, next);
 
-                    // do we have a set method ?
-                    var setMethod = property.GetSetMethod();
-                    if (setMethod == null)
-                        throw new ArgumentException(String.Format("Property {0}.{1} has not set method", property.DeclaringType, property.Name));
+                    // Do our stuff
+                    if (!Metadata.TryGetReadContentMethod(property.PropertyType, out MethodInfo readMethod))
+                        throw new NotSupportedException($"Property {property.Name} has a non supported type.");
+
+                    // Do we have a set method?
+                    MethodInfo setMethod = property.GetSetMethod();
+                    if (setMethod is null)
+                        throw new InvalidOperationException($"Property {property.DeclaringType}.{property.Name} has no set method.");
+
                     // reader.ReadXXX
-                    gen.Emit(OpCodes.Ldarg_2); // element
-                    gen.Emit(OpCodes.Ldarg_0); // reader
-                    gen.Emit(OpCodes.Ldstr, "data");
-                    gen.Emit(OpCodes.Ldarg_1); // namespace uri
-                    // When writing scalar values we call member methods of XmlReader, while for array values 
-                    // we call our own static methods.  These two types of methods seem to need different opcode.
-                    var opcode = readMethod.DeclaringType == typeof(XmlReaderExtensions) ? OpCodes.Call : OpCodes.Callvirt;
-                    gen.EmitCall(opcode, readMethod, null);
-                    gen.EmitCall(OpCodes.Callvirt, setMethod, null);
+                    generator.Emit(OpCodes.Ldarg_2); // element
+                    generator.Emit(OpCodes.Ldarg_0); // reader
+                    generator.Emit(OpCodes.Ldstr, "data");
+                    generator.Emit(OpCodes.Ldarg_1); // namespace URI
 
-                    // jump to do while
-                    gen.Emit(OpCodes.Br, @return);
+                    // When writing scalar values we call member methods of XmlReader, while for array values 
+                    // we call our own static methods. These two types of methods seem to need different OpCode.
+                    generator.EmitCall(
+                        readMethod.DeclaringType == typeof(XmlReaderExtensions)
+                            ? OpCodes.Call
+                            : OpCodes.Callvirt,
+                        readMethod,
+                        null);
+                    generator.EmitCall(OpCodes.Callvirt, setMethod, null);
+
+                    // Jump to do while
+                    generator.Emit(OpCodes.Br, @return);
                 }
 
-                // we don't know this parameter.. we throw
-                gen.MarkLabel(next);
-                gen.Emit(OpCodes.Ldloc_0);
-                gen.Emit(OpCodes.Newobj, Metadata.ArgumentExceptionCtor);
-                gen.Emit(OpCodes.Throw);
+                // We don't know this parameter.. we throw
+                generator.MarkLabel(next);
+                generator.Emit(OpCodes.Ldloc_0);
+                generator.Emit(OpCodes.Newobj, Metadata.ArgumentExceptionCtor);
+                generator.Emit(OpCodes.Throw);
 
-                gen.MarkLabel(@return);
-                gen.Emit(OpCodes.Ret);
+                generator.MarkLabel(@return);
+                generator.Emit(OpCodes.Ret);
 
-                //let's bake the method
+                // Let's bake the method
                 return method.CreateDelegate(delegateType);
             }
-
         }
 
-    #endregion
+        #endregion
 
+        /// <summary>
+        /// Deserializes a graph instance from the given <paramref name="reader"/> into the given <paramref name="graph"/>.
+        /// </summary>
+        /// <param name="reader">The XML reader.</param>
+        /// <param name="graph">Graph instance to fill.</param>
+        /// <param name="vertexFactory">Vertex factory method.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
         public void Deserialize(
-            XmlReader reader,
-            TGraph visitedGraph,
-            IdentifiableVertexFactory<TVertex> vertexFactory,
-            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            [NotNull] XmlReader reader,
+            [NotNull] TGraph graph,
+            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
+            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(reader != null);
-            Contract.Requires(visitedGraph != null);
+            Contract.Requires(graph != null);
             Contract.Requires(vertexFactory != null);
             Contract.Requires(edgeFactory != null);
 #endif
 
-            var worker = new ReaderWorker(
-                this,
-                reader,
-                visitedGraph,
-                vertexFactory,
-                edgeFactory);
+            var worker = new ReaderWorker(reader, graph, vertexFactory, edgeFactory);
             worker.Deserialize();
         }
 
-        class ReaderWorker
+        private class ReaderWorker
         {
-            private readonly GraphMLDeserializer<TVertex, TEdge, TGraph> serializer;
-            private readonly XmlReader reader;
-            private readonly TGraph visitedGraph;
-            private readonly IdentifiableVertexFactory<TVertex> vertexFactory;
-            private readonly IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory;
-            private string graphMLNamespace = "";
+            [NotNull]
+            private readonly XmlReader _reader;
+
+            [NotNull]
+            private readonly TGraph _graph;
+
+            [NotNull]
+            private readonly IdentifiableVertexFactory<TVertex> _vertexFactory;
+
+            [NotNull]
+            private readonly IdentifiableEdgeFactory<TVertex, TEdge> _edgeFactory;
+
+            [NotNull]
+            private string _graphMLNamespace = string.Empty;
 
             public ReaderWorker(
-                GraphMLDeserializer<TVertex, TEdge, TGraph> serializer,
-                XmlReader reader,
-                TGraph visitedGraph,
-                IdentifiableVertexFactory<TVertex> vertexFactory,
-                IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+                [NotNull] XmlReader reader,
+                [NotNull] TGraph graph,
+                [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
+                [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             {
 #if SUPPORTS_CONTRACTS
-                Contract.Requires(serializer != null);
                 Contract.Requires(reader != null);
-                Contract.Requires(visitedGraph != null);
+                Contract.Requires(graph != null);
                 Contract.Requires(vertexFactory != null);
                 Contract.Requires(edgeFactory != null);
 #endif
 
-                this.serializer = serializer;
-                this.reader = reader;
-                this.visitedGraph = visitedGraph;
-                this.vertexFactory = vertexFactory;
-                this.edgeFactory = edgeFactory;
-            }
-
-            public GraphMLDeserializer<TVertex, TEdge, TGraph> Serializer
-            {
-                get { return this.serializer; }
-            }
-
-            public XmlReader Reader
-            {
-                get { return this.reader; }
-            }
-
-            public TGraph VisitedGraph
-            {
-                get { return this.visitedGraph; }
+                _reader = reader;
+                _graph = graph;
+                _vertexFactory = vertexFactory;
+                _edgeFactory = edgeFactory;
             }
 
             public void Deserialize()
             {
-                this.ReadHeader();
-                this.ReadGraphHeader();
-                this.ReadElements();
+                ReadHeader();
+                ReadGraphHeader();
+                ReadElements();
             }
 
             private void ReadHeader()
             {
-                // read flow until we hit the graphml node
-                while (reader.Read())
+                // Read flow until we hit the graphML node
+                while (_reader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element &&
-                        reader.Name == "graphml")
+                    if (_reader.NodeType == XmlNodeType.Element && _reader.Name == GraphMLTag)
                     {
-                        this.graphMLNamespace = reader.NamespaceURI;
+                        _graphMLNamespace = _reader.NamespaceURI;
                         return;
                     }
                 }
 
-                throw new ArgumentException("graphml node not found");
+                throw new InvalidOperationException($"\"{GraphMLTag}\" node not found.");
             }
 
             private void ReadGraphHeader()
             {
-                if (!this.Reader.ReadToDescendant("graph", this.graphMLNamespace))
-                    throw new ArgumentException("graph node not found");
+                if (!_reader.ReadToDescendant(GraphTag, _graphMLNamespace))
+                    throw new InvalidOperationException($"\"{GraphTag}\" node not found.");
             }
 
             private void ReadElements()
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(
-                    this.Reader.Name == "graph" &&
-                    this.Reader.NamespaceURI == this.graphMLNamespace,
-                    "incorrect reader position");
+                    _reader.Name == GraphTag && _reader.NamespaceURI == _graphMLNamespace,
+                    "Incorrect reader position.");
 #endif
 
-                ReadDelegateCompiler.SetGraphDefault(this.VisitedGraph);
+                ReadDelegateCompiler.SetGraphDefault(_graph);
 
                 var vertices = new Dictionary<string, TVertex>(StringComparer.Ordinal);
 
-                // read vertices or edges
-                var reader = this.Reader;
+                // Read vertices or edges
+                XmlReader reader = _reader;
                 while (reader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element &&
-                        reader.NamespaceURI == this.graphMLNamespace)
+                    if (reader.NodeType == XmlNodeType.Element
+                        && reader.NamespaceURI == _graphMLNamespace)
                     {
                         switch (reader.Name)
                         {
-                            case "node":
-                                this.ReadVertex(vertices);
+                            case NodeTag:
+                                ReadVertex(vertices);
                                 break;
-                            case "edge":
-                                this.ReadEdge(vertices);
+                            case EdgeTag:
+                                ReadEdge(vertices);
                                 break;
-                            case "data":
-                                GraphMLDeserializer<TVertex, TEdge, TGraph>.ReadDelegateCompiler.GraphAttributesReader(this.Reader, this.graphMLNamespace, this.VisitedGraph);
+                            case DataTag:
+                                ReadDelegateCompiler.GraphAttributesReader(_reader, _graphMLNamespace, _graph);
                                 break;
                             default:
-                                throw new InvalidOperationException(String.Format("invalid reader position {0}:{1}", this.Reader.NamespaceURI, this.Reader.Name));
+                                throw new InvalidOperationException($"Invalid reader position {_reader.NamespaceURI}: {_reader.Name}.");
                         }
                     }
                 }
             }
 
-            private void ReadEdge(Dictionary<string, TVertex> vertices)
+            private void ReadEdge([NotNull] IDictionary<string, TVertex> vertices)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(vertices != null);
                 Contract.Assert(
-                    this.Reader.NodeType == XmlNodeType.Element &&
-                    this.Reader.Name == "edge" &&
-                    this.Reader.NamespaceURI == this.graphMLNamespace);
+                    _reader.NodeType == XmlNodeType.Element
+                    && _reader.Name == EdgeTag
+                    && _reader.NamespaceURI == _graphMLNamespace);
 #endif
 
-                // get subtree
-                using (var subReader = this.Reader.ReadSubtree())
+                // Get subtree
+                using (XmlReader subReader = _reader.ReadSubtree())
                 {
-                    // read id
-                    string id = ReadAttributeValue(this.Reader, "id");
-                    string sourceid = ReadAttributeValue(this.Reader, "source");
-                    TVertex source;
-                    if (!vertices.TryGetValue(sourceid, out source))
-                        throw new ArgumentException("Could not find vertex " + sourceid);
-                    string targetid = ReadAttributeValue(this.Reader, "target");
-                    TVertex target;
-                    if (!vertices.TryGetValue(targetid, out target))
-                        throw new ArgumentException("Could not find vertex " + targetid);
+                    // Read id
+                    string id = ReadAttributeValue(_reader, IdAttribute);
+                    string sourceId = ReadAttributeValue(_reader, SourceAttribute);
+                    if (!vertices.TryGetValue(sourceId, out TVertex source))
+                        throw new ArgumentException($"Could not find vertex {sourceId}.");
+                    string targetId = ReadAttributeValue(_reader, TargetAttribute);
+                    if (!vertices.TryGetValue(targetId, out TVertex target))
+                        throw new ArgumentException($"Could not find vertex {targetId}.");
 
-                    var edge = this.edgeFactory(source, target, id);
+                    TEdge edge = _edgeFactory(source, target, id);
                     ReadDelegateCompiler.SetEdgeDefault(edge);
 
-                    // read data
+                    // Read data
                     while (subReader.Read())
                     {
-                        if (reader.NodeType == XmlNodeType.Element &&
-                            reader.Name == "data" &&
-                            reader.NamespaceURI == this.graphMLNamespace)
-                            ReadDelegateCompiler.EdgeAttributesReader(subReader, this.graphMLNamespace, edge);
+                        if (_reader.NodeType == XmlNodeType.Element
+                            && _reader.Name == DataTag
+                            && _reader.NamespaceURI == _graphMLNamespace)
+                        {
+                            ReadDelegateCompiler.EdgeAttributesReader(subReader, _graphMLNamespace, edge);
+                        }
                     }
 
-                    this.VisitedGraph.AddEdge(edge);
+                    _graph.AddEdge(edge);
                 }
             }
 
-            private void ReadVertex(Dictionary<string, TVertex> vertices)
+            private void ReadVertex([NotNull] IDictionary<string, TVertex> vertices)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(vertices != null);
                 Contract.Assert(
-                    this.Reader.NodeType == XmlNodeType.Element &&
-                    this.Reader.Name == "node" &&
-                    this.Reader.NamespaceURI == this.graphMLNamespace);
+                    _reader.NodeType == XmlNodeType.Element
+                    && _reader.Name == NodeTag
+                    && _reader.NamespaceURI == _graphMLNamespace);
 #endif
 
-                // get subtree
-                using (var subReader = this.Reader.ReadSubtree())
+                // Get subtree
+                using (XmlReader subReader = _reader.ReadSubtree())
                 {
-                    // read id
-                    string id = ReadAttributeValue(this.Reader, "id");
-                    // create new vertex
-                    TVertex vertex = vertexFactory(id);
-                    // apply defaults
+                    // Read id
+                    string id = ReadAttributeValue(_reader, IdAttribute);
+                    // Create new vertex
+                    TVertex vertex = _vertexFactory(id);
+                    // Apply defaults
                     ReadDelegateCompiler.SetVertexDefault(vertex);
-                    // read data
+                    // Read data
                     while (subReader.Read())
                     {
-                        if (reader.NodeType == XmlNodeType.Element &&
-                            reader.Name == "data" &&
-                            reader.NamespaceURI == this.graphMLNamespace)
-                            ReadDelegateCompiler.VertexAttributesReader(subReader, this.graphMLNamespace, vertex);
+                        if (_reader.NodeType == XmlNodeType.Element
+                            && _reader.Name == DataTag
+                            && _reader.NamespaceURI == _graphMLNamespace)
+                        {
+                            ReadDelegateCompiler.VertexAttributesReader(subReader, _graphMLNamespace, vertex);
+                        }
                     }
-                    // add to graph
-                    this.VisitedGraph.AddVertex(vertex);
+
+                    // Add to graph
+                    _graph.AddVertex(vertex);
                     vertices.Add(id, vertex);
                 }
             }
 
-            private static string ReadAttributeValue(XmlReader reader, string attributeName)
+            private static string ReadAttributeValue([NotNull] XmlReader reader, [NotNull] string attributeName)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(reader != null);
@@ -625,10 +495,119 @@ namespace QuikGraph.Serialization
 
                 reader.MoveToAttribute(attributeName);
                 if (!reader.ReadAttributeValue())
-                    throw new ArgumentException("missing " + attributeName + " attribute");
+                    throw new ArgumentException($"Missing {attributeName} attribute.");
                 return reader.Value;
             }
         }
     }
+
+    internal static partial class Metadata
+    {
+        [NotNull]
+        public static readonly MethodInfo GetAttributeMethod =
+            typeof(XmlReader).GetMethod(
+                nameof(XmlReader.GetAttribute),
+                BindingFlags.Instance | BindingFlags.Public,
+                null,
+                new[] { typeof(string) },
+                null) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlReader.GetAttribute)} method on {nameof(XmlReader)}.");
+
+        [NotNull]
+        public static MethodInfo StringEqualsMethod { get; } =
+            typeof(string).GetMethod(
+                "op_Equality",
+                BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,
+                null,
+                new[] { typeof(string), typeof(string) },
+                null) ?? throw new InvalidOperationException("Cannot find == operator method on string.");
+
+        [NotNull]
+        public static readonly ConstructorInfo ArgumentExceptionCtor =
+            typeof(ArgumentException).GetConstructor(new[] { typeof(string) })
+            ?? throw new InvalidOperationException($"Cannot find {nameof(ArgumentException)} constructor.");
+
+        [NotNull]
+        private static readonly Dictionary<Type, MethodInfo> ReadContentMethods;
+
+        static Metadata()
+        {
+            // Read
+            Type readerType = typeof(XmlReader);
+            Type readerExtensionsType = typeof(XmlReaderExtensions);
+
+            ReadContentMethods = new Dictionary<Type, MethodInfo>
+            {
+                [typeof(bool)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsBoolean), new[] { typeof(string), typeof(string) }),
+                [typeof(int)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsInt), new[] { typeof(string), typeof(string) }),
+                [typeof(long)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsLong), new[] { typeof(string), typeof(string) }),
+                [typeof(float)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsFloat), new[] { typeof(string), typeof(string) }),
+                [typeof(double)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsDouble), new[] { typeof(string), typeof(string) }),
+                [typeof(string)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsString), new[] { typeof(string), typeof(string) }),
+
+                // Extensions
+                [typeof(bool[])] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsBooleanArray)),
+                [typeof(int[])] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsInt32Array)),
+                [typeof(long[])] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsInt64Array)),
+                [typeof(float[])] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsSingleArray)),
+                [typeof(double[])] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsDoubleArray)),
+                [typeof(string[])] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsStringArray)),
+
+                [typeof(IList<bool>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsBooleanArray)),
+                [typeof(IList<int>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsInt32Array)),
+                [typeof(IList<long>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsInt64Array)),
+                [typeof(IList<float>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsSingleArray)),
+                [typeof(IList<double>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsDoubleArray)),
+                [typeof(IList<string>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsStringArray))
+            };
+
+            // Write
+            Type writerType = typeof(XmlWriter);
+            Type writerExtensionsType = typeof(XmlWriterExtensions);
+
+            WriteContentMethods = new Dictionary<Type, MethodInfo>
+            {
+                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(bool) }),
+                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(int) }),
+                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(long) }),
+                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(float) }),
+                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(double) }),
+                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] { typeof(string) }),
+
+                // Extensions
+                [typeof(bool[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),
+                [typeof(int[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt32Array)),
+                [typeof(long[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt64Array)),
+                [typeof(float[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteSingleArray)),
+                [typeof(double[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteDoubleArray)),
+                [typeof(string[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteStringArray)),
+
+                [typeof(IList<bool>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),
+                [typeof(IList<int>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt32Array)),
+                [typeof(IList<long>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt64Array)),
+                [typeof(IList<float>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteSingleArray)),
+                [typeof(IList<double>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteDoubleArray)),
+                [typeof(IList<string>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteStringArray))
+            };
+        }
+
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
 #endif
+        [JetBrains.Annotations.Pure]
+        public static bool TryGetReadContentMethod([NotNull] Type type, out MethodInfo method)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(type != null);
+#endif
+
+            bool result = ReadContentMethods.TryGetValue(type, out method);
+
+#if SUPPORTS_CONTRACTS
+            Contract.Assert(!result || method != null, type.FullName);
+#endif
+
+            return result;
+        }
+    }
 }
+#endif

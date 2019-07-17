@@ -1,97 +1,112 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 using System.Xml.Serialization;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Serialization
 {
-    public class XmlSerializableEdge<TVertex>
-        : IEdge<TVertex>
-    {
-        [XmlElement]
-        public TVertex Source { get; set; }
-
-        [XmlElement]
-        public TVertex Target { get; set; }
-    }
-
     /// <summary>
-    /// A base class that creates a proxy to a graph that is xml serializable
+    /// A base class that creates a proxy to a graph that is serializable in XML.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
-    /// <typeparam name="TGraph"></typeparam>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
     [XmlRoot("graph")]
     public class XmlSerializableGraph<TVertex, TEdge, TGraph>
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
     {
-        readonly TGraph graph;
-        XmlEdgeList _edges;
+        private XmlEdgeList _edges;
 
-        public XmlSerializableGraph(TGraph graph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XmlSerializableGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        public XmlSerializableGraph()
+            : this(new TGraph())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XmlSerializableGraph{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to serialize.</param>
+        public XmlSerializableGraph([NotNull] TGraph graph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
 #endif
 
-            this.graph = graph;
+            Graph = graph;
         }
 
-        public XmlSerializableGraph()
-            : this(new TGraph())
-        { }
-
+        /// <summary>
+        /// Gets the graph to serialize.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull]
         [XmlElement("graph-traits")]
-        public TGraph Graph
-        {
-            get { return this.graph; }
-        }
+        public TGraph Graph { get; }
 
+        /// <summary>
+        /// Gets the edges to serialize.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [NotNull, ItemNotNull]
         [XmlArray("edges")]
         [XmlArrayItem("edge")]
-        public IEnumerable<TEdge> Edges
-        {
-            get
-            {
-                if (this._edges == null)
-                    this._edges = new XmlEdgeList(this.graph);
-                return this._edges;
-            }
-        }
+        public IEnumerable<TEdge> Edges => _edges ?? (_edges = new XmlEdgeList(Graph));
 
-        public class XmlEdgeList
-            : IEnumerable<TEdge>
+        /// <summary>
+        /// Represents an XML serializable list of edge.
+        /// </summary>
+        public class XmlEdgeList : IEnumerable<TEdge>
         {
-            readonly TGraph graph;
+            [NotNull]
+            private readonly TGraph _graph;
 
-            internal XmlEdgeList(TGraph graph)
+            internal XmlEdgeList([NotNull] TGraph graph)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(graph != null);
 #endif
 
-                this.graph = graph;
+                _graph = graph;
             }
 
+            #region IEnumerable
+
+            /// <inheritdoc />
             public IEnumerator<TEdge> GetEnumerator()
             {
-                return this.graph.Edges.GetEnumerator();
+                return _graph.Edges.GetEnumerator();
             }
 
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            /// <inheritdoc />
+            IEnumerator IEnumerable.GetEnumerator()
             {
-                return this.GetEnumerator();
+                return GetEnumerator();
             }
 
-            public void Add(TEdge edge)
+            #endregion
+
+            /// <summary>
+            /// Adds an edge to this serializable graph.
+            /// </summary>
+            /// <param name="edge">Edge to add.</param>
+            public void Add([NotNull] TEdge edge)
             {
 #if SUPPORTS_CONTRACTS
                 Contract.Requires(edge != null);
 #endif
 
-                this.graph.AddVerticesAndEdge(edge);
+                _graph.AddVerticesAndEdge(edge);
             }
         }
     }

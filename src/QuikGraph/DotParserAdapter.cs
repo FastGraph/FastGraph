@@ -1,109 +1,164 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//using System;
+//using System.Collections.Generic;
+//#if SUPPORTS_CONTRACTS
+//using System.Diagnostics.Contracts;
+//#endif
+//using JetBrains.Annotations;
 
-namespace QuikGraph
-{
-    using Attributes = IDictionary<string, string>;
+//namespace QuikGraph
+//{
+//    using Attributes = IDictionary<string, string>;
 
-    public class DotParserAdapter
-    {
-        /// <param name="dotSource"></param>
-        /// <param name="createGraph">Graph constructor function</param>
-        /// <param name="vertexFunc">Packing function (see VertexFactory class)</param>
-        /// <param name="edgeFunc">Packing function (see EdgeFactory class)</param>
-        internal static IMutableVertexAndEdgeSet<TVertex, TEdge> LoadDot<TVertex, TEdge>(string dotSource,
-            Func<bool, IMutableVertexAndEdgeSet<TVertex, TEdge>> createGraph,
-            Func<string, Attributes, TVertex> vertexFunc,
-            Func<TVertex, TVertex, Attributes, TEdge> edgeFunc) where TEdge : IEdge<TVertex>
-        {
-            //var graphData = DotParser.parse(dotSource);
-            //var graph = createGraph(!graphData.IsStrict);
+//    /// <summary>
+//    /// Dot parser adapter, offers features to load graph from dot.
+//    /// </summary>
+//    public class DotParserAdapter
+//    {
+//        /// <summary>
+//        /// Loads the given <paramref name="dotSource"/> and creates the corresponding graph.
+//        /// </summary>
+//        /// <param name="dotSource">Dot source string.</param>
+//        /// <param name="createGraph">Graph constructor function.</param>
+//        /// <param name="vertexFunction">Packing function (See <see cref="VertexFactory"/> class).</param>
+//        /// <param name="edgeFunction">Packing function (See <see cref="EdgeFactory{TVertex}"/> class).</param>
+//        /// <exception cref="NotImplementedException">This method is not implemented yet.</exception>
+//#if SUPPORTS_CONTRACTS
+//        [System.Diagnostics.Contracts.Pure]
+//#endif
+//        [JetBrains.Annotations.Pure]
+//        [NotNull]
+//        internal static IMutableVertexAndEdgeSet<TVertex, TEdge> LoadDot<TVertex, TEdge>(
+//            [NotNull] string dotSource,
+//            [NotNull, InstantHandle] Func<bool, IMutableVertexAndEdgeSet<TVertex, TEdge>> createGraph,
+//            [NotNull, InstantHandle] Func<string, Attributes, TVertex> vertexFunction,
+//            [NotNull, InstantHandle] Func<TVertex, TVertex, Attributes, TEdge> edgeFunction) 
+//            where TEdge : IEdge<TVertex>
+//        {
+//            //var graphData = DotParser.parse(dotSource);
+//            //var graph = createGraph(!graphData.IsStrict);
 
-            //var vertices = graphData.Nodes.ToDictionary(v => v.Key, v => vertexFunc(v.Key, v.Value));
-            //graph.AddVertexRange(vertices.Values);
+//            //var vertices = graphData.Nodes.ToDictionary(v => v.Key, v => vertexFunction(v.Key, v.Value));
+//            //graph.AddVertexRange(vertices.Values);
 
-            //foreach (var parallelEdges in graphData.Edges)
-            //{
-            //    var edgeVertices = parallelEdges.Key;
-            //    foreach (var attr in parallelEdges.Value)
-            //    {
-            //        graph.AddEdge(edgeFunc(vertices[edgeVertices.Item1], vertices[edgeVertices.Item2], attr));
-            //        if (graph.IsDirected && !graphData.IsDirected)
-            //        {
-            //            graph.AddEdge(edgeFunc(vertices[edgeVertices.Item2], vertices[edgeVertices.Item1], attr));
-            //        }
-            //    }
-            //}
-            //return graph;
-            throw new NotImplementedException();
-        }
+//            //foreach (var parallelEdges in graphData.Edges)
+//            //{
+//            //    var edgeVertices = parallelEdges.Key;
+//            //    foreach (var attr in parallelEdges.Value)
+//            //    {
+//            //        graph.AddEdge(edgeFunction(vertices[edgeVertices.Item1], vertices[edgeVertices.Item2], attr));
+//            //        if (graph.IsDirected && !graphData.IsDirected)
+//            //        {
+//            //            graph.AddEdge(edgeFunction(vertices[edgeVertices.Item2], vertices[edgeVertices.Item1], attr));
+//            //        }
+//            //    }
+//            //}
+//            //return graph;
+//            throw new NotImplementedException();
+//        }
 
-        public class Common
-        {
-            public static int? GetWeightNullable(Attributes attrs)
-            {
-                int weight;
-                return int.TryParse(attrs["weight"], out weight) ? (int?) weight : null;
-            }
+//        /// <summary>
+//        /// Helpers to get weight from attributes.
+//        /// </summary>
+//        public class WeightHelpers
+//        {
+//            [NotNull]
+//            private const string Weight = "weight";
 
-            public static int GetWeight(Attributes attrs, int defaultValue)
-            {
-                string weightAttribute;
-                if (!attrs.TryGetValue("weight", out weightAttribute)) return defaultValue;
+//            /// <summary>
+//            /// Gets the <see cref="Weight"/> attribute if available.
+//            /// </summary>
+//            /// <param name="attributes">Attributes.</param>
+//            /// <returns>Found weight, null otherwise.</returns>
+//            [CanBeNull]
+//            public static int? GetWeight([NotNull] Attributes attributes)
+//            {
+//                return int.TryParse(attributes["weight"], out int weight) ? (int?) weight : null;
+//            }
 
-                int weight;
-                return int.TryParse(weightAttribute, out weight) ? weight : defaultValue;
-            }
-        }
+//            /// <summary>
+//            /// Gets the <see cref="Weight"/> attribute if available,
+//            /// and fallback on <paramref name="defaultValue"/> if not found.
+//            /// </summary>
+//            /// <param name="attributes">Attributes.</param>
+//            /// <param name="defaultValue">Default weight value.</param>
+//            /// <returns>Found weight, otherwise returns the <paramref name="defaultValue"/>.</returns>
+//            public static int GetWeight([NotNull] Attributes attributes, int defaultValue)
+//            {
+//                if (!attributes.TryGetValue("weight", out string weightAttribute))
+//                    return defaultValue;
 
-        public class VertexFactory
-        {
-            public static Func<string, Attributes, string>
-                Name = (v, attrs) => v;
+//                return int.TryParse(weightAttribute, out int weight) 
+//                    ? weight 
+//                    : defaultValue;
+//            }
+//        }
 
+//        /// <summary>
+//        /// Vertex factory.
+//        /// </summary>
+//        public class VertexFactory
+//        {
+//            /// <summary>
+//            /// Gets the vertex name.
+//            /// </summary>
+//            [NotNull]
+//            public static Func<string, Attributes, string> Name = (vertex, attributes) => vertex;
 
-            public static Func<string, Attributes, KeyValuePair<string, Attributes>>
-                NameAndAttributes = (v, attrs) =>
-                    new KeyValuePair<string, Attributes>(v, new Dictionary<string, string>(attrs));
+//            /// <summary>
+//            /// Gets the vertex name and its attributes.
+//            /// </summary>
+//            [NotNull]
+//            public static Func<string, Attributes, KeyValuePair<string, Attributes>> NameAndAttributes = 
+//                (vertex, attributes) => new KeyValuePair<string, Attributes>(vertex, new Dictionary<string, string>(attributes));
 
+//            /// <summary>
+//            /// Gets the vertex weight (if available).
+//            /// </summary>
+//            [NotNull]
+//            public static Func<string, Attributes, KeyValuePair<string, int?>> WeightedNullable =
+//                (vertex, attributes) => new KeyValuePair<string, int?>(vertex, WeightHelpers.GetWeight(attributes));
 
-            public static Func<string, Attributes, KeyValuePair<string, int?>>
-                WeightedNullable = (v, attrs) =>
-                    new KeyValuePair<string, int?>(v, DotParserAdapter.Common.GetWeightNullable(attrs));
+//            /// <summary>
+//            /// Gets the vertex weight (with fallback value).
+//            /// </summary>
+//            [NotNull]
+//            public static Func<string, Attributes, KeyValuePair<string, int>> Weighted(int defaultValue) => 
+//                (vertex, attributes) => new KeyValuePair<string, int>(vertex, WeightHelpers.GetWeight(attributes, defaultValue));
+//        }
 
+//        /// <summary>
+//        /// Edge factory.
+//        /// </summary>
+//        /// <typeparam name="TVertex">Vertex type.</typeparam>
+//        public class EdgeFactory<TVertex>
+//        {
+//            /// <summary>
+//            /// Gets the edge vertices.
+//            /// </summary>
+//            [NotNull]
+//            public static Func<TVertex, TVertex, Attributes, SEdge<TVertex>> VerticesOnly = 
+//                (vertex1, vertex2, attributes) => new SEdge<TVertex>(vertex1, vertex2);
 
-            public static Func<string, Attributes, KeyValuePair<string, int>>
-                Weighted(int defaultValue)
-            {
-                return (v, attrs) =>
-                    new KeyValuePair<string, int>(v, DotParserAdapter.Common.GetWeight(attrs, defaultValue));
-            }
-        }
+//            /// <summary>
+//            /// Gets the edge vertices and its attributes.
+//            /// </summary>
+//            [NotNull]
+//            public static Func<TVertex, TVertex, Attributes, STaggedEdge<TVertex, Attributes>> VerticesAndEdgeAttributes = 
+//                (vertex1, vertex2, attributes) => new STaggedEdge<TVertex, Attributes>(vertex1, vertex2, new Dictionary<string, string>(attributes));
 
+//            /// <summary>
+//            /// Gets the edge vertices and weight (if available).
+//            /// </summary>
+//            [NotNull]
+//            public static Func<TVertex, TVertex, Attributes, STaggedEdge<TVertex, int?>> WeightedNullable = 
+//                (vertex1, vertex2, attributes) => new STaggedEdge<TVertex, int?>(vertex1, vertex2, WeightHelpers.GetWeight(attributes));
 
-        public class EdgeFactory<TVertex>
-        {
-            public static Func<TVertex, TVertex, Attributes, SEdge<TVertex>>
-                VerticesOnly = (v1, v2, attrs) => new SEdge<TVertex>(v1, v2);
-
-
-            public static Func<TVertex, TVertex, Attributes, STaggedEdge<TVertex, Attributes>>
-                VerticesAndEdgeAttributes = (v1, v2, attrs) =>
-                    new STaggedEdge<TVertex, Attributes>(v1, v2, new Dictionary<string, string>(attrs));
-
-
-            public static Func<TVertex, TVertex, Attributes, STaggedEdge<TVertex, int?>>
-                WeightedNullable = (v1, v2, attrs) =>
-                    new STaggedEdge<TVertex, int?>(v1, v2, DotParserAdapter.Common.GetWeightNullable(attrs));
-
-
-            public static Func<TVertex, TVertex, Attributes, STaggedEdge<TVertex, int>>
-                Weighted(int defaultValue)
-            {
-                return (v1, v2, attrs) =>
-                    new STaggedEdge<TVertex, int>(v1, v2, DotParserAdapter.Common.GetWeight(attrs, defaultValue));
-            }
-        }
-    }
-}
+//            /// <summary>
+//            /// Gets the edge vertices and weight (with fallback value).
+//            /// </summary>
+//            [NotNull]
+//            public static Func<TVertex, TVertex, Attributes, STaggedEdge<TVertex, int>> Weighted(int defaultValue) => 
+//                (vertex1, vertex2, attributes) => new STaggedEdge<TVertex, int>(vertex1, vertex2, WeightHelpers.GetWeight(attributes, defaultValue));
+//        }
+//    }
+//}

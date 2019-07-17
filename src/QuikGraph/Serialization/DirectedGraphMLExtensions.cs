@@ -6,52 +6,48 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization.DirectedGraphML;
 
 namespace QuikGraph.Serialization
 {
     /// <summary>
-    /// Directed Graph Markup Language extensions
+    /// Directed graph Markup Language extensions.
     /// </summary>
     public static class DirectedGraphMLExtensions
     {
+        [CanBeNull]
         private static XmlSerializer _directedGraphSerializer;
-        /// <summary>
-        /// Gets the DirectedGraph xml serializer
-        /// </summary>
-        public static XmlSerializer DirectedGraphSerializer
-        {
-            get
-            {
-                if (_directedGraphSerializer == null)
-                    _directedGraphSerializer = new XmlSerializer(typeof(DirectedGraph));
-                return _directedGraphSerializer;
-            }
-        }
 
         /// <summary>
-        /// Writes the dgml data structure to the xml writer
+        /// Gets the DirectedGraph XML serializer.
         /// </summary>
-        /// <param name="fileName"/>
-        /// <param name="graph"></param>
-        public static void WriteXml(this DirectedGraph graph, string fileName)
+        public static XmlSerializer DirectedGraphSerializer =>
+            _directedGraphSerializer ?? (_directedGraphSerializer = new XmlSerializer(typeof(DirectedGraph)));
+
+        /// <summary>
+        /// Writes the DGML data structure to the XML writer.
+        /// </summary>
+        /// <param name="graph">Graph instance to write.</param>
+        /// <param name="filePath">Path to the file to write into.</param>
+        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] string filePath)
         {
 #if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null); 
-            Contract.Requires(!String.IsNullOrEmpty(fileName));
+            Contract.Requires(graph != null);
+            Contract.Requires(!string.IsNullOrEmpty(filePath));
 #endif
 
-            using (var stream = File.CreateText(fileName))
+            using (StreamWriter stream = File.CreateText(filePath))
                 WriteXml(graph, stream);
         }
 
         /// <summary>
-        /// Writes the dgml data structure to the xml writer
+        /// Writes the DGML data structure to the <see cref="XmlWriter"/>.
         /// </summary>
-        /// <param name="graph"></param>
-        /// <param name="writer"></param>
-        public static void WriteXml(this DirectedGraph graph, XmlWriter writer)
+        /// <param name="graph">Graph instance to write.</param>
+        /// <param name="writer">XML writer in which writing graph data.</param>
+        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] XmlWriter writer)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -62,11 +58,11 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Writes the dgml data structure to the xml writer
+        /// Writes the DGML data structure to the <see cref="XmlWriter"/>.
         /// </summary>
-        /// <param name="graph"></param>
-        /// <param name="stream"></param>
-        public static void WriteXml(this DirectedGraph graph, Stream stream)
+        /// <param name="graph">Graph instance to write.</param>
+        /// <param name="stream">Stream in which writing graph data.</param>
+        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] Stream stream)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -77,11 +73,11 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Writes the dgml data structure to the xml writer
+        /// Writes the DGML data structure to the <see cref="TextWriter"/>.
         /// </summary>
-        /// <param name="graph"></param>
-        /// <param name="writer"></param>
-        public static void WriteXml(this DirectedGraph graph, TextWriter writer)
+        /// <param name="graph">Graph instance to write.</param>
+        /// <param name="writer">Text writer in which writing graph data.</param>
+        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] TextWriter writer)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
@@ -92,13 +88,14 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Populates a DGML graph from a graph
+        /// Populates a DGML graph from a graph.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <typeparam name="TEdge"></typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
+        /// <returns>Converted graph.</returns>
+        [NotNull]
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>([NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -106,23 +103,24 @@ namespace QuikGraph.Serialization
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
 #endif
 
-            return ToDirectedGraphML<TVertex, TEdge>(
+            return ToDirectedGraphML(
                 visitedGraph,
-                AlgorithmExtensions.GetVertexIdentity<TVertex>(visitedGraph),
-                AlgorithmExtensions.GetEdgeIdentity<TVertex, TEdge>(visitedGraph)
-                );
+                visitedGraph.GetVertexIdentity(),
+                visitedGraph.GetEdgeIdentity());
         }
 
         /// <summary>
-        /// Populates a DGML graph from a graph
+        /// Populates a DGML graph from a graph.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <typeparam name="TEdge"></typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="vertexColors"></param>
-        /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph, 
-            Func<TVertex, GraphColor> vertexColors)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
+        /// <param name="vertexColors">Function that gives the color of a vertex.</param>
+        /// <returns>Converted graph.</returns>
+        [NotNull]
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TVertex, GraphColor> vertexColors)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -131,39 +129,43 @@ namespace QuikGraph.Serialization
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
 #endif
 
-            return ToDirectedGraphML<TVertex, TEdge>(
+            return ToDirectedGraphML(
                 visitedGraph,
-                AlgorithmExtensions.GetVertexIdentity<TVertex>(visitedGraph),
-                AlgorithmExtensions.GetEdgeIdentity<TVertex, TEdge>(visitedGraph),
-                (v, n) =>
+                visitedGraph.GetVertexIdentity(),
+                visitedGraph.GetEdgeIdentity(),
+                (vertex, node) =>
                 {
-                    var color = vertexColors(v);
-                    switch(color)
+                    GraphColor color = vertexColors(vertex);
+                    switch (color)
                     {
-                        case GraphColor.Black: 
-                            n.Background = "Black"; break;
+                        case GraphColor.Black:
+                            node.Background = "Black";
+                            break;
                         case GraphColor.Gray:
-                            n.Background = "LightGray"; break;
+                            node.Background = "LightGray";
+                            break;
                         case GraphColor.White:
-                            n.Background = "White"; break;
+                            node.Background = "White";
+                            break;
                     }
                 },
-                null
-                );
+                null);
         }
 
         /// <summary>
-        /// Populates a DGML graph from a graph
+        /// Populates a DGML graph from a graph.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <typeparam name="TEdge"></typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="vertexIdentities"></param>
-        /// <param name="edgeIdentities"></param>
-        /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph, 
-            VertexIdentity<TVertex> vertexIdentities, 
-            EdgeIdentity<TVertex, TEdge> edgeIdentities)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
+        /// <param name="vertexIdentities">Vertex identity method.</param>
+        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <returns>Converted graph.</returns>
+        [NotNull]
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] VertexIdentity<TVertex> vertexIdentities,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -173,28 +175,32 @@ namespace QuikGraph.Serialization
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
 #endif
 
-            return ToDirectedGraphML<TVertex, TEdge>(
-                visitedGraph, 
+            return ToDirectedGraphML(
+                visitedGraph,
                 vertexIdentities,
-                edgeIdentities, null, null);
+                edgeIdentities,
+                null,
+                null);
         }
 
         /// <summary>
-        /// Populates a DGML graph from a graph
+        /// Populates a DGML graph from a graph.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <typeparam name="TEdge"></typeparam>
-        /// <param name="visitedGraph"></param>
-        /// <param name="vertexIdentities"></param>
-        /// <param name="edgeIdentities"></param>
-        /// <param name="_formatNode"></param>
-        /// <param name="_formatEdge"></param>
-        /// <returns></returns>
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph, 
-            VertexIdentity<TVertex> vertexIdentities,
-            EdgeIdentity<TVertex, TEdge> edgeIdentities,
-            Action<TVertex, DirectedGraphNode> _formatNode,
-            Action<TEdge, DirectedGraphLink> _formatEdge)
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
+        /// <param name="vertexIdentities">Vertex identity method.</param>
+        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="formatNode">Formats a vertex into a <see cref="DirectedGraphNode"/>.</param>
+        /// <param name="formatEdge">Formats an edge into a <see cref="DirectedGraphLink"/>.</param>
+        /// <returns>Converted graph.</returns>
+        [NotNull]
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] VertexIdentity<TVertex> vertexIdentities,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities,
+            [CanBeNull] Action<TVertex, DirectedGraphNode> formatNode,
+            [CanBeNull] Action<TEdge, DirectedGraphLink> formatEdge)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
@@ -204,37 +210,44 @@ namespace QuikGraph.Serialization
             Contract.Ensures(Contract.Result<DirectedGraph>() != null);
 #endif
 
-            var algorithm = 
-                new DirectedGraphMLAlgorithm<TVertex, TEdge>(
-                    visitedGraph, 
-                    vertexIdentities, 
-                    edgeIdentities);
+            var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
+                visitedGraph,
+                vertexIdentities,
+                edgeIdentities);
 
-            if (_formatNode != null)
-                algorithm.FormatNode += _formatNode;
-            if (_formatEdge != null)
-                algorithm.FormatEdge += _formatEdge;
+            if (formatNode != null)
+                algorithm.FormatNode += formatNode;
+            if (formatEdge != null)
+                algorithm.FormatEdge += formatEdge;
             algorithm.Compute();
 
             return algorithm.DirectedGraph;
         }
 
-
-        public static void OpenAsDGML<TVertex, TEdge>(this IVertexAndEdgeListGraph<TVertex, TEdge> graph, string filename)
+        /// <summary>
+        /// Saves and opens the given <paramref name="graph"/> as DGML.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to open.</param>
+        /// <param name="filePath">Path to the file to save.</param>
+        public static void OpenAsDGML<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [CanBeNull] string filePath)
             where TEdge : IEdge<TVertex>
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(graph != null);
 #endif
 
-            if (filename is null)
-                filename = "graph.dgml";
+            if (filePath is null)
+                filePath = "graph.DGML";
 
-            graph.ToDirectedGraphML().WriteXml(filename); 
+            graph.ToDirectedGraphML().WriteXml(filePath);
 
             if (Debugger.IsAttached)
-            { 
-                Process.Start(filename);
+            {
+                Process.Start(filePath);
             }
         }
     }

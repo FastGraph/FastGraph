@@ -1,118 +1,140 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
 using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.Services;
 using QuikGraph.Serialization.DirectedGraphML;
 
 namespace QuikGraph.Serialization
 {
-    public sealed class DirectedGraphMLAlgorithm<TVertex, TEdge>
-        : AlgorithmBase<IVertexAndEdgeListGraph<TVertex,TEdge>>
+    /// <summary>
+    /// Algorithm that creates a <see cref="DirectedGraph"/> from a given directed graph.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public sealed class DirectedGraphMLAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        readonly VertexIdentity<TVertex> vertexIdentities;
-        readonly EdgeIdentity<TVertex, TEdge> edgeIdentities;
-        DirectedGraph directedGraph;
+        [NotNull]
+        private readonly VertexIdentity<TVertex> _vertexIdentities;
 
+        [NotNull]
+        private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentities;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DirectedGraphMLAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="vertexIdentities">Vertex identity method.</param>
+        /// <param name="edgeIdentities">Edge identity method.</param>
         public DirectedGraphMLAlgorithm(
-            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            VertexIdentity<TVertex> vertexIdentities,
-            EdgeIdentity<TVertex, TEdge> edgeIdentities)
-            :base(visitedGraph)
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] VertexIdentity<TVertex> vertexIdentities,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+            : base(visitedGraph)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(vertexIdentities != null);
+            Contract.Requires(edgeIdentities != null);
 #endif
 
-            this.vertexIdentities = vertexIdentities;
-            this.edgeIdentities = edgeIdentities;
+            _vertexIdentities = vertexIdentities;
+            _edgeIdentities = edgeIdentities;
         }
 
-        public DirectedGraph DirectedGraph
-        {
-            get { return this.directedGraph; }
-        }
+        /// <summary>
+        /// Gets the resulting <see cref="DirectedGraphML.DirectedGraph"/>.
+        /// </summary>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        public DirectedGraph DirectedGraph { get; private set; }
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            var cancelManager = this.Services.CancelManager;
-            this.directedGraph = new DirectedGraph();
+            ICancelManager cancelManager = Services.CancelManager;
+            DirectedGraph = new DirectedGraph();
 
-            var nodes = new List<DirectedGraphNode>(this.VisitedGraph.VertexCount);
-            foreach (var vertex in this.VisitedGraph.Vertices)
+            var nodes = new List<DirectedGraphNode>(VisitedGraph.VertexCount);
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling) return;
+                if (cancelManager.IsCancelling)
+                    return;
 
-                var node = new DirectedGraphNode { Id = this.vertexIdentities(vertex) };
-                this.OnFormatNode(vertex, node);
+                var node = new DirectedGraphNode { Id = _vertexIdentities(vertex) };
+                OnFormatNode(vertex, node);
                 nodes.Add(node);
             }
-            this.directedGraph.Nodes = nodes.ToArray();
 
-            var links = new List<DirectedGraphLink>(this.VisitedGraph.EdgeCount);
-            foreach (var edge in this.VisitedGraph.Edges)
+            DirectedGraph.Nodes = nodes.ToArray();
+
+            var links = new List<DirectedGraphLink>(VisitedGraph.EdgeCount);
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                if (cancelManager.IsCancelling) return;
+                if (cancelManager.IsCancelling)
+                    return;
 
                 var link = new DirectedGraphLink
                 {
-                    Label = this.edgeIdentities(edge),
-                    Source = this.vertexIdentities(edge.Source),
-                    Target = this.vertexIdentities(edge.Target)
+                    Label = _edgeIdentities(edge),
+                    Source = _vertexIdentities(edge.Source),
+                    Target = _vertexIdentities(edge.Target)
                 };
-                this.OnFormatEdge(edge, link);
+                OnFormatEdge(edge, link);
                 links.Add(link);
             }
-            this.directedGraph.Links = links.ToArray();
 
-            this.OnFormatGraph();
+            DirectedGraph.Links = links.ToArray();
+
+            OnFormatGraph();
         }
 
+        #endregion
+
         /// <summary>
-        /// Raised when the graph is about to be returned
+        /// Fired when a new node is added to the <see cref="DirectedGraph"/>.
         /// </summary>
-        public event Action<IVertexAndEdgeListGraph<TVertex, TEdge>, DirectedGraph> FormatGraph;
+        public event Action<TVertex, DirectedGraphNode> FormatNode;
 
-        private void OnFormatGraph()
+        private void OnFormatNode([NotNull] TVertex vertex, [NotNull] DirectedGraphNode node)
         {
-            var eh = this.FormatGraph;
-            if (eh != null)
-                eh(this.VisitedGraph, this.DirectedGraph);
+#if SUPPORTS_CONTRACTS
+            Contract.Requires(vertex != null);
+            Contract.Requires(node != null);
+#endif
+
+            FormatNode?.Invoke(vertex, node);
         }
 
         /// <summary>
-        /// Raised when a new link is added to the graph
+        /// Fired when a new link is added to the <see cref="DirectedGraph"/>.
         /// </summary>
         public event Action<TEdge, DirectedGraphLink> FormatEdge;
 
-        private void OnFormatEdge(TEdge edge, DirectedGraphLink link)
+        private void OnFormatEdge([NotNull] TEdge edge, [NotNull] DirectedGraphLink link)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
             Contract.Requires(link != null);
 #endif
 
-            var eh = this.FormatEdge;
-            if (eh != null)
-                eh(edge, link);
+            FormatEdge?.Invoke(edge, link);
         }
 
         /// <summary>
-        /// Raised when a new node is added to the graph
+        /// Fired when the graph is about to be returned.
         /// </summary>
-        public event Action<TVertex, DirectedGraphNode> FormatNode;
+        public event Action<IVertexAndEdgeListGraph<TVertex, TEdge>, DirectedGraph> FormatGraph;
 
-        private void OnFormatNode(TVertex vertex, DirectedGraphNode node)
+        private void OnFormatGraph()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
-#endif
-
-            var eh = this.FormatNode;
-            if (eh != null)
-                eh(vertex, node);
+            FormatGraph?.Invoke(VisitedGraph, DirectedGraph);
         }
     }
 }
