@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -180,11 +181,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             if (!TryGetRootVertex(out TVertex root))
             {
-                foreach (TVertex vertex in VisitedGraph.Vertices)
-                {
-                    root = vertex;
-                    break;
-                }
+                // Try to fallback on first vertex, will throw if the graph is empty
+                root = VisitedGraph.Vertices.First();
             }
 
             Distances[root] = 0;

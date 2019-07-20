@@ -207,8 +207,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            if (TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
-                return inEdges;
+            if (TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+                return outEdges;
             return Enumerable.Empty<TEdge>();
         }
 

@@ -12,7 +12,7 @@ namespace QuikGraph.Contracts
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     [ContractClassFor(typeof(IMutableIncidenceGraph<,>))]
-    abstract class IMutableIncidenceGraphContract<TVertex, TEdge> : IMutableIncidenceGraph<TVertex, TEdge>
+    internal abstract class MutableIncidenceGraphContract<TVertex, TEdge> : IMutableIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         #region IMutableIncidenceGraph<TVertex,TEdge>
@@ -44,6 +44,7 @@ namespace QuikGraph.Contracts
 
         void IMutableIncidenceGraph<TVertex, TEdge>.TrimEdgeExcess()
         {
+            throw new NotImplementedException();
         }
 
         #endregion

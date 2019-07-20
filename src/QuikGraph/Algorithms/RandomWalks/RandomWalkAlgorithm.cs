@@ -19,8 +19,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private IEdgeChain<TVertex, TEdge> _edgeChain;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
@@ -44,7 +42,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             Contract.Requires(edgeChain != null);
 #endif
 
-            _edgeChain = edgeChain;
+            EdgeChain = edgeChain;
         }
 
         /// <summary>
@@ -54,21 +52,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         [System.Diagnostics.Contracts.Pure]
 #endif
         [NotNull]
-        public IEdgeChain<TVertex, TEdge> EdgeChain
-        {
-            get
-            {
-                return _edgeChain;
-            }
-            set
-            {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(value != null);
-#endif
-
-                _edgeChain = value;
-            }
-        }
+        public IEdgeChain<TVertex, TEdge> EdgeChain { get; set; }
 
         /// <summary>
         /// Predicate to prematurely ends the walk.

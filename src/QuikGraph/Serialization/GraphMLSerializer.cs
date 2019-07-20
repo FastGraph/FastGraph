@@ -495,7 +495,39 @@ namespace QuikGraph.Serialization
                 null) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlWriter.WriteAttributeString)} method on {nameof(XmlWriter)}.");
 
         [NotNull]
-        private static readonly Dictionary<Type, MethodInfo> WriteContentMethods;
+        private static readonly Dictionary<Type, MethodInfo> WriteContentMethods = InitializeWriteMethods();
+
+        [NotNull]
+        private static Dictionary<Type, MethodInfo> InitializeWriteMethods()
+        {
+            Type writerType = typeof(XmlWriter);
+            Type writerExtensionsType = typeof(XmlWriterExtensions);
+
+            return new Dictionary<Type, MethodInfo>
+            {
+                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(bool) }),
+                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(int) }),
+                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(long) }),
+                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(float) }),
+                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(double) }),
+                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] { typeof(string) }),
+
+                // Extensions
+                [typeof(bool[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),
+                [typeof(int[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt32Array)),
+                [typeof(long[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt64Array)),
+                [typeof(float[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteSingleArray)),
+                [typeof(double[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteDoubleArray)),
+                [typeof(string[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteStringArray)),
+
+                [typeof(IList<bool>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),
+                [typeof(IList<int>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt32Array)),
+                [typeof(IList<long>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt64Array)),
+                [typeof(IList<float>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteSingleArray)),
+                [typeof(IList<double>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteDoubleArray)),
+                [typeof(IList<string>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteStringArray))
+            };
+        }
 
 #if SUPPORTS_CONTRACTS
         [System.Diagnostics.Contracts.Pure]

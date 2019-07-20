@@ -79,8 +79,8 @@ namespace QuikGraph
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
             Contract.Requires(vertex != null);
-            //Contract.Ensures(
-            //  Contract.Result<bool>() == (edge.Source.Equals(vertex) || edge.Target.Equals(vertex)));
+            Contract.Ensures(
+                Contract.Result<bool>() == (edge.Source.Equals(vertex) || edge.Target.Equals(vertex)));
 #endif
 
             return edge.Source.Equals(vertex) || edge.Target.Equals(vertex);

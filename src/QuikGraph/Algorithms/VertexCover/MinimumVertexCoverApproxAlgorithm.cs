@@ -62,20 +62,14 @@ namespace QuikGraph.Algorithms.VertexCover
                 TVertex source = randomEdge.Source;
                 TVertex target = randomEdge.Target;
 
-                if (graph.AdjacentDegree(randomEdge.Source) > 1)
+                if (graph.AdjacentDegree(randomEdge.Source) > 1 && !_coverSet.Contains(source))
                 {
-                    if (!_coverSet.Contains(source))
-                    {
-                        _coverSet.Add(source);
-                    }
+                    _coverSet.Add(source);
                 }
 
-                if (graph.AdjacentDegree(randomEdge.Target) > 1)
+                if (graph.AdjacentDegree(randomEdge.Target) > 1 && !_coverSet.Contains(target))
                 {
-                    if (!_coverSet.Contains(target))
-                    {
-                        _coverSet.Add(target);
-                    }
+                    _coverSet.Add(target);
                 }
 
                 if (graph.AdjacentDegree(randomEdge.Target) == 1 

@@ -90,8 +90,6 @@ namespace QuikGraph.Algorithms.MaximumFlow
 #endif
         public Dictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
 
-        private TVertex _source;
-
         /// <summary>
         /// Flow source vertex.
         /// </summary>
@@ -99,20 +97,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 #if SUPPORTS_CONTRACTS
         [System.Diagnostics.Contracts.Pure]
 #endif
-        public TVertex Source
-        {
-            get => _source;
-            set
-            {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(value != null);
-#endif
-
-                _source = value;
-            }
-        }
-
-        private TVertex _sink;
+        public TVertex Source { get; set; }
 
         /// <summary>
         /// Flow sink vertex.
@@ -121,17 +106,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 #if SUPPORTS_CONTRACTS
         [System.Diagnostics.Contracts.Pure]
 #endif
-        public TVertex Sink
-        {
-            get => _sink;
-            set
-            {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(value != null);
-#endif
-                _sink = value;
-            }
-        }
+        public TVertex Sink { get; set; }
 
         /// <summary>
         /// Maximal flow value.

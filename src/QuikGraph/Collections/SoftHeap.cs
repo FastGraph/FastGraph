@@ -408,17 +408,13 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return new Enumerator(this);
+            return new Enumerator();
         }
 
-        private struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        private class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            public Enumerator([NotNull] SoftHeap<TKey, TValue> owner)
+            public Enumerator()
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(owner != null);
-#endif
-
                 Current = new KeyValuePair<TKey, TValue>();
             }
 
@@ -432,6 +428,7 @@ namespace QuikGraph.Collections
 
             public void Dispose()
             {
+                // Currently the enumerator does nothing
             }
 
             object IEnumerator.Current => Current;

@@ -14,10 +14,7 @@ namespace QuikGraph
 #endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class TermBidirectionalGraph<TVertex, TEdge> : BidirectionalGraph<TVertex, TEdge>, IMutableTermBidirectionalGraph<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
-        , ICloneable
-#endif
-         where TEdge : ITermEdge<TVertex>
+        where TEdge : ITermEdge<TVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TermBidirectionalGraph{TVertex,TEdge}"/> class.

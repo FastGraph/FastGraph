@@ -39,7 +39,7 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
-        public bool Equals(EquatableTermEdge<TVertex> other)
+        public virtual bool Equals(EquatableTermEdge<TVertex> other)
         {
             if (other is null)
                 return false;

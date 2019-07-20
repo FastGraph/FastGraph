@@ -49,7 +49,10 @@ namespace QuikGraph.Serialization
         /// <inheritdoc />
         public override ICredentials Credentials
         {
-            set { }
+            set
+            {
+                // Do nothing
+            }
         }
 
         /// <inheritdoc />

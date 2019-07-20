@@ -69,10 +69,10 @@ namespace QuikGraph
         private Dictionary<TVertex, int> GetVertexCounts()
         {
             var vertices = new Dictionary<TVertex, int>(EdgeCount * 2);
-            foreach (var edge in Edges)
+            foreach (TEdge edge in Edges)
             {
-                vertices[edge.Source]++;
-                vertices[edge.Target]++;
+                ++vertices[edge.Source];
+                ++vertices[edge.Target];
             }
 
             return vertices;

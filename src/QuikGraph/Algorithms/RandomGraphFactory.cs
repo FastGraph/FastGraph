@@ -148,7 +148,11 @@ namespace QuikGraph.Algorithms
         {
             var vertices = new TVertex[vertexCount];
             for (int i = 0; i < vertexCount; ++i)
-                graph.AddVertex(vertices[i] = vertexFactory());
+            {
+                TVertex vertex = vertexFactory();
+                vertices[i] = vertex;
+                graph.AddVertex(vertex);
+            }
 
             int j = 0;
             while (j < edgeCount)
@@ -159,7 +163,7 @@ namespace QuikGraph.Algorithms
                 {
                     b = vertices[rng.Next(vertexCount)];
                 }
-                while (selfEdges == false && a.Equals(b));
+                while (!selfEdges && a.Equals(b));
 
                 if (graph.AddEdge(edgeFactory(a, b)))
                     ++j;

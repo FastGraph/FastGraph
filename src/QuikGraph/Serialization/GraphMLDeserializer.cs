@@ -527,15 +527,15 @@ namespace QuikGraph.Serialization
             ?? throw new InvalidOperationException($"Cannot find {nameof(ArgumentException)} constructor.");
 
         [NotNull]
-        private static readonly Dictionary<Type, MethodInfo> ReadContentMethods;
+        private static readonly Dictionary<Type, MethodInfo> ReadContentMethods = InitializeReadMethods();
 
-        static Metadata()
+        [NotNull]
+        private static Dictionary<Type, MethodInfo> InitializeReadMethods()
         {
-            // Read
             Type readerType = typeof(XmlReader);
             Type readerExtensionsType = typeof(XmlReaderExtensions);
 
-            ReadContentMethods = new Dictionary<Type, MethodInfo>
+            return new Dictionary<Type, MethodInfo>
             {
                 [typeof(bool)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsBoolean), new[] { typeof(string), typeof(string) }),
                 [typeof(int)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsInt), new[] { typeof(string), typeof(string) }),
@@ -558,35 +558,6 @@ namespace QuikGraph.Serialization
                 [typeof(IList<float>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsSingleArray)),
                 [typeof(IList<double>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsDoubleArray)),
                 [typeof(IList<string>)] = readerExtensionsType.GetMethod(nameof(XmlReaderExtensions.ReadElementContentAsStringArray))
-            };
-
-            // Write
-            Type writerType = typeof(XmlWriter);
-            Type writerExtensionsType = typeof(XmlWriterExtensions);
-
-            WriteContentMethods = new Dictionary<Type, MethodInfo>
-            {
-                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(bool) }),
-                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(int) }),
-                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(long) }),
-                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(float) }),
-                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(double) }),
-                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] { typeof(string) }),
-
-                // Extensions
-                [typeof(bool[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),
-                [typeof(int[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt32Array)),
-                [typeof(long[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt64Array)),
-                [typeof(float[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteSingleArray)),
-                [typeof(double[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteDoubleArray)),
-                [typeof(string[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteStringArray)),
-
-                [typeof(IList<bool>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),
-                [typeof(IList<int>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt32Array)),
-                [typeof(IList<long>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteInt64Array)),
-                [typeof(IList<float>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteSingleArray)),
-                [typeof(IList<double>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteDoubleArray)),
-                [typeof(IList<string>)] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteStringArray))
             };
         }
 

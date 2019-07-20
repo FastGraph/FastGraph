@@ -36,10 +36,12 @@ namespace QuikGraph.Algorithms.Contracts
         void IComputation.Compute()
         {
             // TODO contracts on events
+            throw new NotImplementedException();
         }
 
         void IComputation.Abort()
         {
+            throw new NotImplementedException();
         }
 
         event EventHandler IComputation.StateChanged

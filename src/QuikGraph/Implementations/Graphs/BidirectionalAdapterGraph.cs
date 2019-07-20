@@ -42,7 +42,11 @@ namespace QuikGraph
             foreach (TEdge edge in _baseGraph.Edges)
             {
                 if (!_inEdges.TryGetValue(edge.Target, out EdgeList<TVertex, TEdge> edgeList))
-                    _inEdges.Add(edge.Target, edgeList = new EdgeList<TVertex, TEdge>());
+                {
+                    edgeList = new EdgeList<TVertex, TEdge>();
+                    _inEdges.Add(edge.Target, edgeList);
+                }
+
                 edgeList.Add(edge);
             }
         }

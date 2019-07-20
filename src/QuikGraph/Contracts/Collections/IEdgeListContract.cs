@@ -24,6 +24,7 @@ namespace QuikGraph.Collections
 
         void IEdgeList<TVertex, TEdge>.TrimExcess()
         {
+            throw new NotImplementedException();
         }
 
         #region Others

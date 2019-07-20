@@ -17,6 +17,7 @@ namespace QuikGraph.Contracts
 
         void IMutableGraph<TVertex, TEdge>.Clear()
         {
+            throw new NotImplementedException();
         }
 
         #endregion

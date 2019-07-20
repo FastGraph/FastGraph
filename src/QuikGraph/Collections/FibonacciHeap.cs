@@ -180,7 +180,7 @@ namespace QuikGraph.Collections
                 // New value is in the same direction as the heap
                 cell.Priority = newKey;
                 FibonacciHeapCell<TPriority, TValue> parentCell = cell.Parent;
-                if (parentCell != null 
+                if (parentCell != null
                     && (PriorityComparison(newKey, parentCell.Priority) * _directionMultiplier < 0 || deletingCell))
                 {
                     cell.Marked = false;
@@ -191,7 +191,7 @@ namespace QuikGraph.Collections
                     UpdateCellsDegree(parentCell);
                     cell.Parent = null;
                     _cells.AddLast(cell);
-                    
+
                     // This loop is the cascading cut, we continue to cut
                     // ancestors of the cell reduced until we hit a root 
                     // or we found an unmarked ancestor
@@ -218,7 +218,7 @@ namespace QuikGraph.Collections
                 }
 
                 // Update next
-                if (deletingCell 
+                if (deletingCell
                     || PriorityComparison(newKey, Top.Priority) * _directionMultiplier < 0)
                 {
                     Top = cell;
@@ -280,7 +280,7 @@ namespace QuikGraph.Collections
 
             if (oldDegree != cell.Degree)
             {
-                if (_degreeToCell.TryGetValue(oldDegree, out FibonacciHeapCell<TPriority, TValue> degreeMapValue) 
+                if (_degreeToCell.TryGetValue(oldDegree, out FibonacciHeapCell<TPriority, TValue> degreeMapValue)
                     && degreeMapValue == cell)
                 {
                     _degreeToCell.Remove(oldDegree);
@@ -309,18 +309,17 @@ namespace QuikGraph.Collections
             Top.Previous = null;
             Top.Removed = true;
 
-            if (_degreeToCell.TryGetValue(
-                Top.Degree, 
-                out FibonacciHeapCell<TPriority, TValue> currentDegreeCell))
+            if (_degreeToCell.TryGetValue(Top.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell)
+                && currentDegreeCell == Top)
             {
-                if (currentDegreeCell == Top)
-                {
-                    _degreeToCell.Remove(Top.Degree);
-                }
+                _degreeToCell.Remove(Top.Degree);
             }
 
 #if SUPPORTS_CONTRACTS
             Contract.Assert(Top.Children != null);
+#else
+            if (Top.Children is null)
+                throw new InvalidOperationException("Heap top item has a null children collection.");
 #endif
 
             foreach (FibonacciHeapCell<TPriority, TValue> child in Top.Children)
@@ -364,7 +363,7 @@ namespace QuikGraph.Collections
             while (cell != null)
             {
                 FibonacciHeapCell<TPriority, TValue> nextCell = cell.Next;
-                while (_degreeToCell.TryGetValue(cell.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell) 
+                while (_degreeToCell.TryGetValue(cell.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell)
                        && currentDegreeCell != cell)
                 {
                     _degreeToCell.Remove(cell.Degree);
@@ -433,7 +432,7 @@ namespace QuikGraph.Collections
 #endif
 
             if (heap.Direction != Direction)
-                throw new Exception("Error: Heaps must go in the same direction when merging.");
+                throw new InvalidOperationException("Error: Heaps must go in the same direction when merging.");
 
             _cells.MergeLists(heap._cells);
             if (PriorityComparison(heap.Top.Priority, Top.Priority) * _directionMultiplier < 0)

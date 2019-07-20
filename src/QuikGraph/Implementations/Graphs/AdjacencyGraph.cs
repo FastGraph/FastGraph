@@ -404,11 +404,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public virtual bool AddEdge(TEdge edge)
         {
-            if (!AllowParallelEdges)
-            {
-                if (ContainsEdge(edge.Source, edge.Target))
-                    return false;
-            }
+            if (!AllowParallelEdges && ContainsEdge(edge.Source, edge.Target))
+                return false;
 
             _vertexEdges[edge.Source].Add(edge);
             EdgeCount++;

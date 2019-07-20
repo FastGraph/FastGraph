@@ -44,7 +44,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data.</param>
         /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
-        public VertexEdgeDictionary(SerializationInfo info, StreamingContext context)
+        private VertexEdgeDictionary(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

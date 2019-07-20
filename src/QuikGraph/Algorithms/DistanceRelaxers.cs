@@ -89,9 +89,9 @@ namespace QuikGraph.Algorithms
         {
             public double InitialDistance => double.MaxValue;
 
-            public int Compare(double a, double b)
+            public int Compare(double x, double y)
             {
-                return a.CompareTo(b);
+                return x.CompareTo(y);
             }
 
             public double Combine(double distance, double weight)

@@ -429,11 +429,8 @@ namespace QuikGraph
             IEdgeList<TVertex, TEdge> sourceEdges = AddAndReturnEdges(edge.Source);
             IEdgeList<TVertex, TEdge> targetEdges = AddAndReturnEdges(edge.Target);
 
-            if (!AllowParallelEdges)
-            {
-                if (ContainsEdgeBetweenVertices(sourceEdges, edge))
-                    return false;
-            }
+            if (!AllowParallelEdges && ContainsEdgeBetweenVertices(sourceEdges, edge))
+                return false;
 
             sourceEdges.Add(edge);
             if (!edge.IsSelfEdge())
@@ -462,11 +459,8 @@ namespace QuikGraph
         public bool AddEdge(TEdge edge)
         {
             IEdgeList<TVertex, TEdge> sourceEdges = _adjacentEdges[edge.Source];
-            if (!AllowParallelEdges)
-            {
-                if (ContainsEdgeBetweenVertices(sourceEdges, edge))
-                    return false;
-            }
+            if (!AllowParallelEdges && ContainsEdgeBetweenVertices(sourceEdges, edge))
+                return false;
 
             sourceEdges.Add(edge);
             if (!edge.IsSelfEdge())
