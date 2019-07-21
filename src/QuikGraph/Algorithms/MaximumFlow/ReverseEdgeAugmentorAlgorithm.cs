@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <remarks>
-    /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges"/> if TEdge is a value type,
+    /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges()"/> if TEdge is a value type,
     /// e.g. <see cref="SEdge{TVertex}"/>.
     /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
     /// </remarks>
@@ -102,20 +102,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
             ReversedEdgeAdded?.Invoke(edge);
         }
 
-        /// <summary>
-        /// Adds auxiliary edges to <see cref="VisitedGraph"/> to store residual flows.
-        /// </summary>
-        /// <remarks>
-        /// Will throw an exception if TEdge is a value type, e.g. <see cref="SEdge{TVertex}"/>.
-        /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
-        /// </remarks>
-        public void AddReversedEdges()
+        [NotNull, ItemNotNull]
+        private IEnumerable<TEdge> FindEdgesToReverse()
         {
-            if (Augmented)
-                throw new InvalidOperationException("Graph already augmented.");
-
-            // Step 1, find edges that need reversing
-            var notReversedEdges = new List<TEdge>();
             foreach (TEdge edge in VisitedGraph.Edges)
             {
                 // If reversed already found, continue
@@ -135,10 +124,12 @@ namespace QuikGraph.Algorithms.MaximumFlow
                 }
 
                 // This edge has no reverse
-                notReversedEdges.Add(edge);
+                yield return edge;
             }
+        }
 
-            // Step 2, go over each not reversed edge, add reverse
+        private void AddReversedEdges([NotNull, ItemNotNull] IEnumerable<TEdge> notReversedEdges)
+        {
             foreach (TEdge edge in notReversedEdges)
             {
                 if (ReversedEdges.ContainsKey(edge))
@@ -162,6 +153,25 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
                 OnReservedEdgeAdded(reversedEdge);
             }
+        }
+
+        /// <summary>
+        /// Adds auxiliary edges to <see cref="VisitedGraph"/> to store residual flows.
+        /// </summary>
+        /// <remarks>
+        /// Will throw an exception if TEdge is a value type, e.g. <see cref="SEdge{TVertex}"/>.
+        /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
+        /// </remarks>
+        public void AddReversedEdges()
+        {
+            if (Augmented)
+                throw new InvalidOperationException("Graph already augmented.");
+
+            // Step 1, find edges that need reversing
+            IEnumerable<TEdge> notReversedEdges = FindEdgesToReverse();
+
+            // Step 2, go over each not reversed edge, add reverse
+            AddReversedEdges(notReversedEdges);
 
             Augmented = true;
         }

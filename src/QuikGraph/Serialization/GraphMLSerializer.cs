@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Xml;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
+using static QuikGraph.Serialization.ILHelpers;
 using static QuikGraph.Serialization.XmlConstants;
 
 namespace QuikGraph.Serialization
@@ -36,7 +37,7 @@ namespace QuikGraph.Serialization
     /// Hyper edge, nodes, nested graphs not supported.
     /// </para>
     /// </remarks>
-    public sealed class GraphMLSerializer<TVertex, TEdge, TGraph> : SerializerBase<TVertex, TEdge>
+    public sealed class GraphMLSerializer<TVertex, TEdge, TGraph> : SerializerBase
         where TEdge : IEdge<TVertex>
         where TGraph : IEdgeListGraph<TVertex, TEdge>
     {
@@ -56,31 +57,99 @@ namespace QuikGraph.Serialization
 
         private static class WriteDelegateCompiler
         {
-            [NotNull]
-            public static WriteVertexAttributesDelegate VertexAttributesWriter { get; }
+            [NotNull] public static WriteVertexAttributesDelegate VertexAttributesWriter { get; }
 
-            [NotNull]
-            public static WriteEdgeAttributesDelegate EdgeAttributesWriter { get; }
+            [NotNull] public static WriteEdgeAttributesDelegate EdgeAttributesWriter { get; }
 
-            [NotNull]
-            public static WriteGraphAttributesDelegate GraphAttributesWriter { get; }
+            [NotNull] public static WriteGraphAttributesDelegate GraphAttributesWriter { get; }
 
             static WriteDelegateCompiler()
             {
                 VertexAttributesWriter =
-                    (WriteVertexAttributesDelegate)CreateWriteDelegate(
+                    (WriteVertexAttributesDelegate) CreateWriteDelegate(
                         typeof(TVertex),
                         typeof(WriteVertexAttributesDelegate));
 
                 EdgeAttributesWriter =
-                    (WriteEdgeAttributesDelegate)CreateWriteDelegate(
+                    (WriteEdgeAttributesDelegate) CreateWriteDelegate(
                         typeof(TEdge),
                         typeof(WriteEdgeAttributesDelegate));
 
                 GraphAttributesWriter =
-                    (WriteGraphAttributesDelegate)CreateWriteDelegate(
+                    (WriteGraphAttributesDelegate) CreateWriteDelegate(
                         typeof(TGraph),
                         typeof(WriteGraphAttributesDelegate));
+            }
+
+            private static void EmitCallWriter([NotNull] ILGenerator generator, [NotNull] MethodInfo writer)
+            {
+                // When reading scalar values we call member methods of XmlReader, while for array values 
+                // we call our own static methods.  These two types of methods seem to need different OpCode.
+                generator.EmitCall(
+                    writer.DeclaringType == typeof(XmlWriterExtensions)
+                        ? OpCodes.Call
+                        : OpCodes.Callvirt,
+                    writer,
+                    null);
+            }
+
+            private static void EmitWriteProperty(PropertySerializationInfo info, [NotNull] ILGenerator generator)
+            {
+                Label @default = default(Label);
+                PropertyInfo property = info.Property;
+
+                MethodInfo getMethod = property.GetGetMethod();
+                if (getMethod is null)
+                    throw new NotSupportedException($"Property {property.DeclaringType}.{property.Name} has no getter.");
+                if (!Metadata.TryGetWriteValueMethod(property.PropertyType, out MethodInfo writeMethod))
+                    throw new NotSupportedException($"Property {property.DeclaringType}.{property.Name} type is not supported.");
+
+                var defaultValueAttribute =
+                    Attribute.GetCustomAttribute(property, typeof(DefaultValueAttribute)) as DefaultValueAttribute;
+                if (defaultValueAttribute != null)
+                {
+                    @default = generator.DefineLabel();
+                    object value = defaultValueAttribute.Value;
+                    if (value is null)
+                        throw new NotSupportedException($"Null default value is not supported for property {property.Name}.");
+                    if (value.GetType() != property.PropertyType)
+                        throw new InvalidOperationException($"Invalid default value type for property {property.Name}.");
+
+                    EmitValue(generator, property, value);
+                    generator.Emit(OpCodes.Ldarg_1);
+                    generator.EmitCall(OpCodes.Callvirt, getMethod, null);
+                    generator.Emit(OpCodes.Ceq);
+                    generator.Emit(OpCodes.Brtrue, @default);
+                }
+
+                // For each property of the type,
+                // write it to the WML writer (we need to take care of value types, etc...)
+                // writer.WriteStartElement("data")
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldstr, "data");
+                generator.Emit(OpCodes.Ldstr, GraphMLXmlResolver.GraphMLNamespace);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteStartElementMethod, null);
+
+                // writer.WriteStartAttribute("key");
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldstr, "key");
+                generator.Emit(OpCodes.Ldstr, info.Name);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteAttributeStringMethod, null);
+
+                // writer.WriteValue(v.xxx);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldarg_1);
+                generator.EmitCall(OpCodes.Callvirt, getMethod, null);
+                EmitCallWriter(generator, writeMethod);
+
+                // writer.WriteEndElement()
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteEndElementMethod, null);
+
+                if (defaultValueAttribute != null)
+                {
+                    generator.MarkLabel(@default);
+                }
             }
 
             [NotNull]
@@ -94,97 +163,14 @@ namespace QuikGraph.Serialization
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Write{delegateType.Name}_{nodeType.Name}",
                     typeof(void),
-                    new[] { typeof(XmlWriter), nodeType },
+                    new[] {typeof(XmlWriter), nodeType},
                     nodeType.Module);
 
                 ILGenerator generator = method.GetILGenerator();
-                Label @default = default(Label);
 
-                foreach (PropertySerializationInfo info in SerializationHelper.GetAttributeProperties(nodeType))
+                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(nodeType))
                 {
-                    PropertyInfo property = info.Property;
-
-                    MethodInfo getMethod = property.GetGetMethod();
-                    if (getMethod is null)
-                        throw new NotSupportedException($"Property {property.DeclaringType}.{property.Name} has no getter.");
-                    if (!Metadata.TryGetWriteValueMethod(property.PropertyType, out MethodInfo writeMethod))
-                        throw new NotSupportedException($"Property {property.DeclaringType}.{property.Name} type is not supported.");
-
-                    var defaultValueAttribute = Attribute.GetCustomAttribute(property, typeof(DefaultValueAttribute)) as DefaultValueAttribute;
-                    if (defaultValueAttribute != null)
-                    {
-                        @default = generator.DefineLabel();
-                        object value = defaultValueAttribute.Value;
-                        if (value is null)
-                            throw new NotSupportedException($"Null default value is not supported for property {property.Name}.");
-                        if (value.GetType() != property.PropertyType)
-                            throw new InvalidOperationException($"Invalid default value type for property {property.Name}.");
-
-                        switch (Type.GetTypeCode(property.PropertyType))
-                        {
-                            case TypeCode.Int32:
-                                generator.Emit(OpCodes.Ldc_I4, (int)value);
-                                break;
-                            case TypeCode.Int64:
-                                generator.Emit(OpCodes.Ldc_I8, (long)value);
-                                break;
-                            case TypeCode.Single:
-                                generator.Emit(OpCodes.Ldc_R4, (float)value);
-                                break;
-                            case TypeCode.Double:
-                                generator.Emit(OpCodes.Ldc_R8, (double)value);
-                                break;
-                            case TypeCode.String:
-                                generator.Emit(OpCodes.Ldstr, (string)value);
-                                break;
-                            case TypeCode.Boolean:
-                                generator.Emit((bool)value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-                                break;
-                            default:
-                                throw new NotSupportedException($"Unsupported type {property.PropertyType.FullName}.");
-                        }
-                        generator.Emit(OpCodes.Ldarg_1);
-                        generator.EmitCall(OpCodes.Callvirt, getMethod, null);
-                        generator.Emit(OpCodes.Ceq);
-                        generator.Emit(OpCodes.Brtrue, @default);
-                    }
-
-                    // For each property of the type,
-                    // write it to the WML writer (we need to take care of value types, etc...)
-                    // writer.WriteStartElement("data")
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldstr, "data");
-                    generator.Emit(OpCodes.Ldstr, GraphMLXmlResolver.GraphMLNamespace);
-                    generator.EmitCall(OpCodes.Callvirt, Metadata.WriteStartElementMethod, null);
-
-                    // writer.WriteStartAttribute("key");
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldstr, "key");
-                    generator.Emit(OpCodes.Ldstr, info.Name);
-                    generator.EmitCall(OpCodes.Callvirt, Metadata.WriteAttributeStringMethod, null);
-
-                    // writer.WriteValue(v.xxx);
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldarg_1);
-                    generator.EmitCall(OpCodes.Callvirt, getMethod, null);
-                    // When reading scalar values we call member methods of XmlReader, while for array values 
-                    // we call our own static methods.  These two types of methods seem to need different OpCode.
-                    generator.EmitCall(
-                        writeMethod.DeclaringType == typeof(XmlWriterExtensions)
-                            ? OpCodes.Call
-                            : OpCodes.Callvirt,
-                        writeMethod,
-                        null);
-
-                    // writer.WriteEndElement()
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.EmitCall(OpCodes.Callvirt, Metadata.WriteEndElementMethod, null);
-
-                    if (defaultValueAttribute != null)
-                    {
-                        generator.MarkLabel(@default);
-                        @default = default(Label);
-                    }
+                    EmitWriteProperty(info, generator);
                 }
 
                 generator.Emit(OpCodes.Ret);
@@ -222,20 +208,15 @@ namespace QuikGraph.Serialization
 
         internal class WriterWorker
         {
-            [NotNull]
-            private readonly GraphMLSerializer<TVertex, TEdge, TGraph> _serializer;
+            [NotNull] private readonly GraphMLSerializer<TVertex, TEdge, TGraph> _serializer;
 
-            [NotNull]
-            private readonly XmlWriter _writer;
+            [NotNull] private readonly XmlWriter _writer;
 
-            [NotNull]
-            private readonly TGraph _graph;
+            [NotNull] private readonly TGraph _graph;
 
-            [NotNull]
-            private readonly VertexIdentity<TVertex> _vertexIdentities;
+            [NotNull] private readonly VertexIdentity<TVertex> _vertexIdentities;
 
-            [NotNull]
-            private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentities;
+            [NotNull] private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentities;
 
             public WriterWorker(
                 [NotNull] GraphMLSerializer<TVertex, TEdge, TGraph> serializer,
@@ -374,7 +355,7 @@ namespace QuikGraph.Serialization
                 Contract.Requires(nodeType != null);
 #endif
 
-                foreach (PropertySerializationInfo info in SerializationHelper.GetAttributeProperties(nodeType))
+                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(nodeType))
                 {
                     PropertyInfo property = info.Property;
                     string name = info.Name;
@@ -394,7 +375,8 @@ namespace QuikGraph.Serialization
                         }
                         catch (NotSupportedException)
                         {
-                            throw new NotSupportedException($"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
+                            throw new NotSupportedException(
+                                $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
                         }
 
                         _writer.WriteAttributeString("attr.type", typeCodeStr);
@@ -408,30 +390,34 @@ namespace QuikGraph.Serialization
                         switch (Type.GetTypeCode(defaultValueType))
                         {
                             case TypeCode.Boolean:
-                                _writer.WriteString(XmlConvert.ToString((bool)defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((bool) defaultValue));
                                 break;
                             case TypeCode.Int32:
-                                _writer.WriteString(XmlConvert.ToString((int)defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((int) defaultValue));
                                 break;
                             case TypeCode.Int64:
-                                _writer.WriteString(XmlConvert.ToString((long)defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((long) defaultValue));
                                 break;
                             case TypeCode.Single:
-                                _writer.WriteString(XmlConvert.ToString((float)defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((float) defaultValue));
                                 break;
                             case TypeCode.Double:
-                                _writer.WriteString(XmlConvert.ToString((double)defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((double) defaultValue));
                                 break;
                             case TypeCode.String:
-                                _writer.WriteString((string)defaultValue);
+                                _writer.WriteString((string) defaultValue);
                                 break;
                             case TypeCode.Object:
                                 if (defaultValueType.IsArray)
-                                    throw new NotImplementedException("Default values for array types are not implemented.");
-                                throw new NotSupportedException($"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
+                                    throw new NotImplementedException(
+                                        "Default values for array types are not implemented.");
+                                throw new NotSupportedException(
+                                    $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
                             default:
-                                throw new NotSupportedException($"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
+                                throw new NotSupportedException(
+                                    $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
                         }
+
                         _writer.WriteEndElement();
                     }
 
@@ -467,35 +453,34 @@ namespace QuikGraph.Serialization
 
     internal static partial class Metadata
     {
-        [NotNull]
-        public static readonly MethodInfo WriteStartElementMethod =
+        [NotNull] public static readonly MethodInfo WriteStartElementMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteStartElement),
                 BindingFlags.Instance | BindingFlags.Public,
                 null,
-                new[] { typeof(string), typeof(string) },
-                null) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlWriter.WriteStartElement)} method on {nameof(XmlWriter)}.");
+                new[] {typeof(string), typeof(string)},
+                null) ?? throw new InvalidOperationException(
+                $"Cannot find {nameof(XmlWriter.WriteStartElement)} method on {nameof(XmlWriter)}.");
 
-        [NotNull]
-        public static readonly MethodInfo WriteEndElementMethod =
+        [NotNull] public static readonly MethodInfo WriteEndElementMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteEndElement),
                 BindingFlags.Instance | BindingFlags.Public,
                 null,
                 Type.EmptyTypes,
-                null) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlWriter.WriteEndElement)} method on {nameof(XmlWriter)}.");
+                null) ?? throw new InvalidOperationException(
+                $"Cannot find {nameof(XmlWriter.WriteEndElement)} method on {nameof(XmlWriter)}.");
 
-        [NotNull]
-        public static readonly MethodInfo WriteAttributeStringMethod =
+        [NotNull] public static readonly MethodInfo WriteAttributeStringMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteAttributeString),
                 BindingFlags.Instance | BindingFlags.Public,
                 null,
-                new[] { typeof(string), typeof(string) },
-                null) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlWriter.WriteAttributeString)} method on {nameof(XmlWriter)}.");
+                new[] {typeof(string), typeof(string)},
+                null) ?? throw new InvalidOperationException(
+                $"Cannot find {nameof(XmlWriter.WriteAttributeString)} method on {nameof(XmlWriter)}.");
 
-        [NotNull]
-        private static readonly Dictionary<Type, MethodInfo> WriteContentMethods = InitializeWriteMethods();
+        [NotNull] private static readonly Dictionary<Type, MethodInfo> WriteContentMethods = InitializeWriteMethods();
 
         [NotNull]
         private static Dictionary<Type, MethodInfo> InitializeWriteMethods()
@@ -505,12 +490,12 @@ namespace QuikGraph.Serialization
 
             return new Dictionary<Type, MethodInfo>
             {
-                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(bool) }),
-                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(int) }),
-                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(long) }),
-                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(float) }),
-                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(double) }),
-                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] { typeof(string) }),
+                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(bool)}),
+                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(int)}),
+                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(long)}),
+                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(float)}),
+                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(double)}),
+                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] {typeof(string)}),
 
                 // Extensions
                 [typeof(bool[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),

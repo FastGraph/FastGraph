@@ -132,80 +132,51 @@ namespace QuikGraph.Algorithms.Assignment
         private Steps DoStep()
         {
             if (_step == Steps.Init)
-            {
-                _height = _costs.GetLength(0);
-                _width = _costs.GetLength(1);
-
-                // Reduce by rows
-                for (int i = 0; i < _height; ++i)
-                {
-                    int min = int.MaxValue;
-                    for (int j = 0; j < _width; ++j)
-                        min = Math.Min(min, _costs[i, j]);
-                    for (int j = 0; j < _width; ++j)
-                        _costs[i, j] -= min;
-                }
-
-                // Set 1 where job assigned
-                _masks = new byte[_height, _width];
-                _rowsCovered = new bool[_height];
-                _colsCovered = new bool[_width];
-
-                for (int i = 0; i < _height; ++i)
-                {
-                    for (int j = 0; j < _width; ++j)
-                    {
-                        if (_costs[i, j] == 0 && !_rowsCovered[i] && !_colsCovered[j])
-                        {
-                            _masks[i, j] = 1;
-                            _rowsCovered[i] = true;
-                            _colsCovered[j] = true;
-                        }
-                    }
-                }
-
-                ClearCovers(_rowsCovered, _colsCovered, _width, _height);
-
-                _path = new Location[_width * _height];
-                _pathStart = default(Location);
-                _step = Steps.Step1;
-
-                return Steps.Init;
-            }
+                return RunInitStep();
 
             if (_step != Steps.End)
-            {
-                switch (_step)
-                {
-                    case Steps.Step1:
-                        {
-                            Steps currentStep = _step;
-                            _step = RunStep1(_masks, _colsCovered, _width, _height);
-                            return currentStep;
-                        }
-                    case Steps.Step2:
-                        {
-                            Steps currentStep = _step;
-                            _step = RunStep2(_costs, _masks, _rowsCovered, _colsCovered, _width, _height, ref _pathStart);
-                            return currentStep;
-                        }
-                    case Steps.Step3:
-                        {
-                            Steps currentStep = _step;
-                            _step = RunStep3(_masks, _rowsCovered, _colsCovered, _width, _height, _path, _pathStart);
-                            return currentStep;
-                        }
-                    case Steps.Step4:
-                        {
-                            Steps currentStep = _step;
-                            _step = RunStep4(_costs, _rowsCovered, _colsCovered, _width, _height);
-                            return currentStep;
-                        }
-                }
+                return ComputeStep(_step);
 
-                return Steps.End;
+            UpdateAgentsTasks();
+
+            return Steps.End;
+        }
+
+        private Steps ComputeStep(Steps step)
+        {
+            switch (step)
+            {
+                case Steps.Step1:
+                {
+                    Steps currentStep = step;
+                    _step = RunStep1(_masks, _colsCovered, _width, _height);
+                    return currentStep;
+                }
+                case Steps.Step2:
+                {
+                    Steps currentStep = step;
+                    _step = RunStep2(_costs, _masks, _rowsCovered, _colsCovered, _width, _height, ref _pathStart);
+                    return currentStep;
+                }
+                case Steps.Step3:
+                {
+                    Steps currentStep = step;
+                    _step = RunStep3(_masks, _rowsCovered, _colsCovered, _width, _height, _path, _pathStart);
+                    return currentStep;
+                }
+                case Steps.Step4:
+                {
+                    Steps currentStep = step;
+                    _step = RunStep4(_costs, _rowsCovered, _colsCovered, _width, _height);
+                    return currentStep;
+                }
             }
 
+            return Steps.End;
+        }
+
+        private void UpdateAgentsTasks()
+        {
             AgentsTasks = new int[_height];
 
             for (int i = 0; i < _height; ++i)
@@ -219,8 +190,53 @@ namespace QuikGraph.Algorithms.Assignment
                     }
                 }
             }
+        }
 
-            return Steps.End;
+        private void AssignJobs()
+        {
+            _masks = new byte[_height, _width];
+            _rowsCovered = new bool[_height];
+            _colsCovered = new bool[_width];
+
+            for (int i = 0; i < _height; ++i)
+            {
+                for (int j = 0; j < _width; ++j)
+                {
+                    if (_costs[i, j] == 0 && !_rowsCovered[i] && !_colsCovered[j])
+                    {
+                        _masks[i, j] = 1;
+                        _rowsCovered[i] = true;
+                        _colsCovered[j] = true;
+                    }
+                }
+            }
+        }
+
+        private Steps RunInitStep()
+        {
+            _height = _costs.GetLength(0);
+            _width = _costs.GetLength(1);
+
+            // Reduce by rows
+            for (int i = 0; i < _height; ++i)
+            {
+                int min = int.MaxValue;
+                for (int j = 0; j < _width; ++j)
+                    min = Math.Min(min, _costs[i, j]);
+                for (int j = 0; j < _width; ++j)
+                    _costs[i, j] -= min;
+            }
+
+            // Set 1 where job assigned
+            AssignJobs();
+
+            ClearCovers(_rowsCovered, _colsCovered, _width, _height);
+
+            _path = new Location[_width * _height];
+            _pathStart = default(Location);
+            _step = Steps.Step1;
+
+            return Steps.Init;
         }
 
         private static Steps RunStep1(

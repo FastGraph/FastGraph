@@ -102,47 +102,62 @@ namespace QuikGraph.Algorithms.TSP
                 return;
             }
 
-            double sum = 0;
-            foreach (TVertex vertex in _graph.Vertices)
-            {
-                if (_graph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
-                {
-                    TEdge[] outEdgesArray = outEdges.ToArray();
-                    if (outEdgesArray.Length > 0)
-                    {
-                        double min = outEdgesArray.Min(edge => _weight[edge]);
-                        foreach (TEdge edge in outEdgesArray)
-                        {
-                            _weight[edge] -= min;
-                        }
-
-                        sum += min;
-                    }
-                }
-            }
-
-            foreach (TVertex vertex in _graph.Vertices)
-            {
-                if (_graph.TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
-                {
-                    TEdge[] inEdgesArray = inEdges.ToArray();
-                    if (inEdgesArray.Length > 0)
-                    {
-                        double min = inEdgesArray.Min(edge => _weight[edge]);
-                        foreach (TEdge edge in inEdgesArray)
-                        {
-                            _weight[edge] -= min;
-                        }
-
-                        sum += min;
-                    }
-                }
-            }
+            double sum = ReduceOutEdges();
+            sum += ReduceInEdges();
 
             MinCost += sum;
         }
 
-        private TEdge ChooseEdgeForSplit()
+        private double ReduceOutEdges()
+        {
+            double sum = 0;
+            foreach (TVertex vertex in _graph.Vertices)
+            {
+                if (!_graph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+                    continue;
+
+                TEdge[] outEdgesArray = outEdges.ToArray();
+                if (outEdgesArray.Length <= 0)
+                    continue;
+
+                double min = outEdgesArray.Min(edge => _weight[edge]);
+                foreach (TEdge edge in outEdgesArray)
+                {
+                    _weight[edge] -= min;
+                }
+
+                sum += min;
+            }
+
+            return sum;
+        }
+
+        private double ReduceInEdges()
+        {
+            double sum = 0;
+            foreach (TVertex vertex in _graph.Vertices)
+            {
+                if (!_graph.TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
+                    continue;
+
+                TEdge[] inEdgesArray = inEdges.ToArray();
+                if (inEdgesArray.Length <= 0)
+                    continue;
+
+                double min = inEdgesArray.Min(edge => _weight[edge]);
+                foreach (TEdge edge in inEdgesArray)
+                {
+                    _weight[edge] -= min;
+                }
+
+                sum += min;
+            }
+
+            return sum;
+        }
+
+        [NotNull, ItemNotNull]
+        private List<TEdge> GetZeroEdges()
         {
             var zeros = new List<TEdge>();
             foreach (TVertex vertex in _graph.Vertices)
@@ -153,9 +168,35 @@ namespace QuikGraph.Algorithms.TSP
                 }
             }
 
+            return zeros;
+        }
+
+        [Pure]
+        private double ComputeMaxCandidate(
+            [NotNull, ItemNotNull] IEnumerable<TEdge> row,
+            [NotNull, ItemNotNull] IEnumerable<TEdge> column, 
+            [NotNull] TVertex source,
+            [NotNull] TVertex target)
+        {
+            return
+                row.Where(edge => !edge.Target.Equals(target))
+                    .DefaultIfEmpty(null)
+                    .Min(edge => edge is null
+                        ? double.PositiveInfinity
+                        : _weight[edge])
+                +
+                column.Where(edge => !edge.Source.Equals(source))
+                    .DefaultIfEmpty(null)
+                    .Min(edge => edge is null
+                        ? double.PositiveInfinity
+                        : _weight[edge]);
+        }
+
+        private TEdge ChooseEdgeForSplit()
+        {
             TEdge edgeForSplit = null;
             double max = double.NegativeInfinity;
-            foreach (TEdge edge in zeros)
+            foreach (TEdge edge in GetZeroEdges())
             {
                 TVertex v1 = edge.Source;
                 TVertex v2 = edge.Target;
@@ -163,17 +204,7 @@ namespace QuikGraph.Algorithms.TSP
                 if (_graph.TryGetOutEdges(v1, out IEnumerable<TEdge> row)
                     && _graph.TryGetInEdges(v2, out IEnumerable<TEdge> column))
                 {
-                    double maxCandidate = row.Where(e => !e.Target.Equals(v2))
-                                              .DefaultIfEmpty(null)
-                                              .Min(e => e == null
-                                                  ? double.PositiveInfinity
-                                                  : _weight[e])
-                                          +
-                                          column.Where(e => !e.Source.Equals(v1))
-                                              .DefaultIfEmpty(null)
-                                              .Min(e => e == null
-                                                  ? double.PositiveInfinity
-                                                  : _weight[e]);
+                    double maxCandidate = ComputeMaxCandidate(row, column, v1, v2);
 
                     if (maxCandidate > max)
                     {

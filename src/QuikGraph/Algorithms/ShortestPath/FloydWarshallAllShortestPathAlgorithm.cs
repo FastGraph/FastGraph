@@ -20,7 +20,7 @@ namespace QuikGraph.Algorithms.ShortestPath
     public class FloydWarshallAllShortestPathAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull] 
+        [NotNull]
         private readonly Func<TEdge, double> _weights;
 
         [NotNull]
@@ -293,37 +293,56 @@ namespace QuikGraph.Algorithms.ShortestPath
                 if (cancelManager.IsCancelling)
                     return;
 
-                foreach (TVertex vi in vertices)
-                {
-                    var ik = new SEquatableEdge<TVertex>(vi, vk);
-                    if(_data.TryGetValue(ik, out VertexData pathIk))
-                    {
-                        foreach (TVertex vj in vertices)
-                        {
-                            var kj = new SEquatableEdge<TVertex>(vk, vj);
-                            if (_data.TryGetValue(kj, out VertexData pathKj))
-                            {
-                                double combined = _distanceRelaxer.Combine(
-                                    pathIk.Distance, 
-                                    pathKj.Distance);
-
-                                var ij = new SEquatableEdge<TVertex>(vi, vj);
-                                if (_data.TryGetValue(ij, out VertexData pathIj))
-                                {
-                                    if (_distanceRelaxer.Compare(combined, pathIj.Distance) < 0)
-                                        _data[ij] = new VertexData(combined, vk);
-                                }
-                                else
-                                {
-                                    _data[ij] = new VertexData(combined, vk);
-                                }
-                            }
-                        }
-                    }
-                }
+                FillIData(vertices, vk);
             }
 
             // Check negative cycles
+            CheckNegativeCycles(vertices);
+        }
+
+        private void FillIData([NotNull, ItemNotNull] TVertex[] vertices, [NotNull] TVertex vk)
+        {
+            foreach (TVertex vi in vertices)
+            {
+                var ik = new SEquatableEdge<TVertex>(vi, vk);
+                if (_data.TryGetValue(ik, out VertexData pathIk))
+                {
+                    FillJData(vertices, vi, vk, pathIk);
+                }
+            }
+        }
+
+        private void FillJData(
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
+            [NotNull] TVertex vi,
+            [NotNull] TVertex vk,
+            VertexData pathIk)
+        {
+            foreach (TVertex vj in vertices)
+            {
+                var kj = new SEquatableEdge<TVertex>(vk, vj);
+                if (_data.TryGetValue(kj, out VertexData pathKj))
+                {
+                    double combined = _distanceRelaxer.Combine(
+                        pathIk.Distance,
+                        pathKj.Distance);
+
+                    var ij = new SEquatableEdge<TVertex>(vi, vj);
+                    if (_data.TryGetValue(ij, out VertexData pathIj))
+                    {
+                        if (_distanceRelaxer.Compare(combined, pathIj.Distance) < 0)
+                            _data[ij] = new VertexData(combined, vk);
+                    }
+                    else
+                    {
+                        _data[ij] = new VertexData(combined, vk);
+                    }
+                }
+            }
+        }
+
+        private void CheckNegativeCycles([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        {
             foreach (TVertex vi in vertices)
             {
                 var ii = new SEquatableEdge<TVertex>(vi, vi);

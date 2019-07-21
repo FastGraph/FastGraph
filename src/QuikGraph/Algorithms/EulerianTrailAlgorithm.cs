@@ -290,6 +290,51 @@ namespace QuikGraph.Algorithms
 
         #endregion
 
+        private bool HasEdgeToward([NotNull] TVertex u, [NotNull] TVertex v)
+        {
+            bool foundEdge = false;
+            foreach (TEdge edge in VisitedGraph.OutEdges(v))
+            {
+                if (edge.Target.Equals(u))
+                {
+                    foundEdge = true;
+                    break;
+                }
+            }
+
+            return foundEdge;
+        }
+
+        private bool FindAdjacentOddVertex(
+            [NotNull] TVertex u,
+            [NotNull, ItemNotNull] List<TVertex> oddVertices,
+            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
+            out bool foundAdjacent)
+        {
+            bool found = false;
+            foundAdjacent = false;
+            foreach (TEdge edge in VisitedGraph.OutEdges(u))
+            {
+                TVertex v = edge.Target;
+                if (!v.Equals(u) && oddVertices.Contains(v))
+                {
+                    foundAdjacent = true;
+                    // Check that v does not have an out-edge towards u
+                    if (HasEdgeToward(u, v))
+                        continue;
+
+                    // Add temporary edge
+                    AddTemporaryEdge(u, v, oddVertices, edgeFactory);
+
+                    // Set u to null
+                    found = true;
+                    break;
+                }
+            }
+
+            return found;
+        }
+
         /// <summary>
         /// Adds temporary edges to the graph to make all vertex even.
         /// </summary>
@@ -312,62 +357,16 @@ namespace QuikGraph.Algorithms
             {
                 TVertex u = oddVertices[0];
                 // Find adjacent odd vertex
-                bool found = false;
-                bool foundAdjacent = false;
-                foreach (TEdge edge in VisitedGraph.OutEdges(u))
-                {
-                    TVertex v = edge.Target;
-                    if (!v.Equals(u) && oddVertices.Contains(v))
-                    {
-                        foundAdjacent = true;
-                        // Check that v does not have an out-edge towards u
-                        bool foundEdge = false;
-                        foreach (TEdge be in VisitedGraph.OutEdges(v))
-                        {
-                            if (be.Target.Equals(u))
-                            {
-                                foundEdge = true;
-                                break;
-                            }
-                        }
-
-                        if (foundEdge)
-                            continue;
-
-                        // Add temporary edge
-                        TEdge tempEdge = edgeFactory(v, u);
-                        if (!VisitedGraph.AddEdge(tempEdge))
-                            throw new InvalidOperationException();
-
-                        // Add to collection
-                        _temporaryEdges.Add(tempEdge);
-
-                        // Remove u,v from oddVertices
-                        oddVertices.Remove(u);
-                        oddVertices.Remove(v);
-
-                        // Set u to null
-                        found = true;
-                        break;
-                    }
-                }
-
+                bool found = FindAdjacentOddVertex(u, oddVertices, edgeFactory, out bool foundAdjacent);
                 if (!foundAdjacent)
                 {
                     // Pick another vertex
                     if (oddVertices.Count < 2)
                         throw new InvalidOperationException("Eulerian trail failure.");
                     TVertex v = oddVertices[1];
-                    TEdge tempEdge = edgeFactory(u, v);
-                    if (!VisitedGraph.AddEdge(tempEdge))
-                        throw new InvalidOperationException();
 
                     // Add to temporary edges
-                    _temporaryEdges.Add(tempEdge);
-
-                    // Remove u,v from oddVertices
-                    oddVertices.Remove(u);
-                    oddVertices.Remove(v);
+                    AddTemporaryEdge(u, v, oddVertices, edgeFactory);
 
                     // Set u to null
                     found = true;
@@ -381,6 +380,24 @@ namespace QuikGraph.Algorithms
             }
 
             return _temporaryEdges;
+        }
+
+        private void AddTemporaryEdge(
+            [NotNull] TVertex u,
+            [NotNull] TVertex v,
+            [NotNull, ItemNotNull] List<TVertex> oddVertices,
+            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+        {
+            TEdge tempEdge = edgeFactory(u, v);
+            if (!VisitedGraph.AddEdge(tempEdge))
+                throw new InvalidOperationException();
+
+            // Add to temporary edges
+            _temporaryEdges.Add(tempEdge);
+
+            // Remove u,v from oddVertices
+            oddVertices.Remove(u);
+            oddVertices.Remove(v);
         }
 
         /// <summary>
@@ -425,6 +442,24 @@ namespace QuikGraph.Algorithms
                 yield return trail;
         }
 
+        private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
+        {
+            int i;
+            for (i = 0; i < Circuit.Count; ++i)
+            {
+                TEdge edge = Circuit[i];
+                if (_temporaryEdges.Contains(edge))
+                    continue;
+                if (edge.Source.Equals(startingVertex))
+                    break;
+            }
+
+            if (i == Circuit.Count)
+                throw new InvalidOperationException("Did not find vertex in Eulerian trail?");
+
+            return i;
+        }
+
         /// <summary>
         /// Computes a set of Eulerian trails, starting at <paramref name="startingVertex"/>
         /// that spans the entire graph.
@@ -453,28 +488,14 @@ namespace QuikGraph.Algorithms
         /// <param name="startingVertex">Starting vertex.</param>
         /// <returns>Eulerian trail set, all starting at <paramref name="startingVertex"/>.</returns>
         /// <exception cref="InvalidOperationException">Eulerian trail not computed yet.</exception>
+        [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> Trails([NotNull] TVertex startingVertex)
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(startingVertex != null);
 #endif
 
-            if (Circuit.Count == 0)
-                throw new InvalidOperationException("Circuit is empty.");
-
-            // Find the first edge in the circuit.
-            int i;
-            for (i = 0; i < Circuit.Count; ++i)
-            {
-                TEdge edge = Circuit[i];
-                if (_temporaryEdges.Contains(edge))
-                    continue;
-                if (edge.Source.Equals(startingVertex))
-                    break;
-            }
-
-            if (i == Circuit.Count)
-                throw new InvalidOperationException("Did not find vertex in Eulerian trail?");
+            int index = FindFirstEdgeInCircuit(startingVertex);
 
             // Create collections
             var trail = new List<TEdge>();
@@ -485,10 +506,10 @@ namespace QuikGraph.Algorithms
                 bfs.Compute(startingVertex);
 
                 // Go through the edges and build the predecessor table
-                int start = i;
-                for (; i < Circuit.Count; ++i)
+                int start = index;
+                for (; index < Circuit.Count; ++index)
                 {
-                    TEdge edge = Circuit[i];
+                    TEdge edge = Circuit[index];
                     if (_temporaryEdges.Contains(edge))
                     {
                         // Store previous trail and start new one
@@ -507,9 +528,9 @@ namespace QuikGraph.Algorithms
                 }
 
                 // Starting again on the circuit
-                for (i = 0; i < start; ++i)
+                for (index = 0; index < start; ++index)
                 {
-                    TEdge edge = Circuit[i];
+                    TEdge edge = Circuit[index];
                     if (_temporaryEdges.Contains(edge))
                     {
                         // Store previous trail and start new one

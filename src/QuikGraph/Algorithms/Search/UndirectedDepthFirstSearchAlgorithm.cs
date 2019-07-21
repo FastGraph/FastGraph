@@ -355,7 +355,7 @@ namespace QuikGraph.Algorithms.Search
             OnDiscoverVertex(root);
 
             ICancelManager cancelManager = Services.CancelManager;
-            var enumerable = AdjacentEdgesFilter(VisitedGraph.AdjacentEdges(root));
+            IEnumerable<TEdge> enumerable = AdjacentEdgesFilter(VisitedGraph.AdjacentEdges(root));
             todoStack.Push(new SearchFrame(root, enumerable.GetEnumerator(), 0));
 
             while (todoStack.Count > 0)
@@ -375,7 +375,7 @@ namespace QuikGraph.Algorithms.Search
                     continue;
                 }
 
-                var edges = frame.Edges;
+                IEnumerator<TEdge> edges = frame.Edges;
                 while (edges.MoveNext())
                 {
                     TEdge edge = edges.Current;

@@ -50,16 +50,22 @@ namespace QuikGraph.Algorithms.VertexColoring
         #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
-        protected override void InternalCompute()
+        protected override void Initialize()
         {
+            base.Initialize();
+
             Colors.Clear();
-            
-            // Initialize remaining vertices as unassigned
+
+            // Initialize vertices as unassigned
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 Colors[vertex] = null; // No color is assigned to vertex
             }
+        }
 
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
             int vertexCount = VisitedGraph.VertexCount;
             TVertex firstVertex = VisitedGraph.Vertices.First();
 
@@ -80,36 +86,53 @@ namespace QuikGraph.Algorithms.VertexColoring
             foreach (TVertex vertex in VisitedGraph.Vertices.Skip(1))
             {
                 // Process all adjacent vertices and flag their colors as unavailable
-                foreach (TEdge adjacentEdges in VisitedGraph.AdjacentEdges(vertex))
-                {
-                    TVertex adjacentVertex = adjacentEdges.GetOtherVertex(vertex);
-                    if (Colors[adjacentVertex].HasValue)
-                    {
-                        available[Colors[adjacentVertex].Value] = true;
-                    }
-                }
+                MarkAdjacentAsUnavailable(vertex, available);
 
                 // Find the first available color
-                int usingColor;
-                for (usingColor = 0; usingColor < vertexCount; usingColor++)
-                {
-                    if (!available[usingColor])
-                        break;
-                }
+                int usingColor = FindAvailableColor(available);
 
                 // Assign the found color
                 Colors[vertex] = usingColor;
                 OnVertexColored(vertex);
 
                 // Reset the values back to false for the next iteration
-                foreach (TEdge adjacentEdges in VisitedGraph.AdjacentEdges(vertex))
+                ResetAdjacentAsAvailable(vertex, available);
+            }
+        }
+
+        private void MarkAdjacentAsUnavailable([NotNull] TVertex vertex, [NotNull] bool[] available)
+        {
+            foreach (TEdge adjacentEdges in VisitedGraph.AdjacentEdges(vertex))
+            {
+                TVertex adjacentVertex = adjacentEdges.GetOtherVertex(vertex);
+                if (Colors[adjacentVertex].HasValue)
                 {
-                    if (Colors[adjacentEdges.GetOtherVertex(vertex)].HasValue)
-                    {
-                        // ReSharper disable once PossibleInvalidOperationException, Justification: Was assigned a color just before
-                        var usedColor = Colors[adjacentEdges.GetOtherVertex(vertex)].Value;
-                        available[usedColor] = false;
-                    }
+                    available[Colors[adjacentVertex].Value] = true;
+                }
+            }
+        }
+
+        private static int FindAvailableColor([NotNull] bool[] available)
+        {
+            int usingColor;
+            for (usingColor = 0; usingColor < available.Length; ++usingColor)
+            {
+                if (!available[usingColor])
+                    break;
+            }
+
+            return usingColor;
+        }
+
+        private void ResetAdjacentAsAvailable([NotNull] TVertex vertex, [NotNull] bool[] available)
+        {
+            foreach (TEdge adjacentEdges in VisitedGraph.AdjacentEdges(vertex))
+            {
+                if (Colors[adjacentEdges.GetOtherVertex(vertex)].HasValue)
+                {
+                    // ReSharper disable once PossibleInvalidOperationException, Justification: Was assigned a color just before
+                    var usedColor = Colors[adjacentEdges.GetOtherVertex(vertex)].Value;
+                    available[usedColor] = false;
                 }
             }
         }

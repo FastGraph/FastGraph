@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -84,13 +85,11 @@ namespace QuikGraph.Algorithms.Search
 
             ICancelManager cancelManager = Services.CancelManager;
             var open = new BinaryHeap<double, TVertex>(_distanceRelaxer.Compare);
-            var operators = new Dictionary<TEdge, GraphColor>();
             var graph = VisitedGraph;
 
             // (1) Place the initial node in Open, with all its operators marked unused
             open.Add(0, root);
-            foreach (TEdge edge in graph.OutEdges(root))
-                operators.Add(edge, GraphColor.White);
+            Dictionary<TEdge, GraphColor> operators = graph.OutEdges(root).ToDictionary(edge => edge, edge => GraphColor.White);
 
             while (open.Count > 0)
             {
@@ -112,34 +111,7 @@ namespace QuikGraph.Algorithms.Search
                 // (5) Else, expand node n, generating all
                 // successors n' reachable via unused legal operators,
                 // compute their cost and delete node n
-                foreach (TEdge edge in graph.OutEdges(n))
-                {
-                    if (edge.IsSelfEdge())
-                        continue; // Skip self-edges
-
-                    bool hasColor = operators.TryGetValue(edge, out GraphColor edgeColor);
-                    if (!hasColor || edgeColor == GraphColor.White)
-                    {
-                        double weight = _edgeWeights(edge);
-                        double nCost = _distanceRelaxer.Combine(cost, weight);
-
-                        // (7) For each neighboring node of n' mark the operator from n to n' as used
-                        // (8) For each node n', if there is no copy of n' in Open add it
-                        // else save in open on the copy of n' with lowest cost. Mark as used all operators
-                        // as used in any of the copies
-                        operators[edge] = GraphColor.Gray;
-                        if (open.MinimumUpdate(nCost, edge.Target))
-                            OnTreeEdge(edge);
-                    }
-                    else
-                    {
-#if SUPPORTS_CONTRACTS
-                        Contract.Assume(edgeColor == GraphColor.Gray);
-#endif
-                        // Edge already seen, remove it
-                        operators.Remove(edge);
-                    }
-                }
+                ExpandNode(n, operators, cost, open);
 
 #if DEBUG
                 OperatorMaxCount = Math.Max(OperatorMaxCount, operators.Count);
@@ -155,6 +127,40 @@ namespace QuikGraph.Algorithms.Search
                         // Delete node n
                         operators.Remove(edge);
                     }
+                }
+            }
+        }
+
+        private void ExpandNode(
+            [NotNull] TVertex n, 
+            [NotNull] IDictionary<TEdge, GraphColor> operators, 
+            double cost,
+            [NotNull] BinaryHeap<double, TVertex> open)
+        {
+            // Skip self-edges
+            foreach (TEdge edge in VisitedGraph.OutEdges(n).Where(e => !e.IsSelfEdge()))
+            {
+                bool hasColor = operators.TryGetValue(edge, out GraphColor edgeColor);
+                if (!hasColor || edgeColor == GraphColor.White)
+                {
+                    double weight = _edgeWeights(edge);
+                    double nCost = _distanceRelaxer.Combine(cost, weight);
+
+                    // (7) For each neighboring node of n' mark the operator from n to n' as used
+                    // (8) For each node n', if there is no copy of n' in Open add it
+                    // else save in open on the copy of n' with lowest cost. Mark as used all operators
+                    // as used in any of the copies
+                    operators[edge] = GraphColor.Gray;
+                    if (open.MinimumUpdate(nCost, edge.Target))
+                        OnTreeEdge(edge);
+                }
+                else
+                {
+#if SUPPORTS_CONTRACTS
+                        Contract.Assume(edgeColor == GraphColor.Gray);
+#endif
+                    // Edge already seen, remove it
+                    operators.Remove(edge);
                 }
             }
         }

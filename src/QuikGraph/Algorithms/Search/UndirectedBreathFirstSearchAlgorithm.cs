@@ -295,32 +295,38 @@ namespace QuikGraph.Algorithms.Search
                 TVertex u = _vertexQueue.Dequeue();
 
                 OnExamineVertex(u);
-                foreach (TEdge edge in VisitedGraph.AdjacentEdges(u))
-                {
-                    bool reversed = edge.Target.Equals(u);
-                    TVertex v = reversed ? edge.Source : edge.Target;
-                    OnExamineEdge(edge);
 
-                    GraphColor vColor = VerticesColors[v];
-                    if (vColor == GraphColor.White)
-                    {
-                        OnTreeEdge(edge, reversed);
-                        VerticesColors[v] = GraphColor.Gray;
-                        OnDiscoverVertex(v);
-                        _vertexQueue.Enqueue(v);
-                    }
-                    else
-                    {
-                        OnNonTreeEdge(edge, reversed);
-                        if (vColor == GraphColor.Gray)
-                            OnGrayTarget(edge, reversed);
-                        else
-                            OnBlackTarget(edge, reversed);
-                    }
-                }
+                ExploreAdjacentEdges(u);
 
                 VerticesColors[u] = GraphColor.Black;
                 OnVertexFinished(u);
+            }
+        }
+
+        private void ExploreAdjacentEdges([NotNull] TVertex u)
+        {
+            foreach (TEdge edge in VisitedGraph.AdjacentEdges(u))
+            {
+                bool reversed = edge.Target.Equals(u);
+                TVertex v = reversed ? edge.Source : edge.Target;
+                OnExamineEdge(edge);
+
+                GraphColor vColor = VerticesColors[v];
+                if (vColor == GraphColor.White)
+                {
+                    OnTreeEdge(edge, reversed);
+                    VerticesColors[v] = GraphColor.Gray;
+                    OnDiscoverVertex(v);
+                    _vertexQueue.Enqueue(v);
+                }
+                else
+                {
+                    OnNonTreeEdge(edge, reversed);
+                    if (vColor == GraphColor.Gray)
+                        OnGrayTarget(edge, reversed);
+                    else
+                        OnBlackTarget(edge, reversed);
+                }
             }
         }
     }

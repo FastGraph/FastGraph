@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 #if SUPPORTS_CONTRACTS
 using System.Diagnostics.Contracts;
 #endif
@@ -115,11 +116,15 @@ namespace QuikGraph.Algorithms.TopologicalSort
                 OnVertexAdded(vertex);
 
                 // Update the count of its adjacent vertices
-                foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex))
-                {
-                    if (edge.IsSelfEdge())
-                        continue;
+                UpdateAdjacentDegree(vertex);
+            }
 
+            #region Local function
+
+            void UpdateAdjacentDegree(TVertex vertex)
+            {
+                foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex).Where(e => !e.IsSelfEdge()))
+                {
                     --Degrees[edge.Target];
 
                     if (Degrees[edge.Target] < 0 && !AllowCyclicGraph)
@@ -129,6 +134,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
                         _heap.Update(edge.Target);
                 }
             }
+
+            #endregion
         }
 
         #endregion

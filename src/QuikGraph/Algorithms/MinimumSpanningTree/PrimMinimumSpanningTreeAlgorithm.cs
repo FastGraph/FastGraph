@@ -89,80 +89,107 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
 
         #region AlgorithmBase<TGraph>
 
-        /// <inheritdoc />
-        protected override void InternalCompute()
-        {
-            ICancelManager cancelManager = Services.CancelManager;
+        private Dictionary<TVertex, HashSet<TEdge>> _verticesEdges;
+        private HashSet<TVertex> _visitedVertices;
+        private ForestDisjointSet<TVertex> _sets;
 
-            var verticesEdges = new Dictionary<TVertex, HashSet<TEdge>>();
-            var visitedVertices = new HashSet<TVertex>();
-            var edges = new HashSet<TEdge>();
-            var queue = new BinaryQueue<TEdge, double>(_edgeWeights);
-            var sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
+        private HashSet<TEdge> _edges;
+        private BinaryQueue<TEdge, double> _queue;
+
+        private void InitializeVerticesToEdges()
+        {
+            _verticesEdges = new Dictionary<TVertex, HashSet<TEdge>>();
+            _visitedVertices = new HashSet<TVertex>();
+            _sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
 
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (visitedVertices.Count == 0)
+                if (_visitedVertices.Count == 0)
                 {
-                    visitedVertices.Add(vertex);
+                    _visitedVertices.Add(vertex);
                 }
 
-                sets.MakeSet(vertex);
-                verticesEdges.Add(vertex, new HashSet<TEdge>());
+                _sets.MakeSet(vertex);
+                _verticesEdges.Add(vertex, new HashSet<TEdge>());
             }
 
             foreach (TEdge edge in VisitedGraph.Edges)
             {
-                verticesEdges[edge.Source].Add(edge);
-                verticesEdges[edge.Target].Add(edge);
+                _verticesEdges[edge.Source].Add(edge);
+                _verticesEdges[edge.Target].Add(edge);
             }
+        }
 
-            if (cancelManager.IsCancelling)
-                return;
-
-            TVertex lastVertex = visitedVertices.First();
-            foreach (TEdge edge in verticesEdges[lastVertex])
+        private void InitializeQueue()
+        {
+            _edges = new HashSet<TEdge>();
+            _queue = new BinaryQueue<TEdge, double>(_edgeWeights);
+            TVertex lastVertex = _visitedVertices.First();
+            foreach (TEdge edge in _verticesEdges[lastVertex])
             {
-                if (!edges.Contains(edge))
+                if (!_edges.Contains(edge))
                 {
-                    edges.Add(edge);
-                    queue.Enqueue(edge);
+                    _edges.Add(edge);
+                    _queue.Enqueue(edge);
                 }
             }
+        }
 
-            if (cancelManager.IsCancelling)
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            InitializeVerticesToEdges();
+
+            if (Services.CancelManager.IsCancelling)
                 return;
 
-            while (edges.Count > 0 && visitedVertices.Count < VisitedGraph.VertexCount)
+            InitializeQueue();
+        }
+
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
+            if (Services.CancelManager.IsCancelling)
+                return;
+
+            while (_edges.Count > 0 && _visitedVertices.Count < VisitedGraph.VertexCount)
             {
-                TEdge minEdge = queue.Dequeue();
+                TEdge minEdge = _queue.Dequeue();
                 OnExamineEdge(minEdge);
 
-                if (!sets.AreInSameSet(minEdge.Source, minEdge.Target))
+                if (!_sets.AreInSameSet(minEdge.Source, minEdge.Target))
                 {
                     OnTreeEdge(minEdge);
-                    sets.Union(minEdge.Source, minEdge.Target);
+                    _sets.Union(minEdge.Source, minEdge.Target);
 
-                    if (visitedVertices.Contains(minEdge.Source))
+                    TVertex lastVertex;
+                    if (_visitedVertices.Contains(minEdge.Source))
                     {
                         lastVertex = minEdge.Target;
-                        visitedVertices.Add(minEdge.Target);
+                        _visitedVertices.Add(minEdge.Target);
                     }
                     else
                     {
                         lastVertex = minEdge.Source;
-                        visitedVertices.Add(minEdge.Source);
+                        _visitedVertices.Add(minEdge.Source);
                     }
 
-                    foreach (TEdge edge in verticesEdges[lastVertex])
-                    {
-                        if (edges.Contains(edge))
-                            continue;
-
-                        edges.Add(edge);
-                        queue.Enqueue(edge);
-                    }
+                    EnqueueEdgesFrom(lastVertex);
                 }
+            }
+        }
+
+        private void EnqueueEdgesFrom([NotNull] TVertex vertex)
+        {
+            foreach (TEdge edge in _verticesEdges[vertex])
+            {
+                if (_edges.Contains(edge))
+                    continue;
+
+                _edges.Add(edge);
+                _queue.Enqueue(edge);
             }
         }
 

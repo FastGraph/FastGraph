@@ -1,3 +1,5 @@
+
+using System.Linq;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,39 @@ using JetBrains.Annotations;
 
 namespace QuikGraph.Serialization
 {
-    internal static class SerializationHelper
+    internal static class SerializationHelpers
     {
+        /// <summary>
+        /// Checks if the given <paramref name="type"/> is treatable (not null, <see cref="object"/> or <see cref="ValueType"/>).
+        /// </summary>
+        /// <param name="type"><see cref="Type"/> to check.</param>
+        /// <returns>True if the <paramref name="type"/> can be treated, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
+        [ContractAnnotation("type:null => false")]
+        private static bool IsTreatableType([CanBeNull] Type type)
+        {
+            return type != null
+                   && type != typeof(object)
+                   && type != typeof(ValueType);
+        }
+
+        /// <summary>
+        /// Checks if the given <paramref name="property"/> is an indexed one.
+        /// </summary>
+        /// <param name="property">A <see cref="PropertyInfo"/>.</param>
+        /// <returns>True if the <paramref name="property"/> is an indexed property, false otherwise.</returns>
+#if SUPPORTS_CONTRACTS
+        [System.Diagnostics.Contracts.Pure]
+#endif
+        [Pure]
+        private static bool IsIndexed([NotNull] PropertyInfo property)
+        {
+            return property.GetIndexParameters().Length != 0;
+        }
+
         /// <summary>
         /// Gets all properties that are marked with <see cref="XmlAttributeAttribute"/> on given type.
         /// </summary>
@@ -23,16 +56,14 @@ namespace QuikGraph.Serialization
         public static IEnumerable<PropertySerializationInfo> GetAttributeProperties([CanBeNull] Type type)
         {
             Type currentType = type;
-            while (currentType != null
-                   && currentType != typeof(object)
-                   && currentType != typeof(ValueType))
+            while (IsTreatableType(currentType))
             {
-                foreach (PropertyInfo property in currentType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                // Iterate through properties that must have a get, and are not indexed property
+                IEnumerable<PropertyInfo> properties = currentType
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(ValidProperty);
+                foreach (PropertyInfo property in properties)
                 {
-                    // Must have a get, and not be an index
-                    if (!property.CanRead || property.GetIndexParameters().Length > 0)
-                        continue;
-
                     // Is it tagged with XmlAttributeAttribute
                     if (TryGetAttributeName(property, out string name))
                     {
@@ -45,6 +76,15 @@ namespace QuikGraph.Serialization
 
                 currentType = currentType.BaseType;
             }
+
+            #region Local function
+
+            bool ValidProperty(PropertyInfo property)
+            {
+                return property.CanRead && !IsIndexed(property);
+            }
+
+            #endregion
         }
 
 #if SUPPORTS_CONTRACTS

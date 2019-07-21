@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Xml;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
+using static QuikGraph.Serialization.ILHelpers;
 using static QuikGraph.Serialization.XmlConstants;
 
 namespace QuikGraph.Serialization
@@ -36,7 +37,7 @@ namespace QuikGraph.Serialization
     /// Hyper edge, nodes, nested graphs not supported.
     /// </para>
     /// </remarks>
-    public sealed class GraphMLDeserializer<TVertex, TEdge, TGraph> : SerializerBase<TVertex, TEdge>
+    public sealed class GraphMLDeserializer<TVertex, TEdge, TGraph> : SerializerBase
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
     {
@@ -136,7 +137,7 @@ namespace QuikGraph.Serialization
                 ILGenerator generator = method.GetILGenerator();
 
                 // We need to create the switch for each property
-                foreach (PropertySerializationInfo info in SerializationHelper.GetAttributeProperties(elementType))
+                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(elementType))
                 {
                     PropertyInfo property = info.Property;
 
@@ -149,6 +150,7 @@ namespace QuikGraph.Serialization
                         throw new InvalidOperationException($"Property {property.Name} is not settable.");
                     if (property.PropertyType.IsArray)
                         throw new NotSupportedException("Default values for array types are not implemented.");
+
                     object value = defaultValueAttribute.Value;
                     if (value is null)
                         throw new NotSupportedException($"Null default value is not supported for property {property.Name}.");
@@ -156,36 +158,8 @@ namespace QuikGraph.Serialization
                         throw new InvalidOperationException($"Invalid default value type for property {property.Name}.");
 
                     generator.Emit(OpCodes.Ldarg_0);
-                    switch (Type.GetTypeCode(property.PropertyType))
-                    {
-                        case TypeCode.Int32:
-                            generator.Emit(OpCodes.Ldc_I4, (int)value);
-                            break;
-                        case TypeCode.Int64:
-                            generator.Emit(OpCodes.Ldc_I8, (long)value);
-                            break;
-                        case TypeCode.Single:
-                            generator.Emit(OpCodes.Ldc_R4, (float)value);
-                            break;
-                        case TypeCode.Double:
-                            generator.Emit(OpCodes.Ldc_R8, (double)value);
-                            break;
-                        case TypeCode.String:
-                            generator.Emit(OpCodes.Ldstr, (string)value);
-                            break;
-                        case TypeCode.Boolean:
-                            generator.Emit((bool)value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-                            break;
-                        default:
-                            throw new NotSupportedException($"Unsupported type {property.PropertyType.FullName}.");
-                    }
-
-                    generator.EmitCall(
-                        setMethod.IsVirtual
-                            ? OpCodes.Callvirt
-                            : OpCodes.Call,
-                        setMethod,
-                        null);
+                    EmitValue(generator, property, value);
+                    EmitCall(generator, setMethod);
                 }
 
                 generator.Emit(OpCodes.Ret);
@@ -223,7 +197,7 @@ namespace QuikGraph.Serialization
                 Label next = generator.DefineLabel();
                 Label @return = generator.DefineLabel();
                 bool first = true;
-                foreach (PropertySerializationInfo info in SerializationHelper.GetAttributeProperties(elementType))
+                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(elementType))
                 {
                     PropertyInfo property = info.Property;
                     if (!first)

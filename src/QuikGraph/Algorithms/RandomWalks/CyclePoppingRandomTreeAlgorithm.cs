@@ -338,45 +338,54 @@ namespace QuikGraph.Algorithms.RandomWalks
                     break;
 
                 // First pass: exploration
-                {
-                    var visited = new Dictionary<TEdge, int>();
-                    TVertex current = vertex;
-                    while (NotInTree(current))
-                    {
-                        if (Chance(eps))
-                        {
-                            ClearTree(current);
-                            SetInTree(current);
-                            ++numRoots;
-                            if (numRoots > 1)
-                                return false;
-                        }
-                        else
-                        {
-                            if (!TryGetSuccessor(visited, current, out TEdge successor))
-                                break;
-
-                            visited[successor] = 0;
-                            Tree(current, successor);
-                            if (!TryGetNextInTree(current, out current))
-                                break;
-                        }
-                    }
-                }
+                if (!Explore(eps, vertex, ref numRoots))
+                    return false;
 
                 // Second pass: coloration
+                Colorize(vertex);
+            }
+
+            return true;
+        }
+
+        private bool Explore(double eps, [NotNull] TVertex vertex, ref int numRoots)
+        {
+            var visited = new Dictionary<TEdge, int>();
+            TVertex current = vertex;
+            while (NotInTree(current))
+            {
+                if (Chance(eps))
                 {
-                    TVertex current = vertex;
-                    while (NotInTree(current))
-                    {
-                        SetInTree(current);
-                        if (!TryGetNextInTree(current, out current))
-                            break;
-                    }
+                    ClearTree(current);
+                    SetInTree(current);
+                    ++numRoots;
+                    if (numRoots > 1)
+                        return false;
+                }
+                else
+                {
+                    if (!TryGetSuccessor(visited, current, out TEdge successor))
+                        break;
+
+                    visited[successor] = 0;
+                    Tree(current, successor);
+                    if (!TryGetNextInTree(current, out current))
+                        break;
                 }
             }
 
             return true;
+        }
+
+        private void Colorize([NotNull] TVertex vertex)
+        {
+            TVertex current = vertex;
+            while (NotInTree(current))
+            {
+                SetInTree(current);
+                if (!TryGetNextInTree(current, out current))
+                    break;
+            }
         }
     }
 }

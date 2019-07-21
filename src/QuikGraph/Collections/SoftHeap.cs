@@ -296,44 +296,67 @@ namespace QuikGraph.Collections
             v.CKey = v.Next.CKey;
 
             // Softening the heap
-            if (v.Rank > MinRank 
-                && (v.Rank % 2 == 1 || v.Child.Rank < v.Rank - 1))
+            SoftenHeap(v);
+
+            UpdateChildAndNext(v);
+
+            return v;
+        }
+
+        private void SoftenHeap([NotNull] Node node)
+        {
+            if (node.Rank > MinRank
+                && (node.Rank % 2 == 1 || node.Child.Rank < node.Rank - 1))
             {
-                v.Next = Shift(v.Next);
+#if SUPPORTS_CONTRACTS
+                Contract.Assert(node.Next != null);
+#endif
+
+                node.Next = Shift(node.Next);
                 // Restore heap ordering that might be broken by shifting
-                if (KeyComparison(v.Next.CKey, v.Child.CKey) > 0)
+                if (KeyComparison(node.Next.CKey, node.Child.CKey) > 0)
                 {
-                    Node tmp = v.Child;
-                    v.Child = v.Next;
-                    v.Next = tmp;
+                    Node tmp = node.Child;
+                    node.Child = node.Next;
+                    node.Next = tmp;
                 }
 
-                if (KeyComparison(v.Next.CKey, KeyMaxValue) != 0 && v.Next.IL != null)
+                if (KeyComparison(node.Next.CKey, KeyMaxValue) != 0 && node.Next.IL != null)
                 {
-                    v.Next.ILTail.Next = v.IL;
-                    v.IL = v.Next.IL;
-                    if (v.ILTail == null)
-                        v.ILTail = v.Next.ILTail;
-                    v.CKey = v.Next.CKey;
+                    node.Next.ILTail.Next = node.IL;
+                    node.IL = node.Next.IL;
+                    if (node.ILTail == null)
+                        node.ILTail = node.Next.ILTail;
+                    node.CKey = node.Next.CKey;
                 }
             } // End second shift
+        }
 
-            if (KeyComparison(v.Child.CKey, KeyMaxValue) == 0)
+        private void UpdateChildAndNext([NotNull] Node node)
+        {
+#if SUPPORTS_CONTRACTS
+            Contract.Assert(node.Child != null);
+#endif
+
+            if (KeyComparison(node.Child.CKey, KeyMaxValue) == 0)
             {
-                if (KeyComparison(v.Next.CKey, KeyMaxValue) == 0)
+#if SUPPORTS_CONTRACTS
+                Contract.Assert(node.Next != null);
+#endif
+
+                if (KeyComparison(node.Next.CKey, KeyMaxValue) == 0)
                 {
-                    v.Child = null;
-                    v.Next = null;
+                    node.Child = null;
+                    node.Next = null;
                 }
                 else
                 {
-                    v.Child = v.Next.Child;
-                    v.Next = v.Next.Next;
+                    node.Child = node.Next.Child;
+                    node.Next = node.Next.Next;
                 }
             }
-
-            return v;
-        } // Shift
+        }
+// Shift
 
         /// <summary>
         /// Deletes the element with minimal key.
@@ -411,7 +434,7 @@ namespace QuikGraph.Collections
             return new Enumerator();
         }
 
-        private class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             public Enumerator()
             {
