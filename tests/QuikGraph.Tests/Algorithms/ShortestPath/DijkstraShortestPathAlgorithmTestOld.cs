@@ -7,7 +7,7 @@ using QuikGraph.Tests;
 namespace QuikGraph.Algorithms.ShortestPath
 {
     [TestFixture]
-    internal class DijkstraShortestPathTestOld : QuikGraphUnitTests
+    internal class DijkstraShortestPathTestsOld : QuikGraphUnitTests
     {
         [Test]
         public void RunOnLineGraph()

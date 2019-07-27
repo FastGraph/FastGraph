@@ -3,7 +3,7 @@ using NUnit.Framework;
 namespace QuikGraph
 {
     [TestFixture]
-    public partial class UndirectedGraphTest
+    public partial class UndirectedGraphTests
     {
         public static void IsAdjacentEdgesEmpty<T,E>(IUndirectedGraph<T, E> g)
             where E : IEdge<T>

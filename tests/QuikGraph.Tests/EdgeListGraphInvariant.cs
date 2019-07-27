@@ -3,7 +3,7 @@
 namespace QuikGraph
 {
     [TestFixture]
-    public static class EdgeListGraphTest
+    public static class EdgeListGraphTests
     {
         public static void Iteration<T,E>(IEdgeListGraph<T, E> g)
             where E : IEdge<T>
