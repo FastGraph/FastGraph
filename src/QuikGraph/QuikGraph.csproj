@@ -4,7 +4,7 @@
     <TargetFrameworks>net20;net35;net40;netstandard1.3;netstandard2.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <Title>QuikGraph</Title>
     <RootNamespace>QuikGraph</RootNamespace>
@@ -35,7 +35,7 @@ Supported platforms:
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph</PackageId>
     <PackageReleaseNotes>➟ Release 1.0.0</PackageReleaseNotes>
-    <PackageTags>QuickGraph QuikGraph Graph Algorithm C# .NET</PackageTags>
+    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET</PackageTags>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
@@ -43,6 +43,11 @@ Supported platforms:
     <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuickGraph/master/docs/images/quikgraph_logo.png</PackageIconUrl>
     <RepositoryType>GitHub</RepositoryType>
     <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
+  </PropertyGroup>
+
+  <!-- C# configuration -->
+  <PropertyGroup>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -66,7 +71,7 @@ Supported platforms:
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net20' OR '$(TargetFramework)'=='net35' OR '$(TargetFramework)'=='net40' OR '$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard1.3'">
     <EmbeddedResource Include="Serialization\graphml-structure.xsd" />
     <EmbeddedResource Include="Serialization\graphml.dtd" />
     <EmbeddedResource Include="Serialization\graphml.xsd" />
@@ -111,5 +116,10 @@ Supported platforms:
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
 	<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
 	<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+  <!-- Source Link -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
 </Project>
