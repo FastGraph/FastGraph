@@ -1,106 +1,53 @@
-﻿using NUnit.Framework;
-using QuikGraph.Tests;
+﻿using System.Linq;
+using NUnit.Framework;
 
 namespace QuikGraph.Tests
 {
     /// <summary>
-    ///This is a test class for BidirectionalGraphTest and is intended
-    ///to contain all BidirectionalGraphTest Unit Tests
+    /// Tests for <see cref="BidirectionalGraph{TVertex,TEdge}"/>s.
     ///</summary>
     [TestFixture]
-    internal class BidirectionalGraphTests : QuikGraphUnitTests
+    internal class BidirectionalGraphTests
     {
-
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
         [Test]
-        public void CloneTest()
+        public void Clone()
         {
-            var g = new BidirectionalGraph<int, Edge<int>>();
-            g.AddVertexRange(new int[3] {1, 2, 3});
-            g.AddEdge(new Edge<int>(1, 2));
-            g.AddEdge(new Edge<int>(2, 3));
-            g.AddEdge(new Edge<int>(3, 1));
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVertexRange(new[] { 1, 2, 3 });
+            graph.AddEdge(new Edge<int>(1, 2));
+            graph.AddEdge(new Edge<int>(2, 3));
+            graph.AddEdge(new Edge<int>(3, 1));
 
-            Assert.AreEqual(3, g.VertexCount);
-            Assert.AreEqual(3, g.EdgeCount);
+            Assert.AreEqual(3, graph.VertexCount);
+            Assert.AreEqual(3, graph.EdgeCount);
 
-            var h = g.Clone();
+            var clonedGraph = graph.Clone();
 
-            Assert.AreEqual(3, h.VertexCount);
-            Assert.AreEqual(3, h.EdgeCount);
+            Assert.AreEqual(3, clonedGraph.VertexCount);
+            Assert.AreEqual(3, clonedGraph.EdgeCount);
 
-            h.AddVertexRange(new int[4] { 10, 11, 12, 13 });
-            h.AddEdge(new Edge<int>(10, 11));
+            clonedGraph.AddVertexRange(new[] { 10, 11, 12, 13 });
+            clonedGraph.AddEdge(new Edge<int>(10, 11));
 
-            Assert.AreEqual(7, h.VertexCount);
-            Assert.AreEqual(4, h.EdgeCount);
+            Assert.AreEqual(7, clonedGraph.VertexCount);
+            Assert.AreEqual(4, clonedGraph.EdgeCount);
 
-            var i = 0;
-            foreach (var e in h.Edges)
-                i++;
+            int edgeCount = clonedGraph.Edges.Count();
 
-            Assert.AreEqual(4, i);
+            Assert.AreEqual(4, edgeCount);
 
-            Assert.AreEqual(3, g.VertexCount);
-            Assert.AreEqual(3, g.EdgeCount);
+            Assert.AreEqual(3, graph.VertexCount);
+            Assert.AreEqual(3, graph.EdgeCount);
         }
 
-        // [Test]
+        //[Test]
         //public void LoadGraphFromDot()
-        // {
-        //     const string dotSource = "digraph { a -> b }";
-        //     var vertexFunc = DotParserAdapter.VertexFactory.Name;
-        //     var edgeFunc = DotParserAdapter.EdgeFactory<string>.VerticesOnly;
-        //     var graph = BidirectionalGraph<string, SEdge<string>>.LoadDot(dotSource, vertexFunc, edgeFunc);
-        //     Assert.IsNotNull(graph);
-        // }
+        //{
+        //    const string dotSource = "digraph { a -> b }";
+        //    var vertexFunc = DotParserAdapter.VertexFactory.Name;
+        //    var edgeFunc = DotParserAdapter.EdgeFactory<string>.VerticesOnly;
+        //    var graph = BidirectionalGraph<string, SEdge<string>>.LoadDot(dotSource, vertexFunc, edgeFunc);
+        //    Assert.IsNotNull(graph);
+        //}
     }
 }

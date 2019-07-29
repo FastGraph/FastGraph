@@ -1,74 +1,90 @@
-﻿using NUnit.Framework;
-using QuikGraph.Tests;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
 
 namespace QuikGraph.Tests
 {
+    /// <summary>
+    /// Tests for <see cref="ClusteredAdjacencyGraph{TVertex,TEdge}"/>s.
+    /// </summary>
     [TestFixture]
-    internal class ClusteredGraphTests : QuikGraphUnitTests
+    internal class ClusteredGraphTests
     {
-        public bool ContainsVertexParent(ClusteredAdjacencyGraph<int, IEdge<int>> clus,int v)
+        #region Helpers
+
+        [Pure]
+        public bool ContainsVertexParent([NotNull] ClusteredAdjacencyGraph<int, IEdge<int>> cluster, int vertex)
         {
-            return (clus.ContainsVertex(v) && clus.Parent!=null && ContainsVertexParent(clus.Parent,v) 
-                   || clus.Parent == null);
+            return cluster.ContainsVertex(vertex)
+                   && cluster.Parent != null 
+                   && ContainsVertexParent(cluster.Parent, vertex)
+                   || cluster.Parent is null;
         }
 
-        public bool ContainsEdgeParent(ClusteredAdjacencyGraph<int, IEdge<int>> clus, IEdge<int> e)
+        [Pure]
+        public bool ContainsEdgeParent([NotNull] ClusteredAdjacencyGraph<int, IEdge<int>> cluster, IEdge<int> edge)
         {
-            return (clus.ContainsEdge(e) && clus.Parent != null && ContainsEdgeParent(clus.Parent, e) 
-                   || clus.Parent == null);
+            return cluster.ContainsEdge(edge) 
+                   && cluster.Parent != null 
+                   && ContainsEdgeParent(cluster.Parent, edge)
+                   || cluster.Parent is null;
         }
+
+        #endregion
 
         [Test]
-        public void AddingClustVertexTest1()
+        public void AddingClusterVertex()
         {
             var graph = new AdjacencyGraph<int, IEdge<int>>();
             var clusteredGraph = new ClusteredAdjacencyGraph<int, IEdge<int>>(graph);
-            var cluster1 = clusteredGraph.AddCluster();
-            cluster1.AddVertex(5);
-            var a = ContainsVertexParent(clusteredGraph, 5);
-            Assert.IsTrue(a);
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster = clusteredGraph.AddCluster();
+            cluster.AddVertex(5);
+
+            Assert.IsTrue(ContainsVertexParent(clusteredGraph, 5));
         }
 
         [Test]
-        public void AddingClustEdgeTest1()
+        public void AddingClusterEdge()
         {
             var graph = new AdjacencyGraph<int, IEdge<int>>();
             var clusteredGraph = new ClusteredAdjacencyGraph<int, IEdge<int>>(graph);
-            var cluster1 = clusteredGraph.AddCluster();
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster1 = clusteredGraph.AddCluster();
             cluster1.AddVertex(5);
             cluster1.AddVertex(6);
             var edge = new TaggedEdge<int, int>(5, 6, 1);
             cluster1.AddEdge(edge);
-            var a = ContainsEdgeParent(clusteredGraph, edge);
-            Assert.IsTrue(a);
+
+            Assert.IsTrue(ContainsEdgeParent(clusteredGraph, edge));
         }
 
-          [Test]
-          public void RemovingClustEdgeTest1()
-          {
-              var graph = new AdjacencyGraph<int, IEdge<int>>();
-              var clusteredGraph = new ClusteredAdjacencyGraph<int, IEdge<int>>(graph);
-              var cluster1 = clusteredGraph.AddCluster();
-              var cluster2 = cluster1.AddCluster();
-              var cluster3 = cluster2.AddCluster();
-            cluster3.AddVertex(5);
-            cluster3.AddVertex(6);
-            var edge = new TaggedEdge<int, int>(5, 6, 1);
-            cluster1.RemoveEdge(edge);
-            Assert.IsFalse(ContainsEdgeParent(cluster2, edge));
-          }
-          
         [Test]
-        public void RemovingClustVertexTest1()
+        public void RemovingClusterVertex()
         {
             var graph = new AdjacencyGraph<int, IEdge<int>>();
             var clusteredGraph = new ClusteredAdjacencyGraph<int, IEdge<int>>(graph);
-            var cluster1 = clusteredGraph.AddCluster();
-            var cluster2 = cluster1.AddCluster();
-            var cluster3 = cluster2.AddCluster();
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster1 = clusteredGraph.AddCluster();
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster2 = cluster1.AddCluster();
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster3 = cluster2.AddCluster();
             cluster3.AddVertex(5);
             cluster2.RemoveVertex(5);
+
             Assert.IsFalse(ContainsVertexParent(cluster3, 5));
+        }
+
+        [Test]
+        public void RemovingClusterEdge()
+        {
+            var graph = new AdjacencyGraph<int, IEdge<int>>();
+            var clusteredGraph = new ClusteredAdjacencyGraph<int, IEdge<int>>(graph);
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster1 = clusteredGraph.AddCluster();
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster2 = cluster1.AddCluster();
+            ClusteredAdjacencyGraph<int, IEdge<int>> cluster3 = cluster2.AddCluster();
+            cluster3.AddVertex(5);
+            cluster3.AddVertex(6);
+
+            var edge = new TaggedEdge<int, int>(5, 6, 1);
+            cluster1.RemoveEdge(edge);
+
+            Assert.IsFalse(ContainsEdgeParent(cluster2, edge));
         }
     }
 }
