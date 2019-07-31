@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Tests.Regression
 {
+    /// <summary>
+    /// Tests for <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class ShortestPathBellmanFordTests : QuikGraphUnitTests
+    internal class ShortestPathBellmanFordTests
     {
         [Test]
         public void Repro12901()
@@ -15,10 +17,10 @@ namespace QuikGraph.Tests.Regression
             Assert.Throws<InvalidOperationException>(() =>
             {
                 var graph = new BidirectionalGraph<int, Edge<int>>();
-                int vertex = 1;
+                const int vertex = 1;
                 graph.AddVerticesAndEdge(new Edge<int>(vertex, vertex));
-                var pathFinder = AlgorithmExtensions.ShortestPathsBellmanFord<int, Edge<int>>(graph, edge => -1.0, vertex);
-                pathFinder(vertex, out IEnumerable<Edge<int>> path);
+                var pathFinder = graph.ShortestPathsBellmanFord(edge => -1.0, vertex);
+                pathFinder(vertex, out _);
             });
         }
     }

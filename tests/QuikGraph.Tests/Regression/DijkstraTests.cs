@@ -4,127 +4,146 @@ using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
-using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Regression
 {
+    /// <summary>
+    /// Tests for <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class DijkstraTests : QuikGraphUnitTests
+    internal class DijkstraTests
     {
         [Test]
-        public void Scenario() 
+        public void Scenario()
         {
-            AdjacencyGraph<string, Edge<string>> graph = new AdjacencyGraph<string, Edge<string>>(true);
+            AdjacencyGraph<string, Edge<string>> graph = CreateGraph(out Dictionary<Edge<string>, double> edgeCosts);
 
-            // Add some vertices to the graph
-            graph.AddVertex("A");
-            graph.AddVertex("B");
-            graph.AddVertex("C");
-            graph.AddVertex("D");
-            graph.AddVertex("E");
-            graph.AddVertex("F");
-            graph.AddVertex("G");
-            graph.AddVertex("H");
-            graph.AddVertex("I");
-            graph.AddVertex("J");
-
-            // Create the edges
-            Edge<string> a_b = new Edge<string>("A", "B");
-            Edge<string> a_d = new Edge<string>("A", "D");
-            Edge<string> b_a = new Edge<string>("B", "A");
-            Edge<string> b_c = new Edge<string>("B", "C");
-            Edge<string> b_e = new Edge<string>("B", "E");
-            Edge<string> c_b = new Edge<string>("C", "B");
-            Edge<string> c_f = new Edge<string>("C", "F");
-            Edge<string> c_j = new Edge<string>("C", "J");
-            Edge<string> d_e = new Edge<string>("D", "E");
-            Edge<string> d_g = new Edge<string>("D", "G");
-            Edge<string> e_d = new Edge<string>("E", "D");
-            Edge<string> e_f = new Edge<string>("E", "F");
-            Edge<string> e_h = new Edge<string>("E", "H");
-            Edge<string> f_i = new Edge<string>("F", "I");
-            Edge<string> f_j = new Edge<string>("F", "J");
-            Edge<string> g_d = new Edge<string>("G", "D");
-            Edge<string> g_h = new Edge<string>("G", "H");
-            Edge<string> h_g = new Edge<string>("H", "G");
-            Edge<string> h_i = new Edge<string>("H", "I");
-            Edge<string> i_f = new Edge<string>("I", "F");
-            Edge<string> i_j = new Edge<string>("I", "J");
-            Edge<string> i_h = new Edge<string>("I", "H");
-            Edge<string> j_f = new Edge<string>("J", "F");
-
-            // Add the edges
-            graph.AddEdge(a_b);
-            graph.AddEdge(a_d);
-            graph.AddEdge(b_a);
-            graph.AddEdge(b_c);
-            graph.AddEdge(b_e);
-            graph.AddEdge(c_b);
-            graph.AddEdge(c_f);
-            graph.AddEdge(c_j);
-            graph.AddEdge(d_e);
-            graph.AddEdge(d_g);
-            graph.AddEdge(e_d);
-            graph.AddEdge(e_f);
-            graph.AddEdge(e_h);
-            graph.AddEdge(f_i);
-            graph.AddEdge(f_j);
-            graph.AddEdge(g_d);
-            graph.AddEdge(g_h);
-            graph.AddEdge(h_g);
-            graph.AddEdge(h_i);
-            graph.AddEdge(i_f);
-            graph.AddEdge(i_h);
-            graph.AddEdge(i_j);
-            graph.AddEdge(j_f);
-
-            // Define some weights to the edges
-            Dictionary<Edge<string>, double> edgeCost = new Dictionary<Edge<string>, double>(graph.EdgeCount);
-            edgeCost.Add(a_b, 4);
-            edgeCost.Add(a_d, 1);
-            edgeCost.Add(b_a, 74);
-            edgeCost.Add(b_c, 2);
-            edgeCost.Add(b_e, 12);
-            edgeCost.Add(c_b, 12);
-            edgeCost.Add(c_f, 74);
-            edgeCost.Add(c_j, 12);
-            edgeCost.Add(d_e, 32);
-            edgeCost.Add(d_g, 22);
-            edgeCost.Add(e_d, 66);
-            edgeCost.Add(e_f, 76);
-            edgeCost.Add(e_h, 33);
-            edgeCost.Add(f_i, 11);
-            edgeCost.Add(f_j, 21);
-            edgeCost.Add(g_d, 12);
-            edgeCost.Add(g_h, 10);
-            edgeCost.Add(h_g, 2);
-            edgeCost.Add(h_i, 72);
-            edgeCost.Add(i_f, 31);
-            edgeCost.Add(i_h, 18);
-            edgeCost.Add(i_j, 7);
-            edgeCost.Add(j_f, 8);
-
-            // We want to use Dijkstra on this graph
-            var dijkstra = new DijkstraShortestPathAlgorithm<string, Edge<string>>(graph, e => edgeCost[e]);
+            // Run Dijkstra on this graph
+            var dijkstra = new DijkstraShortestPathAlgorithm<string, Edge<string>>(graph, e => edgeCosts[e]);
 
             // Attach a Vertex Predecessor Recorder Observer to give us the paths
             var predecessorObserver = new VertexPredecessorRecorderObserver<string, Edge<string>>();
-            using (predecessorObserver.Attach(dijkstra)) {
-                // Run the algorithm with A set to be the source
+            using (predecessorObserver.Attach(dijkstra))
+            {
+                // Run the algorithm with A as source
                 dijkstra.Compute("A");
             }
 
-            foreach (KeyValuePair<string, Edge<string>> kvp in predecessorObserver.VertexPredecessors)
-                Console.WriteLine("If you want to get to {0} you have to enter through the in edge {1}", kvp.Key, kvp.Value);
+            foreach (KeyValuePair<string, Edge<string>> pair in predecessorObserver.VertexPredecessors)
+                Console.WriteLine($"If you want to get to {pair.Key} you have to enter through the in edge {pair.Value}.");
 
-            foreach (string v in graph.Vertices) {
-                double distance = 
-                    AlgorithmExtensions.ComputePredecessorCost(
-                        predecessorObserver.VertexPredecessors,
-                        edgeCost,v);
-                Console.WriteLine("A -> {0}: {1}", v, distance);
+            foreach (string vertex in graph.Vertices)
+            {
+                double distance = AlgorithmExtensions.ComputePredecessorCost(
+                    predecessorObserver.VertexPredecessors,
+                    edgeCosts,
+                    vertex);
+                Console.WriteLine($"A -> {vertex}: {distance}");
             }
 
+
+            #region Local function
+
+            AdjacencyGraph<string, Edge<string>> CreateGraph(out Dictionary<Edge<string>, double> costs)
+            {
+                var g = new AdjacencyGraph<string, Edge<string>>(true);
+
+                // Add some vertices to the graph
+                g.AddVertex("A");
+                g.AddVertex("B");
+                g.AddVertex("C");
+                g.AddVertex("D");
+                g.AddVertex("E");
+                g.AddVertex("F");
+                g.AddVertex("G");
+                g.AddVertex("H");
+                g.AddVertex("I");
+                g.AddVertex("J");
+
+                // Create the edges
+                // ReSharper disable InconsistentNaming
+                var a_b = new Edge<string>("A", "B");
+                var a_d = new Edge<string>("A", "D");
+                var b_a = new Edge<string>("B", "A");
+                var b_c = new Edge<string>("B", "C");
+                var b_e = new Edge<string>("B", "E");
+                var c_b = new Edge<string>("C", "B");
+                var c_f = new Edge<string>("C", "F");
+                var c_j = new Edge<string>("C", "J");
+                var d_e = new Edge<string>("D", "E");
+                var d_g = new Edge<string>("D", "G");
+                var e_d = new Edge<string>("E", "D");
+                var e_f = new Edge<string>("E", "F");
+                var e_h = new Edge<string>("E", "H");
+                var f_i = new Edge<string>("F", "I");
+                var f_j = new Edge<string>("F", "J");
+                var g_d = new Edge<string>("G", "D");
+                var g_h = new Edge<string>("G", "H");
+                var h_g = new Edge<string>("H", "G");
+                var h_i = new Edge<string>("H", "I");
+                var i_f = new Edge<string>("I", "F");
+                var i_j = new Edge<string>("I", "J");
+                var i_h = new Edge<string>("I", "H");
+                var j_f = new Edge<string>("J", "F");
+                // ReSharper restore InconsistentNaming
+
+                // Add the edges
+                g.AddEdge(a_b);
+                g.AddEdge(a_d);
+                g.AddEdge(b_a);
+                g.AddEdge(b_c);
+                g.AddEdge(b_e);
+                g.AddEdge(c_b);
+                g.AddEdge(c_f);
+                g.AddEdge(c_j);
+                g.AddEdge(d_e);
+                g.AddEdge(d_g);
+                g.AddEdge(e_d);
+                g.AddEdge(e_f);
+                g.AddEdge(e_h);
+                g.AddEdge(f_i);
+                g.AddEdge(f_j);
+                g.AddEdge(g_d);
+                g.AddEdge(g_h);
+                g.AddEdge(h_g);
+                g.AddEdge(h_i);
+                g.AddEdge(i_f);
+                g.AddEdge(i_h);
+                g.AddEdge(i_j);
+                g.AddEdge(j_f);
+
+                // Define some weights to the edges
+                costs = new Dictionary<Edge<string>, double>(g.EdgeCount)
+                {
+                    [a_b] = 4,
+                    [a_d] = 1,
+                    [b_a] = 74,
+                    [b_c] = 2,
+                    [b_e] = 12,
+                    [c_b] = 12,
+                    [c_f] = 74,
+                    [c_j] = 12,
+                    [d_e] = 32,
+                    [d_g] = 22,
+                    [e_d] = 66,
+                    [e_f] = 76,
+                    [e_h] = 33,
+                    [f_i] = 11,
+                    [f_j] = 21,
+                    [g_d] = 12,
+                    [g_h] = 10,
+                    [h_g] = 2,
+                    [h_i] = 72,
+                    [i_f] = 31,
+                    [i_h] = 18,
+                    [i_j] = 7,
+                    [j_f] = 8
+                };
+
+                return g;
+            }
+
+            #endregion
         }
     }
 }

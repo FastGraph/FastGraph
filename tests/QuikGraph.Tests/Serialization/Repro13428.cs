@@ -4,386 +4,392 @@ using System.Globalization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization;
-using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Serialization
 {
     #region Enumerations
-    /// 
-    /// Enumeration of the person's gender
-    /// 
+
+    /// <summary>
+    /// Enumeration of the <see cref="Person"/>'s gender.
+    /// </summary>
     public enum Gender
     {
-        /// 
+        /// <summary>
         /// Male gender.
-        /// 
+        /// </summary>
         Male,
 
-        /// 
+        /// <summary>
         /// Female gender.
-        /// 
+        /// </summary>
         Female
     }
 
-    /// 
-    /// Enumeration of the person's age group
-    /// 
+    /// <summary>
+    /// Enumeration of the <see cref="Person"/>'s age group.
+    /// </summary>
     public enum AgeGroup
     {
-        /// 
+        /// <summary>
         /// Unknown age group.
-        /// 
+        /// </summary>
         Unknown,
 
-        /// 
+        /// <summary>
         /// 0 to 20 age group.
-        /// 
+        /// </summary>
         Youth,
 
-        /// 
+        /// <summary>
         /// 20 to 40 age group.
-        /// 
+        /// </summary>
         Adult,
 
-        /// 
+        /// <summary>
         /// 40 to 65 age group.
-        /// 
+        /// </summary>
         MiddleAge,
 
-        /// 
+        /// <summary>
         /// Over 65 age group.
-        /// 
+        /// </summary>
         Senior
     }
 
     #endregion
 
+    #region Test classes
+
     /// <summary>
-    /// Representation for a single serializable Person.
-    /// INotifyPropertyChanged allows properties of the Person class to
+    /// Representation for a single serializable <see cref="Person"/>.
+    /// <see cref="INotifyPropertyChanged"/> allows properties of the <see cref="Person"/> class to
     /// participate as source in data bindings.
     /// </summary>
-#if  SUPPORTS_SERIALIZATION
+#if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public class Person : INotifyPropertyChanged, IEquatable<Person>, IDataErrorInfo
     {
         #region Fields and Constants
 
+        [NotNull]
         private const string DefaultFirstName = "Unknown";
-        private string id;
-        private string firstName;
-        private string lastName;
-        private string middleName;
-        private string suffix;
-        private string nickName;
-        private string maidenName;
-        private Gender gender;
-        private DateTime? birthDate;
-        private string birthPlace;
-        private DateTime? deathDate;
-        private string deathPlace;
-        private bool isLiving;
+
+        [NotNull]
+        private string _id;
+
+        [NotNull]
+        private string _firstName;
+
+        [CanBeNull]
+        private string _lastName;
+
+        [CanBeNull]
+        private string _middleName;
+
+        [CanBeNull]
+        private string _suffix;
+
+        [CanBeNull]
+        private string _nickName;
+
+        [CanBeNull]
+        private string _maidenName;
+
+        private Gender _gender;
+
+        [CanBeNull]
+        private DateTime? _birthDate;
+
+        [CanBeNull]
+        private string _birthPlace;
+
+        [CanBeNull]
+        private DateTime? _deathDate;
+
+        [CanBeNull]
+        private string _deathPlace;
+
+        private bool _isLiving;
 
         #endregion
 
         #region Constructors
 
-        /// 
-        /// Initializes a new instance of the Person class.
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person"/> class.
         /// Each new instance will be given a unique identifier.
         /// This parameterless constructor is also required for serialization.
-        /// 
+        /// </summary>
         public Person()
         {
-            this.id = Guid.NewGuid().ToString();
-            this.firstName = DefaultFirstName;
-            this.isLiving = true;
+            _id = Guid.NewGuid().ToString();
+            _firstName = DefaultFirstName;
+            _isLiving = true;
         }
 
-        /// 
-        /// Initializes a new instance of the person class with the firstname and the lastname.
-        /// 
-        /// <param name="firstName" />First name.
-        /// <param name="lastName" />Last name.
-        public Person(string firstName, string lastName)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person"/> class with
+        /// the <paramref name="firstName"/> and the <paramref name="lastName"/>.
+        /// </summary>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        public Person([CanBeNull] string firstName, [CanBeNull] string lastName)
             : this()
         {
             // Use the first name if specified, if not, the default first name is used.
             if (!string.IsNullOrEmpty(firstName))
             {
-                this.firstName = firstName;
+                _firstName = firstName;
             }
 
-            this.lastName = lastName;
+            _lastName = lastName;
         }
 
-        /// 
-        /// Initializes a new instance of the person class with the firstname, the lastname, and gender
-        /// 
-        /// <param name="firstName" />First name.
-        /// <param name="lastName" />Last name.
-        /// <param name="gender" />Gender of the person.
-        public Person(string firstName, string lastName, Gender gender)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person"/> class with
+        /// the <paramref name="firstName"/>, the <paramref name="lastName"/>
+        /// and the <paramref name="gender"/>.
+        /// </summary>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        /// <param name="gender">Gender of the person.</param>
+        public Person([CanBeNull] string firstName, [CanBeNull] string lastName, Gender gender)
             : this(firstName, lastName)
         {
-            this.gender = gender;
+            _gender = gender;
         }
 
         #endregion
 
         #region Properties
 
-        /// 
+        /// <summary>
         /// Gets or sets the unique identifier for each person.
-        /// 
+        /// </summary>
+        [NotNull]
         [XmlAttribute]
         public string Id
         {
-            get
-            {
-                return this.id;
-            }
-
+            get => _id;
             set
             {
-                if (this.id != value)
-                {
-                    this.id = value;
-                    this.OnPropertyChanged("Id");
-                }
+                if (_id == value)
+                    return;
+
+                _id = value;
+                OnPropertyChanged(nameof(Id));
             }
         }
 
-        /// 
-        /// Gets or sets the name that occurs first in a given name
-        /// 
+        /// <summary>
+        /// Gets or sets the name that occurs first in a given name.
+        /// </summary>
+        [NotNull]
         [XmlElement]
         public string FirstName
         {
-            get
-            {
-                return this.firstName;
-            }
-
+            get => _firstName;
             set
             {
-                if (this.firstName != value)
-                {
-                    this.firstName = value;
-                    this.OnPropertyChanged("FirstName");
-                    this.OnPropertyChanged("Name");
-                    this.OnPropertyChanged("FullName");
-                }
+                if (_firstName == value)
+                    return;
+
+                _firstName = value;
+                OnPropertyChanged(nameof(FirstName));
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(FullName));
             }
         }
 
-        /// 
-        /// Gets or sets the part of a given name that indicates what family the person belongs to. 
-        /// 
+        /// <summary>
+        /// Gets or sets the part of a given name that indicates what family the person belongs to.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string LastName
         {
-            get
-            {
-                return this.lastName;
-            }
-
+            get => _lastName;
             set
             {
-                if (this.lastName != value)
-                {
-                    this.lastName = value;
-                    this.OnPropertyChanged("LastName");
-                    this.OnPropertyChanged("Name");
-                    this.OnPropertyChanged("FullName");
-                }
+                if (_lastName == value)
+                    return;
+
+                _lastName = value;
+                OnPropertyChanged(nameof(LastName));
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(FullName));
             }
         }
 
-        /// 
+        /// <summary>
         /// Gets or sets the name that occurs between the first and last name.
-        /// 
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string MiddleName
         {
-            get
-            {
-                return this.middleName;
-            }
-
+            get => _middleName;
             set
             {
-                if (this.middleName != value)
-                {
-                    this.middleName = value;
-                    this.OnPropertyChanged("MiddleName");
-                    this.OnPropertyChanged("FullName");
-                }
+                if (_middleName == value)
+                    return;
+
+                _middleName = value;
+                OnPropertyChanged(nameof(MiddleName));
+                OnPropertyChanged(nameof(FullName));
             }
         }
 
-        /// 
-        /// Gets the person's name in the format FirstName LastName.
-        /// 
+        /// <summary>
+        /// Gets the person's name in the format <see cref="FirstName"/> <see cref="LastName"/>.
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
         public string Name
         {
             get
             {
-                string name = String.Empty;
-                if (!string.IsNullOrEmpty(this.firstName))
+                string name = string.Empty;
+                if (!string.IsNullOrEmpty(_firstName))
                 {
-                    name += this.firstName;
+                    name += _firstName;
                 }
 
-                if (!string.IsNullOrEmpty(this.lastName))
+                if (!string.IsNullOrEmpty(_lastName))
                 {
-                    name += " " + this.lastName;
+                    name += $" {_lastName}";
                 }
 
                 return name;
             }
         }
 
-        /// 
-        /// Gets the person's fully qualified name: Firstname MiddleName LastName Suffix
-        /// 
+        /// <summary>
+        /// Gets the person's fully qualified name: <see cref="FirstName"/> <see cref="MiddleName"/> <see cref="LastName"/> <see cref="Suffix"/>.
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
         public string FullName
         {
             get
             {
-                string fullName = String.Empty;
-                if (!string.IsNullOrEmpty(this.firstName))
+                string fullName = string.Empty;
+                if (!string.IsNullOrEmpty(_firstName))
                 {
-                    fullName += this.firstName;
+                    fullName += _firstName;
                 }
 
-                if (!string.IsNullOrEmpty(this.middleName))
+                if (!string.IsNullOrEmpty(_middleName))
                 {
-                    fullName += " " + this.middleName;
+                    fullName += $" {_middleName}";
                 }
 
-                if (!string.IsNullOrEmpty(this.lastName))
+                if (!string.IsNullOrEmpty(_lastName))
                 {
-                    fullName += " " + this.lastName;
+                    fullName += $" {_lastName}";
                 }
 
-                if (!string.IsNullOrEmpty(this.suffix))
+                if (!string.IsNullOrEmpty(_suffix))
                 {
-                    fullName += " " + this.suffix;
+                    fullName += $" {_suffix}";
                 }
 
                 return fullName;
             }
         }
 
-        /// 
+        /// <summary>
         /// Gets or sets the text that appear behind the last name providing additional information about the person.
-        /// 
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string Suffix
         {
-
-            get
-            {
-                return this.suffix;
-            }
-
+            get => _suffix;
             set
             {
-                if (this.suffix != value)
-                {
-                    this.suffix = value;
-                    this.OnPropertyChanged("Suffix");
-                    this.OnPropertyChanged("FullName");
-                }
+                if (_suffix == value)
+                    return;
+
+                _suffix = value;
+                OnPropertyChanged(nameof(Suffix));
+                OnPropertyChanged(nameof(FullName));
             }
         }
 
-        /// 
-        /// Gets or sets the person's familiar or shortened name
-        /// 
+        /// <summary>
+        /// Gets or sets the person's familiar or shortened name.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string NickName
         {
-            get
-            {
-                return this.nickName;
-            }
-
+            get => _nickName;
             set
             {
-                if (this.nickName != value)
-                {
-                    this.nickName = value;
-                    this.OnPropertyChanged("NickName");
-                }
+                if (_nickName == value)
+                    return;
+
+                _nickName = value;
+                OnPropertyChanged(nameof(NickName));
             }
         }
 
-        /// 
-        /// Gets or sets the person's name carried before marriage
-        /// 
+        /// <summary>
+        /// Gets or sets the person's name carried before marriage.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string MaidenName
         {
-            get
-            {
-                return this.maidenName;
-            }
-
+            get => _maidenName;
             set
             {
-                if (this.maidenName != value)
-                {
-                    this.maidenName = value;
-                    this.OnPropertyChanged("MaidenName");
-                }
+                if (_maidenName == value)
+                    return;
+
+                _maidenName = value;
+                OnPropertyChanged(nameof(MaidenName));
             }
         }
 
-        /// 
-        /// Gets or sets the person's gender
-        /// 
+        /// <summary>
+        /// Gets or sets the person's gender.
+        /// </summary>
         [XmlElement]
         public Gender Gender
         {
-            get
-            {
-                return this.gender;
-            }
-
+            get => _gender;
             set
             {
-                if (this.gender != value)
-                {
-                    this.gender = value;
-                    this.OnPropertyChanged("Gender");
-                }
+                if (_gender == value)
+                    return;
+
+                _gender = value;
+                OnPropertyChanged(nameof(Gender));
             }
         }
 
-        /// 
+        /// <summary>
         /// Gets the age of the person.
-        /// 
+        /// </summary>
+        [CanBeNull]
         [XmlIgnore]
         public int? Age
         {
             get
             {
-                if (this.BirthDate == null)
-                {
+                if (BirthDate is null)
                     return null;
-                }
 
                 // Determine the age of the person based on just the year.
-                DateTime startDate = this.BirthDate.Value;
-                DateTime endDate = (this.IsLiving || this.DeathDate == null) ? DateTime.Now : this.DeathDate.Value;
+                DateTime startDate = BirthDate.Value;
+                DateTime endDate = IsLiving || DeathDate is null ? DateTime.Now : DeathDate.Value;
                 int age = endDate.Year - startDate.Year;
 
                 // Compensate for the month and day of month (if they have not had a birthday this year).
@@ -396,9 +402,9 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        /// 
+        /// <summary>
         /// Gets the age of the person.
-        /// 
+        /// </summary>
         [XmlIgnore]
         public AgeGroup AgeGroup
         {
@@ -406,19 +412,19 @@ namespace QuikGraph.Tests.Serialization
             {
                 AgeGroup ageGroup = AgeGroup.Unknown;
 
-                if (this.Age.HasValue)
+                if (Age.HasValue)
                 {
                     // The AgeGroup enumeration is defined later in this file. It is up to the Person
                     // class to define the ages that fall into the particular age groups
-                    if (this.Age >= 0 && this.Age < 20)
+                    if (Age >= 0 && Age < 20)
                     {
                         ageGroup = AgeGroup.Youth;
                     }
-                    else if (this.Age >= 20 && this.Age < 40)
+                    else if (Age >= 20 && Age < 40)
                     {
                         ageGroup = AgeGroup.Adult;
                     }
-                    else if (this.Age >= 40 && this.Age < 65)
+                    else if (Age >= 40 && Age < 65)
                     {
                         ageGroup = AgeGroup.MiddleAge;
                     }
@@ -432,370 +438,280 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        /// 
-        /// Gets the year the person was born
-        /// 
+        /// <summary>
+        /// Gets the year the person was born.
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
         public string YearOfBirth
         {
             get
             {
-                if (this.birthDate.HasValue)
+                if (_birthDate.HasValue)
                 {
-                    return this.birthDate.Value.Year.ToString(CultureInfo.CurrentCulture);
+                    return _birthDate.Value.Year.ToString(CultureInfo.CurrentCulture);
                 }
-                else
-                {
-                    return "-";
-                }
+
+                return "-";
             }
         }
 
-        /// 
-        /// Gets the year the person died
-        /// 
+        /// <summary>
+        /// Gets the year the person died.
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
         public string YearOfDeath
         {
             get
             {
-                if (this.deathDate.HasValue && !this.isLiving)
+                if (_deathDate.HasValue && !_isLiving)
                 {
-                    return this.deathDate.Value.Year.ToString(CultureInfo.CurrentCulture);
+                    return _deathDate.Value.Year.ToString(CultureInfo.CurrentCulture);
                 }
-                else
-                {
-                    return "-";
-                }
+
+                return "-";
             }
         }
 
-        /// 
-        /// Gets or sets the person's birth date.  This property can be null.
-        /// 
+        /// <summary>
+        /// Gets or sets the person's birth date.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public DateTime? BirthDate
         {
-            get
-            {
-                return this.birthDate;
-            }
-
+            get => _birthDate;
             set
             {
-                if (this.birthDate == null || this.birthDate != value)
+                if (_birthDate is null || _birthDate != value)
                 {
-                    this.birthDate = value;
-                    this.OnPropertyChanged("BirthDate");
-                    this.OnPropertyChanged("Age");
-                    this.OnPropertyChanged("AgeGroup");
-                    this.OnPropertyChanged("YearOfBirth");
-                    this.OnPropertyChanged("BirthMonthAndDay");
-                    this.OnPropertyChanged("BirthDateAndPlace");
+                    _birthDate = value;
+                    OnPropertyChanged(nameof(BirthDate));
+                    OnPropertyChanged(nameof(Age));
+                    OnPropertyChanged(nameof(AgeGroup));
+                    OnPropertyChanged(nameof(YearOfBirth));
+                    OnPropertyChanged(nameof(BirthMonthAndDay));
+                    OnPropertyChanged(nameof(BirthDateAndPlace));
                 }
             }
         }
 
-        /// 
-        /// Gets or sets the person's place of birth
-        /// 
+        /// <summary>
+        /// Gets or sets the person's place of birth.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string BirthPlace
         {
-            get
-            {
-                return this.birthPlace;
-            }
-
+            get => _birthPlace;
             set
             {
-                if (this.birthPlace != value)
-                {
-                    this.birthPlace = value;
-                    this.OnPropertyChanged("BirthPlace");
-                    this.OnPropertyChanged("BirthDateAndPlace");
-                }
+                if (_birthPlace == value)
+                    return;
+
+                _birthPlace = value;
+                OnPropertyChanged(nameof(BirthPlace));
+                OnPropertyChanged(nameof(BirthDateAndPlace));
             }
         }
 
-        /// 
-        /// Gets the month and day the person was born in. This property can be null.
-        /// 
+        /// <summary>
+        /// Gets the month and day the person was born in.
+        /// </summary>
+        [CanBeNull]
         [XmlIgnore]
-        public string BirthMonthAndDay
-        {
-            get
-            {
-                if (this.birthDate == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return this.birthDate.Value.ToString(
-                        DateTimeFormatInfo.CurrentInfo.MonthDayPattern,
-                        CultureInfo.CurrentCulture);
-                }
-            }
-        }
+        public string BirthMonthAndDay =>
+            _birthDate?.ToString(
+                DateTimeFormatInfo.CurrentInfo?.MonthDayPattern,
+                CultureInfo.CurrentCulture);
 
-        /// 
-        /// Gets a friendly string for BirthDate and Place
-        /// 
+        /// <summary>
+        /// Gets a friendly string for BirthDate and Place.
+        /// </summary>
+        [CanBeNull]
         [XmlIgnore]
         public string BirthDateAndPlace
         {
             get
             {
-                if (this.birthDate == null)
-                {
+                if (_birthDate is null)
                     return null;
-                }
-                else
+
+                var returnValue = new StringBuilder();
+                returnValue.Append("Born ");
+                returnValue.Append(
+                    _birthDate.Value.ToString(
+                        DateTimeFormatInfo.CurrentInfo?.ShortDatePattern,
+                        CultureInfo.CurrentCulture));
+
+                if (!string.IsNullOrEmpty(_birthPlace))
                 {
-                    StringBuilder returnValue = new StringBuilder();
-                    returnValue.Append("Born ");
-                    returnValue.Append(
-                        this.birthDate.Value.ToString(
-                            DateTimeFormatInfo.CurrentInfo.ShortDatePattern,
-                            CultureInfo.CurrentCulture));
-
-                    if (!string.IsNullOrEmpty(this.birthPlace))
-                    {
-                        returnValue.Append(", ");
-                        returnValue.Append(this.birthPlace);
-                    }
-
-                    return returnValue.ToString();
+                    returnValue.Append(", ");
+                    returnValue.Append(_birthPlace);
                 }
+
+                return returnValue.ToString();
             }
         }
 
-        /// 
-        /// Gets or sets the person's death of death.  This property can be null.
-        /// 
+        /// <summary>
+        /// Gets or sets the person's death of death.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public DateTime? DeathDate
         {
-            get
-            {
-                return this.deathDate;
-            }
-
+            get => _deathDate;
             set
             {
-                if (this.deathDate == null || this.deathDate != value)
+                if (_deathDate == null || _deathDate != value)
                 {
-                    this.IsLiving = false;
-                    this.deathDate = value;
-                    this.OnPropertyChanged("DeathDate");
-                    this.OnPropertyChanged("Age");
-                    this.OnPropertyChanged("YearOfDeath");
+                    IsLiving = false;
+                    _deathDate = value;
+                    OnPropertyChanged(nameof(DeathDate));
+                    OnPropertyChanged(nameof(Age));
+                    OnPropertyChanged(nameof(YearOfDeath));
                 }
             }
         }
 
-        /// 
-        /// Gets or sets the person's place of death
-        /// 
+        /// <summary>
+        /// Gets or sets the person's place of death.
+        /// </summary>
+        [CanBeNull]
         [XmlElement]
         public string DeathPlace
         {
-            get
-            {
-                return this.deathPlace;
-            }
-
+            get => _deathPlace;
             set
             {
-                if (this.deathPlace != value)
-                {
-                    this.IsLiving = false;
-                    this.deathPlace = value;
-                    this.OnPropertyChanged("DeathPlace");
-                }
+                if (_deathPlace == value)
+                    return;
+
+                IsLiving = false;
+                _deathPlace = value;
+                OnPropertyChanged(nameof(DeathPlace));
             }
         }
 
-        /// 
+        /// <summary>
         /// Gets or sets a value indicating whether the person is still alive or deceased.
-        /// 
+        /// </summary>
         [XmlElement]
         public bool IsLiving
         {
-            get
-            {
-                return this.isLiving;
-            }
-
+            get => _isLiving;
             set
             {
-                if (this.isLiving != value)
-                {
-                    this.isLiving = value;
-                    this.OnPropertyChanged("IsLiving");
-                }
+                if (_isLiving == value)
+                    return;
+
+                _isLiving = value;
+                OnPropertyChanged(nameof(IsLiving));
             }
         }
 
-        /// 
+        /// <summary>
         /// Gets a string that describes this person to their parents.
-        /// 
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
-        public string ParentRelationshipText
-        {
-            get
-            {
-                if (this.gender == Gender.Male)
-                {
-                    return "Son";
-                }
-                else
-                {
-                    return "Daughter";
-                }
-            }
-        }
+        public string ParentRelationshipText => _gender == Gender.Male ? "Son" : "Daughter";
 
-        /// 
+        /// <summary>
         /// Gets a string that describes this person to their siblings.
-        /// 
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
-        public string SiblingRelationshipText
-        {
-            get
-            {
-                if (this.gender == Gender.Male)
-                {
-                    return "Brother";
-                }
-                else
-                {
-                    return "Sister";
-                }
-            }
-        }
+        public string SiblingRelationshipText => _gender == Gender.Male ? "Brother" : "Sister";
 
-        /// 
+        /// <summary>
         /// Gets a string that describes this person to their spouses.
-        /// 
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
-        public string SpouseRelationshipText
-        {
-            get
-            {
-                if (this.gender == Gender.Male)
-                {
-                    return "Husband";
-                }
-                else
-                {
-                    return "Wife";
-                }
-            }
-        }
+        public string SpouseRelationshipText => _gender == Gender.Male ? "Husband" : "Wife";
 
-        /// 
+        /// <summary>
         /// Gets a string that describes this person to their children.
-        /// 
+        /// </summary>
+        [NotNull]
         [XmlIgnore]
-        public string ChildRelationshipText
-        {
-            get
-            {
-                if (this.gender == Gender.Male)
-                {
-                    return "Father";
-                }
-                else
-                {
-                    return "Mother";
-                }
-            }
-        }
+        public string ChildRelationshipText => _gender == Gender.Male ? "Father" : "Mother";
 
         #endregion
 
-        #region INotifyPropertyChanged Members
+        #region INotifyPropertyChanged
 
-        /// 
-        /// INotifyPropertyChanged requires a property called PropertyChanged.
-        /// 
+        /// <summary>
+        /// <see cref="INotifyPropertyChanged"/> requires an event called <see cref="PropertyChanged"/>.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// 
+        /// <summary>
         /// Fires the event for the property when it changes.
-        /// 
-        /// <param name="propertyName" />Property name.
-        protected virtual void OnPropertyChanged(string propertyName)
+        /// </summary>
+        /// <param name="propertyName">Property name.</param>
+        protected virtual void OnPropertyChanged([NotNull] string propertyName)
         {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
 
-        #region IEquatable Members
+        #region IEquatable
 
-        /// 
-        /// Determine equality between two person classes
-        /// 
-        /// <param name="other" />An object to compare with this object.
-        /// true if the current object is equal to the other parameter; otherwise, false. 
+        /// <inheritdoc />
         public bool Equals(Person other)
         {
-            return this.Id == other.Id;
+            if (other is null)
+                return false;
+            return Id == other.Id;
         }
 
         #endregion
 
         #region Methods
 
-        /// 
-        /// Returns a String that represents the current Object.
-        /// 
-        /// A String that represents the current Object.
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
 
         #endregion
 
-        #region IDataErrorInfo Members
+        #region IDataErrorInfo
 
-        /// 
+        /// <summary>
         /// Gets an error message indicating what is wrong with this object.
-        /// 
-        public string Error
-        {
-            get { return null; }
-        }
+        /// </summary>
+        [CanBeNull]
+        public string Error => null;
 
-        /// 
+        /// <summary>
         /// Gets the error message for the property with the given name.
-        /// 
-        /// <param name="columnName" />The name of the property whose error message to get.
-        /// The error message for the property. The default is an empty string ("").
+        /// </summary>
+        /// <param name="columnName">>The name of the property whose error message to get.</param>
+        /// <returns>The error message for the property. The default is an empty string ("").</returns>
         public string this[string columnName]
         {
             get
             {
-                string result = String.Empty;
+                string result = string.Empty;
 
-                if (columnName == "BirthDate")
+                if (columnName == nameof(BirthDate))
                 {
-                    if (this.BirthDate == DateTime.MinValue)
+                    if (BirthDate == DateTime.MinValue)
                     {
                         result = "This does not appear to be a valid date.";
                     }
                 }
 
-                if (columnName == "DeathDate")
+                if (columnName == nameof(DeathDate))
                 {
-                    if (this.DeathDate == DateTime.MinValue)
+                    if (DeathDate == DateTime.MinValue)
                     {
                         result = "This does not appear to be a valid date.";
                     }
@@ -808,15 +724,17 @@ namespace QuikGraph.Tests.Serialization
         #endregion
     }
 
+    #endregion
+
     [TestFixture]
-    internal class Repro13482Test : QuikGraphUnitTests
+    internal class Repro13482Tests
     {
         [Test]
         public void Repro13482()
         {
             var graph = new AdjacencyGraph<Person, TaggedEdge<Person, string>>();
 
-            Person jacob = new Person("Jacob", "Hochstetler")
+            var jacob = new Person("Jacob", "Hochstetler")
             {
                 BirthDate = new DateTime(1712, 01, 01),
                 BirthPlace = "Alsace, France",
@@ -825,7 +743,7 @@ namespace QuikGraph.Tests.Serialization
                 Gender = Gender.Male
             };
 
-            Person john = new Person("John", "Hochstetler")
+            var john = new Person("John", "Hochstetler")
             {
                 BirthDate = new DateTime(1735, 01, 01),
                 BirthPlace = "Alsace, France",
@@ -834,14 +752,14 @@ namespace QuikGraph.Tests.Serialization
                 Gender = Gender.Male
             };
 
-            Person jonathon = new Person("Jonathon", "Hochstetler")
+            var jonathon = new Person("Jonathon", "Hochstetler")
             {
                 BirthPlace = "Pennsylvania",
                 DeathDate = new DateTime(1823, 05, 08),
                 Gender = Gender.Male,
             };
 
-            Person emanuel = new Person("Emanuel", "Hochstedler")
+            var emanuel = new Person("Emanuel", "Hochstedler")
             {
                 BirthDate = new DateTime(1855, 01, 01),
                 DeathDate = new DateTime(1900, 01, 01),
@@ -852,14 +770,13 @@ namespace QuikGraph.Tests.Serialization
             graph.AddVerticesAndEdge(new TaggedEdge<Person, string>(john, jonathon, john.ChildRelationshipText));
             graph.AddVerticesAndEdge(new TaggedEdge<Person, string>(jonathon, emanuel, jonathon.ChildRelationshipText));
 
-            var settings = new XmlWriterSettings() { Indent = true, IndentChars = @"    " };
-            using (var writer = XmlWriter.Create(Console.Out, settings))
+            var settings = new XmlWriterSettings { Indent = true, IndentChars = @"    " };
+            using (XmlWriter writer = XmlWriter.Create(Console.Out, settings))
             {
-                SerializationExtensions.SerializeToXml(
-                    graph,
+                graph.SerializeToXml(
                     writer,
-                    v => v.Id,
-                    AlgorithmExtensions.GetEdgeIdentity(graph),
+                    vertex => vertex.Id,
+                    graph.GetEdgeIdentity(),
                     "graph",
                     "person",
                     "relationship",

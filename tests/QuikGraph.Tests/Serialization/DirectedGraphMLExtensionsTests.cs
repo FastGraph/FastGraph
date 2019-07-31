@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using NUnit.Framework;
 using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Serialization.DirectedGraphML;
 
 namespace QuikGraph.Tests.Serialization
 {
+    /// <summary>
+    /// Tests for <see cref="DirectedGraphMLExtensions"/>.
+    /// </summary>
     [TestFixture]
     internal class DirectedGraphMLExtensionsTests : QuikGraphUnitTests
     {
@@ -14,18 +16,19 @@ namespace QuikGraph.Tests.Serialization
         {
             using (SetTemporaryTestWorkingDirectory())
             {
-                int[][] edges = { new int[]{ 1, 2, 3 }, 
-                              new int[]{ 2, 3, 1 } };
-                edges.ToAdjacencyGraph()
+                int[][] edges =
+                {
+                    new[]{ 1, 2, 3 },
+                    new[]{ 2, 3, 1 }
+                };
+
+                edges
+                    .ToAdjacencyGraph()
                     .ToDirectedGraphML()
                     .WriteXml("simple.dgml");
 
-                if (Debugger.IsAttached)
-                { 
-                    Process.Start("simple.dgml");
-                }
-
-                edges.ToAdjacencyGraph()
+                edges
+                    .ToAdjacencyGraph()
                     .ToDirectedGraphML()
                     .WriteXml(Console.Out);
             }
@@ -34,12 +37,12 @@ namespace QuikGraph.Tests.Serialization
         [Test]
         public void ToDirectedGraphML()
         {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
             {
-                var dg = g.ToDirectedGraphML();
-                Assert.IsNotNull(g);
-                Assert.AreEqual(dg.Nodes.Length, g.VertexCount);
-                Assert.AreEqual(dg.Links.Length, g.EdgeCount);
+                DirectedGraph directedGraph = graph.ToDirectedGraphML();
+                Assert.IsNotNull(graph);
+                Assert.AreEqual(directedGraph.Nodes.Length, graph.VertexCount);
+                Assert.AreEqual(directedGraph.Links.Length, graph.EdgeCount);
             }
         }
     }
