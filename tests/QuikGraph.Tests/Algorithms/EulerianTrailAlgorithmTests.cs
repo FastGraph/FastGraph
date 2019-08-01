@@ -1,70 +1,66 @@
-﻿using System;
+﻿#if SUPPORTS_SYSTEM_DELEGATES
+using System;
+#endif
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms;
 
-namespace QuikGraph.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
     internal class EulerianTrailAlgorithmTests : QuikGraphUnitTests
     {
 #if !SUPPORTS_SYSTEM_DELEGATES
         // System.Core and NUnit both define this delegate that is conflicting
         // Defining it here allows to use it without conflict.
-        public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
+        private delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
 #endif
 
-        [Test]
-        [Ignore("Was already ignored")]
-        public void EulerianTrailAll()
-        {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-            {
-                this.ComputeTrail(g, (s, t) => new Edge<string>(s, t));
-            }
-        }
+        #region Helpers
 
-        public void ComputeTrail<TVertex,TEdge>(
-            IMutableVertexAndEdgeListGraph<TVertex,TEdge> g,
-            Func<TVertex, TVertex, TEdge> edgeCreator)
+        private static void ComputeTrail<TVertex, TEdge>(
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull, InstantHandle] Func<TVertex, TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
         {
-            if (g.VertexCount == 0)
+            if (graph.VertexCount == 0)
                 return;
 
-            int oddCount = 0;
-            foreach (var v in g.Vertices)
-                if (g.OutDegree(v) % 2 == 0)
-                    oddCount++;
-
-            int circuitCount = EulerianTrailAlgorithm<TVertex,TEdge>.ComputeEulerianPathCount(g);
+            int circuitCount = EulerianTrailAlgorithm<TVertex, TEdge>.ComputeEulerianPathCount(graph);
             if (circuitCount == 0)
                 return;
 
-            var trail = new EulerianTrailAlgorithm<TVertex,TEdge>(g);
-            trail.AddTemporaryEdges((s, t) => edgeCreator(s, t));
-            trail.Compute();
-            var trails = trail.Trails();
-            trail.RemoveTemporaryEdges();
+            var algorithm = new EulerianTrailAlgorithm<TVertex, TEdge>(graph);
+            algorithm.AddTemporaryEdges((s, t) => edgeFactory(s, t));
+            algorithm.Compute();
+            var trails = algorithm.Trails();
+            algorithm.RemoveTemporaryEdges();
 
-            //Console.WriteLine("trails: {0}", trails.Count);
-            //int index = 0;
-            //foreach (var t in trails)
-            //{
-            //    Console.WriteLine("trail {0}", index++);
-            //    foreach (Edge<string> edge in t)
-            //        Console.WriteLine("\t{0}", t);
-            //}
-
-            // lets make sure all the edges are in the trail
-            var edgeColors = new Dictionary<TEdge, GraphColor>(g.EdgeCount);
-            foreach (var edge in g.Edges)
+            // Lets make sure all the edges are in the trail
+            var edgeColors = new Dictionary<TEdge, GraphColor>(graph.EdgeCount);
+            foreach (TEdge edge in graph.Edges)
                 edgeColors.Add(edge, GraphColor.White);
-            foreach (var t in trails)
-                foreach (var edge in t)
-                    Assert.IsTrue(edgeColors.ContainsKey(edge));
 
+            foreach (ICollection<TEdge> trail in trails)
+            {
+                foreach (TEdge edge in trail)
+                    Assert.IsTrue(edgeColors.ContainsKey(edge));
+            }
+        }
+
+        #endregion
+
+        [Test]
+        public void EulerianTrailAll()
+        {
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            {
+                ComputeTrail(graph, (s, t) => new Edge<string>(s, t));
+            }
         }
     }
 }

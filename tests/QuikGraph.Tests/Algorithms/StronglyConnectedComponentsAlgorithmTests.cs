@@ -1,118 +1,129 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.ConnectedComponents;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
 
-namespace QuikGraph.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="StronglyConnectedComponentsAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class StronglyConnectedComponentAlgorithmTests : QuikGraphUnitTests
+    internal class StronglyConnectedComponentAlgorithmTests
     {
+        #region Helpers
+
+        private static void CheckStrong<TVertex, TEdge>([NotNull] StronglyConnectedComponentsAlgorithm<TVertex, TEdge> algorithm)
+            where TEdge : IEdge<TVertex>
+        {
+            Assert.AreEqual(algorithm.VisitedGraph.VertexCount, algorithm.Components.Count);
+            Assert.AreEqual(algorithm.VisitedGraph.VertexCount, algorithm.DiscoverTimes.Count);
+            Assert.AreEqual(algorithm.VisitedGraph.VertexCount, algorithm.Roots.Count);
+
+            foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
+            {
+                Assert.IsTrue(algorithm.Components.ContainsKey(vertex));
+                Assert.IsTrue(algorithm.DiscoverTimes.ContainsKey(vertex));
+            }
+
+            foreach (KeyValuePair<TVertex, int> component in algorithm.Components)
+            {
+                Assert.IsNotNull(component.Key);
+                Assert.IsTrue(component.Value <= algorithm.ComponentCount);
+            }
+
+            foreach (KeyValuePair<TVertex, int> time in algorithm.DiscoverTimes)
+            {
+                Assert.IsNotNull(time.Key);
+            }
+        }
+
+        private static void Compute<TVertex, TEdge>([NotNull] AdjacencyGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            var strong = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
+
+            strong.Compute();
+            CheckStrong(strong);
+        }
+
+        #endregion
+
         [Test]
         public void EmptyGraph()
         {
-            var g = new AdjacencyGraph<string, Edge<string>>(true);
-            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<String>>(g);
+            var graph = new AdjacencyGraph<string, Edge<string>>(true);
+
+            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<string>>(graph);
             strong.Compute();
+
             Assert.AreEqual(0, strong.ComponentCount);
-            checkStrong(strong);
+            CheckStrong(strong);
         }
 
         [Test]
         public void OneVertex()
         {
-            AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
-            g.AddVertex("test");
-            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<String>>(g);
-            strong.Compute();
-            Assert.AreEqual(1, strong.ComponentCount);
+            var graph = new AdjacencyGraph<string, Edge<string>>(true);
+            graph.AddVertex("test");
 
-            checkStrong(strong);
+            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<string>>(graph);
+            strong.Compute();
+
+            Assert.AreEqual(1, strong.ComponentCount);
+            CheckStrong(strong);
         }
 
         [Test]
         public void TwoVertex()
         {
-            AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
-            g.AddVertex("v1");
-            g.AddVertex("v2");
-            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<String>>(g);
-            strong.Compute();
-            Assert.AreEqual(2, strong.ComponentCount);
+            var graph = new AdjacencyGraph<string, Edge<string>>(true);
+            graph.AddVertex("v1");
+            graph.AddVertex("v2");
 
-            checkStrong(strong);
+            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<string>>(graph);
+            strong.Compute();
+
+            Assert.AreEqual(2, strong.ComponentCount);
+            CheckStrong(strong);
         }
 
         [Test]
         public void TwoVertexOnEdge()
         {
-            AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
-            g.AddVertex("v1");
-            g.AddVertex("v2");
-            g.AddEdge(new Edge<string>("v1", "v2"));
-            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<String>>(g);
+            var graph = new AdjacencyGraph<string, Edge<string>>(true);
+            graph.AddVertex("v1");
+            graph.AddVertex("v2");
+            graph.AddEdge(new Edge<string>("v1", "v2"));
+
+            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<string>>(graph);
             strong.Compute();
+
             Assert.AreEqual(2, strong.ComponentCount);
-
-            checkStrong(strong);
+            CheckStrong(strong);
         }
-
 
         [Test]
         public void TwoVertexCycle()
         {
-            AdjacencyGraph<string, Edge<string>> g = new AdjacencyGraph<string, Edge<string>>(true);
-            g.AddVertex("v1");
-            g.AddVertex("v2");
-            g.AddEdge(new Edge<string>("v1", "v2"));
-            g.AddEdge(new Edge<string>("v2", "v1"));
-            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<String>>(g);
-            strong.Compute();
-            Assert.AreEqual(1, strong.ComponentCount);
+            var graph = new AdjacencyGraph<string, Edge<string>>(true);
+            graph.AddVertex("v1");
+            graph.AddVertex("v2");
+            graph.AddEdge(new Edge<string>("v1", "v2"));
+            graph.AddEdge(new Edge<string>("v2", "v1"));
 
-            checkStrong(strong);
+            var strong = new StronglyConnectedComponentsAlgorithm<string, Edge<string>>(graph);
+            strong.Compute();
+
+            Assert.AreEqual(1, strong.ComponentCount);
+            CheckStrong(strong);
         }
 
         [Test]
         public void StronglyConnectedComponentAll()
         {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-                this.Compute(g);
-        }
-
-        public void Compute<TVertex,TEdge>(AdjacencyGraph<TVertex, TEdge> g)
-            where TEdge : IEdge<TVertex>
-        {
-            var strong = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(g);
-
-            strong.Compute();
-            checkStrong(strong);
-        }
-
-        private void checkStrong<TVertex,TEdge>(StronglyConnectedComponentsAlgorithm<TVertex, TEdge> strong)
-            where TEdge : IEdge<TVertex>
-        {
-            Assert.AreEqual(strong.VisitedGraph.VertexCount, strong.Components.Count);
-            Assert.AreEqual(strong.VisitedGraph.VertexCount, strong.DiscoverTimes.Count);
-            Assert.AreEqual(strong.VisitedGraph.VertexCount, strong.Roots.Count);
-
-            foreach (var v in strong.VisitedGraph.Vertices)
-            {
-                Assert.IsTrue(strong.Components.ContainsKey(v));
-                Assert.IsTrue(strong.DiscoverTimes.ContainsKey(v));
-            }
-
-            foreach (var de in strong.Components)
-            {
-                Assert.IsNotNull(de.Key);
-                Assert.IsTrue(de.Value <= strong.ComponentCount);
-            }
-
-            foreach (var de in strong.DiscoverTimes)
-            {
-                Assert.IsNotNull(de.Key);
-            }
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+                Compute(graph);
         }
     }
 }

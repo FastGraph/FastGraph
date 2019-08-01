@@ -1,27 +1,37 @@
+using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.TopologicalSort;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
 
-namespace QuikGraph.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="UndirectedFirstTopologicalSortAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal partial class UndirectedFirstTopologicalSortAlgorithmTests : QuikGraphUnitTests
+    internal class UndirectedFirstTopologicalSortAlgorithmTests
     {
+        #region Helpers
+
+        private static void Compute<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            var algorithm = new UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph)
+            {
+                AllowCyclicGraph = true
+            };
+
+            algorithm.Compute();
+        }
+
+        #endregion
+
         [Test]
         public void UndirectedFirstTopologicalSortAll()
         {
-            foreach (var g in TestGraphFactory.GetUndirectedGraphs())
-                this.Compute(g);
-        }
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+                Compute(graph);
 
-        public void Compute<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> g)
-            where TEdge : IEdge<TVertex>
-        {
-            var topo =
-                new UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge>(g);
-            topo.AllowCyclicGraph = true;
-            topo.Compute();
+            // TODO: Add assertions
         }
     }
 }

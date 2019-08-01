@@ -1,30 +1,41 @@
 ﻿using NUnit.Framework;
 using QuikGraph.Algorithms;
-using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="TransitiveClosureAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class TransitiveClosureAlgorithmTests : QuikGraphUnitTests
+    internal class TransitiveClosureAlgorithmTests
     {
-
         [Test]
-        public void SmallTest()
+        public void TransitiveClosure1()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { new Edge<int>(1, 2), new Edge<int>(2, 3)});
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 3)
+            });
 
-            var result = graph.ComputeTransitiveClosure((u, v) => new Edge<int>(u, v));
+            BidirectionalGraph<int, Edge<int>> result = graph.ComputeTransitiveClosure((u, v) => new Edge<int>(u, v));
             Assert.AreEqual(3, result.EdgeCount);
         }
 
         [Test]
-        public void Test()
+        public void TransitiveClosure2()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { new Edge<int>(1, 2) , new Edge<int>(2, 3), new Edge<int>(3, 4), new Edge<int>(3, 5) });
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 3),
+                new Edge<int>(3, 4),
+                new Edge<int>(3, 5)
+            });
 
-            var result = graph.ComputeTransitiveClosure((u, v) => new Edge<int>(u, v));
+            BidirectionalGraph<int, Edge<int>> result = graph.ComputeTransitiveClosure((u, v) => new Edge<int>(u, v));
             Assert.AreEqual(9, result.EdgeCount);
         }
     }

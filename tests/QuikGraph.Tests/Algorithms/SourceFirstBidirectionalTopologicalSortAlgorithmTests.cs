@@ -1,68 +1,71 @@
-﻿using NUnit.Framework;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
 using QuikGraph.Algorithms.TopologicalSort;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
 
-namespace QuikGraph.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="SourceFirstBidirectionalTopologicalSortAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
     internal class SourceFirstBidirectionalTopologicalSortAlgorithmTests : QuikGraphUnitTests
     {
-        [Test]
-        public void SortAll()
+        #region Helpers
+
+        private static void Sort<TVertex, TEdge>([NotNull] IBidirectionalGraph<TVertex, TEdge> graph, TopologicalSortDirection direction)
+            where TEdge : IEdge<TVertex>
         {
-            foreach (var g in TestGraphFactory.GetBidirectionalGraphs())
+            var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction);
+            try
             {
-                this.Sort(g, TopologicalSortDirection.Forward);
-                this.Sort(g, TopologicalSortDirection.Backward);
+                algorithm.Compute();
+            }
+            catch (NonAcyclicGraphException)
+            {
             }
         }
 
-        public void Sort<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> g, TopologicalSortDirection direction)
-            where TEdge : IEdge<TVertex>
+        #endregion
+
+        [Test]
+        public void SortAll()
         {
-            var topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(g, direction);
-            try
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
             {
-                topo.Compute();
+                Sort(graph, TopologicalSortDirection.Forward);
+                Sort(graph, TopologicalSortDirection.Backward);
             }
-            catch (NonAcyclicGraphException)
-            { }
         }
 
         [Test]
         public void SortAnotherOne()
         {
-            var g = new BidirectionalGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
 
-            g.AddVertexRange(new int[5] { 0, 1, 2, 3, 4 });
-            g.AddEdge(new Edge<int>(0, 1));
-            g.AddEdge(new Edge<int>(1, 2));
-            g.AddEdge(new Edge<int>(1, 3));
-            g.AddEdge(new Edge<int>(2, 3));
-            g.AddEdge(new Edge<int>(3, 4));
+            graph.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
+            graph.AddEdge(new Edge<int>(0, 1));
+            graph.AddEdge(new Edge<int>(1, 2));
+            graph.AddEdge(new Edge<int>(1, 3));
+            graph.AddEdge(new Edge<int>(2, 3));
+            graph.AddEdge(new Edge<int>(3, 4));
 
-            SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>> topo;
+            var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph, TopologicalSortDirection.Forward);
+            algorithm.Compute();
 
-            topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(g, TopologicalSortDirection.Forward);
-            topo.Compute();
-
-            topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(g, TopologicalSortDirection.Backward);
-            topo.Compute();
+            algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph, TopologicalSortDirection.Backward);
+            algorithm.Compute();
         }
 
         [Test]
-        public void SortDCT()
+        public void Sort_DCT8()
         {
-            var g = TestGraphFactory.LoadBidirectionalGraph(GetGraphFilePath("DCT8.graphml"));
+            BidirectionalGraph<string, Edge<string>> graph = TestGraphFactory.LoadBidirectionalGraph(GetGraphFilePath("DCT8.graphml"));
 
-            SourceFirstBidirectionalTopologicalSortAlgorithm<string, Edge<string>> topo;
+            var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<string, Edge<string>>(graph, TopologicalSortDirection.Forward);
+            algorithm.Compute();
 
-            topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<string, Edge<string>>(g, TopologicalSortDirection.Forward);
-            topo.Compute();
-
-            topo = new SourceFirstBidirectionalTopologicalSortAlgorithm<string, Edge<string>>(g, TopologicalSortDirection.Backward);
-            topo.Compute();
+            algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<string, Edge<string>>(graph, TopologicalSortDirection.Backward);
+            algorithm.Compute();
         }
     }
 }

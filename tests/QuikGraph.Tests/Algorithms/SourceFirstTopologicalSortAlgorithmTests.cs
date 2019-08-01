@@ -1,55 +1,62 @@
-﻿using NUnit.Framework;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
 using QuikGraph.Algorithms.TopologicalSort;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
 
-namespace QuikGraph.Algorithms
+namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="SourceFirstTopologicalSortAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
     internal class SourceFirstTopologicalSortAlgorithmTests : QuikGraphUnitTests
     {
+        #region Helpers
+
+        private static void Sort<TVertex, TEdge>([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph);
+            try
+            {
+                algorithm.Compute();
+            }
+            catch (NonAcyclicGraphException)
+            {
+            }
+        }
+
+        #endregion
+
         [Test]
         public void SortAll()
         {
-            foreach(var g in TestGraphFactory.GetAdjacencyGraphs())
-                this.Sort(g);
-        }
-
-        public void Sort<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g)
-            where TEdge : IEdge<TVertex>
-        {
-            var topo = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(g);
-            try
-            {
-                topo.Compute();
-            }
-            catch (NonAcyclicGraphException)
-            { }
+            foreach(AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+                Sort(graph);
         }
 
         [Test]
         public void SortAnotherOne()
         {
-            var g = new BidirectionalGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
 
-            g.AddVertexRange(new int[5] { 0, 1, 2, 3, 4 });
-            g.AddEdge(new Edge<int>(0, 1));
-            g.AddEdge(new Edge<int>(1, 2));
-            g.AddEdge(new Edge<int>(1, 3));
-            g.AddEdge(new Edge<int>(2, 3));
-            g.AddEdge(new Edge<int>(3, 4));
+            graph.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
+            graph.AddEdge(new Edge<int>(0, 1));
+            graph.AddEdge(new Edge<int>(1, 2));
+            graph.AddEdge(new Edge<int>(1, 3));
+            graph.AddEdge(new Edge<int>(2, 3));
+            graph.AddEdge(new Edge<int>(3, 4));
 
-            var topo = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(g);
-            topo.Compute();
+            var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(graph);
+            algorithm.Compute();
         }
 
         [Test]
-        public void SortDCT()
+        public void Sort_DCT8()
         {
-            var g = TestGraphFactory.LoadBidirectionalGraph(GetGraphFilePath("DCT8.graphml"));
+            BidirectionalGraph<string, Edge<string>> graph = TestGraphFactory.LoadBidirectionalGraph(GetGraphFilePath("DCT8.graphml"));
 
-            var topo = new SourceFirstTopologicalSortAlgorithm<string, Edge<string>>(g);
-            topo.Compute();
+            var algorithm = new SourceFirstTopologicalSortAlgorithm<string, Edge<string>>(graph);
+            algorithm.Compute();
         }
     }
 }

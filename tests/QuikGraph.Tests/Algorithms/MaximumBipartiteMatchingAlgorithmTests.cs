@@ -1,142 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MaximumFlow;
-using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Algorithms
 {
+    /// <summary>
+    /// Tests for <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class MaximumBipartiteMatchingAlgorithmTests : QuikGraphUnitTests
+    internal class MaximumBipartiteMatchingAlgorithmTests
     {
+        #region Helpers
 
-        private EdgeFactory<string, Edge<string>> EdgeFactory = 
+        [NotNull]
+        private readonly EdgeFactory<string, Edge<string>> _edgeFactory =
             (source, target) => new Edge<string>(source, target);
 
-
-        [Test]
-        public void BipartiteMaxMatchSimpleTest()
+        private static void AssertThatMaxMatchEdgesAreValid<TVertex, TEdge>(
+            [NotNull, ItemNotNull] TVertex[] vertexSetA,
+            [NotNull, ItemNotNull] TVertex[] vertexSetB,
+            [NotNull] MaximumBipartiteMatchingAlgorithm<TVertex, TEdge> maxMatch)
+            where TEdge : IEdge<TVertex>
         {
-            var integers = Enumerable.Range(0, 100);
-            var even = integers.Where(n => n % 2 == 0).Select(n => n.ToString());
-            var odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString());
-
-            // Create the edges from even to odd
-            var edges = TestHelpers.CreateAllPairwiseEdges(even, odd, EdgeFactory);
-
-            var setA = even;
-            var setB = odd;
-            var expectedMatchSize = Math.Min(setA.Count(), setB.Count());
-
-            RunBipartiteMatch(edges, setA, setB, expectedMatchSize);
-
+            foreach (TEdge edge in maxMatch.MatchedEdges)
+            {
+                bool isValidEdge = vertexSetA.Contains(edge.Source) && vertexSetB.Contains(edge.Target)
+                                   ||
+                                   vertexSetB.Contains(edge.Source) && vertexSetA.Contains(edge.Target);
+                Assert.IsTrue(isValidEdge, "Match contains invalid edges.");
+            }
         }
 
-        [Test]
-        public void BipartiteMaxMatchSimpleReversedEdgesTest()
-        {
-            var integers = Enumerable.Range(0, 100);
-            var even = integers.Where(n => n % 2 == 0).Select(n => n.ToString());
-            var odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString());
-            
-            // Create the edges from odd to even
-            var edges = TestHelpers.CreateAllPairwiseEdges(odd, even, EdgeFactory);
-
-            var setA = even;
-            var setB = odd;
-            var expectedMatchSize = Math.Min(setA.Count(), setB.Count());
-
-            RunBipartiteMatch(edges, setA, setB, expectedMatchSize);
-
-        }
-
-        [Test]
-        public void BipartiteMaxMatchTwoFullyConnectedSetsTest()
-        {
-            var setA = new List<string>();
-            var setB = new List<string>();
-
-            int nodesInSet1 = 100;
-            int nodesInSet2 = 10;
-
-            //Create a set of vertices in each set which all match each other
-            var integers = Enumerable.Range(0, nodesInSet1);
-            var even = integers.Where(n => n % 2 == 0).Select(n => n.ToString());
-            var odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString());
-            var edges = TestHelpers.CreateAllPairwiseEdges(even, odd, EdgeFactory);
-
-            setA.AddRange(even);
-            setB.AddRange(odd);
-
-            //Create another set of vertices in each set which all match each other
-            integers = Enumerable.Range(nodesInSet1 + 1, nodesInSet2);
-            even = integers.Where(n => n % 2 == 0).Select(n => n.ToString());
-            odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString());
-            edges.AddRange(TestHelpers.CreateAllPairwiseEdges(even, odd, EdgeFactory));
-
-            setA.AddRange(even);
-            setB.AddRange(odd);
-
-            var expectedMatchSize = Math.Min(setA.Count(), setB.Count());
-
-            RunBipartiteMatch(edges, setA, setB, expectedMatchSize);
-
-        }
-
-        [Test]
-        public void BipartiteMaxMatchUnequalPartitionsTest()
-        {
-            var setA = new List<string>();
-            var setB = new List<string>();
-
-            //Create a bipartite graph with small and large vertex partitions
-            int smallerSetSize = 1;
-            int largerSetSize = 1000;
-
-            //Create a set of vertices in each set which all match each other
-            var leftNodes = Enumerable.Range(0, smallerSetSize).Select(n => "L" + n);
-            var rightNodes = Enumerable.Range(0, largerSetSize).Select(n => "R" + n);
-            var edges = TestHelpers.CreateAllPairwiseEdges(leftNodes, rightNodes, EdgeFactory);
-
-            setA.AddRange(leftNodes);
-            setB.AddRange(rightNodes);
-
-            var expectedMatchSize = Math.Min(setA.Count(), setB.Count());
-
-            RunBipartiteMatch(edges, setA, setB, expectedMatchSize);
-
-        }
-
-        private void RunBipartiteMatch(List<Edge<string>> edges, IEnumerable<string> setA, 
-            IEnumerable<string> setB, int expectedMatchSize)
-        {
-            var graph = edges.ToAdjacencyGraph<string, Edge<string>>();
-
-            var vertexFactory = new StringVertexFactory();
-
-            if (graph.VertexCount > 0)
-                this.MaxBipartiteMatch<string, Edge<string>>(graph, setA, setB,
-                    () => (vertexFactory.CreateVertex()),
-                    (source, target) => new Edge<string>(source, target),
-                    expectedMatchSize
-                );
-        }
-
-        public MaximumBipartiteMatchingAlgorithm<TVertex, TEdge> MaxBipartiteMatch<TVertex, TEdge>(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> g,
-            IEnumerable<TVertex> vertexSetA,
-            IEnumerable<TVertex> vertexSetB,
-            VertexFactory<TVertex> vertexFactory,
-            EdgeFactory<TVertex, TEdge> edgeFactory,
+        private static void MaxBipartiteMatch<TVertex, TEdge>(
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull, ItemNotNull] TVertex[] vertexSetA,
+            [NotNull, ItemNotNull] TVertex[] vertexSetB,
+            [NotNull] VertexFactory<TVertex> vertexFactory,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
             int expectedMatchSize)
             where TEdge : IEdge<TVertex>
         {
-            Assert.IsTrue(g.VertexCount > 0);
+            Assert.IsTrue(graph.VertexCount > 0);
 
-            var maxMatch = new MaximumBipartiteMatchingAlgorithm<TVertex, TEdge>(g, 
-                vertexSetA, vertexSetB, vertexFactory, edgeFactory);
+            var maxMatch = new MaximumBipartiteMatchingAlgorithm<TVertex, TEdge>(
+                graph,
+                vertexSetA,
+                vertexSetB,
+                vertexFactory,
+                edgeFactory);
 
             DateTime startTime = DateTime.Now;
 
@@ -146,29 +61,114 @@ namespace QuikGraph.Tests.Algorithms
 
             Assert.IsTrue(computeTime < TimeSpan.FromMinutes(5));
 
-            AssertThatMaxMatchEdgesAreValid<TVertex, TEdge>(vertexSetA, vertexSetB, maxMatch);
+            AssertThatMaxMatchEdgesAreValid(vertexSetA, vertexSetB, maxMatch);
 
-            Assert.IsTrue(maxMatch.MatchedEdges.Count == expectedMatchSize);
-
-            return maxMatch;
+            Assert.AreEqual(expectedMatchSize, maxMatch.MatchedEdges.Count);
         }
 
-        private static void AssertThatMaxMatchEdgesAreValid<TVertex, TEdge>(IEnumerable<TVertex> vertexSetA, IEnumerable<TVertex> vertexSetB, MaximumBipartiteMatchingAlgorithm<TVertex, TEdge> maxMatch) where TEdge : IEdge<TVertex>
+        private static void RunBipartiteMatch(
+            [NotNull, ItemNotNull] IEnumerable<Edge<string>> edges,
+            [NotNull, ItemNotNull] IEnumerable<string> setA,
+            [NotNull, ItemNotNull] IEnumerable<string> setB,
+            int expectedMatchSize)
         {
-            foreach (var edge in maxMatch.MatchedEdges)
+            AdjacencyGraph<string, Edge<string>> graph = edges.ToAdjacencyGraph<string, Edge<string>>();
+
+            var vertexFactory = new StringVertexFactory();
+
+            if (graph.VertexCount > 0)
             {
-                bool isValidEdge = (vertexSetA.Contains(edge.Source) && vertexSetB.Contains(edge.Target)) ||
-                                   (vertexSetB.Contains(edge.Source) && vertexSetA.Contains(edge.Target));
-                Assert.IsTrue(isValidEdge, "match contains invalid edges");
+                MaxBipartiteMatch(
+                    graph,
+                    setA.ToArray(),
+                    setB.ToArray(),
+                    () => (vertexFactory.CreateVertex()),
+                    (source, target) => new Edge<string>(source, target),
+                    expectedMatchSize);
             }
         }
 
-        #region Private Methods
-
-        
-
-        
-
         #endregion
+
+        [Test]
+        public void BipartiteMaxMatchSimple()
+        {
+            int[] integers = Enumerable.Range(0, 100).ToArray();
+            string[] even = integers.Where(n => n % 2 == 0).Select(n => n.ToString()).ToArray();
+            string[] odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString()).ToArray();
+
+            // Create the edges from even to odd
+            List<Edge<string>> edges = TestHelpers.CreateAllPairwiseEdges(even, odd, _edgeFactory);
+
+            int expectedMatchSize = Math.Min(even.Length, odd.Length);
+            RunBipartiteMatch(edges, even, odd, expectedMatchSize);
+        }
+
+        [Test]
+        public void BipartiteMaxMatchSimpleReversedEdges()
+        {
+            int[] integers = Enumerable.Range(0, 100).ToArray();
+            string[] even = integers.Where(n => n % 2 == 0).Select(n => n.ToString()).ToArray();
+            string[] odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString()).ToArray();
+
+            // Create the edges from odd to even
+            List<Edge<string>> edges = TestHelpers.CreateAllPairwiseEdges(odd, even, _edgeFactory);
+
+            int expectedMatchSize = Math.Min(even.Length, odd.Length);
+            RunBipartiteMatch(edges, even, odd, expectedMatchSize);
+        }
+
+        [Test]
+        public void BipartiteMaxMatchTwoFullyConnectedSets()
+        {
+            var setA = new List<string>();
+            var setB = new List<string>();
+
+            const int nodesInSet1 = 100;
+            const int nodesInSet2 = 10;
+
+            // Create a set of vertices in each set which all match each other
+            int[] integers = Enumerable.Range(0, nodesInSet1).ToArray();
+            string[] even = integers.Where(n => n % 2 == 0).Select(n => n.ToString()).ToArray();
+            string[] odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString()).ToArray();
+            List<Edge<string>> edges = TestHelpers.CreateAllPairwiseEdges(even, odd, _edgeFactory);
+
+            setA.AddRange(even);
+            setB.AddRange(odd);
+
+            // Create another set of vertices in each set which all match each other
+            integers = Enumerable.Range(nodesInSet1 + 1, nodesInSet2).ToArray();
+            even = integers.Where(n => n % 2 == 0).Select(n => n.ToString()).ToArray();
+            odd = integers.Where(n => n % 2 != 0).Select(n => n.ToString()).ToArray();
+            edges.AddRange(TestHelpers.CreateAllPairwiseEdges(even, odd, _edgeFactory));
+
+            setA.AddRange(even);
+            setB.AddRange(odd);
+
+            int expectedMatchSize = Math.Min(setA.Count, setB.Count);
+            RunBipartiteMatch(edges, setA, setB, expectedMatchSize);
+        }
+
+        [Test]
+        public void BipartiteMaxMatchUnequalPartitionsTest()
+        {
+            var setA = new List<string>();
+            var setB = new List<string>();
+
+            // Create a bipartite graph with small and large vertex partitions
+            const int smallerSetSize = 1;
+            const int largerSetSize = 1000;
+
+            // Create a set of vertices in each set which all match each other
+            string[] leftNodes = Enumerable.Range(0, smallerSetSize).Select(n => $"L{n}").ToArray();
+            string[] rightNodes = Enumerable.Range(0, largerSetSize).Select(n => $"R{n}").ToArray();
+            List<Edge<string>> edges = TestHelpers.CreateAllPairwiseEdges(leftNodes, rightNodes, _edgeFactory);
+
+            setA.AddRange(leftNodes);
+            setB.AddRange(rightNodes);
+
+            int expectedMatchSize = Math.Min(setA.Count, setB.Count);
+            RunBipartiteMatch(edges, setA, setB, expectedMatchSize);
+        }
     }
 }
