@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -80,6 +81,26 @@ namespace QuikGraph.Tests
             // ContainsEdge(1, 3) raises contracts violation in IncidenceGraphContract, because 3 is not in the graph.
             // obviously no edge between vertices 1, 3, as vertex 3 is not even present in the graph.
             // Assert.IsFalse(g.ContainsEdge(1, 3));
+        }
+
+        [Pure]
+        public static bool IsDescendant<TVertex>(
+            [NotNull] Dictionary<TVertex, TVertex> parents,
+            [NotNull] TVertex u,
+            [NotNull] TVertex v)
+        {
+            TVertex t;
+            TVertex current = u;
+            do
+            {
+                t = current;
+                current = parents[t];
+                if (current.Equals(v))
+                    return true;
+            }
+            while (!t.Equals(current));
+
+            return false;
         }
     }
 }

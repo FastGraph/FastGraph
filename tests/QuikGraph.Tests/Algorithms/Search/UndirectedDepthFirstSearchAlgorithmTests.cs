@@ -1,47 +1,28 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.Search;
+using static QuikGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Algorithms.Search
+namespace QuikGraph.Tests.Algorithms.Search
 {
+    /// <summary>
+    /// Tests for <see cref="UndirectedDepthFirstSearchAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class UndirectedDepthFirstAlgorithmSearchTests : QuikGraphUnitTests
+    internal class UndirectedDepthFirstAlgorithmSearchTests
     {
-        private static bool IsDescendant<TVertex>(
-            Dictionary<TVertex,TVertex> parents,
-            TVertex u, 
-            TVertex v)
-        {
-            TVertex t;
-            TVertex p = u;
-            do
-            {
-                t = p;
-                p = parents[t];
-                if (p.Equals(v))
-                    return true;
-            }
-            while (!t.Equals(p));
+        #region Helpers
 
-            return false;
-        }
-
-        [Test]
-        public void UndirectedDepthFirstSearchAll()
-        {
-            foreach (var g in TestGraphFactory.GetUndirectedGraphs())
-                this.UndirectedDepthFirstSearch(g);
-        }
-
-        public void UndirectedDepthFirstSearch<TVertex,TEdge>(IUndirectedGraph<TVertex, TEdge> g)
+        public void RunUndirectedDepthFirstSearchAndCheck<TVertex, TEdge>(
+            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TVertex, TVertex>();
             var discoverTimes = new Dictionary<TVertex, int>();
             var finishTimes = new Dictionary<TVertex, int>();
             int time = 0;
-            var dfs = new UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>(g);
+            var dfs = new UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
 
             dfs.StartVertex += args =>
             {
@@ -89,37 +70,37 @@ namespace QuikGraph.Algorithms.Search
 
             dfs.Compute();
 
-            // check
-            // all vertices should be black
-            foreach (var v in g.Vertices)
+            // Check
+            // All vertices should be black
+            foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.IsTrue(dfs.VerticesColors.ContainsKey(v));
-                Assert.AreEqual(dfs.VerticesColors[v], GraphColor.Black);
+                Assert.IsTrue(dfs.VerticesColors.ContainsKey(vertex));
+                Assert.AreEqual(dfs.VerticesColors[vertex], GraphColor.Black);
             }
 
-            foreach (var u in g.Vertices)
+            foreach (TVertex u in graph.Vertices)
             {
-                foreach (var v in g.Vertices)
+                foreach (TVertex v in graph.Vertices)
                 {
                     if (!u.Equals(v))
                     {
                         Assert.IsTrue(
                             finishTimes[u] < discoverTimes[v]
                             || finishTimes[v] < discoverTimes[u]
-                            || (
-                            discoverTimes[v] < discoverTimes[u]
-                            && finishTimes[u] < finishTimes[v]
-                            && IsDescendant(parents, u, v)
-                            )
-                            || (
-                            discoverTimes[u] < discoverTimes[v]
-                            && finishTimes[v] < finishTimes[u]
-                            && IsDescendant(parents, v, u)
-                            )
-                            );
+                            || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v] && IsDescendant(parents, u, v))
+                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] && IsDescendant(parents, v, u)));
                     }
                 }
             }
+        }
+
+        #endregion
+
+        [Test]
+        public void UndirectedDepthFirstSearchAll()
+        {
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+                RunUndirectedDepthFirstSearchAndCheck(graph);
         }
     }
 }

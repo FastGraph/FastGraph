@@ -1,31 +1,37 @@
+using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.Search;
 
-namespace QuikGraph.Algorithms.Search
+namespace QuikGraph.Tests.Algorithms.Search
 {
+    /// <summary>
+    /// Tests for <see cref="BidirectionalDepthFirstSearchAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class BidirectionalDepthFirstSearchAlgorithmTests : QuikGraphUnitTests
+    internal class BidirectionalDepthFirstSearchAlgorithmTests
     {
+        #region Helpers
+
+        private static void Compute<TVertex, TEdge>([NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            var dfs = new BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
+            dfs.Compute();
+
+            foreach (TVertex vertex in graph.Vertices)
+            {
+                Assert.IsTrue(dfs.VerticesColors.ContainsKey(vertex));
+                Assert.AreEqual(dfs.VerticesColors[vertex], GraphColor.Black);
+            }
+        }
+
+        #endregion
+
         [Test]
         public void ComputeAll()
         {
-            foreach (var g in TestGraphFactory.GetBidirectionalGraphs())
-                this.Compute(g);
-        }
-
-        public void Compute<TVertex,TEdge>(IBidirectionalGraph<TVertex, TEdge> g)
-            where TEdge : IEdge<TVertex>
-        {
-            var dfs = new BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge>(g);
-            dfs.Compute();
-
-            // let's make sure
-            foreach (var v in g.Vertices)
-            {
-                Assert.IsTrue(dfs.VerticesColors.ContainsKey(v));
-                Assert.AreEqual(dfs.VerticesColors[v], GraphColor.Black);
-            }
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+                Compute(graph);
         }
     }
 }

@@ -1,133 +1,137 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.Search;
 
-namespace QuikGraph.Algorithms.Search
+namespace QuikGraph.Tests.Algorithms.Search
 {
+    /// <summary>
+    /// Tests for <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class BreadthFirstAlgorithmSearchTests : QuikGraphUnitTests
+    internal class BreadthFirstAlgorithmSearchTests
     {
-        [Test]
-        public void BreadthFirstSearchAll()
-        {
-            foreach(var g in TestGraphFactory.GetAdjacencyGraphs())
-                foreach(var v in g.Vertices)
-                    RunBfs(g,v);
-        }
+        #region Helpers
 
-        public void RunBfs<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g, TVertex sourceVertex)
+        public void RunBfsAndCheck<TVertex, TEdge>(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex sourceVertex)
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TVertex, TVertex>();
             var distances = new Dictionary<TVertex, int>();
-            TVertex currentVertex = default(TVertex);
+            TVertex currentVertex = default;
             int currentDistance = 0;
-            var algo = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(g);
+            var algorithm = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(graph);
 
-            algo.InitializeVertex += u =>
+            algorithm.InitializeVertex += u =>
             {
-                Assert.AreEqual(algo.VerticesColors[u], GraphColor.White);
+                Assert.AreEqual(algorithm.VerticesColors[u], GraphColor.White);
             };
 
-            algo.DiscoverVertex += u =>
+            algorithm.DiscoverVertex += u =>
             {
-                Assert.AreEqual(algo.VerticesColors[u], GraphColor.Gray);
+                Assert.AreEqual(algorithm.VerticesColors[u], GraphColor.Gray);
                 if (u.Equals(sourceVertex))
+                {
                     currentVertex = sourceVertex;
+                }
                 else
                 {
                     Assert.IsNotNull(currentVertex);
                     Assert.AreEqual(parents[u], currentVertex);
+                    // ReSharper disable once AccessToModifiedClosure
                     Assert.AreEqual(distances[u], currentDistance + 1);
                     Assert.AreEqual(distances[u], distances[parents[u]] + 1);
                 }
             };
-            algo.ExamineEdge += args =>
+
+            algorithm.ExamineEdge += args =>
             {
                 Assert.AreEqual(args.Source, currentVertex);
             };
 
-            algo.ExamineVertex += args =>
+            algorithm.ExamineVertex += args =>
             {
-                var u = args;
+                TVertex u = args;
                 currentVertex = u;
                 // Ensure that the distances monotonically increase.
-                Assert.IsTrue(
-                       distances[u] == currentDistance
-                    || distances[u] == currentDistance + 1
-                    );
+                // ReSharper disable AccessToModifiedClosure
+                Assert.IsTrue(distances[u] == currentDistance || distances[u] == currentDistance + 1);
 
-                if (distances[u] == currentDistance + 1) // new level
+                if (distances[u] == currentDistance + 1) // New level
                     ++currentDistance;
+                // ReSharper restore AccessToModifiedClosure
             };
-            algo.TreeEdge += args =>
-            {
-                var u = args.Source;
-                var v = args.Target;
 
-                Assert.AreEqual(algo.VerticesColors[v], GraphColor.White);
+            algorithm.TreeEdge += args =>
+            {
+                TVertex u = args.Source;
+                TVertex v = args.Target;
+
+                Assert.AreEqual(algorithm.VerticesColors[v], GraphColor.White);
                 Assert.AreEqual(distances[u], currentDistance);
                 parents[v] = u;
                 distances[v] = distances[u] + 1;
             };
-            algo.NonTreeEdge += args =>
+
+            algorithm.NonTreeEdge += args =>
             {
-                var u = args.Source;
-                var v = args.Target;
+                TVertex u = args.Source;
+                TVertex v = args.Target;
 
-                Assert.IsFalse(algo.VerticesColors[v] == GraphColor.White);
+                Assert.IsFalse(algorithm.VerticesColors[v] == GraphColor.White);
 
-                if (algo.VisitedGraph.IsDirected)
+                if (algorithm.VisitedGraph.IsDirected)
                 {
-                    // cross or back edge
+                    // Cross or back edge
                     Assert.IsTrue(distances[v] <= distances[u] + 1);
                 }
                 else
                 {
-                    // cross edge (or going backwards on a tree edge)
+                    // Cross edge (or going backwards on a tree edge)
                     Assert.IsTrue(
                         distances[v] == distances[u]
                         || distances[v] == distances[u] + 1
-                        || distances[v] == distances[u] - 1
-                        );
+                        || distances[v] == distances[u] - 1);
                 }
             };
 
-            algo.GrayTarget += args =>
+            algorithm.GrayTarget += args =>
             {
-                Assert.AreEqual(algo.VerticesColors[args.Target], GraphColor.Gray);
-            };
-            algo.BlackTarget += args =>
-            {
-                Assert.AreEqual(algo.VerticesColors[args.Target], GraphColor.Black);
-
-                foreach (var e in algo.VisitedGraph.OutEdges(args.Target))
-                    Assert.IsFalse(algo.VerticesColors[e.Target] == GraphColor.White);
+                Assert.AreEqual(algorithm.VerticesColors[args.Target], GraphColor.Gray);
             };
 
-            algo.FinishVertex += args =>
+            algorithm.BlackTarget += args =>
             {
-                Assert.AreEqual(algo.VerticesColors[args], GraphColor.Black);
+                Assert.AreEqual(algorithm.VerticesColors[args.Target], GraphColor.Black);
+
+                foreach (TEdge edge in algorithm.VisitedGraph.OutEdges(args.Target))
+                    Assert.IsFalse(algorithm.VerticesColors[edge.Target] == GraphColor.White);
             };
 
+            algorithm.FinishVertex += args =>
+            {
+                Assert.AreEqual(algorithm.VerticesColors[args], GraphColor.Black);
+            };
 
             parents.Clear();
             distances.Clear();
             currentDistance = 0;
 
-            foreach (var v in g.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                distances[v] = int.MaxValue;
-                parents[v] = v;
+                distances[vertex] = int.MaxValue;
+                parents[vertex] = vertex;
             }
+
             distances[sourceVertex] = 0;
-            algo.Compute(sourceVertex);
+            algorithm.Compute(sourceVertex);
 
             // All white vertices should be unreachable from the source.
-            foreach (var v in g.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                if (algo.VerticesColors[v] == GraphColor.White)
+                if (algorithm.VerticesColors[vertex] == GraphColor.White)
                 {
                     //!IsReachable(start,u,g);
                 }
@@ -135,10 +139,22 @@ namespace QuikGraph.Algorithms.Search
 
             // The shortest path to a child should be one longer than
             // shortest path to the parent.
-            foreach (var v in g.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                if (!parents[v].Equals(v)) // *ui not the root of the bfs tree
-                    Assert.AreEqual(distances[v], distances[parents[v]] + 1);
+                if (!parents[vertex].Equals(vertex)) // Not the root of the bfs tree
+                    Assert.AreEqual(distances[vertex], distances[parents[vertex]] + 1);
+            }
+        }
+
+        #endregion
+
+        [Test]
+        public void BreadthFirstSearchAll()
+        {
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            {
+                foreach (string vertex in graph.Vertices)
+                    RunBfsAndCheck(graph, vertex);
             }
         }
     }
