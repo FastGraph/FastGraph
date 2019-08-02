@@ -1,62 +1,75 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.Condensation;
 
-namespace QuikGraph.Algorithms.Condensation
+namespace QuikGraph.Tests.Algorithms.Condensation
 {
+    /// <summary>
+    /// Tests for <see cref="CondensationGraphAlgorithm{TVertex,TEdge,TGraph}"/> (weakly connected).
+    /// </summary>
     [TestFixture]
-    internal class WeaklyConnectedCondensationGraphAlgorithmTests : QuikGraphUnitTests
+    internal class WeaklyConnectedCondensationGraphAlgorithmTests
     {
-        [Test]
-        public void WeaklyConnectedCondensatAll()
-        {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-                this.WeaklyConnectedCondensate(g);
-        }
+        #region Helpers
 
-        public void WeaklyConnectedCondensate<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g)
+        private static void RunWeaklyConnectedCondensateAndCheck<TVertex, TEdge>(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            var algo = new CondensationGraphAlgorithm<TVertex,TEdge, AdjacencyGraph<TVertex,TEdge>>(g);
-            algo.StronglyConnected = false;
-            algo.Compute();
-            CheckVertexCount(g, algo);
-            CheckEdgeCount(g, algo);
-            CheckComponentCount(g, algo);
+            var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>(graph)
+            {
+                StronglyConnected = false
+            };
+            algorithm.Compute();
+            CheckVertexCount(graph, algorithm);
+            CheckEdgeCount(graph, algorithm);
+            CheckComponentCount(graph, algorithm);
         }
 
-        private void CheckVertexCount<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g,
-            CondensationGraphAlgorithm<TVertex,TEdge, AdjacencyGraph<TVertex,TEdge>> algo)
+        private static void CheckVertexCount<TVertex, TEdge>(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] CondensationGraphAlgorithm<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>> algorithm)
             where TEdge : IEdge<TVertex>
         {
             int count = 0;
-            foreach (var vertices in algo.CondensedGraph.Vertices)
+            foreach (AdjacencyGraph<TVertex, TEdge> vertices in algorithm.CondensedGraph.Vertices)
                 count += vertices.VertexCount;
-            Assert.AreEqual(g.VertexCount, count, "VertexCount does not match");
+            Assert.AreEqual(graph.VertexCount, count, "VertexCount does not match.");
         }
 
-        private void CheckEdgeCount<TVertex,TEdge>(IVertexAndEdgeListGraph<TVertex,TEdge> g,
-            CondensationGraphAlgorithm<TVertex,TEdge, AdjacencyGraph<TVertex,TEdge>> algo)
+        private static void CheckEdgeCount<TVertex, TEdge>(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] CondensationGraphAlgorithm<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>> algorithm)
             where TEdge : IEdge<TVertex>
         {
-            // check edge count
+            // Check edge count
             int count = 0;
-            foreach (var edges in algo.CondensedGraph.Edges)
+            foreach (CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>> edges in algorithm.CondensedGraph.Edges)
                 count += edges.Edges.Count;
-            foreach (var vertices in algo.CondensedGraph.Vertices)
+            foreach (AdjacencyGraph<TVertex, TEdge> vertices in algorithm.CondensedGraph.Vertices)
                 count += vertices.EdgeCount;
-            Assert.AreEqual(g.EdgeCount, count, "EdgeCount does not match");
+            Assert.AreEqual(graph.EdgeCount, count, "EdgeCount does not match.");
         }
 
-
-        private void CheckComponentCount<TVertex,TEdge>(IVertexAndEdgeListGraph<TVertex,TEdge> g,
-            CondensationGraphAlgorithm<TVertex,TEdge, AdjacencyGraph<TVertex,TEdge>> algo)
+        private static void CheckComponentCount<TVertex, TEdge>(
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] CondensationGraphAlgorithm<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>> algorithm)
             where TEdge : IEdge<TVertex>
         {
-            // check number of vertices = number of strongly connected components
-            int components = g.WeaklyConnectedComponents<TVertex,TEdge>(new Dictionary<TVertex, int>());
-            Assert.AreEqual(components, algo.CondensedGraph.VertexCount, "ComponentCount does not match");
+            // Check number of vertices = number of strongly connected components
+            int components = graph.WeaklyConnectedComponents(new Dictionary<TVertex, int>());
+            Assert.AreEqual(components, algorithm.CondensedGraph.VertexCount, "Component count does not match.");
+        }
+
+        #endregion
+
+        [Test]
+        public void WeaklyConnectedCondensateAll()
+        {
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+                RunWeaklyConnectedCondensateAndCheck(graph);
         }
     }
 }

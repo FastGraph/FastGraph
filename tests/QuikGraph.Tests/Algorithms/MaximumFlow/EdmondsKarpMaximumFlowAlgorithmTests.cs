@@ -1,46 +1,50 @@
-﻿using NUnit.Framework;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MaximumFlow;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Algorithms.MaximumFlow
 {
+    /// <summary>
+    /// Tests for <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class EdmondsKarpMaximumFlowAlgorithmTests : QuikGraphUnitTests
+    internal class EdmondsKarpMaximumFlowAlgorithmTests
     {
-        [Test]
-        public void EdmondsKarpMaxFlowAll()
+        #region Helpers
+
+        private static void EdmondsKarpMaxFlow<TVertex, TEdge>(
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            where TEdge : IEdge<TVertex>
         {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
+            Assert.IsTrue(graph.VertexCount > 0);
+
+            foreach (TVertex source in graph.Vertices)
             {
-                if (g.VertexCount > 0)
-                    this.EdmondsKarpMaxFlow(g, (source, target) => new Edge<string>(source, target));
+                foreach (TVertex sink in graph.Vertices)
+                {
+                    if (source.Equals(sink))
+                        continue;
+
+                    RunMaxFlowAlgorithmAndCheck(graph, edgeFactory, source, sink);
+                    // TODO: Add Asserts
+                }
             }
         }
 
-
-        public void EdmondsKarpMaxFlow<TVertex, TEdge>(IMutableVertexAndEdgeListGraph<TVertex, TEdge> g, 
-            EdgeFactory<TVertex, TEdge> edgeFactory)
+        private static double RunMaxFlowAlgorithmAndCheck<TVertex, TEdge>(
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
+            [NotNull] TVertex source,
+            [NotNull] TVertex sink)
             where TEdge : IEdge<TVertex>
         {
-            Assert.IsTrue(g.VertexCount > 0);
-
-            foreach (var source in g.Vertices)
-                foreach (var sink in g.Vertices)
-                {
-                    if (source.Equals(sink)) continue;
-
-                    RunMaxFlowAlgorithm<TVertex, TEdge>(g, edgeFactory, source, sink);
-                }
-        }
-
-        private static double RunMaxFlowAlgorithm<TVertex, TEdge>(IMutableVertexAndEdgeListGraph<TVertex, TEdge> g, EdgeFactory<TVertex, TEdge> edgeFactory, TVertex source, TVertex sink) where TEdge : IEdge<TVertex>
-        {
-            var reversedEdgeAugmentorAlgorithm = new ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>(g, edgeFactory);
+            var reversedEdgeAugmentorAlgorithm = new ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>(graph, edgeFactory);
             reversedEdgeAugmentorAlgorithm.AddReversedEdges();
 
-            var flow = g.MaximumFlow(edge => 1,
+            var flow = graph.MaximumFlow(
+                edge => 1,
                 source, sink,
                 out _,
                 edgeFactory,
@@ -49,6 +53,18 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             reversedEdgeAugmentorAlgorithm.RemoveReversedEdges();
 
             return flow;
+        }
+
+        #endregion
+
+        [Test]
+        public void EdmondsKarpMaxFlowAll()
+        {
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            {
+                if (graph.VertexCount > 0)
+                    EdmondsKarpMaxFlow(graph, (source, target) => new Edge<string>(source, target));
+            }
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.MaximumFlow;
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -85,6 +84,34 @@ namespace QuikGraph.Tests.Algorithms
                     () => (vertexFactory.CreateVertex()),
                     (source, target) => new Edge<string>(source, target),
                     expectedMatchSize);
+            }
+        }
+
+        #endregion
+
+        #region Test classes
+
+        private sealed class StringVertexFactory
+        {
+            private int _id;
+
+            [NotNull]
+            private readonly string _prefix;
+
+            public StringVertexFactory()
+                : this("Super")
+            {
+            }
+
+            private StringVertexFactory([NotNull] string prefix)
+            {
+                _prefix = prefix;
+            }
+
+            [NotNull]
+            public string CreateVertex()
+            {
+                return $"{_prefix}{++_id}";
             }
         }
 

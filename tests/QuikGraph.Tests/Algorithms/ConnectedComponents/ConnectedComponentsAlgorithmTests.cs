@@ -1,51 +1,61 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.ConnectedComponents;
 
-namespace QuikGraph.Algorithms.ConnectedComponents
+namespace QuikGraph.Tests.Algorithms.ConnectedComponents
 {
+    /// <summary>
+    /// Tests for <see cref="ConnectedComponentsAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class ConnectedComponentsAlgorithmTests : QuikGraphUnitTests
+    internal class ConnectedComponentsAlgorithmTests
     {
-        [Test]
-        [Category(TestCategories.LongRunning)]
-        public void ConnectedComponentsAll()
-        {
-            foreach (var g in TestGraphFactory.GetUndirectedGraphs())
-            {
-                while (g.EdgeCount > 0)
-                {
-                    this.Compute(g);
-                    g.RemoveEdge(Enumerable.First(g.Edges));
-                }
-            }
-        }
+        #region Helpers
 
-        public void Compute<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> g)
-             where TEdge : IEdge<TVertex>
+        private static void Compute<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
         {
-            var dfs = new ConnectedComponentsAlgorithm<TVertex, TEdge>(g);
+            var dfs = new ConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             dfs.Compute();
-            if (g.VertexCount == 0)
+            if (graph.VertexCount == 0)
             {
                 Assert.IsTrue(dfs.ComponentCount == 0);
                 return;
             }
 
             Assert.IsTrue(0 < dfs.ComponentCount);
-            Assert.IsTrue(dfs.ComponentCount <= g.VertexCount);
-            foreach (var kv in dfs.Components)
+            Assert.IsTrue(dfs.ComponentCount <= graph.VertexCount);
+            foreach (KeyValuePair<TVertex, int> pair in dfs.Components)
             {
-                Assert.IsTrue(0 <= kv.Value);
-                Assert.IsTrue(kv.Value < dfs.ComponentCount, "{0} < {1}", kv.Value, dfs.ComponentCount);
+                Assert.IsTrue(0 <= pair.Value);
+                Assert.IsTrue(pair.Value < dfs.ComponentCount, $"{pair.Value} < {dfs.ComponentCount}");
             }
 
-            foreach (var vertex in g.Vertices)
-                foreach (var edge in g.AdjacentEdges(vertex))
+            foreach (TVertex vertex in graph.Vertices)
+            {
+                foreach (TEdge edge in graph.AdjacentEdges(vertex))
                 {
                     Assert.AreEqual(dfs.Components[edge.Source], dfs.Components[edge.Target]);
                 }
+            }
+        }
+
+        #endregion
+
+        [Test]
+        [Category(TestCategories.LongRunning)]
+        public void ConnectedComponentsAll()
+        {
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            {
+                while (graph.EdgeCount > 0)
+                {
+                    Compute(graph);
+                    graph.RemoveEdge(graph.Edges.First());
+                }
+            }
         }
     }
 }

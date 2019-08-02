@@ -4,8 +4,11 @@ using QuikGraph.Algorithms.Assignment;
 
 namespace QuikGraph.Tests.Algorithms.Assignment
 {
+    /// <summary>
+    /// Tests for <see cref="HungarianAlgorithm"/>.
+    /// </summary>
     [TestFixture]
-    internal class HungarianAlgorithmTests : QuikGraphUnitTests
+    internal class HungarianAlgorithmTests
     {
         [Test]
         public void Compute()

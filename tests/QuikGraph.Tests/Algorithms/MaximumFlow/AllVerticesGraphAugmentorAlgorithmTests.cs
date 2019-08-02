@@ -1,102 +1,87 @@
-﻿using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
+using QuikGraph.Algorithms.MaximumFlow;
 
-namespace QuikGraph.Algorithms.MaximumFlow
+namespace QuikGraph.Tests.Algorithms.MaximumFlow
 {
+    /// <summary>
+    /// Tests for <see cref="AllVerticesGraphAugmentorAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class AllVerticesGraphAugmentorAlgorithmTests : QuikGraphUnitTests
+    internal class AllVerticesGraphAugmentorAlgorithmTests
     {
-        [Test]
-        public void AugmentAll()
-        {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-                this.Augment(g);
-        }
+        #region Helpers
 
-        public void Augment(
-            IMutableVertexAndEdgeListGraph<string, Edge<string>> g)
+        private static void AugmentAndCheck(
+            [NotNull] IMutableVertexAndEdgeListGraph<string, Edge<string>> graph)
         {
-            int vertexCount = g.VertexCount;
-            int edgeCount = g.EdgeCount;
-            int vertexId = g.VertexCount+1;
-            int edgeID = g.EdgeCount+1;
+            int vertexCount = graph.VertexCount;
+            int edgeCount = graph.EdgeCount;
+            int vertexId = graph.VertexCount + 1;
             using (var augmentor = new AllVerticesGraphAugmentorAlgorithm<string, Edge<string>>(
-                g,
+                graph,
                 () => (vertexId++).ToString(),
-                (s, t) => new Edge<string>(s, t)
-                ))
+                (s, t) => new Edge<string>(s, t)))
             {
                 augmentor.Compute();
-                VerifyCount(g, augmentor, vertexCount);
-                VerifySourceConnector(g, augmentor);
-                VerifySinkConnector(g, augmentor);
+                VerifyCount(graph, augmentor, vertexCount);
+                VerifySourceConnector(graph, augmentor);
+                VerifySinkConnector(graph, augmentor);
             }
-            Assert.AreEqual(g.VertexCount, vertexCount);
-            Assert.AreEqual(g.EdgeCount, edgeCount);
+
+            Assert.AreEqual(graph.VertexCount, vertexCount);
+            Assert.AreEqual(graph.EdgeCount, edgeCount);
         }
 
-        private static void VerifyCount<TVertex,TEdge>(
-            IMutableVertexAndEdgeListGraph<TVertex,TEdge> g, 
-            AllVerticesGraphAugmentorAlgorithm<TVertex,TEdge> augmentor,
+        private static void VerifyCount<TVertex, TEdge>(
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
             int vertexCount)
             where TEdge : IEdge<TVertex>
         {
-            Assert.AreEqual(vertexCount + 2, g.VertexCount);
-            Assert.IsTrue(g.ContainsVertex(augmentor.SuperSource));
-            Assert.IsTrue(g.ContainsVertex(augmentor.SuperSink));
+            Assert.AreEqual(vertexCount + 2, graph.VertexCount);
+            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSource));
+            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSink));
         }
 
         private static void VerifySourceConnector<TVertex, TEdge>(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> g, 
-            AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
             where TEdge : IEdge<TVertex>
         {
-            foreach (var v in g.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                if (v.Equals(augmentor.SuperSource))
+                if (vertex.Equals(augmentor.SuperSource))
                     continue;
-                if (v.Equals(augmentor.SuperSink))
+                if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsTrue(g.ContainsEdge(augmentor.SuperSource, v));
+                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource, vertex));
             }
         }
 
         private static void VerifySinkConnector<TVertex, TEdge>(
-            IMutableVertexAndEdgeListGraph<TVertex, TEdge> g, 
-            AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
             where TEdge : IEdge<TVertex>
         {
-            foreach (var v in g.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                if (v.Equals(augmentor.SuperSink))
+                if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                if (v.Equals(augmentor.SuperSink))
+                if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsTrue(g.ContainsEdge(v, augmentor.SuperSink));
+                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink));
             }
         }
 
-    }
+        #endregion
 
-    public sealed class StringVertexFactory
-    {
-        private int id = 0;
-
-        public StringVertexFactory()
-            : this("Super")
-        { }
-
-        public StringVertexFactory(string prefix)
+        [Test]
+        public void AugmentAll()
         {
-            this.Prefix = prefix;
-        }
-
-        public string Prefix { get; set; }
-
-        public string CreateVertex()
-        {
-            return this.Prefix + (++id).ToString();
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+                AugmentAndCheck(graph);
         }
     }
 }
