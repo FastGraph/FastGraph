@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms.VertexColoring;
 
 namespace QuikGraph.Tests.Algorithms.GraphColoring
 {
+    /// <summary>
+    /// Tests for <see cref="VertexColoringAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
     internal class VertexColoringAlgorithmTests : QuikGraphUnitTests
     {
@@ -17,16 +21,16 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
                                                  \ | /
                                                   (2)
             */
-            var input = GenerateInputSimple();
+            UndirectedGraph<char, Edge<char>> input = GenerateInputSimple();
             var algorithm = new VertexColoringAlgorithm<char, Edge<char>>(input);
             algorithm.Compute();
 
-            var coloredVertices = algorithm.Colors;
+            IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have third vertex color
             Assert.IsFalse(coloredVertices.Values.Contains(3));
 
-            var result = coloredVertices.Values.ToArray();
+            int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 3 different colors
             Assert.AreEqual(3, result.Max() + 1);
@@ -79,16 +83,16 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
                                                      
                                       (2)
             */
-            var input = GenerateInputEmpty();
+            UndirectedGraph<char, Edge<char>> input = GenerateInputEmpty();
             var algorithm = new VertexColoringAlgorithm<char, Edge<char>>(input);
             algorithm.Compute();
 
-            var coloredVertices = algorithm.Colors;
+            IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have first vertex color
             Assert.IsFalse(coloredVertices.Values.Contains(1));
 
-            var result = coloredVertices.Values.ToArray();
+            int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get only 1 color
             Assert.AreEqual(1, result.Max() + 1);
@@ -134,16 +138,16 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
                                                \    \ | /    /
                                                 \____(3)____/
             */
-            var input = GenerateInputFull();
+            UndirectedGraph<char, Edge<char>> input = GenerateInputFull();
             var algorithm = new VertexColoringAlgorithm<char, Edge<char>>(input);
             algorithm.Compute();
 
-            var coloredVertices = algorithm.Colors;
+            IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have sixth vertex color
             Assert.IsFalse(coloredVertices.Values.Contains(6));
 
-            var result = coloredVertices.Values.ToArray();
+            int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 6 different colors
             Assert.AreEqual(6, result.Max() + 1);
@@ -211,16 +215,16 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
             
             */
 
-            var input = GenerateInputBipartite();
+            UndirectedGraph<char, Edge<char>> input = GenerateInputBipartite();
             var algorithm = new VertexColoringAlgorithm<char, Edge<char>>(input);
             algorithm.Compute();
 
-            var coloredVertices = algorithm.Colors;
+            IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have second vertex color
             Assert.IsFalse(coloredVertices.Values.Contains(2));
 
-            var result = coloredVertices.Values.ToArray();
+            int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 2 different colors
             Assert.AreEqual(2, result.Max() + 1);
@@ -282,16 +286,16 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
             
             (this graph has a minimum number of vertex colors only if to swap (1) and (4) vertices)
             */
-            var input = GenerateInputTest();
+            UndirectedGraph<char, Edge<char>> input = GenerateInputTest();
             var algorithm = new VertexColoringAlgorithm<char, Edge<char>>(input);
             algorithm.Compute();
 
-            var coloredVertices = algorithm.Colors;
+            IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have third vertex color
             Assert.IsFalse(coloredVertices.Values.Contains(3));
 
-            var result = coloredVertices.Values.ToArray();
+            int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 3 different colors
             Assert.AreEqual(3, result.Max() + 1);

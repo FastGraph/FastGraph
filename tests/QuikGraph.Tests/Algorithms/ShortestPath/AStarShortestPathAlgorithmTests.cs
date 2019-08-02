@@ -1,62 +1,65 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Observers;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.ShortestPath;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace QuikGraph.Tests.Algorithms.ShortestPath
 {
+    /// <summary>
+    /// Tests for <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class AStartShortestPathAlgorithmTests : QuikGraphUnitTests
+    internal class AStartShortestPathAlgorithmTests
     {
+        #region Helpers
+
+        public void RunAStarAndCheck<TVertex, TEdge>([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph, [NotNull] TVertex root)
+            where TEdge : IEdge<TVertex>
+        {
+            var distances = new Dictionary<TEdge, double>();
+            foreach (TEdge edge in graph.Edges)
+                distances[edge] = graph.OutDegree(edge.Source) + 1;
+
+            var algorithm = new AStarShortestPathAlgorithm<TVertex, TEdge>(
+                graph,
+                e => distances[e],
+                v => 0);
+            var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
+            using (predecessors.Attach(algorithm))
+                algorithm.Compute(root);
+
+            Verify(algorithm, predecessors);
+        }
+
+        private static void Verify<TVertex, TEdge>(
+            [NotNull] AStarShortestPathAlgorithm<TVertex, TEdge> algorithm,
+            [NotNull] VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            where TEdge : IEdge<TVertex>
+        {
+            // Verify the result
+            foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
+            {
+                if (!predecessors.VertexPredecessors.TryGetValue(vertex, out TEdge predecessor))
+                    continue;
+                if (predecessor.Source.Equals(vertex))
+                    continue;
+                Assert.AreEqual(
+                    algorithm.TryGetDistance(vertex, out _),
+                    algorithm.TryGetDistance(predecessor.Source, out _));
+            }
+        }
+
+        #endregion
+
         [Test]
         [Category(TestCategories.LongRunning)]
         public void AStartAll()
         {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-                foreach (var root in g.Vertices)
-                    this.AStar(g, root);
-        }
-
-        public void AStar<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> g, TVertex root)
-            where TEdge : IEdge<TVertex>
-        {
-            var distances = new Dictionary<TEdge, double>();
-            foreach (var e in g.Edges)
-                distances[e] = g.OutDegree(e.Source) + 1;
-
-            var algo = new AStarShortestPathAlgorithm<TVertex, TEdge>(
-                g,
-                e => distances[e],
-                v => 0
-                );
-            var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using (predecessors.Attach(algo))
-                algo.Compute(root);
-
-            Verify(algo, predecessors);
-        }
-
-        private static void Verify<TVertex, TEdge>(
-            AStarShortestPathAlgorithm<TVertex, TEdge> algo,
-            VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors
-            )
-            where TEdge : IEdge<TVertex>
-        {
-            // let's verify the result
-            foreach (var v in algo.VisitedGraph.Vertices)
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
             {
-                TEdge predecessor;
-                if (!predecessors.VertexPredecessors.TryGetValue(v, out predecessor))
-                    continue;
-                if (predecessor.Source.Equals(v))
-                    continue;
-                double vd, vp;
-                bool found;
-                Assert.AreEqual(
-                    found = algo.TryGetDistance(v, out vd), 
-                    algo.TryGetDistance(predecessor.Source, out vp)
-                    );
+                foreach (string root in graph.Vertices)
+                    RunAStarAndCheck(graph, root);
             }
         }
     }

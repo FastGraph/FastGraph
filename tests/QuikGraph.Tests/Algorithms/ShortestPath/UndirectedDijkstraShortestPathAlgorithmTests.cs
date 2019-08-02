@@ -1,93 +1,95 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Observers;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.ShortestPath;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace QuikGraph.Tests.Algorithms.ShortestPath
 {
+    /// <summary>
+    /// Tests for <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class UndirectedDijkstraShortestPathAlgorithmTests : QuikGraphUnitTests
+    internal class UndirectedDijkstraShortestPathAlgorithmTests
     {
-        [Test]
-        public void UndirectedDijkstraAll()
-        {
-            foreach (var g in TestGraphFactory.GetUndirectedGraphs())
-            {
-                int cut = 0;
-                foreach (var root in g.Vertices)
-                {
-                    if (cut++ > 10)
-                        break;
-                    this.UndirectedDijkstra(g, root);
-                }
-            }
-        }
+        #region Helpers
 
-        public void UndirectedDijkstra<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> g, TVertex root)
+        private static void RunUndirectedDijkstraAndCheck<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph, [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
-            foreach (var e in g.Edges)
-                distances[e] = g.AdjacentDegree(e.Source) + 1;
+            foreach (TEdge edge in graph.Edges)
+                distances[edge] = graph.AdjacentDegree(edge.Source) + 1;
 
-            var algo = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(
-                g,
-                e => distances[e]
-                );
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, e => distances[e]);
             var predecessors = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
-            using(predecessors.Attach(algo))
-                algo.Compute(root);
+            using (predecessors.Attach(algorithm))
+                algorithm.Compute(root);
 
-            Verify(algo, predecessors);
+            Verify(algorithm, predecessors);
         }
 
         private static void Verify<TVertex, TEdge>(
-            UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge> algo,
-            UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            [NotNull] UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge> algorithm,
+            [NotNull] UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
             where TEdge : IEdge<TVertex>
         {
-            // let's verify the result
-            foreach (var v in algo.VisitedGraph.Vertices)
+            // Verify the result
+            foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
             {
-                TEdge predecessor;
-                if (!predecessors.VertexPredecessors.TryGetValue(v, out predecessor))
+                if (!predecessors.VertexPredecessors.TryGetValue(vertex, out TEdge predecessor))
                     continue;
-                if (predecessor.Source.Equals(v))
+                if (predecessor.Source.Equals(vertex))
                     continue;
-                double vd, vp;
-                bool found;
-                Assert.AreEqual(found = algo.TryGetDistance(v, out vd), algo.TryGetDistance(predecessor.Source, out vp));
-               // if (found)
-             //       Assert.AreEqual(vd, vp+1);
+                bool found = algorithm.TryGetDistance(vertex, out double vd);
+                Assert.AreEqual(found, algorithm.TryGetDistance(predecessor.Source, out double vp));
+                if (found)
+                    Assert.AreEqual(vd, vp + 1);
+            }
+        }
+
+        #endregion
+
+        [Test]
+        public void UndirectedDijkstraAll()
+        {
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            {
+                int cut = 0;
+                foreach (var root in graph.Vertices)
+                {
+                    if (cut++ > 10)
+                        break;
+                    RunUndirectedDijkstraAndCheck(graph, root);
+                }
             }
         }
 
         [Test]
         public void Repro42450()
         {
-            var ug = new UndirectedGraph<object, Edge<object>>(true);
+            var undirectedGraph = new UndirectedGraph<object, Edge<object>>(true);
             object v1 = "vertex1";
             object v2 = "vertex2";
             object v3 = "vertex3";
             var e1 = new Edge<object>(v1, v2);
             var e2 = new Edge<object>(v2, v3);
             var e3 = new Edge<object>(v3, v1);
-            ug.AddVertex(v1);
-            ug.AddVertex(v2);
-            ug.AddVertex(v3);
-            ug.AddEdge(e1);
-            ug.AddEdge(e2);
-            ug.AddEdge(e3);
+            undirectedGraph.AddVertex(v1);
+            undirectedGraph.AddVertex(v2);
+            undirectedGraph.AddVertex(v3);
+            undirectedGraph.AddEdge(e1);
+            undirectedGraph.AddEdge(e2);
+            undirectedGraph.AddEdge(e3);
 
-            var udspa =
-                new UndirectedDijkstraShortestPathAlgorithm<object, Edge<object>>(ug, edge => (double)1);
-            var observer =
-                new UndirectedVertexPredecessorRecorderObserver<object, Edge<object>>();
-            using (observer.Attach(udspa))
-                udspa.Compute(v1);
-            IEnumerable<Edge<object>> path;
-            observer.TryGetPath(v3, out path);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<object, Edge<object>>(
+                undirectedGraph,
+                edge => 1.0);
+            var observer = new UndirectedVertexPredecessorRecorderObserver<object, Edge<object>>();
+            using (observer.Attach(algorithm))
+                algorithm.Compute(v1);
+
+            Assert.IsTrue(observer.TryGetPath(v3, out _));
         }
     }
 }
