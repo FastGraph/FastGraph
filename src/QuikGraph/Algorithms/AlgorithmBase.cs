@@ -18,9 +18,8 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         protected AlgorithmBase([CanBeNull] IAlgorithmComponent host, [NotNull] TGraph visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
+            if (visitedGraph == null)
+                throw new ArgumentNullException(nameof(visitedGraph));
 
             if (host is null)
                 host = this;
@@ -34,9 +33,8 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         protected AlgorithmBase([NotNull] TGraph visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
+            if (visitedGraph == null)
+                throw new ArgumentNullException(nameof(visitedGraph));
 
             VisitedGraph = visitedGraph;
             _algorithmServices = new AlgorithmServices(this);
@@ -107,9 +105,8 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStateChanged([NotNull] EventArgs args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             StateChanged?.Invoke(this, args);
         }
@@ -123,9 +120,8 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStarted([NotNull] EventArgs args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             Started?.Invoke(this, args);
         }
@@ -139,9 +135,8 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnFinished([NotNull] EventArgs args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             Finished?.Invoke(this, args);
         }
@@ -155,9 +150,8 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnAborted([NotNull] EventArgs args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             Aborted?.Invoke(this, args);
         }
@@ -215,9 +209,8 @@ namespace QuikGraph.Algorithms
         [JetBrains.Annotations.Pure]
         protected virtual bool TryGetService([NotNull] Type serviceType, out object service)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(serviceType != null);
-#endif
+            if (serviceType is null)
+                throw new ArgumentNullException(nameof(serviceType));
 
             lock (SyncRoot)
             {

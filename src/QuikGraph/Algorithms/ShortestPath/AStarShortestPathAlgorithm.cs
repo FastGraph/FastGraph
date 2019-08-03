@@ -71,9 +71,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(costHeuristic != null);
-#endif
+            if (costHeuristic is null)
+                throw new ArgumentNullException(nameof(costHeuristic));
 
             CostHeuristic = costHeuristic;
         }
@@ -118,18 +117,16 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeNotRelaxed?.Invoke(edge);
         }
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             if (Weights(edge) < 0)
                 throw new NegativeWeightException();
@@ -137,9 +134,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnAStarTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             bool decreased = Relax(edge);
             if (decreased)
@@ -150,9 +146,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnGrayTarget([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             bool decreased = Relax(edge);
             if (decreased)
@@ -172,9 +167,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnBlackTarget([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             bool decreased = Relax(edge);
             if (decreased)

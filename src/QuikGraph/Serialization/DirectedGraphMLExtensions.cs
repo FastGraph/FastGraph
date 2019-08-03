@@ -233,9 +233,8 @@ namespace QuikGraph.Serialization
             [CanBeNull] string filePath)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             if (filePath is null)
                 filePath = "graph.DGML";

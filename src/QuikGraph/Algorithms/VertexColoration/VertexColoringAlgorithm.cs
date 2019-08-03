@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -37,9 +38,8 @@ namespace QuikGraph.Algorithms.VertexColoring
 
         private void OnVertexColored([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VertexColored?.Invoke(vertex);
         }

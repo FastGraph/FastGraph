@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
@@ -32,9 +33,8 @@ namespace QuikGraph.Serialization
         /// <param name="graph">Graph to serialize.</param>
         public XmlSerializableGraph([NotNull] TGraph graph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
 
             Graph = graph;
         }
@@ -70,9 +70,8 @@ namespace QuikGraph.Serialization
 
             internal XmlEdgeList([NotNull] TGraph graph)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(graph != null);
-#endif
+                if (graph == null)
+                    throw new ArgumentNullException(nameof(graph));
 
                 _graph = graph;
             }
@@ -99,9 +98,8 @@ namespace QuikGraph.Serialization
             /// <param name="edge">Edge to add.</param>
             public void Add([NotNull] TEdge edge)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(edge != null);
-#endif
+                if (edge == null)
+                    throw new ArgumentNullException(nameof(edge));
 
                 _graph.AddVerticesAndEdge(edge);
             }

@@ -68,9 +68,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnVertexInitialized([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -80,9 +79,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             StartVertex?.Invoke(vertex);
         }
@@ -92,9 +90,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             DiscoverVertex?.Invoke(vertex);
         }
@@ -106,9 +103,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnExamineVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             ExamineVertex?.Invoke(vertex);
         }
@@ -120,9 +116,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             ExamineEdge?.Invoke(edge);
         }
@@ -134,9 +129,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeNotRelaxed?.Invoke(edge);
         }
@@ -146,9 +140,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnFinishVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             FinishVertex?.Invoke(vertex);
         }

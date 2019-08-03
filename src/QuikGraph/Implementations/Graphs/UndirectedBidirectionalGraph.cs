@@ -24,9 +24,8 @@ namespace QuikGraph
         /// <param name="visitedGraph">Bidirectional graph.</param>
         public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
+            if (visitedGraph is null)
+                throw new ArgumentNullException(nameof(visitedGraph));
 
             VisitedGraph = visitedGraph;
         }

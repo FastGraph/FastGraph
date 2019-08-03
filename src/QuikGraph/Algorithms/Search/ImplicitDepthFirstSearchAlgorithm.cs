@@ -73,9 +73,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             StartVertex?.Invoke(vertex);
         }
@@ -87,9 +86,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             DiscoverVertex?.Invoke(vertex);
         }
@@ -101,9 +99,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             ExamineEdge?.Invoke(edge);
         }
@@ -117,9 +114,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -131,9 +127,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             BackEdge?.Invoke(edge);
         }
@@ -146,9 +141,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnForwardOrCrossEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             ForwardOrCrossEdge?.Invoke(edge);
         }
@@ -162,9 +156,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             FinishVertex?.Invoke(vertex);
         }
@@ -195,9 +188,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void Visit([NotNull] TVertex u, int depth)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(u != null);
-#endif
+            if (u == null)
+                throw new ArgumentNullException(nameof(u));
 
             if (depth > MaxDepth)
                 return;

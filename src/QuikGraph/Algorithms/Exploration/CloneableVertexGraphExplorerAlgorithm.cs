@@ -116,9 +116,8 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VisitedGraph.AddVertex(vertex);
             _unExploredVertices.Enqueue(vertex);
@@ -133,9 +132,8 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -147,9 +145,8 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             BackEdge?.Invoke(edge);
         }
@@ -161,9 +158,8 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnEdgeSkipped([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeSkipped?.Invoke(edge);
         }

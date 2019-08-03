@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -27,11 +25,7 @@ namespace QuikGraph
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,
             bool allowParallelEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(tryGetAdjacentEdges != null);
-#endif
-
-            _tryGetAdjacencyEdges = tryGetAdjacentEdges;
+            _tryGetAdjacencyEdges = tryGetAdjacentEdges ?? throw new ArgumentNullException(nameof(tryGetAdjacentEdges));
             AllowParallelEdges = allowParallelEdges;
         }
 

@@ -36,9 +36,8 @@ namespace QuikGraph.Algorithms
             [NotNull] Func<TEdge, double> distances)
             : base(visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(distances != null);
-#endif
+            if (distances is null)
+                throw new ArgumentNullException(nameof(distances));
 
             _dijkstra = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(
                 VisitedGraph,

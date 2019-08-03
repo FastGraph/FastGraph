@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -60,9 +58,8 @@ namespace QuikGraph
         /// <param name="visitedGraph">Graph to visit.</param>
         public ArrayBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
+            if (visitedGraph is null)
+                throw new ArgumentNullException(nameof(visitedGraph));
 
             _vertexEdges = new Dictionary<TVertex, InOutEdges>(visitedGraph.VertexCount);
             EdgeCount = visitedGraph.EdgeCount;

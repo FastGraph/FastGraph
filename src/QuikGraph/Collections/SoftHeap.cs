@@ -198,9 +198,8 @@ namespace QuikGraph.Collections
 
         private void Meld([NotNull] Node node)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(node != null);
-#endif
+            if (node is null)
+                throw new ArgumentNullException(nameof(node));
 
             Head toHead = _header.Next;
             while (node.Rank > toHead.Rank)
@@ -246,9 +245,8 @@ namespace QuikGraph.Collections
 
         private void FixMinList([NotNull] Head head)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(head != null);
-#endif
+            if (head is null)
+                throw new ArgumentNullException(nameof(head));
 
             Head tmpMin = head.Next == _tail 
                 ? head 
@@ -267,9 +265,8 @@ namespace QuikGraph.Collections
         [NotNull]
         private Node Shift([NotNull] Node v)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(v != null);
-#endif
+            if (v is null)
+                throw new ArgumentNullException(nameof(v));
 
             v.IL = null;
             v.ILTail = null;

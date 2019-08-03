@@ -29,9 +29,8 @@ namespace QuikGraph.Serialization
         /// <param name="baseResolver">Base XML resolver.</param>
         public GraphMLXmlResolver([NotNull] XmlResolver baseResolver)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(baseResolver != null);
-#endif
+            if (baseResolver is null)
+                throw new ArgumentNullException(nameof(baseResolver));
 
             _baseResolver = baseResolver;
         }

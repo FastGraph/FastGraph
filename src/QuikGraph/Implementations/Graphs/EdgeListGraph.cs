@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -169,9 +167,8 @@ namespace QuikGraph
         /// <param name="edge">Added edge.</param>
         protected virtual void OnEdgeAdded([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeAdded?.Invoke(edge);
         }
@@ -197,9 +194,8 @@ namespace QuikGraph
         /// <param name="edge">Removed edge.</param>
         protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeRemoved?.Invoke(edge);
         }
@@ -233,9 +229,8 @@ namespace QuikGraph
             bool allowParallelEdges,
             [NotNull] EdgeEdgeDictionary<TVertex, TEdge> edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
 
             IsDirected = isDirected;
             AllowParallelEdges = allowParallelEdges;

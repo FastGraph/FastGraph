@@ -22,9 +22,8 @@ namespace QuikGraph
         public static TryFunc<T, TResult> ToTryFunc<T, TResult>([NotNull] Func<T, TResult> func)
             where TResult : class
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(func != null);
-#endif
+            if (func is null)
+                throw new ArgumentNullException(nameof(func));
 
             return (T value, out TResult result) =>
             {

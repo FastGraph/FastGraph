@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -85,9 +86,8 @@ namespace QuikGraph.Algorithms.Condensation
 
         private void MergeVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             // Get in-edges and out-edges
             var inEdges = new List<MergedEdge<TVertex, TEdge>>(CondensedGraph.InEdges(vertex));

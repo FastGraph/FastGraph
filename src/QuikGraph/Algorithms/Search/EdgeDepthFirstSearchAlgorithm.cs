@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -60,11 +58,7 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] IDictionary<TEdge, GraphColor> edgesColors)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgesColors != null);
-#endif
-
-            EdgesColors = edgesColors;
+            EdgesColors = edgesColors ?? throw new ArgumentNullException(nameof(edgesColors));
         }
 
         /// <summary>
@@ -90,9 +84,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnEdgeInitialized([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             InitializeEdge?.Invoke(edge);
         }
@@ -104,9 +97,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             StartVertex?.Invoke(vertex);
         }
@@ -118,9 +110,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             StartEdge?.Invoke(edge);
         }
@@ -145,9 +136,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -159,9 +149,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             BackEdge?.Invoke(edge);
         }
@@ -173,9 +162,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnForwardOrCrossEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             ForwardOrCrossEdge?.Invoke(edge);
         }
@@ -185,9 +173,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnFinishEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             FinishEdge?.Invoke(edge);
         }
@@ -262,9 +249,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void Visit([NotNull] TEdge rootEdge, int depth)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(rootEdge != null);
-#endif
+            if (rootEdge == null)
+                throw new ArgumentNullException(nameof(rootEdge));
 
             if (depth > MaxDepth)
                 return;

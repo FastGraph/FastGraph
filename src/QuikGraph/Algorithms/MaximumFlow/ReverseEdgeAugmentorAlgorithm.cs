@@ -92,9 +92,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnReservedEdgeAdded([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             ReversedEdgeAdded?.Invoke(edge);
         }
@@ -199,9 +198,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <returns>True if the reversed edge was found, false otherwise.</returns>
         private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             foreach (TEdge reversedEdge in VisitedGraph.OutEdges(edge.Target))
             {

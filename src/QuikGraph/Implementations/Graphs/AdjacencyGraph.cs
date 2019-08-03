@@ -78,9 +78,8 @@ namespace QuikGraph
             int edgeCapacity,
             [NotNull, InstantHandle] Func<int, IVertexEdgeDictionary<TVertex, TEdge>> vertexEdgesDictionaryFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexEdgesDictionaryFactory != null);
-#endif
+            if (vertexEdgesDictionaryFactory is null)
+                throw new ArgumentNullException(nameof(vertexEdgesDictionaryFactory));
 
             AllowParallelEdges = allowParallelEdges;
             _vertexEdges = vertexEdgesDictionaryFactory(capacity);
@@ -289,9 +288,8 @@ namespace QuikGraph
         /// <param name="vertex">Added vertex.</param>
         protected virtual void OnVertexAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VertexAdded?.Invoke(vertex);
         }
@@ -350,9 +348,8 @@ namespace QuikGraph
         /// <param name="vertex">Removed vertex.</param>
         protected virtual void OnVertexRemoved([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VertexRemoved?.Invoke(vertex);
         }
@@ -434,9 +431,8 @@ namespace QuikGraph
         /// <param name="edge">Added edge.</param>
         protected virtual void OnEdgeAdded([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeAdded?.Invoke(edge);
         }
@@ -468,9 +464,8 @@ namespace QuikGraph
         /// <param name="edge">Removed edge.</param>
         protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeRemoved?.Invoke(edge);
         }

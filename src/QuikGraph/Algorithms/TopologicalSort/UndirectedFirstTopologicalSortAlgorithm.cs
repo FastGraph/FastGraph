@@ -61,9 +61,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
         private void OnVertexAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VertexAdded?.Invoke(vertex);
         }
@@ -83,9 +82,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="vertices">Set of sorted vertices.</param>
         public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-#endif
+            if (vertices is null)
+                throw new ArgumentNullException(nameof(vertices));
 
             SortedVertices = vertices;
             SortedVertices.Clear();

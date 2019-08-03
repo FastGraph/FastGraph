@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -24,11 +22,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="edgeWeights">Map that contains edge weights.</param>
         protected WeightedMarkovEdgeChainBase([NotNull] IDictionary<TEdge, double> edgeWeights)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeWeights != null);
-#endif
-
-            Weights = edgeWeights;
+            Weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
         }
 
         /// <summary>
@@ -90,9 +84,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <returns>True if a successor was found, false otherwise.</returns>
         protected bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, double position, out TEdge successor)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
 
             double pos = 0;
             foreach (TEdge edge in edges)

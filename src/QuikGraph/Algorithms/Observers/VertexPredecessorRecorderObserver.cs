@@ -31,9 +31,8 @@ namespace QuikGraph.Algorithms.Observers
         public VertexPredecessorRecorderObserver(
             [NotNull] IDictionary<TVertex, TEdge> vertexPredecessors)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexPredecessors != null);
-#endif
+            if (vertexPredecessors is null)
+                throw new ArgumentNullException(nameof(vertexPredecessors));
 
             VertexPredecessors = vertexPredecessors;
         }

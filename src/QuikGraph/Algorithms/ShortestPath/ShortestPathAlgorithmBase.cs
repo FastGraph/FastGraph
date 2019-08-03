@@ -161,9 +161,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edge">Concerned edge.</param>
         protected virtual void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -175,9 +174,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
         protected bool Relax([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TVertex source = edge.Source;
             TVertex target = edge.Target;

@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -25,11 +23,7 @@ namespace QuikGraph.Predicates
         /// <param name="vertexMap">Vertex map.</param>
         public InDictionaryVertexPredicate([NotNull] IDictionary<TVertex, TValue> vertexMap)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(_vertexMap != null);
-#endif
-
-            _vertexMap = vertexMap;
+            _vertexMap = vertexMap ?? throw new ArgumentNullException(nameof(vertexMap));
         }
 
         /// <summary>
@@ -45,9 +39,8 @@ namespace QuikGraph.Predicates
         [JetBrains.Annotations.Pure]
         public bool Test([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             return _vertexMap.ContainsKey(vertex);
         }

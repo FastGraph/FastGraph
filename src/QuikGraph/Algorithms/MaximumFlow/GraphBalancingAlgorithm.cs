@@ -262,9 +262,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnEdgeAdded([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeAdded?.Invoke(edge);
         }
@@ -276,9 +275,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnSurplusVertexAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             SurplusVertexAdded?.Invoke(vertex);
         }
@@ -290,9 +288,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnDeficientVertexAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             DeficientVertexAdded?.Invoke(vertex);
         }
@@ -304,9 +301,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <returns>Balancing index.</returns>
         public int GetBalancingIndex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             int balancingIndex = 0;
             foreach (TEdge edge in VisitedGraph.OutEdges(vertex))

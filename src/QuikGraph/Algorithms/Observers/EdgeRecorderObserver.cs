@@ -31,9 +31,8 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="edges">Set of edges.</param>
         public EdgeRecorderObserver([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
 
             _edges = edges.ToList();
         }

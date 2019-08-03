@@ -54,9 +54,8 @@ namespace QuikGraph.Algorithms
         /// <param name="target">Target vertex.</param>
         public void SetTargetVertex([NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(target != null);
-#endif
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             bool changed = !Equals(_target, target);
             _target = target;
@@ -85,9 +84,8 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnTargetVertexChanged([NotNull] EventArgs args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             TargetVertexChanged?.Invoke(this, args);
         }

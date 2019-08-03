@@ -46,9 +46,8 @@ namespace QuikGraph.Collections
         /// <param name="priorityComparison">Priority comparer.</param>
         public FibonacciHeap(HeapDirection direction, [NotNull] Comparison<TPriority> priorityComparison)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(priorityComparison != null);
-#endif
+            if (priorityComparison is null)
+                throw new ArgumentNullException(nameof(priorityComparison));
 
             _cells = new FibonacciHeapLinkedList<TPriority, TValue>();
             _degreeToCell = new Dictionary<int, FibonacciHeapCell<TPriority, TValue>>();
@@ -137,9 +136,8 @@ namespace QuikGraph.Collections
         /// <param name="cell">Cell to delete.</param>
         public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cell != null);
-#endif
+            if (cell is null)
+                throw new ArgumentNullException(nameof(cell));
 
             ChangeKeyInternal(cell, default(TPriority), true);
             Dequeue();
@@ -152,9 +150,8 @@ namespace QuikGraph.Collections
         /// <param name="newPriority">New priority.</param>
         public void ChangeKey([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newPriority)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cell != null);
-#endif
+            if (cell is null)
+                throw new ArgumentNullException(nameof(cell));
 
             ChangeKeyInternal(cell, newPriority, false);
         }
@@ -164,9 +161,8 @@ namespace QuikGraph.Collections
             [CanBeNull] TPriority newKey, // Null authorized if deleting the cell
             bool deletingCell)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cell != null);
-#endif
+            if (cell is null)
+                throw new ArgumentNullException(nameof(cell));
 
             int delta = Math.Sign(PriorityComparison(cell.Priority, newKey));
             if (delta == 0)
@@ -449,9 +445,8 @@ namespace QuikGraph.Collections
         /// <exception cref="Exception">If the heap is not in the same direction.</exception>
         public void Merge([NotNull] FibonacciHeap<TPriority, TValue> heap)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(heap != null);
-#endif
+            if (heap is null)
+                throw new ArgumentNullException(nameof(heap));
 
             if (heap.Direction != Direction)
                 throw new InvalidOperationException("Error: Heaps must go in the same direction when merging.");

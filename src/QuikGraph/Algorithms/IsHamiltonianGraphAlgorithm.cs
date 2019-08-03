@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -24,9 +25,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to check.</param>
         public IsHamiltonianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             // Create new graph without parallel edges
             var newGraph = new UndirectedGraph<TVertex, TEdge>(

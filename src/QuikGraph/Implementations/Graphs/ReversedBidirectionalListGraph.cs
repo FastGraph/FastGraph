@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,16 +24,13 @@ namespace QuikGraph
         /// <param name="originalGraph">Original graph to reverse.</param>
         public ReversedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(originalGraph != null);
-#endif
-
-            OriginalGraph = originalGraph;
+            OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
         }
 
         /// <summary>
         /// Original graph.
         /// </summary>
+        [NotNull]
         public IBidirectionalGraph<TVertex, TEdge> OriginalGraph { get; }
 
         #region IGraph<TVertex,TEdge>

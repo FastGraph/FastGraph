@@ -32,9 +32,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(capacities != null);
-#endif
+            if (capacities is null)
+                throw new ArgumentNullException(nameof(capacities));
 
             Capacities = capacities;
             EdgeFactory = edgeFactory;

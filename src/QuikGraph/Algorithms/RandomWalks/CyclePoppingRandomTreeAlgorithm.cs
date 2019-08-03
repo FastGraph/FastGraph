@@ -53,9 +53,8 @@ namespace QuikGraph.Algorithms.RandomWalks
             [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeChain != null);
-#endif
+            if (edgeChain is null)
+                throw new ArgumentNullException(nameof(edgeChain));
             EdgeChain = edgeChain;
         }
 
@@ -102,11 +101,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             }
             set
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(value != null);
-#endif
-
-                _rand = value;
+                _rand = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -128,9 +123,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnInitializeVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -142,9 +136,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnFinishVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             FinishVertex?.Invoke(vertex);
         }
@@ -154,9 +147,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -168,9 +160,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnClearTreeVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             ClearTreeVertex?.Invoke(vertex);
         }

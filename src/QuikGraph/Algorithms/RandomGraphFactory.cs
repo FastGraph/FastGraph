@@ -25,9 +25,8 @@ namespace QuikGraph.Algorithms
             [NotNull] IVertexSet<TVertex> graph,
             [NotNull] Random rng)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return GetVertex(graph.Vertices, graph.VertexCount, rng);
         }
@@ -87,9 +86,8 @@ namespace QuikGraph.Algorithms
             [NotNull] Random rng)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return GetEdge<TVertex, TEdge>(graph.Edges, graph.EdgeCount, rng);
         }

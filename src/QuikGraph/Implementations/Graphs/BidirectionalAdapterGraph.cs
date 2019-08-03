@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,11 +28,7 @@ namespace QuikGraph
         /// <param name="baseGraph">Wrapped bidirectional graph.</param>
         public BidirectionalAdapterGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(baseGraph != null);
-#endif
-
-            _baseGraph = baseGraph;
+            _baseGraph = baseGraph ?? throw new ArgumentNullException(nameof(baseGraph));
             _inEdges = new Dictionary<TVertex, EdgeList<TVertex, TEdge>>(_baseGraph.VertexCount);
             foreach (TEdge edge in _baseGraph.Edges)
             {

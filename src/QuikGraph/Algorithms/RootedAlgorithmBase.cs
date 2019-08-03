@@ -56,9 +56,8 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Root vertex.</param>
         public void SetRootVertex([NotNull] TVertex root)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-#endif
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             bool changed = !Equals(_root, root);
             _root = root;
@@ -87,9 +86,8 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnRootVertexChanged([NotNull] EventArgs args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             RootVertexChanged?.Invoke(this, args);
         }
@@ -100,9 +98,8 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Root vertex.</param>
         public void Compute([NotNull] TVertex root)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-#endif
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             SetRootVertex(root);
             Compute();

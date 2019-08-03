@@ -116,18 +116,16 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotRelaxed([NotNull] TEdge edge, bool reversed)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeNotRelaxed?.Invoke(this, new UndirectedEdgeEventArgs<TVertex, TEdge>(edge, reversed));
         }
 
         private void OnDijkstraTreeEdge(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             bool decreased = Relax(args.Edge, args.Source, args.Target);
             if (decreased)
@@ -138,9 +136,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnGrayTarget(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(args != null);
-#endif
+            if (args is null)
+                throw new ArgumentNullException(nameof(args));
 
             bool decreased = Relax(args.Edge, args.Source, args.Target);
             if (decreased)

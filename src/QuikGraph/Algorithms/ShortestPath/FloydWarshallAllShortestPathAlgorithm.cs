@@ -46,9 +46,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             public VertexData(double distance, [NotNull] TVertex predecessor)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(predecessor != null);
-#endif
+                if (predecessor == null)
+                    throw new ArgumentNullException(nameof(predecessor));
 
                 Distance = distance;
                 _predecessor = predecessor;

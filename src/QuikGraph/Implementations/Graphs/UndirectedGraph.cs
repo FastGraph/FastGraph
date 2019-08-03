@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +33,8 @@ namespace QuikGraph
         /// <param name="edgeEqualityComparer">Equality comparer to use to compare edges.</param>
         public UndirectedGraph(bool allowParallelEdges, [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(_edgeEqualityComparer != null);
-#endif
-
             AllowParallelEdges = allowParallelEdges;
-            _edgeEqualityComparer = edgeEqualityComparer;
+            _edgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
         }
 
         /// <summary>
@@ -294,9 +288,8 @@ namespace QuikGraph
         /// <param name="vertex">Added vertex.</param>
         protected virtual void OnVertexAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VertexAdded?.Invoke(vertex);
         }
@@ -352,9 +345,8 @@ namespace QuikGraph
         /// <param name="vertex">Removed vertex.</param>
         protected virtual void OnVertexRemoved([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             VertexRemoved?.Invoke(vertex);
         }
@@ -494,9 +486,8 @@ namespace QuikGraph
         /// <param name="edge">Added edge.</param>
         protected virtual void OnEdgeAdded([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeAdded?.Invoke(edge);
         }
@@ -530,9 +521,8 @@ namespace QuikGraph
         /// <param name="edge">Removed edge.</param>
         protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeRemoved?.Invoke(edge);
         }

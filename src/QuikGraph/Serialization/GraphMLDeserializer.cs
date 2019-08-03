@@ -538,9 +538,8 @@ namespace QuikGraph.Serialization
         [JetBrains.Annotations.Pure]
         public static bool TryGetReadContentMethod([NotNull] Type type, out MethodInfo method)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(type != null);
-#endif
+            if (type is null)
+                throw new ArgumentNullException(nameof(type));
 
             bool result = ReadContentMethods.TryGetValue(type, out method);
 

@@ -71,9 +71,8 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>([NotNull] this IVertexSet<TVertex> graph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             // Simpler identity for primitive types
 #if SUPPORTS_TYPE_FULL_FEATURES
@@ -124,9 +123,8 @@ namespace QuikGraph.Algorithms
         public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>([NotNull] this IEdgeSet<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             // Create dictionary
             var ids = new Dictionary<TEdge, string>(graph.EdgeCount);
@@ -149,9 +147,8 @@ namespace QuikGraph.Algorithms
             where TEdge : IEdge<TVertex>
             where TAlgorithm : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>, ITreeBuilderAlgorithm<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(algorithm != null);
-#endif
+            if (algorithm is null)
+                throw new ArgumentNullException(nameof(algorithm));
 
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
@@ -532,9 +529,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return graph.Vertices.Where(graph.IsOutEdgesEmpty);
         }
@@ -555,9 +551,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var notRoots = new Dictionary<TVertex, bool>(graph.VertexCount);
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
@@ -587,9 +582,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return graph.Vertices.Where(graph.IsInEdgesEmpty);
         }
@@ -610,9 +604,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return graph.Vertices.Where(vertex => graph.Degree(vertex) == 0);
         }
@@ -636,9 +629,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var vertices = new List<TVertex>(graph.VertexCount);
             TopologicalSort(graph, vertices);
@@ -684,9 +676,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var vertices = new List<TVertex>(graph.VertexCount);
             TopologicalSort(graph, vertices);
@@ -732,9 +723,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var vertices = new List<TVertex>(graph.VertexCount);
             SourceFirstTopologicalSort(graph, vertices);
@@ -782,9 +772,8 @@ namespace QuikGraph.Algorithms
             TopologicalSortDirection direction)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var vertices = new List<TVertex>(graph.VertexCount);
             SourceFirstBidirectionalTopologicalSort(graph, vertices, direction);
@@ -893,9 +882,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var incrementalComponents = new IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             incrementalComponents.Compute();
@@ -963,9 +951,8 @@ namespace QuikGraph.Algorithms
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(graph)
             {
@@ -989,9 +976,8 @@ namespace QuikGraph.Algorithms
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(graph)
             {
@@ -1046,9 +1032,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var counts = new Dictionary<TVertex, int>(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)
@@ -1083,9 +1068,8 @@ namespace QuikGraph.Algorithms
         public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return new DagTester<TVertex, TEdge>().IsDag(graph);
         }
@@ -1170,9 +1154,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             var sets = new ForestDisjointSet<TVertex>(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)

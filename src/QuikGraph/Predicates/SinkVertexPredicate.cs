@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
@@ -25,11 +23,7 @@ namespace QuikGraph.Predicates
         /// <param name="visitedGraph">Graph to consider.</param>
         public SinkVertexPredicate([NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(_visitedGraph != null);
-#endif
-
-            _visitedGraph = visitedGraph;
+            _visitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
         }
 
         /// <summary>

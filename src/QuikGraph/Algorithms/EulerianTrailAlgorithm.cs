@@ -100,9 +100,8 @@ namespace QuikGraph.Algorithms
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -114,9 +113,8 @@ namespace QuikGraph.Algorithms
 
         private void OnCircuitEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             CircuitEdge?.Invoke(edge);
         }
@@ -128,18 +126,16 @@ namespace QuikGraph.Algorithms
 
         private void OnVisitEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             VisitEdge?.Invoke(edge);
         }
 
         private bool Search([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             foreach (TEdge edge in SelectOutEdgesNotInCircuit(vertex))
             {
@@ -196,9 +192,8 @@ namespace QuikGraph.Algorithms
         public static int ComputeEulerianPathCount(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             if (graph.EdgeCount < graph.VertexCount)
                 return 0;
@@ -488,9 +483,8 @@ namespace QuikGraph.Algorithms
         [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> Trails([NotNull] TVertex startingVertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(startingVertex != null);
-#endif
+            if (startingVertex == null)
+                throw new ArgumentNullException(nameof(startingVertex));
 
             int index = FindFirstEdgeInCircuit(startingVertex);
 

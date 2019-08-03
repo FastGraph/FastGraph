@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -17,11 +18,7 @@ namespace QuikGraph.Predicates
         /// <param name="residualCapacities">Residual capacities per edge.</param>
         public ResidualEdgePredicate([NotNull] IDictionary<TEdge, double> residualCapacities)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(residualCapacities != null);
-#endif
-
-            ResidualCapacities = residualCapacities;
+            ResidualCapacities = residualCapacities ?? throw new ArgumentNullException(nameof(residualCapacities));
         }
 
         /// <summary>
@@ -42,9 +39,8 @@ namespace QuikGraph.Predicates
         [JetBrains.Annotations.Pure]
         public bool Test(TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             return 0 < ResidualCapacities[edge];
         }

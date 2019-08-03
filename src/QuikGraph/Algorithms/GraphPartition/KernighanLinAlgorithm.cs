@@ -111,9 +111,8 @@ namespace QuikGraph.Algorithms.GraphPartition
         [JetBrains.Annotations.Pure]
         private double GetVertexCost([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             double cost = 0;
             bool vertexIsInA = _vertexSetA.Contains(vertex);
@@ -140,9 +139,8 @@ namespace QuikGraph.Algorithms.GraphPartition
         [NotNull, ItemNotNull]
         private IEnumerable<TVertex> GetNeighbors([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             var neighbors = new HashSet<TVertex>();
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex))

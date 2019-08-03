@@ -28,9 +28,8 @@ namespace QuikGraph
         /// <param name="wrappedGraph">Graph to wrap.</param>
         public ClusteredAdjacencyGraph([NotNull] AdjacencyGraph<TVertex, TEdge> wrappedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(wrappedGraph != null);
-#endif
+            if (wrappedGraph is null)
+                throw new ArgumentNullException(nameof(wrappedGraph));
 
             Parent = null;
             Wrapped = wrappedGraph;
@@ -44,9 +43,8 @@ namespace QuikGraph
         /// <param name="parentGraph">Parent graph.</param>
         public ClusteredAdjacencyGraph([NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> parentGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(parentGraph != null);
-#endif
+            if (parentGraph is null)
+                throw new ArgumentNullException(nameof(parentGraph));
 
             Parent = parentGraph;
             Wrapped = new AdjacencyGraph<TVertex, TEdge>(parentGraph.AllowParallelEdges);
@@ -117,9 +115,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public void RemoveCluster(IClusteredGraph graph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             _clusters.Remove(graph);
         }
@@ -152,9 +149,8 @@ namespace QuikGraph
         /// <returns>True if the vertex was added, false otherwise.</returns>
         public virtual bool AddVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             if (!(Parent is null || Parent.ContainsVertex(vertex)))
             {
@@ -193,9 +189,8 @@ namespace QuikGraph
         /// <param name="vertex">Vertex to remove.</param>
         private void RemoveChildVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
             {
@@ -215,9 +210,8 @@ namespace QuikGraph
         /// <returns>True if the vertex was removed, false otherwise.</returns>
         public virtual bool RemoveVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             if (!Wrapped.ContainsVertex(vertex))
                 return false;
@@ -236,9 +230,8 @@ namespace QuikGraph
         /// <returns>The number of vertex removed.</returns>
         public int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(predicate != null);
-#endif
+            if (predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
 
             var verticesToRemove = Vertices
                 .Where(vertex => predicate(vertex))
@@ -352,9 +345,8 @@ namespace QuikGraph
         /// <returns>True if the edge was added, false otherwise.</returns>
         public virtual bool AddVerticesAndEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             AddVertex(edge.Source);
             AddVertex(edge.Target);
@@ -390,9 +382,8 @@ namespace QuikGraph
         /// <returns>True if the edge was added, false otherwise.</returns>
         public virtual bool AddEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             Wrapped.AddEdge(edge);
             if (Parent != null && !Parent.ContainsEdge(edge))
@@ -424,9 +415,8 @@ namespace QuikGraph
 
         private void RemoveChildEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
             {
@@ -446,9 +436,8 @@ namespace QuikGraph
         /// <returns>True if the <paramref name="edge"/> was successfully removed, false otherwise.</returns>
         public virtual bool RemoveEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             if (!Wrapped.ContainsEdge(edge))
                 return false;
@@ -467,9 +456,8 @@ namespace QuikGraph
         /// <returns>The number of edges removed.</returns>
         public int RemoveEdgeIf([NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(predicate != null);
-#endif
+            if (predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
 
             var edgesToRemove = Wrapped.Edges
                 .Where(edge => predicate(edge))
@@ -507,9 +495,8 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         public void ClearOutEdges([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             Wrapped.ClearOutEdges(vertex);
         }

@@ -93,9 +93,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnSuperSourceAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             SuperSourceAdded?.Invoke(vertex);
         }
@@ -107,9 +106,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnSuperSinkAdded([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             SuperSinkAdded?.Invoke(vertex);
         }
@@ -121,9 +119,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnEdgeAdded([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             EdgeAdded?.Invoke(edge);
         }

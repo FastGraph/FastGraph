@@ -18,9 +18,8 @@ namespace QuikGraph.Algorithms.Services
         /// <param name="host">Algorithm host.</param>
         public AlgorithmServices([NotNull] IAlgorithmComponent host)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(host != null);
-#endif
+            if (host is null)
+                throw new ArgumentNullException(nameof(host));
 
             _host = host;
         }

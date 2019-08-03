@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -27,11 +28,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(distanceRelaxer != null);
-#endif
-
-            DistanceRelaxer = distanceRelaxer;
+            DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
         }
 
         private int _shortestPathCount = 3;

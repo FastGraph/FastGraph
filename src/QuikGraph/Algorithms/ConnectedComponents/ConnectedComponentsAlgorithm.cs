@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
@@ -54,11 +52,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             [NotNull] IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(components != null);
-#endif
-
-            Components = components;
+            Components = components ?? throw new ArgumentNullException(nameof(components));
         }
 
         #region AlgorithmBase<TGraph>

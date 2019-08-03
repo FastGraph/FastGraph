@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
@@ -39,11 +37,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
             [NotNull, ItemNotNull] IList<TVertex> vertices)
             : base(visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-#endif
-
-            SortedVertices = vertices;
+            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
         }
 
         /// <summary>
@@ -71,9 +65,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="vertices">Set of sorted vertices.</param>
         public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-#endif
+            if (vertices is null)
+                throw new ArgumentNullException(nameof(vertices));
 
             SortedVertices = vertices;
             SortedVertices.Clear();

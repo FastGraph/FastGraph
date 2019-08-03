@@ -22,9 +22,8 @@ namespace QuikGraph
         /// <param name="tryGetOutEdges">Getter of out-edges.</param>
         public DelegateImplicitGraph([NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(tryGetOutEdges != null);
-#endif
+            if (tryGetOutEdges is null)
+                throw new ArgumentNullException(nameof(tryGetOutEdges));
 
             _tryGetOutEdgesFunc = tryGetOutEdges;
         }

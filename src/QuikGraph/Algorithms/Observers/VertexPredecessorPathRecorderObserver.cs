@@ -33,9 +33,8 @@ namespace QuikGraph.Algorithms.Observers
         public VertexPredecessorPathRecorderObserver(
             [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(verticesPredecessors != null);
-#endif
+            if (verticesPredecessors is null)
+                throw new ArgumentNullException(nameof(verticesPredecessors));
 
             VerticesPredecessors = verticesPredecessors;
         }

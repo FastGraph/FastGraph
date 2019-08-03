@@ -517,9 +517,8 @@ namespace QuikGraph.Serialization
         [JetBrains.Annotations.Pure]
         public static bool TryGetWriteValueMethod([NotNull] Type valueType, out MethodInfo method)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(valueType != null);
-#endif
+            if (valueType is null)
+                throw new ArgumentNullException(nameof(valueType));
 
             bool status = WriteContentMethods.TryGetValue(valueType, out method);
             return status;

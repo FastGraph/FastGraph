@@ -29,9 +29,8 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="vertices">Set of vertices.</param>
         public VertexRecorderObserver([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-#endif
+            if (vertices is null)
+                throw new ArgumentNullException(nameof(vertices));
 
             _vertices = vertices.ToList();
         }

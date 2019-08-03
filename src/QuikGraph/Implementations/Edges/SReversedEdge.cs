@@ -24,9 +24,8 @@ namespace QuikGraph
         /// <param name="originalEdge">Original edge.</param>
         public SReversedEdge([NotNull] TEdge originalEdge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(originalEdge != null);
-#endif
+            if (originalEdge == null)
+                throw new ArgumentNullException(nameof(originalEdge));
 
             OriginalEdge = originalEdge;
         }

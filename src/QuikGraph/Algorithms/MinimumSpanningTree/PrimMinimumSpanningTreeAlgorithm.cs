@@ -47,11 +47,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
             [NotNull] Func<TEdge, double> edgeWeights)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeWeights != null);
-#endif
-
-            _edgeWeights = edgeWeights;
+            _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
         }
 
         /// <summary>
@@ -61,9 +57,8 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             ExamineEdge?.Invoke(edge);
         }
@@ -75,9 +70,8 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }

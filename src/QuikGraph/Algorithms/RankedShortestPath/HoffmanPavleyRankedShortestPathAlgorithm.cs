@@ -59,9 +59,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, distanceRelaxer)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeWeights != null);
-#endif
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
 
             _edgeWeights = edgeWeights;
         }
@@ -226,9 +225,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             out IDictionary<TVertex, TEdge> successors,
             out IDictionary<TVertex, double> distances)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(target != null);
-#endif
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             var reversedGraph =
                 new ReversedBidirectionalGraph<TVertex, TEdge>(VisitedGraph);

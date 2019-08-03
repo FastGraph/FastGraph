@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -58,9 +56,8 @@ namespace QuikGraph.Predicates
         [JetBrains.Annotations.Pure]
         public bool Test([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
             return 0 < ResidualCapacities[ReversedEdges[edge]];
         }
     }

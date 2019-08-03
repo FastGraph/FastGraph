@@ -96,9 +96,8 @@ namespace QuikGraph
             [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(tryGetOutEdges != null);
-#endif
+            if (tryGetOutEdges is null)
+                throw new ArgumentNullException(nameof(tryGetOutEdges));
 
             return new DelegateIncidenceGraph<TVertex, TEdge>(tryGetOutEdges);
         }
@@ -146,9 +145,8 @@ namespace QuikGraph
             [NotNull] this Func<TVertex, IEnumerable<TEdge>> getOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(getOutEdges != null);
-#endif
+            if (getOutEdges is null)
+                throw new ArgumentNullException(nameof(getOutEdges));
 
             return ToDelegateIncidenceGraph(ToTryFunc(getOutEdges));
         }
@@ -384,9 +382,8 @@ namespace QuikGraph
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return new ArrayAdjacencyGraph<TVertex, TEdge>(graph);
         }
@@ -407,9 +404,8 @@ namespace QuikGraph
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return new ArrayBidirectionalGraph<TVertex, TEdge>(graph);
         }
@@ -430,9 +426,8 @@ namespace QuikGraph
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             return new ArrayUndirectedGraph<TVertex, TEdge>(graph);
         }
@@ -453,9 +448,8 @@ namespace QuikGraph
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
             if (graph is IBidirectionalGraph<TVertex, TEdge> self)
                 return self;
@@ -633,9 +627,8 @@ namespace QuikGraph
         public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(
             [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexPairs != null);
-#endif
+            if (vertexPairs is null)
+                throw new ArgumentNullException(nameof(vertexPairs));
 
             var graph = new AdjacencyGraph<TVertex, SEquatableEdge<TVertex>>();
             graph.AddVerticesAndEdgeRange(vertexPairs);
@@ -656,9 +649,8 @@ namespace QuikGraph
         public static BidirectionalGraph<TVertex, SEquatableEdge<TVertex>> ToBidirectionalGraph<TVertex>(
             [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexPairs != null);
-#endif
+            if (vertexPairs is null)
+                throw new ArgumentNullException(nameof(vertexPairs));
 
             var graph = new BidirectionalGraph<TVertex, SEquatableEdge<TVertex>>();
             graph.AddVerticesAndEdgeRange(vertexPairs);
@@ -697,9 +689,8 @@ namespace QuikGraph
         public static UndirectedGraph<TVertex, SEquatableEdge<TVertex>> ToUndirectedGraph<TVertex>(
             [NotNull] this IEnumerable<SEquatableEdge<TVertex>> vertexPairs)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexPairs != null);
-#endif
+            if (vertexPairs is null)
+                throw new ArgumentNullException(nameof(vertexPairs));
 
             var graph = new UndirectedGraph<TVertex, SEquatableEdge<TVertex>>();
             graph.AddVerticesAndEdgeRange(vertexPairs);
@@ -722,9 +713,8 @@ namespace QuikGraph
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-#endif
+            if (visitedGraph is null)
+                throw new ArgumentNullException(nameof(visitedGraph));
 
             return CompressedSparseRowGraph<TVertex>.FromGraph(visitedGraph);
         }

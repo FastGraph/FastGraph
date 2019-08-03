@@ -131,9 +131,8 @@ namespace QuikGraph.Algorithms
         /// <param name="pairs">Vertices pairs.</param>
         public void SetVertexPairs([NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(pairs != null);
-#endif
+            if (pairs is null)
+                throw new ArgumentNullException(nameof(pairs));
 
             _pairs = pairs.ToArray();
         }

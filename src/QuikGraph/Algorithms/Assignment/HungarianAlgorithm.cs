@@ -77,9 +77,8 @@ namespace QuikGraph.Algorithms.Assignment
         /// <param name="costs">Costs matrix.</param>
         public HungarianAlgorithm([NotNull] int[,] costs)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(costs != null);
-#endif
+            if (costs is null)
+                throw new ArgumentNullException(nameof(costs));
 
             _costs = costs;
             _step = Steps.Init;

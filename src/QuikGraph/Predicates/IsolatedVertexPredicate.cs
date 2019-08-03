@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
@@ -19,11 +20,7 @@ namespace QuikGraph.Predicates
         /// <param name="visitedGraph">Graph to consider.</param>
         public IsolatedVertexPredicate([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(_visitedGraph != null);
-#endif
-
-            _visitedGraph = visitedGraph;
+            _visitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
         }
 
         /// <summary>
@@ -38,9 +35,8 @@ namespace QuikGraph.Predicates
         [JetBrains.Annotations.Pure]
         public bool Test(TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             return _visitedGraph.IsInEdgesEmpty(vertex)
                    && _visitedGraph.IsOutEdgesEmpty(vertex);

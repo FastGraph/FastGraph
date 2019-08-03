@@ -15,9 +15,8 @@ namespace QuikGraph
         /// <param name="vertex">Concerned vertex.</param>
         public VertexEventArgs([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             Vertex = vertex;
         }

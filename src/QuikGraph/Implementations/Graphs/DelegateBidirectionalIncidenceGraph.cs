@@ -26,9 +26,8 @@ namespace QuikGraph
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
             : base(tryGetOutEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(tryGetInEdges != null);
-#endif
+            if (tryGetInEdges is null)
+                throw new ArgumentNullException(nameof(tryGetInEdges));
             _tryGetInEdgesFunc = tryGetInEdges;
         }
 

@@ -64,9 +64,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if the distance was found, false otherwise.</returns>
         public bool TryGetDistance([NotNull] TVertex vertex, out double distance)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             return Distances.TryGetValue(vertex, out distance);
         }
@@ -155,9 +154,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="reversed">Indicates if the edge is reversed.</param>
         protected virtual void OnTreeEdge([NotNull] TEdge edge, bool reversed)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(
                 this,

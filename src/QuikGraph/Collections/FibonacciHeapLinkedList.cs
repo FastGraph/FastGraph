@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -32,9 +33,8 @@ namespace QuikGraph.Collections
         /// <param name="cells">Cells to merge.</param>
         internal void MergeLists([NotNull] FibonacciHeapLinkedList<TPriority, TValue> cells)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cells != null);
-#endif
+            if (cells is null)
+                throw new ArgumentNullException(nameof(cells));
 
             if (cells.First is null)
                 return;
@@ -59,9 +59,8 @@ namespace QuikGraph.Collections
         /// <param name="cell">Cell to add.</param>
         internal void AddLast([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cell != null);
-#endif
+            if (cell is null)
+                throw new ArgumentNullException(nameof(cell));
 
             if (_last != null)
             {
@@ -83,9 +82,8 @@ namespace QuikGraph.Collections
         /// <param name="cell">Cell to remove.</param>
         internal void Remove([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cell != null);
-#endif
+            if (cell is null)
+                throw new ArgumentNullException(nameof(cell));
 
             if (cell.Previous != null)
             {

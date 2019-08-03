@@ -35,9 +35,8 @@ namespace QuikGraph.Algorithms.RandomWalks
             [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
             : base(null, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeChain != null);
-#endif
+            if (edgeChain is null)
+                throw new ArgumentNullException(nameof(edgeChain));
 
             EdgeChain = edgeChain;
         }
@@ -67,9 +66,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             StartVertex?.Invoke(vertex);
         }
@@ -81,9 +79,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnEndVertex(TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             EndVertex?.Invoke(vertex);
         }
@@ -95,9 +92,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             TreeEdge?.Invoke(edge);
         }
@@ -132,9 +128,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="walkCount">Number of steps for the random walk.</param>
         public void Generate([NotNull] TVertex root, int walkCount)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-#endif
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             int count = 0;
             TVertex current = root;
