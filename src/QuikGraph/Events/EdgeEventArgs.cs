@@ -25,6 +25,9 @@ namespace QuikGraph
         {
 #if SUPPORTS_CONTRACTS
             Contract.Requires(edge != null);
+#else
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 #endif
 
             Edge = edge;

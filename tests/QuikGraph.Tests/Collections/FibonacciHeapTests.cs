@@ -2,467 +2,394 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Collections;
-using QuikGraph.Tests;
 
 namespace QuikGraph.Tests.Collections
 {
     [TestFixture]
-    internal class FibonacciHeapTests : QuikGraphUnitTests
+    internal class FibonacciHeapTests
     {
-        /// <summary>
-        /// Checks heap invariant
-        /// </summary>
-        private static void AssertInvariant<TPriority, TValue>(
-            FibonacciHeap<TPriority, TValue> target
-            )
-        {
-            Assert.IsTrue(target.Count >= 0);
-        }
-
-        public void InsertAndRemoveMinimum<TPriority, TValue>(
-             FibonacciHeap<TPriority, TValue> target,
-             KeyValuePair<TPriority, TValue>[] kvs)
-        {
-            var count = target.Count;
-            foreach (var kv in kvs)
-                target.Enqueue(kv.Key, kv.Value);
-
-            TPriority minimum = default(TPriority);
-            for (int i = 0; i < kvs.Length; ++i)
-            {
-                if (i == 0)
-                    minimum = target.Dequeue().Key;
-                else
-                {
-                    var m = target.Dequeue().Key;
-                    Assert.IsTrue(target.PriorityComparison(minimum, m) <= 0);
-                    minimum = m;
-                }
-                AssertInvariant(target);
-            }
-
-            Assert.AreEqual(0, target.Count);
-        }
-
-        public void InsertAndMinimum<TPriority, TValue>(
-             FibonacciHeap<TPriority, TValue> target,
-             KeyValuePair<TPriority, TValue>[] kvs)
-        {
-            Assert.IsTrue(kvs.Length > 0);
-
-            var count = target.Count;
-            TPriority minimum = default(TPriority);
-            for (int i = 0; i < kvs.Length; ++i)
-            {
-                KeyValuePair<TPriority, TValue> kv = kvs[i];
-                if (i == 0)
-                    minimum = kv.Key;
-                else
-                    minimum = target.PriorityComparison(kv.Key, minimum) < 0 ? kv.Key : minimum;
-                target.Enqueue(kv.Key, kv.Value);
-                // check minimum
-                var kvMin = target.Top.Priority;
-                Assert.AreEqual(minimum, kvMin);
-            }
-            AssertInvariant(target);
-        }
-
-        public void CompareBinary<TPriority, TValue>(
-            KeyValuePair<bool, TPriority>[] values)
-        {
-            var fib = new FibonacciHeap<TPriority, TValue>();
-            var bin = new BinaryHeap<TPriority, TValue>();
-            foreach (var value in values)
-            {
-                if (value.Key)
-                {
-                    QuikGraphAssert.AreBehaviorsEqual(
-                        () => fib.Enqueue(value.Value, default(TValue)),
-                        () => bin.Add(value.Value, default(TValue)));
-                }
-                else
-                {
-                    QuikGraphAssert.AreBehaviorsEqual(
-                        () => fib.Dequeue().Key,
-                        () => bin.RemoveMinimum().Key);
-                }
-            }
-        }
-
-        public void Operations<TPriority, TValue>(
-            FibonacciHeap<TPriority, TValue> target,
-            KeyValuePair<bool, TPriority>[] values)
-        {
-            foreach (var value in values)
-            {
-                if (value.Key)
-                    target.Enqueue(value.Value, default(TValue));
-                else
-                {
-                    var min = target.Dequeue();
-                }
-                AssertInvariant<TPriority, TValue>(target);
-            }
-        }
-
         [Test]
         public void CreateHeap()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
-            Assert.IsNotNull(heap, "Heap is null!");
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            Assert.IsNotNull(heap, "Heap is null");
         }
 
         [Test]
-        public void SimpleEnqueDequeIncreasing()
+        public void SimpleEnqueueDequeIncreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 heap.Enqueue(i, i.ToString());
                 count++;
             }
+
             int? lastValue = null;
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated: {0} > {1}", lastValue, value.Key);
+                    Assert.Fail($"Heap condition has been violated: {lastValue} > {value.Key}");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
-        public void SimpleEnqueDequeDecreasing()
+        public void SimpleEnqueueDequeDecreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
             int count = 0;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 heap.Enqueue(i, i.ToString());
-                count++;
+                ++count;
             }
-            int? lastValue = null;
 
-            foreach (var value in heap.GetDestructiveEnumerator())
+            int? lastValue = null;
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue < value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void DecreaseKeyOnIncreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
             heap.ChangeKey(cells[9], -1);
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void IncreaseKeyOnIncreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
             heap.ChangeKey(cells[0], 100);
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void DecreaseKeyOnDecreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
             for (int i = 0; i < 10; i++)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
             heap.ChangeKey(cells[9], -1);
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue < value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void IncreaseKeyOnDecreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
             heap.ChangeKey(cells[0], 100);
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue < value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void ChangeKeyToSelf()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Decreasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
             heap.ChangeKey(cells[0], 0);
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue < value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void IncreasingDecreaseKeyCascadeCut()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
-            int? lastValue = null;
-            lastValue = heap.Top.Priority;
+
+            int lastValue = heap.Top.Priority;
             heap.Dequeue();
-            count--;
+            --count;
             heap.ChangeKey(cells[6], 3);
             heap.ChangeKey(cells[7], 2);
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
-                {
-                    lastValue = value.Key;
-                }
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void IncreasingIncreaseKeyCascadeCut()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
                 count++;
             }
-            int? lastValue = null;
-            lastValue = heap.Top.Priority;
+
+            int lastValue = heap.Top.Priority;
             heap.Dequeue();
-            count--;
+            --count;
             heap.ChangeKey(cells[5], 10);
-            string s = (heap as FibonacciHeap<int, string>).DrawHeap();
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
-                {
-                    lastValue = value.Key;
-                }
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated: {0} > {1}", lastValue, value.Key);
+                    Assert.Fail($"Heap condition has been violated: {lastValue} > {value.Key}");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void DeleteKey()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
             var cells = new Dictionary<int, FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
             heap.Dequeue();
-            var DeletedCell = cells[8];
-            heap.Delete(DeletedCell);
+            FibonacciHeapCell<int, string> deletedCell = cells[8];
+            heap.Delete(deletedCell);
             count -= 2;
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
-                Assert.IsFalse(lastValue > value.Key, "Heap condition has been violated");
-                Assert.AreNotEqual(DeletedCell, value, "Found item that was deleted");
+
+                Assert.IsFalse(lastValue > value.Key, "Heap condition has been violated.");
+                Assert.AreNotEqual(deletedCell, value, "Found item that was deleted.");
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
         public void EnumeratorIncreasing()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
-            for (int i = 10; i >= 0; i--)
+            for (int i = 10; i >= 0; --i)
             {
                 heap.Enqueue(i, i.ToString());
-                count++;
+                ++count;
             }
+
             int? lastValue = null;
-            foreach (var value in heap)
+            foreach (KeyValuePair<int, string> value in heap)
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
-        public void MergeTest()
+        public void Merge()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
-            FibonacciHeap<int, string> heap2 = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var heap2 = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             int count = 0;
-            for (int i = 11; i > 0; i--)
+            for (int i = 11; i > 0; --i)
             {
                 heap.Enqueue(i, i.ToString());
                 heap2.Enqueue(i * 11, i.ToString());
                 count += 2;
             }
+
             heap2.Merge(heap);
+
             int? lastValue = null;
-            foreach (var value in heap2.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap2.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
 
         [Test]
@@ -471,7 +398,7 @@ namespace QuikGraph.Tests.Collections
             var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             var heap2 = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             var toCutNodes = new List<FibonacciHeapCell<int, string>>();
-            int count = 0;
+
             heap.Enqueue(0, "0");
             toCutNodes.Add(heap.Enqueue(5, "5"));
             toCutNodes.Add(heap.Enqueue(6, "6"));
@@ -489,30 +416,34 @@ namespace QuikGraph.Tests.Collections
             toCutNodes.ForEach(x => heap.ChangeKey(x, -5));
             heap.Enqueue(-10, "-10");
             heap.Dequeue();
-            count = 7;
+
+            int count = 7;
             int? lastValue = null;
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
+
         [Test]
         public void NextCutOnGreaterThan()
         {
             var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             var heap2 = new FibonacciHeap<int, string>(HeapDirection.Increasing);
             var toCutNodes = new List<FibonacciHeapCell<int, string>>();
-            int count = 0;
+
             heap.Enqueue(1, "1");
             toCutNodes.Add(heap.Enqueue(5, "5"));
             toCutNodes.Add(heap.Enqueue(6, "6"));
@@ -530,37 +461,43 @@ namespace QuikGraph.Tests.Collections
             toCutNodes.ForEach(x => heap.ChangeKey(x, -5));
             heap.Enqueue(-10, "-10");
             heap.Dequeue();
-            count = 7;
+
+            int count = 7;
             int? lastValue = null;
-            foreach (var value in heap.GetDestructiveEnumerator())
+            foreach (KeyValuePair<int, string> value in heap.GetDestructiveEnumerator())
             {
-                if (lastValue == null)
+                if (lastValue is null)
                 {
                     lastValue = value.Key;
                 }
+
                 if (lastValue > value.Key)
                 {
-                    Assert.Fail("Heap condition has been violated");
+                    Assert.Fail("Heap condition has been violated.");
                 }
+
                 lastValue = value.Key;
-                count--;
+                --count;
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
+
         [Test]
         public void RandomTest()
         {
-            FibonacciHeap<int, string> heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
-            Random rand = new Random(10);
-            int NumberOfRecords = 10000;
-            int RangeMultiplier = 10;
+            var heap = new FibonacciHeap<int, string>(HeapDirection.Increasing);
+            var rand = new Random(10);
+            const int numberOfRecords = 10000;
+            const int rangeMultiplier = 10;
+
             int count = 0;
             var cells = new List<FibonacciHeapCell<int, string>>();
-            for (int i = 0; i < NumberOfRecords; i++)
+            for (int i = 0; i < numberOfRecords; ++i)
             {
-                cells.Add(heap.Enqueue(rand.Next(0, NumberOfRecords * RangeMultiplier), i.ToString()));
-                count++;
+                cells.Add(heap.Enqueue(rand.Next(0, numberOfRecords * rangeMultiplier), i.ToString()));
+                ++count;
             }
+
             while (!heap.IsEmpty)
             {
                 int action = rand.Next(1, 6);
@@ -568,27 +505,28 @@ namespace QuikGraph.Tests.Collections
                 while (action == 1 && i < 2)
                 {
                     action = rand.Next(1, 6);
-                    i++;
+                    ++i;
                 }
-                int lastValue = int.MinValue;
+
+                int lastValue = int.MinValue;   // Seems there is a flaw there
                 switch (action)
                 {
                     case 1:
-                        cells.Add(heap.Enqueue(rand.Next(0, NumberOfRecords * RangeMultiplier), "SomeValue"));
-                        count++;
+                        cells.Add(heap.Enqueue(rand.Next(0, numberOfRecords * rangeMultiplier), "SomeValue"));
+                        ++count;
                         break;
                     case 2:
                         Assert.IsFalse(lastValue > heap.Top.Priority, "Heap Condition Violated");
                         lastValue = heap.Top.Priority;
                         cells.Remove(heap.Top);
                         heap.Dequeue();
-                        count--;
+                        --count;
                         break;
                     case 3:
                         int deleteIndex = rand.Next(0, cells.Count);
                         heap.Delete(cells[deleteIndex]);
                         cells.RemoveAt(deleteIndex);
-                        count--;
+                        --count;
                         break;
                     case 4:
                         int decreaseIndex = rand.Next(0, cells.Count);
@@ -601,13 +539,11 @@ namespace QuikGraph.Tests.Collections
                         break;
                     case 5:
                         int increaseIndex = rand.Next(0, cells.Count);
-                        heap.ChangeKey(cells[increaseIndex], rand.Next(cells[increaseIndex].Priority, NumberOfRecords * RangeMultiplier));
-                        break;
-                    default:
+                        heap.ChangeKey(cells[increaseIndex], rand.Next(cells[increaseIndex].Priority, numberOfRecords * rangeMultiplier));
                         break;
                 }
             }
-            Assert.AreEqual(count, 0, "Not all elements enqueued were dequeued");
+            Assert.AreEqual(0, count, "Not all elements enqueued were dequeued.");
         }
     }
 }

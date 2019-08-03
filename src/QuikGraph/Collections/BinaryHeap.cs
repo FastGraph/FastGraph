@@ -63,10 +63,13 @@ namespace QuikGraph.Collections
 #if SUPPORTS_CONTRACTS
             Contract.Requires(capacity >= 0);
             Contract.Requires(priorityComparison != null);
+#else
+            if (capacity < 0)
+                throw new ArgumentException("Capacity must be positive.");
 #endif
 
             _items = new KeyValuePair<TPriority, TValue>[capacity];
-            PriorityComparison = priorityComparison;
+            PriorityComparison = priorityComparison ?? throw new ArgumentNullException(nameof(priorityComparison));
         }
 
 
@@ -115,13 +118,13 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="priority">Item priority.</param>
         /// <param name="value">The value.</param>
-        public void Add([NotNull] TPriority priority, [NotNull] TValue value)
+        public void Add([NotNull] TPriority priority, [CanBeNull] TValue value)
         {
 #if BINARY_HEAP_DEBUG
             Console.WriteLine($"Add({priority}, {value})");
 #endif
 
-            _version++;
+            ++_version;
             ResizeArray();
             _items[Count++] = new KeyValuePair<TPriority, TValue>(priority, value);
             MinHeapifyUp(Count - 1);
@@ -255,36 +258,6 @@ namespace QuikGraph.Collections
             Swap(0, Count - 1);
             --Count;
             MinHeapifyDown(0);
-
-            return _items[Count];
-        }
-
-        /// <summary>
-        /// Removes element at a certain index.  
-        /// TODO: RemoveAt is wrong.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        [Obsolete("BinaryHeap.RemoveAt is wrong. Fix it before using it.")]
-        public KeyValuePair<TPriority, TValue> RemoveAt(int index)
-        {
-#if BINARY_HEAP_DEBUG
-            Console.WriteLine($"RemoveAt({index})");
-#endif
-
-            if (Count == 0)
-                throw new InvalidOperationException("Heap is empty.");
-            if (index < 0 || index >= Count)
-                throw new ArgumentOutOfRangeException(nameof(index));
-
-            _version++;
-            // Shortcut for heap with 1 element.
-            if (Count == 1)
-                return _items[--Count];
-
-            Swap(index, Count - 1);
-            --Count;
-            MinHeapifyDown(index);
 
             return _items[Count];
         }

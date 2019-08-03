@@ -320,6 +320,7 @@ namespace QuikGraph.Tests
         /// <param name="action">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         public static void ThrowsContractException([NotNull, InstantHandle] Action action)
         {
+#if SUPPORTS_CONTRACTS
             try
             {
                 action();
@@ -341,6 +342,9 @@ namespace QuikGraph.Tests
             }
 
             #endregion
+#else
+            Assert.Catch(() => action());
+#endif
         }
     }
 }
