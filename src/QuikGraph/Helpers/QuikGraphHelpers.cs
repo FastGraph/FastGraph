@@ -15,7 +15,7 @@ namespace QuikGraph
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static TryFunc<T, TResult> ToTryFunc<T, TResult>([NotNull] Func<T, TResult> func)
             where TResult : class
         {

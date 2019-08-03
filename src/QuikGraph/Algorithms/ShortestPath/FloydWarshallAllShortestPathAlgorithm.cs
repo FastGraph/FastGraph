@@ -55,14 +55,14 @@ namespace QuikGraph.Algorithms.ShortestPath
                 _edgeStored = false;
             }
 
-            [JetBrains.Annotations.Pure]
+            [Pure]
             public bool TryGetPredecessor(out TVertex predecessor)
             {
                 predecessor = _predecessor;
                 return !_edgeStored;
             }
 
-            [JetBrains.Annotations.Pure]
+            [Pure]
             public bool TryGetEdge(out TEdge edge)
             {
                 edge = _edge;
@@ -117,10 +117,10 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(distanceRelaxer != null);
-#endif
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
+            if (distanceRelaxer is null)
+                throw new ArgumentNullException(nameof(distanceRelaxer));
 
             _weights = edgeWeights;
             _distanceRelaxer = distanceRelaxer;
@@ -137,10 +137,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if the distance was found, false otherwise.</returns>
         public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double cost)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             if (_data.TryGetValue(new SEquatableEdge<TVertex>(source, target), out VertexData data))
             {
@@ -165,10 +165,10 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] TVertex target,
             out IEnumerable<TEdge> path)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             if (source.Equals(target))
             {

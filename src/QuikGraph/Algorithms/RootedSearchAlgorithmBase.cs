@@ -32,7 +32,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="target">Target vertex if set, otherwise null.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool TryGetTargetVertex(out TVertex target)
         {
             if (_hasTargetVertex)
@@ -107,10 +107,10 @@ namespace QuikGraph.Algorithms
         /// <param name="target">Target vertex.</param>
         public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-            Contract.Requires(target != null);
-#endif
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             SetTargetVertex(target);
             Compute(root);

@@ -33,7 +33,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">Value to search.</param>
         /// <returns></returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [CanBeNull]
         T FindSet([NotNull] T value);
 
@@ -43,7 +43,7 @@ namespace QuikGraph.Collections
         /// <param name="left">Left value.</param>
         /// <param name="right">Right value.</param>
         /// <returns>True if both values are in the same set, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool AreInSameSet([NotNull] T left, [NotNull] T right);
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>True if the value is already in the set, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool Contains([NotNull] T value);
     }
 }

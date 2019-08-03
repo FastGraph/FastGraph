@@ -152,10 +152,10 @@ namespace QuikGraph.Serialization
             [NotNull]
             private static Delegate CreateWriteDelegate([NotNull] Type nodeType, [NotNull] Type delegateType)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(nodeType != null);
-                Contract.Requires(delegateType != null);
-#endif
+                if (nodeType is null)
+                    throw new ArgumentNullException(nameof(nodeType));
+                if (delegateType is null)
+                    throw new ArgumentNullException(nameof(delegateType));
 
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Write{delegateType.Name}_{nodeType.Name}",
@@ -347,10 +347,10 @@ namespace QuikGraph.Serialization
 
             private void WriteAttributeDefinitions([NotNull] string nodeName, [NotNull] Type nodeType)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(nodeName != null);
-                Contract.Requires(nodeType != null);
-#endif
+                if (nodeName is null)
+                    throw new ArgumentNullException(nameof(nodeName));
+                if (nodeType is null)
+                    throw new ArgumentNullException(nameof(nodeType));
 
                 foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(nodeType))
                 {
@@ -511,7 +511,7 @@ namespace QuikGraph.Serialization
             };
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool TryGetWriteValueMethod([NotNull] Type valueType, out MethodInfo method)
         {
             if (valueType is null)

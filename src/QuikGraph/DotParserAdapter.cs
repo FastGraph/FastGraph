@@ -25,7 +25,7 @@
 //#if SUPPORTS_CONTRACTS
 //        [System.Diagnostics.Contracts.Pure]
 //#endif
-//        [JetBrains.Annotations.Pure]
+//        [Pure]
 //        [NotNull]
 //        internal static IMutableVertexAndEdgeSet<TVertex, TEdge> LoadDot<TVertex, TEdge>(
 //            [NotNull] string dotSource,

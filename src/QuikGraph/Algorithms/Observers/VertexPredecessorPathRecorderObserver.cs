@@ -55,7 +55,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Gets all paths.
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<IEnumerable<TEdge>> AllPaths()
         {

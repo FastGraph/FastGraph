@@ -241,7 +241,7 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public EdgeListGraph<TVertex, TEdge> Clone()
         {

@@ -159,7 +159,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
-            foreach (var adjacentEdge in AdjacentEdges(edge.Source))
+            foreach (TEdge adjacentEdge in AdjacentEdges(edge.Source))
             {
                 if (adjacentEdge.Equals(edge))
                     return true;
@@ -170,14 +170,14 @@ namespace QuikGraph
 
         private bool ContainsEdgeBetweenVertices([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(edge != null);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
-            var source = edge.Source;
-            var target = edge.Target;
-            foreach (var e in edges)
+            TVertex source = edge.Source;
+            TVertex target = edge.Target;
+            foreach (TEdge e in edges)
             {
                 if (EdgeEqualityComparer(e, source, target))
                     return true;
@@ -567,7 +567,7 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public UndirectedGraph<TVertex, TEdge> Clone()
         {

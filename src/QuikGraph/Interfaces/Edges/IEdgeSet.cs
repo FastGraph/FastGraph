@@ -37,7 +37,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if the specified <paramref name="edge"/> is contained in this set, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool ContainsEdge([NotNull] TEdge edge);
     }
 

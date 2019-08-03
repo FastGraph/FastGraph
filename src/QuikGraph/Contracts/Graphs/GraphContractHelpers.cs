@@ -1,3 +1,4 @@
+using System;
 
 namespace QuikGraph.Contracts
 {
@@ -10,10 +11,10 @@ namespace QuikGraph.Contracts
             this IVertexSet<TVertex> left, 
             IVertexSet<TVertex> right)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(left != null);
-            Contract.Requires(right != null);
-#endif
+            if (left is null)
+                throw new ArgumentNullException(nameof(left));
+            if (right is null)
+                throw new ArgumentNullException(nameof(right));
 
             return left.VertexCount == right.VertexCount;
         }
@@ -23,10 +24,10 @@ namespace QuikGraph.Contracts
             IEdgeListGraph<TVertex, TEdge> right)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(left != null);
-            Contract.Requires(right != null);
-#endif
+            if (left is null)
+                throw new ArgumentNullException(nameof(left));
+            if (right is null)
+                throw new ArgumentNullException(nameof(right));
 
             return left.EdgeCount == right.EdgeCount;
         }
@@ -35,10 +36,10 @@ namespace QuikGraph.Contracts
             IVertexSet<TVertex> graph, 
             TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(vertex != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             // todo make requires
             return graph.ContainsVertex(vertex);
@@ -49,10 +50,10 @@ namespace QuikGraph.Contracts
             TEdge edge)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edge != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             return InVertexSet(graph, edge.Source)
                    && InVertexSet(graph, edge.Target);
@@ -63,10 +64,10 @@ namespace QuikGraph.Contracts
             TEdge edge)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edge != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
 
             return InVertexSet(graph, edge) && graph.ContainsEdge(edge);
         }

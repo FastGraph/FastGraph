@@ -62,10 +62,10 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexQueue != null);
-            Contract.Requires(verticesColors != null);
-#endif
+            if (vertexQueue is null)
+                throw new ArgumentNullException(nameof(vertexQueue));
+            if (verticesColors is null)
+                throw new ArgumentNullException(nameof(verticesColors));
 
             VerticesColors = verticesColors;
             _vertexQueue = vertexQueue;

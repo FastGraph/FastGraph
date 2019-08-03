@@ -33,13 +33,8 @@ namespace QuikGraph.Serialization
             [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
             : base(visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexIdentities != null);
-            Contract.Requires(edgeIdentities != null);
-#endif
-
-            _vertexIdentities = vertexIdentities;
-            _edgeIdentities = edgeIdentities;
+            _vertexIdentities = vertexIdentities ?? throw new ArgumentNullException(nameof(vertexIdentities));
+            _edgeIdentities = edgeIdentities ?? throw new ArgumentNullException(nameof(edgeIdentities));
         }
 
         /// <summary>
@@ -98,10 +93,10 @@ namespace QuikGraph.Serialization
 
         private void OnFormatNode([NotNull] TVertex vertex, [NotNull] DirectedGraphNode node)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-            Contract.Requires(node != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+            if (node is null)
+                throw new ArgumentNullException(nameof(node));
 
             FormatNode?.Invoke(vertex, node);
         }
@@ -113,10 +108,10 @@ namespace QuikGraph.Serialization
 
         private void OnFormatEdge([NotNull] TEdge edge, [NotNull] DirectedGraphLink link)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(link != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+            if (link is null)
+                throw new ArgumentNullException(nameof(link));
 
             FormatEdge?.Invoke(edge, link);
         }

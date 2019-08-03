@@ -112,10 +112,10 @@ namespace QuikGraph.Collections
             [NotNull] Dictionary<TVertex, TDistance> values,
             [NotNull] Comparison<TDistance> distanceComparison)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(values != null);
-            Contract.Requires(distanceComparison != null);
-#endif
+            if (values is null)
+                throw new ArgumentNullException(nameof(values));
+            if (distanceComparison is null)
+                throw new ArgumentNullException(nameof(distanceComparison));
 
             _distanceFunc = AlgorithmExtensions.GetIndexer(values);
             _cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(values.Count);

@@ -33,7 +33,7 @@ namespace QuikGraph.Predicates
         /// <remarks>Check if the implemented predicate is matched.</remarks>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if the edge is residual, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool Test(TEdge edge)
         {
             if (edge == null)

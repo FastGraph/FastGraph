@@ -44,7 +44,7 @@ namespace QuikGraph.Algorithms.TSP
         /// Checks if there are pending tasks.
         /// </summary>
         /// <returns>True if there are pending tasks, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool HasTasks()
         {
             return _tasksQueue.Count > 0;

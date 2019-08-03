@@ -32,10 +32,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (visitedGraph is null)
+                throw new ArgumentNullException(nameof(visitedGraph));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             VisitedGraph = visitedGraph;
             EdgeFactory = edgeFactory;

@@ -655,10 +655,10 @@ namespace QuikGraph
             [NotNull, InstantHandle] VertexPredicate<TVertex> vertexPredicate,
             [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexPredicate != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (vertexPredicate is null)
+                throw new ArgumentNullException(nameof(vertexPredicate));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             // Storing vertices to merge
             var mergeVertices = new VertexList<TVertex>(VertexCount / 4);
@@ -691,7 +691,7 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public BidirectionalGraph<TVertex, TEdge> Clone()
         {

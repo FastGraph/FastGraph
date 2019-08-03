@@ -31,10 +31,10 @@ namespace QuikGraph.Algorithms
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (vertexFactory is null)
+                throw new ArgumentNullException(nameof(vertexFactory));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             SourceToVertices = sourceToVertices;
             VerticesToSink = verticesToSink;

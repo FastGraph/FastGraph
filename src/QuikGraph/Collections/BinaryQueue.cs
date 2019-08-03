@@ -40,10 +40,10 @@ namespace QuikGraph.Collections
             [NotNull] Func<TVertex, TDistance> distanceFunc, 
             [NotNull] Comparison<TDistance> distanceComparison)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(distanceFunc != null);
-            Contract.Requires(distanceComparison != null);
-#endif
+            if (distanceFunc is null)
+                throw new ArgumentNullException(nameof(distanceFunc));
+            if (distanceComparison is null)
+                throw new ArgumentNullException(nameof(distanceComparison));
 
             _distanceFunc = distanceFunc;
             _heap = new BinaryHeap<TDistance, TVertex>(distanceComparison);
@@ -92,7 +92,7 @@ namespace QuikGraph.Collections
         /// Converts this queue to an array of vertices associated to their distances.
         /// </summary>
         /// <returns>Array composed of elements.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public KeyValuePair<TDistance, TVertex>[] ToArray2()
         {
@@ -103,7 +103,7 @@ namespace QuikGraph.Collections
         /// Gets an alternative string representation.
         /// </summary>
         /// <returns>String representation.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public string ToString2()
         {

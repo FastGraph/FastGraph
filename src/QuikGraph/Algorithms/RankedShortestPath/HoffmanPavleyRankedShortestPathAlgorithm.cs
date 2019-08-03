@@ -85,7 +85,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// </summary>
         /// <param name="target">Target vertex if set, otherwise null.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool TryGetTargetVertex(out TVertex target)
         {
             if (_hasTargetVertex)

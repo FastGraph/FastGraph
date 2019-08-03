@@ -20,10 +20,10 @@ namespace QuikGraph
             [NotNull, ItemCanBeNull] this IEnumerable<T> enumerable, 
             [NotNull, InstantHandle] Action<T> action)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(enumerable != null);
-            Contract.Requires(action != null);
-#endif
+            if (enumerable is null)
+                throw new ArgumentNullException(nameof(enumerable));
+            if (action is null)
+                throw new ArgumentNullException(nameof(action));
 
             foreach (T elem in enumerable)
                 action(elem);

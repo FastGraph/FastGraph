@@ -92,10 +92,10 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(writer != null);
-#endif
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+            if (writer is null)
+                throw new ArgumentNullException(nameof(writer));
 
             var serializer = new GraphMLSerializer<TVertex, TEdge, TGraph>();
             serializer.Serialize(writer, graph, vertexIdentities, edgeIdentities);
@@ -113,10 +113,10 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(writer != null);
-#endif
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+            if (writer is null)
+                throw new ArgumentNullException(nameof(writer));
 
             VertexIdentity<TVertex> vertexIdentity = graph.GetVertexIdentity();
             EdgeIdentity<TVertex, TEdge> edgeIdentity = graph.GetEdgeIdentity();

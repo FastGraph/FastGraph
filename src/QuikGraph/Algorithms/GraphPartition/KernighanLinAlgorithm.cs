@@ -102,7 +102,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             return GetCutCost();
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private double GetVertexCost([NotNull] TVertex vertex)
         {
             if (vertex == null)
@@ -126,7 +126,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             return cost;
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         private IEnumerable<TVertex> GetNeighbors([NotNull] TVertex vertex)
         {
@@ -190,7 +190,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <summary>
         /// Searches for an edge that links <paramref name="vertexFromA"/> and <paramref name="vertexFromB"/>.
         /// </summary>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private bool FindEdge([NotNull] TVertex vertexFromA, [NotNull] TVertex vertexFromB, out TEdge foundEdge)
         {
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertexFromA))

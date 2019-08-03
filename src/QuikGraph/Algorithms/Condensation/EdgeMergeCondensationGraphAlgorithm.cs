@@ -24,10 +24,10 @@ namespace QuikGraph.Algorithms.Condensation
             [NotNull] VertexPredicate<TVertex> vertexPredicate)
             : base(visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(condensedGraph != null);
-            Contract.Requires(vertexPredicate != null);
-#endif
+            if (condensedGraph is null)
+                throw new ArgumentNullException(nameof(condensedGraph));
+            if (vertexPredicate is null)
+                throw new ArgumentNullException(nameof(vertexPredicate));
 
             CondensedGraph = condensedGraph;
             VertexPredicate = vertexPredicate;

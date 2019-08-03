@@ -115,7 +115,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="pairs">Vertices pairs if set.</param>
         /// <returns></returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
             pairs = _pairs;
@@ -141,10 +141,10 @@ namespace QuikGraph.Algorithms
         /// <param name="pairs">Vertices pairs.</param>
         public void Compute([NotNull] TVertex root, [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-            Contract.Requires(pairs != null);
-#endif
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+            if (pairs is null)
+                throw new ArgumentNullException(nameof(pairs));
 
             _pairs = pairs.ToArray();
             Compute(root);

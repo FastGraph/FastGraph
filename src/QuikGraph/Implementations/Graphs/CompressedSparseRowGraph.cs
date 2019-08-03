@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -59,13 +57,8 @@ namespace QuikGraph
             [NotNull] Dictionary<TVertex, Range> outEdgeStartRanges,
             [NotNull, ItemNotNull] TVertex[] outEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(outEdgeStartRanges != null);
-            Contract.Requires(outEdges != null);
-#endif
-
-            _outEdgeStartRanges = outEdgeStartRanges;
-            _outEdges = outEdges;
+            _outEdgeStartRanges = outEdgeStartRanges ?? throw new ArgumentNullException(nameof(outEdgeStartRanges));
+            _outEdges = outEdges ?? throw new ArgumentNullException(nameof(outEdges));
         }
 
         /// <summary>
@@ -89,12 +82,12 @@ namespace QuikGraph
 
             const int start = 0;
             int index = 0;
-            foreach (var vertex in visitedGraph.Vertices)
+            foreach (TVertex vertex in visitedGraph.Vertices)
             {
                 int end = start + visitedGraph.OutDegree(vertex);
                 var range = new Range(start, end);
                 outEdgeStartRanges.Add(vertex, range);
-                foreach (var edge in visitedGraph.OutEdges(vertex))
+                foreach (TEdge edge in visitedGraph.OutEdges(vertex))
                     outEdges[index++] = edge.Target;
 #if SUPPORTS_CONTRACTS
                 Contract.Assert(index == end);
@@ -277,7 +270,7 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public CompressedSparseRowGraph<TVertex> Clone()
         {

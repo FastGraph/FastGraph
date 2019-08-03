@@ -45,7 +45,7 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="stream">Stream from which deserializing the graph.</param>
         /// <returns>Deserialized graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>([NotNull] this Stream stream)
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
@@ -78,7 +78,7 @@ namespace QuikGraph.Serialization
         /// If the <paramref name="document"/> does not allow to get an XML navigator
         /// or if the <paramref name="graphXPath"/> does not allow to get graph node.
         /// </exception>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this IXPathNavigable document,
             [NotNull] string graphXPath,
@@ -139,7 +139,7 @@ namespace QuikGraph.Serialization
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
         /// <exception cref="InvalidOperationException">If the graph node cannot be found.</exception>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this XmlReader reader,
             [NotNull, InstantHandle] Predicate<XmlReader> graphPredicate,
@@ -214,7 +214,7 @@ namespace QuikGraph.Serialization
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
         /// <exception cref="InvalidOperationException">If the graph node cannot be found.</exception>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this XmlReader reader,
             [NotNull] string graphElementName,

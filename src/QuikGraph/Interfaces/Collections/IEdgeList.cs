@@ -26,7 +26,7 @@ namespace QuikGraph.Collections
         /// Gets a clone of this list.
         /// </summary>
         /// <returns>Cloned list.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
 #if SUPPORTS_CLONEABLE
         new

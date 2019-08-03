@@ -33,7 +33,7 @@ namespace QuikGraph.Predicates
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the vertex is in the vertex map, false otherwise.</returns>
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool Test([NotNull] TVertex vertex)
         {
             if (vertex == null)

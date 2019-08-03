@@ -138,7 +138,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         private TVertex MinDiscoverTime([NotNull] TVertex u, [NotNull] TVertex v)
         {

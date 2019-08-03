@@ -46,10 +46,10 @@ namespace QuikGraph.Algorithms.Observers
             [NotNull] IDictionary<TVertex, int> discoverTimes,
             [NotNull] IDictionary<TVertex, int> finishTimes)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(discoverTimes != null);
-            Contract.Requires(finishTimes != null);
-#endif
+            if (discoverTimes is null)
+                throw new ArgumentNullException(nameof(discoverTimes));
+            if (finishTimes is null)
+                throw new ArgumentNullException(nameof(finishTimes));
 
             DiscoverTimes = discoverTimes;
             FinishTimes = finishTimes;

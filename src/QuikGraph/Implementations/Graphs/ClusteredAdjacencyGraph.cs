@@ -463,10 +463,10 @@ namespace QuikGraph
         /// <returns>The number of removed edges.</returns>
         public int RemoveOutEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-            Contract.Requires(predicate != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+            if (predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
 
             int edgeToRemoveCount = Wrapped.RemoveOutEdgeIf(vertex, predicate);
             Parent?.RemoveOutEdgeIf(vertex, predicate);

@@ -18,7 +18,7 @@ namespace QuikGraph
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if edge is a self one, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool IsSelfEdge<TVertex>([NotNull] this IEdge<TVertex> edge)
         {
 #if SUPPORTS_CONTRACTS
@@ -37,7 +37,7 @@ namespace QuikGraph
         /// <param name="edge">The edge.</param>
         /// <param name="vertex">The source or target vertex of the <paramref name="edge"/>.</param>
         /// <returns>The other edge vertex.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static TVertex GetOtherVertex<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
@@ -61,7 +61,7 @@ namespace QuikGraph
         /// <param name="edge">The edge.</param>
         /// <param name="vertex">Source or target <paramref name="edge"/> vertex.</param>
         /// <returns>True if the <paramref name="vertex"/> is adjacent to this <paramref name="edge"/>, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool IsAdjacent<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
 #if SUPPORTS_CONTRACTS
@@ -81,7 +81,7 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="path">Set of edges.</param>
         /// <returns>True if the set makes a complete path, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool IsPath<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
@@ -123,7 +123,7 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="path">Set of edges.</param>
         /// <returns>True if the set makes a cycle, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool HasCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
@@ -168,7 +168,7 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="path">Path of edges.</param>
         /// <returns>True if the path makes a cycle, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool IsPathWithoutCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
@@ -219,7 +219,7 @@ namespace QuikGraph
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <returns>A <see cref="SEquatableEdge{TVertex}"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static SEquatableEdge<TVertex> ToVertexPair<TVertex>([NotNull] this IEdge<TVertex> edge)
         {
 #if SUPPORTS_CONTRACTS
@@ -240,7 +240,7 @@ namespace QuikGraph
         /// <param name="root">Root vertex.</param>
         /// <param name="vertex">Ending vertex.</param>
         /// <returns>True if the <paramref name="root"/> is a predecessor of the <paramref name="vertex"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool IsPredecessor<TVertex, TEdge>(
             [NotNull] this IDictionary<TVertex, TEdge> predecessors,
             [NotNull] TVertex root,
@@ -286,7 +286,7 @@ namespace QuikGraph
         /// <param name="vertex">Path ending vertex.</param>
         /// <param name="result">Path to the ending vertex.</param>
         /// <returns>True if a path was found, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool TryGetPath<TVertex, TEdge>(
             [NotNull] this IDictionary<TVertex, TEdge> predecessors,
             [NotNull] TVertex vertex,
@@ -343,7 +343,7 @@ namespace QuikGraph
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>The best edge equality comparer.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static EdgeEqualityComparer<TVertex> GetUndirectedVertexEquality<TVertex, TEdge>()
         {
             if (typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge)))
@@ -362,7 +362,7 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <returns>True if both <paramref name="source"/> and
         /// <paramref name="target"/> match edge vertices, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool UndirectedVertexEquality<TVertex>(
             [NotNull] this IEdge<TVertex> edge,
             [NotNull] TVertex source,
@@ -388,7 +388,7 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <returns>True if both <paramref name="source"/> and
         /// <paramref name="target"/> match edge vertices, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool SortedVertexEquality<TVertex>(
             [NotNull] this IEdge<TVertex> edge, 
             [NotNull] TVertex source,
@@ -411,7 +411,7 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="edges">Edges to reversed.</param>
         /// <returns>Reversed edges.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static IEnumerable<SReversedEdge<TVertex, TEdge>> ReverseEdges<TVertex, TEdge>(
             [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
             where TEdge : IEdge<TVertex>

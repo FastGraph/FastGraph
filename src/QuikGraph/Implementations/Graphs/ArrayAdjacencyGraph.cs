@@ -187,7 +187,7 @@ namespace QuikGraph
         /// Clones this graph, returns this instance because this class is immutable.
         /// </summary>
         /// <returns>This graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public ArrayAdjacencyGraph<TVertex, TEdge> Clone()
         {

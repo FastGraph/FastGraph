@@ -27,7 +27,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Enumerable of adjacent edges.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> AdjacentEdges([NotNull] TVertex vertex);
 
@@ -36,7 +36,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Vertex adjacent degree.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         int AdjacentDegree([NotNull] TVertex vertex);
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if the vertex has at least one adjacent edge, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool IsAdjacentEdgesEmpty([NotNull] TVertex vertex);
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">Index of the adjacent edge requested.</param>
         /// <returns>The adjacent edge.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         TEdge AdjacentEdge([NotNull] TVertex vertex, int index);
 
@@ -65,7 +65,7 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edge">Edge found, otherwise null.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if an edge exists, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
     }
 }

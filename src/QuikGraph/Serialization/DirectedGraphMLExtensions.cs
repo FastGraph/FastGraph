@@ -46,10 +46,10 @@ namespace QuikGraph.Serialization
         /// <param name="writer">XML writer in which writing graph data.</param>
         public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] XmlWriter writer)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(writer != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (writer is null)
+                throw new ArgumentNullException(nameof(writer));
 
             DirectedGraphSerializer.Serialize(writer, graph);
         }
@@ -61,10 +61,10 @@ namespace QuikGraph.Serialization
         /// <param name="stream">Stream in which writing graph data.</param>
         public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] Stream stream)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(stream != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
 
             DirectedGraphSerializer.Serialize(stream, graph);
         }
@@ -76,10 +76,10 @@ namespace QuikGraph.Serialization
         /// <param name="writer">Text writer in which writing graph data.</param>
         public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] TextWriter writer)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(writer != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (writer is null)
+                throw new ArgumentNullException(nameof(writer));
 
             DirectedGraphSerializer.Serialize(writer, graph);
         }

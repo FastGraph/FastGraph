@@ -121,10 +121,10 @@ namespace QuikGraph.Serialization
                 [NotNull] Type delegateType,
                 [NotNull] Type elementType)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(delegateType != null);
-                Contract.Requires(elementType != null);
-#endif
+                if (delegateType is null)
+                    throw new ArgumentNullException(nameof(delegateType));
+                if (elementType is null)
+                    throw new ArgumentNullException(nameof(elementType));
 
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Set{elementType.Name}Default",
@@ -170,10 +170,10 @@ namespace QuikGraph.Serialization
                 [NotNull] Type delegateType,
                 [NotNull] Type elementType)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(delegateType != null);
-                Contract.Requires(elementType != null);
-#endif
+                if (delegateType is null)
+                    throw new ArgumentNullException(nameof(delegateType));
+                if (elementType is null)
+                    throw new ArgumentNullException(nameof(elementType));
 
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Read{elementType.Name}",
@@ -459,10 +459,10 @@ namespace QuikGraph.Serialization
 
             private static string ReadAttributeValue([NotNull] XmlReader reader, [NotNull] string attributeName)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(reader != null);
-                Contract.Requires(attributeName != null);
-#endif
+                if (reader is null)
+                    throw new ArgumentNullException(nameof(reader));
+                if (attributeName is null)
+                    throw new ArgumentNullException(nameof(attributeName));
 
                 reader.MoveToAttribute(attributeName);
                 if (!reader.ReadAttributeValue())
@@ -532,7 +532,7 @@ namespace QuikGraph.Serialization
             };
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool TryGetReadContentMethod([NotNull] Type type, out MethodInfo method)
         {
             if (type is null)

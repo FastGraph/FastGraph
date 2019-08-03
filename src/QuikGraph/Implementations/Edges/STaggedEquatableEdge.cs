@@ -26,10 +26,10 @@ namespace QuikGraph
         /// <param name="tag">Edge tag.</param>
         public STaggedEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             Source = source;
             Target = target;

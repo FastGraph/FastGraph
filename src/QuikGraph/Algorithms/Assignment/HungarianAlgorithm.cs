@@ -103,7 +103,7 @@ namespace QuikGraph.Algorithms.Assignment
         /// Returns iterations that can be used to visualize the algorithm.
         /// </summary>
         /// <returns>An enumerable of algorithm iterations.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public IEnumerable<HungarianIteration> GetIterations()
         {

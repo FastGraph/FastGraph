@@ -522,7 +522,7 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public BidirectionalMatrixGraph<TEdge> Clone()
         {

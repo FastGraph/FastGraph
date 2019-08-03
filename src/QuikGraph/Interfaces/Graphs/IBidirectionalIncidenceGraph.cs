@@ -22,7 +22,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if <paramref name="vertex"/> has no in-edges, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool IsInEdgesEmpty([NotNull] TVertex vertex);
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The number of in-edges pointing towards <paramref name="vertex"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         int InDegree([NotNull] TVertex vertex);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The collection of in-edges of <paramref name="vertex"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> InEdges([NotNull] TVertex vertex);
 
@@ -48,7 +48,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="edges">In edges.</param>
         /// <returns>True if in-edges were found, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool TryGetInEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">The index.</param>
         /// <returns>The in-edge at position <paramref name="index"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         TEdge InEdge([NotNull] TVertex vertex, int index);
 
@@ -67,7 +67,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The sum of OutDegree and InDegree of <paramref name="vertex"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         int Degree([NotNull] TVertex vertex);
     }
 }

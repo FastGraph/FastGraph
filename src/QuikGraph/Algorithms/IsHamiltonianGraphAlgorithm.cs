@@ -44,7 +44,7 @@ namespace QuikGraph.Algorithms
         /// Gets vertices permutations.
         /// </summary>
         /// <returns>List of permutations.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         public List<List<TVertex>> GetPermutations()
         {
@@ -77,7 +77,7 @@ namespace QuikGraph.Algorithms
             }
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private bool ExistsInGraph([NotNull, ItemNotNull] List<TVertex> path)
         {
             if (path.Count > 1)
@@ -96,7 +96,7 @@ namespace QuikGraph.Algorithms
             return true;
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private bool SatisfiesDiracTheorem([NotNull] TVertex vertex)
         {
             // Using Dirac's theorem:
@@ -109,7 +109,7 @@ namespace QuikGraph.Algorithms
         /// Returns true if the graph is Hamiltonian, otherwise false.
         /// </summary>
         /// <returns>True if the graph is Hamiltonian, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool IsHamiltonian()
         {
             int n = _graph.VertexCount;
@@ -143,7 +143,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to check.</param>
         /// <returns>True if the <paramref name="graph"/> is Hamiltonian, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public static bool IsHamiltonian<TVertex, TEdge>(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IUndirectedEdge<TVertex>

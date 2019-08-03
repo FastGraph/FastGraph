@@ -17,7 +17,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the specified <paramref name="vertex"/> is contained in this set, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool ContainsVertex([NotNull] TVertex vertex);
     }
 }

@@ -47,10 +47,10 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(Weights != null);
-            Contract.Requires(distanceRelaxer != null);
-#endif
+            if (Weights is null)
+                throw new ArgumentNullException(nameof(Weights));
+            if (distanceRelaxer is null)
+                throw new ArgumentNullException(nameof(distanceRelaxer));
 
             Weights = edgeWeights;
             DistanceRelaxer = distanceRelaxer;
@@ -78,7 +78,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Gets the function that gives access to distances from a vertex.
         /// </summary>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         protected Func<TVertex, double> DistancesIndexGetter()
         {

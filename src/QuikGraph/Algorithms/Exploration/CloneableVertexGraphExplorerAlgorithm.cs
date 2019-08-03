@@ -192,10 +192,10 @@ namespace QuikGraph.Algorithms.Exploration
             [NotNull] TVertex current,
             [NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(current != null);
-            Contract.Requires(transitionFactory != null);
-#endif
+            if (current == null)
+                throw new ArgumentNullException(nameof(current));
+            if (transitionFactory is null)
+                throw new ArgumentNullException(nameof(transitionFactory));
 
             if (!transitionFactory.IsValid(current))
                 return;
@@ -259,7 +259,7 @@ namespace QuikGraph.Algorithms.Exploration
             /// </summary>
             /// <param name="algorithm">Algorithm explorer to check.</param>
             /// <returns>True if the explorer can continue to explore, false otherwise.</returns>
-            [JetBrains.Annotations.Pure]
+            [Pure]
             public bool Test(CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
             {
                 if (algorithm.VisitedGraph.VertexCount > MaxVertexCount)

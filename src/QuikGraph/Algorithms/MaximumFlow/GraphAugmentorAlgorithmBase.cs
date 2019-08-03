@@ -29,10 +29,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (vertexFactory is null)
+                throw new ArgumentNullException(nameof(vertexFactory));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             VertexFactory = vertexFactory;
             EdgeFactory = edgeFactory;
@@ -160,10 +160,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="target">Target vertex.</param>
         protected void AddAugmentedEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             TEdge edge = EdgeFactory(source, target);
             AugmentedEdges.Add(edge);

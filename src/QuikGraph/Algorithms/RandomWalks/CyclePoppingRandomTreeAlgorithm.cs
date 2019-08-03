@@ -239,10 +239,10 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void Tree([NotNull] TVertex vertex, [NotNull] TEdge next)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-            Contract.Requires(next != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+            if (next == null)
+                throw new ArgumentNullException(nameof(next));
 
             Successors[vertex] = next;
             OnTreeEdge(next);

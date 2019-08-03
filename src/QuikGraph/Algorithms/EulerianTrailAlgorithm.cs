@@ -59,21 +59,21 @@ namespace QuikGraph.Algorithms
         [NotNull, ItemNotNull]
         public List<TEdge> Circuit { get; private set; } = new List<TEdge>();
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private bool NotInCircuit([NotNull] TEdge edge)
         {
             return !Circuit.Contains(edge)
                    && !_temporaryCircuit.Contains(edge);
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         private IEnumerable<TEdge> SelectOutEdgesNotInCircuit([NotNull] TVertex vertex)
         {
             return VisitedGraph.OutEdges(vertex).Where(NotInCircuit);
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [CanBeNull]
         private TEdge SelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex)
         {

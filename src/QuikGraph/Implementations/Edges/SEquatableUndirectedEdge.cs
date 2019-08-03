@@ -25,10 +25,10 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         public SEquatableUndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             if (Comparer<TVertex>.Default.Compare(source, target) > 0)
             {

@@ -15,7 +15,7 @@
 //#if SUPPORTS_CONTRACTS
 //        [System.Diagnostics.Contracts.Pure]
 //#endif
-//        [JetBrains.Annotations.Pure]
+//        [Pure]
 //        [NotNull]
 //        private static TGraph LoadGraphFromDot<TVertex, TEdge, TGraph>(
 //            [NotNull] string dotSource,
@@ -51,7 +51,7 @@
 //#if SUPPORTS_CONTRACTS
 //        [System.Diagnostics.Contracts.Pure]
 //#endif
-//        [JetBrains.Annotations.Pure]
+//        [Pure]
 //        [NotNull]
 //        public static AdjacencyGraph<TVertex, TEdge> LoadAdjacencyGraphFromDot<TVertex, TEdge>(
 //            [NotNull] string dotSource,
@@ -78,7 +78,7 @@
 //#if SUPPORTS_CONTRACTS
 //        [System.Diagnostics.Contracts.Pure]
 //#endif
-//        [JetBrains.Annotations.Pure]
+//        [Pure]
 //        [NotNull]
 //        public static UndirectedGraph<TVertex, TEdge> LoadUndirectedGraphFromDot<TVertex, TEdge>(
 //            [NotNull] string dotSource,
@@ -105,7 +105,7 @@
 //#if SUPPORTS_CONTRACTS
 //        [System.Diagnostics.Contracts.Pure]
 //#endif
-//        [JetBrains.Annotations.Pure]
+//        [Pure]
 //        [NotNull]
 //        public static BidirectionalGraph<TVertex, TEdge> LoadBidirectionalGraphFromDot<TVertex, TEdge>(
 //            [NotNull] string dotSource,

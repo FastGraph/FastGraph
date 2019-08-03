@@ -29,7 +29,7 @@ namespace QuikGraph.Predicates
         /// <remarks>Check if the implemented predicate is matched.</remarks>
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the vertex is isolated, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool Test(TVertex vertex)
         {
             if (vertex == null)

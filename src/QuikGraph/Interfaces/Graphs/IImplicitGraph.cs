@@ -21,7 +21,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if <paramref name="vertex"/> has no out-edges, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool IsOutEdgesEmpty([NotNull] TVertex vertex);
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The count of out-edges of <paramref name="vertex"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         int OutDegree([NotNull] TVertex vertex);
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>An enumeration of the out-edges of <paramref name="vertex"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> OutEdges([NotNull] TVertex vertex);
 
@@ -47,7 +47,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="edges">Out edges.</param>
         /// <returns>True if out edges were found, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         bool TryGetOutEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">The index.</param>
         /// <returns>The out-edge at position <paramref name="index"/>.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         TEdge OutEdge([NotNull] TVertex vertex, int index);
     }

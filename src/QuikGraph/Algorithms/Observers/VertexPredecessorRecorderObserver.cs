@@ -65,7 +65,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="vertex">Path ending vertex.</param>
         /// <param name="path">Path to the ending vertex.</param>
         /// <returns>True if a path was found, false otherwise.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public bool TryGetPath(TVertex vertex, out IEnumerable<TEdge> path)
         {
             return VertexPredecessors.TryGetPath(vertex, out path);

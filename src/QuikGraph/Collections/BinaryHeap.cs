@@ -126,7 +126,7 @@ namespace QuikGraph.Collections
         /// Gets all heap values.
         /// </summary>
         /// <returns>Array of heap values.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public TValue[] ToValueArray()
         {
@@ -137,7 +137,7 @@ namespace QuikGraph.Collections
         /// Gets all values with their priorities.
         /// </summary>
         /// <returns>Array of heap priorities and values.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public KeyValuePair<TPriority, TValue>[] ToPriorityValueArray()
         {
@@ -258,7 +258,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Index of the value if found, otherwise -1.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         public int IndexOf([CanBeNull] TValue value)
         {
             for (int i = 0; i < Count; i++)
@@ -329,7 +329,7 @@ namespace QuikGraph.Collections
             }
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private bool LessOrEqual(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
@@ -341,7 +341,7 @@ namespace QuikGraph.Collections
             return PriorityComparison(_items[i].Key, _items[j].Key) <= 0;
         }
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         private bool Less(int i, int j)
         {
 #if SUPPORTS_CONTRACTS
@@ -448,7 +448,7 @@ namespace QuikGraph.Collections
         /// Gets a string representation of this heap.
         /// </summary>
         /// <returns>String representation.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public string ToString2()
         {
@@ -460,7 +460,7 @@ namespace QuikGraph.Collections
         /// Gets a string tree representation of this heap.
         /// </summary>
         /// <returns>String representation.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         public string ToStringTree()
         {

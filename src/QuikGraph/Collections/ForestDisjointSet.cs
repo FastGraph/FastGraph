@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -107,7 +108,7 @@ namespace QuikGraph.Collections
 
         #endregion
 
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull]
         private static Element FindNoCompression([NotNull] Element element)
         {
@@ -144,10 +145,10 @@ namespace QuikGraph.Collections
 
         private static void CompressPath([NotNull] Element element, [NotNull] Element root)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(element != null);
-            Contract.Requires(root != null);
-#endif
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
+            if (root is null)
+                throw new ArgumentNullException(nameof(root));
 
             // Path compression
             Element current = element;

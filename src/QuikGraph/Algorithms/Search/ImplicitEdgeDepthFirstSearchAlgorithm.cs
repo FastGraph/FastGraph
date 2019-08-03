@@ -90,10 +90,10 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnDiscoverTreeEdge([NotNull] TEdge edge, [NotNull] TEdge targetEdge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(targetEdge != null);
-#endif
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+            if (targetEdge == null)
+                throw new ArgumentNullException(nameof(targetEdge));
 
             DiscoverTreeEdge?.Invoke(edge, targetEdge);
         }

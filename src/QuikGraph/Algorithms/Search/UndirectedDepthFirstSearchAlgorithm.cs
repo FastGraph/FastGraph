@@ -74,10 +74,10 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] Func<IEnumerable<TEdge>, IEnumerable<TEdge>> adjacentEdgesFilter)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(verticesColors != null);
-            Contract.Requires(adjacentEdgesFilter != null);
-#endif
+            if (verticesColors is null)
+                throw new ArgumentNullException(nameof(verticesColors));
+            if (adjacentEdgesFilter is null)
+                throw new ArgumentNullException(nameof(adjacentEdgesFilter));
 
             VerticesColors = verticesColors;
             AdjacentEdgesFilter = adjacentEdgesFilter;

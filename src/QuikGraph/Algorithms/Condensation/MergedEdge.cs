@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -46,10 +44,10 @@ namespace QuikGraph.Algorithms.Condensation
             [NotNull] MergedEdge<TVertex, TEdge> inEdge,
             [NotNull] MergedEdge<TVertex, TEdge> outEdge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(inEdge != null);
-            Contract.Requires(outEdge != null);
-#endif
+            if (inEdge is null)
+                throw new ArgumentNullException(nameof(inEdge));
+            if (outEdge is null)
+                throw new ArgumentNullException(nameof(outEdge));
 
             var newEdge = new MergedEdge<TVertex, TEdge>(inEdge.Source, outEdge.Target)
             {

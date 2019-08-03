@@ -34,10 +34,10 @@ namespace QuikGraph.Algorithms.Observers
             [NotNull] IDictionary<TEdge, TEdge> edgesPredecessors,
             [NotNull, ItemNotNull] ICollection<TEdge> endPathEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgesPredecessors != null);
-            Contract.Requires(endPathEdges != null);
-#endif
+            if (edgesPredecessors is null)
+                throw new ArgumentNullException(nameof(edgesPredecessors));
+            if (endPathEdges is null)
+                throw new ArgumentNullException(nameof(endPathEdges));
 
             EdgesPredecessors = edgesPredecessors;
             EndPathEdges = endPathEdges;
@@ -77,7 +77,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <param name="startingEdge">Starting edge.</param>
         /// <returns>Edge path.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         public ICollection<TEdge> Path(TEdge startingEdge)
         {
@@ -98,7 +98,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Gets all paths.
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> AllPaths()
         {
@@ -111,16 +111,16 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="startingEdge">Starting edge.</param>
         /// <param name="colors">Edges colors mapping.</param>
         /// <returns>Merged path.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         public ICollection<TEdge> MergedPath(
             [NotNull] TEdge startingEdge,
             [NotNull] IDictionary<TEdge, GraphColor> colors)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(startingEdge != null);
-            Contract.Requires(colors != null);
-#endif
+            if (startingEdge == null)
+                throw new ArgumentNullException(nameof(startingEdge));
+            if (colors is null)
+                throw new ArgumentNullException(nameof(colors));
 
             var path = new List<TEdge>();
 
@@ -149,7 +149,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Gets all merged path.
         /// </summary>
         /// <returns>Enumerable of merged paths.</returns>
-        [JetBrains.Annotations.Pure]
+        [Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> AllMergedPaths()
         {

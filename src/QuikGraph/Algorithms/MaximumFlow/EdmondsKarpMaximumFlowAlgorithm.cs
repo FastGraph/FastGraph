@@ -68,10 +68,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void Augment([NotNull] TVertex source, [NotNull] TVertex sink)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(sink != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (sink == null)
+                throw new ArgumentNullException(nameof(sink));
 
             // Find minimum residual capacity along the augmenting path
             double delta = double.MaxValue;

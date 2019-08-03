@@ -54,10 +54,10 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(distanceRelaxer != null);
-#endif
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
+            if (distanceRelaxer is null)
+                throw new ArgumentNullException(nameof(distanceRelaxer));
 
             _edgeWeights = edgeWeights;
             _distanceRelaxer = distanceRelaxer;
