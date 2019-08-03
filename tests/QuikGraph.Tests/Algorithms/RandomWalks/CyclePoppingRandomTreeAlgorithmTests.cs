@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using QuikGraph.Algorithms.RandomWalks;
 
 namespace QuikGraph.Tests.Algorithms.RandomWalks

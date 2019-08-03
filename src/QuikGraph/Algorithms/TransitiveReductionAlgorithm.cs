@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Code by Yoad Snapir <yoadsn@gmail.com> with a bit of refactoring.
  * Taken from https://github.com/yoadsn/ArrowDiagramGenerator because PR was not opened.
  **/

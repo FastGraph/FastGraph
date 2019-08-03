@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Enumeration of possible cases for component with edges in a graph.

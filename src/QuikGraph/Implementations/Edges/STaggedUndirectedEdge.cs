@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Collections.Generic;

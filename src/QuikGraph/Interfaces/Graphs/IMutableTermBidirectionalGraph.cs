@@ -1,4 +1,4 @@
-﻿namespace QuikGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A mutable directed graph with vertices of type <typeparamref name="TVertex"/>

@@ -1,9 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Collections
 {

@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_CLONEABLE
+#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
 using System.Linq;

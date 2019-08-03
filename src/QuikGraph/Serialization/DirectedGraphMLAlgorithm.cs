@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Serialization.DirectedGraphML;

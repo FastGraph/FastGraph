@@ -1,8 +1,5 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using System.Net;
 using System.Xml;
 using JetBrains.Annotations;

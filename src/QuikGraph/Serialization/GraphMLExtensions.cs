@@ -2,9 +2,6 @@
 using JetBrains.Annotations;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;

@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 

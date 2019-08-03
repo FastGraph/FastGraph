@@ -1,4 +1,4 @@
-﻿namespace QuikGraph
+namespace QuikGraph
 {
     /// <summary>
     /// Helpers to work with hash codes.

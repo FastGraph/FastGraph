@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Serialization;

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates

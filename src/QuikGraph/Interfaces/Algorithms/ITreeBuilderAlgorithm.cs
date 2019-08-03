@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// An algorithm that exposes an event to build an edge tree.

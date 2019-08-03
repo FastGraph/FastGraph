@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_CONTRACTS
+#if SUPPORTS_CONTRACTS
 using System;
 using System.Collections;
 using System.Collections.Generic;

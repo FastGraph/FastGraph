@@ -1,8 +1,5 @@
-﻿
+
 using System;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Services

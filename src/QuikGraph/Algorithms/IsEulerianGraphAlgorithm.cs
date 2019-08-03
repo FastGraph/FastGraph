@@ -1,8 +1,5 @@
-﻿
+
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.ConnectedComponents;

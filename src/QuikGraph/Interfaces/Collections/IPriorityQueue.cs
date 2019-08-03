@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// Represents a queue with priority.

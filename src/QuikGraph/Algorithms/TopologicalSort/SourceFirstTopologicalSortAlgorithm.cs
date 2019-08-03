@@ -1,13 +1,10 @@
-﻿#if SUPPORTS_SERIALIZATION
+#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph.Algorithms.TopologicalSort
 {

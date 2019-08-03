@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_SYSTEM_DELEGATES
+#if SUPPORTS_SYSTEM_DELEGATES
 using System;
 #endif
 using System.Collections.Generic;

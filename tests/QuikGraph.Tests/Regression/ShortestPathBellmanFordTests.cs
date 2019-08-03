@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.ShortestPath;

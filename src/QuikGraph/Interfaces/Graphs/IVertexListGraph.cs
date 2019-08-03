@@ -1,4 +1,4 @@
-﻿namespace QuikGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A directed graph data structure where out-edges can be traversed,

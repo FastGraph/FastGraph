@@ -1,4 +1,4 @@
-﻿// TODO: Under construction
+// TODO: Under construction
 //using System.Collections.Generic;
 //using JetBrains.Annotations;
 //using QuikGraph.Algorithms.Services;

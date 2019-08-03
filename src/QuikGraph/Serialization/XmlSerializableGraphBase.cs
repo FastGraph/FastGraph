@@ -1,8 +1,5 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using System.Xml.Serialization;
 using JetBrains.Annotations;
 

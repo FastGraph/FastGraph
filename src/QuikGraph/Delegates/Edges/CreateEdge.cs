@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
+#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using JetBrains.Annotations;

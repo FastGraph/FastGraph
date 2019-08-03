@@ -4,9 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 
 namespace QuikGraph
 {

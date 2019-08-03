@@ -1,7 +1,4 @@
-﻿using System;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System;
 using System.Xml;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System.IO;

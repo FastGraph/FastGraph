@@ -2,9 +2,6 @@
 using System;
 #endif
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 

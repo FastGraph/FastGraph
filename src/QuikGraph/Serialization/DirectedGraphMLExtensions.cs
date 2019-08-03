@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;

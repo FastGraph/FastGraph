@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_KERNIGHANLIN_ALGORITHM
+#if SUPPORTS_KERNIGHANLIN_ALGORITHM
 using System.Collections.Generic;
 using JetBrains.Annotations;
 

@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Algorithms
+namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// An algorithm that exposes events to compute timing with vertices treatment.

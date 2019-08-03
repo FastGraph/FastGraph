@@ -1,8 +1,5 @@
-﻿#if SUPPORTS_SERIALIZATION
+#if SUPPORTS_SERIALIZATION
 using System;
-#endif
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
 #endif
 using JetBrains.Annotations;
 

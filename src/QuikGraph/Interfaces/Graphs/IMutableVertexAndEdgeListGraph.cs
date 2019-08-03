@@ -1,4 +1,4 @@
-﻿namespace QuikGraph
+namespace QuikGraph
 {
     /// <summary>
     /// A mutable vertex and edge list graph with vertices of type

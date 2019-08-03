@@ -1,10 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
+#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using System.Linq;
 using JetBrains.Annotations;
 

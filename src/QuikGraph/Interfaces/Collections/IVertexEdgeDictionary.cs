@@ -1,11 +1,8 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
 #endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif

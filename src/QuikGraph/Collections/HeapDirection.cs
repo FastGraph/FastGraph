@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Collections
+namespace QuikGraph.Collections
 {
     /// <summary>
     /// Specifies the order in which a Heap will Dequeue items.

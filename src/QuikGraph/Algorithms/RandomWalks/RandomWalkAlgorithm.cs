@@ -1,7 +1,4 @@
-﻿using System;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.RandomWalks

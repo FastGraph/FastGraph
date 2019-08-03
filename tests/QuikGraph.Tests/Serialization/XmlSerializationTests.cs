@@ -1,4 +1,4 @@
-﻿using System.Xml;
+using System.Xml;
 using System.Xml.XPath;
 using NUnit.Framework;
 using QuikGraph.Serialization;

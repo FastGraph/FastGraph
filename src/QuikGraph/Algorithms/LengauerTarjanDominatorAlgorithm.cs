@@ -1,4 +1,4 @@
-﻿// TODO: Finish the implementation
+// TODO: Finish the implementation
 //using System.Collections.Generic;
 //using JetBrains.Annotations;
 //using QuikGraph.Algorithms.Observers;

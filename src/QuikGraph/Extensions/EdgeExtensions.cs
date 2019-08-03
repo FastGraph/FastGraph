@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
+using System.Collections.Generic;
 using System.Linq;
 #if !SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;

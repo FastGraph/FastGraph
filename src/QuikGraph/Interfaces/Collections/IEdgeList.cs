@@ -1,10 +1,7 @@
-﻿#if SUPPORTS_CLONEABLE
+#if SUPPORTS_CLONEABLE
 using System;
 #endif
 using System.Collections.Generic;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Collections

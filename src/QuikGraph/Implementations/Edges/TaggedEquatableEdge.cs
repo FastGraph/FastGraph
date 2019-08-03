@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
