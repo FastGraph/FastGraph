@@ -42,9 +42,6 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the graph to serialize.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         [XmlElement("graph-traits")]
         public TGraph Graph { get; }
@@ -52,9 +49,6 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the edges to serialize.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         [XmlArray("edges")]
         [XmlArrayItem("edge")]

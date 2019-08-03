@@ -90,9 +90,6 @@ namespace QuikGraph
         /// <summary>
         /// Gives the type of edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public static Type EdgeType => typeof(TEdge);
 
         /// <summary>
@@ -706,9 +703,6 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public BidirectionalGraph<TVertex, TEdge> Clone()

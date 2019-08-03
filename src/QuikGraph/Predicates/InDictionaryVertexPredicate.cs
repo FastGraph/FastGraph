@@ -32,9 +32,6 @@ namespace QuikGraph.Predicates
         /// <remarks>Check if the implemented predicate is matched.</remarks>
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the vertex is in the vertex map, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
 
         [JetBrains.Annotations.Pure]
         public bool Test([NotNull] TVertex vertex)

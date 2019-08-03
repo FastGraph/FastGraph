@@ -29,9 +29,6 @@ namespace QuikGraph.Collections
         /// Gets a clone of this list.
         /// </summary>
         /// <returns>Cloned list.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
 #if SUPPORTS_CLONEABLE

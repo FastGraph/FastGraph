@@ -32,9 +32,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TValue">Value type.</typeparam>
         /// <param name="dictionary">Dictionary on which getting the key access method.</param>
         /// <returns>A function allowing key indexed access.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static Func<TKey, TValue> GetIndexer<TKey, TValue>([NotNull] IDictionary<TKey, TValue> dictionary)
@@ -64,9 +61,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <param name="graph">The graph.</param>
         /// <returns>A function that computes a vertex identity for the given <paramref name="graph"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>([NotNull] this IVertexSet<TVertex> graph)
@@ -115,9 +109,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph.</param>
         /// <returns>A function that computes an edge identity for the given <paramref name="graph"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>([NotNull] this IEdgeSet<TVertex, TEdge> graph)
@@ -136,9 +127,6 @@ namespace QuikGraph.Algorithms
             };
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         private static TryFunc<TVertex, IEnumerable<TEdge>> RunDirectedRootedAlgorithm<TVertex, TEdge, TAlgorithm>(
@@ -168,9 +156,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeBreadthFirstSearch<TVertex, TEdge>(
@@ -201,9 +186,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeDepthFirstSearch<TVertex, TEdge>(
@@ -235,9 +217,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
@@ -259,9 +238,6 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Starting vertex.</param>
         /// <param name="edgeChain">Edge chain handler.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
@@ -297,9 +273,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
@@ -331,9 +304,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
@@ -369,9 +339,6 @@ namespace QuikGraph.Algorithms
         /// <param name="costHeuristic">Function that computes a cost for a given vertex.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsAStar<TVertex, TEdge>(
@@ -405,9 +372,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsBellmanFord<TVertex, TEdge>(
@@ -442,9 +406,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDag<TVertex, TEdge>(
@@ -481,9 +442,6 @@ namespace QuikGraph.Algorithms
         /// <param name="target">Target vertex.</param>
         /// <param name="maxCount">Maximal number of path to search.</param>
         /// <returns>ENumeration of paths to go from <paramref name="root"/> vertex to <paramref name="target"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<IEnumerable<TEdge>> RankedShortestPathHoffmanPavley<TVertex, TEdge>(
@@ -520,9 +478,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sink vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Sinks<TVertex, TEdge>(
@@ -542,9 +497,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Root vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
@@ -573,9 +525,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Root vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
@@ -595,9 +544,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Root vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> IsolatedVertices<TVertex, TEdge>(
@@ -620,9 +566,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort)</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
@@ -667,9 +610,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort)</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
@@ -714,9 +654,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort)</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
@@ -762,9 +699,6 @@ namespace QuikGraph.Algorithms
         /// <param name="direction">Topological sort direction.</param>
         /// <returns>Sorted vertices (topological sort)</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
@@ -789,9 +723,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort)</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
@@ -1023,9 +954,6 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Enumerable of odd vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> OddVertices<TVertex, TEdge>(
@@ -1061,9 +989,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>True if the graph contains a cycle, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
@@ -1111,9 +1036,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeCosts">Costs map.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>The predecessors cost.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static double ComputePredecessorCost<TVertex, TEdge>(
             [NotNull] IDictionary<TVertex, TEdge> predecessors,
@@ -1145,9 +1067,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Found disjoint sets.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static IDisjointSet<TVertex> ComputeDisjointSet<TVertex, TEdge>(
@@ -1175,9 +1094,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <returns>Edges part of the minimum spanning tree.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreePrim<TVertex, TEdge>(
@@ -1210,9 +1126,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <returns>Edges part of the minimum spanning tree.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreeKruskal<TVertex, TEdge>(
@@ -1252,9 +1165,6 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Starting vertex.</param>
         /// <param name="pairs">Vertices pairs.</param>
         /// <returns>A function that allow to get least common ancestor for a pair of vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TryFunc<SEquatableEdge<TVertex>, TVertex> OfflineLeastCommonAncestor<TVertex, TEdge>(
@@ -1298,9 +1208,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
         /// <returns>The maximum flow.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static double MaximumFlow<TVertex, TEdge>(
             [NotNull] this IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
@@ -1341,9 +1248,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to compute the reduction.</param>
         /// <returns>Transitive graph reduction.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveReduction<TVertex, TEdge>(
@@ -1363,9 +1267,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to compute the closure.</param>
         /// <param name="createEdge">Function that create an edge between the 2 given vertices.</param>
         /// <returns>Transitive graph closure.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveClosure<TVertex, TEdge>(

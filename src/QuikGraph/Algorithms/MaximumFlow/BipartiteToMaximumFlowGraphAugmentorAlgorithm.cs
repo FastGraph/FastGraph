@@ -60,18 +60,12 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Vertices to which augmented edge from super source are created with augmentation.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> SourceToVertices { get; }
 
         /// <summary>
         /// Vertices from which augmented edge to super sink are created with augmentation.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> VerticesToSink { get; }
 

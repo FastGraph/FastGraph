@@ -25,9 +25,6 @@ namespace QuikGraph.Algorithms.VertexColoring
         /// <summary>
         /// Vertices colors.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, int?> Colors { get; } = new Dictionary<TVertex, int?>();
 

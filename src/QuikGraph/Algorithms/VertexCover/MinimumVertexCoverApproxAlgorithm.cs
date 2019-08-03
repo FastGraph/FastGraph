@@ -33,9 +33,6 @@ namespace QuikGraph.Algorithms.VertexCover
         /// <summary>
         /// Set of covering vertices.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public VertexList<TVertex> CoverSet =>
             State == ComputationState.Finished
                 ? _coverSet

@@ -246,9 +246,6 @@ namespace QuikGraph
         /// <summary>
         /// Gets or sets the edge capacity.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int EdgeCapacity
         {
             get => Wrapped.EdgeCapacity;
@@ -258,9 +255,6 @@ namespace QuikGraph
         /// <summary>
         /// Gives the type of edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public static Type EdgeType => typeof(TEdge);
 
         #region IEdgeSet<TVertex,TEdge>

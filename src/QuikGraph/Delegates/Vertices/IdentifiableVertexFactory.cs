@@ -8,9 +8,6 @@ namespace QuikGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <param name="id">Vertex id.</param>
     /// <returns>The created vertex.</returns>
-#if SUPPORTS_CONTRACTS
-    [System.Diagnostics.Contracts.Pure]
-#endif
     [NotNull]
     public delegate TVertex IdentifiableVertexFactory<out TVertex>([NotNull] string id);
 }

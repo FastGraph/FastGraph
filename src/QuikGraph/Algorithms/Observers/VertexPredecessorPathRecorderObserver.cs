@@ -42,18 +42,12 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Vertex predecessors.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
 
         /// <summary>
         /// Path ending vertices.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public ICollection<TVertex> EndPathVertices { get; } = new List<TVertex>();
 
@@ -61,9 +55,6 @@ namespace QuikGraph.Algorithms.Observers
         /// Gets all paths.
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<IEnumerable<TEdge>> AllPaths()

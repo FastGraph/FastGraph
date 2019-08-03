@@ -45,9 +45,6 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="stream">Stream from which deserializing the graph.</param>
         /// <returns>Deserialized graph.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>([NotNull] this Stream stream)
             where TGraph : IGraph<TVertex, TEdge>
@@ -81,9 +78,6 @@ namespace QuikGraph.Serialization
         /// If the <paramref name="document"/> does not allow to get an XML navigator
         /// or if the <paramref name="graphXPath"/> does not allow to get graph node.
         /// </exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this IXPathNavigable document,
@@ -145,9 +139,6 @@ namespace QuikGraph.Serialization
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
         /// <exception cref="InvalidOperationException">If the graph node cannot be found.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this XmlReader reader,
@@ -223,9 +214,6 @@ namespace QuikGraph.Serialization
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
         /// <exception cref="InvalidOperationException">If the graph node cannot be found.</exception>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this XmlReader reader,

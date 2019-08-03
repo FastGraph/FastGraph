@@ -75,27 +75,18 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Root vertices associated to their minimal linked vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, TVertex> Roots { get; }
 
         /// <summary>
         /// Times of vertices discover.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, int> DiscoverTimes { get; }
 
         /// <summary>
         /// Number of steps spent.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int Steps { get; private set; }
 
         /// <summary>
@@ -114,9 +105,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Strongly connected components.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public List<BidirectionalGraph<TVertex, TEdge>> Graphs
         {
@@ -150,9 +138,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         private TVertex MinDiscoverTime([NotNull] TVertex u, [NotNull] TVertex v)

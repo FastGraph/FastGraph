@@ -44,9 +44,6 @@ namespace QuikGraph.Algorithms
         /// Gets vertices permutations.
         /// </summary>
         /// <returns>List of permutations.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public List<List<TVertex>> GetPermutations()
@@ -80,9 +77,6 @@ namespace QuikGraph.Algorithms
             }
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool ExistsInGraph([NotNull, ItemNotNull] List<TVertex> path)
         {
@@ -102,9 +96,6 @@ namespace QuikGraph.Algorithms
             return true;
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool SatisfiesDiracTheorem([NotNull] TVertex vertex)
         {
@@ -118,9 +109,6 @@ namespace QuikGraph.Algorithms
         /// Returns true if the graph is Hamiltonian, otherwise false.
         /// </summary>
         /// <returns>True if the graph is Hamiltonian, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool IsHamiltonian()
         {
@@ -155,9 +143,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to check.</param>
         /// <returns>True if the <paramref name="graph"/> is Hamiltonian, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static bool IsHamiltonian<TVertex, TEdge>(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)

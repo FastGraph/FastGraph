@@ -89,17 +89,11 @@ namespace QuikGraph
         /// <summary>
         /// Gets or sets the edge capacity.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int EdgeCapacity { get; set; }
 
         /// <summary>
         /// Gives the type of edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public static Type EdgeType => typeof(TEdge);
 
 #if SUPPORTS_CONTRACTS
@@ -567,9 +561,6 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public AdjacencyGraph<TVertex, TEdge> Clone()

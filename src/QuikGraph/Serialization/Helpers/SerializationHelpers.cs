@@ -17,9 +17,6 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="type"><see cref="Type"/> to check.</param>
         /// <returns>True if the <paramref name="type"/> can be treated, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [ContractAnnotation("type:null => false")]
         private static bool IsTreatableType([CanBeNull] Type type)
@@ -34,9 +31,6 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="property">A <see cref="PropertyInfo"/>.</param>
         /// <returns>True if the <paramref name="property"/> is an indexed property, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         private static bool IsIndexed([NotNull] PropertyInfo property)
         {
@@ -48,9 +42,6 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [NotNull]
         public static IEnumerable<PropertySerializationInfo> GetAttributeProperties([CanBeNull] Type type)
@@ -87,9 +78,6 @@ namespace QuikGraph.Serialization
             #endregion
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         public static bool TryGetAttributeName([NotNull] PropertyInfo property, out string name)
         {
@@ -106,9 +94,6 @@ namespace QuikGraph.Serialization
             return true;
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         public static bool TryGetDefaultValue([NotNull] PropertyInfo property, out object value)
         {

@@ -18,9 +18,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Number of out terminals.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         int OutTerminalCount([NotNull] TVertex vertex);
 
@@ -30,9 +27,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
         /// <returns>True if the out terminal is empty, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         bool IsOutEdgesEmptyAt([NotNull] TVertex vertex, int terminal);
 
@@ -42,9 +36,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
         /// <returns>The <paramref name="vertex"/> out degree on terminal <paramref name="terminal"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         int OutDegreeAt([NotNull] TVertex vertex, int terminal);
 
@@ -54,9 +45,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
         /// <returns>The <paramref name="vertex"/> out-edges on terminal <paramref name="terminal"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> OutEdgesAt([NotNull] TVertex vertex, int terminal);
@@ -68,9 +56,6 @@ namespace QuikGraph
         /// <param name="terminal">Out terminal index.</param>
         /// <param name="edges">Out-edges found, otherwise null.</param>
         /// <returns>True if out-edges were found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         bool TryGetOutEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
 
@@ -79,9 +64,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Number of in terminals.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         int InTerminalCount([NotNull] TVertex vertex);
 
@@ -91,9 +73,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">In terminal index.</param>
         /// <returns>True if the in terminal is empty, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         bool IsInEdgesEmptyAt([NotNull] TVertex vertex, int terminal);
 
@@ -103,9 +82,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">In terminal index.</param>
         /// <returns>The <paramref name="vertex"/> in degree on terminal <paramref name="terminal"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         int InDegreeAt([NotNull] TVertex vertex, int terminal);
 
@@ -115,9 +91,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">In terminal index.</param>
         /// <returns>The <paramref name="vertex"/> in-edges on terminal <paramref name="terminal"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> InEdgesAt([NotNull] TVertex vertex, int terminal);
@@ -129,9 +102,6 @@ namespace QuikGraph
         /// <param name="terminal">Out terminal index.</param>
         /// <param name="edges">In-edges found, otherwise null.</param>
         /// <returns>True if in-edges were found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         bool TryGetInEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
     }

@@ -18,9 +18,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="vertex">The vertex.</param>
         /// <param name="successor">Found successor, otherwise null.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, out TEdge successor);
 
@@ -31,9 +28,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="vertex">The vertex.</param>
         /// <param name="successor">Found successor, otherwise null.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TVertex vertex, out TEdge successor);
     }

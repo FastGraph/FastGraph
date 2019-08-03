@@ -13,9 +13,6 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The vertex <see cref="GraphColor"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         GraphColor GetVertexColor([NotNull] TVertex vertex);
     }

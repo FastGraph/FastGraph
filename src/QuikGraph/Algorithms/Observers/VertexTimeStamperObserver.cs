@@ -58,18 +58,12 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Times of vertices discover.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, int> DiscoverTimes { get; }
 
         /// <summary>
         /// Times of vertices fully treated.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [CanBeNull]
         public IDictionary<TVertex, int> FinishTimes { get; }
 

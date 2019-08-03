@@ -28,9 +28,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Map of edge weights.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TEdge, double> Weights { get; }
 

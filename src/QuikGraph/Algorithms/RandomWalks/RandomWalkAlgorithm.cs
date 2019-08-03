@@ -44,18 +44,12 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Edge chain strategy for the random walk.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IEdgeChain<TVertex, TEdge> EdgeChain { get; set; }
 
         /// <summary>
         /// Predicate to prematurely ends the walk.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [CanBeNull]
         public EdgePredicate<TVertex, TEdge> EndPredicate { get; set; }
 

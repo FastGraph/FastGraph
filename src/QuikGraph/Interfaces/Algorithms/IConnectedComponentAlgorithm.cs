@@ -16,17 +16,11 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Number of components.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         int ComponentCount { get; }
 
         /// <summary>
         /// Graph components.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         IDictionary<TVertex, int> Components { get; }
     }

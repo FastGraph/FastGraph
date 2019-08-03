@@ -203,9 +203,6 @@ namespace QuikGraph.Algorithms
         /// <param name="serviceType">Service type.</param>
         /// <param name="service">Found service.</param>
         /// <returns>True if the service was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         protected virtual bool TryGetService([NotNull] Type serviceType, out object service)
         {

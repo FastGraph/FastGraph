@@ -131,9 +131,6 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Minimal rank (based on <see cref="ErrorRate"/>).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int MinRank { get; }
 
         /// <summary>
@@ -145,26 +142,17 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Maximal authorized key.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public TKey KeyMaxValue { get; }
 
         /// <summary>
         /// Error rate.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public double ErrorRate { get; }
 
         /// <summary>
         /// Number of element.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int Count { get; private set; }
 
 #if SUPPORTS_CONTRACTS

@@ -24,9 +24,6 @@ namespace QuikGraph
         /// <param name="source">The source vertex of the new edge.</param>
         /// <param name="target">The target vertex of the new edge.</param>
         /// <returns>A clone of the edge with new source and target vertices.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         TEdge Clone([NotNull] TVertex source, [NotNull] TVertex target);

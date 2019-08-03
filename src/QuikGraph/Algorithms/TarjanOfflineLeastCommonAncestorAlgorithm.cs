@@ -115,9 +115,6 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="pairs">Vertices pairs if set.</param>
         /// <returns></returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
         {

@@ -68,33 +68,21 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Heap direction.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public HeapDirection Direction { get; }
 
         /// <summary>
         /// Checks if the heap is empty.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public bool IsEmpty => _cells.First is null;
 
         /// <summary>
         /// Number of element.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int Count { get; private set; }
 
         /// <summary>
         /// Top element of the heap.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public FibonacciHeapCell<TPriority, TValue> Top { get; private set; }
 
         /// <summary>

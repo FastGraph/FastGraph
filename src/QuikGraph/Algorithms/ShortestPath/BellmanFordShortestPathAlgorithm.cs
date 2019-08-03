@@ -74,9 +74,6 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Indicates if a negative cycle was found in the graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public bool FoundNegativeCycle { get; private set; }
 
         #region Events

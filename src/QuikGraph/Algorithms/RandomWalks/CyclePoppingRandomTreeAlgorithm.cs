@@ -61,9 +61,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 
@@ -80,9 +77,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Edge chain strategy for the random walk.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IMarkovEdgeChain<TVertex, TEdge> EdgeChain { get; }
 
@@ -108,9 +102,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Map vertices associated to their edge successors.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, TEdge> Successors { get; } = new Dictionary<TVertex, TEdge>();
 

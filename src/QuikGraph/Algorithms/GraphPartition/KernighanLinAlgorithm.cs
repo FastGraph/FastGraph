@@ -41,9 +41,6 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <summary>
         /// Partition created by the algorithm.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public Partition<TVertex> Partition { get; private set; }
 
         private Partition<TVertex> DoAllSwaps()
@@ -105,9 +102,6 @@ namespace QuikGraph.Algorithms.GraphPartition
             return GetCutCost();
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private double GetVertexCost([NotNull] TVertex vertex)
         {
@@ -132,9 +126,6 @@ namespace QuikGraph.Algorithms.GraphPartition
             return cost;
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         private IEnumerable<TVertex> GetNeighbors([NotNull] TVertex vertex)
@@ -199,9 +190,6 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <summary>
         /// Searches for an edge that links <paramref name="vertexFromA"/> and <paramref name="vertexFromB"/>.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool FindEdge([NotNull] TVertex vertexFromA, [NotNull] TVertex vertexFromB, out TEdge foundEdge)
         {

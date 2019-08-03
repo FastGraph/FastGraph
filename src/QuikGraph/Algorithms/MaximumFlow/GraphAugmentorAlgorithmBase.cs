@@ -41,43 +41,28 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Vertex factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public VertexFactory<TVertex> VertexFactory { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
         /// Gets the flow source vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TVertex SuperSource { get; private set; }
 
         /// <summary>
         /// Gets the flow sink vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TVertex SuperSink { get; private set; }
 
         /// <summary>
         /// Indicates if the graph has been augmented or not.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public bool Augmented { get; private set; }
 
         /// <summary>

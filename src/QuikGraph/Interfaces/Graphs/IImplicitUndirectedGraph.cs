@@ -22,9 +22,6 @@ namespace QuikGraph
         /// <summary>
         /// Comparer for edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; }
 
@@ -33,9 +30,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Enumerable of adjacent edges.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> AdjacentEdges([NotNull] TVertex vertex);
@@ -45,9 +39,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Vertex adjacent degree.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         int AdjacentDegree([NotNull] TVertex vertex);
 
@@ -56,9 +47,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if the vertex has at least one adjacent edge, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool IsAdjacentEdgesEmpty([NotNull] TVertex vertex);
 
@@ -68,9 +56,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">Index of the adjacent edge requested.</param>
         /// <returns>The adjacent edge.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         TEdge AdjacentEdge([NotNull] TVertex vertex, int index);
@@ -83,9 +68,6 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edge">Edge found, otherwise null.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
 
@@ -96,9 +78,6 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if an edge exists, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
     }

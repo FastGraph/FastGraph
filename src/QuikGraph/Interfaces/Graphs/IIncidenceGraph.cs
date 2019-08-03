@@ -26,9 +26,6 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if an edge exists, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
 
@@ -40,9 +37,6 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edge">Edge found, otherwise null.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
 
@@ -54,9 +48,6 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edges">Edges found, otherwise null.</param>
         /// <returns>True if at least an edge was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool TryGetEdges([NotNull] TVertex source, [NotNull] TVertex target, [ItemNotNull] out IEnumerable<TEdge> edges);
     }

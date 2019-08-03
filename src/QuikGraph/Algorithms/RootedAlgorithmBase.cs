@@ -34,9 +34,6 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="root">Root vertex if set, otherwise null.</param>
         /// <returns>True if the root vertex was set, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool TryGetRootVertex(out TVertex root)
         {

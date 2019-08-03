@@ -104,53 +104,35 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IMutableBidirectionalGraph<TVertex, TEdge> VisitedGraph { get; }
 
         /// <summary>
         /// Vertex factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public VertexFactory<TVertex> VertexFactory { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
         /// Indicates if the graph has been balanced or not.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public bool Balanced { get; private set; }
 
         /// <summary>
         /// Flow source vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public TVertex Source { get; }
 
         /// <summary>
         /// Flow sink vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public TVertex Sink { get; }
 
@@ -158,36 +140,24 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// Balancing flow source vertex.
         /// </summary>
         /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TVertex BalancingSource { get; private set; }
 
         /// <summary>
         /// Balancing source edge (between <see cref="BalancingSource"/> and <see cref="Source"/>).
         /// </summary>
         /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TEdge BalancingSourceEdge { get; private set; }
 
         /// <summary>
         /// Balancing flow sink vertex.
         /// </summary>
         /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TVertex BalancingSink { get; private set; }
 
         /// <summary>
         /// Balancing sink edge (between <see cref="Sink"/> and <see cref="BalancingSink"/>).
         /// </summary>
         /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TEdge BalancingSinkEdge { get; private set; }
 
         [NotNull, ItemNotNull]
@@ -229,9 +199,6 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Edges capacities.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TEdge, double> Capacities { get; } = new Dictionary<TEdge, double>();
 

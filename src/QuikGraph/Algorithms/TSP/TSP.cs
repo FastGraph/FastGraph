@@ -23,9 +23,6 @@ namespace QuikGraph.Algorithms.TSP
         /// <summary>
         /// Shortest path found, otherwise null.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [CanBeNull]
         public BidirectionalGraph<TVertex, TEdge> ResultPath { get; private set; }
 
@@ -55,9 +52,6 @@ namespace QuikGraph.Algorithms.TSP
                     0));
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [NotNull]
         private static Dictionary<EquatableEdge<TVertex>, double> BuildWeightsDictionary(

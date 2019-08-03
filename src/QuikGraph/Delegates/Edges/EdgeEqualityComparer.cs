@@ -10,9 +10,6 @@ namespace QuikGraph
     /// <param name="source">Source vertex to compare with.</param>
     /// <param name="target">Target vertex to compare with.</param>
     /// <returns>True if the <paramref name="edge"/> vertices matches given ones, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-    [System.Diagnostics.Contracts.Pure]
-#endif
     public delegate bool EdgeEqualityComparer<in TVertex>(
         [NotNull] IEdge<TVertex> edge,
         [NotNull] TVertex source,

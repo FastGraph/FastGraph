@@ -63,9 +63,6 @@ namespace QuikGraph.Collections
         /// Converts this cell to a <see cref="KeyValuePair{TPriority,TValue}"/>.
         /// </summary>
         /// <returns>A corresponding <see cref="KeyValuePair{TPriority,TValue}"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         public KeyValuePair<TPriority, TValue> ToKeyValuePair()
         {

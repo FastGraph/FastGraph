@@ -18,18 +18,12 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Synchronizer object.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         object SyncRoot { get; }
 
         /// <summary>
         /// Current computation state.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         ComputationState State { get; }
 
         /// <summary>

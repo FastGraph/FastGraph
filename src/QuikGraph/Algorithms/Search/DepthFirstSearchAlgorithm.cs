@@ -105,9 +105,6 @@ namespace QuikGraph.Algorithms.Search
         /// <summary>
         /// Filter of edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Func<IEnumerable<TEdge>, IEnumerable<TEdge>> OutEdgesFilter { get; }
 
@@ -122,9 +119,6 @@ namespace QuikGraph.Algorithms.Search
         /// <value>
         /// Maximum exploration depth.
         /// </value>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int MaxDepth
         {
             get => _maxDepth;
@@ -287,9 +281,6 @@ namespace QuikGraph.Algorithms.Search
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, GraphColor> VerticesColors { get; }
 

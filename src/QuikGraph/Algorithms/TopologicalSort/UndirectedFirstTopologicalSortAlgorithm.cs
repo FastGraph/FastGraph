@@ -34,18 +34,12 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public ICollection<TVertex> SortedVertices { get; private set; } = new List<TVertex>();
 
         /// <summary>
         /// Vertices degrees.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, int> Degrees { get; } = new Dictionary<TVertex, int>();
 

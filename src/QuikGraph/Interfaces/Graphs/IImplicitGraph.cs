@@ -24,9 +24,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if <paramref name="vertex"/> has no out-edges, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool IsOutEdgesEmpty([NotNull] TVertex vertex);
 
@@ -35,9 +32,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The count of out-edges of <paramref name="vertex"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         int OutDegree([NotNull] TVertex vertex);
 
@@ -46,9 +40,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>An enumeration of the out-edges of <paramref name="vertex"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> OutEdges([NotNull] TVertex vertex);
@@ -59,9 +50,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="edges">Out edges.</param>
         /// <returns>True if out edges were found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool TryGetOutEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
@@ -71,9 +59,6 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">The index.</param>
         /// <returns>The out-edge at position <paramref name="index"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         TEdge OutEdge([NotNull] TVertex vertex, int index);

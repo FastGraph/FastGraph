@@ -36,9 +36,6 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <summary>
         /// Gets or sets the maximum number of shortest path to find.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int ShortestPathCount
         {
             get => _shortestPathCount;
@@ -105,9 +102,6 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 

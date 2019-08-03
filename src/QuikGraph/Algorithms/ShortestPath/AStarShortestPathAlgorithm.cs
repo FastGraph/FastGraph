@@ -80,9 +80,6 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Function that computes a cost for a given vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Func<TVertex, double> CostHeuristic { get; }
 

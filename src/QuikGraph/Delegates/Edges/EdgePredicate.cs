@@ -9,9 +9,6 @@ namespace QuikGraph
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="edge">Edge to check condition.</param>
     /// <returns>True if the <paramref name="edge"/> matches the predicate, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-    [System.Diagnostics.Contracts.Pure]
-#endif
     public delegate bool EdgePredicate<TVertex, in TEdge>([NotNull] TEdge edge)
         where TEdge : IEdge<TVertex>;
 }

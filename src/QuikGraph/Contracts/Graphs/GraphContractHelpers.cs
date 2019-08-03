@@ -6,9 +6,6 @@ namespace QuikGraph.Contracts
     /// </summary>
     internal static class GraphContractHelpers
     {
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         public static bool VertexCountEqual<TVertex>(
             this IVertexSet<TVertex> left, 
             IVertexSet<TVertex> right)
@@ -21,9 +18,6 @@ namespace QuikGraph.Contracts
             return left.VertexCount == right.VertexCount;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         public static bool EdgeCountEqual<TVertex, TEdge>(
             this IEdgeListGraph<TVertex, TEdge> left, 
             IEdgeListGraph<TVertex, TEdge> right)
@@ -37,9 +31,6 @@ namespace QuikGraph.Contracts
             return left.EdgeCount == right.EdgeCount;
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         public static bool InVertexSet<TVertex>(
             IVertexSet<TVertex> graph, 
             TVertex vertex)
@@ -53,9 +44,6 @@ namespace QuikGraph.Contracts
             return graph.ContainsVertex(vertex);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         public static bool InVertexSet<TVertex, TEdge>(
             IEdgeListGraph<TVertex, TEdge> graph, 
             TEdge edge)
@@ -70,9 +58,6 @@ namespace QuikGraph.Contracts
                    && InVertexSet(graph, edge.Target);
         }
 
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         public static bool InEdgeSet<TVertex, TEdge>(
             IEdgeListGraph<TVertex, TEdge> graph,
             TEdge edge)

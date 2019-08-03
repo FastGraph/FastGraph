@@ -11,18 +11,12 @@ namespace QuikGraph
         /// <summary>
         /// Graph clusters.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         IEnumerable Clusters { get; }
 
         /// <summary>
         /// Number of clusters.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         int ClustersCount { get; }
 
         /// <summary>

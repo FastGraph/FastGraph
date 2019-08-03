@@ -36,9 +36,6 @@ namespace QuikGraph.Algorithms.Condensation
         /// <summary>
         /// Condensed graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensedGraph { get; }
 

@@ -97,17 +97,11 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Heap capacity.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int Capacity => _items.Length;
 
         /// <summary>
         /// Number of element.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int Count { get; private set; }
 
         /// <summary>
@@ -150,9 +144,6 @@ namespace QuikGraph.Collections
         /// Gets all heap values.
         /// </summary>
         /// <returns>Array of heap values.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public TValue[] ToValueArray()
@@ -164,9 +155,6 @@ namespace QuikGraph.Collections
         /// Gets all values with their priorities.
         /// </summary>
         /// <returns>Array of heap priorities and values.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public KeyValuePair<TPriority, TValue>[] ToPriorityValueArray()
@@ -288,9 +276,6 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Index of the value if found, otherwise -1.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public int IndexOf([CanBeNull] TValue value)
         {
@@ -362,9 +347,6 @@ namespace QuikGraph.Collections
             }
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool LessOrEqual(int i, int j)
         {
@@ -377,9 +359,6 @@ namespace QuikGraph.Collections
             return PriorityComparison(_items[i].Key, _items[j].Key) <= 0;
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool Less(int i, int j)
         {
@@ -487,9 +466,6 @@ namespace QuikGraph.Collections
         /// Gets a string representation of this heap.
         /// </summary>
         /// <returns>String representation.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public string ToString2()
@@ -502,9 +478,6 @@ namespace QuikGraph.Collections
         /// Gets a string tree representation of this heap.
         /// </summary>
         /// <returns>String representation.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public string ToStringTree()

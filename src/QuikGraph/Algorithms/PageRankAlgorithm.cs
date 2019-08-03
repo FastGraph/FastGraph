@@ -36,25 +36,16 @@ namespace QuikGraph.Algorithms.Ranking
         /// <summary>
         /// Gets or sets the damping rate.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public double Damping { get; set; } = 0.85;
 
         /// <summary>
         /// Gets or sets the error tolerance (used to stop the algorithm).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public double Tolerance { get; set; } = 2 * double.Epsilon;
 
         /// <summary>
         /// Gets or sets the maximum number of iterations.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int MaxIterations { get; set; } = 60;
 
         /// <summary>
@@ -126,9 +117,6 @@ namespace QuikGraph.Algorithms.Ranking
         /// Gets the sum of all ranks.
         /// </summary>
         /// <returns>Ranks sum.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         public double GetRanksSum()
         {
@@ -139,9 +127,6 @@ namespace QuikGraph.Algorithms.Ranking
         /// Gets the rank average.
         /// </summary>
         /// <returns>Rank average.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         public double GetRanksMean()
         {

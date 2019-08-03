@@ -20,9 +20,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the specified <paramref name="vertex"/> is contained in this set, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool ContainsVertex([NotNull] TVertex vertex);
     }

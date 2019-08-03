@@ -33,9 +33,6 @@ namespace QuikGraph.Predicates
         /// <remarks>Check if the implemented predicate is matched.</remarks>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if the edge is residual, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool Test(TEdge edge)
         {

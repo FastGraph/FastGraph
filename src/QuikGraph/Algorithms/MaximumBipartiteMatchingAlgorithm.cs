@@ -46,45 +46,30 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Vertices to which augmented edge from super source are created with augmentation.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> SourceToVertices { get; }
 
         /// <summary>
         /// Vertices from which augmented edge to super sink are created with augmentation.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> VerticesToSink { get; }
 
         /// <summary>
         /// Vertex factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public VertexFactory<TVertex> VertexFactory { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
         /// Maximal edges matching.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public ICollection<TEdge> MatchedEdges { get; }
 

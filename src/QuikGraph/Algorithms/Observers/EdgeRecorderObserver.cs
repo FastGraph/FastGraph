@@ -43,9 +43,6 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Encountered edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TEdge> Edges => _edges.AsEnumerable();
 

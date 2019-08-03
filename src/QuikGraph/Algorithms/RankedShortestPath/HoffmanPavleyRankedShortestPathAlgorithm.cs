@@ -85,9 +85,6 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// </summary>
         /// <param name="target">Target vertex if set, otherwise null.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool TryGetTargetVertex(out TVertex target)
         {
@@ -376,26 +373,14 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         [DebuggerDisplay("Weight = {" + nameof(Weight) + "}, Index = {" + nameof(DeviationIndex) + "}, Edge = {" + nameof(DeviationEdge) + "}")]
         private struct DeviationPath
         {
-#if SUPPORTS_CONTRACTS
-            [System.Diagnostics.Contracts.Pure]
-#endif
             [NotNull, ItemNotNull]
             public TEdge[] ParentPath { get; }
 
-#if SUPPORTS_CONTRACTS
-            [System.Diagnostics.Contracts.Pure]
-#endif
             public int DeviationIndex { get; }
 
-#if SUPPORTS_CONTRACTS
-            [System.Diagnostics.Contracts.Pure]
-#endif
             [NotNull]
             public TEdge DeviationEdge { get; }
 
-#if SUPPORTS_CONTRACTS
-            [System.Diagnostics.Contracts.Pure]
-#endif
             public double Weight { get; }
 
             public DeviationPath(

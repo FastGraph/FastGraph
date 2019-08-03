@@ -16,9 +16,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TVertex GetVertex<TVertex>(
@@ -39,9 +36,6 @@ namespace QuikGraph.Algorithms
         /// <param name="count">Number of vertices in the set.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TVertex GetVertex<TVertex>(
@@ -76,9 +70,6 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TEdge GetEdge<TVertex, TEdge>(
@@ -101,9 +92,6 @@ namespace QuikGraph.Algorithms
         /// <param name="count">Number of edges in the set.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public static TEdge GetEdge<TVertex, TEdge>(

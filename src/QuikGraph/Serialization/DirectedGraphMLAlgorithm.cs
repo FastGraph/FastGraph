@@ -45,9 +45,6 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the resulting <see cref="DirectedGraphML.DirectedGraph"/>.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public DirectedGraph DirectedGraph { get; private set; }
 
         #region AlgorithmBase<TGraph>

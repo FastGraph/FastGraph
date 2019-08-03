@@ -76,9 +76,6 @@ namespace QuikGraph.Predicates
         /// </summary>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if the <paramref name="edge"/> matches all predicates, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         protected bool FilterEdge([NotNull] TEdge edge)
         {

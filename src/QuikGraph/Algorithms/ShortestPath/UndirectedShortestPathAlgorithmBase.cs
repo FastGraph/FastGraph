@@ -73,17 +73,11 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Vertices distances.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public IDictionary<TVertex, double> Distances { get; private set; }
 
         /// <summary>
         /// Gets the function that gives access to distances from a vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         protected Func<TVertex, double> DistancesIndexGetter()
@@ -94,18 +88,12 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Function that given an edge return the weight of this edge.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Func<TEdge, double> Weights { get; }
 
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 
@@ -127,9 +115,6 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public IDictionary<TVertex, GraphColor> VerticesColors { get; private set; }
 
         /// <inheritdoc />

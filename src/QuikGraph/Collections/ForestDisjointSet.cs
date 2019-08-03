@@ -116,9 +116,6 @@ namespace QuikGraph.Collections
 
         #endregion
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         private static Element FindNoCompression([NotNull] Element element)

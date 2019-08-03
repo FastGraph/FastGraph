@@ -10,9 +10,6 @@ namespace QuikGraph
     /// <param name="source">Edge source vertex.</param>
     /// <param name="target">Edge target vertex.</param>
     /// <returns>The created edge.</returns>
-#if SUPPORTS_CONTRACTS
-    [System.Diagnostics.Contracts.Pure]
-#endif
     [NotNull]
     public delegate TEdge EdgeFactory<in TVertex, out TEdge>([NotNull] TVertex source, [NotNull] TVertex target)
         where TEdge : IEdge<TVertex>;

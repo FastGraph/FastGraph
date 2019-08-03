@@ -32,9 +32,6 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="target">Target vertex if set, otherwise null.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool TryGetTargetVertex(out TVertex target)
         {

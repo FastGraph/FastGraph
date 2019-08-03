@@ -11,9 +11,6 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Initial distance.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         double InitialDistance { get; }
 
         /// <summary>
@@ -22,9 +19,6 @@ namespace QuikGraph.Algorithms
         /// <param name="distance">Distance value.</param>
         /// <param name="weight">Weight value.</param>
         /// <returns>The combined value.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         double Combine(double distance, double weight);
     }

@@ -18,17 +18,11 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Gets the current number of sets.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         int SetCount { get; }
 
         /// <summary>
         /// Gets the current number of elements.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         int ElementCount { get; }
 
         /// <summary>
@@ -42,9 +36,6 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">Value to search.</param>
         /// <returns></returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [CanBeNull]
         T FindSet([NotNull] T value);
@@ -55,9 +46,6 @@ namespace QuikGraph.Collections
         /// <param name="left">Left value.</param>
         /// <param name="right">Right value.</param>
         /// <returns>True if both values are in the same set, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool AreInSameSet([NotNull] T left, [NotNull] T right);
 
@@ -75,9 +63,6 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>True if the value is already in the set, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         bool Contains([NotNull] T value);
     }

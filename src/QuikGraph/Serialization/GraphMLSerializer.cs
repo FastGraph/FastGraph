@@ -511,9 +511,6 @@ namespace QuikGraph.Serialization
             };
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static bool TryGetWriteValueMethod([NotNull] Type valueType, out MethodInfo method)
         {

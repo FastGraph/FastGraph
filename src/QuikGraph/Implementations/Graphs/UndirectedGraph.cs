@@ -76,9 +76,6 @@ namespace QuikGraph
         /// <summary>
         /// Gets or sets the edge capacity.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int EdgeCapacity { get; set; } = 4;
 
         /// <summary>
@@ -579,9 +576,6 @@ namespace QuikGraph
         /// Clones this graph.
         /// </summary>
         /// <returns>Cloned graph.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public UndirectedGraph<TVertex, TEdge> Clone()

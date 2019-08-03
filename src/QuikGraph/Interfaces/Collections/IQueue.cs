@@ -11,9 +11,6 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Number of elements.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         int Count { get; }
 
         /// <summary>
@@ -21,9 +18,6 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">Value to check.</param>
         /// <returns>True if the <paramref name="value"/> is contained in the queue, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         bool Contains(T value);
 
@@ -43,9 +37,6 @@ namespace QuikGraph.Collections
         /// Returns the element at the beginning of the queue.
         /// </summary>
         /// <returns>The top queue element.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         T Peek();
 
@@ -53,9 +44,6 @@ namespace QuikGraph.Collections
         /// Converts this queue to an array.
         /// </summary>
         /// <returns>Array composed of elements.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [NotNull]
         T[] ToArray();

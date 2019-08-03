@@ -532,9 +532,6 @@ namespace QuikGraph.Serialization
             };
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static bool TryGetReadContentMethod([NotNull] Type type, out MethodInfo method)
         {

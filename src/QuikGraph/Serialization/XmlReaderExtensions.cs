@@ -16,9 +16,6 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Boolean array.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static bool[] ReadElementContentAsBooleanArray([NotNull] XmlReader xmlReader, [NotNull] string localName,
@@ -34,9 +31,6 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Int array.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static int[] ReadElementContentAsInt32Array([NotNull] XmlReader xmlReader, [NotNull] string localName,
@@ -52,9 +46,6 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Long array.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static long[] ReadElementContentAsInt64Array([NotNull] XmlReader xmlReader, [NotNull] string localName,
@@ -70,9 +61,6 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Float array.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static float[] ReadElementContentAsSingleArray([NotNull] XmlReader xmlReader, [NotNull] string localName,
@@ -88,9 +76,6 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Double array.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static double[] ReadElementContentAsDoubleArray([NotNull] XmlReader xmlReader,
@@ -106,9 +91,6 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>String array.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static string[] ReadElementContentAsStringArray([NotNull] XmlReader xmlReader,
@@ -126,9 +108,6 @@ namespace QuikGraph.Serialization
         /// <param name="namespaceURI">XML namespace.</param>
         /// <param name="stringToT">Converts the XML element string as <typeparamref name="T"/>.</param>
         /// <returns>Array of <typeparamref name="T"/>.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         public static T[] ReadElementContentAsArray<T>(

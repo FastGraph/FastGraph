@@ -9,18 +9,12 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the embedded <see cref="PropertyInfo"/>.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public PropertyInfo Property { get; }
 
         /// <summary>
         /// Gets the property name.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public string Name { get; }
 
@@ -45,9 +39,6 @@ namespace QuikGraph.Serialization
             _hasValue = _value != null;
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         public bool TryGetDefaultValue(out object value)
         {

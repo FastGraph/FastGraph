@@ -46,18 +46,12 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Edges predecessors.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TEdge, TEdge> EdgesPredecessors { get; }
 
         /// <summary>
         /// Path ending edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public ICollection<TEdge> EndPathEdges { get; }
 
@@ -83,9 +77,6 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <param name="startingEdge">Starting edge.</param>
         /// <returns>Edge path.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public ICollection<TEdge> Path(TEdge startingEdge)
@@ -107,9 +98,6 @@ namespace QuikGraph.Algorithms.Observers
         /// Gets all paths.
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> AllPaths()
@@ -123,9 +111,6 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="startingEdge">Starting edge.</param>
         /// <param name="colors">Edges colors mapping.</param>
         /// <returns>Merged path.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public ICollection<TEdge> MergedPath(
@@ -164,9 +149,6 @@ namespace QuikGraph.Algorithms.Observers
         /// Gets all merged path.
         /// </summary>
         /// <returns>Enumerable of merged paths.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> AllMergedPaths()

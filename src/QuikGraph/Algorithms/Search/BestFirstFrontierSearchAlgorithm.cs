@@ -168,9 +168,6 @@ namespace QuikGraph.Algorithms.Search
         /// <summary>
         /// Gets the maximum number of operators.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int OperatorMaxCount { get; private set; } = -1;
 #endif
 

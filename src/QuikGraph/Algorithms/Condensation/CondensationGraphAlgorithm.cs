@@ -28,18 +28,12 @@ namespace QuikGraph.Algorithms.Condensation
         /// <summary>
         /// Condensed graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensedGraph { get; private set; }
 
         /// <summary>
         /// Gets or sets the strongly connected components flag.
         /// Indicates if the algorithm should do strongly connected components or not.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public bool StronglyConnected { get; set; } = true;
 
         #region AlgorithmBase<TGraph>
@@ -113,9 +107,6 @@ namespace QuikGraph.Algorithms.Condensation
 
         #endregion
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         private int ComputeComponentCount([NotNull] IDictionary<TVertex, int> components)
         {

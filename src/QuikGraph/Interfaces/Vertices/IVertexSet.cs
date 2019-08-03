@@ -20,26 +20,17 @@ namespace QuikGraph
         /// Gets a value indicating whether there are no vertices in this set.
         /// It is true if this vertex set is empty, otherwise false.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         bool IsVerticesEmpty { get; }
 
         /// <summary>
         /// Gets the vertex count.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         int VertexCount { get; }
 
         /// <summary>
         /// Gets the vertices.
         /// </summary>
         [NotNull, ItemNotNull]
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         IEnumerable<TVertex> Vertices { get; }
     }
 }

@@ -41,9 +41,6 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Encountered vertices.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> Vertices => _vertices.AsEnumerable();
 

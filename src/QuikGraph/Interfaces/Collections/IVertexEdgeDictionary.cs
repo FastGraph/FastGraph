@@ -30,9 +30,6 @@ namespace QuikGraph.Collections
         /// Gets a clone of the dictionary. The vertices and edges are not cloned.
         /// </summary>
         /// <returns>Cloned dictionary.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
 #if SUPPORTS_CLONEABLE

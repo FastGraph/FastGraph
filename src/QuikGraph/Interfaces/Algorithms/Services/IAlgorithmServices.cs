@@ -10,9 +10,6 @@ namespace QuikGraph.Algorithms.Services
         /// <summary>
         /// Algorithm cancel manager.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         ICancelManager CancelManager { get; }
     }

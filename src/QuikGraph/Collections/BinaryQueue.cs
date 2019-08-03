@@ -92,9 +92,6 @@ namespace QuikGraph.Collections
         /// Converts this queue to an array of vertices associated to their distances.
         /// </summary>
         /// <returns>Array composed of elements.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public KeyValuePair<TDistance, TVertex>[] ToArray2()
@@ -106,9 +103,6 @@ namespace QuikGraph.Collections
         /// Gets an alternative string representation.
         /// </summary>
         /// <returns>String representation.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull]
         public string ToString2()

@@ -44,18 +44,12 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IMutableVertexAndEdgeListGraph<TVertex, TEdge> VisitedGraph { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
@@ -65,18 +59,12 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Edges added to the initial graph (augmented ones).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TEdge> AugmentedEdges => _augmentedEdges.AsEnumerable();
 
         /// <summary>
         /// Edges associated to their reversed edges.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Dictionary<TEdge, TEdge> ReversedEdges { get; } = new Dictionary<TEdge, TEdge>();
 

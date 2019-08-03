@@ -51,27 +51,18 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         /// <summary>
         /// Function that computes the weight for a given edge.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Func<TEdge, double> EdgeWeights { get; }
 
         /// <summary>
         /// Distances per vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, double> Distances { get; }
 

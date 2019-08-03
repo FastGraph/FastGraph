@@ -76,9 +76,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Weakly connected components.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public List<BidirectionalGraph<TVertex, TEdge>> Graphs
         {

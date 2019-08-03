@@ -43,9 +43,6 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Transitions factories.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories { get; } =
             new List<ITransitionFactory<TVertex, TEdge>>();
@@ -53,36 +50,24 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that a vertex must match to be added in the graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public VertexPredicate<TVertex> AddVertexPredicate { get; set; } = vertex => true;
 
         /// <summary>
         /// Predicate that checks if a given vertex should be explored or ignored.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public VertexPredicate<TVertex> ExploreVertexPredicate { get; set; } = vertex => true;
 
         /// <summary>
         /// Predicate that an edge must match to be added in the graph.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgePredicate<TVertex, TEdge> AddEdgePredicate { get; set; } = edge => true;
 
         /// <summary>
         /// Predicate that checks if the exploration is finished or not.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate { get; set; } =
             new DefaultFinishedPredicate().Test;
@@ -93,18 +78,12 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Gets the enumeration of unexplored vertices.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> UnExploredVertices => _unExploredVertices.AsEnumerable();
 
         /// <summary>
         /// Indicates if the algorithm finished successfully or not.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public bool FinishedSuccessfully { get; private set; }
 
         #region Events
@@ -280,9 +259,6 @@ namespace QuikGraph.Algorithms.Exploration
             /// </summary>
             /// <param name="algorithm">Algorithm explorer to check.</param>
             /// <returns>True if the explorer can continue to explore, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-            [System.Diagnostics.Contracts.Pure]
-#endif
             [JetBrains.Annotations.Pure]
             public bool Test(CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
             {

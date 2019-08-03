@@ -50,9 +50,6 @@ namespace QuikGraph.Algorithms
             public int? SecondIndex { get; }
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private static TrueIndexes FirstAndSecondIndexOfTrue([NotNull] bool[] data)
         {
@@ -81,9 +78,6 @@ namespace QuikGraph.Algorithms
         /// Gets the component state of the current graph.
         /// </summary>
         /// <returns><see cref="ComponentWithEdges"/> state.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public ComponentWithEdges CheckComponentsWithEdges()
         {
@@ -106,9 +100,6 @@ namespace QuikGraph.Algorithms
             return ComponentWithEdges.OneComponent;
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool SatisfiesEulerianCondition([NotNull] TVertex vertex)
         {
@@ -119,9 +110,6 @@ namespace QuikGraph.Algorithms
         /// Returns true if the graph is Eulerian, otherwise false.
         /// </summary>
         /// <returns>True if the graph is Eulerian, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool IsEulerian()
         {
@@ -151,9 +139,6 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to check.</param>
         /// <returns>True if the <paramref name="graph"/> is Eulerian, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public static bool IsEulerian<TVertex, TEdge>(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)

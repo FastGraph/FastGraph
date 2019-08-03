@@ -14,9 +14,6 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Treated edges with their colors (colorized edges).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         IDictionary<TEdge, GraphColor> EdgesColors { get; }
     }

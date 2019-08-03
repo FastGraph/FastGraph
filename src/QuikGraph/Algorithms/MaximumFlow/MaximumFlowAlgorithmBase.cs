@@ -44,36 +44,24 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Flow vertices predecessors.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Dictionary<TVertex, TEdge> Predecessors { get; } = new Dictionary<TVertex, TEdge>();
 
         /// <summary>
         /// Function that given an edge return the capacity of this edge.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Func<TEdge, double> Capacities { get; }
 
         /// <summary>
         /// Residual capacities per edge.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public Dictionary<TEdge, double> ResidualCapacities { get; } = new Dictionary<TEdge, double>();
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
@@ -81,43 +69,28 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// Graph reversed edges.
         /// </summary>
         /// <remarks>Should be not null but may be empty.</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public Dictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
 
         /// <summary>
         /// Flow source vertex.
         /// </summary>
         /// <remarks>Must not be null to run the algorithm.</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TVertex Source { get; set; }
 
         /// <summary>
         /// Flow sink vertex.
         /// </summary>
         /// <remarks>Must not be null to run the algorithm.</remarks>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public TVertex Sink { get; set; }
 
         /// <summary>
         /// Maximal flow value.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public double MaxFlow { get; protected set; }
 
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 

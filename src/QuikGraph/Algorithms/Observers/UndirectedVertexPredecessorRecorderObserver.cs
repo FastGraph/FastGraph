@@ -41,9 +41,6 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Vertex predecessors.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public IDictionary<TVertex, TEdge> VertexPredecessors { get; }
 
@@ -69,9 +66,6 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="vertex">Path ending vertex.</param>
         /// <param name="path">Path to the ending vertex.</param>
         /// <returns>True if a path was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         public bool TryGetPath(TVertex vertex, out IEnumerable<TEdge> path)
         {

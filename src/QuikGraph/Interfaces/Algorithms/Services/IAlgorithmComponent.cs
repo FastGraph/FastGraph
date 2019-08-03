@@ -10,9 +10,6 @@ namespace QuikGraph.Algorithms.Services
         /// <summary>
         /// Algorithm common services.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         IAlgorithmServices Services { get; }
 
@@ -21,9 +18,6 @@ namespace QuikGraph.Algorithms.Services
         /// </summary>
         /// <typeparam name="T">Service type.</typeparam>
         /// <returns>Found service, otherwise null.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         [CanBeNull]
         T GetService<T>();
@@ -34,9 +28,6 @@ namespace QuikGraph.Algorithms.Services
         /// <typeparam name="T">Service type.</typeparam>
         /// <param name="service">Found service.</param>
         /// <returns>True if the service was found, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [Pure]
         bool TryGetService<T>(out T service);
     }

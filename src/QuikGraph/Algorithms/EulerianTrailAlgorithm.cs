@@ -59,9 +59,6 @@ namespace QuikGraph.Algorithms
         [NotNull, ItemNotNull]
         public List<TEdge> Circuit { get; private set; } = new List<TEdge>();
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         private bool NotInCircuit([NotNull] TEdge edge)
         {
@@ -69,9 +66,6 @@ namespace QuikGraph.Algorithms
                    && !_temporaryCircuit.Contains(edge);
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [NotNull, ItemNotNull]
         private IEnumerable<TEdge> SelectOutEdgesNotInCircuit([NotNull] TVertex vertex)
@@ -79,9 +73,6 @@ namespace QuikGraph.Algorithms
             return VisitedGraph.OutEdges(vertex).Where(NotInCircuit);
         }
 
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [JetBrains.Annotations.Pure]
         [CanBeNull]
         private TEdge SelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex)

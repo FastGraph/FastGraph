@@ -18,9 +18,6 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         TGraph VisitedGraph { get; }
     }

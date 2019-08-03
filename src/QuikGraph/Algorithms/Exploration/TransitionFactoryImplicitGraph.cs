@@ -27,9 +27,6 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Transitions factories.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull, ItemNotNull]
         public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories { get; } =
             new List<ITransitionFactory<TVertex, TEdge>>();
@@ -37,18 +34,12 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that a vertex must match to be the successor (target) of an edge.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public VertexPredicate<TVertex> SuccessorVertexPredicate { get; set; } = vertex => true;
 
         /// <summary>
         /// Predicate that an edge must match to be the successor of a source vertex.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate { get; set; } = edge => true;
 

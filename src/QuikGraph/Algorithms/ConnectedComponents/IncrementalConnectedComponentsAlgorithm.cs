@@ -74,9 +74,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Number of components.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         public int ComponentCount
         {
             get

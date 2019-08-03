@@ -21,9 +21,6 @@ namespace QuikGraph.Algorithms.Services
         /// Gets a value indicating if a cancellation request is pending.
         /// </summary>
         /// <returns>True is a cancellation is pending, false otherwise.</returns>
-#if SUPPORTS_CONTRACTS
-        [Pure]
-#endif
         bool IsCancelling { get; }
 
         /// <summary>

@@ -10,36 +10,24 @@ namespace QuikGraph.Algorithms.Assignment
         /// <summary>
         /// Costs matrix.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public int[,] Matrix { get; }
 
         /// <summary>
         /// Matrix mask.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public byte[,] Mask { get; }
 
         /// <summary>
         /// Array of treated rows.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public bool[] RowsCovered { get; }
 
         /// <summary>
         /// Array of treated columns.
         /// </summary>
-#if SUPPORTS_CONTRACTS
-        [System.Diagnostics.Contracts.Pure]
-#endif
         [NotNull]
         public bool[] ColumnsCovered { get; }
 

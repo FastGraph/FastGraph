@@ -9,9 +9,6 @@ namespace QuikGraph
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="edge">Edge to compute identity.</param>
     /// <returns>The <paramref name="edge"/> identity.</returns>
-#if SUPPORTS_CONTRACTS
-    [System.Diagnostics.Contracts.Pure]
-#endif
     [NotNull]
     public delegate string EdgeIdentity<TVertex, in TEdge>([NotNull] TEdge edge)
         where TEdge : IEdge<TVertex>;
