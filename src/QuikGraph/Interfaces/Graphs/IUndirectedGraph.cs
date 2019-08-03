@@ -11,9 +11,6 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(UndirectedGraphContract<,>))]
-#endif
     public interface IUndirectedGraph<TVertex, TEdge>
         : IImplicitUndirectedGraph<TVertex, TEdge>
         , IEdgeListGraph<TVertex, TEdge>

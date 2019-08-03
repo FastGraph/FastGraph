@@ -11,9 +11,6 @@ namespace QuikGraph
     /// Represents a mutable set of vertices.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(MutableVertexSetContract<>))]
-#endif
     public interface IMutableVertexSet<TVertex> : IVertexSet<TVertex>
     {
         /// <summary>

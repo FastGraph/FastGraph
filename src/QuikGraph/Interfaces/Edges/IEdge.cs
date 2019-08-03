@@ -10,9 +10,6 @@ namespace QuikGraph
     /// Represents a directed edge.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(EdgeContract<>))]
-#endif
     public interface IEdge<out TVertex>
     {
         /// <summary>

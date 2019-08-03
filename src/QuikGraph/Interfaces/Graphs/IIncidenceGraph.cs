@@ -13,9 +13,6 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(IncidenceGraphContract<,>))]
-#endif
     public interface IIncidenceGraph<TVertex, TEdge> : IImplicitGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

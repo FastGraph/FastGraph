@@ -12,9 +12,6 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(MutableVertexAndEdgeSetContract<,>))]
-#endif
     public interface IMutableVertexAndEdgeSet<TVertex,TEdge>
         : IMutableVertexSet<TVertex>
         , IMutableEdgeListGraph<TVertex, TEdge>

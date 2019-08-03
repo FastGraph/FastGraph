@@ -9,9 +9,6 @@ namespace QuikGraph
     /// Represents a directed edge with terminal indexes.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(TermEdgeContract<>))]
-#endif
     public interface ITermEdge<out TVertex> : IEdge<TVertex>
     {
         /// <summary>

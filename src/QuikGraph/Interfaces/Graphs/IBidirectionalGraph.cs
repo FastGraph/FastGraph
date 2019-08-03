@@ -12,9 +12,6 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(BidirectionalGraphContract<,>))]
-#endif
     public interface IBidirectionalGraph<TVertex,TEdge> 
         : IVertexAndEdgeListGraph<TVertex,TEdge>
         , IBidirectionalIncidenceGraph<TVertex, TEdge>

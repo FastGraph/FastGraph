@@ -11,9 +11,6 @@ namespace QuikGraph
     /// Represents a set of vertices.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(VertexSetContract<>))]
-#endif
     public interface IVertexSet<TVertex> : IImplicitVertexSet<TVertex>
     {
         /// <summary>

@@ -12,9 +12,6 @@ namespace QuikGraph.Algorithms.Observers
     /// </summary>
     /// <typeparam name="TAlgorithm">Algorithm type.</typeparam>
     /// <reference-ref id="gof02designpatterns" />
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(ObserverContract<>))]
-#endif
     public interface IObserver<in TAlgorithm>
     {
         /// <summary>

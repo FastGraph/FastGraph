@@ -10,9 +10,6 @@ namespace QuikGraph
     /// Represents an implicit set of vertices.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(ImplicitVertexSetContract<>))]
-#endif
     public interface IImplicitVertexSet<in TVertex>
     {
         /// <summary>

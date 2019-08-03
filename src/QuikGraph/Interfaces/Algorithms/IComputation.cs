@@ -10,9 +10,6 @@ namespace QuikGraph.Algorithms
     /// <summary>
     /// Represents a computation of something with control states.
     /// </summary>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(ComputationContract))]
-#endif
     public interface IComputation
     {
         /// <summary>

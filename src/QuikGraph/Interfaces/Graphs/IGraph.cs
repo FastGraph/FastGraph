@@ -11,9 +11,6 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(GraphContract<,>))]
-#endif
     // ReSharper disable once UnusedTypeParameter
     public interface IGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>

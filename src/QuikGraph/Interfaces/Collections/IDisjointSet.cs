@@ -10,9 +10,6 @@ namespace QuikGraph.Collections
     /// A disjoint-set data structure.
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
-#if SUPPORTS_CONTRACTS
-    [ContractClass(typeof(DisjointSetContract<>))]
-#endif
     public interface IDisjointSet<T>
     {
         /// <summary>
