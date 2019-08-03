@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
@@ -22,313 +20,74 @@ namespace QuikGraph.Tests.Serialization
 
         public sealed class TestGraph : AdjacencyGraph<TestVertex, TestEdge>
         {
-            private string _string;
             [XmlAttribute("g_string")]
             [DefaultValue("defaultValue")]
-            public string String
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _string;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _string = value;
-                }
-            }
+            public string String { get; set; }
 
-            private int _int;
             [XmlAttribute("g_int")]
             [DefaultValue(1)]
-            public int Int
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _int;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _int = value;
-                }
-            }
+            public int Int { get; set; }
 
-            private long _long;
             [XmlAttribute("g_long")]
             [DefaultValue(2L)]
-            public long Long
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _long;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _long = value;
-                }
-            }
+            public long Long { get; set; }
 
-            private bool _bool;
             [XmlAttribute("g_bool")]
-            public bool Bool
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _bool;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _bool = value;
-                }
-            }
+            public bool Bool { get; set; }
 
-            private float _float;
             [XmlAttribute("g_float")]
-            public float Float
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _float;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _float = value;
-                }
-            }
+            public float Float { get; set; }
 
-            private double _double;
             [XmlAttribute("g_double")]
-            public double Double
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _double;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _double = value;
-                }
-            }
+            public double Double { get; set; }
 
-            private string[] _stringArray;
             [XmlAttribute("g_stringArray")]
-            public string[] StringArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _stringArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _stringArray = value;
-                }
-            }
+            public string[] StringArray { get; set; }
 
-            private int[] _intArray;
             [XmlAttribute("g_intArray")]
-            public int[] IntArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _intArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _intArray = value;
-                }
-            }
+            public int[] IntArray { get; set; }
 
-            private long[] _longArray;
             [XmlAttribute("g_longArray")]
-            public long[] LongArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _longArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _longArray = value;
-                }
-            }
+            public long[] LongArray { get; set; }
 
-            private bool[] _boolArray;
             [XmlAttribute("g_boolArray")]
-            public bool[] BoolArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _boolArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _boolArray = value;
-                }
-            }
+            public bool[] BoolArray { get; set; }
 
-            private float[] _floatArray;
             [XmlAttribute("g_floatArray")]
-            public float[] FloatArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _floatArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _floatArray = value;
-                }
-            }
+            public float[] FloatArray { get; set; }
 
-            private double[] _doubleArray;
             [XmlAttribute("g_doubleArray")]
-            public double[] DoubleArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _doubleArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _doubleArray = value;
-                }
-            }
+            public double[] DoubleArray { get; set; }
 
             [XmlAttribute("g_nullArray")]
             public int[] NullArray
             {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return null;
-                }
+                get => null;
                 set
                 {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
                     Assert.IsNull(value);
                 }
             }
 
             #region IList properties
 
-            private IList<string> _stringIList;
             [XmlAttribute("g_stringIList")]
-            public IList<string> StringIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _stringIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _stringIList = value;
-                }
-            }
+            public IList<string> StringIList { get; set; }
 
-            private IList<int> _intIList;
             [XmlAttribute("g_intIList")]
-            public IList<int> IntIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _intIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _intIList = value;
-                }
-            }
+            public IList<int> IntIList { get; set; }
 
-            private IList<long> _longIList;
             [XmlAttribute("g_longIList")]
-            public IList<long> LongIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _longIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _longIList = value;
-                }
-            }
+            public IList<long> LongIList { get; set; }
 
-            private IList<bool> _boolIList;
             [XmlAttribute("g_boolIList")]
-            public IList<bool> BoolIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _boolIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _boolIList = value;
-                }
-            }
+            public IList<bool> BoolIList { get; set; }
 
-            private IList<float> _floatIList;
             [XmlAttribute("g_floatIList")]
-            public IList<float> FloatIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _floatIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _floatIList = value;
-                }
-            }
+            public IList<float> FloatIList { get; set; }
 
-            private IList<double> _doubleIList;
             [XmlAttribute("g_doubleIList")]
-            public IList<double> DoubleIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _doubleIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _doubleIList = value;
-                }
-            }
+            public IList<double> DoubleIList { get; set; }
 
             #endregion
         }
@@ -343,153 +102,36 @@ namespace QuikGraph.Tests.Serialization
             [NotNull]
             public string ID { get; }
 
-            private string _stringDefault;
             [XmlAttribute("v_stringDefault")]
             [DefaultValue("defaultDefaultString")]
-            public string StringDefault
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _stringDefault;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _stringDefault = value;
-                }
-            }
+            public string StringDefault { get; set; }
 
-            private string _string;
             [XmlAttribute("v_string")]
             [DefaultValue("defaultString")]
-            public string String
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _string;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _string = value;
-                }
-            }
+            public string String { get; set; }
 
-            private int _int;
             [XmlAttribute("v_int")]
             [DefaultValue(1)]
-            public int Int
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _int;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _int = value;
-                }
-            }
+            public int Int { get; set; }
 
-            private long _long;
             [XmlAttribute("v_long")]
             [DefaultValue(2L)]
-            public long Long
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _long;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _long = value;
-                }
-            }
+            public long Long { get; set; }
 
-            private bool _bool;
             [XmlAttribute("v_bool")]
-            public bool Bool
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _bool;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _bool = value;
-                }
-            }
+            public bool Bool { get; set; }
 
-            private float _float;
             [XmlAttribute("v_float")]
-            public float Float
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _float;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _float = value;
-                }
-            }
+            public float Float { get; set; }
 
-            private double _double;
             [XmlAttribute("v_double")]
-            public double Double
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _double;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _double = value;
-                }
-            }
+            public double Double { get; set; }
 
-            private int[] _intArray;
             [XmlAttribute("v_intArray")]
-            public int[] IntArray
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _intArray;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _intArray = value;
-                }
-            }
+            public int[] IntArray { get; set; }
 
-            private IList<int> _intIList;
             [XmlAttribute("v_intIList")]
-            public IList<int> IntIList
-            {
-                get
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    return _intIList;
-                }
-                set
-                {
-                    Console.WriteLine(MethodBase.GetCurrentMethod());
-                    _intIList = value;
-                }
-            }
+            public IList<int> IntIList { get; set; }
         }
 
         public sealed class TestEdge : Edge<TestVertex>

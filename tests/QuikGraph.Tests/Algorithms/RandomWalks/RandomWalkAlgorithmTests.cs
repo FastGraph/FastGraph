@@ -1,51 +1,61 @@
-﻿using NUnit.Framework;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
 using QuikGraph.Algorithms.Observers;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.RandomWalks;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace QuikGraph.Tests.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Tests for <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class RandomWalkAlgorithmTests : QuikGraphUnitTests
+    internal class RandomWalkAlgorithmTests
     {
-        [Test]
-        public void RoundRobinAll()
-        {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-                this.RoundRobinTest(g);
-        }
+        #region Helpers
 
-        public void RoundRobinTest<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
+        private static void NormalizedEdgeChainTest<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (g.VertexCount == 0)
+            if (graph.VertexCount == 0)
                 return;
 
-            foreach (var root in g.Vertices)
+            foreach (TVertex root in graph.Vertices)
             {
-                var walker =
-                    new RandomWalkAlgorithm<TVertex, TEdge>(g);
-                walker.EdgeChain = new NormalizedMarkovEdgeChain<TVertex, TEdge>();
+                var walker = new RandomWalkAlgorithm<TVertex, TEdge>(graph)
+                {
+                    EdgeChain = new NormalizedMarkovEdgeChain<TVertex, TEdge>()
+                };
+
                 walker.Generate(root);
             }
         }
 
-        public void RoundRobinTestWithVisitor<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
+        private static void NormalizedEdgeChainTestWithVisitor<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (g.VertexCount == 0)
+            if (graph.VertexCount == 0)
                 return;
 
-            foreach (var root in g.Vertices)
+            foreach (TVertex root in graph.Vertices)
             {
-                var walker =
-                    new RandomWalkAlgorithm<TVertex, TEdge>(g);
-                walker.EdgeChain = new NormalizedMarkovEdgeChain<TVertex, TEdge>();
+                var walker = new RandomWalkAlgorithm<TVertex, TEdge>(graph)
+                {
+                    EdgeChain = new NormalizedMarkovEdgeChain<TVertex, TEdge>()
+                };
 
                 var vis = new EdgeRecorderObserver<TVertex, TEdge>();
-                using(vis.Attach(walker))
+                using (vis.Attach(walker))
                     walker.Generate(root);
             }
+        }
+
+        #endregion
+
+        [Test]
+        public void RoundRobinAll()
+        {
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+                NormalizedEdgeChainTest(graph);
         }
     }
 }

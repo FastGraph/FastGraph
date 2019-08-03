@@ -1,31 +1,37 @@
-﻿using NUnit.Framework;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
 using QuikGraph.Algorithms.Observers;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+using QuikGraph.Algorithms.RandomWalks;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace QuikGraph.Tests.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Tests for <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class EdgeChainTests : QuikGraphUnitTests
+    internal class EdgeChainTests
     {
+        #region Helpers
+
+        private static void Generate<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            foreach (TVertex vertex in graph.Vertices)
+            {
+                var walker = new RandomWalkAlgorithm<TVertex, TEdge>(graph);
+                var vis = new EdgeRecorderObserver<TVertex, TEdge>();
+                using (vis.Attach(walker))
+                    walker.Generate(vertex);
+            }
+        }
+
+        #endregion
+
         [Test]
         public void GenerateAll()
         {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
-                this.Generate(g);
-        }
-
-        public void Generate<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> g)
-            where TEdge : IEdge<TVertex>
-        {
-
-            foreach (var v in g.Vertices)
-            {
-                var walker = new RandomWalkAlgorithm<TVertex, TEdge>(g);
-                var vis = new EdgeRecorderObserver<TVertex, TEdge>();
-                using(vis.Attach(walker))
-                    walker.Generate(v);
-            }
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+                Generate(graph);
         }
     }
 }

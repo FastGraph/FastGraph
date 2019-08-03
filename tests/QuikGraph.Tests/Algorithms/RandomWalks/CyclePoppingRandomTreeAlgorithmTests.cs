@@ -1,22 +1,23 @@
-﻿using System;
-using NUnit.Framework;
-using QuikGraph.Serialization;
-using QuikGraph.Tests;
+﻿using NUnit.Framework;
+using QuikGraph.Algorithms.RandomWalks;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace QuikGraph.Tests.Algorithms.RandomWalks
 {
+    /// <summary>
+    /// Tests for <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/>.
+    /// </summary>
     [TestFixture]
-    internal class CyclePoppingRandomTreeAlgorithmTests : QuikGraphUnitTests
+    internal class CyclePoppingRandomTreeAlgorithmTests
     {
         [Test]
         public void CyclePoppingRandomTreeAll()
         {
-            foreach (var g in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
             {
-                foreach (var v in g.Vertices)
+                foreach (string root in graph.Vertices)
                 {
-                    var target = new CyclePoppingRandomTreeAlgorithm<string, Edge<string>>(g);
-                    target.Compute(v);
+                    var target = new CyclePoppingRandomTreeAlgorithm<string, Edge<string>>(graph);
+                    target.Compute(root);
                 }
             }
         }
@@ -24,71 +25,85 @@ namespace QuikGraph.Algorithms.RandomWalks
         [Test]
         public void Repro13160()
         {
-            // create a new graph			
+            // Create a new graph
             var graph = new BidirectionalGraph<int, SEquatableEdge<int>>(false);
 
-            // adding vertices		    
+            // Adding vertices
             for (int i = 0; i < 3; ++i)
-                for(int j = 0;j<3;++j)
-                    graph.AddVertex(i * 3 + j);
-
-            // adding Width edges			    
-            for (int i = 0; i < 3; ++i)
-                for(int j = 0; j < 2;++j)
-                graph.AddEdge(new SEquatableEdge<int>(i * 3 +j, i * 3 + j + 1));
-
-            // adding Length edges			    
-            for (int i = 0; i < 2; ++i)
-                for(int j = 0; j < 3;++j)
-                graph.AddEdge(new SEquatableEdge<int>(i * 3 + j, (i+1) * 3 + j));
-
-            // create cross edges 
-            foreach (var e in graph.Edges)
-                graph.AddEdge(new SEquatableEdge<int>(e.Target, e.Source));
-
-            // breaking graph apart
-            for (int i = 0; i < 3; ++i)
+            {
                 for (int j = 0; j < 3; ++j)
+                    graph.AddVertex(i * 3 + j);
+            }
+
+            // Adding Width edges
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < 2; ++j)
+                {
+                    graph.AddEdge(
+                        new SEquatableEdge<int>(i * 3 + j, i * 3 + j + 1));
+                }
+            }
+
+            // Adding Length edges
+            for (int i = 0; i < 2; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    graph.AddEdge(
+                        new SEquatableEdge<int>(i * 3 + j, (i + 1) * 3 + j));
+                }
+            }
+
+            // Create cross edges 
+            foreach (SEquatableEdge<int> edge in graph.Edges)
+                graph.AddEdge(new SEquatableEdge<int>(edge.Target, edge.Source));
+
+            // Breaking graph apart
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
                     if (i == 1)
                         graph.RemoveVertex(i * 3 + j);
+                }
+            }
 
             var target = new CyclePoppingRandomTreeAlgorithm<int, SEquatableEdge<int>>(graph);
             target.Compute(2);
-            foreach(var kv in target.Successors)
-                Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
         }
 
         [Test]
         public void IsolatedVertices()
         {
-            var g = new AdjacencyGraph<int, Edge<int>>(true);
-            g.AddVertex(0);
-            g.AddVertex(1);
+            var graph = new AdjacencyGraph<int, Edge<int>>(true);
+            graph.AddVertex(0);
+            graph.AddVertex(1);
 
-            var target = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(g);
+            var target = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph);
             target.RandomTree();
         }
 
         [Test]
         public void IsolatedVerticesWithRoot()
         {
-            var g = new AdjacencyGraph<int, Edge<int>>(true);
-            g.AddVertex(0);
-            g.AddVertex(1);
+            var graph = new AdjacencyGraph<int, Edge<int>>(true);
+            graph.AddVertex(0);
+            graph.AddVertex(1);
 
-            var target = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(g);
+            var target = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph);
             target.RandomTreeWithRoot(0);
         }
 
         [Test]
         public void RootIsNotAccessible()
         {
-            AdjacencyGraph<int, Edge<int>> g = new AdjacencyGraph<int, Edge<int>>(true);
-            g.AddVertex(0);
-            g.AddVertex(1);
-            g.AddEdge(new Edge<int>(0, 1));
+            AdjacencyGraph<int, Edge<int>> graph = new AdjacencyGraph<int, Edge<int>>(true);
+            graph.AddVertex(0);
+            graph.AddVertex(1);
+            graph.AddEdge(new Edge<int>(0, 1));
 
-            var target = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(g);
+            var target = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph);
             target.RandomTreeWithRoot(0);
         }
     }
