@@ -62,15 +62,6 @@ namespace QuikGraph
         /// </summary>
         protected AdjacencyGraph<TVertex, TEdge> Wrapped { get; }
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        // ReSharper disable once UnusedMember.Local
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(Wrapped.EdgeCount >= 0);
-        }
-#endif
-
         #region IGraph<TVertex,TEdge>
 
         /// <inheritdoc />

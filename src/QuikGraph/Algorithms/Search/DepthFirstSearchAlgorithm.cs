@@ -94,14 +94,6 @@ namespace QuikGraph.Algorithms.Search
             OutEdgesFilter = outEdgesFilter;
         }
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(MaxDepth > 0);
-        }
-#endif
-
         /// <summary>
         /// Filter of edges.
         /// </summary>

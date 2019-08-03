@@ -70,24 +70,6 @@ namespace QuikGraph.Collections
         }
 
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_items != null);
-            Contract.Invariant(Count > -1 && Count <= _items.Length);
-            Contract.Invariant(
-                EnumerableContract.All(0, Count, index =>
-                {
-                    int left = 2 * index + 1;
-                    int right = 2 * index + 2;
-                    return (left >= Count || LessOrEqual(index, left))
-                           && (right >= Count || LessOrEqual(index, right));
-                })
-            );
-        }
-#endif
-
         /// <summary>
         /// Priority comparer.
         /// </summary>

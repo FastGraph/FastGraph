@@ -55,16 +55,6 @@ namespace QuikGraph.Algorithms.ShortestPath
                 _edgeStored = false;
             }
 
-#if SUPPORTS_CONTRACTS
-            [ContractInvariantMethod]
-            private void ObjectInvariant()
-            {
-                Contract.Invariant(_edgeStored 
-                    ? _edge != null 
-                    : _predecessor != null);
-            }
-#endif
-
             [JetBrains.Annotations.Pure]
             public bool TryGetPredecessor(out TVertex predecessor)
             {

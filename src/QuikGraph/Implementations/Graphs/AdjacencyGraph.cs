@@ -96,15 +96,6 @@ namespace QuikGraph
         /// </summary>
         public static Type EdgeType => typeof(TEdge);
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        // ReSharper disable once UnusedMember.Local
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(EdgeCount >= 0);
-        }
-#endif
-
         #region IGraph<TVertex,TEdge>
 
         /// <inheritdoc />

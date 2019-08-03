@@ -155,16 +155,6 @@ namespace QuikGraph.Collections
         /// </summary>
         public int Count { get; private set; }
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(Count > -1);
-            Contract.Invariant(_header != null);
-            Contract.Invariant(_tail != null);
-        }
-#endif
-
         /// <summary>
         /// Adds the given <paramref name="value"/> with the given <paramref name="key"/> into the heap.
         /// </summary>

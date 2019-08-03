@@ -65,15 +65,6 @@ namespace QuikGraph.Collections
             SetCount = 0;
         }
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(SetCount >= 0);
-            Contract.Invariant(SetCount <= _elements.Count);
-        }
-#endif
-
         #region IDisjointSet<T>
 
         /// <inheritdoc />

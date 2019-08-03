@@ -97,18 +97,6 @@ namespace QuikGraph
         /// </summary>
         public int EdgeCapacity { get; set; }
 
-#if SUPPORTS_CONTRACTS
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(EdgeCount >= 0);
-            Contract.Invariant(_vertexInEdges.Values.Sum(inEdges => inEdges.Count) == EdgeCount);
-            Contract.Invariant(_vertexInEdges.Count == _vertexOutEdges.Count);
-            Contract.Invariant(_vertexInEdges.All(kv => _vertexOutEdges.ContainsKey(kv.Key)));
-            Contract.Invariant(_vertexOutEdges.All(kv => _vertexInEdges.ContainsKey(kv.Key)));
-        }
-#endif
-
         #region IGraph<TVertex,TEdge>
 
         /// <inheritdoc />
