@@ -1,8 +1,4 @@
 using JetBrains.Annotations;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-using QuikGraph.Collections.Contracts;
-#endif
 
 namespace QuikGraph.Collections
 {

@@ -1,8 +1,3 @@
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-using QuikGraph.Contracts;
-#endif
-
 namespace QuikGraph
 {
     /// <summary>

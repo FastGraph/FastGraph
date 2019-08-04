@@ -171,7 +171,7 @@ namespace QuikGraph.Collections
             var node = new Node(cell);
 
             Meld(node);
-            Count++;
+            ++Count;
         }
 
         private void Meld([NotNull] Node node)
@@ -335,7 +335,7 @@ namespace QuikGraph.Collections
                 while (tmp.Next != null)
                 {
                     tmp = tmp.Next;
-                    childCount++;
+                    ++childCount;
                 }
 
                 if (childCount < head.Rank / 2)

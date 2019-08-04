@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
@@ -43,13 +44,8 @@ namespace QuikGraph.Algorithms.Observers
             [NotNull] IDictionary<TVertex, int> discoverTimes,
             [NotNull] IDictionary<TVertex, int> finishTimes)
         {
-            if (discoverTimes is null)
-                throw new ArgumentNullException(nameof(discoverTimes));
-            if (finishTimes is null)
-                throw new ArgumentNullException(nameof(finishTimes));
-
-            DiscoverTimes = discoverTimes;
-            FinishTimes = finishTimes;
+            DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
+            FinishTimes = finishTimes ?? throw new ArgumentNullException(nameof(finishTimes));
         }
 
         /// <summary>
@@ -69,6 +65,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
         {
+            if (algorithm is null)
+                throw new ArgumentNullException(nameof(algorithm));
+
             algorithm.DiscoverVertex += OnVertexDiscovered;
             if (FinishTimes != null)
                 algorithm.FinishVertex += OnVertexFinished;
@@ -85,11 +84,15 @@ namespace QuikGraph.Algorithms.Observers
 
         private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
+            Debug.Assert(vertex != null);
+
             DiscoverTimes[vertex] = _currentTime++;
         }
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
+            Debug.Assert(vertex != null);
+
             // ReSharper disable once PossibleNullReferenceException, Justification: Not null if the handler is attached
             FinishTimes[vertex] = _currentTime++;
         }

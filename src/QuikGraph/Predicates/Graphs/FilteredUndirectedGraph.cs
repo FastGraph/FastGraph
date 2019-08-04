@@ -53,6 +53,9 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return VertexPredicate(vertex)
                    && BaseGraph.ContainsVertex(vertex);
         }
@@ -73,8 +76,7 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
-            return FilterEdge(edge) 
-                   && BaseGraph.ContainsEdge(edge);
+            return FilterEdge(edge) && BaseGraph.ContainsEdge(edge);
         }
 
         #endregion
@@ -84,6 +86,9 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (VertexPredicate(vertex))
                 return BaseGraph.AdjacentEdges(vertex).Where(FilterEdge);
             return Enumerable.Empty<TEdge>();
@@ -104,6 +109,9 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public TEdge AdjacentEdge(TVertex vertex, int index)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (VertexPredicate(vertex))
                 return AdjacentEdges(vertex).ElementAt(index);
 
@@ -113,6 +121,11 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (VertexPredicate(source)
                 && VertexPredicate(target))
             {

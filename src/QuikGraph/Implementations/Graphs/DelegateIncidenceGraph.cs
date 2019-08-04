@@ -36,6 +36,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
         {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
             {
                 edges = outEdges.Where(edge => edge.Target.Equals(target));
@@ -49,9 +52,12 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
             {
-                foreach (var outEdge in outEdges)
+                foreach (TEdge outEdge in outEdges)
                 {
                     if (outEdge.Target.Equals(target))
                     {

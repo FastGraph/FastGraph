@@ -313,38 +313,5 @@ namespace QuikGraph.Tests
                 Assert.AreEqual(expected, actual);
             }
         }
-
-        /// <summary>
-        /// Asserts that a contract exception is thrown, otherwise fails.
-        /// </summary>
-        /// <param name="action">An <see cref="Action"/> delegate that performs a user-defined action.</param>
-        public static void ThrowsContractException([NotNull, InstantHandle] Action action)
-        {
-#if SUPPORTS_CONTRACTS
-            try
-            {
-                action();
-                Assert.Fail("Must throw contract exception.");
-            }
-            catch (Exception ex)
-            {
-                if (!IsContractException(ex.GetType()))
-                    throw;
-            }
-
-            #region Local function
-
-            bool IsContractException(Type exceptionType)
-            {
-                if (exceptionType != null && exceptionType.Namespace == "System.Diagnostics.Contracts")
-                    return exceptionType.Name == "ContractException";
-                return false;
-            }
-
-            #endregion
-#else
-            Assert.Catch(() => action());
-#endif
-        }
     }
 }

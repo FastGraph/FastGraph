@@ -113,6 +113,7 @@ namespace QuikGraph
         /// <summary>
         /// <see cref="AdjacentEdge"/> is not supported for this kind of graph.
         /// </summary>
+        /// <exception cref="NotSupportedException">This operation is not supported.</exception>
         public TEdge AdjacentEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
@@ -127,7 +128,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
-            foreach (var adjacentEdge in AdjacentEdges(source))
+            foreach (TEdge adjacentEdge in AdjacentEdges(source))
             {
                 if (EdgeEqualityComparer(adjacentEdge, source, target))
                 {

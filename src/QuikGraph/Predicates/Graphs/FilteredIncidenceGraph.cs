@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -40,6 +38,11 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (!VertexPredicate(source))
                 return false;
             if (!VertexPredicate(target))
@@ -52,6 +55,11 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (VertexPredicate(source)
                 && VertexPredicate(target)
                 && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
@@ -73,6 +81,11 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             edges = null;
             if (!VertexPredicate(source))
                 return false;

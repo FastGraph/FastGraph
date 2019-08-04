@@ -72,6 +72,7 @@ namespace QuikGraph.Predicates
         /// <summary>
         /// <see cref="OutEdge"/> is not supported for this kind of graph.
         /// </summary>
+        /// <exception cref="NotSupportedException">This operation is not supported.</exception>
         public TEdge OutEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();

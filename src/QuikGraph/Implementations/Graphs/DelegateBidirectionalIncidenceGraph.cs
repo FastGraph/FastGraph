@@ -52,6 +52,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TEdge> InEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge> result))
                 return result;
             return Enumerable.Empty<TEdge>();
@@ -60,6 +63,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _tryGetInEdgesFunc(vertex, out edges);
         }
 

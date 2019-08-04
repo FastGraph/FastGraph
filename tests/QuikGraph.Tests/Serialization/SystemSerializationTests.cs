@@ -2,7 +2,6 @@ using System.IO;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Serialization;
-using QuikGraph.Contracts;
 
 namespace QuikGraph.Tests.Serialization
 {
@@ -42,8 +41,8 @@ namespace QuikGraph.Tests.Serialization
             [NotNull] IEdgeListGraph<int, EquatableEdge<int>> graph)
         {
             // Check equal
-            Assert.IsTrue(expected.VertexCountEqual(graph));
-            Assert.IsTrue(expected.EdgeCountEqual(graph));
+            expected.AssertVertexCountEqual(graph);
+            expected.AssertEdgeCountEqual(graph);
 
             foreach (int vertex in expected.Vertices)
                 Assert.IsTrue(graph.ContainsVertex(vertex));

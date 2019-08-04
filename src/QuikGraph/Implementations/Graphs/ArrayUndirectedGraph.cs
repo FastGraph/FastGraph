@@ -75,6 +75,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _vertexEdges.ContainsKey(vertex);
         }
 
@@ -94,6 +97,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             if (_vertexEdges.TryGetValue(edge.Source, out TEdge[] edges))
                 return edges.Any(e => e.Equals(edge));
             return false;
@@ -106,30 +112,44 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _vertexEdges[vertex];
         }
 
         /// <inheritdoc />
         public int AdjacentDegree(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _vertexEdges[vertex].Length;
         }
 
         /// <inheritdoc />
         public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
-            return _vertexEdges[vertex].Length == 0;
+            return AdjacentDegree(vertex) == 0;
         }
 
         /// <inheritdoc />
         public TEdge AdjacentEdge(TVertex vertex, int index)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _vertexEdges[vertex][index];
         }
 
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             TEdge[] edges = _vertexEdges[source];
             foreach (TEdge e in edges)
             {

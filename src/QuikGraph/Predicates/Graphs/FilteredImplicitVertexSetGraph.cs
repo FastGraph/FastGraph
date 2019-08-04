@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
@@ -38,6 +36,9 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return VertexPredicate(vertex)
                    && BaseGraph.ContainsVertex(vertex);
         }

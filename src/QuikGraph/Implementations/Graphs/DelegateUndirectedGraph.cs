@@ -101,6 +101,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             if (TryGetAdjacentEdges(edge.Source, out IEnumerable<TEdge> edges))
                 return edges.Any(e => e.Equals(edge));
             return false;

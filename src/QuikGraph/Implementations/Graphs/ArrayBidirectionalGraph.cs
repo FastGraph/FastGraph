@@ -98,6 +98,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _vertexEdges.ContainsKey(vertex);
         }
 
@@ -123,6 +126,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             if (_vertexEdges.TryGetValue(edge.Source, out InOutEdges inOutEdges) 
                 && inOutEdges.TryGetOutEdges(out TEdge[] edges))
             {
@@ -145,6 +151,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (_vertexEdges.TryGetValue(source, out InOutEdges inOutEdges) 
                 && inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
@@ -165,6 +176,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (_vertexEdges.TryGetValue(source, out InOutEdges inOutEdges)
                 && inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
@@ -183,15 +199,15 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
-                && inOutEdges.TryGetOutEdges(out _))
-                return false;
-            return true;
+            return OutDegree(vertex) == 0;
         }
 
         /// <inheritdoc />
         public int OutDegree(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
                 && inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
                 return outEdges.Length;
@@ -209,6 +225,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) &&
                 inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
@@ -223,12 +242,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public TEdge OutEdge(TVertex vertex, int index)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (!_vertexEdges[vertex].TryGetOutEdges(out TEdge[] edges))
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(false);
-#else
-                Debug.Assert(false);
-#endif
+                throw new InvalidOperationException();
 
             return edges[index];
         }
@@ -240,15 +258,15 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool IsInEdgesEmpty(TVertex vertex)
         {
-            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
-                && inOutEdges.TryGetInEdges(out _))
-                return false;
-            return true;
+            return InDegree(vertex) == 0;
         }
 
         /// <inheritdoc />
         public int InDegree(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
                 && inOutEdges.TryGetInEdges(out TEdge[] inEdges))
                 return inEdges.Length;
@@ -266,6 +284,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
                 && inOutEdges.TryGetInEdges(out TEdge[] inEdges))
             {
@@ -280,12 +301,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public TEdge InEdge(TVertex vertex, int index)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (!_vertexEdges[vertex].TryGetInEdges(out TEdge[] edges))
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(false);
-#else
-                Debug.Assert(false);
-#endif
+                throw new InvalidOperationException();
 
             return edges[index];
         }

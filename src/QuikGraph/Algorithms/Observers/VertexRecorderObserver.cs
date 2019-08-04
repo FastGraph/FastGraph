@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
@@ -49,6 +50,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
         {
+            if (algorithm is null)
+                throw new ArgumentNullException(nameof(algorithm));
+
             algorithm.DiscoverVertex += OnVertexDiscovered;
             return Finally(() => algorithm.DiscoverVertex -= OnVertexDiscovered);
         }
@@ -57,6 +61,8 @@ namespace QuikGraph.Algorithms.Observers
 
         private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
+            Debug.Assert(vertex != null);
+
             _vertices.Add(vertex);
         }
     }

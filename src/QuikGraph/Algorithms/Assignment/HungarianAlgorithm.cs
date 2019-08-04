@@ -251,7 +251,7 @@ namespace QuikGraph.Algorithms.Assignment
             for (int j = 0; j < width; ++j)
             {
                 if (colsCovered[j])
-                    colsCoveredCount++;
+                    ++colsCoveredCount;
             }
 
             return colsCoveredCount == height ? Steps.End : Steps.Step2;

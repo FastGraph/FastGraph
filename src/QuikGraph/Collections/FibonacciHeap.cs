@@ -110,7 +110,7 @@ namespace QuikGraph.Collections
                 Top = newCell;
             }
 
-            Count++;
+            ++Count;
 
             return newCell;
         }

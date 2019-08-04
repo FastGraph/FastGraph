@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
@@ -71,6 +72,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IVertexPredecessorRecorderAlgorithm<TVertex, TEdge> algorithm)
         {
+            if (algorithm is null)
+                throw new ArgumentNullException(nameof(algorithm));
+
             algorithm.TreeEdge += OnEdgeDiscovered;
             algorithm.FinishVertex += OnVertexFinished;
             return Finally(() =>
@@ -84,11 +88,15 @@ namespace QuikGraph.Algorithms.Observers
 
         private void OnEdgeDiscovered([NotNull] TEdge edge)
         {
+            Debug.Assert(edge != null);
+
             VerticesPredecessors[edge.Target] = edge;
         }
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
+            Debug.Assert(vertex != null);
+
             foreach (TEdge edge in VerticesPredecessors.Values)
             {
                 if (edge.Source.Equals(vertex))

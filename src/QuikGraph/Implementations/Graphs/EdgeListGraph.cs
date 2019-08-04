@@ -76,6 +76,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return Edges.Any(
                 edge => edge.Source.Equals(vertex) || edge.Target.Equals(vertex));
         }
@@ -99,6 +102,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             return _edges.ContainsKey(edge);
         }
 
@@ -127,7 +133,7 @@ namespace QuikGraph
             foreach (TEdge edge in edges)
             {
                 if (AddVerticesAndEdge(edge))
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -148,11 +154,14 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddEdgeRange(IEnumerable<TEdge> edges)
         {
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
+
             int count = 0;
-            foreach (var edge in edges)
+            foreach (TEdge edge in edges)
             {
                 if (AddEdge(edge))
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -176,6 +185,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool RemoveEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             if (_edges.Remove(edge))
             {
                 OnEdgeRemoved(edge);
@@ -203,6 +215,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
         {
+            if (predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
+
             var edgesToRemove = Edges.Where(edge => predicate(edge)).ToArray();
 
             foreach (TEdge edge in edgesToRemove)

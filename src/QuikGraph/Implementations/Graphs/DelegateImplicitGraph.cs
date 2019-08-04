@@ -58,6 +58,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge> result))
                 return result;
             return Enumerable.Empty<TEdge>();
@@ -66,6 +69,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _tryGetOutEdgesFunc(vertex, out edges);
         }
 
@@ -78,6 +84,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _tryGetOutEdgesFunc(vertex, out _);
         }
 

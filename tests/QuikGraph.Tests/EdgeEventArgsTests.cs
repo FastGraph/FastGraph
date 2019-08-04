@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -40,9 +41,8 @@ namespace QuikGraph.Tests
         [Test]
         public void ConstructorThrowsContractException()
         {
-            QuikGraphAssert.ThrowsContractException(
-                // ReSharper disable once AssignNullToNotNullAttribute
-                () => Constructor<int, Edge<int>>(null));
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => Constructor<int, Edge<int>>(null));
         }
     }
 }

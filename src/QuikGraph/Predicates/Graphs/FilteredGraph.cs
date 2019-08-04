@@ -74,6 +74,9 @@ namespace QuikGraph.Predicates
         [Pure]
         protected bool FilterEdge([NotNull] TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             return VertexPredicate(edge.Source)
                    && VertexPredicate(edge.Target)
                    && EdgePredicate(edge);

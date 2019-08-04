@@ -97,6 +97,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             TEdge e = _edges[edge.Source, edge.Target];
             return e != null && e.Equals(edge);
         }
@@ -154,7 +157,7 @@ namespace QuikGraph
             for (int j = 0; j < VertexCount; ++j)
             {
                 if (_edges[vertex, j] != null)
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -196,7 +199,7 @@ namespace QuikGraph
                 {
                     if (count == index)
                         return edge;
-                    count++;
+                    ++count;
                 }
             }
 
@@ -226,7 +229,7 @@ namespace QuikGraph
             for (int i = 0; i < VertexCount; ++i)
             {
                 if (_edges[i, vertex] != null)
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -268,7 +271,7 @@ namespace QuikGraph
                 {
                     if (count == index)
                         return edge;
-                    count++;
+                    ++count;
                 }
             }
 
@@ -318,7 +321,7 @@ namespace QuikGraph
                 if (edge != null && predicate(edge))
                 {
                     RemoveEdge(edge);
-                    count++;
+                    ++count;
                 }
             }
 
@@ -381,7 +384,7 @@ namespace QuikGraph
                 if (edge != null && predicate(edge))
                 {
                     RemoveEdge(edge);
-                    count++;
+                    ++count;
                 }
             }
 
@@ -413,11 +416,14 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool AddEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             if (_edges[edge.Source, edge.Target] != null)
                 throw new ParallelEdgeNotAllowedException();
 
             _edges[edge.Source, edge.Target] = edge;
-            EdgeCount++;
+            ++EdgeCount;
             OnEdgeAdded(edge);
 
             return true;
@@ -426,11 +432,14 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddEdgeRange(IEnumerable<TEdge> edges)
         {
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
+
             int count = 0;
             foreach (TEdge edge in edges)
             {
                 if (AddEdge(edge))
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -454,6 +463,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool RemoveEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             TEdge e = _edges[edge.Source, edge.Target];
             _edges[edge.Source, edge.Target] = default(TEdge);
             if (!e.Equals(default(TEdge)))
@@ -484,9 +496,10 @@ namespace QuikGraph
         /// <summary>
         /// <see cref="RemoveEdgeIf"/> is not implemented for this kind of graph.
         /// </summary>
+        /// <exception cref="NotSupportedException">This method is not supported.</exception>
         public int RemoveEdgeIf(EdgePredicate<int, TEdge> predicate)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         #endregion

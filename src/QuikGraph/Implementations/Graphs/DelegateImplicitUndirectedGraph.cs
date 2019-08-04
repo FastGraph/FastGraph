@@ -54,6 +54,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_tryGetAdjacencyEdges(vertex, out IEnumerable<TEdge> result))
                 return result;
             return Enumerable.Empty<TEdge>();
@@ -80,9 +83,12 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (TryGetAdjacentEdges(source, out IEnumerable<TEdge> adjacentEdges))
             {
-                foreach (var adjacentEdge in adjacentEdges)
+                foreach (TEdge adjacentEdge in adjacentEdges)
                 {
                     if (EdgeEqualityComparer(adjacentEdge, source, target))
                     {
@@ -104,6 +110,9 @@ namespace QuikGraph
         /// <returns>True if at least one edge was found, false otherwise.</returns>
         public bool TryGetAdjacentEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _tryGetAdjacencyEdges(vertex, out edges);
         }
 
@@ -116,6 +125,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _tryGetAdjacencyEdges(vertex, out _);
         }
 

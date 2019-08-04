@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
@@ -64,6 +65,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(ITreeBuilderAlgorithm<TVertex, TEdge> algorithm)
         {
+            if (algorithm is null)
+                throw new ArgumentNullException(nameof(algorithm));
+
             algorithm.TreeEdge += OnEdgeDiscovered;
             return Finally(() => algorithm.TreeEdge -= OnEdgeDiscovered);
         }
@@ -72,10 +76,10 @@ namespace QuikGraph.Algorithms.Observers
 
         private void OnEdgeDiscovered([NotNull] TEdge edge)
         {
-            TVertex source = edge.Source;
+            Debug.Assert(edge != null);
 
-            if (!Distances.TryGetValue(source, out double sourceDistance))
-                Distances[source] = sourceDistance = DistanceRelaxer.InitialDistance;
+            if (!Distances.TryGetValue(edge.Source, out double sourceDistance))
+                Distances[edge.Source] = sourceDistance = DistanceRelaxer.InitialDistance;
             Distances[edge.Target] = DistanceRelaxer.Combine(sourceDistance, EdgeWeights(edge));
         }
     }

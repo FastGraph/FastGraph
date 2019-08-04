@@ -108,6 +108,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _outEdgeStartRanges.ContainsKey(vertex);
         }
 
@@ -158,6 +161,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             if (_outEdgeStartRanges.TryGetValue(source, out Range range))
             {
                 for (int i = range.Start; i < range.End; ++i)
@@ -203,18 +211,24 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            return _outEdgeStartRanges[vertex].Length == 0;
+            return OutDegree(vertex) == 0;
         }
 
         /// <inheritdoc />
         public int OutDegree(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _outEdgeStartRanges[vertex].Length;
         }
 
         /// <inheritdoc />
         public IEnumerable<SEquatableEdge<TVertex>> OutEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             Range range = _outEdgeStartRanges[vertex];
             for (int i = range.Start; i < range.End; ++i)
                 yield return new SEquatableEdge<TVertex>(vertex, _outEdges[i]);
@@ -223,6 +237,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetOutEdges(TVertex vertex, out IEnumerable<SEquatableEdge<TVertex>> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             Range range = _outEdgeStartRanges[vertex];
             if (range.Length > 0)
             {
@@ -237,11 +254,13 @@ namespace QuikGraph
         /// <inheritdoc />
         public SEquatableEdge<TVertex> OutEdge(TVertex vertex, int index)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             Range range = _outEdgeStartRanges[vertex];
             int targetIndex = range.Start + index;
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(targetIndex < range.End);
-#endif
+
+            Debug.Assert(targetIndex < range.End);
 
             return new SEquatableEdge<TVertex>(vertex, _outEdges[targetIndex]);
         }

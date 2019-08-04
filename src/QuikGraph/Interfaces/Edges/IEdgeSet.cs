@@ -1,9 +1,5 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-using QuikGraph.Contracts;
-#endif
 
 namespace QuikGraph
 {
@@ -40,6 +36,4 @@ namespace QuikGraph
         [Pure]
         bool ContainsEdge([NotNull] TEdge edge);
     }
-
-
 }

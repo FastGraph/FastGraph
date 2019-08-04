@@ -56,6 +56,9 @@ namespace QuikGraph.Algorithms.Exploration
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _verticesEdgesCache.ContainsKey(vertex);
         }
 
@@ -76,6 +79,9 @@ namespace QuikGraph.Algorithms.Exploration
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
             {
                 edges = new EdgeList<TVertex, TEdge>();

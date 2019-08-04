@@ -77,6 +77,9 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public void MakeSet(T value)
         {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
             var element = new Element(value);
             _elements.Add(value, element);
             ++SetCount;
@@ -85,24 +88,40 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public T FindSet(T value)
         {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
             return Find(_elements[value]).Value;
         }
 
         /// <inheritdoc />
         public bool AreInSameSet(T left, T right)
         {
+            if (left == null)
+                throw new ArgumentNullException(nameof(left));
+            if (right == null)
+                throw new ArgumentNullException(nameof(right));
+
             return FindSet(left)?.Equals(FindSet(right)) ?? false;
         }
 
         /// <inheritdoc />
         public bool Union(T left, T right)
         {
+            if (left == null)
+                throw new ArgumentNullException(nameof(left));
+            if (right == null)
+                throw new ArgumentNullException(nameof(right));
+
             return Union(_elements[left], _elements[right]);
         }
 
         /// <inheritdoc />
         public bool Contains(T value)
         {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
             return _elements.ContainsKey(value);
         }
 

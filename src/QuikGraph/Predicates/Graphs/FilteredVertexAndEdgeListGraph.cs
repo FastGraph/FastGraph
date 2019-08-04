@@ -49,6 +49,9 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
             return Edges.Any(e => Equals(edge, e));
         }
 

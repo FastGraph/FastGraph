@@ -160,6 +160,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public int InDegree(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
                 return edges.Count;
             return 0;
@@ -168,6 +171,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TEdge> InEdges(TVertex vertex)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
                 return edges;
             return Enumerable.Empty<TEdge>();
@@ -176,6 +182,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edgeList))
             {
                 edges = edgeList;
@@ -189,6 +198,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public TEdge InEdge(TVertex vertex, int index)
         {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
             return _inEdges[vertex][index];
         }
 

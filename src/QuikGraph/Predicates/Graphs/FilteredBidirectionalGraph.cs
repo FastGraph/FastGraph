@@ -91,6 +91,7 @@ namespace QuikGraph.Predicates
         /// <summary>
         /// <see cref="InEdge"/> is not supported for this kind of graph.
         /// </summary>
+        /// <exception cref="NotSupportedException">This operation is not supported.</exception>
         public TEdge InEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();

@@ -23,7 +23,7 @@ namespace QuikGraph.Tests.Collections
             for (int i = 0; i < 10; ++i)
             {
                 heap.Enqueue(i, i.ToString());
-                count++;
+                ++count;
             }
 
             int? lastValue = null;
@@ -276,7 +276,7 @@ namespace QuikGraph.Tests.Collections
             for (int i = 0; i < 10; ++i)
             {
                 cells.Add(i, heap.Enqueue(i, i.ToString()));
-                count++;
+                ++count;
             }
 
             int lastValue = heap.Top.Priority;

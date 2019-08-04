@@ -162,7 +162,7 @@ namespace QuikGraph
             foreach (TVertex vertex in vertices)
             {
                 if (AddVertex(vertex))
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -347,7 +347,7 @@ namespace QuikGraph
             foreach (TEdge edge in edges)
             {
                 if (AddVerticesAndEdge(edge))
-                    count++;
+                    ++count;
             }
 
             return count;
@@ -385,7 +385,7 @@ namespace QuikGraph
             foreach (TEdge edge in edges)
             {
                 if (AddEdge(edge))
-                    count++;
+                    ++count;
             }
 
             return count;

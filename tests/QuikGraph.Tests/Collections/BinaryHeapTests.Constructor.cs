@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Collections;
@@ -38,19 +39,19 @@ namespace QuikGraph.Tests.Collections
         [Test]
         public void ConstructorThrowsContractException1()
         {
-            QuikGraphAssert.ThrowsContractException(() => Constructor<int, Edge<int>>(int.MinValue));
+            Assert.Throws<ArgumentException>(() => Constructor<int, Edge<int>>(int.MinValue));
         }
 
         [Test]
         public void ConstructorThrowsContractException2()
         {
-            QuikGraphAssert.ThrowsContractException(() => Constructor<int, SEdge<int>>(int.MinValue));
+            Assert.Throws<ArgumentException>(() => Constructor<int, SEdge<int>>(int.MinValue));
         }
 
         [Test]
         public void ConstructorThrowsContractException3()
         {
-            QuikGraphAssert.ThrowsContractException(() => Constructor<int, int>(int.MinValue));
+            Assert.Throws<ArgumentException>(() => Constructor<int, int>(int.MinValue));
         }
     }
 }
