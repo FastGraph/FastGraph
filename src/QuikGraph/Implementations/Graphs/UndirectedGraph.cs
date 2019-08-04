@@ -34,7 +34,7 @@ namespace QuikGraph
         public UndirectedGraph(bool allowParallelEdges, [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer)
         {
             AllowParallelEdges = allowParallelEdges;
-            _edgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
+            EdgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
         }
 
         /// <summary>
@@ -57,21 +57,8 @@ namespace QuikGraph
         {
         }
 
-        [NotNull]
-        private readonly EdgeEqualityComparer<TVertex> _edgeEqualityComparer;
-
         /// <inheritdoc />
-        public EdgeEqualityComparer<TVertex> EdgeEqualityComparer
-        {
-            get
-            {
-#if SUPPORTS_CONTRACTS
-                Contract.Ensures(Contract.Result<EdgeEqualityComparer<TVertex>>() != null);
-#endif
-
-                return _edgeEqualityComparer;
-            }
-        }
+        public EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; }
 
         /// <summary>
         /// Gets or sets the edge capacity.
@@ -170,10 +157,8 @@ namespace QuikGraph
 
         private bool ContainsEdgeBetweenVertices([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TEdge edge)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edges != null);
+            Debug.Assert(edge != null);
 
             TVertex source = edge.Source;
             TVertex target = edge.Target;
@@ -220,7 +205,7 @@ namespace QuikGraph
 
             foreach (TEdge adjacentEdge in AdjacentEdges(source))
             {
-                if (_edgeEqualityComparer(adjacentEdge, source, target))
+                if (EdgeEqualityComparer(adjacentEdge, source, target))
                 {
                     edge = adjacentEdge;
                     return true;
@@ -490,9 +475,8 @@ namespace QuikGraph
                     _adjacentEdges[edge.Target].Remove(edge);
                 EdgeCount--;
 
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(EdgeCount >= 0);
-#endif
+                Debug.Assert(EdgeCount >= 0);
+
                 OnEdgeRemoved(edge);
                 return true;
             }
@@ -550,14 +534,11 @@ namespace QuikGraph
             int edgeCapacity,
             bool allowParallelEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(_adjacentEdges != null);
-            Contract.Requires(_edgeEqualityComparer != null);
-            Contract.Requires(edgeCount >= 0);
-#endif
+            if (edgeCount < 0)
+                throw new ArgumentException("Must be positive", nameof(edgeCount));
 
-            _adjacentEdges = adjacentEdges;
-            _edgeEqualityComparer = edgeEqualityComparer;
+            _adjacentEdges = adjacentEdges ?? throw new ArgumentNullException(nameof(adjacentEdges));
+            EdgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
             EdgeCount = edgeCount;
             EdgeCapacity = edgeCapacity;
             AllowParallelEdges = allowParallelEdges;
@@ -573,7 +554,7 @@ namespace QuikGraph
         {
             return new UndirectedGraph<TVertex, TEdge>(
                 _adjacentEdges.Clone(),
-                _edgeEqualityComparer,
+                EdgeEqualityComparer,
                 EdgeCount,
                 EdgeCapacity,
                 AllowParallelEdges);

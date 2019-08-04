@@ -32,10 +32,7 @@ namespace QuikGraph.Algorithms.Observers
         public UndirectedVertexPredecessorRecorderObserver(
             [NotNull] IDictionary<TVertex, TEdge> vertexPredecessors)
         {
-            if (vertexPredecessors is null)
-                throw new ArgumentNullException(nameof(vertexPredecessors));
-
-            VertexPredecessors = vertexPredecessors;
+            VertexPredecessors = vertexPredecessors ?? throw new ArgumentNullException(nameof(vertexPredecessors));
         }
 
         /// <summary>

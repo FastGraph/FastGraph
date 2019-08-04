@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -54,13 +55,8 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-            if (edgeWeights is null)
-                throw new ArgumentNullException(nameof(edgeWeights));
-            if (distanceRelaxer is null)
-                throw new ArgumentNullException(nameof(distanceRelaxer));
-
-            _edgeWeights = edgeWeights;
-            _distanceRelaxer = distanceRelaxer;
+            _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
+            _distanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
         }
 
         #region AlgorithmBase<TGraph>
@@ -178,8 +174,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }

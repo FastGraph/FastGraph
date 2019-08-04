@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 #if SUPPORTS_CONTRACTS
 using System.Linq;
 #endif
@@ -142,13 +143,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         [NotNull]
         private TVertex MinDiscoverTime([NotNull] TVertex u, [NotNull] TVertex v)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(u != null);
-            Contract.Requires(v != null);
-            Contract.Ensures(DiscoverTimes[u] < DiscoverTimes[v]
-                ? Contract.Result<TVertex>().Equals(u)
-                : Contract.Result<TVertex>().Equals(v));
-#endif
+            Debug.Assert(u != null);
+            Debug.Assert(v != null);
 
             // Min vertex
             return DiscoverTimes[u] < DiscoverTimes[v]
@@ -156,7 +152,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 : v;
         }
 
-#region AlgorithmBase<TGraph>
+        #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
         protected override void InternalCompute()
@@ -201,9 +197,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             }
         }
 
-#endregion
+        #endregion
 
-#region IConnectedComponentAlgorithm<TVertex,TEdge,TGraph>
+        #region IConnectedComponentAlgorithm<TVertex,TEdge,TGraph>
 
         /// <inheritdoc />
         public int ComponentCount { get; private set; }
@@ -211,7 +207,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <inheritdoc />
         public IDictionary<TVertex, int> Components { get; }
 
-#endregion
+        #endregion
 
         private void OnVertexDiscovered([NotNull] TVertex vertex)
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -50,8 +51,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
         private void OnVertexAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             VertexAdded?.Invoke(vertex);
         }
@@ -83,10 +83,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="vertices">Set of sorted vertices.</param>
         public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            SortedVertices = vertices;
+            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
             SortedVertices.Clear();
             Compute();
         }
@@ -119,9 +116,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
                     --InDegrees[edge.Target];
 
-#if SUPPORTS_CONTRACTS
-                    Contract.Assert(InDegrees[edge.Target] >= 0);
-#endif
+                    Debug.Assert(InDegrees[edge.Target] >= 0);
 
                     _heap.Update(edge.Target);
                 }

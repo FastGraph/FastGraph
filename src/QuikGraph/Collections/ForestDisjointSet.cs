@@ -112,16 +112,15 @@ namespace QuikGraph.Collections
         [NotNull]
         private static Element FindNoCompression([NotNull] Element element)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(element != null);
-            Contract.Ensures(Contract.Result<Element>() != null);
-#endif
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
 
             // Find root
             Element current = element;
             while (current.Parent != null)
                 current = current.Parent;
 
+            Debug.Assert(current != null);
             return current;
         }
 
@@ -133,22 +132,20 @@ namespace QuikGraph.Collections
         [NotNull]
         private static Element Find([NotNull] Element element)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(element != null);
-            Contract.Ensures(Contract.Result<Element>() != null);
-#endif
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
 
             Element root = FindNoCompression(element);
             CompressPath(element, root);
+
+            Debug.Assert(root != null);
             return root;
         }
 
         private static void CompressPath([NotNull] Element element, [NotNull] Element root)
         {
-            if (element is null)
-                throw new ArgumentNullException(nameof(element));
-            if (root is null)
-                throw new ArgumentNullException(nameof(root));
+            Debug.Assert(element != null);
+            Debug.Assert(root != null);
 
             // Path compression
             Element current = element;

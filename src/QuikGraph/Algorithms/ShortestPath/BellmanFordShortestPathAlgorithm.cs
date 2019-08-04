@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -85,8 +86,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnInitializeVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -98,8 +98,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ExamineEdge?.Invoke(edge);
         }
@@ -111,8 +110,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeNotRelaxed?.Invoke(edge);
         }
@@ -126,8 +124,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeMinimized([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeMinimized?.Invoke(edge);
         }
@@ -142,8 +139,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotMinimized([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeNotMinimized?.Invoke(edge);
         }

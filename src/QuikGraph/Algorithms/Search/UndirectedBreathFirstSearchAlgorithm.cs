@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -62,13 +63,8 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
             : base(host, visitedGraph)
         {
-            if (vertexQueue is null)
-                throw new ArgumentNullException(nameof(vertexQueue));
-            if (verticesColors is null)
-                throw new ArgumentNullException(nameof(verticesColors));
-
-            VerticesColors = verticesColors;
-            _vertexQueue = vertexQueue;
+            VerticesColors = verticesColors ?? throw new ArgumentNullException(nameof(verticesColors));
+            _vertexQueue = vertexQueue ?? throw new ArgumentNullException(nameof(vertexQueue));
         }
 
         #region Events
@@ -78,8 +74,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexInitialized([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -89,8 +84,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             StartVertex?.Invoke(vertex);
         }
@@ -102,8 +96,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnExamineVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             ExamineVertex?.Invoke(vertex);
         }
@@ -115,8 +108,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             DiscoverVertex?.Invoke(vertex);
         }
@@ -128,8 +120,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ExamineEdge?.Invoke(edge);
         }
@@ -141,8 +132,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge, bool reversed)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(
                 this, 
@@ -156,8 +146,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnNonTreeEdge([NotNull] TEdge edge, bool reversed)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             NonTreeEdge?.Invoke(
                 this,
@@ -171,8 +160,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnGrayTarget([NotNull] TEdge edge, bool reversed)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             GrayTarget?.Invoke(
                 this, 
@@ -186,8 +174,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnBlackTarget([NotNull] TEdge edge, bool reversed)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             BlackTarget?.Invoke(
                 this,
@@ -199,8 +186,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             FinishVertex?.Invoke(vertex);
         }

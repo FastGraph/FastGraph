@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -35,8 +35,7 @@ namespace QuikGraph.Algorithms.VertexColoring
 
         private void OnVertexColored([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             VertexColored?.Invoke(vertex);
         }

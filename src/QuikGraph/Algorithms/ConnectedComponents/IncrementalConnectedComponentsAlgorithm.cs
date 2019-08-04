@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -78,9 +79,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         {
             get
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(_sets != null);
-#endif
+                if (_sets is null)
+                    throw new InvalidOperationException("Run the algorithm before getting the number of components.");
                 return _sets.SetCount;
             }
         }
@@ -94,14 +94,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <returns>Number of components associated to components vertex mapping.</returns>
         public KeyValuePair<int, IDictionary<TVertex, int>> GetComponents()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(
-                Contract.Result<KeyValuePair<int, IDictionary<TVertex, int>>>().Key == ComponentCount);
-            Contract.Ensures(
-                Contract.Result<KeyValuePair<int, IDictionary<TVertex, int>>>().Value.Count == VisitedGraph.VertexCount);
-            // TODO: more contracts
-            Contract.Assert(_sets != null);
-#endif
+            if (_sets is null)
+                throw new InvalidOperationException("Run the algorithm before.");
 
             var representatives = new Dictionary<TVertex, int>(_sets.SetCount);
             if (_components is null)
@@ -115,6 +109,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 _components[vertex] = index;
             }
 
+            Debug.Assert(_sets.SetCount == ComponentCount);
+            Debug.Assert(_components.Count == VisitedGraph.VertexCount);
             return new KeyValuePair<int, IDictionary<TVertex, int>>(_sets.SetCount, _components);
         }
 

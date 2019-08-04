@@ -18,10 +18,7 @@ namespace QuikGraph.Algorithms.Services
         /// <param name="host">Algorithm host.</param>
         public AlgorithmServices([NotNull] IAlgorithmComponent host)
         {
-            if (host is null)
-                throw new ArgumentNullException(nameof(host));
-
-            _host = host;
+            _host = host ?? throw new ArgumentNullException(nameof(host));
         }
 
         private ICancelManager _cancelManager;

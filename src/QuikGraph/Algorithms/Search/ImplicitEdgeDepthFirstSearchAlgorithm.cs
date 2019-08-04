@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -64,8 +65,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             StartVertex?.Invoke(vertex);
         }
@@ -77,8 +77,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             StartEdge?.Invoke(edge);
         }
@@ -90,10 +89,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnDiscoverTreeEdge([NotNull] TEdge edge, [NotNull] TEdge targetEdge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
-            if (targetEdge == null)
-                throw new ArgumentNullException(nameof(targetEdge));
+            Debug.Assert(edge != null);
+            Debug.Assert(targetEdge != null);
 
             DiscoverTreeEdge?.Invoke(edge, targetEdge);
         }
@@ -107,8 +104,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -120,8 +116,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             BackEdge?.Invoke(edge);
         }
@@ -134,8 +129,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnForwardOrCrossEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ForwardOrCrossEdge?.Invoke(edge);
         }
@@ -149,8 +143,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnFinishEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             FinishEdge?.Invoke(edge);
         }

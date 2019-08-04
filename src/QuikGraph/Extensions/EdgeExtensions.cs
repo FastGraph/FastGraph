@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 #if !SUPPORTS_TYPE_FULL_FEATURES
@@ -21,10 +22,8 @@ namespace QuikGraph
         [Pure]
         public static bool IsSelfEdge<TVertex>([NotNull] this IEdge<TVertex> edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Ensures(Contract.Result<bool>() == (edge.Source.Equals(edge.Target)));
-#endif
+            if (edge is null)
+                throw new ArgumentNullException(nameof(edge));
 
             return edge.Source.Equals(edge.Target);
         }
@@ -40,15 +39,10 @@ namespace QuikGraph
         [Pure]
         public static TVertex GetOtherVertex<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(vertex != null);
-            Contract.Requires(!edge.Source.Equals(edge.Target));
-            Contract.Requires(edge.Source.Equals(vertex) || edge.Target.Equals(vertex));
-            Contract.Ensures(Contract.Result<TVertex>() != null);
-            Contract.Ensures(
-                Contract.Result<TVertex>().Equals(edge.Source.Equals(vertex) ? edge.Target : edge.Source));
-#endif
+            if (edge is null)
+                throw new ArgumentNullException(nameof(edge));
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             return edge.Source.Equals(vertex) ? edge.Target : edge.Source;
         }
@@ -64,12 +58,10 @@ namespace QuikGraph
         [Pure]
         public static bool IsAdjacent<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(vertex != null);
-            Contract.Ensures(
-                Contract.Result<bool>() == (edge.Source.Equals(vertex) || edge.Target.Equals(vertex)));
-#endif
+            if (edge is null)
+                throw new ArgumentNullException(nameof(edge));
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             return edge.Source.Equals(vertex) || edge.Target.Equals(vertex);
         }
@@ -85,20 +77,12 @@ namespace QuikGraph
         public static bool IsPath<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(path != null);
-            Contract.Requires(
-#if SUPPORTS_TYPE_FULL_FEATURES
-                typeof(TEdge).IsValueType
-#else
-                typeof(TEdge).GetTypeInfo().IsValueType
-#endif
-                || path.All(e => e != null));
-#endif
+            if (path is null)
+                throw new ArgumentNullException(nameof(path));
 
             bool first = true;
             TVertex lastTarget = default(TVertex);
-            foreach (var edge in path)
+            foreach (TEdge edge in path)
             {
                 if (first)
                 {
@@ -127,16 +111,8 @@ namespace QuikGraph
         public static bool HasCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(path != null);
-            Contract.Requires(
-#if SUPPORTS_TYPE_FULL_FEATURES
-                typeof(TEdge).IsValueType
-#else
-                typeof(TEdge).GetTypeInfo().IsValueType
-#endif
-                || path.All(e => e != null));
-#endif
+            if (path is null)
+                throw new ArgumentNullException(nameof(path));
 
             var vertices = new Dictionary<TVertex, int>();
             bool first = true;
@@ -172,17 +148,8 @@ namespace QuikGraph
         public static bool IsPathWithoutCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(path != null);
-            Contract.Requires(
-#if SUPPORTS_TYPE_FULL_FEATURES
-                typeof(TEdge).IsValueType
-#else
-                typeof(TEdge).GetTypeInfo().IsValueType
-#endif
-                || path.All(e => e != null));
-            Contract.Requires(IsPath<TVertex, TEdge>(path));
-#endif
+            if (path is null)
+                throw new ArgumentNullException(nameof(path));
 
             var vertices = new Dictionary<TVertex, int>();
             bool first = true;
@@ -222,12 +189,8 @@ namespace QuikGraph
         [Pure]
         public static SEquatableEdge<TVertex> ToVertexPair<TVertex>([NotNull] this IEdge<TVertex> edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Ensures(Contract.Result<SEquatableEdge<TVertex>>().Source.Equals(edge.Source));
-            Contract.Ensures(Contract.Result<SEquatableEdge<TVertex>>().Target.Equals(edge.Target));
-#endif
-
+            if (edge is null)
+                throw new ArgumentNullException(nameof(edge));
             return new SEquatableEdge<TVertex>(edge.Source, edge.Target);
         }
 
@@ -247,18 +210,12 @@ namespace QuikGraph
             [NotNull] TVertex vertex)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(predecessors != null);
-            Contract.Requires(root != null);
-            Contract.Requires(vertex != null);
-            Contract.Requires(
-#if SUPPORTS_TYPE_FULL_FEATURES
-                typeof(TEdge).IsValueType
-#else
-                typeof(TEdge).GetTypeInfo().IsValueType
-#endif
-                || predecessors.Values.All(e => e != null));
-#endif
+            if (predecessors is null)
+                throw new ArgumentNullException(nameof(predecessors));
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             TVertex currentVertex = vertex;
             if (root.Equals(currentVertex))
@@ -293,26 +250,10 @@ namespace QuikGraph
             [ItemNotNull] out IEnumerable<TEdge> result)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(predecessors != null);
-            Contract.Requires(vertex != null);
-            Contract.Requires(
-#if SUPPORTS_TYPE_FULL_FEATURES
-                typeof(TEdge).IsValueType
-#else
-                typeof(TEdge).GetTypeInfo().IsValueType
-#endif
-                || predecessors.Values.All(e => e != null));
-            Contract.Ensures(
-                !Contract.Result<bool>()
-                || (Contract.ValueAtReturn(out result) != null
-#if SUPPORTS_TYPE_FULL_FEATURES
-                    && (typeof(TEdge).IsValueType
-#else
-                    && (typeof(TEdge).GetTypeInfo().IsValueType
-#endif
-                        || Contract.ValueAtReturn(out result).All(e => e != null))));
-#endif
+            if (predecessors is null)
+                throw new ArgumentNullException(nameof(predecessors));
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
 
             var path = new List<TEdge>();
 
@@ -368,11 +309,12 @@ namespace QuikGraph
             [NotNull] TVertex source,
             [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (edge is null)
+                throw new ArgumentNullException(nameof(edge));
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             return (edge.Source.Equals(source) && edge.Target.Equals(target)) 
                    || (edge.Target.Equals(source) && edge.Source.Equals(target));
@@ -394,12 +336,12 @@ namespace QuikGraph
             [NotNull] TVertex source,
             [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-            Contract.Requires(Comparer<TVertex>.Default.Compare(source, target) <= 0);
-#endif
+            if (edge is null)
+                throw new ArgumentNullException(nameof(edge));
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             return edge.Source.Equals(source) && edge.Target.Equals(target);
         }
@@ -412,15 +354,13 @@ namespace QuikGraph
         /// <param name="edges">Edges to reversed.</param>
         /// <returns>Reversed edges.</returns>
         [Pure]
+        [NotNull]
         public static IEnumerable<SReversedEdge<TVertex, TEdge>> ReverseEdges<TVertex, TEdge>(
             [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(edges.All(e => e != null));
-            Contract.Ensures(Contract.Result<IEnumerable<SReversedEdge<TVertex, TEdge>>>() != null);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
 
             return edges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge));
         }

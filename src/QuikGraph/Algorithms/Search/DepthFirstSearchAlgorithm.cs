@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -116,9 +117,8 @@ namespace QuikGraph.Algorithms.Search
             get => _maxDepth;
             set
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(value > 0);
-#endif
+                if (value <= 0)
+                    throw new ArgumentException("Must be positive", nameof(value));
                 _maxDepth = value;
             }
         }
@@ -130,8 +130,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexInitialized([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -141,8 +140,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             StartVertex?.Invoke(vertex);
         }
@@ -154,8 +152,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             DiscoverVertex?.Invoke(vertex);
         }
@@ -167,8 +164,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ExamineEdge?.Invoke(edge);
         }
@@ -180,8 +176,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -193,8 +188,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             BackEdge?.Invoke(edge);
         }
@@ -206,8 +200,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnForwardOrCrossEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ForwardOrCrossEdge?.Invoke(edge);
         }
@@ -217,8 +210,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             FinishVertex?.Invoke(vertex);
         }
@@ -298,22 +290,20 @@ namespace QuikGraph.Algorithms.Search
 
             public SearchFrame([NotNull] TVertex vertex, [NotNull] IEnumerator<TEdge> edges, int depth)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(vertex != null);
-                Contract.Requires(edges != null);
-                Contract.Requires(depth >= 0);
-#endif
+                if (vertex == null)
+                    throw new ArgumentNullException(nameof(vertex));
+                if (depth < 0)
+                    throw new ArgumentException("Must be positive", nameof(depth));
 
                 Vertex = vertex;
-                Edges = edges;
+                Edges = edges ?? throw new ArgumentNullException(nameof(edges));
                 Depth = depth;
             }
         }
 
         private void Visit([NotNull] TVertex root)
         {
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
+            Debug.Assert(root != null);
 
             var todoStack = new Stack<SearchFrame>();
             VerticesColors[root] = GraphColor.Gray;

@@ -281,11 +281,12 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(root != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             var algorithm = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, DijkstraShortestPathAlgorithm<TVertex, TEdge>>(
@@ -312,11 +313,12 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(root != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
@@ -380,11 +382,12 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(root != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             var algorithm = new BellmanFordShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
@@ -414,11 +417,12 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(root != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (edgeWeights is null)
+                throw new ArgumentNullException(nameof(edgeWeights));
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
 
             var algorithm = new DagShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, DagShortestPathAlgorithm<TVertex, TEdge>>(
@@ -1043,11 +1047,12 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex target)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(predecessors != null);
-            Contract.Requires(edgeCosts != null);
-            Contract.Requires(target != null);
-#endif
+            if (predecessors is null)
+                throw new ArgumentNullException(nameof(predecessors));
+            if (edgeCosts is null)
+                throw new ArgumentNullException(nameof(edgeCosts));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             double cost = 0;
             TVertex current = target;

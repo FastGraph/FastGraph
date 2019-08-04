@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Condensation
@@ -24,13 +25,8 @@ namespace QuikGraph.Algorithms.Condensation
             [NotNull] VertexPredicate<TVertex> vertexPredicate)
             : base(visitedGraph)
         {
-            if (condensedGraph is null)
-                throw new ArgumentNullException(nameof(condensedGraph));
-            if (vertexPredicate is null)
-                throw new ArgumentNullException(nameof(vertexPredicate));
-
-            CondensedGraph = condensedGraph;
-            VertexPredicate = vertexPredicate;
+            CondensedGraph = condensedGraph ?? throw new ArgumentNullException(nameof(condensedGraph));
+            VertexPredicate = vertexPredicate ?? throw new ArgumentNullException(nameof(vertexPredicate));
         }
 
         /// <summary>
@@ -83,8 +79,7 @@ namespace QuikGraph.Algorithms.Condensation
 
         private void MergeVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             // Get in-edges and out-edges
             var inEdges = new List<MergedEdge<TVertex, TEdge>>(CondensedGraph.InEdges(vertex));

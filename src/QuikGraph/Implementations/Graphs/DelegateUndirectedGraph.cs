@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -30,12 +28,7 @@ namespace QuikGraph
             bool allowParallelEdges)
             : base(tryGetAdjacentEdges, allowParallelEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(vertices.All(vertex => tryGetAdjacentEdges(vertex, out _)));
-#endif
-
-            _vertices = vertices;
+            _vertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
         }
 
         #region IVertexSet<TVertex>

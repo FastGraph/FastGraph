@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
@@ -71,10 +72,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
-            if (costHeuristic is null)
-                throw new ArgumentNullException(nameof(costHeuristic));
-
-            CostHeuristic = costHeuristic;
+            CostHeuristic = costHeuristic ?? throw new ArgumentNullException(nameof(costHeuristic));
         }
 
         /// <summary>
@@ -114,16 +112,14 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeNotRelaxed?.Invoke(edge);
         }
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             if (Weights(edge) < 0)
                 throw new NegativeWeightException();
@@ -131,8 +127,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnAStarTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             bool decreased = Relax(edge);
             if (decreased)
@@ -143,8 +138,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnGrayTarget([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             bool decreased = Relax(edge);
             if (decreased)
@@ -164,8 +158,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnBlackTarget([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             bool decreased = Relax(edge);
             if (decreased)

@@ -116,16 +116,14 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnEdgeNotRelaxed([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeNotRelaxed?.Invoke(edge);
         }
 
         private void InternalExamineEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             if (Weights(edge) < 0)
                 throw new NegativeWeightException();
@@ -133,8 +131,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnDijkstraTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             bool decreased = Relax(edge);
             if (decreased)
@@ -150,8 +147,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void OnGrayTarget([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             bool decreased = Relax(edge);
             if (decreased)

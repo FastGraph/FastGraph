@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -53,9 +54,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             : base(host, visitedGraph)
         {
-            if (edgeChain is null)
-                throw new ArgumentNullException(nameof(edgeChain));
-            EdgeChain = edgeChain;
+            EdgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
         }
 
         /// <summary>
@@ -114,8 +113,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnInitializeVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -127,8 +125,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnFinishVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             FinishVertex?.Invoke(vertex);
         }
@@ -138,8 +135,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -151,8 +147,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnClearTreeVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             ClearTreeVertex?.Invoke(vertex);
         }

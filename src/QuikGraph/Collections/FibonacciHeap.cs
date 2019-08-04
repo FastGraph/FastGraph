@@ -46,14 +46,11 @@ namespace QuikGraph.Collections
         /// <param name="priorityComparison">Priority comparer.</param>
         public FibonacciHeap(HeapDirection direction, [NotNull] Comparison<TPriority> priorityComparison)
         {
-            if (priorityComparison is null)
-                throw new ArgumentNullException(nameof(priorityComparison));
-
             _cells = new FibonacciHeapLinkedList<TPriority, TValue>();
             _degreeToCell = new Dictionary<int, FibonacciHeapCell<TPriority, TValue>>();
             _directionMultiplier = (short)(direction == HeapDirection.Increasing ? 1 : -1);
             Direction = direction;
-            PriorityComparison = priorityComparison;
+            PriorityComparison = priorityComparison ?? throw new ArgumentNullException(nameof(priorityComparison));
             Count = 0;
         }
 
@@ -149,8 +146,7 @@ namespace QuikGraph.Collections
             [CanBeNull] TPriority newKey, // Null authorized if deleting the cell
             bool deletingCell)
         {
-            if (cell is null)
-                throw new ArgumentNullException(nameof(cell));
+            Debug.Assert(cell != null);
 
             int delta = Math.Sign(PriorityComparison(cell.Priority, newKey));
             if (delta == 0)

@@ -30,10 +30,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="discoverTimes">Vertices discover times.</param>
         public VertexTimeStamperObserver([NotNull] IDictionary<TVertex, int> discoverTimes)
         {
-            if (discoverTimes is null)
-                throw new ArgumentNullException(nameof(discoverTimes));
-
-            DiscoverTimes = discoverTimes;
+            DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
             FinishTimes = null;
         }
 

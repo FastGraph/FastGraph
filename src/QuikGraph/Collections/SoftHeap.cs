@@ -176,8 +176,7 @@ namespace QuikGraph.Collections
 
         private void Meld([NotNull] Node node)
         {
-            if (node is null)
-                throw new ArgumentNullException(nameof(node));
+            Debug.Assert(node != null);
 
             Head toHead = _header.Next;
             while (node.Rank > toHead.Rank)
@@ -223,8 +222,7 @@ namespace QuikGraph.Collections
 
         private void FixMinList([NotNull] Head head)
         {
-            if (head is null)
-                throw new ArgumentNullException(nameof(head));
+            Debug.Assert(head != null);
 
             Head tmpMin = head.Next == _tail 
                 ? head 
@@ -243,8 +241,7 @@ namespace QuikGraph.Collections
         [NotNull]
         private Node Shift([NotNull] Node v)
         {
-            if (v is null)
-                throw new ArgumentNullException(nameof(v));
+            Debug.Assert(v != null);
 
             v.IL = null;
             v.ILTail = null;
@@ -280,9 +277,7 @@ namespace QuikGraph.Collections
             if (node.Rank > MinRank
                 && (node.Rank % 2 == 1 || node.Child.Rank < node.Rank - 1))
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(node.Next != null);
-#endif
+                Debug.Assert(node.Next != null);
 
                 node.Next = Shift(node.Next);
                 // Restore heap ordering that might be broken by shifting
@@ -306,16 +301,10 @@ namespace QuikGraph.Collections
 
         private void UpdateChildAndNext([NotNull] Node node)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(node.Child != null);
-#endif
-
+            Debug.Assert(node.Child != null);
             if (KeyComparison(node.Child.CKey, KeyMaxValue) == 0)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(node.Next != null);
-#endif
-
+                Debug.Assert(node.Next != null);
                 if (KeyComparison(node.Next.CKey, KeyMaxValue) == 0)
                 {
                     node.Child = null;
@@ -328,7 +317,6 @@ namespace QuikGraph.Collections
                 }
             }
         }
-// Shift
 
         /// <summary>
         /// Deletes the element with minimal key.

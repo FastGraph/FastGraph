@@ -59,10 +59,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, distanceRelaxer)
         {
-            if (edgeWeights is null)
-                throw new ArgumentNullException(nameof(edgeWeights));
-
-            _edgeWeights = edgeWeights;
+            _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
         }
 
         /// <summary>
@@ -222,8 +219,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             out IDictionary<TVertex, TEdge> successors,
             out IDictionary<TVertex, double> distances)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            Debug.Assert(target != null);
 
             var reversedGraph =
                 new ReversedBidirectionalGraph<TVertex, TEdge>(VisitedGraph);

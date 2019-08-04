@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
@@ -152,10 +153,8 @@ namespace QuikGraph.Serialization
             [NotNull]
             private static Delegate CreateWriteDelegate([NotNull] Type nodeType, [NotNull] Type delegateType)
             {
-                if (nodeType is null)
-                    throw new ArgumentNullException(nameof(nodeType));
-                if (delegateType is null)
-                    throw new ArgumentNullException(nameof(delegateType));
+                Debug.Assert(nodeType != null);
+                Debug.Assert(delegateType != null);
 
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Write{delegateType.Name}_{nodeType.Name}",
@@ -347,10 +346,8 @@ namespace QuikGraph.Serialization
 
             private void WriteAttributeDefinitions([NotNull] string nodeName, [NotNull] Type nodeType)
             {
-                if (nodeName is null)
-                    throw new ArgumentNullException(nameof(nodeName));
-                if (nodeType is null)
-                    throw new ArgumentNullException(nameof(nodeType));
+                Debug.Assert(nodeName != null);
+                Debug.Assert(nodeType != null);
 
                 foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(nodeType))
                 {

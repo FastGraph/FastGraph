@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -32,13 +33,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-            if (visitedGraph is null)
-                throw new ArgumentNullException(nameof(visitedGraph));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
-
-            VisitedGraph = visitedGraph;
-            EdgeFactory = edgeFactory;
+            VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
+            EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
         }
 
         /// <summary>
@@ -80,8 +76,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnReservedEdgeAdded([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ReversedEdgeAdded?.Invoke(edge);
         }

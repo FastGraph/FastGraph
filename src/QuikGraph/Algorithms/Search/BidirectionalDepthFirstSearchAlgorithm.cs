@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -58,10 +59,7 @@ namespace QuikGraph.Algorithms.Search
             [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
             : base(host, visitedGraph)
         {
-            if (verticesColors is null)
-                throw new ArgumentNullException(nameof(verticesColors));
-
-            VerticesColors = verticesColors;
+            VerticesColors = verticesColors ?? throw new ArgumentNullException(nameof(verticesColors));
         }
 
         /// <summary>
@@ -82,8 +80,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexInitialized([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             InitializeVertex?.Invoke(vertex);
         }
@@ -93,8 +90,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             StartVertex?.Invoke(vertex);
         }
@@ -106,8 +102,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnDiscoverVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             DiscoverVertex?.Invoke(vertex);
         }
@@ -119,8 +114,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnExamineEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ExamineEdge?.Invoke(edge);
         }
@@ -132,8 +126,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -145,8 +138,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             BackEdge?.Invoke(edge);
         }
@@ -158,8 +150,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnForwardOrCrossEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             ForwardOrCrossEdge?.Invoke(edge);
         }
@@ -169,8 +160,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             FinishVertex?.Invoke(vertex);
         }
@@ -238,8 +228,7 @@ namespace QuikGraph.Algorithms.Search
 
         private void Visit([NotNull] TVertex u, int depth)
         {
-            if (u == null)
-                throw new ArgumentNullException(nameof(u));
+            Debug.Assert(u != null);
 
             if (depth > MaxDepth)
                 return;

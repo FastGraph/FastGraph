@@ -81,11 +81,12 @@ namespace QuikGraph.Algorithms.ShortestPath
             [CanBeNull] Func<TaggedEquatableEdge<TVertex, double>, double> edgeWeights = null,
             [CanBeNull] Func<IEnumerable<SortedPath>, IEnumerable<SortedPath>> filter = null)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             _sourceVertex = source;
             _targetVertex = target;

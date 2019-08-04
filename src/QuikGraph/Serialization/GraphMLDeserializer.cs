@@ -1,3 +1,5 @@
+
+using System.Diagnostics;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
@@ -121,10 +123,8 @@ namespace QuikGraph.Serialization
                 [NotNull] Type delegateType,
                 [NotNull] Type elementType)
             {
-                if (delegateType is null)
-                    throw new ArgumentNullException(nameof(delegateType));
-                if (elementType is null)
-                    throw new ArgumentNullException(nameof(elementType));
+                Debug.Assert(delegateType != null);
+                Debug.Assert(elementType != null);
 
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Set{elementType.Name}Default",
@@ -170,10 +170,8 @@ namespace QuikGraph.Serialization
                 [NotNull] Type delegateType,
                 [NotNull] Type elementType)
             {
-                if (delegateType is null)
-                    throw new ArgumentNullException(nameof(delegateType));
-                if (elementType is null)
-                    throw new ArgumentNullException(nameof(elementType));
+                Debug.Assert(delegateType != null);
+                Debug.Assert(elementType != null);
 
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Read{elementType.Name}",
@@ -423,13 +421,11 @@ namespace QuikGraph.Serialization
 
             private void ReadVertex([NotNull] IDictionary<string, TVertex> vertices)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(vertices != null);
-                Contract.Assert(
+                Debug.Assert(vertices != null);
+                Debug.Assert(
                     _reader.NodeType == XmlNodeType.Element
                     && _reader.Name == NodeTag
                     && _reader.NamespaceURI == _graphMLNamespace);
-#endif
 
                 // Get subtree
                 using (XmlReader subReader = _reader.ReadSubtree())
@@ -459,10 +455,8 @@ namespace QuikGraph.Serialization
 
             private static string ReadAttributeValue([NotNull] XmlReader reader, [NotNull] string attributeName)
             {
-                if (reader is null)
-                    throw new ArgumentNullException(nameof(reader));
-                if (attributeName is null)
-                    throw new ArgumentNullException(nameof(attributeName));
+                Debug.Assert(reader != null);
+                Debug.Assert(attributeName != null);
 
                 reader.MoveToAttribute(attributeName);
                 if (!reader.ReadAttributeValue())
@@ -540,9 +534,7 @@ namespace QuikGraph.Serialization
 
             bool result = ReadContentMethods.TryGetValue(type, out method);
 
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(!result || method != null, type.FullName);
-#endif
+            Debug.Assert(!result || method != null);
 
             return result;
         }

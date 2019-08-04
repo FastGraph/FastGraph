@@ -37,15 +37,9 @@ namespace QuikGraph.Algorithms.Observers
             [NotNull] IDistanceRelaxer distanceRelaxer,
             [NotNull] IDictionary<TVertex, double> distances)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(distanceRelaxer != null);
-            Contract.Requires(distances != null);
-#endif
-
-            EdgeWeights = edgeWeights;
-            DistanceRelaxer = distanceRelaxer;
-            Distances = distances;
+            EdgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
+            DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
+            Distances = distances ?? throw new ArgumentNullException(nameof(distances));
         }
 
         /// <summary>

@@ -24,10 +24,7 @@ namespace QuikGraph
         /// <param name="visitedGraph">Bidirectional graph.</param>
         public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
-            if (visitedGraph is null)
-                throw new ArgumentNullException(nameof(visitedGraph));
-
-            VisitedGraph = visitedGraph;
+            VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
         }
 
         /// <inheritdoc />

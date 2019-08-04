@@ -28,11 +28,8 @@ namespace QuikGraph
         /// <param name="wrappedGraph">Graph to wrap.</param>
         public ClusteredAdjacencyGraph([NotNull] AdjacencyGraph<TVertex, TEdge> wrappedGraph)
         {
-            if (wrappedGraph is null)
-                throw new ArgumentNullException(nameof(wrappedGraph));
-
             Parent = null;
-            Wrapped = wrappedGraph;
+            Wrapped = wrappedGraph ?? throw new ArgumentNullException(nameof(wrappedGraph));
             _clusters = new ArrayList();
             Collapsed = false;
         }
@@ -43,10 +40,7 @@ namespace QuikGraph
         /// <param name="parentGraph">Parent graph.</param>
         public ClusteredAdjacencyGraph([NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> parentGraph)
         {
-            if (parentGraph is null)
-                throw new ArgumentNullException(nameof(parentGraph));
-
-            Parent = parentGraph;
+            Parent = parentGraph ?? throw new ArgumentNullException(nameof(parentGraph));
             Wrapped = new AdjacencyGraph<TVertex, TEdge>(parentGraph.AllowParallelEdges);
             _clusters = new ArrayList();
         }
@@ -180,8 +174,7 @@ namespace QuikGraph
         /// <param name="vertex">Vertex to remove.</param>
         private void RemoveChildVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
             {
@@ -400,8 +393,7 @@ namespace QuikGraph
 
         private void RemoveChildEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
@@ -91,8 +92,7 @@ namespace QuikGraph.Algorithms
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -104,8 +104,7 @@ namespace QuikGraph.Algorithms
 
         private void OnCircuitEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             CircuitEdge?.Invoke(edge);
         }
@@ -117,16 +116,14 @@ namespace QuikGraph.Algorithms
 
         private void OnVisitEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             VisitEdge?.Invoke(edge);
         }
 
         private bool Search([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             foreach (TEdge edge in SelectOutEdgesNotInCircuit(vertex))
             {

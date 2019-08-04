@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -229,8 +230,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnEdgeAdded([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeAdded?.Invoke(edge);
         }
@@ -242,8 +242,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnSurplusVertexAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             SurplusVertexAdded?.Invoke(vertex);
         }
@@ -255,8 +254,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnDeficientVertexAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             DeficientVertexAdded?.Invoke(vertex);
         }

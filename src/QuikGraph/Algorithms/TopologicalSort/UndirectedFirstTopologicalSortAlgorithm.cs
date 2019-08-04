@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -55,8 +56,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
         private void OnVertexAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             VertexAdded?.Invoke(vertex);
         }
@@ -76,10 +76,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="vertices">Set of sorted vertices.</param>
         public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            SortedVertices = vertices;
+            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
             SortedVertices.Clear();
             Compute();
         }

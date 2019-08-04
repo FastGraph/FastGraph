@@ -47,13 +47,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-            if (Weights is null)
-                throw new ArgumentNullException(nameof(Weights));
-            if (distanceRelaxer is null)
-                throw new ArgumentNullException(nameof(distanceRelaxer));
-
-            Weights = edgeWeights;
-            DistanceRelaxer = distanceRelaxer;
+            Weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
+            DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
         }
 
         /// <summary>

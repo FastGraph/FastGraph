@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -78,8 +79,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnSuperSourceAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             SuperSourceAdded?.Invoke(vertex);
         }
@@ -91,8 +91,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnSuperSinkAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             SuperSinkAdded?.Invoke(vertex);
         }
@@ -104,8 +103,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void OnEdgeAdded([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeAdded?.Invoke(edge);
         }

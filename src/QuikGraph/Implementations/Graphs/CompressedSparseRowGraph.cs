@@ -29,28 +29,16 @@ namespace QuikGraph
 
             public Range(int start, int end)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(start >= 0);
-                Contract.Requires(start <= end);
-                Contract.Ensures(Contract.ValueAtReturn(out this).Start == start);
-                Contract.Ensures(Contract.ValueAtReturn(out this).End == end);
-#endif
+                if (start < 0)
+                    throw new ArgumentException("Must be positive", nameof(start));
+                if (start > end)
+                    throw new ArgumentException($"Must be less that {nameof(start)} ({start}).", nameof(end));
 
                 Start = start;
                 End = end;
             }
 
-            public int Length
-            {
-                get
-                {
-#if SUPPORTS_CONTRACTS
-                    Contract.Ensures(Contract.Result<int>() >= 0);
-#endif
-
-                    return End - Start;
-                }
-            }
+            public int Length => End - Start;
         }
 
         private CompressedSparseRowGraph(
@@ -72,10 +60,8 @@ namespace QuikGraph
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Ensures(Contract.Result<CompressedSparseRowGraph<TVertex>>() != null);
-#endif
+            if (visitedGraph is null)
+                throw new ArgumentNullException(nameof(visitedGraph));
 
             var outEdgeStartRanges = new Dictionary<TVertex, Range>(visitedGraph.VertexCount);
             var outEdges = new TVertex[visitedGraph.EdgeCount];
@@ -89,13 +75,11 @@ namespace QuikGraph
                 outEdgeStartRanges.Add(vertex, range);
                 foreach (TEdge edge in visitedGraph.OutEdges(vertex))
                     outEdges[index++] = edge.Target;
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(index == end);
-#endif
+
+                Debug.Assert(index == end);
             }
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(index == outEdges.Length);
-#endif
+
+            Debug.Assert(index == outEdges.Length);
 
             return new CompressedSparseRowGraph<TVertex>(outEdgeStartRanges, outEdges);
         }

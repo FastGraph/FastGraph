@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Services;
@@ -93,10 +94,8 @@ namespace QuikGraph.Serialization
 
         private void OnFormatNode([NotNull] TVertex vertex, [NotNull] DirectedGraphNode node)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-            if (node is null)
-                throw new ArgumentNullException(nameof(node));
+            Debug.Assert(vertex != null);
+            Debug.Assert(node != null);
 
             FormatNode?.Invoke(vertex, node);
         }
@@ -108,10 +107,8 @@ namespace QuikGraph.Serialization
 
         private void OnFormatEdge([NotNull] TEdge edge, [NotNull] DirectedGraphLink link)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
-            if (link is null)
-                throw new ArgumentNullException(nameof(link));
+            Debug.Assert(edge != null);
+            Debug.Assert(link != null);
 
             FormatEdge?.Invoke(edge, link);
         }

@@ -35,10 +35,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
             [NotNull, ItemNotNull] IList<TVertex> vertices)
             : base(visitedGraph)
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            SortedVertices = vertices;
+            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
         }
 
         /// <summary>
@@ -69,10 +66,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="vertices">Set of sorted vertices.</param>
         public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            SortedVertices = vertices;
+            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
             SortedVertices.Clear();
             Compute();
         }

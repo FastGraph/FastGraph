@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
@@ -30,15 +28,12 @@ namespace QuikGraph.Predicates
             [NotNull] VertexPredicate<TVertex> vertexPredicate,
             [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(baseGraph != null);
-            Contract.Requires(vertexPredicate != null);
-            Contract.Requires(edgePredicate != null);
-#endif
+            if (baseGraph == null)
+                throw new ArgumentNullException(nameof(baseGraph));
 
             BaseGraph = baseGraph;
-            VertexPredicate = vertexPredicate;
-            EdgePredicate = edgePredicate;
+            VertexPredicate = vertexPredicate ?? throw new ArgumentNullException(nameof(vertexPredicate));
+            EdgePredicate = edgePredicate ?? throw new ArgumentNullException(nameof(edgePredicate));
         }
 
         /// <summary>

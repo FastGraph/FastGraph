@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
@@ -123,12 +125,10 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(
-                0 <= ComponentCount && ComponentCount <= VisitedGraph.VertexCount);
-            Contract.Ensures(VisitedGraph.Vertices.All(
-                vertex => 0 <= Components[vertex] && Components[vertex] < ComponentCount));
-#endif
+            Debug.Assert(0 <= ComponentCount && ComponentCount <= VisitedGraph.VertexCount);
+            Debug.Assert(
+                VisitedGraph.Vertices.All(
+                    vertex => 0 <= Components[vertex] && Components[vertex] < ComponentCount));
 
             // Shortcut for empty graph
             if (VisitedGraph.IsVerticesEmpty)
@@ -196,9 +196,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             {
                 --ComponentCount;
 
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(ComponentCount > 0);
-#endif
+                Debug.Assert(ComponentCount > 0);
                 if (_currentComponent > otherComponent)
                 {
                     _componentEquivalences[_currentComponent] = otherComponent;

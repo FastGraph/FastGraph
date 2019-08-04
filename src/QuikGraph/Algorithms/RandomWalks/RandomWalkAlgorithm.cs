@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.RandomWalks
@@ -35,10 +36,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
             : base(null, visitedGraph)
         {
-            if (edgeChain is null)
-                throw new ArgumentNullException(nameof(edgeChain));
-
-            EdgeChain = edgeChain;
+            EdgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
         }
 
         /// <summary>
@@ -60,8 +58,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnStartVertex([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             StartVertex?.Invoke(vertex);
         }
@@ -73,8 +70,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnEndVertex(TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             EndVertex?.Invoke(vertex);
         }
@@ -86,8 +82,7 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }

@@ -26,12 +26,7 @@ namespace QuikGraph
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
             : base(tryGetOutEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(vertices.All(vertex => tryGetOutEdges(vertex, out _)));
-#endif
-
-            _vertices = vertices;
+            _vertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
         }
 
         #region IVertexSet<TVertex>

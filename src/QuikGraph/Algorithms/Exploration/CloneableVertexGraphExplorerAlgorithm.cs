@@ -1,6 +1,7 @@
 #if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -95,8 +96,7 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnVertexDiscovered([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             VisitedGraph.AddVertex(vertex);
             _unExploredVertices.Enqueue(vertex);
@@ -111,8 +111,7 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -124,8 +123,7 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnBackEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             BackEdge?.Invoke(edge);
         }
@@ -137,8 +135,7 @@ namespace QuikGraph.Algorithms.Exploration
 
         private void OnEdgeSkipped([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeSkipped?.Invoke(edge);
         }

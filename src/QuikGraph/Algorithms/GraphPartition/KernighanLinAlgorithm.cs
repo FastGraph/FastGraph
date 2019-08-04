@@ -1,6 +1,7 @@
 #if SUPPORTS_KERNIGHANLIN_ALGORITHM
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using System.Linq;
 
@@ -90,9 +91,7 @@ namespace QuikGraph.Algorithms.GraphPartition
                 }
             }
 
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(maxPair != null, "Must find a swap.");
-#endif
+            Debug.Assert(maxPair != null, "Must find a swap.");
 
             SwapVertices(_vertexSetA, maxPair.Item1, _vertexSetB, maxPair.Item2);
             swaps.Add(maxPair);
@@ -105,8 +104,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         [Pure]
         private double GetVertexCost([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             double cost = 0;
             bool vertexIsInA = _vertexSetA.Contains(vertex);
@@ -130,8 +128,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         [NotNull, ItemNotNull]
         private IEnumerable<TVertex> GetNeighbors([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             var neighbors = new HashSet<TVertex>();
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex))

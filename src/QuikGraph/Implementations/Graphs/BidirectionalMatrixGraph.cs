@@ -246,13 +246,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetInEdges(int vertex, out IEnumerable<TEdge> edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(
-                Contract.Result<bool>() == (0 <= vertex && vertex > VertexCount));
-            Contract.Ensures(
-                Contract.Result<bool>() == (Contract.ValueAtReturn(out edges) != null));
-#endif
-
             if (vertex > -1 && vertex < VertexCount)
             {
                 TEdge[] inEdges = InEdges(vertex).ToArray();
