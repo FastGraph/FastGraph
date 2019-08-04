@@ -18,7 +18,7 @@ QuikGraph comes with algorithms such as depth first search, breath first search,
 
 It was then updated to become YC.QuickGraph.
 
-This version of QuickGraph, renamed QuikGraph, is a fork of YC.QuickGraph, and I tried to clean the Core or the library to provide it as a clean NuGet package using modern C# development.
+This version of QuickGraph, renamed QuikGraph, is a fork of YC.QuickGraph, and I tried to clean the Core of the library to provide it as a clean NuGet package using modern C# development.
 
 The plan would be to fully clean the original library and all its non Core parts and unit test it more.
 
@@ -41,11 +41,14 @@ The plan would be to fully clean the original library and all its non Core parts
 
 ### Notes
 
-- It uses NUnit3 for unit testing (not published).
+It uses NUnit3 for unit testing (not published).
+
+I would be very pleased to receive pull requests to further **test** or **improve** the library.
 
 ### Where to go next?
 
-* [Documentation](https://quickgraph.codeplex.com/documentation)
+* [Documentation](https://kernelith.github.io/QuikGraph/)
+* [External Information](https://quickgraph.codeplex.com/documentation)
 
 ### Maintainer(s)
 
