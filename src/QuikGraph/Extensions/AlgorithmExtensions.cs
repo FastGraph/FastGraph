@@ -454,11 +454,8 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
-            var notRoots = new Dictionary<TVertex, bool>(graph.VertexCount);
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
+            var notRoots = new Dictionary<TVertex, bool>(graph.VertexCount);
             dfs.ExamineEdge += edge => notRoots[edge.Target] = false;
             dfs.Compute();
 

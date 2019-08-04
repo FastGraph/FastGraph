@@ -476,7 +476,7 @@ namespace QuikGraph.Serialization
         public static MethodInfo StringEqualsMethod { get; } =
             typeof(string).GetMethod(
                 "op_Equality",
-                BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,
+                BindingFlags.Static | BindingFlags.Public,
                 null,
                 new[] { typeof(string), typeof(string) },
                 null) ?? throw new InvalidOperationException("Cannot find == operator method on string.");

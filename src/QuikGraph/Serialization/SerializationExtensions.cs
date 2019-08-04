@@ -106,6 +106,27 @@ namespace QuikGraph.Serialization
             if (edgeFactory is null)
                 throw new ArgumentNullException(nameof(edgeFactory));
 
+            return DeserializeFromXmlInternal(
+                document,
+                graphXPath,
+                verticesXPath,
+                edgesXPath,
+                graphFactory,
+                vertexFactory,
+                edgeFactory);
+        }
+
+        private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
+            [NotNull] this IXPathNavigable document,
+            [NotNull] string graphXPath,
+            [NotNull] string verticesXPath,
+            [NotNull] string edgesXPath,
+            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
+            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
+            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
+            where TEdge : IEdge<TVertex>
+        {
             XPathNavigator navigator = document.CreateNavigator();
             if (navigator is null)
                 throw new InvalidOperationException("Document does not allow to get an XML navigator.");

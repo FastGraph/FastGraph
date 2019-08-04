@@ -37,8 +37,6 @@ namespace QuikGraph.Tests.Serialization
                 settings.XmlResolver = new GraphMLXmlResolver();
 #if SUPPORTS_XML_DTD_PROCESSING
                 settings.DtdProcessing = DtdProcessing.Parse;
-#else
-                settings.ProhibitDtd = false;
 #endif
                 settings.ValidationFlags = XmlSchemaValidationFlags.None;
 

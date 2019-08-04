@@ -223,15 +223,22 @@ namespace QuikGraph
             return _outEdgeStartRanges[vertex].Length;
         }
 
+        [Pure]
+        [NotNull]
+        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator(TVertex vertex)
+        {
+            Range range = _outEdgeStartRanges[vertex];
+            for (int i = range.Start; i < range.End; ++i)
+                yield return new SEquatableEdge<TVertex>(vertex, _outEdges[i]);
+        }
+
         /// <inheritdoc />
         public IEnumerable<SEquatableEdge<TVertex>> OutEdges(TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            Range range = _outEdgeStartRanges[vertex];
-            for (int i = range.Start; i < range.End; ++i)
-                yield return new SEquatableEdge<TVertex>(vertex, _outEdges[i]);
+            return OutEdgesIterator(vertex);
         }
 
         /// <inheritdoc />

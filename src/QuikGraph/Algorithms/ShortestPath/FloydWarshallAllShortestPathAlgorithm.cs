@@ -116,13 +116,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
-            if (edgeWeights is null)
-                throw new ArgumentNullException(nameof(edgeWeights));
-            if (distanceRelaxer is null)
-                throw new ArgumentNullException(nameof(distanceRelaxer));
-
-            _weights = edgeWeights;
-            _distanceRelaxer = distanceRelaxer;
+            _weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
+            _distanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
             _data = new Dictionary<SEquatableEdge<TVertex>, VertexData>();
         }
 
@@ -175,6 +170,14 @@ namespace QuikGraph.Algorithms.ShortestPath
                 return false;
             }
 
+            return TryGetPathInternal(source, target, out path);
+        }
+
+        private bool TryGetPathInternal(
+            [NotNull] TVertex source,
+            [NotNull] TVertex target,
+            out IEnumerable<TEdge> path)
+        {
 #if DEBUG && !NET20
             var set = new HashSet<TVertex> { source, target };
 #endif

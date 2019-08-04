@@ -474,6 +474,12 @@ namespace QuikGraph.Algorithms
             if (startingVertex == null)
                 throw new ArgumentNullException(nameof(startingVertex));
 
+            return TrailsInternal(startingVertex);
+        }
+
+        [NotNull, ItemNotNull]
+        private IEnumerable<ICollection<TEdge>> TrailsInternal([NotNull] TVertex startingVertex)
+        {
             int index = FindFirstEdgeInCircuit(startingVertex);
 
             // Create collections
