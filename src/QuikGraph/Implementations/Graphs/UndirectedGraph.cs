@@ -520,7 +520,7 @@ namespace QuikGraph
             {
                 if (!edge.IsSelfEdge())
                     _adjacentEdges[edge.Target].Remove(edge);
-                EdgeCount--;
+                --EdgeCount;
 
                 Debug.Assert(EdgeCount >= 0);
 

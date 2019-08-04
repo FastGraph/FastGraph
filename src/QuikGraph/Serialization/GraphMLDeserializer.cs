@@ -1,9 +1,8 @@
-
-using System.Diagnostics;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
@@ -267,12 +266,14 @@ namespace QuikGraph.Serialization
             [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
             [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(reader != null);
-            Contract.Requires(graph != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (reader is null)
+                throw new ArgumentNullException(nameof(reader));
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+            if (vertexFactory is null)
+                throw new ArgumentNullException(nameof(vertexFactory));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             var worker = new ReaderWorker(reader, graph, vertexFactory, edgeFactory);
             worker.Deserialize();
@@ -301,12 +302,10 @@ namespace QuikGraph.Serialization
                 [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
                 [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(reader != null);
-                Contract.Requires(graph != null);
-                Contract.Requires(vertexFactory != null);
-                Contract.Requires(edgeFactory != null);
-#endif
+                Debug.Assert(reader != null);
+                Debug.Assert(graph != null);
+                Debug.Assert(vertexFactory != null);
+                Debug.Assert(edgeFactory != null);
 
                 _reader = reader;
                 _graph = graph;
@@ -344,11 +343,9 @@ namespace QuikGraph.Serialization
 
             private void ReadElements()
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(
+                Debug.Assert(
                     _reader.Name == GraphTag && _reader.NamespaceURI == _graphMLNamespace,
                     "Incorrect reader position.");
-#endif
 
                 ReadDelegateCompiler.SetGraphDefault(_graph);
 
@@ -381,13 +378,11 @@ namespace QuikGraph.Serialization
 
             private void ReadEdge([NotNull] IDictionary<string, TVertex> vertices)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(vertices != null);
-                Contract.Assert(
+                Debug.Assert(vertices != null);
+                Debug.Assert(
                     _reader.NodeType == XmlNodeType.Element
                     && _reader.Name == EdgeTag
                     && _reader.NamespaceURI == _graphMLNamespace);
-#endif
 
                 // Get subtree
                 using (XmlReader subReader = _reader.ReadSubtree())

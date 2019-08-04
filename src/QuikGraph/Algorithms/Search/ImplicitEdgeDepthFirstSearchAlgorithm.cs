@@ -195,10 +195,8 @@ namespace QuikGraph.Algorithms.Search
 
         private void Visit([NotNull] TEdge startingEdge, int depth)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(startingEdge != null);
-            Contract.Requires(depth >= 0);
-#endif
+            Debug.Assert(startingEdge != null);
+            Debug.Assert(depth >= 0);
 
             if (depth > MaxDepth)
                 return;

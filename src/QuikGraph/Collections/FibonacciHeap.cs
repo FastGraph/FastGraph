@@ -159,10 +159,8 @@ namespace QuikGraph.Collections
             }
             else
             {
-#if SUPPORTS_CONTRACTS
                 // Not removing a cell so the newKey must not be null
-                Contract.Assert(newKey != null);
-#endif
+                Debug.Assert(newKey != null);
 
                 // New value is in opposite direction of Heap, cut all children violating heap condition
                 UpdateCellOppositeDirection(cell, newKey);
@@ -170,8 +168,8 @@ namespace QuikGraph.Collections
         }
 
         private void UpdateCellSameDirection(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell, 
-            [CanBeNull] TPriority newKey, 
+            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
+            [CanBeNull] TPriority newKey,
             bool deletingCell)
         {
             cell.Priority = newKey;
@@ -261,13 +259,10 @@ namespace QuikGraph.Collections
         /// <param name="cell">Cell to update.</param>
         private void UpdateCellsDegree([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(cell != null);
-            Contract.Requires(cell.Children != null);
-#endif
+            Debug.Assert(cell != null);
+            Debug.Assert(cell.Children != null);
 
             int oldDegree = cell.Degree;
-            // ReSharper disable once PossibleNullReferenceException, Justification: Checked by contract.
             cell.Degree = cell.Children.First is null
                 ? 1
                 : cell.Children.Max(x => x.Degree) + 1;
@@ -309,12 +304,7 @@ namespace QuikGraph.Collections
                 _degreeToCell.Remove(Top.Degree);
             }
 
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(Top.Children != null);
-#else
-            if (Top.Children is null)
-                throw new InvalidOperationException("Heap top item has a null children collection.");
-#endif
+            Debug.Assert(Top.Children != null);
 
             foreach (FibonacciHeapCell<TPriority, TValue> child in Top.Children)
             {
@@ -324,7 +314,7 @@ namespace QuikGraph.Collections
             _cells.MergeLists(Top.Children);
             Top.Children = null;
 
-            Count--;
+            --Count;
             UpdateNext();
 
             return result;
@@ -404,14 +394,11 @@ namespace QuikGraph.Collections
             [NotNull] FibonacciHeapCell<TPriority, TValue> parentCell,
             [NotNull] FibonacciHeapCell<TPriority, TValue> childCell)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(parentCell != null);
-            Contract.Requires(parentCell.Children != null);
-            Contract.Requires(childCell != null);
-#endif
+            Debug.Assert(parentCell != null);
+            Debug.Assert(parentCell.Children != null);
+            Debug.Assert(childCell != null);
 
             _cells.Remove(childCell);
-            // ReSharper disable once PossibleNullReferenceException, Justification: Checked by contract.
             parentCell.Children.AddLast(childCell);
             childCell.Parent = parentCell;
             childCell.Marked = false;
@@ -444,7 +431,7 @@ namespace QuikGraph.Collections
             Count += heap.Count;
         }
 
-#region IEnumerable
+        #region IEnumerable
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
@@ -452,9 +439,9 @@ namespace QuikGraph.Collections
             return GetEnumerator();
         }
 
-#endregion
+        #endregion
 
-#region IEnumerable<KeyValuePair<TKey,TValue>>
+        #region IEnumerable<KeyValuePair<TKey,TValue>>
 
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TPriority, TValue>> GetEnumerator()
@@ -477,7 +464,7 @@ namespace QuikGraph.Collections
             }
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Enumerator for this heap that <see cref="Dequeue"/> elements in the same time.
@@ -492,7 +479,7 @@ namespace QuikGraph.Collections
             }
         }
 
-#region String representation
+        #region String representation
 
         private struct CellLevel
         {
@@ -551,6 +538,6 @@ namespace QuikGraph.Collections
             return string.Join(Environment.NewLine, lines.ToArray());
         }
 
-#endregion
+        #endregion
     }
 }

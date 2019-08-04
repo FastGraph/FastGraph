@@ -144,9 +144,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
                     --InDegrees[successor];
 
-#if SUPPORTS_CONTRACTS
-                    Contract.Assert(InDegrees[successor] >= 0);
-#endif
+                    Debug.Assert(InDegrees[successor] >= 0);
 
                     _heap.Update(successor);
                 }

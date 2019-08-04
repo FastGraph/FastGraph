@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
@@ -24,12 +22,10 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         public Edge([NotNull] TVertex source, [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-            Contract.Ensures(Source.Equals(source));
-            Contract.Ensures(Target.Equals(target));
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             Source = source;
             Target = target;

@@ -24,12 +24,10 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         public SEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-            Contract.Ensures(Contract.ValueAtReturn(out this).Source.Equals(source));
-            Contract.Ensures(Contract.ValueAtReturn(out this).Target.Equals(target));
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             Source = source;
             Target = target;
@@ -51,11 +49,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(SEquatableEdge<TVertex> other)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(
-                Contract.Result<bool>() == (Source.Equals(other.Source) && Target.Equals(other.Target)));
-#endif
-
             return Source.Equals(other.Source) && Target.Equals(other.Target);
         }
 

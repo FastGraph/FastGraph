@@ -57,13 +57,8 @@ namespace QuikGraph.Collections
         /// <param name="priorityComparison">Priority comparer.</param>
         public BinaryHeap(int capacity, [NotNull] Comparison<TPriority> priorityComparison)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(capacity >= 0);
-            Contract.Requires(priorityComparison != null);
-#else
             if (capacity < 0)
-                throw new ArgumentException("Capacity must be positive.");
-#endif
+                throw new ArgumentException("Capacity must be positive.", nameof(capacity));
 
             _items = new KeyValuePair<TPriority, TValue>[capacity];
             PriorityComparison = priorityComparison ?? throw new ArgumentNullException(nameof(priorityComparison));
@@ -332,11 +327,9 @@ namespace QuikGraph.Collections
         [Pure]
         private bool LessOrEqual(int i, int j)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(i >= 0 && i < Count
-                              && j >= 0 && j < Count 
-                              && i != j);
-#endif
+            Debug.Assert(i >= 0 && i < Count 
+                         && j >= 0 && j < Count 
+                         && i != j);
 
             return PriorityComparison(_items[i].Key, _items[j].Key) <= 0;
         }
@@ -344,20 +337,14 @@ namespace QuikGraph.Collections
         [Pure]
         private bool Less(int i, int j)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(i >= 0 && i < Count
-                              && j >= 0 && j < Count);
-#endif
+            Debug.Assert(i >= 0 && i < Count && j >= 0 && j < Count);
 
             return PriorityComparison(_items[i].Key, _items[j].Key) < 0;
         }
 
         private void Swap(int i, int j)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(i >= 0 && i < Count
-                              && j >= 0 && j < Count);
-#endif
+            Debug.Assert(i >= 0 && i < Count && j >= 0 && j < Count);
 
             if (i == j)
                 return;
@@ -411,9 +398,8 @@ namespace QuikGraph.Collections
                         throw new InvalidOperationException();
                     if (_index < 0 || _index == _count)
                         throw new InvalidOperationException();
-#if SUPPORTS_CONTRACTS
-                    Contract.Assert(_index <= _count);
-#endif
+
+                    Debug.Assert(_index <= _count);
 
                     return _items[_index];
                 }

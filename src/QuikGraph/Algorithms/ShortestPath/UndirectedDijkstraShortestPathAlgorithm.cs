@@ -77,11 +77,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             for (int i = 1; i < vertices.Length; ++i)
             {
                 if (Distances[top] > Distances[vertices[i]])
-#if SUPPORTS_CONTRACTS
-                    Contract.Assert(false);
-#else
                     Debug.Assert(false);
-#endif
             }
         }
 
@@ -190,11 +186,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void ComputeFromRoot([NotNull] TVertex rootVertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(rootVertex != null);
-            Contract.Requires(VisitedGraph.ContainsVertex(rootVertex));
-            Contract.Requires(VerticesColors[rootVertex] == GraphColor.White);
-#endif
+            Debug.Assert(rootVertex != null);
+            Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
+            Debug.Assert(VerticesColors[rootVertex] == GraphColor.White);
 
             VerticesColors[rootVertex] = GraphColor.Gray;
             Distances[rootVertex] = 0;
@@ -203,10 +197,8 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void ComputeNoInit([NotNull] TVertex root)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-            Contract.Requires(VisitedGraph.ContainsVertex(root));
-#endif
+            Debug.Assert(root != null);
+            Debug.Assert(VisitedGraph.ContainsVertex(root));
 
             UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge> bfs = null;
             try

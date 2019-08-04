@@ -43,11 +43,12 @@ namespace QuikGraph.Algorithms
             int count,
             [NotNull] Random rng)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(rng != null);
-            Contract.Requires(count > 0);
-#endif
+            if (vertices is null)
+                throw new ArgumentNullException(nameof(vertices));
+            if (rng is null)
+                throw new ArgumentNullException(nameof(rng));
+            if (count <= 0)
+                throw new ArgumentException("Must be positive.", nameof(count));
 
             int i = rng.Next(count);
             foreach (TVertex vertex in vertices)
@@ -100,11 +101,12 @@ namespace QuikGraph.Algorithms
             [NotNull] Random rng)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(rng != null);
-            Contract.Requires(count > 0);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
+            if (rng is null)
+                throw new ArgumentNullException(nameof(rng));
+            if (count <= 0)
+                throw new ArgumentException("Must be positive.", nameof(count));
 
             int i = rng.Next(count);
             foreach (TEdge edge in edges)
@@ -129,6 +131,19 @@ namespace QuikGraph.Algorithms
             bool selfEdges)
             where TEdge : IEdge<TVertex>
         {
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (vertexFactory is null)
+                throw new ArgumentNullException(nameof(vertexFactory));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
+            if (rng is null)
+                throw new ArgumentNullException(nameof(rng));
+            if (vertexCount <= 0)
+                throw new ArgumentException("Must have at least one vertex.", nameof(vertexCount));
+            if (edgeCount <= 0)
+                throw new ArgumentException("Must not be negative.", nameof(edgeCount));
+
             var vertices = new TVertex[vertexCount];
             for (int i = 0; i < vertexCount; ++i)
             {
@@ -176,18 +191,6 @@ namespace QuikGraph.Algorithms
             bool selfEdges)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-            Contract.Requires(rng != null);
-            Contract.Requires(vertexCount > 0);
-            Contract.Requires(edgeCount >= 0);
-            Contract.Requires(
-                !(!graph.AllowParallelEdges && !selfEdges)
-                || edgeCount <= vertexCount * (vertexCount - 1)); // Directed graph
-#endif
-
             CreateInternal(graph, vertexFactory, edgeFactory, rng, vertexCount, edgeCount, selfEdges);
         }
 
@@ -214,18 +217,6 @@ namespace QuikGraph.Algorithms
             bool selfEdges) 
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-            Contract.Requires(rng != null);
-            Contract.Requires(vertexCount > 0);
-            Contract.Requires(edgeCount >= 0);
-            Contract.Requires(
-                !(!graph.AllowParallelEdges && !selfEdges)
-                || edgeCount <= vertexCount * (vertexCount - 1) / 2);
-#endif
-
             CreateInternal(graph, vertexFactory, edgeFactory, rng, vertexCount, edgeCount, selfEdges);
         }
     }

@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
-using QuikGraph.Contracts;
-#endif
 using QuikGraph.Collections;
-
 
 namespace QuikGraph
 {
@@ -523,10 +518,10 @@ namespace QuikGraph
             if (_vertexOutEdges[edge.Source].Remove(edge))
             {
                 _vertexInEdges[edge.Target].Remove(edge);
-                EdgeCount--;
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(EdgeCount >= 0);
-#endif
+                --EdgeCount;
+
+                Debug.Assert(EdgeCount >= 0);
+
                 OnEdgeRemoved(edge);
                 return true;
             }
@@ -698,10 +693,10 @@ namespace QuikGraph
             [NotNull] TVertex vertex, 
             [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(GraphContractHelpers.InVertexSet(this, vertex));
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             // Storing edges in local array
             IEdgeList<TVertex, TEdge> inEdges = _vertexInEdges[vertex];

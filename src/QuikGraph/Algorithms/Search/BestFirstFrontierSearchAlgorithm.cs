@@ -149,9 +149,8 @@ namespace QuikGraph.Algorithms.Search
                 }
                 else
                 {
-#if SUPPORTS_CONTRACTS
-                        Contract.Assume(edgeColor == GraphColor.Gray);
-#endif
+                    Debug.Assert(edgeColor == GraphColor.Gray);
+
                     // Edge already seen, remove it
                     operators.Remove(edge);
                 }

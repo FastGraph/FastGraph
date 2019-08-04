@@ -95,9 +95,6 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Root vertex.</param>
         public void Compute([NotNull] TVertex root)
         {
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
-
             SetRootVertex(root);
             Compute();
         }

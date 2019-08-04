@@ -222,11 +222,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         private void ComputeFromRoot([NotNull] TVertex rootVertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(rootVertex != null);
-            Contract.Requires(VisitedGraph.ContainsVertex(rootVertex));
-            Contract.Requires(VerticesColors[rootVertex] == GraphColor.White);
-#endif
+            Debug.Assert(rootVertex != null);
+            Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
+            Debug.Assert(VerticesColors[rootVertex] == GraphColor.White);
 
             VerticesColors[rootVertex] = GraphColor.Gray;
             Distances[rootVertex] = 0;

@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-#if SUPPORTS_CONTRACTS
-using System.Diagnostics.Contracts;
 using System.Linq;
-#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Services;
@@ -68,10 +65,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="target">Target vertex.</param>
         public void SetTargetVertex([NotNull] TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(target != null);
-            Contract.Requires(VisitedGraph.ContainsVertex(target));
-#endif
+            if (!VisitedGraph.ContainsVertex(target))
+                throw new ArgumentException("Target must be in the graph.", nameof(target));
 
             _target = target;
             _hasTargetVertex = true;
@@ -102,15 +97,12 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="target">Target vertex.</param>
         public void Compute(TVertex root, TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-            Contract.Requires(target != null);
-            Contract.Requires(VisitedGraph.ContainsVertex(root));
-            Contract.Requires(VisitedGraph.ContainsVertex(target));
-#endif
-
+            if (!VisitedGraph.ContainsVertex(root))
+                throw new ArgumentException("Root must be in the graph.", nameof(root));
             SetRootVertex(root);
+
             SetTargetVertex(target);
+
             Compute();
         }
 
@@ -158,10 +150,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 int startEdge = path.Count;
                 AppendShortestPath(path, successors, deviation.DeviationEdge.Target);
 
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(Math.Abs(deviation.Weight - path.Sum(e => _edgeWeights(e))) < float.Epsilon);
-                Contract.Assert(path.Count > 0);
-#endif
+                Debug.Assert(Math.Abs(deviation.Weight - path.Sum(e => _edgeWeights(e))) < float.Epsilon);
+                Debug.Assert(path.Count > 0);
 
                 // Add to list if has no cycle
                 if (!path.HasCycles<TVertex, TEdge>())
@@ -188,13 +178,11 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull] IDictionary<TVertex, double> distances,
             [NotNull] TVertex root)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(queue != null);
-            Contract.Requires(queue.Count == 0);
-            Contract.Requires(successors != null);
-            Contract.Requires(distances != null);
-            Contract.Requires(root != null);
-#endif
+            Debug.Assert(queue != null);
+            Debug.Assert(queue.Count == 0);
+            Debug.Assert(successors != null);
+            Debug.Assert(distances != null);
+            Debug.Assert(root != null);
 
             var path = new List<TEdge>();
             AppendShortestPath(path, successors, root);
@@ -261,14 +249,12 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull, ItemNotNull] TEdge[] path,
             int startEdge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(queue != null);
-            Contract.Requires(root != null);
-            Contract.Requires(distances != null);
-            Contract.Requires(path != null);
-            Contract.Requires(path[0].IsAdjacent(root));
-            Contract.Requires(0 <= startEdge && startEdge < path.Length);
-#endif
+            Debug.Assert(queue != null);
+            Debug.Assert(root != null);
+            Debug.Assert(distances != null);
+            Debug.Assert(path != null);
+            Debug.Assert(path[0].IsAdjacent(root));
+            Debug.Assert(0 <= startEdge && startEdge < path.Length);
 
             TVertex previousVertex = root;
             double previousWeight = 0;
@@ -311,12 +297,10 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull] TVertex previousVertex,
             double previousWeight)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(queue != null);
-            Contract.Requires(distances != null);
-            Contract.Requires(path != null);
-            Contract.Requires(previousVertex != null);
-#endif
+            Debug.Assert(queue != null);
+            Debug.Assert(distances != null);
+            Debug.Assert(path != null);
+            Debug.Assert(previousVertex != null);
 
             TEdge edge = path[edgeIndex];
             foreach (TEdge deviationEdge in VisitedGraph.OutEdges(previousVertex))
@@ -351,12 +335,10 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             [NotNull] IDictionary<TVertex, TEdge> successors,
             [NotNull] TVertex startVertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(path != null);
-            Contract.Requires(successors != null);
-            Contract.Requires(startVertex != null);
-            Contract.Ensures(path[path.Count - 1].Target.Equals(_target));
-#endif
+            Debug.Assert(path != null);
+            Debug.Assert(successors != null);
+            Debug.Assert(startVertex != null);
+            //Debug.Assert(path.Count == 0 || path[path.Count - 1].Target.Equals(_target));
 
             TVertex current = startVertex;
             while (successors.TryGetValue(current, out TEdge edge))
@@ -385,12 +367,10 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 [NotNull] TEdge deviationEdge,
                 double weight)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(parentPath != null);
-                Contract.Requires(0 <= deviationIndex && deviationIndex < parentPath.Length);
-                Contract.Requires(deviationEdge != null);
-                Contract.Requires(weight >= 0);
-#endif
+                Debug.Assert(parentPath != null);
+                Debug.Assert(0 <= deviationIndex && deviationIndex < parentPath.Length);
+                Debug.Assert(deviationEdge != null);
+                Debug.Assert(weight >= 0);
 
                 ParentPath = parentPath;
                 DeviationIndex = deviationIndex;

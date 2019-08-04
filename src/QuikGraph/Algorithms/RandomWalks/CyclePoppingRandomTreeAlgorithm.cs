@@ -272,10 +272,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="root">Tree starting vertex.</param>
         public void RandomTreeWithRoot([NotNull] TVertex root)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(root != null);
-            Contract.Requires(VisitedGraph.ContainsVertex(root));
-#endif
+            if (!VisitedGraph.ContainsVertex(root))
+                throw new ArgumentException("The vertex must be in the graph.", nameof(root));
 
             SetRootVertex(root);
             Compute();

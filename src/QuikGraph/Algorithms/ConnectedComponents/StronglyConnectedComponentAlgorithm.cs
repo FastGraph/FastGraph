@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-#if SUPPORTS_CONTRACTS
 using System.Linq;
-#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
@@ -22,9 +20,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class StronglyConnectedComponentsAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IVertexListGraph<TVertex, TEdge>>,
-        IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
+    public sealed class StronglyConnectedComponentsAlgorithm<TVertex, TEdge> 
+        : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>, IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         private readonly Stack<TVertex> _stack;
@@ -157,13 +154,11 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(ComponentCount >= 0);
-            Contract.Ensures(VisitedGraph.VertexCount == 0 || ComponentCount > 0);
-            Contract.Ensures(VisitedGraph.Vertices.All(vertex => Components.ContainsKey(vertex)));
-            Contract.Ensures(VisitedGraph.VertexCount == Components.Count);
-            Contract.Ensures(Components.Values.All(component => component <= ComponentCount));
-#endif
+            Debug.Assert(ComponentCount >= 0);
+            Debug.Assert(VisitedGraph.VertexCount >= 0 || ComponentCount == 0);
+            //Debug.Assert(VisitedGraph.Vertices.All(v => Components.ContainsKey(v)));
+            //Debug.Assert(VisitedGraph.VertexCount == Components.Count);
+            //Debug.Assert(Components.Values.All(c => c <= ComponentCount));
 
             ComponentsPerStep = new List<int>();
             VerticesPerStep = new List<TVertex>();

@@ -30,10 +30,8 @@ namespace QuikGraph.Serialization
         /// <param name="filePath">Path to the file to write into.</param>
         public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] string filePath)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(!string.IsNullOrEmpty(filePath));
-#endif
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             using (StreamWriter stream = File.CreateText(filePath))
                 WriteXml(graph, stream);
@@ -95,11 +93,6 @@ namespace QuikGraph.Serialization
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>([NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Ensures(Contract.Result<DirectedGraph>() != null);
-#endif
-
             return ToDirectedGraphML(
                 visitedGraph,
                 visitedGraph.GetVertexIdentity(),
@@ -120,12 +113,6 @@ namespace QuikGraph.Serialization
             [NotNull] Func<TVertex, GraphColor> vertexColors)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertexColors != null);
-            Contract.Ensures(Contract.Result<DirectedGraph>() != null);
-#endif
-
             return ToDirectedGraphML(
                 visitedGraph,
                 visitedGraph.GetVertexIdentity(),
@@ -165,13 +152,6 @@ namespace QuikGraph.Serialization
             [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertexIdentities != null);
-            Contract.Requires(edgeIdentities != null);
-            Contract.Ensures(Contract.Result<DirectedGraph>() != null);
-#endif
-
             return ToDirectedGraphML(
                 visitedGraph,
                 vertexIdentities,
@@ -200,13 +180,6 @@ namespace QuikGraph.Serialization
             [CanBeNull] Action<TEdge, DirectedGraphLink> formatEdge)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertexIdentities != null);
-            Contract.Requires(edgeIdentities != null);
-            Contract.Ensures(Contract.Result<DirectedGraph>() != null);
-#endif
-
             var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
                 visitedGraph,
                 vertexIdentities,

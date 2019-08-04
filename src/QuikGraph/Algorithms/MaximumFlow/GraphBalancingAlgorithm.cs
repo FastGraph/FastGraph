@@ -36,19 +36,19 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] VertexFactory<TVertex> vertexFactory,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-            Contract.Requires(source != null);
-            Contract.Requires(visitedGraph.ContainsVertex(source));
-            Contract.Requires(sink != null);
-            Contract.Requires(visitedGraph.ContainsVertex(sink));
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (sink == null)
+                throw new ArgumentNullException(nameof(sink));
 
-            VisitedGraph = visitedGraph;
-            VertexFactory = vertexFactory;
-            EdgeFactory = edgeFactory;
+            VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
+            VertexFactory = vertexFactory ?? throw new ArgumentNullException(nameof(vertexFactory));
+            EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
+
+            if (!VisitedGraph.ContainsVertex(source))
+                throw new ArgumentException("Source must be in the graph", nameof(source));
+            if (!VisitedGraph.ContainsVertex(sink))
+                throw new ArgumentException("Sink must be in the graph", nameof(sink));
             Source = source;
             Sink = sink;
 
@@ -79,23 +79,23 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] TVertex sink,
             [NotNull] IDictionary<TEdge, double> capacities)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-            Contract.Requires(source != null);
-            Contract.Requires(visitedGraph.ContainsVertex(source));
-            Contract.Requires(sink != null);
-            Contract.Requires(visitedGraph.ContainsVertex(sink));
-            Contract.Requires(capacities != null);
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (sink == null)
+                throw new ArgumentNullException(nameof(sink));
 
-            VisitedGraph = visitedGraph;
-            VertexFactory = vertexFactory;
-            EdgeFactory = edgeFactory;
+            VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
+            VertexFactory = vertexFactory ?? throw new ArgumentNullException(nameof(vertexFactory));
+            EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
+
+            if (!VisitedGraph.ContainsVertex(source))
+                throw new ArgumentException("Source must be in the graph", nameof(source));
+            if (!VisitedGraph.ContainsVertex(sink))
+                throw new ArgumentException("Sink must be in the graph", nameof(sink));
             Source = source;
             Sink = sink;
-            Capacities = capacities;
+
+            Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
 
             // Setting preflow = l(e) = 1
             foreach (TEdge edge in VisitedGraph.Edges)

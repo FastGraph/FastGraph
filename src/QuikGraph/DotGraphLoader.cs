@@ -1,8 +1,5 @@
 //using System;
 //using System.Collections.Generic;
-//#if SUPPORTS_CONTRACTS
-//using System.Diagnostics.Contracts;
-//#endif
 //using JetBrains.Annotations;
 
 //namespace QuikGraph
@@ -12,9 +9,6 @@
 //    /// </summary>
 //    public static class DotGraphLoader
 //    {
-//#if SUPPORTS_CONTRACTS
-//        [System.Diagnostics.Contracts.Pure]
-//#endif
 //        [Pure]
 //        [NotNull]
 //        private static TGraph LoadGraphFromDot<TVertex, TEdge, TGraph>(
@@ -48,9 +42,6 @@
 //        /// <param name="vertexFactory">Vertex factory method.</param>
 //        /// <param name="edgeFactory">Edge factory method.</param>
 //        /// <returns>A corresponding <see cref="AdjacencyGraph{TVertex,TEdge}"/>.</returns>
-//#if SUPPORTS_CONTRACTS
-//        [System.Diagnostics.Contracts.Pure]
-//#endif
 //        [Pure]
 //        [NotNull]
 //        public static AdjacencyGraph<TVertex, TEdge> LoadAdjacencyGraphFromDot<TVertex, TEdge>(
@@ -75,9 +66,6 @@
 //        /// <param name="vertexFactory">Vertex factory method.</param>
 //        /// <param name="edgeFactory">Edge factory method.</param>
 //        /// <returns>A corresponding <see cref="UndirectedGraph{TVertex,TEdge}"/>.</returns>
-//#if SUPPORTS_CONTRACTS
-//        [System.Diagnostics.Contracts.Pure]
-//#endif
 //        [Pure]
 //        [NotNull]
 //        public static UndirectedGraph<TVertex, TEdge> LoadUndirectedGraphFromDot<TVertex, TEdge>(
@@ -102,9 +90,6 @@
 //        /// <param name="vertexFactory">Vertex factory method.</param>
 //        /// <param name="edgeFactory">Edge factory method.</param>
 //        /// <returns>A corresponding <see cref="BidirectionalGraph{TVertex,TEdge}"/>.</returns>
-//#if SUPPORTS_CONTRACTS
-//        [System.Diagnostics.Contracts.Pure]
-//#endif
 //        [Pure]
 //        [NotNull]
 //        public static BidirectionalGraph<TVertex, TEdge> LoadBidirectionalGraphFromDot<TVertex, TEdge>(

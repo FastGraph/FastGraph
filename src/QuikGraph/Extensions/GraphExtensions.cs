@@ -25,11 +25,6 @@ namespace QuikGraph
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
             where TValue : IEnumerable<TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(dictionary != null);
-            Contract.Requires(dictionary.Values.All(v => v != null));
-#endif
-
             return ToVertexAndEdgeListGraph(dictionary, kv => kv.Value);
         }
 
@@ -151,12 +146,6 @@ namespace QuikGraph
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(tryGetOutEdges != null);
-            Contract.Requires(vertices.All(v => tryGetOutEdges(v, out _)));
-#endif
-
             return new DelegateVertexAndEdgeListGraph<TVertex, TEdge>(vertices, tryGetOutEdges);
         }
 
@@ -176,11 +165,6 @@ namespace QuikGraph
             [NotNull] Func<TVertex, IEnumerable<TEdge>> getOutEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-            if (getOutEdges is null)
-                throw new ArgumentNullException(nameof(getOutEdges));
-
             return ToDelegateVertexAndEdgeListGraph(vertices, ToTryFunc(getOutEdges));
         }
 
@@ -199,11 +183,6 @@ namespace QuikGraph
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
             where TValue : IEnumerable<TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(dictionary != null);
-            Contract.Requires(dictionary.Values.All(v => v != null));
-#endif
-
             return ToDelegateUndirectedGraph(dictionary, kv => kv.Value);
         }
 
@@ -263,12 +242,6 @@ namespace QuikGraph
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(tryGetAdjacentEdges != null);
-            Contract.Requires(vertices.All(v => tryGetAdjacentEdges(v, out _)));
-#endif
-
             return new DelegateUndirectedGraph<TVertex, TEdge>(vertices, tryGetAdjacentEdges, true);
         }
 
@@ -288,11 +261,6 @@ namespace QuikGraph
             [NotNull] Func<TVertex, IEnumerable<TEdge>> getAdjacentEdges)
             where TEdge : IEdge<TVertex>, IEquatable<TEdge>
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-            if (getAdjacentEdges is null)
-                throw new ArgumentNullException(nameof(getAdjacentEdges));
-
             return ToDelegateUndirectedGraph(vertices, ToTryFunc(getAdjacentEdges));
         }
 
@@ -310,17 +278,19 @@ namespace QuikGraph
         public static AdjacencyGraph<TVertex, SEquatableEdge<TVertex>> ToAdjacencyGraph<TVertex>(
             [NotNull] this TVertex[][] edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(edges.Length == 2);
-            Contract.Requires(edges[0] != null);
-            Contract.Requires(edges[1] != null);
-            Contract.Requires(edges[0].Length == edges[1].Length);
-            Contract.Ensures(Contract.Result<AdjacencyGraph<TVertex, SEquatableEdge<TVertex>>>() != null);
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
+            if (edges.Length != 2)
+                throw new ArgumentException("Must have a length of 2.", nameof(edges));
+            if (edges[0] is null)
+                throw new ArgumentNullException(nameof(edges));
+            if (edges[1] is null)
+                throw new ArgumentNullException(nameof(edges));
+            if (edges[0].Length != edges[1].Length)
+                throw new ArgumentException("Edges columns must have same size.");
 
-            var sources = edges[0];
-            var targets = edges[1];
+            TVertex[] sources = edges[0];
+            TVertex[] targets = edges[1];
             int n = sources.Length;
             var edgePairs = new List<SEquatableEdge<TVertex>>(n);
             for (int i = 0; i < n; ++i)
@@ -342,9 +312,6 @@ namespace QuikGraph
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
             return new ArrayAdjacencyGraph<TVertex, TEdge>(graph);
         }
 
@@ -361,9 +328,6 @@ namespace QuikGraph
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
             return new ArrayBidirectionalGraph<TVertex, TEdge>(graph);
         }
 
@@ -380,9 +344,6 @@ namespace QuikGraph
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
             return new ArrayUndirectedGraph<TVertex, TEdge>(graph);
         }
 
@@ -423,11 +384,6 @@ namespace QuikGraph
             bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(edges.All(e => e != null));
-#endif
-
             var graph = new UndirectedGraph<TVertex, TEdge>(allowParallelEdges);
             graph.AddVerticesAndEdgeRange(edges);
             return graph;
@@ -448,11 +404,6 @@ namespace QuikGraph
             bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
-#endif
-
             var graph = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
             graph.AddVerticesAndEdgeRange(edges);
             return graph;
@@ -473,11 +424,6 @@ namespace QuikGraph
             bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
-#endif
-
             var graph = new AdjacencyGraph<TVertex, TEdge>(allowParallelEdges);
             graph.AddVerticesAndEdgeRange(edges);
             return graph;
@@ -501,16 +447,13 @@ namespace QuikGraph
             bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(outEdgesFactory != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(vertices));
-#endif
+            if (outEdgesFactory is null)
+                throw new ArgumentNullException(nameof(outEdgesFactory));
 
             var graph = new AdjacencyGraph<TVertex, TEdge>(allowParallelEdges);
             graph.AddVertexRange(vertices);
 
-            foreach (var vertex in graph.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
                 graph.AddEdgeRange(outEdgesFactory(vertex));
 
             return graph;
@@ -534,16 +477,13 @@ namespace QuikGraph
             bool allowParallelEdges = true)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(outEdgesFactory != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(vertices));
-#endif
+            if (outEdgesFactory is null)
+                throw new ArgumentNullException(nameof(outEdgesFactory));
 
             var graph = new BidirectionalGraph<TVertex, TEdge>(allowParallelEdges);
             graph.AddVertexRange(vertices);
 
-            foreach (var vertex in graph.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
                 graph.AddEdgeRange(outEdgesFactory(vertex));
 
             return graph;

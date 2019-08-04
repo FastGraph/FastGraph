@@ -115,9 +115,7 @@
 
 //            public TimeStampObserver([NotNull, ItemNotNull] List<TVertex> vertices)
 //            {
-//#if SUPPORTS_CONTRACTS
-//                Contract.Requires(vertices != null);
-//#endif
+//                Debug.Assert(vertices != null);
 
 //                _vertices = vertices;
 //            }
@@ -125,12 +123,16 @@
 //            /// <inheritdoc />
 //            public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
 //            {
+//                Debug.Assert(algorithm != null);
+
 //                algorithm.DiscoverVertex += OnDiscoveredVertex;
 //                return Finally(() => algorithm.DiscoverVertex -= OnDiscoveredVertex);
 //            }
 
 //            private void OnDiscoveredVertex([NotNull] TVertex vertex)
 //            {
+//                Debug.Assert(vertex != null);
+
 //                _vertices.Add(vertex);
 //            }
 //        }

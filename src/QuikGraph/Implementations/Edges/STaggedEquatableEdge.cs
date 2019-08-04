@@ -77,11 +77,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(STaggedEquatableEdge<TVertex, TTag> other)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(
-                Contract.Result<bool>() == (Source.Equals(other.Source) && Target.Equals(other.Target)));
-#endif
-
             return Source.Equals(other.Source) && Target.Equals(other.Target);
         }
 

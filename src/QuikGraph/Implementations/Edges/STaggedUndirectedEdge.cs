@@ -1,9 +1,5 @@
 using System;
 using System.Diagnostics;
-#if SUPPORTS_CONTRACTS
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-#endif
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
@@ -30,13 +26,10 @@ namespace QuikGraph
         /// <param name="tag">Edge tag.</param>
         public SUndirectedTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-            Contract.Requires(Comparer<TVertex>.Default.Compare(source, target) <= 0);
-            Contract.Ensures(Contract.ValueAtReturn(out this).Source.Equals(source));
-            Contract.Ensures(Contract.ValueAtReturn(out this).Target.Equals(target));
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             Source = source;
             Target = target;

@@ -1,6 +1,4 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
@@ -27,16 +25,14 @@ namespace QuikGraph
         /// <param name="targetTerminal">The target terminal.</param>
         public TermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-            Contract.Requires(sourceTerminal >= 0);
-            Contract.Requires(targetTerminal >= 0);
-            Contract.Ensures(Source.Equals(source));
-            Contract.Ensures(Target.Equals(target));
-            Contract.Ensures(SourceTerminal.Equals(sourceTerminal));
-            Contract.Ensures(TargetTerminal.Equals(targetTerminal));
-#endif
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (sourceTerminal < 0)
+                throw new ArgumentException("Must not be negative", nameof(sourceTerminal));
+            if (targetTerminal < 0)
+                throw new ArgumentException("Must not be negative.", nameof(targetTerminal));
 
             Source = source;
             Target = target;

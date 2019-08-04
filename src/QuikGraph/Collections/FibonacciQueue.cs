@@ -53,28 +53,23 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Initializes a new instance of the <see cref="FibonacciQueue{TVertex,TDistance}"/> class.
         /// </summary>
-        /// <param name="valueCount">Number of values.</param>
-        /// <param name="values">Set of vertices (null if <paramref name="valueCount"/> is 0).</param>
+        /// <param name="capacity">Number of values.</param>
+        /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <param name="distanceComparison">Comparer of distances.</param>
         public FibonacciQueue(
-            int valueCount,
+            int capacity,
             [CanBeNull, ItemNotNull] IEnumerable<TVertex> values,
             [NotNull] Func<TVertex, TDistance> distanceFunc,
             [NotNull] Comparison<TDistance> distanceComparison)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(valueCount >= 0);
-            Contract.Requires(
-                valueCount == 0 || (values != null && valueCount == values.Count()));
-            Contract.Requires(distanceFunc != null);
-            Contract.Requires(distanceComparison != null);
-#endif
+            if (capacity < 0)
+                throw new ArgumentException("Must be positive.", nameof(capacity));
 
-            _distanceFunc = distanceFunc;
-            _cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(valueCount);
+            _distanceFunc = distanceFunc ?? throw new ArgumentNullException(nameof(distanceFunc));
+            _cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(capacity);
 
-            if (valueCount > 0 && values != null)
+            if (capacity > 0 && values != null)
             {
                 foreach (TVertex vertex in values)
                 {
@@ -159,9 +154,9 @@ namespace QuikGraph.Collections
         public TVertex Dequeue()
         {
             FibonacciHeapCell<TDistance, TVertex> cell = _heap.Top;
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(cell != null);
-#endif
+
+            if (cell is null)
+                throw new InvalidOperationException("Heap is empty.");
 
             _heap.Dequeue();
             return cell.Value;
@@ -170,9 +165,8 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public TVertex Peek()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(_heap.Top != null);
-#endif
+            if (_heap.Top is null)
+                throw new InvalidOperationException("Heap is empty.");
 
             return _heap.Top.Value;
         }

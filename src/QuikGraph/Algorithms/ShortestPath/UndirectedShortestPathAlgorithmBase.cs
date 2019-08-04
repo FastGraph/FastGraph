@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -151,15 +152,13 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
         protected bool Relax(TEdge edge, TVertex source, TVertex target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-            Contract.Requires(
+            Debug.Assert(edge != null);
+            Debug.Assert(source != null);
+            Debug.Assert(target != null);
+            Debug.Assert(
                 (edge.Source.Equals(source) && edge.Target.Equals(target))
                 ||
                 (edge.Source.Equals(target) && edge.Target.Equals(source)));
-#endif
 
             double du = Distances[source];
             double dv = Distances[target];

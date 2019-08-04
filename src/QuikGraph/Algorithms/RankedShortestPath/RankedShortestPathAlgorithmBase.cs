@@ -41,10 +41,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             get => _shortestPathCount;
             set
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(value > 1);
-                Contract.Ensures(ShortestPathCount == value);
-#endif
+                if (value <= 1)
+                    throw new ArgumentException("Must be more than 1.", nameof(value));
 
                 _shortestPathCount = value;
             }
@@ -53,17 +51,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <summary>
         /// Gets the number of shortest path found.
         /// </summary>
-        public int ComputedShortestPathCount
-        {
-            get
-            {
-#if SUPPORTS_CONTRACTS
-                Contract.Ensures(Contract.Result<int>() == ComputedShortestPaths.Count());
-#endif
-
-                return _computedShortestPaths?.Count ?? 0;
-            }
-        }
+        public int ComputedShortestPathCount => _computedShortestPaths?.Count ?? 0;
 
         [ItemNotNull]
         private List<IEnumerable<TEdge>> _computedShortestPaths;
@@ -90,12 +78,12 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="path">Path to add.</param>
         protected void AddComputedShortestPath([NotNull, ItemNotNull] IEnumerable<TEdge> path)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(path != null);
-            Contract.Requires(path.All(edge => edge != null));
-#endif
-
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
             TEdge[] pathArray = path.ToArray();
+            if (pathArray.Any(edge => edge == null))
+                throw new ArgumentException("There is at least one null edge is the path.", nameof(path));
+
             _computedShortestPaths.Add(pathArray);
         }
 

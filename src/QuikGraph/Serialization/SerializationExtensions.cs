@@ -27,11 +27,12 @@ namespace QuikGraph.Serialization
             [NotNull] Stream stream)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(stream != null);
-            Contract.Requires(stream.CanWrite);
-#endif
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
+            if (!stream.CanWrite)
+                throw new ArgumentException("Must be a writable stream", nameof(stream));
 
             var formatter = new BinaryFormatter();
             formatter.Serialize(stream, graph);
@@ -50,10 +51,10 @@ namespace QuikGraph.Serialization
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(stream != null);
-            Contract.Requires(stream.CanRead);
-#endif
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
+            if (!stream.CanRead)
+                throw new ArgumentException("Must be a readable stream", nameof(stream));
 
             var formatter = new BinaryFormatter();
             object result = formatter.Deserialize(stream);
@@ -90,15 +91,20 @@ namespace QuikGraph.Serialization
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(document != null);
-            Contract.Requires(graphXPath != null);
-            Contract.Requires(verticesXPath != null);
-            Contract.Requires(edgesXPath != null);
-            Contract.Requires(graphFactory != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (document is null)
+                throw new ArgumentNullException(nameof(document));
+            if (graphXPath is null)
+                throw new ArgumentNullException(nameof(graphXPath));
+            if (verticesXPath is null)
+                throw new ArgumentNullException(nameof(verticesXPath));
+            if (edgesXPath is null)
+                throw new ArgumentNullException(nameof(edgesXPath));
+            if (graphFactory is null)
+                throw new ArgumentNullException(nameof(graphFactory));
+            if (vertexFactory is null)
+                throw new ArgumentNullException(nameof(vertexFactory));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             XPathNavigator navigator = document.CreateNavigator();
             if (navigator is null)
@@ -151,15 +157,20 @@ namespace QuikGraph.Serialization
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(reader != null);
-            Contract.Requires(graphPredicate != null);
-            Contract.Requires(vertexPredicate != null);
-            Contract.Requires(edgePredicate != null);
-            Contract.Requires(graphFactory != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (reader is null)
+                throw new ArgumentNullException(nameof(reader));
+            if (graphPredicate is null)
+                throw new ArgumentNullException(nameof(graphPredicate));
+            if (vertexPredicate is null)
+                throw new ArgumentNullException(nameof(vertexPredicate));
+            if (edgePredicate is null)
+                throw new ArgumentNullException(nameof(edgePredicate));
+            if (graphFactory is null)
+                throw new ArgumentNullException(nameof(graphFactory));
+            if (vertexFactory is null)
+                throw new ArgumentNullException(nameof(vertexFactory));
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
 
             // Find the graph node
             TGraph graph = null;
@@ -227,16 +238,6 @@ namespace QuikGraph.Serialization
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(reader != null);
-            Contract.Requires(graphElementName != null);
-            Contract.Requires(vertexElementName != null);
-            Contract.Requires(edgeElementName != null);
-            Contract.Requires(graphFactory != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
-
             return DeserializeFromXml(
                 reader,
                 r => r.Name == graphElementName && r.NamespaceURI == namespaceUri,
@@ -319,15 +320,20 @@ namespace QuikGraph.Serialization
             where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(writer != null);
-            Contract.Requires(vertexIdentity != null);
-            Contract.Requires(edgeIdentity != null);
-            Contract.Requires(!string.IsNullOrEmpty(graphElementName));
-            Contract.Requires(!string.IsNullOrEmpty(vertexElementName));
-            Contract.Requires(!string.IsNullOrEmpty(edgeElementName));
-#endif
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+            if (writer is null)
+                throw new ArgumentNullException(nameof(writer));
+            if (vertexIdentity is null)
+                throw new ArgumentNullException(nameof(vertexIdentity));
+            if (edgeIdentity is null)
+                throw new ArgumentNullException(nameof(edgeIdentity));
+            if (string.IsNullOrEmpty(graphElementName))
+                throw new ArgumentException($"{nameof(graphElementName)} must be set.", nameof(graphElementName));
+            if (string.IsNullOrEmpty(vertexElementName))
+                throw new ArgumentException($"{nameof(vertexElementName)} must be set.", nameof(vertexElementName));
+            if (string.IsNullOrEmpty(edgeElementName))
+                throw new ArgumentException($"{nameof(edgeElementName)} must be set.", nameof(edgeElementName));
 
             writer.WriteStartElement(graphElementName, namespaceUri);
 

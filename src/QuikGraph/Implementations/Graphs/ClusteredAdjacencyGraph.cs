@@ -153,10 +153,8 @@ namespace QuikGraph
         /// <returns>The number of vertex added.</returns>
         public virtual int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertices != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(vertices));
-#endif
+            if (vertices is null)
+                throw new ArgumentNullException(nameof(vertices));
 
             int count = 0;
             foreach (TVertex vertex in vertices)
@@ -338,10 +336,8 @@ namespace QuikGraph
         /// <returns>The number of edges added.</returns>
         public int AddVerticesAndEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
 
             int count = 0;
             foreach (TEdge edge in edges)
@@ -376,10 +372,8 @@ namespace QuikGraph
         /// <returns>The number of edges successfully added to this graph.</returns>
         public int AddEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edges != null);
-            Contract.Requires(EnumerableContract.ElementsNotNull(edges));
-#endif
+            if (edges is null)
+                throw new ArgumentNullException(nameof(edges));
 
             int count = 0;
             foreach (TEdge edge in edges)

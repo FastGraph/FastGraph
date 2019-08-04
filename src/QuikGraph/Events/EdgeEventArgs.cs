@@ -20,12 +20,8 @@ namespace QuikGraph
         /// <param name="edge">The edge.</param>
         public EdgeEventArgs([NotNull] TEdge edge)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(edge != null);
-#else
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
-#endif
 
             Edge = edge;
         }

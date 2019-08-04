@@ -1,10 +1,9 @@
-
-using JetBrains.Annotations;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 
 namespace QuikGraph.Serialization
@@ -36,10 +35,8 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(filePath != null);
-            Contract.Requires(filePath.Length > 0);
-#endif
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             var settings = new XmlWriterSettings { Indent = true, IndentChars = "    " };
             using (XmlWriter writer = XmlWriter.Create(filePath, settings))
@@ -61,10 +58,8 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(filePath != null);
-            Contract.Requires(filePath.Length > 0);
-#endif
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             var settings = new XmlWriterSettings { Indent = true, IndentChars = "    " };
             using (XmlWriter writer = XmlWriter.Create(filePath, settings))
@@ -146,10 +141,8 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(filePath != null);
-            Contract.Requires(filePath.Length > 0);
-#endif
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             using (var reader = new StreamReader(filePath))
                 DeserializeFromGraphML(graph, reader, vertexFactory, edgeFactory);
@@ -173,12 +166,8 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(reader != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (reader is null)
+                throw new ArgumentNullException(nameof(reader));
 
             var settings = new XmlReaderSettings
             {
@@ -208,13 +197,6 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(reader != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
-
             var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
             serializer.Deserialize(reader, graph, vertexFactory, edgeFactory);
         }
@@ -238,12 +220,8 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(reader != null);
-            Contract.Requires(vertexFactory != null);
-            Contract.Requires(edgeFactory != null);
-#endif
+            if (reader is null)
+                throw new ArgumentNullException(nameof(reader));
 
             var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
             var settings = new XmlReaderSettings

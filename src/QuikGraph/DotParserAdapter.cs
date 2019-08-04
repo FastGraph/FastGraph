@@ -1,8 +1,5 @@
 //using System;
 //using System.Collections.Generic;
-//#if SUPPORTS_CONTRACTS
-//using System.Diagnostics.Contracts;
-//#endif
 //using JetBrains.Annotations;
 
 //namespace QuikGraph
@@ -22,9 +19,6 @@
 //        /// <param name="vertexFunction">Packing function (See <see cref="VertexFactory"/> class).</param>
 //        /// <param name="edgeFunction">Packing function (See <see cref="EdgeFactory{TVertex}"/> class).</param>
 //        /// <exception cref="NotImplementedException">This method is not implemented yet.</exception>
-//#if SUPPORTS_CONTRACTS
-//        [System.Diagnostics.Contracts.Pure]
-//#endif
 //        [Pure]
 //        [NotNull]
 //        internal static IMutableVertexAndEdgeSet<TVertex, TEdge> LoadDot<TVertex, TEdge>(

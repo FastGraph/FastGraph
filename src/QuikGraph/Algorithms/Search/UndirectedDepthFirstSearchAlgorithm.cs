@@ -295,11 +295,9 @@ namespace QuikGraph.Algorithms.Search
 
             public SearchFrame([NotNull] TVertex vertex, [NotNull] IEnumerator<TEdge> edges, int depth)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(vertex != null);
-                Contract.Requires(edges != null);
-                Contract.Requires(depth >= 0);
-#endif
+                Debug.Assert(vertex != null);
+                Debug.Assert(edges != null);
+                Debug.Assert(depth >= 0);
 
                 Vertex = vertex;
                 Edges = edges;

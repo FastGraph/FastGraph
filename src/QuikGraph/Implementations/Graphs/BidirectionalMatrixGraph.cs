@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-
 namespace QuikGraph
 {
     /// <summary>
@@ -27,9 +26,8 @@ namespace QuikGraph
         /// <param name="vertexCount">Number of vertices.</param>
         public BidirectionalMatrixGraph(int vertexCount)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexCount > 0);
-#endif
+            if (vertexCount <= 0)
+                throw new ArgumentException("Must be positive.", nameof(vertexCount));
 
             VertexCount = vertexCount;
             EdgeCount = 0;
@@ -299,6 +297,13 @@ namespace QuikGraph
 
         #endregion
 
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+        private void AssertIsInRange(int vertex)
+        {
+            if (vertex < 0 || vertex >= VertexCount)
+                throw new ArgumentOutOfRangeException($"Vertex must be in [0, {VertexCount - 1}].");
+        }
+
         #region IMutableBidirectionalGraph<int,TEdge>
 
         /// <summary>
@@ -310,9 +315,7 @@ namespace QuikGraph
         /// <returns>Number of edges removed.</returns>
         public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= vertex && vertex < VertexCount);
-#endif
+            AssertIsInRange(vertex);
 
             int count = 0;
             for (int i = 0; i < VertexCount; ++i)
@@ -334,9 +337,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         public void ClearInEdges(int vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= vertex && vertex < VertexCount);
-#endif
+            AssertIsInRange(vertex);
 
             for (int i = 0; i < VertexCount; ++i)
             {
@@ -352,9 +353,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         public void ClearEdges(int vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= vertex && vertex < VertexCount);
-#endif
+            AssertIsInRange(vertex);
 
             ClearInEdges(vertex);
             ClearOutEdges(vertex);
@@ -373,9 +372,7 @@ namespace QuikGraph
         /// <returns>The number of removed edges.</returns>
         public int RemoveOutEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= vertex && vertex < VertexCount);
-#endif
+            AssertIsInRange(vertex);
 
             int count = 0;
             for (int j = 0; j < VertexCount; ++j)
@@ -397,9 +394,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         public void ClearOutEdges(int vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(0 <= vertex && vertex < VertexCount);
-#endif
+            AssertIsInRange(vertex);
 
             for (int j = 0; j < VertexCount; ++j)
             {
@@ -470,7 +465,7 @@ namespace QuikGraph
             _edges[edge.Source, edge.Target] = default(TEdge);
             if (!e.Equals(default(TEdge)))
             {
-                EdgeCount--;
+                --EdgeCount;
                 OnEdgeRemoved(edge);
                 return true;
             }
@@ -511,13 +506,11 @@ namespace QuikGraph
             int edgeCount,
             [NotNull] TEdge[,] edges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexCount > 0);
-            Contract.Requires(edgeCount >= 0);
-            Contract.Requires(edges != null);
-            Contract.Requires(vertexCount == edges.GetLength(0));
-            Contract.Requires(vertexCount == edges.GetLength(1));
-#endif
+            Debug.Assert(vertexCount > 0);
+            Debug.Assert(edgeCount >= 0);
+            Debug.Assert(edges != null);
+            Debug.Assert(vertexCount == edges.GetLength(0));
+            Debug.Assert(vertexCount == edges.GetLength(1));
 
             VertexCount = vertexCount;
             EdgeCount = edgeCount;

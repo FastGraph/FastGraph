@@ -344,14 +344,13 @@ namespace QuikGraph
                     {
                         pair.Value.Remove(edge);
                         OnEdgeRemoved(edge);
-                        EdgeCount--;
+                        --EdgeCount;
                     }
                 }
             }
 
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(EdgeCount >= 0);
-#endif
+            Debug.Assert(EdgeCount >= 0);
+
             _vertexEdges.Remove(vertex);
             OnVertexRemoved(vertex);
 
@@ -482,9 +481,8 @@ namespace QuikGraph
             {
                 --EdgeCount;
 
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(EdgeCount >= 0);
-#endif
+                Debug.Assert(EdgeCount >= 0);
+
                 OnEdgeRemoved(edge);
                 return true;
             }
@@ -600,10 +598,8 @@ namespace QuikGraph
             int edgeCapacity,
             bool allowParallelEdges)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertexEdges != null);
-            Contract.Requires(edgeCount >= 0);
-#endif
+            Debug.Assert(vertexEdges != null);
+            Debug.Assert(edgeCount >= 0);
 
             _vertexEdges = vertexEdges;
             EdgeCount = edgeCount;

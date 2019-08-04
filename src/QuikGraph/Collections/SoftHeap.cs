@@ -111,13 +111,12 @@ namespace QuikGraph.Collections
         /// <param name="comparison">Key comparer.</param>
         public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue, [NotNull] Comparison<TKey> comparison)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(keyMaxValue != null);
-            Contract.Requires(comparison != null);
-            Contract.Requires(0 < maximumErrorRate && maximumErrorRate <= 0.5);
-#endif
+            if (keyMaxValue == null)
+                throw new ArgumentNullException(nameof(keyMaxValue));
+            if (maximumErrorRate <= 0 || maximumErrorRate > 0.5)
+                throw new ArgumentOutOfRangeException(nameof(maximumErrorRate), "Must be between ]0, 0.5]");
 
-            KeyComparison = comparison;
+            KeyComparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
             KeyMaxValue = keyMaxValue;
             _header = new Head();
             _tail = new Head { Rank = int.MaxValue };
@@ -162,10 +161,10 @@ namespace QuikGraph.Collections
         /// <param name="value">Value to add.</param>
         public void Add([NotNull] TKey key, TValue value)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(key != null);
-            Contract.Requires(KeyComparison(key, KeyMaxValue) < 0);
-#endif
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+            if (KeyComparison(key, KeyMaxValue) >= 0)
+                throw new ArgumentException("Key is superior to the maximal authorized key.", nameof(key));
 
             var cell = new Cell(key, value);
             var node = new Node(cell);
@@ -181,9 +180,8 @@ namespace QuikGraph.Collections
             Head toHead = _header.Next;
             while (node.Rank > toHead.Rank)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(toHead.Next != null);
-#endif
+                Debug.Assert(toHead.Next != null);
+
                 toHead = toHead.Next;
             }
 
@@ -372,7 +370,7 @@ namespace QuikGraph.Collections
             if (head.Queue.IL is null)
                 head.Queue.ILTail = null;
 
-            Count--;
+            --Count;
             return new KeyValuePair<TKey, TValue>(min, value);
         }
 

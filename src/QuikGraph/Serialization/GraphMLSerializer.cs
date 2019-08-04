@@ -191,12 +191,14 @@ namespace QuikGraph.Serialization
             [NotNull] VertexIdentity<TVertex> vertexIdentities,
             [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(writer != null);
-            Contract.Requires(graph != null);
-            Contract.Requires(vertexIdentities != null);
-            Contract.Requires(edgeIdentities != null);
-#endif
+            if (writer is null)
+                throw new ArgumentNullException(nameof(writer));
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
+            if (vertexIdentities is null)
+                throw new ArgumentNullException(nameof(vertexIdentities));
+            if (edgeIdentities is null)
+                throw new ArgumentNullException(nameof(edgeIdentities));
 
             var worker = new WriterWorker(this, writer, graph, vertexIdentities, edgeIdentities);
             worker.Serialize();
@@ -221,13 +223,11 @@ namespace QuikGraph.Serialization
                 [NotNull] VertexIdentity<TVertex> vertexIdentities,
                 [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
             {
-#if SUPPORTS_CONTRACTS
-                Contract.Requires(serializer != null);
-                Contract.Requires(writer != null);
-                Contract.Requires(graph != null);
-                Contract.Requires(vertexIdentities != null);
-                Contract.Requires(edgeIdentities != null);
-#endif
+                Debug.Assert(serializer != null);
+                Debug.Assert(writer != null);
+                Debug.Assert(graph != null);
+                Debug.Assert(vertexIdentities != null);
+                Debug.Assert(edgeIdentities != null);
 
                 _serializer = serializer;
                 _writer = writer;

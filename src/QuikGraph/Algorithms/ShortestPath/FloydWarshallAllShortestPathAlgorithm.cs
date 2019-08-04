@@ -185,9 +185,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             while (todo.Count > 0)
             {
                 SEquatableEdge<TVertex> current = todo.Pop();
-#if SUPPORTS_CONTRACTS
-                Contract.Assert(!current.Source.Equals(current.Target));
-#endif
+
+                Debug.Assert(!current.Source.Equals(current.Target));
 
                 if (_data.TryGetValue(current, out VertexData data))
                 {
@@ -199,8 +198,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                     {
                         if (data.TryGetPredecessor(out TVertex intermediate))
                         {
-#if SUPPORTS_CONTRACTS && DEBUG && !NET20
-                            Contract.Assert(set.Add(intermediate));
+#if DEBUG && !NET20
+                            Debug.Assert(set.Add(intermediate));
 #endif
 
                             todo.Push(new SEquatableEdge<TVertex>(intermediate, current.Target));
@@ -208,11 +207,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                         }
                         else
                         {
-#if SUPPORTS_CONTRACTS
-                            Contract.Assert(false, "Cannot find predecessor.");
-#else
                             throw new InvalidOperationException("Cannot find predecessor.");
-#endif
                         }
                     }
                 }
@@ -224,10 +219,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                 }
             }
 
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(todo.Count == 0);
-            Contract.Assert(edges.Count > 0);
-#endif
+            Debug.Assert(todo.Count == 0);
+            Debug.Assert(edges.Count > 0);
 
             path = edges;
             return true;

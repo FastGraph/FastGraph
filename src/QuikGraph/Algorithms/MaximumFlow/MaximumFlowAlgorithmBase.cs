@@ -32,10 +32,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
-            if (capacities is null)
-                throw new ArgumentNullException(nameof(capacities));
-
-            Capacities = capacities;
+            Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
             EdgeFactory = edgeFactory;
         }
 
@@ -114,6 +111,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <returns>Maximum flow value.</returns>
         public double Compute([NotNull] TVertex source, [NotNull] TVertex sink)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (sink == null)
+                throw new ArgumentNullException(nameof(sink));
+
             Source = source;
             Sink = sink;
 

@@ -150,12 +150,10 @@ namespace QuikGraph.Algorithms.GraphPartition
             [NotNull, ItemNotNull] ISet<TVertex> setB,
             [NotNull] TVertex vertexB)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(setA != null);
-            Contract.Requires(vertexA != null);
-            Contract.Requires(setB != null);
-            Contract.Requires(vertexB != null);
-#endif
+            Debug.Assert(setA != null);
+            Debug.Assert(vertexA != null);
+            Debug.Assert(setB != null);
+            Debug.Assert(vertexB != null);
 
             if (!setA.Contains(vertexA)
                 || setA.Contains(vertexB)

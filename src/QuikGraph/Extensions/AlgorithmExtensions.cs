@@ -36,10 +36,8 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public static Func<TKey, TValue> GetIndexer<TKey, TValue>([NotNull] IDictionary<TKey, TValue> dictionary)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(dictionary != null);
-            Contract.Ensures(Contract.Result<Func<TKey, TValue>>() != null);
-#endif
+            if (dictionary is null)
+                throw new ArgumentNullException(nameof(dictionary));
 
 #if SUPPORTS_TYPE_FULL_FEATURES
             // ReSharper disable once PossibleNullReferenceException, Justification: Dictionary has the [] operator called "Item".
@@ -163,13 +161,6 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(root != null);
-            Contract.Requires(graph.ContainsVertex(root));
-            Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
-#endif
-
             var algorithm = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(graph);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, BreadthFirstSearchAlgorithm<TVertex, TEdge>>(
                 root,
@@ -193,13 +184,6 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(root != null);
-            Contract.Requires(graph.ContainsVertex(root));
-            Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
-#endif
-
             var algorithm = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, DepthFirstSearchAlgorithm<TVertex, TEdge>>(
                 root,
@@ -246,14 +230,6 @@ namespace QuikGraph.Algorithms
             [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(root != null);
-            Contract.Requires(edgeChain != null);
-            Contract.Requires(graph.ContainsVertex(root));
-            Contract.Ensures(Contract.Result<TryFunc<TVertex, IEnumerable<TEdge>>>() != null);
-#endif
-
             var algorithm = new CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>(graph, edgeChain);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>>(
                 root,
@@ -281,13 +257,6 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (edgeWeights is null)
-                throw new ArgumentNullException(nameof(edgeWeights));
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
-
             var algorithm = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, DijkstraShortestPathAlgorithm<TVertex, TEdge>>(
                 root,
@@ -313,13 +282,6 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (edgeWeights is null)
-                throw new ArgumentNullException(nameof(edgeWeights));
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
-
             var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
@@ -350,13 +312,6 @@ namespace QuikGraph.Algorithms
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(costHeuristic != null);
-            Contract.Requires(root != null);
-#endif
-
             var algorithm = new AStarShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights, costHeuristic);
             return RunDirectedRootedAlgorithm<TVertex, TEdge, AStarShortestPathAlgorithm<TVertex, TEdge>>(
                 root,
@@ -456,14 +411,6 @@ namespace QuikGraph.Algorithms
             int maxCount)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeWeights != null);
-            Contract.Requires(root != null && graph.ContainsVertex(root));
-            Contract.Requires(target != null && graph.ContainsVertex(target));
-            Contract.Requires(maxCount > 1);
-#endif
-
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights)
             {
                 ShortestPathCount = maxCount
@@ -793,11 +740,6 @@ namespace QuikGraph.Algorithms
             [NotNull] IDictionary<TVertex, int> components)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (components is null)
-                throw new ArgumentNullException(nameof(components));
-
             var algorithm = new ConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
             algorithm.Compute();
             return algorithm.ComponentCount;
@@ -817,9 +759,6 @@ namespace QuikGraph.Algorithms
             [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
             var incrementalComponents = new IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             incrementalComponents.Compute();
 
@@ -839,11 +778,6 @@ namespace QuikGraph.Algorithms
             [NotNull] IDictionary<TVertex, int> components)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Ensures(components != null);
-#endif
-
             var algorithm = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
             algorithm.Compute();
             return algorithm.ComponentCount;
@@ -1178,17 +1112,20 @@ namespace QuikGraph.Algorithms
             [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(root != null);
-            Contract.Requires(pairs != null);
-            Contract.Requires(graph.ContainsVertex(root));
-            Contract.Requires(pairs.All(pair => graph.ContainsVertex(pair.Source)));
-            Contract.Requires(pairs.All(pair => graph.ContainsVertex(pair.Target)));
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (!graph.ContainsVertex(root))
+                throw new ArgumentException($"{nameof(root)} must be in the {nameof(graph)}.", nameof(root));
+            if (pairs is null)
+                throw new ArgumentNullException(nameof(pairs));
+            SEquatableEdge<TVertex>[] pairsArray = pairs.ToArray();
+            if (pairsArray.Any(pair => !graph.ContainsVertex(pair.Source)))
+                throw new ArgumentException($"All pairs sources must be in the {nameof(graph)}.", nameof(pairs));
+            if (pairsArray.Any(pair => !graph.ContainsVertex(pair.Target)))
+                throw new ArgumentException($"All pairs targets must be in the {nameof(graph)}.", nameof(pairs));
 
             var algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge>(graph);
-            algorithm.Compute(root, pairs);
+            algorithm.Compute(root, pairsArray);
 
             var ancestors = algorithm.Ancestors;
             return (SEquatableEdge<TVertex> pair, out TVertex vertex) => ancestors.TryGetValue(pair, out vertex);
@@ -1224,15 +1161,8 @@ namespace QuikGraph.Algorithms
             [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(edgeCapacities != null);
-            Contract.Requires(source != null);
-            Contract.Requires(sink != null);
-            Contract.Requires(!source.Equals(sink));
-            Contract.Requires(edgeFactory != null);
-            Contract.Requires(reversedEdgeAugmentorAlgorithm != null);
-#endif
+            if (Equals(source, sink))
+                throw new ArgumentException($"{nameof(source)} and {nameof(sink)} must be different.");
 
             // Compute maximum flow
             var flow = new EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>(
@@ -1297,15 +1227,17 @@ namespace QuikGraph.Algorithms
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
             [NotNull, InstantHandle] Func<TVertex, TVertex> vertexCloner,
             [NotNull, InstantHandle] Func<TEdge, TVertex, TVertex, TEdge> edgeCloner,
-            IMutableVertexAndEdgeSet<TVertex, TEdge> clone)
+            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> clone)
             where TEdge : IEdge<TVertex>
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(graph != null);
-            Contract.Requires(vertexCloner != null);
-            Contract.Requires(edgeCloner != null);
-            Contract.Requires(clone != null);
-#endif
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+            if (vertexCloner is null)
+                throw new ArgumentNullException(nameof(vertexCloner));
+            if (edgeCloner is null)
+                throw new ArgumentNullException(nameof(edgeCloner));
+            if (clone is null)
+                throw new ArgumentNullException(nameof(clone));
 
             var vertexClones = new Dictionary<TVertex, TVertex>(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)

@@ -29,16 +29,8 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
-
             if (Comparer<TVertex>.Default.Compare(source, target) > 0)
-            {
-                throw new ArgumentException("source cannot be greater than target in SEquatableUndirectedEdge");
-            }
-
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(Contract.ValueAtReturn(out this).Source.Equals(source));
-            Contract.Ensures(Contract.ValueAtReturn(out this).Target.Equals(target));
-#endif
+                throw new ArgumentException($"{nameof(source)} must be lower or equals to {nameof(target)}.");
 
             Source = source;
             Target = target;
@@ -60,11 +52,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(SEquatableUndirectedEdge<TVertex> other)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(
-                Contract.Result<bool>() == (Source.Equals(other.Source) && Target.Equals(other.Target)));
-#endif
-
             return Source.Equals(other.Source) && Target.Equals(other.Target);
         }
 

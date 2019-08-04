@@ -141,8 +141,6 @@ namespace QuikGraph.Algorithms
         /// <param name="pairs">Vertices pairs.</param>
         public void Compute([NotNull] TVertex root, [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
             if (pairs is null)
                 throw new ArgumentNullException(nameof(pairs));
 

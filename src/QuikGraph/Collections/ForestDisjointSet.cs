@@ -58,9 +58,8 @@ namespace QuikGraph.Collections
         /// <param name="capacity">Element capacity.</param>
         public ForestDisjointSet(int capacity)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(capacity >= 0 && capacity < int.MaxValue);
-#endif
+            if (capacity < 0 || capacity >= int.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(capacity));
 
             _elements = new Dictionary<T, Element>(capacity);
             SetCount = 0;
@@ -178,15 +177,9 @@ namespace QuikGraph.Collections
 
         private bool Union([NotNull] Element left, [NotNull] Element right)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(left != null);
-            Contract.Requires(right != null);
-            Contract.Ensures(
-                Contract.Result<bool>()
-                ? Contract.OldValue(SetCount) - 1 == SetCount
-                : Contract.OldValue(SetCount) == SetCount);
-            Contract.Ensures(FindNoCompression(left) == FindNoCompression(right));
-#endif
+            Debug.Assert(left != null);
+            Debug.Assert(right != null);
+            //Debug.Assert(FindNoCompression(left) == FindNoCompression(right));
 
             // Shortcut when already unioned
             if (left == right)
@@ -214,7 +207,7 @@ namespace QuikGraph.Collections
                 return false; // Do not update the SetCount
             }
 
-            SetCount--;
+            --SetCount;
             return true;
         }
     }

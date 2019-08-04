@@ -61,10 +61,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if the distance was found, false otherwise.</returns>
         public bool TryGetDistance([NotNull] TVertex vertex, out double distance)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(vertex != null);
-            Contract.Assert(Distances != null);
-#endif
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+            if (Distances is null)
+                throw new InvalidOperationException("Runt the algorithm before.");
 
             return Distances.TryGetValue(vertex, out distance);
         }
@@ -119,10 +119,6 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Assert(Distances != null);
-#endif
-
             return VerticesColors[vertex];
         }
 

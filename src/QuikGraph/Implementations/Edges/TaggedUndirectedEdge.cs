@@ -25,10 +25,6 @@ namespace QuikGraph
         public TaggedUndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
             : base(source, target)
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Ensures(Equals(Tag, tag));
-#endif
-
             _tag = tag;
         }
 

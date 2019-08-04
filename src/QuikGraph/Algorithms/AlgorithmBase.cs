@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -230,9 +231,7 @@ namespace QuikGraph.Algorithms
 
         private void BeginComputation()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(State == ComputationState.NotRunning);
-#endif
+            Debug.Assert(State == ComputationState.NotRunning);
 
             lock (SyncRoot)
             {
@@ -264,10 +263,7 @@ namespace QuikGraph.Algorithms
 
         private void EndComputation()
         {
-#if SUPPORTS_CONTRACTS
-            Contract.Requires(
-                State == ComputationState.Running || State == ComputationState.Aborted);
-#endif
+            Debug.Assert(State == ComputationState.Running || State == ComputationState.Aborted);
 
             lock (SyncRoot)
             {

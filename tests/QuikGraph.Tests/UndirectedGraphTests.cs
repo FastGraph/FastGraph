@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
 
@@ -27,9 +26,6 @@ namespace QuikGraph.Tests
         [Test]
         public void ContainsEdge_UndirectedEdge()
         {
-            // ReSharper disable once ObjectCreationAsStatement
-            Assert.Throws<ArgumentException>(() => new SEquatableUndirectedEdge<int>(2, 1));
-
             var graph = new UndirectedGraph<int, IEdge<int>>();
             var e12 = new SEquatableUndirectedEdge<int>(1, 2);
             var f12 = new SEquatableUndirectedEdge<int>(1, 2);
