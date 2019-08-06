@@ -17,6 +17,17 @@ namespace QuikGraph
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TermEdge{TVertex}"/> class
+        /// using source/target vertices and zero terminals.
+        /// </summary>
+        /// <param name="source">The source vertex.</param>
+        /// <param name="target">The target vertex.</param>
+        public TermEdge([NotNull] TVertex source, [NotNull] TVertex target)
+            : this(source, target, 0, 0)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TermEdge{TVertex}"/> class
         /// using source/target vertices and source/target terminals.
         /// </summary>
         /// <param name="source">The source vertex.</param>
@@ -38,17 +49,6 @@ namespace QuikGraph
             Target = target;
             SourceTerminal = sourceTerminal;
             TargetTerminal = targetTerminal;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TermEdge{TVertex}"/> class
-        /// using source/target vertices and zero terminals.
-        /// </summary>
-        /// <param name="source">The source vertex.</param>
-        /// <param name="target">The target vertex.</param>
-        public TermEdge(TVertex source, TVertex target)
-            : this(source, target, 0, 0)
-        {
         }
 
         /// <inheritdoc />

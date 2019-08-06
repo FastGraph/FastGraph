@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -34,6 +35,8 @@ namespace QuikGraph
         /// <param name="args">Event arguments.</param>
         protected virtual void OnTagChanged([NotNull] EventArgs args)
         {
+            Debug.Assert(args != null);
+
             TagChanged?.Invoke(this, args);
         }
 

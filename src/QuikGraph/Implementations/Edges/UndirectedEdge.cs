@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -19,7 +20,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
-        public UndirectedEdge(TVertex source, TVertex target)
+        public UndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

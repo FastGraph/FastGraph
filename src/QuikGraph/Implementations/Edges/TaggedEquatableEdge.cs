@@ -34,8 +34,10 @@ namespace QuikGraph
         /// Event invoker for <see cref="TagChanged"/> event.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        protected virtual void OnTagChanged(EventArgs args)
+        protected virtual void OnTagChanged([NotNull] EventArgs args)
         {
+            Debug.Assert(args != null);
+
             TagChanged?.Invoke(this, args);
         }
 

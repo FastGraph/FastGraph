@@ -16,6 +16,17 @@ namespace QuikGraph
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EquatableTermEdge{TVertex}"/> class
+        /// using source/target vertices and zero terminals.
+        /// </summary>
+        /// <param name="source">The source vertex.</param>
+        /// <param name="target">The target vertex.</param>
+        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target)
+            : base(source, target)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EquatableTermEdge{TVertex}"/> class
         /// using source/target vertices and source/target terminals.
         /// </summary>
         /// <param name="source">The source vertex.</param>
@@ -24,17 +35,6 @@ namespace QuikGraph
         /// <param name="targetTerminal">The target terminal.</param>
         public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
             : base(source, target, sourceTerminal, targetTerminal)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EquatableTermEdge{TVertex}"/> class
-        /// using source/target vertices and zero terminals.
-        /// </summary>
-        /// <param name="source">The source vertex.</param>
-        /// <param name="target">The target vertex.</param>
-        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target)
-            : base(source, target)
         {
         }
 

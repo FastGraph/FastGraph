@@ -27,8 +27,8 @@ namespace QuikGraph.Tests
         public void ContainsEdge_UndirectedEdge()
         {
             var graph = new UndirectedGraph<int, IEdge<int>>();
-            var e12 = new SEquatableUndirectedEdge<int>(1, 2);
-            var f12 = new SEquatableUndirectedEdge<int>(1, 2);
+            var e12 = new EquatableUndirectedEdge<int>(1, 2);
+            var f12 = new EquatableUndirectedEdge<int>(1, 2);
 
             graph.AddVerticesAndEdge(e12);
 

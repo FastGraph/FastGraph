@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
 
 namespace QuikGraph.Tests
 {
