@@ -79,7 +79,7 @@ namespace QuikGraph
         [NotNull]
         public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(
             [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             if (tryGetOutEdges is null)
                 throw new ArgumentNullException(nameof(tryGetOutEdges));
@@ -101,7 +101,7 @@ namespace QuikGraph
         public static DelegateBidirectionalIncidenceGraph<TVertex, TEdge> ToDelegateBidirectionalIncidenceGraph<TVertex, TEdge>(
             [NotNull] this TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             if (tryGetOutEdges is null)
                 throw new ArgumentNullException(nameof(tryGetOutEdges));
@@ -122,7 +122,7 @@ namespace QuikGraph
         [NotNull]
         public static DelegateIncidenceGraph<TVertex, TEdge> ToDelegateIncidenceGraph<TVertex, TEdge>(
             [NotNull] this Func<TVertex, IEnumerable<TEdge>> getOutEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             if (getOutEdges is null)
                 throw new ArgumentNullException(nameof(getOutEdges));
@@ -240,7 +240,7 @@ namespace QuikGraph
         public static DelegateUndirectedGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             return new DelegateUndirectedGraph<TVertex, TEdge>(vertices, tryGetAdjacentEdges, true);
         }
@@ -259,7 +259,7 @@ namespace QuikGraph
         public static DelegateUndirectedGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] Func<TVertex, IEnumerable<TEdge>> getAdjacentEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             return ToDelegateUndirectedGraph(vertices, ToTryFunc(getAdjacentEdges));
         }

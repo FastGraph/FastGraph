@@ -14,7 +14,7 @@ namespace QuikGraph
     [Serializable]
 #endif
     public class DelegateBidirectionalIncidenceGraph<TVertex, TEdge> : DelegateIncidenceGraph<TVertex, TEdge>, IBidirectionalIncidenceGraph<TVertex, TEdge>
-        where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+        where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateBidirectionalIncidenceGraph{TVertex,TEdge}"/> class.
