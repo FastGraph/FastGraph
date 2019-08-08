@@ -54,35 +54,14 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="AdjacencyGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
-        /// <param name="capacity">Vertex capacity.</param>
+        /// <param name="vertexCapacity">Vertex capacity.</param>
         /// <param name="edgeCapacity">Edge capacity.</param>
-        public AdjacencyGraph(bool allowParallelEdges, int capacity, int edgeCapacity)
+        public AdjacencyGraph(bool allowParallelEdges, int vertexCapacity, int edgeCapacity)
         {
             AllowParallelEdges = allowParallelEdges;
-            _vertexEdges = capacity > -1
-                ? new VertexEdgeDictionary<TVertex, TEdge>(capacity)
+            _vertexEdges = vertexCapacity > -1
+                ? new VertexEdgeDictionary<TVertex, TEdge>(vertexCapacity)
                 : new VertexEdgeDictionary<TVertex, TEdge>();
-            EdgeCapacity = edgeCapacity;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AdjacencyGraph{TVertex,TEdge}"/> class.
-        /// </summary>
-        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
-        /// <param name="capacity">Vertex capacity.</param>
-        /// <param name="edgeCapacity">Edge capacity.</param>
-        /// <param name="vertexEdgesDictionaryFactory">Factory method to create vertices and their edges.</param>
-        public AdjacencyGraph(
-            bool allowParallelEdges,
-            int capacity,
-            int edgeCapacity,
-            [NotNull, InstantHandle] Func<int, IVertexEdgeDictionary<TVertex, TEdge>> vertexEdgesDictionaryFactory)
-        {
-            if (vertexEdgesDictionaryFactory is null)
-                throw new ArgumentNullException(nameof(vertexEdgesDictionaryFactory));
-
-            AllowParallelEdges = allowParallelEdges;
-            _vertexEdges = vertexEdgesDictionaryFactory(capacity);
             EdgeCapacity = edgeCapacity;
         }
 
@@ -92,9 +71,16 @@ namespace QuikGraph
         public int EdgeCapacity { get; set; }
 
         /// <summary>
-        /// Gives the type of edges.
+        /// Gets the type of vertices.
         /// </summary>
-        public static Type EdgeType => typeof(TEdge);
+        [NotNull]
+        public Type VertexType => typeof(TVertex);
+
+        /// <summary>
+        /// Gets the type of edges.
+        /// </summary>
+        [NotNull]
+        public Type EdgeType => typeof(TEdge);
 
         #region IGraph<TVertex,TEdge>
 
@@ -109,7 +95,7 @@ namespace QuikGraph
         #region IVertexSet<TVertex>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => _vertexEdges.Count == 0;
+        public bool IsVerticesEmpty => VertexCount == 0;
 
         /// <inheritdoc />
         public int VertexCount => _vertexEdges.Count;
@@ -287,9 +273,12 @@ namespace QuikGraph
         {
             if (vertices is null)
                 throw new ArgumentNullException(nameof(vertices));
+            TVertex[] verticesArray = vertices.ToArray();
+            if (verticesArray.Any(v => v == null))
+                throw new ArgumentNullException(nameof(vertices), "At least one vertex is null.");
 
             int count = 0;
-            foreach (TVertex vertex in vertices)
+            foreach (TVertex vertex in verticesArray)
             {
                 if (AddVertex(vertex))
                     ++count;
@@ -307,8 +296,7 @@ namespace QuikGraph
         /// <param name="vertex">Added vertex.</param>
         protected virtual void OnVertexAdded([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             VertexAdded?.Invoke(vertex);
         }
@@ -330,15 +318,14 @@ namespace QuikGraph
             EdgeCount -= edges.Count;
             edges.Clear();
 
-
             // Run over edges and remove each edge touching the vertex
-            foreach (var pair in _vertexEdges)
+            foreach (KeyValuePair<TVertex, IEdgeList<TVertex, TEdge>> pair in _vertexEdges)
             {
                 if (pair.Key.Equals(vertex))
                     continue; // We've already
 
                 // Collect edges to remove
-                foreach (var edge in pair.Value.Clone())
+                foreach (TEdge edge in pair.Value.Clone())
                 {
                     if (edge.Target.Equals(vertex))
                     {
@@ -366,8 +353,7 @@ namespace QuikGraph
         /// <param name="vertex">Removed vertex.</param>
         protected virtual void OnVertexRemoved([NotNull] TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(vertex != null);
 
             VertexRemoved?.Invoke(vertex);
         }
@@ -399,17 +385,20 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Adds a range of edges to the graph
+        /// Adds a range of edges to the graph.
         /// </summary>
-        /// <param name="edges"></param>
-        /// <returns>the count edges that were added</returns>
+        /// <param name="edges">Edges to add.</param>
+        /// <returns>The number of edges that were added.</returns>
         public int AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
+            TEdge[] edgesArray = edges.ToArray();
+            if (edgesArray.Any(e => e == null))
+                throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
             int count = 0;
-            foreach (TEdge edge in edges)
+            foreach (TEdge edge in edgesArray)
             {
                 if (AddVerticesAndEdge(edge))
                     ++count;
@@ -444,9 +433,12 @@ namespace QuikGraph
         {
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
+            TEdge[] edgesArray = edges.ToArray();
+            if (edgesArray.Any(e => e == null))
+                throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
             int count = 0;
-            foreach (TEdge edge in edges)
+            foreach (TEdge edge in edgesArray)
             {
                 if (AddEdge(edge))
                     ++count;
@@ -464,8 +456,7 @@ namespace QuikGraph
         /// <param name="edge">Added edge.</param>
         protected virtual void OnEdgeAdded([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeAdded?.Invoke(edge);
         }
@@ -499,8 +490,7 @@ namespace QuikGraph
         /// <param name="edge">Removed edge.</param>
         protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             EdgeRemoved?.Invoke(edge);
         }
@@ -584,6 +574,14 @@ namespace QuikGraph
         /// <inheritdoc />
         public void Clear()
         {
+            if (EdgeRemoved != null) // Lazily notify
+            {
+                foreach (TEdge edge in _vertexEdges.SelectMany(edges => edges.Value).Distinct())
+                    OnEdgeRemoved(edge);
+                foreach (TVertex vertex in _vertexEdges.Keys)
+                    OnVertexRemoved(vertex);
+            }
+
             _vertexEdges.Clear();
             EdgeCount = 0;
         }
