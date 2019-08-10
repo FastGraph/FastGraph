@@ -16,7 +16,7 @@
       ],
       "dest": "api",
       "properties": {
-        "TargetFramework": "net45"
+        "TargetFramework": "netstandard2.0"
       },
       "disableGitFeatures": false,
       "disableDefaultFilter": false
