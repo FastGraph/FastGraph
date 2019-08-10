@@ -3,6 +3,7 @@ using System.Text;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.TopologicalSort;
+using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -10,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="TopologicalSortAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class TopologicalSortAlgorithmTests : QuikGraphUnitTests
+    internal class TopologicalSortAlgorithmTests
     {
         #region Helpers
 

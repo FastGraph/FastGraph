@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -5,10 +9,7 @@ using QuikGraph.Algorithms.MinimumSpanningTree;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Collections;
 using QuikGraph.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
 {
@@ -16,7 +17,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
     /// Tests for <see cref="PrimMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/> and <see cref="KruskalMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MinimumSpanningTreeTests : QuikGraphUnitTests
+    internal class MinimumSpanningTreeTests
     {
         #region Helpers
 

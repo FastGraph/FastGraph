@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using QuikGraph.Serialization;
 using QuikGraph.Serialization.DirectedGraphML;
+using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 namespace QuikGraph.Tests.Serialization
 {
@@ -9,7 +10,7 @@ namespace QuikGraph.Tests.Serialization
     /// Tests for <see cref="DirectedGraphMLExtensions"/>.
     /// </summary>
     [TestFixture]
-    internal class DirectedGraphMLExtensionsTests : QuikGraphUnitTests
+    internal class DirectedGraphMLExtensionsTests
     {
         [Test]
         public void SimpleGraph()

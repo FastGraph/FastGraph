@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
     /// Tests for <see cref="KernighanLinAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class KernighanLinAlgorithmTests : QuikGraphUnitTests
+    internal class KernighanLinAlgorithmTests
     {
         [NotNull]
         private static UndirectedGraph<int, TaggedUndirectedEdge<int, double>> CreateGraph(

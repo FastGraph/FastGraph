@@ -2,6 +2,7 @@ using System.Xml;
 using System.Xml.XPath;
 using NUnit.Framework;
 using QuikGraph.Serialization;
+using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 namespace QuikGraph.Tests.Serialization
 {
@@ -9,7 +10,7 @@ namespace QuikGraph.Tests.Serialization
     /// Tests relative to XML serialization.
     /// </summary>
     [TestFixture]
-    internal class XmlSerializationTests : QuikGraphUnitTests
+    internal class XmlSerializationTests
     {
         [Test]
         public void DeserializeFromXml()

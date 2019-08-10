@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
     /// Tests for <see cref="VertexColoringAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class VertexColoringAlgorithmTests : QuikGraphUnitTests
+    internal class VertexColoringAlgorithmTests
     {
         [Test]
         public void VertexColoringComputeSimpleGraph()

@@ -5,6 +5,7 @@ using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
+using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 namespace QuikGraph.Tests.Algorithms.ShortestPath
 {
@@ -12,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class DijkstraShortestPathAlgorithmTests : QuikGraphUnitTests
+    internal class DijkstraShortestPathAlgorithmTests
     {
         #region Helpers
 

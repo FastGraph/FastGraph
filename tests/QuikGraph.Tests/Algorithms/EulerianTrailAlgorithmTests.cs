@@ -1,6 +1,4 @@
-#if SUPPORTS_SYSTEM_DELEGATES
 using System;
-#endif
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -12,14 +10,8 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EulerianTrailAlgorithmTests : QuikGraphUnitTests
+    internal class EulerianTrailAlgorithmTests
     {
-#if !SUPPORTS_SYSTEM_DELEGATES
-        // System.Core and NUnit both define this delegate that is conflicting
-        // Defining it here allows to use it without conflict.
-        private delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
-#endif
-
         #region Helpers
 
         private static void ComputeTrail<TVertex, TEdge>(
