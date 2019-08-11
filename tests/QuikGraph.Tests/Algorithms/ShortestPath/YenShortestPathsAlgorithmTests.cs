@@ -17,7 +17,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void YenZeroCaseTest()
         {
-            AdjacencyGraph<char, TaggedEquatableEdge<char, double>> graph = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
+            AdjacencyGraph<char, EquatableTaggedEdge<char, double>> graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
 
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
             Assert.Throws<KeyNotFoundException>(() => algorithm.Execute());
@@ -30,7 +30,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void YenOneVertexCaseTest()
         {
-            var graph = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
+            var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
             graph.AddVertexRange("1");
 
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '1', 10);
@@ -44,18 +44,18 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void YenLoopCaseTest()
         {
-            var graph = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
+            var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
             graph.AddVertexRange("1");
 
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '1', 10);
-            graph.AddEdge(new TaggedEquatableEdge<char, double>('1', '1', 7));
+            graph.AddEdge(new EquatableTaggedEdge<char, double>('1', '1', 7));
             Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
         }
 
         [Test]
         public void YenNormalCaseTest()
         {
-            AdjacencyGraph<char, TaggedEquatableEdge<char, double>> graph = GenerateGraph();
+            AdjacencyGraph<char, EquatableTaggedEdge<char, double>> graph = GenerateGraph();
 
             // Default weight function and default filter function case
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
@@ -75,25 +75,25 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             #region Local functions
 
-            AdjacencyGraph<char, TaggedEquatableEdge<char, double>> GenerateGraph()
+            AdjacencyGraph<char, EquatableTaggedEdge<char, double>> GenerateGraph()
             {
-                var g = new AdjacencyGraph<char, TaggedEquatableEdge<char, double>>(true);
+                var g = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
 
                 g.AddVertexRange("123456");
-                g.AddEdge(new TaggedEquatableEdge<char, double>('1', '2', 7));  // 0
-                g.AddEdge(new TaggedEquatableEdge<char, double>('1', '3', 9));  // 1
-                g.AddEdge(new TaggedEquatableEdge<char, double>('1', '6', 14)); // 2
-                g.AddEdge(new TaggedEquatableEdge<char, double>('2', '3', 10)); // 3
-                g.AddEdge(new TaggedEquatableEdge<char, double>('2', '4', 15)); // 4
-                g.AddEdge(new TaggedEquatableEdge<char, double>('3', '4', 11)); // 5
-                g.AddEdge(new TaggedEquatableEdge<char, double>('3', '6', 2));  // 6
-                g.AddEdge(new TaggedEquatableEdge<char, double>('4', '5', 6));  // 7
-                g.AddEdge(new TaggedEquatableEdge<char, double>('5', '6', 9));  // 8
+                g.AddEdge(new EquatableTaggedEdge<char, double>('1', '2', 7));  // 0
+                g.AddEdge(new EquatableTaggedEdge<char, double>('1', '3', 9));  // 1
+                g.AddEdge(new EquatableTaggedEdge<char, double>('1', '6', 14)); // 2
+                g.AddEdge(new EquatableTaggedEdge<char, double>('2', '3', 10)); // 3
+                g.AddEdge(new EquatableTaggedEdge<char, double>('2', '4', 15)); // 4
+                g.AddEdge(new EquatableTaggedEdge<char, double>('3', '4', 11)); // 5
+                g.AddEdge(new EquatableTaggedEdge<char, double>('3', '6', 2));  // 6
+                g.AddEdge(new EquatableTaggedEdge<char, double>('4', '5', 6));  // 7
+                g.AddEdge(new EquatableTaggedEdge<char, double>('5', '6', 9));  // 8
 
                 return g;
             }
 
-            void RunYenAndCheck(YenShortestPathsAlgorithm<char> yen, AdjacencyGraph<char, TaggedEquatableEdge<char, double>> g)
+            void RunYenAndCheck(YenShortestPathsAlgorithm<char> yen, AdjacencyGraph<char, EquatableTaggedEdge<char, double>> g)
             {
                 // Generate simple graph
                 // like this https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm

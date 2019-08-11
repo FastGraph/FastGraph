@@ -11,5 +11,10 @@ namespace QuikGraph.Tests
         }
 
         public int Value { get; }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

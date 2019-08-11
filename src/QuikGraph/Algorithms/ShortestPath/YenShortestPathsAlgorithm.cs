@@ -17,21 +17,21 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Class representing a sorted path.
         /// </summary>
-        public struct SortedPath : IEnumerable<TaggedEquatableEdge<TVertex, double>>
+        public struct SortedPath : IEnumerable<EquatableTaggedEdge<TVertex, double>>
         {
             [NotNull, ItemNotNull]
-            private readonly IList<TaggedEquatableEdge<TVertex, double>> _edges;
+            private readonly IList<EquatableTaggedEdge<TVertex, double>> _edges;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="SortedPath"/> struct.
             /// </summary>
-            public SortedPath([NotNull, ItemNotNull] IEnumerable<TaggedEquatableEdge<TVertex, double>> edges)
+            public SortedPath([NotNull, ItemNotNull] IEnumerable<EquatableTaggedEdge<TVertex, double>> edges)
             {
                 _edges = edges.ToList();
             }
 
             /// <inheritdoc />
-            public IEnumerator<TaggedEquatableEdge<TVertex, double>> GetEnumerator()
+            public IEnumerator<EquatableTaggedEdge<TVertex, double>> GetEnumerator()
             {
                 return _edges.GetEnumerator();
             }
@@ -47,7 +47,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         private readonly TVertex _targetVertex;
 
         [NotNull]
-        private readonly Func<TaggedEquatableEdge<TVertex, double>, double> _weights;
+        private readonly Func<EquatableTaggedEdge<TVertex, double>, double> _weights;
 
         [NotNull]
         private readonly Func<IEnumerable<SortedPath>, IEnumerable<SortedPath>> _filter;
@@ -56,10 +56,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         private readonly int _k;
 
         [NotNull]
-        private readonly AdjacencyGraph<TVertex, TaggedEquatableEdge<TVertex, double>> _graph;
+        private readonly AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> _graph;
 
         [NotNull, ItemNotNull]
-        private readonly List<TaggedEquatableEdge<TVertex, double>> _removedEdges = new List<TaggedEquatableEdge<TVertex, double>>();
+        private readonly List<EquatableTaggedEdge<TVertex, double>> _removedEdges = new List<EquatableTaggedEdge<TVertex, double>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YenShortestPathsAlgorithm{TVertex}"/> class.
@@ -74,11 +74,11 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edgeWeights">Optional function that computes the weight for a given edge.</param>
         /// <param name="filter">Optional filter of found paths.</param>
         public YenShortestPathsAlgorithm(
-            [NotNull] AdjacencyGraph<TVertex, TaggedEquatableEdge<TVertex, double>> graph,
+            [NotNull] AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
             [NotNull] TVertex source,
             [NotNull] TVertex target,
             int k,
-            [CanBeNull] Func<TaggedEquatableEdge<TVertex, double>, double> edgeWeights = null,
+            [CanBeNull] Func<EquatableTaggedEdge<TVertex, double>, double> edgeWeights = null,
             [CanBeNull] Func<IEnumerable<SortedPath>, IEnumerable<SortedPath>> filter = null)
         {
             if (graph is null)
@@ -102,7 +102,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             return paths;
         }
 
-        private static double DefaultGetWeights([NotNull] TaggedEquatableEdge<TVertex, double> edge)
+        private static double DefaultGetWeights([NotNull] EquatableTaggedEdge<TVertex, double> edge)
         {
             return edge.Tag;
         }
@@ -113,17 +113,17 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         private SortedPath? GetShortestPathInGraph(
-            [NotNull] AdjacencyGraph<TVertex, TaggedEquatableEdge<TVertex, double>> graph)
+            [NotNull] AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph)
         {
             // Compute distances between the start vertex and other
-            var algorithm = new DijkstraShortestPathAlgorithm<TVertex, TaggedEquatableEdge<TVertex, double>>(graph, _weights);
-            var recorder = new VertexPredecessorRecorderObserver<TVertex, TaggedEquatableEdge<TVertex, double>>();
+            var algorithm = new DijkstraShortestPathAlgorithm<TVertex, EquatableTaggedEdge<TVertex, double>>(graph, _weights);
+            var recorder = new VertexPredecessorRecorderObserver<TVertex, EquatableTaggedEdge<TVertex, double>>();
 
             using (recorder.Attach(algorithm))
                 algorithm.Compute(_sourceVertex);
 
             // Get shortest path from start (source) vertex to target
-            return recorder.TryGetPath(_targetVertex, out IEnumerable<TaggedEquatableEdge<TVertex, double>> path)
+            return recorder.TryGetPath(_targetVertex, out IEnumerable<EquatableTaggedEdge<TVertex, double>> path)
                 ? new SortedPath(path)
                 : (SortedPath?)null;
         }
@@ -148,8 +148,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             {
                 double minDistance = double.MaxValue;
                 SortedPath? pathSlot = null;
-                TaggedEquatableEdge<TVertex, double> removedEdge = null;
-                foreach (TaggedEquatableEdge<TVertex, double> edge in shortestWay.Value)
+                EquatableTaggedEdge<TVertex, double> removedEdge = null;
+                foreach (EquatableTaggedEdge<TVertex, double> edge in shortestWay.Value)
                 {
                     _graph.RemoveEdge(edge);
 
@@ -186,7 +186,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <returns>Removed edges.</returns>
         [NotNull, ItemNotNull]
-        public IEnumerable<TaggedEquatableEdge<TVertex, double>> RemovedEdges()
+        public IEnumerable<EquatableTaggedEdge<TVertex, double>> RemovedEdges()
         {
             return _removedEdges.AsEnumerable();
         }

@@ -50,5 +50,15 @@ namespace QuikGraph.Tests.Structures
 
             Assert.AreNotEqual(edge1, null);
         }
+
+        [Test]
+        public void ObjectToString()
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(2, 1);
+
+            Assert.AreEqual("1 -> 2", edge1.ToString());
+            Assert.AreEqual("2 -> 1", edge2.ToString());
+        }
     }
 }

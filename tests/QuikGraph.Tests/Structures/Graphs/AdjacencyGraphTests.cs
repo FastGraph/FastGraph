@@ -733,6 +733,7 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentOutOfRangeException>(() => graph1.OutEdge(vertex1, 5));
 
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph2.OutEdge(null, 0));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -771,9 +772,11 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<KeyNotFoundException>(() => graph1.OutEdges(vertex));
 
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph2.IsOutEdgesEmpty(null));
             Assert.Throws<ArgumentNullException>(() => graph2.OutDegree(null));
             Assert.Throws<ArgumentNullException>(() => graph2.OutEdges(null));
+            // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -1291,10 +1294,13 @@ namespace QuikGraph.Tests.Structures
         public void RemoveOutEdgeIf_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+
+            // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
             Assert.Throws<KeyNotFoundException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), edge => true));
+            // ReSharper restore AssignNullToNotNullAttribute
         }
 
         #endregion
@@ -1405,6 +1411,7 @@ namespace QuikGraph.Tests.Structures
         public void ClearOutEdges_Throws()
         {
             Assert.Throws<KeyNotFoundException>(() => new AdjacencyGraph<int, Edge<int>>().ClearOutEdges(1));
+            // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(null));
         }
 
@@ -1414,27 +1421,32 @@ namespace QuikGraph.Tests.Structures
         public void Clone()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
+            AssertEmptyGraph(graph);
 
             var clonedGraph = graph.Clone();
             Assert.IsNotNull(clonedGraph);
-
-            AssertEmptyGraph(graph);
             AssertEmptyGraph(clonedGraph);
 
+            clonedGraph = (AdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
+            Assert.IsNotNull(clonedGraph);
+            AssertEmptyGraph(clonedGraph);
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 3);
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3 });
-
-            clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
-
             AssertHasVertices(graph, new[] { 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
 
+            clonedGraph = graph.Clone();
+            Assert.IsNotNull(clonedGraph);
             AssertHasVertices(clonedGraph, new []{ 1, 2, 3 });
             AssertHasEdges(clonedGraph, new []{ edge1, edge2, edge3 });
+
+            clonedGraph = (AdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
+            Assert.IsNotNull(clonedGraph);
+            AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
+            AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
         }
 
         [Test]

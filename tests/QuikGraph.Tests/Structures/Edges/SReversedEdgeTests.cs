@@ -56,14 +56,20 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void Equals()
         {
-            var edge1 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
-            var edge2 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
-            var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
+            var wrappedEdge = new Edge<int>(1, 2);
+            var edge1 = new SReversedEdge<int, Edge<int>>(wrappedEdge);
+            var edge2 = new SReversedEdge<int, Edge<int>>(wrappedEdge);
+            var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
+            var edge4 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
 
             Assert.AreEqual(edge1, edge1);
-            Assert.AreNotEqual(edge1, edge2);
+            Assert.AreEqual(edge1, edge2);
+            Assert.IsTrue(edge1.Equals((object)edge2));
             Assert.AreNotEqual(edge1, edge3);
+            Assert.IsFalse(edge1.Equals((object)edge3));
+            Assert.AreNotEqual(edge1, edge4);
 
+            Assert.IsFalse(edge1.Equals(null));
             Assert.AreNotEqual(edge1, null);
         }
 
@@ -76,9 +82,39 @@ namespace QuikGraph.Tests.Structures
 
             Assert.AreEqual(edge1, edge1);
             Assert.AreEqual(edge1, edge2);
+            Assert.IsTrue(edge1.Equals((object)edge2));
             Assert.AreNotEqual(edge1, edge3);
 
+            Assert.IsFalse(edge1.Equals(null));
             Assert.AreNotEqual(edge1, null);
+        }
+
+        [Test]
+        public void Hashcode()
+        {
+            var wrappedEdge = new Edge<int>(1, 2);
+            var edge1 = new SReversedEdge<int, Edge<int>>(wrappedEdge);
+            var edge2 = new SReversedEdge<int, Edge<int>>(wrappedEdge);
+            var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
+            var edge4 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
+
+            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
+            Assert.AreNotEqual(edge1.GetHashCode(), edge3.GetHashCode());
+            Assert.AreNotEqual(edge1.GetHashCode(), edge4.GetHashCode());
+        }
+
+        [Test]
+        public void ObjectToString()
+        {
+            var edge1 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
+            var edge2 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
+            var edge3 = new SReversedEdge<int, UndirectedEdge<int>>(new UndirectedEdge<int>(1, 2));
+            var edge4 = new SReversedEdge<int, UndirectedEdge<int>>(new UndirectedEdge<int>(2, 1));
+
+            Assert.AreEqual("R(1 -> 2)", edge1.ToString());
+            Assert.AreEqual("R(2 -> 1)", edge2.ToString());
+            Assert.AreEqual("R(1 <-> 2)", edge3.ToString());
+            Assert.AreEqual("R(2 <-> 1)", edge4.ToString());
         }
     }
 }

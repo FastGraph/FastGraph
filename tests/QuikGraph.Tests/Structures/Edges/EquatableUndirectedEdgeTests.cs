@@ -46,9 +46,32 @@ namespace QuikGraph.Tests.Structures
 
             Assert.AreEqual(edge1, edge1);
             Assert.AreEqual(edge1, edge2);
+            Assert.IsTrue(edge1.Equals((object)edge2));
             Assert.AreNotEqual(edge1, edge3);
 
+            Assert.IsFalse(edge1.Equals(null));
             Assert.AreNotEqual(edge1, null);
+        }
+
+        [Test]
+        public void Hashcode()
+        {
+            var edge1 = new EquatableUndirectedEdge<int>(1, 2);
+            var edge2 = new EquatableUndirectedEdge<int>(1, 2);
+            var edge3 = new EquatableUndirectedEdge<int>(2, 1);
+
+            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
+            Assert.AreNotEqual(edge1.GetHashCode(), edge3.GetHashCode());
+        }
+
+        [Test]
+        public void ObjectToString()
+        {
+            var edge1 = new EquatableUndirectedEdge<int>(1, 2);
+            var edge2 = new EquatableUndirectedEdge<int>(2, 1);
+
+            Assert.AreEqual("1 <-> 2", edge1.ToString());
+            Assert.AreEqual("2 <-> 1", edge2.ToString());
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
+using QuikGraph.Constants;
 
 namespace QuikGraph
 {
@@ -54,6 +55,12 @@ namespace QuikGraph
                 _tag = value;
                 OnTagChanged(EventArgs.Empty);
             }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format(EdgeConstants.TaggedEdgeFormatString, Source, Target, Tag?.ToString() ?? "no tag");
         }
     }
 }

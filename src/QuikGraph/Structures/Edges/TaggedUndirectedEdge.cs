@@ -61,7 +61,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format(EdgeConstants.TaggedUndirectedEdgeFormatString, Source, Target, Tag);
+            return string.Format(EdgeConstants.TaggedUndirectedEdgeFormatString, Source, Target, Tag?.ToString() ?? "no tag");
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
+using QuikGraph.Constants;
 
 namespace QuikGraph
 {
@@ -13,15 +14,15 @@ namespace QuikGraph
     [Serializable]
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
-    public class TaggedEquatableEdge<TVertex, TTag> : EquatableEdge<TVertex>, ITagged<TTag>
+    public class EquatableTaggedEdge<TVertex, TTag> : EquatableEdge<TVertex>, ITagged<TTag>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TaggedEquatableEdge{TVertex, TTag}"/> class.
+        /// Initializes a new instance of the <see cref="EquatableTaggedEdge{TVertex,TTag}"/> class.
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
         /// <param name="tag">Edge tag.</param>
-        public TaggedEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
+        public EquatableTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
             : base(source, target)
         {
             _tag = tag;
@@ -55,6 +56,12 @@ namespace QuikGraph
                 _tag = value;
                 OnTagChanged(EventArgs.Empty);
             }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format(EdgeConstants.TaggedEdgeFormatString, Source, Target, Tag?.ToString() ?? "no tag");
         }
     }
 }

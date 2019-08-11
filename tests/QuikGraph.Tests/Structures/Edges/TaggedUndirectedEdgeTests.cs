@@ -86,5 +86,17 @@ namespace QuikGraph.Tests.Structures
             edge.Tag = tag1;
             Assert.AreEqual(3, changeCount);
         }
+
+        [Test]
+        public void ObjectToString()
+        {
+            var edge1 = new TaggedUndirectedEdge<int, TestObject>(1, 2, null);
+            var edge2 = new TaggedUndirectedEdge<int, TestObject>(1, 2, new TestObject(12));
+            var edge3 = new TaggedUndirectedEdge<int, TestObject>(2, 1, null);
+
+            Assert.AreEqual("1 <-> 2 (no tag)", edge1.ToString());
+            Assert.AreEqual("1 <-> 2 (12)", edge2.ToString());
+            Assert.AreEqual("2 <-> 1 (no tag)", edge3.ToString());
+        }
     }
 }
