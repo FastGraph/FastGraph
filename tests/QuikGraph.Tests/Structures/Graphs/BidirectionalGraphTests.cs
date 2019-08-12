@@ -1,43 +1,42 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Structures
 {
     /// <summary>
-    /// Tests for <see cref="AdjacencyGraph{TVertex,TEdge}"/>.
+    /// Tests for <see cref="BidirectionalGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class AdjacencyGraphTests : GraphTestsBase
+    internal class BidirectionalGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
-            graph = new AdjacencyGraph<int, Edge<int>>(true);
+            graph = new BidirectionalGraph<int, Edge<int>>(true);
             AssertEmptyGraph(graph);
 
-            graph = new AdjacencyGraph<int, Edge<int>>(false);
+            graph = new BidirectionalGraph<int, Edge<int>>(false);
             AssertEmptyGraph(graph, false);
 
-            graph = new AdjacencyGraph<int, Edge<int>>(true, 12);
+            graph = new BidirectionalGraph<int, Edge<int>>(true, 12);
             AssertEmptyGraph(graph);
 
-            graph = new AdjacencyGraph<int, Edge<int>>(false, 12);
+            graph = new BidirectionalGraph<int, Edge<int>>(false, 12);
             AssertEmptyGraph(graph, false);
 
-            graph = new AdjacencyGraph<int, Edge<int>>(true, 42, 12);
+            graph = new BidirectionalGraph<int, Edge<int>>(true, 42, 12);
             AssertEmptyGraph(graph, edgeCapacity: 12);
 
-            graph = new AdjacencyGraph<int, Edge<int>>(false, 42, 12);
+            graph = new BidirectionalGraph<int, Edge<int>>(false, 42, 12);
             AssertEmptyGraph(graph, false, 12);
 
             #region Local function
 
-            void AssertEmptyGraph<TVertex, TEdge>(AdjacencyGraph<TVertex, TEdge> g, bool parallelEdges = true, int edgeCapacity = 0)
+            void AssertEmptyGraph<TVertex, TEdge>(BidirectionalGraph<TVertex, TEdge> g, bool parallelEdges = true, int edgeCapacity = 0)
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -59,7 +58,7 @@ namespace QuikGraph.Tests.Structures
         {
             int vertexAdded = 0;
 
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             AssertNoVertex(graph);
             graph.VertexAdded += v =>
@@ -95,7 +94,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AddVertex_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.AddVertex(null));
             AssertNoVertex(graph);
@@ -106,7 +105,7 @@ namespace QuikGraph.Tests.Structures
         {
             int vertexAdded = 0;
 
-            var graph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
 
             AssertNoVertex(graph);
             graph.VertexAdded += v =>
@@ -144,7 +143,7 @@ namespace QuikGraph.Tests.Structures
         {
             int vertexAdded = 0;
 
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             AssertNoVertex(graph);
             graph.VertexAdded += v =>
@@ -157,7 +156,7 @@ namespace QuikGraph.Tests.Structures
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
             var vertex3 = new TestVertex("3");
-            Assert.AreEqual(3, graph.AddVertexRange(new [] { vertex1, vertex2, vertex3 }));
+            Assert.AreEqual(3, graph.AddVertexRange(new[] { vertex1, vertex2, vertex3 }));
             Assert.AreEqual(3, vertexAdded);
             AssertHasVertices(graph, new[] { vertex1, vertex2, vertex3 });
 
@@ -173,7 +172,7 @@ namespace QuikGraph.Tests.Structures
         {
             int vertexAdded = 0;
 
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             AssertNoVertex(graph);
             graph.VertexAdded += v =>
@@ -190,7 +189,7 @@ namespace QuikGraph.Tests.Structures
             // Vertex 1, 2, 3
             var vertex1 = new TestVertex("1");
             var vertex3 = new TestVertex("3");
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(new [] { vertex1, null, vertex3 }));
+            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(new[] { vertex1, null, vertex3 }));
             AssertNoVertex(graph);
             Assert.AreEqual(0, vertexAdded);
         }
@@ -204,7 +203,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVertex(1);
             graph.AddVertex(2);
 
@@ -244,7 +243,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
+            var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
             graph.AddVertex(1);
             graph.AddVertex(2);
 
@@ -284,7 +283,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>(false);
+            var graph = new BidirectionalGraph<int, Edge<int>>(false);
             graph.AddVertex(1);
             graph.AddVertex(2);
 
@@ -324,7 +323,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, EquatableEdge<int>>(false);
+            var graph = new BidirectionalGraph<int, EquatableEdge<int>>(false);
             graph.AddVertex(1);
             graph.AddVertex(2);
 
@@ -362,7 +361,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AddEdge_Throws()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.AddEdge(null));
             AssertNoEdge(graph);
@@ -376,7 +375,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>(false);
+            var graph = new BidirectionalGraph<int, Edge<int>>(false);
             graph.AddVertex(1);
             graph.AddVertex(2);
             graph.AddVertex(3);
@@ -408,7 +407,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVertex(1);
             graph.AddVertex(2);
             graph.AddVertex(3);
@@ -443,7 +442,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
 
             AssertNoEdge(graph);
             graph.VertexAdded += v =>
@@ -485,7 +484,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AddVerticesAndEdge_Throws()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
 
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(null));
@@ -499,7 +498,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>(false);
+            var graph = new BidirectionalGraph<int, Edge<int>>(false);
 
             AssertNoEdge(graph);
             graph.VertexAdded += v =>
@@ -537,7 +536,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
             int edgeAdded = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>(false);
+            var graph = new BidirectionalGraph<int, Edge<int>>(false);
 
             AssertNoEdge(graph);
             graph.VertexAdded += v =>
@@ -571,7 +570,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsVertex()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
@@ -596,7 +595,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsVertex_EquatableVertex()
         {
-            var graph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
 
             var vertex1 = new EquatableTestVertex("1");
             var vertex2 = new EquatableTestVertex("2");
@@ -621,7 +620,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsVertex_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -635,7 +634,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsEdge()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -660,7 +659,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsEdge_EquatableEdge()
         {
-            var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
+            var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
 
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
@@ -685,7 +684,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsEdge_SourceTarget()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -705,7 +704,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsEdge_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             var vertex = new TestVertex("v1");
 
@@ -731,7 +730,7 @@ namespace QuikGraph.Tests.Structures
             var edge13 = new Edge<int>(1, 3);
             var edge24 = new Edge<int>(2, 4);
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24 });
 
             Assert.AreSame(edge11, graph.OutEdge(1, 0));
@@ -743,17 +742,19 @@ namespace QuikGraph.Tests.Structures
         public void OutEdge_Throws()
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            var graph1 = new AdjacencyGraph<int, Edge<int>>();
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
             const int vertex1 = 1;
+            const int vertex2 = 2;
             Assert.Throws<KeyNotFoundException>(() => graph1.OutEdge(vertex1, 0));
 
             graph1.AddVertex(vertex1);
+            graph1.AddVertex(vertex2);
             Assert.Throws<ArgumentOutOfRangeException>(() => graph1.OutEdge(vertex1, 0));
 
             graph1.AddEdge(new Edge<int>(1, 2));
             Assert.Throws<ArgumentOutOfRangeException>(() => graph1.OutEdge(vertex1, 5));
 
-            var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph2.OutEdge(null, 0));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -769,7 +770,7 @@ namespace QuikGraph.Tests.Structures
             var edge31 = new Edge<int>(3, 1);
             var edge33 = new Edge<int>(3, 3);
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVertex(1);
             AssertNoOutEdge(graph, 1);
 
@@ -785,14 +786,14 @@ namespace QuikGraph.Tests.Structures
         public void OutEdges_Throws()
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            var graph1 = new AdjacencyGraph<int, Edge<int>>();
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
             const int vertex = 1;
 
             Assert.Throws<KeyNotFoundException>(() => graph1.IsOutEdgesEmpty(vertex));
             Assert.Throws<KeyNotFoundException>(() => graph1.OutDegree(vertex));
             Assert.Throws<KeyNotFoundException>(() => graph1.OutEdges(vertex));
 
-            var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph2.IsOutEdgesEmpty(null));
             Assert.Throws<ArgumentNullException>(() => graph2.OutDegree(null));
@@ -802,6 +803,117 @@ namespace QuikGraph.Tests.Structures
         }
 
         #endregion
+
+        #region In Edges
+
+        [Test]
+        public void InEdge()
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge13 = new Edge<int>(1, 3);
+            var edge21 = new Edge<int>(2, 1);
+            var edge41 = new Edge<int>(4, 1);
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge21, edge41 });
+
+            Assert.AreSame(edge11, graph.InEdge(1, 0));
+            Assert.AreSame(edge41, graph.InEdge(1, 2));
+            Assert.AreSame(edge13, graph.InEdge(3, 0));
+        }
+
+        [Test]
+        public void InEdge_Throws()
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
+            const int vertex1 = 1;
+            const int vertex2 = 2;
+            Assert.Throws<KeyNotFoundException>(() => graph1.InEdge(vertex1, 0));
+
+            graph1.AddVertex(vertex1);
+            graph1.AddVertex(vertex2);
+            Assert.Throws<ArgumentOutOfRangeException>(() => graph1.InEdge(vertex1, 0));
+
+            graph1.AddEdge(new Edge<int>(1, 2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => graph1.InEdge(vertex1, 5));
+
+            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        [Test]
+        public void InEdges()
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge32 = new Edge<int>(3, 2);
+            var edge33 = new Edge<int>(3, 3);
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVertex(1);
+            AssertNoInEdge(graph, 1);
+            AssertNoOutEdge(graph, 1);
+
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge32, edge33 });
+
+            AssertHasOutEdges(graph, 1, new[] { edge12, edge13, edge14 });
+            AssertHasOutEdges(graph, 2, new[] { edge24 });
+            AssertHasOutEdges(graph, 3, new[] { edge32, edge33 });
+            AssertNoOutEdge(graph, 4);
+
+            AssertNoInEdge(graph, 1);
+            AssertHasInEdges(graph, 2, new[] { edge12, edge32 });
+            AssertHasInEdges(graph, 3, new[] { edge13, edge33 });
+            AssertHasInEdges(graph, 4, new [] { edge14, edge24 });
+        }
+
+        [Test]
+        public void InEdges_Throws()
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
+            const int vertex = 1;
+
+            Assert.Throws<KeyNotFoundException>(() => graph1.IsInEdgesEmpty(vertex));
+            Assert.Throws<KeyNotFoundException>(() => graph1.InDegree(vertex));
+            Assert.Throws<KeyNotFoundException>(() => graph1.InEdges(vertex));
+
+            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph2.IsInEdgesEmpty(null));
+            Assert.Throws<ArgumentNullException>(() => graph2.InDegree(null));
+            Assert.Throws<ArgumentNullException>(() => graph2.InEdges(null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        #endregion
+
+        [Test]
+        public void Degree()
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(1, 4);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 2);
+            var edge6 = new Edge<int>(3, 3);
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+
+            graph.AddVertex(5);
+            Assert.AreEqual(3, graph.Degree(1));
+            Assert.AreEqual(3, graph.Degree(2));
+            Assert.AreEqual(4, graph.Degree(3)); // Self edge
+            Assert.AreEqual(2, graph.Degree(4));
+            Assert.AreEqual(0, graph.Degree(5));
+        }
 
         #region Try Get Edges
 
@@ -815,7 +927,7 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
             Assert.IsFalse(graph.TryGetEdge(0, 1, out Edge<int> _));
@@ -832,7 +944,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void TryGetEdge_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TestVertex("v2"), out _));
@@ -851,7 +963,7 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
             Assert.IsFalse(graph.TryGetEdges(0, 1, out IEnumerable<Edge<int>> _));
@@ -868,7 +980,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void TryGetEdges_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(null, new TestVertex("v2"), out _));
@@ -887,7 +999,7 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
             Assert.IsFalse(graph.TryGetOutEdges(0, out IEnumerable<Edge<int>> _));
@@ -902,10 +1014,41 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void TryGetOutEdges_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetOutEdges(null, out _));
+        }
+
+        [Test]
+        public void TryGetInEdges()
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(1, 3);
+            var edge4 = new Edge<int>(2, 2);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 1);
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+
+            Assert.IsFalse(graph.TryGetInEdges(0, out IEnumerable<Edge<int>> _));
+
+            Assert.IsTrue(graph.TryGetInEdges(4, out IEnumerable<Edge<int>> gotEdges));
+            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
+        }
+
+        [Test]
+        public void TryGetInEdges_Throws()
+        {
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.TryGetInEdges(null, out _));
         }
 
         #endregion
@@ -918,7 +1061,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -979,7 +1122,7 @@ namespace QuikGraph.Tests.Structures
         public void RemoveVertex_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveVertex(null));
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().RemoveVertex(null));
         }
 
         [Test]
@@ -988,7 +1131,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -1039,7 +1182,7 @@ namespace QuikGraph.Tests.Structures
         public void RemoveVertexIf_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveVertexIf(null));
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().RemoveVertexIf(null));
         }
 
         #endregion
@@ -1052,7 +1195,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -1121,7 +1264,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
+            var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -1189,7 +1332,7 @@ namespace QuikGraph.Tests.Structures
         public void RemoveEdge_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveEdge(null));
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().RemoveEdge(null));
         }
 
         [Test]
@@ -1198,7 +1341,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -1251,7 +1394,7 @@ namespace QuikGraph.Tests.Structures
         public void RemoveEdgeIf_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveEdgeIf(null));
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().RemoveEdgeIf(null));
         }
 
         [Test]
@@ -1260,7 +1403,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -1314,13 +1457,83 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void RemoveOutEdgeIf_Throws()
         {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
 
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
             Assert.Throws<KeyNotFoundException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), edge => true));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        [Test]
+        public void RemoveInEdgeIf()
+        {
+            int verticesRemoved = 0;
+            int edgesRemoved = 0;
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.VertexRemoved += v =>
+            {
+                Assert.IsNotNull(v);
+                // ReSharper disable once AccessToModifiedClosure
+                ++verticesRemoved;
+            };
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge13Bis = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(2, graph.RemoveInEdgeIf(3, edge => edge.Source == 1));
+            CheckCounters(0, 2);
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(3, edge => edge.Target > 5));
+            CheckCounters(0, 0);
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, edge => true));
+            CheckCounters(0, 1);
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge14, edge24, edge31, edge33 });
+
+            #region Local function
+
+            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved = 0;
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        [Test]
+        public void RemoveInEdgeIf_Throws()
+        {
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), null));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, null));
+            Assert.Throws<KeyNotFoundException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), edge => true));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -1334,7 +1547,7 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
@@ -1364,6 +1577,16 @@ namespace QuikGraph.Tests.Structures
             AssertEmptyGraph(graph);
             CheckCounters(3, 3);
 
+            graph.AddVerticesAndEdge(new Edge<int>(1, 2));
+            graph.AddVerticesAndEdge(new Edge<int>(3, 2));
+            graph.AddVerticesAndEdge(new Edge<int>(3, 1));
+            graph.AddVerticesAndEdge(new Edge<int>(3, 3));
+
+            graph.Clear();
+
+            AssertEmptyGraph(graph);
+            CheckCounters(3, 4);
+
             #region Local function
 
             void CheckCounters(int expectedVerticesRemoved, int expectedEdgesRemoved)
@@ -1377,11 +1600,12 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
-        private void ClearEdgesCommon([NotNull, InstantHandle] Action<AdjacencyGraph<int, Edge<int>>, int> clearEdges)
+        [Test]
+        public void ClearOutEdges()
         {
             int edgesRemoved = 0;
 
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -1393,11 +1617,10 @@ namespace QuikGraph.Tests.Structures
 
             var edge12 = new Edge<int>(1, 2);
             var edge23 = new Edge<int>(2, 3);
-            graph.AddVerticesAndEdge(edge12);
-            graph.AddVerticesAndEdge(edge23);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge23 });
 
-            // Clear 1
-            clearEdges(graph, 1);
+            // Clear out 1
+            graph.ClearOutEdges(1);
 
             AssertHasEdges(graph, new[] { edge23 });
             CheckCounter(1);
@@ -1405,25 +1628,22 @@ namespace QuikGraph.Tests.Structures
             var edge13 = new Edge<int>(1, 3);
             var edge31 = new Edge<int>(3, 1);
             var edge32 = new Edge<int>(3, 2);
-            graph.AddVerticesAndEdge(edge12);
-            graph.AddVerticesAndEdge(edge13);
-            graph.AddVerticesAndEdge(edge31);
-            graph.AddVerticesAndEdge(edge32);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge31, edge32 });
 
-            // Clear 3
-            clearEdges(graph, 3);
+            // Clear out 3
+            graph.ClearOutEdges(3);
 
             AssertHasEdges(graph, new[] { edge12, edge13, edge23 });
             CheckCounter(2);
 
-            // Clear 1
-            clearEdges(graph, 1);
+            // Clear out 1
+            graph.ClearOutEdges(1);
 
             AssertHasEdges(graph, new[] { edge23 });
             CheckCounter(2);
 
-            // Clear 2 = Clear
-            clearEdges(graph, 2);
+            // Clear out 2 = Clear
+            graph.ClearOutEdges(2);
 
             AssertNoEdge(graph);
             CheckCounter(1);
@@ -1440,26 +1660,139 @@ namespace QuikGraph.Tests.Structures
         }
 
         [Test]
-        public void ClearOutEdges()
+        public void ClearOutEdges_Throws()
         {
-            ClearEdgesCommon((graph, vertex) => graph.ClearOutEdges(vertex));
+            Assert.Throws<KeyNotFoundException>(() => new BidirectionalGraph<int, Edge<int>>().ClearOutEdges(1));
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(null));
+        }
+
+        [Test]
+        public void ClearInEdges()
+        {
+            int edgesRemoved = 0;
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            AssertEmptyGraph(graph);
+
+            var edge12 = new Edge<int>(1, 2);
+            var edge23 = new Edge<int>(2, 3);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge23 });
+
+            // Clear in 2
+            graph.ClearInEdges(2);
+
+            AssertHasEdges(graph, new[] { edge23 });
+            CheckCounter(1);
+
+            var edge13 = new Edge<int>(1, 3);
+            var edge31 = new Edge<int>(3, 1);
+            var edge32 = new Edge<int>(3, 2);
+            graph.AddVerticesAndEdgeRange(new [] { edge12, edge13, edge31, edge32 });
+
+            // Clear in 3
+            graph.ClearInEdges(3);
+
+            AssertHasEdges(graph, new[] { edge12, edge31, edge32 });
+            CheckCounter(2);
+
+            // Clear in 1
+            graph.ClearInEdges(1);
+
+            AssertHasEdges(graph, new[] { edge12, edge32 });
+            CheckCounter(1);
+
+            // Clear 2 = Clear
+            graph.ClearInEdges(2);
+
+            AssertNoEdge(graph);
+            CheckCounter(2);
+
+            #region Local function
+
+            void CheckCounter(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        [Test]
+        public void ClearInEdges_Throws()
+        {
+            Assert.Throws<KeyNotFoundException>(() => new BidirectionalGraph<int, Edge<int>>().ClearInEdges(1));
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearInEdges(null));
         }
 
         [Test]
         public void ClearEdges()
         {
-            ClearEdgesCommon((graph, vertex) => graph.ClearEdges(vertex));
+            int edgesRemoved = 0;
+
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            AssertEmptyGraph(graph);
+
+            var edge12 = new Edge<int>(1, 2);
+            var edge23 = new Edge<int>(2, 3);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge23 });
+
+            // Clear 2
+            graph.ClearEdges(2);
+
+            AssertNoEdge(graph);
+            CheckCounter(2);
+
+            var edge13 = new Edge<int>(1, 3);
+            var edge31 = new Edge<int>(3, 1);
+            var edge32 = new Edge<int>(3, 2);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge31, edge32 });
+
+            // Clear 3
+            graph.ClearEdges(3);
+
+            AssertHasEdges(graph, new[] { edge12 });
+            CheckCounter(3);
+
+            // Clear 1 = clear
+            graph.ClearEdges(1);
+
+            AssertNoEdge(graph);
+            CheckCounter(1);
+
+            #region Local function
+
+            void CheckCounter(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
         }
 
         [Test]
         public void ClearEdges_Throws()
         {
-            Assert.Throws<KeyNotFoundException>(() => new AdjacencyGraph<int, Edge<int>>().ClearOutEdges(1));
-            Assert.Throws<KeyNotFoundException>(() => new AdjacencyGraph<int, Edge<int>>().ClearEdges(1));
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(null));
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearEdges(null));
-            // ReSharper restore AssignNullToNotNullAttribute
+            Assert.Throws<KeyNotFoundException>(() => new BidirectionalGraph<int, Edge<int>>().ClearEdges(1));
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearEdges(null));
         }
 
         #endregion
@@ -1467,14 +1800,18 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void Clone()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
             var clonedGraph = graph.Clone();
             Assert.IsNotNull(clonedGraph);
             AssertEmptyGraph(clonedGraph);
 
-            clonedGraph = (AdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
+            clonedGraph = new BidirectionalGraph<int, Edge<int>>(graph);
+            Assert.IsNotNull(clonedGraph);
+            AssertEmptyGraph(clonedGraph);
+
+            clonedGraph = (BidirectionalGraph<int, Edge<int>>)((ICloneable)graph).Clone();
             Assert.IsNotNull(clonedGraph);
             AssertEmptyGraph(clonedGraph);
 
@@ -1490,16 +1827,29 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
-            clonedGraph = (AdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
+            clonedGraph = new BidirectionalGraph<int, Edge<int>>(graph);
+            Assert.IsNotNull(clonedGraph);
+            AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
+            AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
+
+            clonedGraph = (BidirectionalGraph<int, Edge<int>>)((ICloneable)graph).Clone();
             Assert.IsNotNull(clonedGraph);
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
         }
 
         [Test]
+        public void Clone_Throws()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<int, Edge<int>>(null));
+        }
+
+        [Test]
         public void TrimEdgeExcess()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>(true, 12, 50);
+            var graph = new BidirectionalGraph<int, Edge<int>>(true, 12);
             graph.AddVerticesAndEdgeRange(new[]
             {
                 new Edge<int>(1, 2),

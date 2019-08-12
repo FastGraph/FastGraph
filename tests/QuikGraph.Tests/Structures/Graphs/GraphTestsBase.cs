@@ -68,6 +68,28 @@ namespace QuikGraph.Tests.Structures
             AssertNoEdge(graph);
         }
 
+        protected static void AssertNoInEdge<TVertex, TEdge>([NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
+            where TEdge : IEdge<TVertex>
+        {
+            Assert.IsTrue(graph.IsInEdgesEmpty(vertex));
+            Assert.AreEqual(0, graph.InDegree(vertex));
+            CollectionAssert.IsEmpty(graph.InEdges(vertex));
+        }
+
+        protected static void AssertHasInEdges<TVertex, TEdge>(
+            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph,
+            [NotNull] TVertex vertex,
+            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            where TEdge : IEdge<TVertex>
+        {
+            TEdge[] edgeArray = edges.ToArray();
+            CollectionAssert.IsNotEmpty(edgeArray);
+
+            Assert.IsFalse(graph.IsInEdgesEmpty(vertex));
+            Assert.AreEqual(edgeArray.Length, graph.InDegree(vertex));
+            CollectionAssert.AreEquivalent(edgeArray, graph.InEdges(vertex));
+        }
+
         protected static void AssertNoOutEdge<TVertex, TEdge>([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
             where TEdge : IEdge<TVertex>
         {
@@ -76,7 +98,7 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.IsEmpty(graph.OutEdges(vertex));
         }
 
-        protected static void AssertHasOutEdge<TVertex, TEdge>(
+        protected static void AssertHasOutEdges<TVertex, TEdge>(
             [NotNull] IImplicitGraph<TVertex, TEdge> graph,
             [NotNull] TVertex vertex,
             [NotNull, ItemNotNull] IEnumerable<TEdge> edges)

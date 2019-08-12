@@ -46,7 +46,7 @@ namespace QuikGraph
         /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
         /// <param name="capacity">Vertex capacity.</param>
         public AdjacencyGraph(bool allowParallelEdges, int capacity)
-            : this(allowParallelEdges, capacity, -1)
+            : this(allowParallelEdges, capacity, 0)
         {
         }
 
@@ -558,6 +558,15 @@ namespace QuikGraph
 
             edges.Clear();
             EdgeCount -= count;
+        }
+
+        /// <summary>
+        /// Clears edges of the given <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex.</param>
+        public void ClearEdges(TVertex vertex)
+        {
+            ClearOutEdges(vertex);
         }
 
         /// <inheritdoc />
