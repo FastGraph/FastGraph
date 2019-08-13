@@ -57,142 +57,36 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AddVertex()
         {
-            int vertexAdded = 0;
-
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            AssertNoVertex(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-
-            // Vertex 1
-            var vertex1 = new TestVertex("1");
-            Assert.IsTrue(graph.AddVertex(vertex1));
-            Assert.AreEqual(1, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1 });
-
-            // Vertex 2
-            var vertex2 = new TestVertex("2");
-            Assert.IsTrue(graph.AddVertex(vertex2));
-            Assert.AreEqual(2, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2 });
-
-            // Vertex 1 bis
-            Assert.IsFalse(graph.AddVertex(vertex1));
-            Assert.AreEqual(2, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2 });
-
-            // Other "Vertex 1"
-            var otherVertex1 = new TestVertex("1");
-            Assert.IsTrue(graph.AddVertex(otherVertex1));
-            Assert.AreEqual(3, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2, otherVertex1 });
+            AddVertex_Test(graph);
         }
 
         [Test]
         public void AddVertex_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertex(null));
-            AssertNoVertex(graph);
+            AddVertex_Throws_Test(graph);
         }
 
         [Test]
         public void AddVertex_EquatableVertex()
         {
-            int vertexAdded = 0;
-
             var graph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
-
-            AssertNoVertex(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-
-            // Vertex 1
-            var vertex1 = new EquatableTestVertex("1");
-            Assert.IsTrue(graph.AddVertex(vertex1));
-            Assert.AreEqual(1, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1 });
-
-            // Vertex 2
-            var vertex2 = new EquatableTestVertex("2");
-            Assert.IsTrue(graph.AddVertex(vertex2));
-            Assert.AreEqual(2, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2 });
-
-            // Vertex 1 bis
-            Assert.IsFalse(graph.AddVertex(vertex1));
-            Assert.AreEqual(2, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2 });
-
-            // Other "Vertex 1"
-            var otherVertex1 = new EquatableTestVertex("1");
-            Assert.IsFalse(graph.AddVertex(otherVertex1));
-            Assert.AreEqual(2, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2 });
+            AddVertex_EquatableVertex_Test(graph);
         }
 
         [Test]
         public void AddVertexRange()
         {
-            int vertexAdded = 0;
-
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            AssertNoVertex(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-
-            // Vertex 1, 2, 3
-            var vertex1 = new TestVertex("1");
-            var vertex2 = new TestVertex("2");
-            var vertex3 = new TestVertex("3");
-            Assert.AreEqual(3, graph.AddVertexRange(new [] { vertex1, vertex2, vertex3 }));
-            Assert.AreEqual(3, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2, vertex3 });
-
-            // Vertex 1, 4
-            var vertex4 = new TestVertex("4");
-            Assert.AreEqual(1, graph.AddVertexRange(new[] { vertex1, vertex4 }));
-            Assert.AreEqual(4, vertexAdded);
-            AssertHasVertices(graph, new[] { vertex1, vertex2, vertex3, vertex4 });
+            AddVertexRange_Test(graph);
         }
 
         [Test]
         public void AddVertexRange_Throws()
         {
-            int vertexAdded = 0;
-
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            AssertNoVertex(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(null));
-            AssertNoVertex(graph);
-            Assert.AreEqual(0, vertexAdded);
-
-            // Vertex 1, 2, 3
-            var vertex1 = new TestVertex("1");
-            var vertex3 = new TestVertex("3");
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(new [] { vertex1, null, vertex3 }));
-            AssertNoVertex(graph);
-            Assert.AreEqual(0, vertexAdded);
+            AddVertexRange_Throws_Test(graph);
         }
 
         #endregion
@@ -202,235 +96,50 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AddEdge_ParallelEdges()
         {
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertex(1);
-            graph.AddVertex(2);
-
-            AssertNoEdge(graph);
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1
-            var edge1 = new Edge<int>(1, 2);
-            Assert.IsTrue(graph.AddEdge(edge1));
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 2
-            var edge2 = new Edge<int>(1, 2);
-            Assert.IsTrue(graph.AddEdge(edge2));
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2 });
-
-            // Edge 3
-            var edge3 = new Edge<int>(2, 1);
-            Assert.IsTrue(graph.AddEdge(edge3));
-            Assert.AreEqual(3, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
-
-            // Edge 1 bis
-            Assert.IsTrue(graph.AddEdge(edge1));
-            Assert.AreEqual(4, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge1 });
+            AddEdge_ParallelEdges_Test(graph);
         }
 
         [Test]
         public void AddEdge_ParallelEdges_EquatableEdge()
         {
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
-            graph.AddVertex(1);
-            graph.AddVertex(2);
-
-            AssertNoEdge(graph);
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1
-            var edge1 = new EquatableEdge<int>(1, 2);
-            Assert.IsTrue(graph.AddEdge(edge1));
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 2
-            var edge2 = new EquatableEdge<int>(1, 2);
-            Assert.IsTrue(graph.AddEdge(edge2));
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2 });
-
-            // Edge 3
-            var edge3 = new EquatableEdge<int>(2, 1);
-            Assert.IsTrue(graph.AddEdge(edge3));
-            Assert.AreEqual(3, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
-
-            // Edge 1 bis
-            Assert.IsTrue(graph.AddEdge(edge1));
-            Assert.AreEqual(4, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge1 });
+            AddEdge_ParallelEdges_EquatableEdge_Test(graph);
         }
 
         [Test]
         public void AddEdge_NoParallelEdges()
         {
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>(false);
-            graph.AddVertex(1);
-            graph.AddVertex(2);
-
-            AssertNoEdge(graph);
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1
-            var edge1 = new Edge<int>(1, 2);
-            Assert.IsTrue(graph.AddEdge(edge1));
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 2
-            var edge2 = new Edge<int>(1, 2);
-            Assert.IsFalse(graph.AddEdge(edge2));
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 3
-            var edge3 = new Edge<int>(2, 1);
-            Assert.IsTrue(graph.AddEdge(edge3));
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge3 });
-
-            // Edge 1 bis
-            Assert.IsFalse(graph.AddEdge(edge1));
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge3 });
+            AddEdge_NoParallelEdges_Test(graph);
         }
 
         [Test]
         public void AddEdge_NoParallelEdges_EquatableEdge()
         {
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, EquatableEdge<int>>(false);
-            graph.AddVertex(1);
-            graph.AddVertex(2);
-
-            AssertNoEdge(graph);
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1
-            var edge1 = new EquatableEdge<int>(1, 2);
-            Assert.IsTrue(graph.AddEdge(edge1));
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 2
-            var edge2 = new EquatableEdge<int>(1, 2);
-            Assert.IsFalse(graph.AddEdge(edge2));
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 3
-            var edge3 = new EquatableEdge<int>(2, 1);
-            Assert.IsTrue(graph.AddEdge(edge3));
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge3 });
-
-            // Edge 1 bis
-            Assert.IsFalse(graph.AddEdge(edge1));
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge3 });
+            AddEdge_NoParallelEdges_EquatableEdge_Test(graph);
         }
 
         [Test]
         public void AddEdge_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(null));
-            AssertNoEdge(graph);
-
-            Assert.Throws<KeyNotFoundException>(() => graph.AddEdge(new Edge<int>(0, 1)));
-            AssertNoEdge(graph);
+            AddEdge_Throws_Test(graph);
         }
 
         [Test]
         public void AddEdgeRange()
         {
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>(false);
-            graph.AddVertex(1);
-            graph.AddVertex(2);
-            graph.AddVertex(3);
-
-            AssertNoEdge(graph);
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1, 2, 3
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 3);
-            var edge3 = new Edge<int>(2, 3);
-            Assert.AreEqual(3, graph.AddEdgeRange(new[] { edge1, edge2, edge3 }));
-            Assert.AreEqual(3, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
-
-            // Edge 1, 4
-            var edge4 = new Edge<int>(2, 2);
-            Assert.AreEqual(1, graph.AddEdgeRange(new[] { edge1, edge4 })); // Showcase the add of only one edge
-            Assert.AreEqual(4, edgeAdded);
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge4 });
+            AddEdgeRange_Test(graph);
         }
 
         [Test]
         public void AddEdgeRange_Throws()
         {
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertex(1);
-            graph.AddVertex(2);
-            graph.AddVertex(3);
-
-            AssertNoEdge(graph);
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(null));
-            AssertNoEdge(graph);
-            Assert.AreEqual(0, edgeAdded);
-
-            // Edge 1, 2, 3
-            var edge1 = new Edge<int>(1, 2);
-            var edge3 = new Edge<int>(2, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, null, edge3 }));
-            Assert.AreEqual(0, edgeAdded);
-            AssertNoEdge(graph);
+            AddEdgeRange_Throws_Test(graph);
         }
 
         #endregion
@@ -440,128 +149,29 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AddVerticesAndEdge()
         {
-            int vertexAdded = 0;
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-
-            AssertNoEdge(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1
-            var edge1 = new Edge<int>(1, 2);
-            Assert.IsTrue(graph.AddVerticesAndEdge(edge1));
-            Assert.AreEqual(2, vertexAdded);
-            Assert.AreEqual(1, edgeAdded);
-            AssertHasVertices(graph, new[] { 1, 2 });
-            AssertHasEdges(graph, new[] { edge1 });
-
-            // Edge 2
-            var edge2 = new Edge<int>(1, 3);
-            Assert.IsTrue(graph.AddVerticesAndEdge(edge2));
-            Assert.AreEqual(3, vertexAdded);
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasVertices(graph, new[] { 1, 2, 3 });
-            AssertHasEdges(graph, new[] { edge1, edge2 });
-
-            // Edge 3
-            var edge3 = new Edge<int>(2, 3);
-            Assert.IsTrue(graph.AddVerticesAndEdge(edge3));
-            Assert.AreEqual(3, vertexAdded);
-            Assert.AreEqual(3, edgeAdded);
-            AssertHasVertices(graph, new[] { 1, 2, 3 });
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
+            AddVerticesAndEdge_Test(graph);
         }
 
         [Test]
         public void AddVerticesAndEdge_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(null));
-            AssertNoVertex(graph);
-            AssertNoEdge(graph);
+            AddVerticesAndEdge_Throws_Test(graph);
         }
 
         [Test]
         public void AddVerticesAndEdgeRange()
         {
-            int vertexAdded = 0;
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>(false);
-
-            AssertNoEdge(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // Edge 1, 2
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 3);
-            Assert.AreEqual(2, graph.AddVerticesAndEdgeRange(new[] { edge1, edge2 }));
-            Assert.AreEqual(3, vertexAdded);
-            Assert.AreEqual(2, edgeAdded);
-            AssertHasVertices(graph, new[] { 1, 2, 3 });
-            AssertHasEdges(graph, new[] { edge1, edge2 });
-
-            // Edge 1, 3
-            var edge3 = new Edge<int>(2, 3);
-            Assert.AreEqual(1, graph.AddVerticesAndEdgeRange(new[] { edge1, edge3 })); // Showcase the add of only one edge
-            Assert.AreEqual(3, vertexAdded);
-            Assert.AreEqual(3, edgeAdded);
-            AssertHasVertices(graph, new[] { 1, 2, 3 });
-            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
+            AddVerticesAndEdgeRange_Test(graph);
         }
 
         [Test]
         public void AddVerticesAndEdgeRange_Throws()
         {
-            int vertexAdded = 0;
-            int edgeAdded = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>(false);
-
-            AssertNoEdge(graph);
-            graph.VertexAdded += v =>
-            {
-                Assert.IsNotNull(v);
-                ++vertexAdded;
-            };
-            graph.EdgeAdded += e =>
-            {
-                Assert.IsNotNull(e);
-                ++edgeAdded;
-            };
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(null));
-
-            // Edge 1, 2, 3
-            var edge1 = new Edge<int>(1, 2);
-            var edge3 = new Edge<int>(1, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, null, edge3 }));
-            Assert.AreEqual(0, vertexAdded);
-            Assert.AreEqual(0, edgeAdded);
-            AssertNoVertex(graph);
-            AssertNoEdge(graph);
+            AddVerticesAndEdgeRange_Throws_Test(graph);
         }
 
         #endregion
@@ -572,60 +182,21 @@ namespace QuikGraph.Tests.Structures
         public void ContainsVertex()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            var vertex1 = new TestVertex("1");
-            var vertex2 = new TestVertex("2");
-            var otherVertex1 = new TestVertex("1");
-
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-
-            graph.AddVertex(vertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-
-            graph.AddVertex(vertex2);
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-
-            graph.AddVertex(otherVertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            ContainsVertex_Test(graph);
         }
 
         [Test]
         public void ContainsVertex_EquatableVertex()
         {
             var graph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
-
-            var vertex1 = new EquatableTestVertex("1");
-            var vertex2 = new EquatableTestVertex("2");
-            var otherVertex1 = new EquatableTestVertex("1");
-
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-
-            graph.AddVertex(vertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
-
-            graph.AddVertex(vertex2);
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-
-            graph.AddVertex(otherVertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            ContainsVertex_EquatableVertex_Test(graph);
         }
 
         [Test]
         public void ContainsVertex_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsVertex(null));
+            ContainsVertex_Throws_Test(graph);
         }
 
         #endregion
@@ -636,87 +207,29 @@ namespace QuikGraph.Tests.Structures
         public void ContainsEdge()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 3);
-            var otherEdge1 = new Edge<int>(1, 2);
-
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
-
-            graph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
-
-            graph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-
-            graph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            ContainsEdge_Test(graph);
         }
 
         [Test]
         public void ContainsEdge_EquatableEdge()
         {
             var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
-
-            var edge1 = new EquatableEdge<int>(1, 2);
-            var edge2 = new EquatableEdge<int>(1, 3);
-            var otherEdge1 = new EquatableEdge<int>(1, 2);
-
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
-
-            graph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
-
-            graph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-
-            graph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            ContainsEdge_EquatableEdge_Test(graph);
         }
 
         [Test]
         public void ContainsEdge_SourceTarget()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 3);
-
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
-
-            graph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
-
-            graph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
-            Assert.IsFalse(graph.ContainsEdge(3, 1));
+            ContainsEdge_SourceTarget_Test(graph);
         }
 
         [Test]
         public void ContainsEdge_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            var vertex = new TestVertex("v1");
-
-            // ReSharper disable AssignNullToNotNullAttribute
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
-            // ReSharper restore AssignNullToNotNullAttribute
+            ContainsEdge_Throws_Test(graph);
+            ContainsEdge_SourceTarget_Throws_Test(graph);
         }
 
         #endregion
@@ -726,79 +239,31 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdge()
         {
-            var edge11 = new Edge<int>(1, 1);
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge24 = new Edge<int>(2, 4);
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24 });
-
-            Assert.AreSame(edge11, graph.OutEdge(1, 0));
-            Assert.AreSame(edge13, graph.OutEdge(1, 2));
-            Assert.AreSame(edge24, graph.OutEdge(2, 0));
+            OutEdge_Test(graph);
         }
 
         [Test]
         public void OutEdge_Throws()
         {
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            const int vertex1 = 1;
-            Assert.Throws<KeyNotFoundException>(() => graph1.OutEdge(vertex1, 0));
-
-            graph1.AddVertex(vertex1);
-            Assert.Throws<ArgumentOutOfRangeException>(() => graph1.OutEdge(vertex1, 0));
-
-            graph1.AddEdge(new Edge<int>(1, 2));
-            Assert.Throws<ArgumentOutOfRangeException>(() => graph1.OutEdge(vertex1, 5));
-
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.OutEdge(null, 0));
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+            OutEdge_Throws_Test(graph1, graph2);
         }
 
         [Test]
         public void OutEdges()
         {
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertex(1);
-            AssertNoOutEdge(graph, 1);
-
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
-
-            AssertHasOutEdges(graph, 1, new[] { edge12, edge13, edge14 });
-            AssertHasOutEdges(graph, 2, new[] { edge24 });
-            AssertHasOutEdges(graph, 3, new[] { edge31, edge33 });
-            AssertNoOutEdge(graph, 4);
+            OutEdges_Test(graph);
         }
 
         [Test]
         public void OutEdges_Throws()
         {
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            const int vertex = 1;
-
-            Assert.Throws<KeyNotFoundException>(() => graph1.IsOutEdgesEmpty(vertex));
-            Assert.Throws<KeyNotFoundException>(() => graph1.OutDegree(vertex));
-            Assert.Throws<KeyNotFoundException>(() => graph1.OutEdges(vertex));
-
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.IsOutEdgesEmpty(null));
-            Assert.Throws<ArgumentNullException>(() => graph2.OutDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph2.OutEdges(null));
-            // ReSharper restore AssignNullToNotNullAttribute
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+            OutEdges_Throws_Test(graph1, graph2);
         }
 
         #endregion
@@ -808,104 +273,43 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void TryGetEdge()
         {
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 2);
-            var edge3 = new Edge<int>(1, 3);
-            var edge4 = new Edge<int>(2, 2);
-            var edge5 = new Edge<int>(2, 4);
-            var edge6 = new Edge<int>(3, 1);
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
-
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out Edge<int> _));
-
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
-            Assert.AreSame(edge5, gotEdge);
-
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
-
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out gotEdge));
+            TryGetEdge_Test(graph);
         }
 
         [Test]
         public void TryGetEdge_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TestVertex("v2"), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TestVertex("v1"), null, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, null, out _));
-            // ReSharper restore AssignNullToNotNullAttribute
+            TryGetEdge_Throws_Test(graph);
         }
 
         [Test]
         public void TryGetEdges()
         {
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 2);
-            var edge3 = new Edge<int>(1, 3);
-            var edge4 = new Edge<int>(2, 2);
-            var edge5 = new Edge<int>(2, 4);
-            var edge6 = new Edge<int>(3, 1);
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
-
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out IEnumerable<Edge<int>> _));
-
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out IEnumerable<Edge<int>> gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
-
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
-
-            Assert.IsFalse(graph.TryGetEdges(2, 1, out gotEdges));
+            TryGetEdges_Test(graph);
         }
 
         [Test]
         public void TryGetEdges_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(null, new TestVertex("v2"), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(new TestVertex("v1"), null, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(null, null, out _));
-            // ReSharper restore AssignNullToNotNullAttribute
+            TryGetEdges_Throws_Test(graph);
         }
 
         [Test]
         public void TryGetOutEdges()
         {
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 2);
-            var edge3 = new Edge<int>(1, 3);
-            var edge4 = new Edge<int>(2, 2);
-            var edge5 = new Edge<int>(2, 4);
-            var edge6 = new Edge<int>(3, 1);
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
-
-            Assert.IsFalse(graph.TryGetOutEdges(0, out IEnumerable<Edge<int>> _));
-
-            Assert.IsTrue(graph.TryGetOutEdges(3, out IEnumerable<Edge<int>> gotEdges));
-            CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
-
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
+            TryGetOutEdges_Test(graph);
         }
 
         [Test]
         public void TryGetOutEdges_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetOutEdges(null, out _));
+            TryGetOutEdges_Throws_Test(graph);
         }
 
         #endregion
@@ -915,131 +319,29 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void RemoveVertex()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
-
-            Assert.IsFalse(graph.RemoveVertex(5));
-            CheckCounters(0, 0);
-
-            Assert.IsTrue(graph.RemoveVertex(3));
-            CheckCounters(1, 3);
-            AssertHasVertices(graph, new[] { 1, 2, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge14, edge24 });
-
-            Assert.IsTrue(graph.RemoveVertex(1));
-            CheckCounters(1, 2);
-            AssertHasVertices(graph, new[] { 2, 4 });
-            AssertHasEdges(graph, new[] { edge24 });
-
-            Assert.IsTrue(graph.RemoveVertex(2));
-            CheckCounters(1, 1);
-            AssertHasVertices(graph, new[] { 4 });
-            AssertNoEdge(graph);
-
-            Assert.IsTrue(graph.RemoveVertex(4));
-            CheckCounters(1, 0);
-            AssertEmptyGraph(graph);
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveVertex_Test(graph);
         }
 
         [Test]
         public void RemoveVertex_Throws()
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveVertex(null));
+            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            RemoveVertex_Throws_Test(graph);
         }
 
         [Test]
         public void RemoveVertexIf()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
-
-            Assert.AreEqual(0, graph.RemoveVertexIf(vertex => vertex > 10));
-            CheckCounters(0, 0);
-
-            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => vertex > 2));
-            CheckCounters(2, 5);
-            AssertHasVertices(graph, new[] { 1, 2 });
-            AssertHasEdges(graph, new[] { edge12 });
-
-            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => true));
-            CheckCounters(2, 1);
-            AssertEmptyGraph(graph);
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveVertexIf_Test(graph);
         }
 
         [Test]
         public void RemoveVertexIf_Throws()
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveVertexIf(null));
+            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            RemoveVertexIf_Throws_Test(graph);
         }
 
         #endregion
@@ -1049,279 +351,50 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void RemoveEdge()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge13Bis = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-            var edgeNotInGraph = new Edge<int>(3, 4);
-            var edgeNotEquatable = new Edge<int>(1, 2);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
-
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
-            CheckCounters(0, 0);
-
-            Assert.IsFalse(graph.RemoveEdge(edgeNotEquatable));
-            CheckCounters(0, 0);
-
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
-            CheckCounters(0, 1);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
-
-            Assert.IsTrue(graph.RemoveEdge(edge31));
-            CheckCounters(0, 1);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge33 });
-
-            Assert.IsTrue(graph.RemoveEdge(edge12));
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
-            CheckCounters(0, 5);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertNoEdge(graph);
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveEdge_Test(graph);
         }
 
         [Test]
         public void RemoveEdge_EquatableEdge()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            var edge12 = new EquatableEdge<int>(1, 2);
-            var edge13 = new EquatableEdge<int>(1, 3);
-            var edge13Bis = new EquatableEdge<int>(1, 3);
-            var edge14 = new EquatableEdge<int>(1, 4);
-            var edge24 = new EquatableEdge<int>(2, 4);
-            var edge31 = new EquatableEdge<int>(3, 1);
-            var edge33 = new EquatableEdge<int>(3, 3);
-            var edgeNotInGraph = new EquatableEdge<int>(3, 4);
-            var edgeEquatable = new EquatableEdge<int>(1, 2);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
-
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
-            CheckCounters(0, 0);
-
-            Assert.IsTrue(graph.RemoveEdge(edgeEquatable));
-            CheckCounters(0, 1);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge13, edge13Bis, edge14, edge24, edge31, edge33 });
-
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
-            CheckCounters(0, 1);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31, edge33 });
-
-            Assert.IsTrue(graph.RemoveEdge(edge31));
-            CheckCounters(0, 1);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge33 });
-
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
-            CheckCounters(0, 4);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertNoEdge(graph);
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveEdge_EquatableEdge_Test(graph);
         }
 
         [Test]
         public void RemoveEdge_Throws()
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveEdge(null));
+            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            RemoveEdge_Throws_Test(graph);
         }
 
         [Test]
         public void RemoveEdgeIf()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge13Bis = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
-
-            Assert.AreEqual(0, graph.RemoveEdgeIf(edge => edge.Target == 5));
-            CheckCounters(0, 0);
-
-            Assert.AreEqual(2, graph.RemoveEdgeIf(edge => edge.Source == 3));
-            CheckCounters(0, 2);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
-
-            Assert.AreEqual(5, graph.RemoveEdgeIf(edge => true));
-            CheckCounters(0, 5);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertNoEdge(graph);
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveEdgeIf_Test(graph);
         }
 
         [Test]
         public void RemoveEdgeIf_Throws()
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().RemoveEdgeIf(null));
+            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            RemoveEdgeIf_Throws_Test(graph);
         }
 
         [Test]
         public void RemoveOutEdgeIf()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge13Bis = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
-
-            Assert.AreEqual(3, graph.RemoveOutEdgeIf(1, edge => edge.Target >= 3));
-            CheckCounters(0, 3);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
-
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(3, edge => edge.Target > 5));
-            CheckCounters(0, 0);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
-
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, edge => true));
-            CheckCounters(0, 2);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge24 });
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveOutEdgeIf_Test(graph);
         }
 
         [Test]
         public void RemoveOutEdgeIf_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
-            Assert.Throws<KeyNotFoundException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), edge => true));
-            // ReSharper restore AssignNullToNotNullAttribute
+            RemoveOutEdgeIf_Throws_Test(graph);
         }
 
         #endregion
@@ -1393,8 +466,7 @@ namespace QuikGraph.Tests.Structures
 
             var edge12 = new Edge<int>(1, 2);
             var edge23 = new Edge<int>(2, 3);
-            graph.AddVerticesAndEdge(edge12);
-            graph.AddVerticesAndEdge(edge23);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge23 });
 
             // Clear 1
             clearEdges(graph, 1);
@@ -1405,10 +477,7 @@ namespace QuikGraph.Tests.Structures
             var edge13 = new Edge<int>(1, 3);
             var edge31 = new Edge<int>(3, 1);
             var edge32 = new Edge<int>(3, 2);
-            graph.AddVerticesAndEdge(edge12);
-            graph.AddVerticesAndEdge(edge13);
-            graph.AddVerticesAndEdge(edge31);
-            graph.AddVerticesAndEdge(edge32);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge31, edge32 });
 
             // Clear 3
             clearEdges(graph, 3);
