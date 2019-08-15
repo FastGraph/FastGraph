@@ -26,9 +26,9 @@ The plan would be to fully clean the original library and all its non Core parts
 
 ## Target
 
-- .NET Standard 1.3+
-- .NET Core 1.0+
-- .NET Framework 2.0+
+- [![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%201.3-blue.svg)](#)
+- [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%201.0-blue.svg)](#)
+- [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%203.5-blue.svg)](#)
 
 ---
 

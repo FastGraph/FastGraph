@@ -30,7 +30,7 @@ You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph)
 
 - .NET Standard 1.3+
 - .NET Core 1.0+
-- .NET Framework 2.0+
+- .NET Framework 3.5+
 
 ## Installation
 
