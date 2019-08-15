@@ -54,7 +54,7 @@ namespace QuikGraph
         #region IVertexSet<TVertex>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => _vertexOutEdges.Count == 0;
+        public bool IsVerticesEmpty => VertexCount == 0;
 
         /// <inheritdoc />
         public int VertexCount => _vertexOutEdges.Count;

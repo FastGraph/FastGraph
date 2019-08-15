@@ -260,9 +260,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdges_Throws()
         {
-            var graph1 = new BidirectionalGraph<int, Edge<int>>();
-            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            OutEdges_Throws_Test(graph1, graph2);
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            OutEdges_Throws_Test(graph);
         }
 
         #endregion
@@ -318,6 +317,9 @@ namespace QuikGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
+            AssertNoInEdge(graph, 1);
+            AssertNoOutEdge(graph, 1);
+
             graph.AddVertex(1);
             AssertNoInEdge(graph, 1);
             AssertNoOutEdge(graph, 1);
@@ -338,19 +340,13 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void InEdges_Throws()
         {
+            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            var graph1 = new BidirectionalGraph<int, Edge<int>>();
-            const int vertex = 1;
-
-            Assert.Throws<KeyNotFoundException>(() => graph1.IsInEdgesEmpty(vertex));
-            Assert.Throws<KeyNotFoundException>(() => graph1.InDegree(vertex));
-            Assert.Throws<KeyNotFoundException>(() => graph1.InEdges(vertex));
-
-            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.IsInEdgesEmpty(null));
-            Assert.Throws<ArgumentNullException>(() => graph2.InDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph2.InEdges(null));
+            Assert.Throws<ArgumentNullException>(() => graph.IsInEdgesEmpty(null));
+            Assert.Throws<ArgumentNullException>(() => graph.InDegree(null));
+            Assert.Throws<ArgumentNullException>(() => graph.InEdges(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -558,6 +554,10 @@ namespace QuikGraph.Tests.Structures
                 ++edgesRemoved;
             };
 
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(1, edge => true));
+            CheckCounters(0, 0);
+            AssertEmptyGraph(graph);
+
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
             var edge13Bis = new Edge<int>(1, 3);
@@ -604,7 +604,6 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, edge => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, null));
-            Assert.Throws<KeyNotFoundException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), edge => true));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

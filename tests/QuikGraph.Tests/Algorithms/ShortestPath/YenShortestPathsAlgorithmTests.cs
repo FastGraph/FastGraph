@@ -20,7 +20,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             AdjacencyGraph<char, EquatableTaggedEdge<char, double>> graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
 
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
-            Assert.Throws<KeyNotFoundException>(() => algorithm.Execute());
+            Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
         }
 
         /// <summary>

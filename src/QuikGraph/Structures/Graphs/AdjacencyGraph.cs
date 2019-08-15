@@ -212,16 +212,17 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _vertexEdges[vertex].Count;
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
+                return edges.Count;
+            return 0;
         }
 
         /// <inheritdoc />
         public virtual IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-
-            return _vertexEdges[vertex];
+            if (TryGetOutEdges(vertex, out IEnumerable<TEdge> edges))
+                return edges;
+            return Enumerable.Empty<TEdge>();
         }
 
         /// <inheritdoc />
@@ -527,17 +528,11 @@ namespace QuikGraph
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            IEdgeList<TVertex, TEdge> edges = _vertexEdges[vertex];
-            var edgesToRemove = new EdgeList<TVertex, TEdge>(edges.Count);
-            edgesToRemove.AddRange(edges.Where(edge => predicate(edge)));
+            var edgesToRemove = new EdgeList<TVertex, TEdge>();
+            edgesToRemove.AddRange(OutEdges(vertex).Where(edge => predicate(edge)));
 
             foreach (TEdge edge in edgesToRemove)
-            {
-                edges.Remove(edge);
-                OnEdgeRemoved(edge);
-            }
-
-            EdgeCount -= edgesToRemove.Count;
+                RemoveEdge(edge);
 
             return edgesToRemove.Count;
         }

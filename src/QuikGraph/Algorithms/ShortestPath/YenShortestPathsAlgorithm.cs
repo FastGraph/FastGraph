@@ -134,6 +134,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>Found paths.</returns>
         public IEnumerable<SortedPath> Execute()
         {
+            // In case the root vertex is not in the graph then there is no path found
+            if (!_graph.ContainsVertex(_sourceVertex))
+                throw new NoPathFoundException();
+
             var shortestWays = new List<SortedPath>();
             // Find the first shortest way
             SortedPath? shortestWay = GetShortestPathInGraph(_graph);
