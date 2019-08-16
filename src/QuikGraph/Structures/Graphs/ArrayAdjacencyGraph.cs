@@ -31,6 +31,7 @@ namespace QuikGraph
             if (visitedGraph is null)
                 throw new ArgumentNullException(nameof(visitedGraph));
 
+            AllowParallelEdges = visitedGraph.AllowParallelEdges;
             _vertexOutEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
             EdgeCount = visitedGraph.EdgeCount;
             foreach (TVertex vertex in visitedGraph.Vertices)
@@ -47,7 +48,7 @@ namespace QuikGraph
         public bool IsDirected => true;
 
         /// <inheritdoc />
-        public bool AllowParallelEdges => true;
+        public bool AllowParallelEdges { get; }
 
         #endregion
 

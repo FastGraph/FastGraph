@@ -61,12 +61,13 @@ namespace QuikGraph
             if (visitedGraph is null)
                 throw new ArgumentNullException(nameof(visitedGraph));
 
+            AllowParallelEdges = visitedGraph.AllowParallelEdges;
             _vertexEdges = new Dictionary<TVertex, InOutEdges>(visitedGraph.VertexCount);
             EdgeCount = visitedGraph.EdgeCount;
-            foreach (var vertex in visitedGraph.Vertices)
+            foreach (TVertex vertex in visitedGraph.Vertices)
             {
-                var outEdges = visitedGraph.OutEdges(vertex).ToArray();
-                var inEdges = visitedGraph.InEdges(vertex).ToArray();
+                TEdge[] outEdges = visitedGraph.OutEdges(vertex).ToArray();
+                TEdge[] inEdges = visitedGraph.InEdges(vertex).ToArray();
                 _vertexEdges.Add(vertex, new InOutEdges(outEdges, inEdges));
             }
         }
@@ -77,7 +78,7 @@ namespace QuikGraph
         public bool IsDirected => true;
 
         /// <inheritdoc />
-        public bool AllowParallelEdges => true;
+        public bool AllowParallelEdges { get; }
 
         #endregion
 
@@ -245,10 +246,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (!_vertexEdges[vertex].TryGetOutEdges(out TEdge[] edges))
-                throw new InvalidOperationException();
-
-            return edges[index];
+            if (_vertexEdges[vertex].TryGetOutEdges(out TEdge[] edges))
+                return edges[index];
+            throw new IndexOutOfRangeException();
         }
         
         #endregion
@@ -304,10 +304,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (!_vertexEdges[vertex].TryGetInEdges(out TEdge[] edges))
-                throw new InvalidOperationException();
-
-            return edges[index];
+            if (_vertexEdges[vertex].TryGetInEdges(out TEdge[] edges))
+                return edges[index];
+            throw new IndexOutOfRangeException();
         }
 
         /// <inheritdoc />

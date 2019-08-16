@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using static QuikGraph.Tests.AssertHelpers;
 
 namespace QuikGraph.Tests.Structures
 {
@@ -287,18 +288,19 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void InEdge_Throws()
         {
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            var graph1 = new BidirectionalGraph<int, Edge<int>>();
             const int vertex1 = 1;
             const int vertex2 = 2;
+
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
             Assert.Throws<KeyNotFoundException>(() => graph1.InEdge(vertex1, 0));
 
             graph1.AddVertex(vertex1);
             graph1.AddVertex(vertex2);
-            Assert.Throws<ArgumentOutOfRangeException>(() => graph1.InEdge(vertex1, 0));
+            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
 
             graph1.AddEdge(new Edge<int>(1, 2));
-            Assert.Throws<ArgumentOutOfRangeException>(() => graph1.InEdge(vertex1, 5));
+            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
 
             var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -341,14 +343,7 @@ namespace QuikGraph.Tests.Structures
         public void InEdges_Throws()
         {
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.IsInEdgesEmpty(null));
-            Assert.Throws<ArgumentNullException>(() => graph.InDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph.InEdges(null));
-            // ReSharper restore AssignNullToNotNullAttribute
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+            InEdges_Throws_Test(graph);
         }
 
         #endregion
@@ -365,8 +360,8 @@ namespace QuikGraph.Tests.Structures
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
-
             graph.AddVertex(5);
+
             Assert.AreEqual(3, graph.Degree(1));
             Assert.AreEqual(3, graph.Degree(2));
             Assert.AreEqual(4, graph.Degree(3)); // Self edge
@@ -444,9 +439,7 @@ namespace QuikGraph.Tests.Structures
         public void TryGetInEdges_Throws()
         {
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetInEdges(null, out _));
+            TryGetInEdges_Throws_Test(graph);
         }
 
         #endregion
