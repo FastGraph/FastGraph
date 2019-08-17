@@ -32,7 +32,7 @@ namespace QuikGraph.Tests.Structures
             #region Local function
 
             void AssertEmptyGraph<TVertex, TEdge>(
-                UndirectedGraph<TVertex, TEdge> g, 
+                UndirectedGraph<TVertex, TEdge> g,
                 bool parallelEdges = true)
                 where TEdge : IEdge<TVertex>
             {

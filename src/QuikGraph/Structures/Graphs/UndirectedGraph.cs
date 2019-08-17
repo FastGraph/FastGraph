@@ -185,7 +185,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             if (_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
-                return edges.Count;
+                return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
             return 0;
         }
 
