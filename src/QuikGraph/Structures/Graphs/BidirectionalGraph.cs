@@ -611,8 +611,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
@@ -658,8 +656,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveInEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 

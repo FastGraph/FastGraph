@@ -449,7 +449,7 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
-        private void ClearEdgesCommon([NotNull, InstantHandle] Action<AdjacencyGraph<int, Edge<int>>, int> clearEdges)
+        private static void ClearEdgesCommon([NotNull, InstantHandle] Action<AdjacencyGraph<int, Edge<int>>, int> clearEdges)
         {
             int edgesRemoved = 0;
 

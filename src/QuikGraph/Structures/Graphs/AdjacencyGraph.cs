@@ -264,6 +264,7 @@ namespace QuikGraph
                 _vertexEdges.Add(vertex, new EdgeList<TVertex, TEdge>(EdgeCapacity));
             else
                 _vertexEdges.Add(vertex, new EdgeList<TVertex, TEdge>());
+
             OnVertexAdded(vertex);
 
             return true;
@@ -523,8 +524,6 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
@@ -559,7 +558,7 @@ namespace QuikGraph
         /// Clears edges of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        public void ClearEdges(TVertex vertex)
+        public void ClearEdges([NotNull] TVertex vertex)
         {
             ClearOutEdges(vertex);
         }
