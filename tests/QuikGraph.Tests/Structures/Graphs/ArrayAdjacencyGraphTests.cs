@@ -16,8 +16,7 @@ namespace QuikGraph.Tests.Structures
 
             var graph = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedGraph);
             AssertGraphProperties(graph);
-            AssertNoVertex(graph);
-            AssertNoEdge(graph);
+            AssertEmptyGraph(graph);
 
             wrappedGraph.AddVertexRange(new[] { 2, 3, 1 });
             graph = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedGraph);

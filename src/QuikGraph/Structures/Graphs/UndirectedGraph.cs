@@ -196,6 +196,15 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
+        public TEdge AdjacentEdge(TVertex vertex, int index)
+        {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            return _adjacentEdges[vertex][index];
+        }
+
+        /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
             if (source == null)
@@ -227,15 +236,6 @@ namespace QuikGraph
         public bool ContainsEdge(TVertex source, TVertex target)
         {
             return TryGetEdge(source, target, out _);
-        }
-
-        /// <inheritdoc />
-        public TEdge AdjacentEdge(TVertex vertex, int index)
-        {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-
-            return _adjacentEdges[vertex][index];
         }
 
         #endregion

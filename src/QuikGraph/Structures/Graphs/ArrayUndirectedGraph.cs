@@ -30,6 +30,7 @@ namespace QuikGraph
             if (visitedGraph is null)
                 throw new ArgumentNullException(nameof(visitedGraph));
 
+            AllowParallelEdges = visitedGraph.AllowParallelEdges;
             EdgeEqualityComparer = visitedGraph.EdgeEqualityComparer;
             EdgeCount = visitedGraph.EdgeCount;
             _vertexEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
@@ -39,6 +40,8 @@ namespace QuikGraph
                     vertex,
                     visitedGraph.AdjacentEdges(vertex).ToArray());
             }
+
+            _edges = new List<TEdge>(visitedGraph.Edges);
         }
 
         /// <inheritdoc />
@@ -50,7 +53,7 @@ namespace QuikGraph
         public bool IsDirected => false;
 
         /// <inheritdoc />
-        public bool AllowParallelEdges => true;
+        public bool AllowParallelEdges { get; }
 
         #endregion
 
@@ -86,13 +89,16 @@ namespace QuikGraph
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount > 0;
+        public bool IsEdgesEmpty => EdgeCount == 0;
 
         /// <inheritdoc />
         public int EdgeCount { get; }
 
+        [NotNull, ItemNotNull]
+        private readonly IList<TEdge> _edges;
+
         /// <inheritdoc />
-        public IEnumerable<TEdge> Edges => _vertexEdges.Values.SelectMany(edges => edges);
+        public IEnumerable<TEdge> Edges => _edges;
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
@@ -115,7 +121,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _vertexEdges[vertex];
+            if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
+                return edges;
+            return Enumerable.Empty<TEdge>();
         }
 
         /// <inheritdoc />
@@ -124,7 +132,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _vertexEdges[vertex].Length;
+            if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
+                return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
+            return 0;
         }
 
         /// <inheritdoc />
@@ -150,12 +160,18 @@ namespace QuikGraph
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            TEdge[] edges = _vertexEdges[source];
-            foreach (TEdge e in edges)
+            if (Comparer<TVertex>.Default.Compare(source, target) > 0)
             {
-                if (EdgeEqualityComparer(e, source, target))
+                TVertex temp = source;
+                source = target;
+                target = temp;
+            }
+
+            foreach (TEdge adjacentEdge in AdjacentEdges(source))
+            {
+                if (EdgeEqualityComparer(adjacentEdge, source, target))
                 {
-                    edge = e;
+                    edge = adjacentEdge;
                     return true;
                 }
             }
