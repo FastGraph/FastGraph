@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.AssertHelpers;
 
@@ -336,7 +338,7 @@ namespace QuikGraph.Tests.Structures
             AssertNoInEdge(graph, 1);
             AssertHasInEdges(graph, 2, new[] { edge12, edge32 });
             AssertHasInEdges(graph, 3, new[] { edge13, edge33 });
-            AssertHasInEdges(graph, 4, new [] { edge14, edge24 });
+            AssertHasInEdges(graph, 4, new[] { edge14, edge24 });
         }
 
         [Test]
@@ -440,6 +442,324 @@ namespace QuikGraph.Tests.Structures
         {
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             TryGetInEdges_Throws_Test(graph);
+        }
+
+        #endregion
+
+        #region Merge
+
+        public void Merge_Test(
+            [NotNull] IEnumerable<int> setupVertices,
+            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> setupEdges,
+            int vertexToMerge,
+            int expectedEdgesAdded,
+            int expectedEdgesRemoved,
+            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> expectedEdges)
+        {
+            int verticesAdded = 0;
+            int edgesAdded = 0;
+            int verticesRemoved = 0;
+            int edgesRemoved = 0;
+
+            var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
+
+            int[] verticesArray = setupVertices.ToArray();
+            graph.AddVertexRange(verticesArray);
+            graph.AddEdgeRange(setupEdges);
+
+            graph.VertexAdded += v =>
+            {
+                Assert.IsNotNull(v);
+                ++verticesAdded;
+            };
+            graph.VertexRemoved += v =>
+            {
+                Assert.IsNotNull(v);
+                // ReSharper disable once AccessToModifiedClosure
+                ++verticesRemoved;
+            };
+            graph.EdgeAdded += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesAdded;
+            };
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            graph.MergeVertex(vertexToMerge, (source, target) => new EquatableEdge<int>(source, target));
+            CheckCounters();
+            AssertHasVertices(graph, verticesArray.Except(new[] { vertexToMerge }));
+            AssertHasEdges(graph, expectedEdges);
+
+            #region Local function
+
+            void CheckCounters()
+            {
+                Assert.AreEqual(0, verticesAdded);
+                Assert.AreEqual(1, verticesRemoved);
+                Assert.AreEqual(expectedEdgesAdded, edgesAdded);
+                Assert.AreEqual(expectedEdgesRemoved, edgesRemoved);
+                verticesRemoved = 0;
+                edgesAdded = 0;
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        [Test]
+        public void Merge1()
+        {
+            var edge13 = new EquatableEdge<int>(1, 3);
+            var edge13Bis = new EquatableEdge<int>(1, 3);
+            var edge21 = new EquatableEdge<int>(2, 1);
+            var edge23 = new EquatableEdge<int>(2, 3);
+            var edge34 = new EquatableEdge<int>(3, 4);
+            var edge35 = new EquatableEdge<int>(3, 5);
+            var edge35Bis = new EquatableEdge<int>(3, 5);
+            var edge45 = new EquatableEdge<int>(4, 5);
+
+            Merge_Test(
+                new[] { 1, 2, 3, 4, 5 },
+                new[] { edge13, edge13Bis, edge21, edge23, edge34, edge35, edge35Bis, edge45 },
+                3,
+                9,
+                6,
+                new[]
+                {
+                    edge21, edge45,
+                    new EquatableEdge<int>(1, 4),
+                    new EquatableEdge<int>(1, 5),
+                    new EquatableEdge<int>(1, 5),
+
+                    new EquatableEdge<int>(1, 4),
+                    new EquatableEdge<int>(1, 5),
+                    new EquatableEdge<int>(1, 5),
+
+                    new EquatableEdge<int>(2, 4),
+                    new EquatableEdge<int>(2, 5),
+                    new EquatableEdge<int>(2, 5)
+                });
+        }
+
+        [Test]
+        public void Merge2()
+        {
+            var edge23 = new EquatableEdge<int>(2, 3);
+            var edge31 = new EquatableEdge<int>(3, 1);
+            var edge33 = new EquatableEdge<int>(3, 3);
+            var edge34 = new EquatableEdge<int>(3, 4);
+
+            Merge_Test(
+                new[] { 1, 2, 3, 4 },
+                new[] { edge23, edge31, edge33, edge34 },
+                3,
+                2,
+                4,
+                new[]
+                {
+                    new EquatableEdge<int>(2, 1),
+                    new EquatableEdge<int>(2, 4)
+                });
+        }
+
+        [Test]
+        public void Merge3()
+        {
+            var edge34 = new EquatableEdge<int>(3, 4);
+
+            Merge_Test(
+                new[] { 1, 2, 3, 4 },
+                new[] { edge34 },
+                1,
+                0,
+                0,
+                new[] { edge34 });
+        }
+
+        [Test]
+        public void Merge_Throws()
+        {
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
+            Assert.Throws<KeyNotFoundException>(
+                () => graph1.MergeVertex(1, (source, target) => new Edge<int>(source, target)));
+
+            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            Assert.Throws<ArgumentNullException>(
+                // ReSharper disable AssignNullToNotNullAttribute
+                () => graph2.MergeVertex(null, (source, target) => new Edge<TestVertex>(source, target)));
+            Assert.Throws<ArgumentNullException>(
+                () => graph2.MergeVertex(new TestVertex("1"), null));
+            Assert.Throws<ArgumentNullException>(
+                () => graph2.MergeVertex(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        public void MergeIf_Test(
+            [NotNull] IEnumerable<int> setupVertices,
+            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> setupEdges,
+            [NotNull, InstantHandle] VertexPredicate<int> vertexPredicate,
+            int expectedVerticesRemoved,
+            int expectedEdgesAdded,
+            int expectedEdgesRemoved,
+            [NotNull] IEnumerable<int> expectedVertices,
+            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> expectedEdges)
+        {
+            int verticesAdded = 0;
+            int edgesAdded = 0;
+            int verticesRemoved = 0;
+            int edgesRemoved = 0;
+
+            var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
+
+            graph.AddVertexRange(setupVertices);
+            graph.AddEdgeRange(setupEdges);
+
+            graph.VertexAdded += v =>
+            {
+                Assert.IsNotNull(v);
+                ++verticesAdded;
+            };
+            graph.VertexRemoved += v =>
+            {
+                Assert.IsNotNull(v);
+                // ReSharper disable once AccessToModifiedClosure
+                ++verticesRemoved;
+            };
+            graph.EdgeAdded += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesAdded;
+            };
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            graph.MergeVerticesIf(vertexPredicate, (source, target) => new EquatableEdge<int>(source, target));
+            CheckCounters();
+            AssertHasVertices(graph, expectedVertices);
+            EquatableEdge<int>[] edges = expectedEdges.ToArray();
+            if (!edges.Any())
+                AssertNoEdge(graph);
+            else
+                AssertHasEdges(graph, edges);
+
+            #region Local function
+
+            void CheckCounters()
+            {
+                Assert.AreEqual(0, verticesAdded);
+                Assert.AreEqual(expectedVerticesRemoved, verticesRemoved);
+                Assert.AreEqual(expectedEdgesAdded, edgesAdded);
+                Assert.AreEqual(expectedEdgesRemoved, edgesRemoved);
+                verticesRemoved = 0;
+                edgesAdded = 0;
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        [Test]
+        public void MergeIf1()
+        {
+            var edge13 = new EquatableEdge<int>(1, 3);
+            var edge13Bis = new EquatableEdge<int>(1, 3);
+            var edge21 = new EquatableEdge<int>(2, 1);
+            var edge23 = new EquatableEdge<int>(2, 3);
+            var edge34 = new EquatableEdge<int>(3, 4);
+            var edge35 = new EquatableEdge<int>(3, 5);
+            var edge35Bis = new EquatableEdge<int>(3, 5);
+            var edge45 = new EquatableEdge<int>(4, 5);
+
+            MergeIf_Test(
+                new[] { 1, 2, 3, 4, 5 },
+                new[] { edge13, edge13Bis, edge21, edge23, edge34, edge35, edge35Bis, edge45 },
+                vertex => vertex == 3 || vertex == 4,
+                1 + 1,
+                9 + 3,
+                6 + 4,
+                new[] { 1, 2, 5 },
+                new[]
+                {
+                    edge21,
+                    new EquatableEdge<int>(1, 5),
+                    new EquatableEdge<int>(1, 5),
+
+                    new EquatableEdge<int>(1, 5),
+                    new EquatableEdge<int>(1, 5),
+
+                    new EquatableEdge<int>(2, 5),
+                    new EquatableEdge<int>(2, 5),
+
+
+                    new EquatableEdge<int>(1, 5),
+                    new EquatableEdge<int>(1, 5),
+                    new EquatableEdge<int>(2, 5)
+                });
+        }
+
+        [Test]
+        public void MergeIf2()
+        {
+            var edge23 = new EquatableEdge<int>(2, 3);
+            var edge31 = new EquatableEdge<int>(3, 1);
+            var edge33 = new EquatableEdge<int>(3, 3);
+            var edge34 = new EquatableEdge<int>(3, 4);
+
+            MergeIf_Test(
+                new[] { 1, 2, 3, 4 },
+                new[] { edge23, edge31, edge33, edge34 },
+                vertex => vertex == 3 || vertex == 4,
+                1 + 1,
+                2 + 0,
+                4 + 1,
+                new[] { 1, 2 },
+                new[]
+                {
+                    new EquatableEdge<int>(2, 1)
+                });
+        }
+
+        [Test]
+        public void MergeIf3()
+        {
+            var edge34 = new EquatableEdge<int>(3, 4);
+
+            MergeIf_Test(
+                new[] { 1, 2, 3, 4 },
+                new[] { edge34 },
+                vertex => vertex == 1 || vertex == 2,
+               1 + 1,
+                0 + 0,
+                0 + 0,
+                new[] { 3, 4 },
+                new[] { edge34 });
+        }
+
+        [Test]
+        public void MergeIf4()
+        {
+            var edge34 = new EquatableEdge<int>(3, 4);
+
+            MergeIf_Test(
+                new[] { 1, 2, 3, 4 },
+                new[] { edge34 },
+                vertex => vertex == 1 || vertex == 3,
+                1 + 1,
+                0 + 0,
+                0 + 1,
+                new[] { 2, 4 },
+                Enumerable.Empty<EquatableEdge<int>>());
         }
 
         #endregion
@@ -758,7 +1078,7 @@ namespace QuikGraph.Tests.Structures
             var edge13 = new Edge<int>(1, 3);
             var edge31 = new Edge<int>(3, 1);
             var edge32 = new Edge<int>(3, 2);
-            graph.AddVerticesAndEdgeRange(new [] { edge12, edge13, edge31, edge32 });
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge31, edge32 });
 
             // Clear in 3
             graph.ClearInEdges(3);
