@@ -15,35 +15,34 @@ namespace QuikGraph.Tests.Structures
         public void Construction()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            AssertEmptyGraph(graph);
+            AssertGraphProperties(graph);
 
             graph = new AdjacencyGraph<int, Edge<int>>(true);
-            AssertEmptyGraph(graph);
+            AssertGraphProperties(graph);
 
             graph = new AdjacencyGraph<int, Edge<int>>(false);
-            AssertEmptyGraph(graph, false);
+            AssertGraphProperties(graph, false);
 
             graph = new AdjacencyGraph<int, Edge<int>>(true, 12);
-            AssertEmptyGraph(graph);
+            AssertGraphProperties(graph);
 
             graph = new AdjacencyGraph<int, Edge<int>>(false, 12);
-            AssertEmptyGraph(graph, false);
+            AssertGraphProperties(graph, false);
 
             graph = new AdjacencyGraph<int, Edge<int>>(true, 42, 12);
-            AssertEmptyGraph(graph, edgeCapacity: 12);
+            AssertGraphProperties(graph, edgeCapacity: 12);
 
             graph = new AdjacencyGraph<int, Edge<int>>(false, 42, 12);
-            AssertEmptyGraph(graph, false, 12);
+            AssertGraphProperties(graph, false, 12);
 
             #region Local function
 
-            void AssertEmptyGraph<TVertex, TEdge>(AdjacencyGraph<TVertex, TEdge> g, bool parallelEdges = true, int edgeCapacity = 0)
+            void AssertGraphProperties<TVertex, TEdge>(AdjacencyGraph<TVertex, TEdge> g, bool parallelEdges = true, int edgeCapacity = 0)
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
                 Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                AssertNoVertex(g);
-                AssertNoEdge(g);
+                AssertEmptyGraph(g);
                 Assert.AreEqual(edgeCapacity, g.EdgeCapacity);
                 Assert.AreSame(typeof(int), g.VertexType);
                 Assert.AreSame(typeof(Edge<int>), g.EdgeType);

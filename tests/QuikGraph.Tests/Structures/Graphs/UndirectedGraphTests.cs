@@ -15,31 +15,30 @@ namespace QuikGraph.Tests.Structures
         public void Construction()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            AssertEmptyGraph(graph);
+            AssertGraphProperties(graph);
 
             graph = new UndirectedGraph<int, Edge<int>>(true);
-            AssertEmptyGraph(graph);
+            AssertGraphProperties(graph);
 
             graph = new UndirectedGraph<int, Edge<int>>(false);
-            AssertEmptyGraph(graph, false);
+            AssertGraphProperties(graph, false);
 
             EdgeEqualityComparer<int> comparer = (edge, source, target) =>
                 edge.Source.Equals(source) && edge.Target.Equals(target);
             graph = new UndirectedGraph<int, Edge<int>>(true, comparer);
-            AssertEmptyGraph(graph);
+            AssertGraphProperties(graph);
             Assert.AreSame(comparer, graph.EdgeEqualityComparer);
 
             #region Local function
 
-            void AssertEmptyGraph<TVertex, TEdge>(
+            void AssertGraphProperties<TVertex, TEdge>(
                 UndirectedGraph<TVertex, TEdge> g,
                 bool parallelEdges = true)
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsFalse(g.IsDirected);
                 Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                AssertNoVertex(g);
-                AssertNoEdge(g);
+                AssertEmptyGraph(g);
                 Assert.AreEqual(-1, g.EdgeCapacity);
             }
 

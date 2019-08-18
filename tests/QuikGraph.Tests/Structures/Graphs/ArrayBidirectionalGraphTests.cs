@@ -88,8 +88,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsVertex_Throws()
         {
-            var wrappedGraph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var graph = new ArrayAdjacencyGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
+            var wrappedGraph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new ArrayBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
             ContainsVertex_Throws_Test(graph);
         }
 

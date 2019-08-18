@@ -128,6 +128,9 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
         {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             foreach (TEdge adjacentEdge in AdjacentEdges(source))
             {
                 if (EdgeEqualityComparer(adjacentEdge, source, target))

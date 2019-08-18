@@ -1106,7 +1106,7 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_ImmutableGraph_UndirectedGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> wrappedGraph,
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
@@ -1351,7 +1351,7 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void AdjacentEdge_ImmutableGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> wrappedGraph,
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
@@ -1448,7 +1448,7 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void AdjacentEdges_ImmutableGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> wrappedGraph,
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
@@ -1592,7 +1592,7 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetEdge_ImmutableGraph_UndirectedGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> wrappedGraph,
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
