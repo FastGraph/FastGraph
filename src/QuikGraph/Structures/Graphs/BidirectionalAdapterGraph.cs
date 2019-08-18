@@ -8,9 +8,9 @@ using QuikGraph.Collections;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation that wraps a bidirectional graph.
-    /// Vertex list graph for out-edges only and dictionary cache for in-edges.
+    /// Implementation that wraps a graph and adapt it to become bidirectional.
     /// </summary>
+    /// <remarks>Vertex list graph for out-edges only and dictionary cache for in-edges.</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
@@ -20,12 +20,13 @@ namespace QuikGraph
     public class BidirectionalAdapterGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        [NotNull]
         private readonly IVertexAndEdgeListGraph<TVertex, TEdge> _baseGraph;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BidirectionalAdapterGraph{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="baseGraph">Wrapped bidirectional graph.</param>
+        /// <param name="baseGraph">Wrapped graph.</param>
         public BidirectionalAdapterGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
             _baseGraph = baseGraph ?? throw new ArgumentNullException(nameof(baseGraph));
@@ -39,6 +40,12 @@ namespace QuikGraph
                 }
 
                 edgeList.Add(edge);
+            }
+
+            // Add vertices that has no in edges
+            foreach (TVertex vertex in _baseGraph.Vertices.Except(_inEdges.Keys.ToArray()))
+            {
+                _inEdges.Add(vertex, new EdgeList<TVertex, TEdge>());
             }
         }
 
