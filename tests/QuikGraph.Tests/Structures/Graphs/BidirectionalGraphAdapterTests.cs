@@ -79,6 +79,32 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => new BidirectionalAdapterGraph<int, Edge<int>>(null));
         }
 
+        #region Add Vertex => has effect
+
+        [Test]
+        public void AddVertex()
+        {
+            var wrappedGraph = new BidirectionalGraph<int, Edge<int>>();
+            AddVertex_ImmutableGraph_WithUpdate(
+                wrappedGraph,
+                () => new BidirectionalAdapterGraph<int, Edge<int>>(wrappedGraph));
+        }
+
+        #endregion
+
+        #region Add Edge => has effect
+
+        [Test]
+        public void AddEdge()
+        {
+            var wrappedGraph = new BidirectionalGraph<int, Edge<int>>();
+            AddEdge_ImmutableGraph_WithUpdate(
+                wrappedGraph,
+                () => new BidirectionalAdapterGraph<int, Edge<int>>(wrappedGraph));
+        }
+
+        #endregion
+
         #region Contains Vertex
 
         [Test]

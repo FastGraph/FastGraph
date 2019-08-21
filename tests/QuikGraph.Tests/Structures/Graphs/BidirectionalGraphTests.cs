@@ -39,7 +39,10 @@ namespace QuikGraph.Tests.Structures
 
             #region Local function
 
-            void AssertGraphProperties<TVertex, TEdge>(BidirectionalGraph<TVertex, TEdge> g, bool parallelEdges = true, int edgeCapacity = 0)
+            void AssertGraphProperties<TVertex, TEdge>(
+                BidirectionalGraph<TVertex, TEdge> g,
+                bool parallelEdges = true,
+                int edgeCapacity = 0)
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -759,6 +762,17 @@ namespace QuikGraph.Tests.Structures
                 0 + 1,
                 new[] { 2, 4 },
                 Enumerable.Empty<EquatableEdge<int>>());
+        }
+
+        [Test]
+        public void MergeIf_Throws()
+        {
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(null, (source, target) => new Edge<int>(source, target)));
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(vertex => true, null));
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
         }
 
         #endregion

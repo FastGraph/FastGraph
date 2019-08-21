@@ -63,6 +63,32 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => new ArrayBidirectionalGraph<int, Edge<int>>(null));
         }
 
+        #region Add Vertex => no effect
+
+        [Test]
+        public void AddVertex()
+        {
+            var wrappedGraph = new BidirectionalGraph<int, Edge<int>>();
+            AddVertex_ImmutableGraph_NoUpdate(
+                wrappedGraph,
+                () => new ArrayBidirectionalGraph<int, Edge<int>>(wrappedGraph));
+        }
+
+        #endregion
+
+        #region Add Edge => no effect
+
+        [Test]
+        public void AddEdge()
+        {
+            var wrappedGraph = new BidirectionalGraph<int, Edge<int>>();
+            AddEdge_ImmutableGraph_NoUpdate(
+                wrappedGraph,
+                () => new ArrayBidirectionalGraph<int, Edge<int>>(wrappedGraph));
+        }
+
+        #endregion
+
         #region Contains Vertex
 
         [Test]

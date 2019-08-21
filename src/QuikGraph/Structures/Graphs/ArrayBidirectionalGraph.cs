@@ -248,7 +248,7 @@ namespace QuikGraph
 
             if (_vertexEdges[vertex].TryGetOutEdges(out TEdge[] edges))
                 return edges[index];
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
         
         #endregion
@@ -306,7 +306,7 @@ namespace QuikGraph
 
             if (_vertexEdges[vertex].TryGetInEdges(out TEdge[] edges))
                 return edges[index];
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         /// <inheritdoc />

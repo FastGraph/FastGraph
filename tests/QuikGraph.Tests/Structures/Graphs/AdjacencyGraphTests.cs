@@ -37,7 +37,10 @@ namespace QuikGraph.Tests.Structures
 
             #region Local function
 
-            void AssertGraphProperties<TVertex, TEdge>(AdjacencyGraph<TVertex, TEdge> g, bool parallelEdges = true, int edgeCapacity = 0)
+            void AssertGraphProperties<TVertex, TEdge>(
+                AdjacencyGraph<TVertex, TEdge> g,
+                bool parallelEdges = true,
+                int edgeCapacity = 0)
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
