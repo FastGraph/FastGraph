@@ -936,35 +936,48 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 1);
+            var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
             Assert.IsFalse(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(edge1);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(edge2);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(edge3);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+
+            graph.AddVerticesAndEdge(edge4);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(otherEdge1);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
         }
 
@@ -977,11 +990,13 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 1);
+            var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
             Assert.IsFalse(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(edge1);
@@ -989,6 +1004,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(edge2);
@@ -996,6 +1012,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(edge3);
@@ -1003,6 +1020,15 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge4);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
@@ -1010,6 +1036,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
         }
 
@@ -1019,35 +1046,48 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
             var edge3 = new EquatableEdge<int>(2, 1);
+            var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
             Assert.IsFalse(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(edge1);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(edge2);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(edge3);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddVerticesAndEdge(edge4);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
 
             graph.AddVerticesAndEdge(otherEdge1);
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
         }
 
@@ -1060,11 +1100,13 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
             var edge3 = new EquatableEdge<int>(2, 1);
+            var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
             Assert.IsFalse(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsFalse(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(edge1);
@@ -1072,6 +1114,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsFalse(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(edge2);
@@ -1079,6 +1122,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(edge3);
@@ -1086,6 +1130,15 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge4);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
@@ -1093,6 +1146,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(edge1));
             Assert.IsTrue(graph.ContainsEdge(edge2));
             Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
         }
 
@@ -1101,6 +1155,7 @@ namespace QuikGraph.Tests.Structures
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
 
             Assert.IsFalse(graph.ContainsEdge(1, 2));
             Assert.IsFalse(graph.ContainsEdge(2, 1));
@@ -1112,6 +1167,9 @@ namespace QuikGraph.Tests.Structures
             graph.AddVerticesAndEdge(edge2);
             Assert.IsTrue(graph.ContainsEdge(1, 3));
             Assert.IsFalse(graph.ContainsEdge(3, 1));
+
+            graph.AddVerticesAndEdge(edge3);
+            Assert.IsTrue(graph.ContainsEdge(2, 2));
 
             // A vertex is not present in the graph
             Assert.IsFalse(graph.ContainsEdge(1, 4));
@@ -1126,6 +1184,7 @@ namespace QuikGraph.Tests.Structures
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
 
             Assert.IsFalse(graph.ContainsEdge(1, 2));
             Assert.IsFalse(graph.ContainsEdge(2, 1));
@@ -1140,6 +1199,10 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(1, 3));
             Assert.IsFalse(graph.ContainsEdge(3, 1));
 
+            wrappedGraph.AddVerticesAndEdge(edge3);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(2, 2));
+
             // A vertex is not present in the graph
             Assert.IsFalse(graph.ContainsEdge(1, 4));
             Assert.IsFalse(graph.ContainsEdge(4, 1));
@@ -1150,6 +1213,7 @@ namespace QuikGraph.Tests.Structures
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
 
             Assert.IsFalse(graph.ContainsEdge(1, 2));
             Assert.IsFalse(graph.ContainsEdge(2, 1));
@@ -1162,6 +1226,9 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(1, 3));
             Assert.IsTrue(graph.ContainsEdge(3, 1));
 
+            graph.AddVerticesAndEdge(edge3);
+            Assert.IsTrue(graph.ContainsEdge(2, 2));
+
             // A vertex is not present in the graph
             Assert.IsFalse(graph.ContainsEdge(1, 4));
             Assert.IsFalse(graph.ContainsEdge(4, 1));
@@ -1173,6 +1240,7 @@ namespace QuikGraph.Tests.Structures
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
 
             IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
             Assert.IsFalse(graph.ContainsEdge(1, 2));
@@ -1187,6 +1255,10 @@ namespace QuikGraph.Tests.Structures
             graph = createGraph();
             Assert.IsTrue(graph.ContainsEdge(1, 3));
             Assert.IsTrue(graph.ContainsEdge(3, 1));
+
+            wrappedGraph.AddVerticesAndEdge(edge3);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(2, 2));
 
             // A vertex is not present in the graph
             Assert.IsFalse(graph.ContainsEdge(1, 4));
