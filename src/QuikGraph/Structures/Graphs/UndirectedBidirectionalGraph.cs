@@ -7,8 +7,9 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation for a bidirectional undirected graph.
+    /// Mutable bidirectional undirected graph data structure.
     /// </summary>
+    /// <remarks>It is mutable via the wrapped graph.</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
@@ -21,10 +22,10 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of the <see cref="UndirectedBidirectionalGraph{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="visitedGraph">Bidirectional graph.</param>
-        public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+        /// <param name="originalGraph">Bidirectional graph.</param>
+        public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
-            VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
+            OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
         }
 
         /// <inheritdoc />
@@ -34,7 +35,7 @@ namespace QuikGraph
         /// <summary>
         /// Underlying bidirectional graph.
         /// </summary>
-        public IBidirectionalGraph<TVertex, TEdge> VisitedGraph { get; }
+        public IBidirectionalGraph<TVertex, TEdge> OriginalGraph { get; }
 
         #region IGraph<TVertex,TEdge>
 
@@ -42,25 +43,25 @@ namespace QuikGraph
         public bool IsDirected => false;
 
         /// <inheritdoc />
-        public bool AllowParallelEdges => VisitedGraph.AllowParallelEdges;
+        public bool AllowParallelEdges => OriginalGraph.AllowParallelEdges;
 
         #endregion
 
         #region IVertexSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => VisitedGraph.IsVerticesEmpty;
+        public bool IsVerticesEmpty => OriginalGraph.IsVerticesEmpty;
 
         /// <inheritdoc />
-        public int VertexCount => VisitedGraph.VertexCount;
+        public int VertexCount => OriginalGraph.VertexCount;
 
         /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => VisitedGraph.Vertices;
+        public IEnumerable<TVertex> Vertices => OriginalGraph.Vertices;
 
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
         {
-            return VisitedGraph.ContainsVertex(vertex);
+            return OriginalGraph.ContainsVertex(vertex);
         }
 
         #endregion
@@ -68,18 +69,18 @@ namespace QuikGraph
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => VisitedGraph.IsEdgesEmpty;
+        public bool IsEdgesEmpty => OriginalGraph.IsEdgesEmpty;
 
         /// <inheritdoc />
-        public int EdgeCount => VisitedGraph.EdgeCount;
+        public int EdgeCount => OriginalGraph.EdgeCount;
 
         /// <inheritdoc />
-        public IEnumerable<TEdge> Edges => VisitedGraph.Edges;
+        public IEnumerable<TEdge> Edges => OriginalGraph.Edges;
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
-            return VisitedGraph.ContainsEdge(edge);
+            return OriginalGraph.ContainsEdge(edge);
         }
 
         #endregion
@@ -90,9 +91,9 @@ namespace QuikGraph
         public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
         {
             return
-                VisitedGraph.OutEdges(vertex)
+                OriginalGraph.OutEdges(vertex)
                     .Concat(
-                        VisitedGraph.InEdges(vertex)
+                        OriginalGraph.InEdges(vertex)
                             // We skip self edges here since
                             // We already did those in the out-edge run
                             .Where(inEdge => !inEdge.IsSelfEdge()));
@@ -101,13 +102,13 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AdjacentDegree(TVertex vertex)
         {
-            return VisitedGraph.Degree(vertex);
+            return OriginalGraph.Degree(vertex);
         }
 
         /// <inheritdoc />
         public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
-            return VisitedGraph.IsOutEdgesEmpty(vertex) && VisitedGraph.IsInEdgesEmpty(vertex);
+            return OriginalGraph.IsOutEdgesEmpty(vertex) && OriginalGraph.IsInEdgesEmpty(vertex);
         }
 
         /// <summary>

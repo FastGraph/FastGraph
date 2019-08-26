@@ -8,7 +8,7 @@ using QuikGraph.Collections;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation that wraps a graph and adapt it to become bidirectional.
+    /// Wrapper of a graph adapting it to become bidirectional.
     /// </summary>
     /// <remarks>Vertex list graph for out-edges only and dictionary cache for in-edges.</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>

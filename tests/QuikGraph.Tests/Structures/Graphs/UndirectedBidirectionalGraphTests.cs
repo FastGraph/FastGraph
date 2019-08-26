@@ -27,7 +27,7 @@ namespace QuikGraph.Tests.Structures
             {
                 Assert.IsFalse(g.IsDirected);
                 Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.IsNotNull(g.VisitedGraph);
+                Assert.IsNotNull(g.OriginalGraph);
                 AssertEmptyGraph(g);
             }
 

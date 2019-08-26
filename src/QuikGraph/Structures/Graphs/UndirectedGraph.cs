@@ -8,7 +8,7 @@ using QuikGraph.Collections;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation for an undirected graph.
+    /// Mutable undirected graph data structure.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>

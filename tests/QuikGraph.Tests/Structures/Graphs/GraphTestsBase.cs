@@ -65,8 +65,27 @@ namespace QuikGraph.Tests.Structures
             where TEdge : IEdge<TVertex>
         {
             AssertHasEdges(
-                graph, 
+                graph,
                 edges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge)));
+        }
+
+        protected static void AssertSameReversedEdge(
+            [NotNull] Edge<int> edge, 
+            SReversedEdge<int, Edge<int>> reversedEdge)
+        {
+            Assert.AreEqual(new SReversedEdge<int, Edge<int>>(edge), reversedEdge);
+            Assert.AreSame(edge, reversedEdge.OriginalEdge);
+        }
+
+        protected static void AssertSameReversedEdges(
+            [NotNull, ItemNotNull] IEnumerable<Edge<int>> edges,
+            [NotNull] IEnumerable<SReversedEdge<int, Edge<int>>> reversedEdges)
+        {
+            var edgesArray = edges.ToArray();
+            var reversedEdgesArray = reversedEdges.ToArray();
+            Assert.AreEqual(edgesArray.Length, reversedEdgesArray.Length);
+            for (int i = 0; i < edgesArray.Length; ++i)
+                AssertSameReversedEdge(edgesArray[i], reversedEdgesArray[i]);
         }
 
         #endregion
@@ -102,6 +121,22 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.AreEquivalent(edgeArray, graph.InEdges(vertex));
         }
 
+        protected static void AssertHasReversedInEdges<TVertex, TEdge>(
+            [NotNull] IBidirectionalIncidenceGraph<TVertex, SReversedEdge<TVertex, TEdge>> graph,
+            [NotNull] TVertex vertex,
+            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            where TEdge : IEdge<TVertex>
+        {
+            TEdge[] edgeArray = edges.ToArray();
+            CollectionAssert.IsNotEmpty(edgeArray);
+
+            Assert.IsFalse(graph.IsInEdgesEmpty(vertex));
+            Assert.AreEqual(edgeArray.Length, graph.InDegree(vertex));
+            CollectionAssert.AreEquivalent(
+                edgeArray.Select(edge => new SReversedEdge<TVertex, TEdge>(edge)),
+                graph.InEdges(vertex));
+        }
+
         protected static void AssertNoOutEdge<TVertex, TEdge>([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
             where TEdge : IEdge<TVertex>
         {
@@ -122,6 +157,22 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.IsOutEdgesEmpty(vertex));
             Assert.AreEqual(edgeArray.Length, graph.OutDegree(vertex));
             CollectionAssert.AreEquivalent(edgeArray, graph.OutEdges(vertex));
+        }
+
+        protected static void AssertHasReversedOutEdges<TVertex, TEdge>(
+            [NotNull] IImplicitGraph<TVertex, SReversedEdge<TVertex, TEdge>> graph,
+            [NotNull] TVertex vertex,
+            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            where TEdge : IEdge<TVertex>
+        {
+            TEdge[] edgeArray = edges.ToArray();
+            CollectionAssert.IsNotEmpty(edgeArray);
+
+            Assert.IsFalse(graph.IsOutEdgesEmpty(vertex));
+            Assert.AreEqual(edgeArray.Length, graph.OutDegree(vertex));
+            CollectionAssert.AreEquivalent(
+                edgeArray.Select(edge => new SReversedEdge<TVertex, TEdge>(edge)),
+                graph.OutEdges(vertex));
         }
 
         protected static void AssertNoAdjacentEdge<TVertex, TEdge>([NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
@@ -1040,6 +1091,70 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
         }
 
+        protected static void ContainsEdge_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            IEdgeSet<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            var edge1 = new Edge<int>(1, 2);
+            var reversedEdge1 = new SReversedEdge<int, Edge<int>>(edge1);
+            var edge2 = new Edge<int>(1, 3);
+            var reversedEdge2 = new SReversedEdge<int, Edge<int>>(edge2);
+            var edge3 = new Edge<int>(2, 1);
+            var reversedEdge3 = new SReversedEdge<int, Edge<int>>(edge3);
+            var edge4 = new Edge<int>(2, 2);
+            var reversedEdge4 = new SReversedEdge<int, Edge<int>>(edge4);
+            var otherEdge1 = new Edge<int>(1, 2);
+            var reversedOtherEdge1 = new SReversedEdge<int, Edge<int>>(otherEdge1);
+
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge1));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge1);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge2);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge3);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge4);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
+            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(otherEdge1);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
+            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+        }
+
         protected static void ContainsEdge_EquatableEdge_Test(
             [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
         {
@@ -1150,6 +1265,70 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.ContainsEdge(otherEdge1));
         }
 
+        protected static void ContainsEdge_EquatableEdge_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, EquatableEdge<int>>>> createGraph)
+        {
+            IEdgeSet<int, SReversedEdge<int, EquatableEdge<int>>> graph = createGraph();
+
+            var edge1 = new EquatableEdge<int>(1, 2);
+            var reversedEdge1 = new SReversedEdge<int, EquatableEdge<int>>(edge1);
+            var edge2 = new EquatableEdge<int>(1, 3);
+            var reversedEdge2 = new SReversedEdge<int, EquatableEdge<int>>(edge2);
+            var edge3 = new EquatableEdge<int>(2, 1);
+            var reversedEdge3 = new SReversedEdge<int, EquatableEdge<int>>(edge3);
+            var edge4 = new EquatableEdge<int>(2, 2);
+            var reversedEdge4 = new SReversedEdge<int, EquatableEdge<int>>(edge4);
+            var otherEdge1 = new EquatableEdge<int>(1, 2);
+            var reversedOtherEdge1 = new SReversedEdge<int, EquatableEdge<int>>(otherEdge1);
+
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge1));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge1);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge2);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge3);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
+            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
+            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge4);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
+            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(otherEdge1);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
+            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
+            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+        }
+
         protected static void ContainsEdge_SourceTarget_Test(
             [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
@@ -1198,6 +1377,38 @@ namespace QuikGraph.Tests.Structures
             graph = createGraph();
             Assert.IsTrue(graph.ContainsEdge(1, 3));
             Assert.IsFalse(graph.ContainsEdge(3, 1));
+
+            wrappedGraph.AddVerticesAndEdge(edge3);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(2, 2));
+
+            // A vertex is not present in the graph
+            Assert.IsFalse(graph.ContainsEdge(1, 4));
+            Assert.IsFalse(graph.ContainsEdge(4, 1));
+        }
+
+        protected static void ContainsEdge_SourceTarget_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
+
+            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            Assert.IsFalse(graph.ContainsEdge(2, 1));
+
+            wrappedGraph.AddVerticesAndEdge(edge1);
+            graph = createGraph();
+            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            Assert.IsTrue(graph.ContainsEdge(2, 1));
+
+            wrappedGraph.AddVerticesAndEdge(edge2);
+            graph = createGraph();
+            Assert.IsFalse(graph.ContainsEdge(1, 3));
+            Assert.IsTrue(graph.ContainsEdge(3, 1));
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
@@ -1274,8 +1485,31 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null));
         }
 
+        protected static void ContainsEdge_Throws_ReversedTest<TVertex, TEdge>(
+            [NotNull] IEdgeSet<TVertex, SReversedEdge<TVertex, TEdge>> graph)
+            where TEdge : class, IEdge<TVertex>
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
+        }
+
         protected static void ContainsEdge_SourceTarget_Throws_Test(
             [NotNull] IIncidenceGraph<TestVertex, Edge<TestVertex>> graph)
+        {
+            var vertex = new TestVertex("v1");
+
+            // ReSharper disable AssignNullToNotNullAttribute
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(vertex, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, vertex));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        protected static void ContainsEdge_SourceTarget_Throws_ReversedTest(
+            [NotNull] IIncidenceGraph<TestVertex, SReversedEdge<TestVertex, Edge<TestVertex>>> graph)
         {
             var vertex = new TestVertex("v1");
 
@@ -1346,6 +1580,28 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge41, graph.OutEdge(4, 0));
         }
 
+        protected static void OutEdge_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge21 = new Edge<int>(2, 1);
+            var edge24 = new Edge<int>(2, 4);
+            var edge33 = new Edge<int>(3, 3);
+            var edge41 = new Edge<int>(4, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge21, edge24, edge33, edge41 });
+            IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            AssertSameReversedEdge(edge11, graph.OutEdge(1, 0));
+            AssertSameReversedEdge(edge41, graph.OutEdge(1, 2));
+            AssertSameReversedEdge(edge12, graph.OutEdge(2, 0));
+            AssertSameReversedEdge(edge13, graph.OutEdge(3, 0));
+            AssertSameReversedEdge(edge24, graph.OutEdge(4, 0));
+        }
+
         protected static void OutEdge_Throws_Test<TVertex>(
             [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph1,
             [NotNull] IImplicitGraph<TVertex, Edge<TVertex>> graph2)
@@ -1375,6 +1631,33 @@ namespace QuikGraph.Tests.Structures
             [NotNull] IImplicitGraph<TestVertex, Edge<TestVertex>> graph2)
         {
             IImplicitGraph<int, Edge<int>> graph1 = createGraph1();
+
+            const int vertex1 = 1;
+            const int vertex2 = 2;
+
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<KeyNotFoundException>(() => graph1.OutEdge(vertex1, 0));
+
+            wrappedGraph1.AddVertex(vertex1);
+            wrappedGraph1.AddVertex(vertex2);
+            graph1 = createGraph1();
+            AssertIndexOutOfRange(() => graph1.OutEdge(vertex1, 0));
+
+            wrappedGraph1.AddEdge(new Edge<int>(1, 2));
+            graph1 = createGraph1();
+            AssertIndexOutOfRange(() => graph1.OutEdge(vertex1, 5));
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph2.OutEdge(null, 0));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void OutEdge_Throws_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph1,
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph1,
+            [NotNull] IImplicitGraph<TestVertex, SReversedEdge<TestVertex, Edge<TestVertex>>> graph2)
+        {
+            IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph1 = createGraph1();
 
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -1447,9 +1730,38 @@ namespace QuikGraph.Tests.Structures
             AssertNoOutEdge(graph, 4);
         }
 
-        protected static void OutEdges_Throws_Test<TVertex>(
-            [NotNull] IImplicitGraph<TVertex, Edge<TVertex>> graph)
+        protected static void OutEdges_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge33 = new Edge<int>(3, 3);
+            var edge34 = new Edge<int>(3, 4);
+
+            IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            AssertNoOutEdge(graph, 1);
+
+            wrappedGraph.AddVertex(1);
+            graph = createGraph();
+            AssertNoOutEdge(graph, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge33, edge34 });
+            graph = createGraph();
+
+            AssertNoOutEdge(graph, 1);
+            AssertHasReversedOutEdges(graph, 2, new[] { edge12 });
+            AssertHasReversedOutEdges(graph, 3, new[] { edge13, edge33 });
+            AssertHasReversedOutEdges(graph, 4, new[] { edge14, edge24, edge34 });
+        }
+
+        protected static void OutEdges_Throws_Test<TVertex, TEdge>(
+            [NotNull] IImplicitGraph<TVertex, TEdge> graph)
             where TVertex : class
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
@@ -1627,7 +1939,22 @@ namespace QuikGraph.Tests.Structures
 
         #region In Edges
 
-        protected void InEdge_ImmutableGraph_Test(
+        protected static void InEdge_Test(
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge13 = new Edge<int>(1, 3);
+            var edge21 = new Edge<int>(2, 1);
+            var edge41 = new Edge<int>(4, 1);
+
+            graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge21, edge41 });
+
+            Assert.AreSame(edge11, graph.InEdge(1, 0));
+            Assert.AreSame(edge41, graph.InEdge(1, 2));
+            Assert.AreSame(edge13, graph.InEdge(3, 0));
+        }
+
+        protected static void InEdge_ImmutableGraph_Test(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
@@ -1642,6 +1969,45 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge11, graph.InEdge(1, 0));
             Assert.AreSame(edge41, graph.InEdge(1, 2));
             Assert.AreSame(edge13, graph.InEdge(3, 0));
+        }
+
+        protected static void InEdge_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge31 = new Edge<int>(3, 1);
+            var edge32 = new Edge<int>(3, 2);
+            var edge34 = new Edge<int>(3, 4);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge31, edge32, edge34 });
+            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            AssertSameReversedEdge(edge11, graph.InEdge(1, 0));
+            AssertSameReversedEdge(edge31, graph.InEdge(3, 0));
+            AssertSameReversedEdge(edge34, graph.InEdge(3, 2));
+        }
+
+        protected static void InEdge_Throws_Test(
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph1,
+            [NotNull] IMutableBidirectionalGraph<TestVertex, Edge<TestVertex>> graph2)
+        {
+            const int vertex1 = 1;
+            const int vertex2 = 2;
+
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<KeyNotFoundException>(() => graph1.InEdge(vertex1, 0));
+
+            graph1.AddVertex(vertex1);
+            graph1.AddVertex(vertex2);
+            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
+
+            graph1.AddEdge(new Edge<int>(1, 2));
+            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void InEdge_Throws_ImmutableGraph_Test(
@@ -1668,6 +2034,62 @@ namespace QuikGraph.Tests.Structures
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void InEdge_Throws_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph1,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph1,
+            [NotNull] IBidirectionalIncidenceGraph<TestVertex, SReversedEdge<TestVertex, Edge<TestVertex>>> graph2)
+        {
+            const int vertex1 = 1;
+            const int vertex2 = 2;
+
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph1 = createGraph1();
+            Assert.Throws<KeyNotFoundException>(() => graph1.InEdge(vertex1, 0));
+
+            wrappedGraph1.AddVertex(vertex1);
+            wrappedGraph1.AddVertex(vertex2);
+            graph1 = createGraph1();
+            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
+
+            wrappedGraph1.AddEdge(new Edge<int>(1, 2));
+            graph1 = createGraph1();
+            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void InEdges_Test(
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge32 = new Edge<int>(3, 2);
+            var edge33 = new Edge<int>(3, 3);
+
+            AssertNoInEdge(graph, 1);
+            AssertNoOutEdge(graph, 1);
+
+            graph.AddVertex(1);
+            AssertNoInEdge(graph, 1);
+            AssertNoOutEdge(graph, 1);
+
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge32, edge33 });
+
+            AssertHasOutEdges(graph, 1, new[] { edge12, edge13, edge14 });
+            AssertHasOutEdges(graph, 2, new[] { edge24 });
+            AssertHasOutEdges(graph, 3, new[] { edge32, edge33 });
+            AssertNoOutEdge(graph, 4);
+
+            AssertNoInEdge(graph, 1);
+            AssertHasInEdges(graph, 2, new[] { edge12, edge32 });
+            AssertHasInEdges(graph, 3, new[] { edge13, edge33 });
+            AssertHasInEdges(graph, 4, new[] { edge14, edge24 });
         }
 
         protected static void InEdges_ImmutableGraph_Test(
@@ -1704,9 +2126,44 @@ namespace QuikGraph.Tests.Structures
             AssertHasInEdges(graph, 4, new[] { edge14, edge24 });
         }
 
-        protected static void InEdges_Throws_Test<TVertex>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, Edge<TVertex>> graph)
+        protected static void InEdges_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge33 = new Edge<int>(3, 3);
+            var edge34 = new Edge<int>(3, 4);
+            var edge43 = new Edge<int>(4, 3);
+
+            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+            AssertNoInEdge(graph, 1);
+            AssertNoOutEdge(graph, 1);
+
+            wrappedGraph.AddVertex(1);
+            graph = createGraph();
+            AssertNoInEdge(graph, 1);
+            AssertNoOutEdge(graph, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge33, edge34, edge43 });
+            graph = createGraph();
+
+            AssertNoOutEdge(graph, 1);
+            AssertHasReversedOutEdges(graph, 2, new[] { edge12 });
+            AssertHasReversedOutEdges(graph, 3, new[] { edge13, edge33, edge43 });
+            AssertHasReversedOutEdges(graph, 4, new[] { edge14, edge34 });
+
+            AssertHasReversedInEdges(graph, 1, new [] { edge12, edge13, edge14 });
+            AssertNoInEdge(graph, 2);
+            AssertHasReversedInEdges(graph, 3, new[] { edge33, edge34 });
+            AssertHasReversedInEdges(graph, 4, new[] { edge43 });
+        }
+
+        protected static void InEdges_Throws_Test<TVertex, TEdge>(
+            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : class
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
@@ -1720,6 +2177,26 @@ namespace QuikGraph.Tests.Structures
         #endregion
 
         protected static void Degree_Test(
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(1, 4);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 2);
+            var edge6 = new Edge<int>(3, 3);
+
+            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            graph.AddVertex(5);
+
+            Assert.AreEqual(3, graph.Degree(1));
+            Assert.AreEqual(3, graph.Degree(2));
+            Assert.AreEqual(4, graph.Degree(3)); // Self edge
+            Assert.AreEqual(2, graph.Degree(4));
+            Assert.AreEqual(0, graph.Degree(5));
+        }
+
+        protected static void Degree_ImmutableGraph_Test(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
@@ -1733,6 +2210,28 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             wrappedGraph.AddVertex(5);
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
+
+            Assert.AreEqual(3, graph.Degree(1));
+            Assert.AreEqual(3, graph.Degree(2));
+            Assert.AreEqual(4, graph.Degree(3)); // Self edge
+            Assert.AreEqual(2, graph.Degree(4));
+            Assert.AreEqual(0, graph.Degree(5));
+        }
+
+        protected static void Degree_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(1, 4);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 2);
+            var edge6 = new Edge<int>(3, 3);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVertex(5);
+            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
             Assert.AreEqual(3, graph.Degree(1));
             Assert.AreEqual(3, graph.Degree(2));
@@ -1755,7 +2254,7 @@ namespace QuikGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out Edge<int> _));
+            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
             Assert.AreSame(edge5, gotEdge);
@@ -1780,7 +2279,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out Edge<int> _));
+            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
             Assert.AreSame(edge5, gotEdge);
@@ -1789,6 +2288,31 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge1, gotEdge);
 
             Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+        }
+
+        protected static void TryGetEdge_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(1, 3);
+            var edge4 = new Edge<int>(2, 2);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+
+            Assert.IsTrue(graph.TryGetEdge(4, 2, out SReversedEdge<int, Edge<int>> gotEdge));
+            AssertSameReversedEdge(edge5, gotEdge);
+
+            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
+            AssertSameReversedEdge(edge1, gotEdge);
+
+            Assert.IsFalse(graph.TryGetEdge(1, 2, out _));
         }
 
         protected static void TryGetEdge_UndirectedGraph_Test(
@@ -1804,7 +2328,7 @@ namespace QuikGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out Edge<int> _));
+            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
             Assert.AreSame(edge5, gotEdge);
@@ -1839,7 +2363,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             var graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out Edge<int> _));
+            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
             Assert.AreSame(edge5, gotEdge);
@@ -1859,8 +2383,9 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge7, gotEdge);
         }
 
-        protected static void TryGetEdge_Throws_Test(
-            [NotNull] IIncidenceGraph<TestVertex, Edge<TestVertex>> graph)
+        protected static void TryGetEdge_Throws_Test<TEdge>(
+            [NotNull] IIncidenceGraph<TestVertex, TEdge> graph)
+            where TEdge : IEdge<TestVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TestVertex("v2"), out _));
@@ -1869,8 +2394,9 @@ namespace QuikGraph.Tests.Structures
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
-        protected static void TryGetEdge_Throws_UndirectedGraph_Test(
-            [NotNull] IImplicitUndirectedGraph<TestVertex, Edge<TestVertex>> graph)
+        protected static void TryGetEdge_Throws_UndirectedGraph_Test<TEdge>(
+            [NotNull] IImplicitUndirectedGraph<TestVertex, TEdge> graph)
+            where TEdge : IEdge<TestVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TestVertex("v2"), out _));
@@ -1891,7 +2417,7 @@ namespace QuikGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out IEnumerable<Edge<int>> _));
+            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdges(2, 4, out IEnumerable<Edge<int>> gotEdges));
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
@@ -1916,7 +2442,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out IEnumerable<Edge<int>> _));
+            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdges(2, 4, out IEnumerable<Edge<int>> gotEdges));
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
@@ -1927,8 +2453,34 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.TryGetEdges(2, 1, out _));
         }
 
-        protected static void TryGetEdges_Throws_Test(
-            [NotNull] IIncidenceGraph<TestVertex, Edge<TestVertex>> graph)
+        protected static void TryGetEdges_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(1, 3);
+            var edge4 = new Edge<int>(2, 2);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+
+            Assert.IsTrue(graph.TryGetEdges(4, 2, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges));
+            AssertSameReversedEdges(new[] { edge5 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            AssertSameReversedEdges(new[] { edge1, edge2 }, gotEdges);
+
+            Assert.IsFalse(graph.TryGetEdges(1, 2, out _));
+        }
+
+        protected static void TryGetEdges_Throws_Test<TEdge>(
+            [NotNull] IIncidenceGraph<TestVertex, TEdge> graph)
+            where TEdge : IEdge<TestVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(null, new TestVertex("v2"), out _));
@@ -1946,10 +2498,13 @@ namespace QuikGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
+            var edge7 = new Edge<int>(4, 5);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out IEnumerable<Edge<int>> _));
+            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+
+            Assert.IsFalse(graph.TryGetOutEdges(5, out _));
 
             Assert.IsTrue(graph.TryGetOutEdges(3, out IEnumerable<Edge<int>> gotEdges));
             CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
@@ -1968,11 +2523,14 @@ namespace QuikGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
+            var edge7 = new Edge<int>(4, 5);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IImplicitGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out IEnumerable<Edge<int>> _));
+            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+
+            Assert.IsFalse(graph.TryGetOutEdges(5, out _));
 
             Assert.IsTrue(graph.TryGetOutEdges(3, out IEnumerable<Edge<int>> gotEdges));
             CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
@@ -1981,12 +2539,63 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
         }
 
-        protected static void TryGetOutEdges_Throws_Test<TVertex>(
-            [NotNull] IImplicitGraph<TVertex, Edge<TVertex>> graph)
+        protected static void TryGetOutEdges_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(1, 3);
+            var edge4 = new Edge<int>(2, 2);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 1);
+            var edge7 = new Edge<int>(5, 4);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            Assert.IsFalse(graph.TryGetOutEdges(0, out IEnumerable<SReversedEdge<int, Edge<int>>> _));
+
+            Assert.IsFalse(graph.TryGetOutEdges(5, out _));
+
+            Assert.IsTrue(graph.TryGetOutEdges(3, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges));
+            AssertSameReversedEdges(new[] { edge3 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetOutEdges(2, out gotEdges));
+            AssertSameReversedEdges(new[] { edge1, edge2, edge4 }, gotEdges);
+        }
+
+        protected static void TryGetOutEdges_Throws_Test<TVertex, TEdge>(
+            [NotNull] IImplicitGraph<TVertex, TEdge> graph)
             where TVertex : class
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetOutEdges(null, out _));
+        }
+
+        protected static void TryGetInEdges_Test(
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(1, 3);
+            var edge4 = new Edge<int>(2, 2);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 1);
+            var edge7 = new Edge<int>(5, 3);
+
+            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+
+            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+
+            Assert.IsFalse(graph.TryGetInEdges(5, out _));
+
+            Assert.IsTrue(graph.TryGetInEdges(4, out IEnumerable<Edge<int>> gotEdges));
+            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
         }
 
         protected static void TryGetInEdges_ImmutableGraph_Test(
@@ -1999,11 +2608,14 @@ namespace QuikGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
+            var edge7 = new Edge<int>(5, 3);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out IEnumerable<Edge<int>> _));
+            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+
+            Assert.IsFalse(graph.TryGetInEdges(5, out _));
 
             Assert.IsTrue(graph.TryGetInEdges(4, out IEnumerable<Edge<int>> gotEdges));
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
@@ -2012,9 +2624,36 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
         }
 
-        protected static void TryGetInEdges_Throws_Test<TVertex>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, Edge<TVertex>> graph)
+        protected static void TryGetInEdges_ImmutableGraph_ReversedTest(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(1, 3);
+            var edge4 = new Edge<int>(1, 1);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 1);
+            var edge7 = new Edge<int>(4, 5);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+
+            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+
+            Assert.IsFalse(graph.TryGetInEdges(5, out _));
+
+            Assert.IsTrue(graph.TryGetInEdges(4, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges));
+            AssertSameReversedEdges(new[] { edge7 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetInEdges(1, out gotEdges));
+            AssertSameReversedEdges(new[] { edge1, edge2, edge3, edge4 }, gotEdges);
+        }
+
+        protected static void TryGetInEdges_Throws_Test<TVertex, TEdge>(
+            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : class
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetInEdges(null, out _));
@@ -2425,6 +3064,74 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        protected static void RemoveInEdgeIf_Test(
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+        {
+            int verticesRemoved = 0;
+            int edgesRemoved = 0;
+
+            graph.VertexRemoved += v =>
+            {
+                Assert.IsNotNull(v);
+                ++verticesRemoved;
+            };
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(1, edge => true));
+            CheckCounters(0);
+            AssertEmptyGraph(graph);
+
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge13Bis = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(2, graph.RemoveInEdgeIf(3, edge => edge.Source == 1));
+            CheckCounters(2);
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(3, edge => edge.Target > 5));
+            CheckCounters(0);
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, edge => true));
+            CheckCounters(1);
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge14, edge24, edge31, edge33 });
+
+            #region Local function
+
+            void CheckCounters(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(0, verticesRemoved);
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        protected static void RemoveInEdgeIf_Throws_Test(
+            [NotNull] IMutableBidirectionalGraph<TestVertex, Edge<TestVertex>> graph)
+        {
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), null));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

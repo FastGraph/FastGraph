@@ -7,9 +7,12 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation for an immutable directed graph data structure efficient for large sparse
-    /// graph representation where out-edge need to be enumerated only.
+    /// Immutable directed graph data structure.
     /// </summary>
+    /// <remarks>
+    /// It is efficient for large sparse graph representation
+    /// where out-edge need to be enumerated only.
+    /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION

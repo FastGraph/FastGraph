@@ -7,9 +7,12 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation for an immutable bidirectional directed graph data structure for large sparse
-    /// graph representation where out-edge need to be enumerated only.
+    /// Immutable bidirectional directed graph data structure.
     /// </summary>
+    /// <remarks>
+    /// It can be used for large sparse graph representation where
+    /// out-edge need to be enumerated only.
+    /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION

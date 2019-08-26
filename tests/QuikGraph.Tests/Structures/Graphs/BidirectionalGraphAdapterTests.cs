@@ -299,7 +299,7 @@ namespace QuikGraph.Tests.Structures
         public void Degree()
         {
             var wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
-            Degree_Test(
+            Degree_ImmutableGraph_Test(
                 wrappedGraph,
                 () => new BidirectionalAdapterGraph<int, Edge<int>>(wrappedGraph));
         }

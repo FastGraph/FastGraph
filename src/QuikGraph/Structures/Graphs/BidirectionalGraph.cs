@@ -8,10 +8,13 @@ using QuikGraph.Collections;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation for a mutable directed graph data structure efficient for sparse
-    /// graph representation where out-edge and in-edges need to be enumerated. Requires
-    /// twice as much memory as the adjacency graph.
+    /// Mutable directed graph data structure.
     /// </summary>
+    /// <remarks>
+    /// It is efficient for sparse graph representation
+    /// where out-edge and in-edges need to be enumerated.
+    /// Requires twice as much memory as the <see cref="AdjacencyGraph{TVertex,TEdge}"/>.
+    /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
 #if SUPPORTS_SERIALIZATION
@@ -708,7 +711,9 @@ namespace QuikGraph
             if (edgeFactory is null)
                 throw new ArgumentNullException(nameof(edgeFactory));
 
-            // Storing edges in local array
+            // Storing edges (not a copy)
+            // Remove vertex will delete some of these edges
+            // but it will remain needed edges to perform the merge
             IEdgeList<TVertex, TEdge> inEdges = _vertexInEdges[vertex];
             IEdgeList<TVertex, TEdge> outEdges = _vertexOutEdges[vertex];
 
@@ -718,10 +723,6 @@ namespace QuikGraph
             // Add edges from each source to each target
             foreach (TEdge source in inEdges)
             {
-                // Is it a self edge?
-                if (source.Source.Equals(vertex))
-                    continue;
-
                 foreach (TEdge target in outEdges)
                 {
                     if (vertex.Equals(target.Target))

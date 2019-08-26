@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Tests.AssertHelpers;
 
 namespace QuikGraph.Tests.Structures
 {
@@ -276,71 +275,23 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void InEdge()
         {
-            var edge11 = new Edge<int>(1, 1);
-            var edge13 = new Edge<int>(1, 3);
-            var edge21 = new Edge<int>(2, 1);
-            var edge41 = new Edge<int>(4, 1);
-
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge21, edge41 });
-
-            Assert.AreSame(edge11, graph.InEdge(1, 0));
-            Assert.AreSame(edge41, graph.InEdge(1, 2));
-            Assert.AreSame(edge13, graph.InEdge(3, 0));
+            InEdge_Test(graph);
         }
 
         [Test]
         public void InEdge_Throws()
         {
-            const int vertex1 = 1;
-            const int vertex2 = 2;
-
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var graph1 = new BidirectionalGraph<int, Edge<int>>();
-            Assert.Throws<KeyNotFoundException>(() => graph1.InEdge(vertex1, 0));
-
-            graph1.AddVertex(vertex1);
-            graph1.AddVertex(vertex2);
-            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
-
-            graph1.AddEdge(new Edge<int>(1, 2));
-            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
-
             var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+            InEdge_Throws_Test(graph1, graph2);
         }
 
         [Test]
         public void InEdges()
         {
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge32 = new Edge<int>(3, 2);
-            var edge33 = new Edge<int>(3, 3);
-
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            AssertNoInEdge(graph, 1);
-            AssertNoOutEdge(graph, 1);
-
-            graph.AddVertex(1);
-            AssertNoInEdge(graph, 1);
-            AssertNoOutEdge(graph, 1);
-
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge32, edge33 });
-
-            AssertHasOutEdges(graph, 1, new[] { edge12, edge13, edge14 });
-            AssertHasOutEdges(graph, 2, new[] { edge24 });
-            AssertHasOutEdges(graph, 3, new[] { edge32, edge33 });
-            AssertNoOutEdge(graph, 4);
-
-            AssertNoInEdge(graph, 1);
-            AssertHasInEdges(graph, 2, new[] { edge12, edge32 });
-            AssertHasInEdges(graph, 3, new[] { edge13, edge33 });
-            AssertHasInEdges(graph, 4, new[] { edge14, edge24 });
+            InEdges_Test(graph);
         }
 
         [Test]
@@ -355,22 +306,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void Degree()
         {
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 3);
-            var edge3 = new Edge<int>(1, 4);
-            var edge4 = new Edge<int>(2, 4);
-            var edge5 = new Edge<int>(3, 2);
-            var edge6 = new Edge<int>(3, 3);
-
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
-            graph.AddVertex(5);
-
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            Degree_Test(graph);
         }
 
         #region Try Get Edges
@@ -420,23 +357,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void TryGetInEdges()
         {
-            var edge1 = new Edge<int>(1, 2);
-            var edge2 = new Edge<int>(1, 2);
-            var edge3 = new Edge<int>(1, 3);
-            var edge4 = new Edge<int>(2, 2);
-            var edge5 = new Edge<int>(2, 4);
-            var edge6 = new Edge<int>(3, 1);
-
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
-
-            Assert.IsFalse(graph.TryGetInEdges(0, out IEnumerable<Edge<int>> _));
-
-            Assert.IsTrue(graph.TryGetInEdges(4, out IEnumerable<Edge<int>> gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
-
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
+            TryGetInEdges_Test(graph);
         }
 
         [Test]
@@ -863,74 +785,15 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void RemoveInEdgeIf()
         {
-            int verticesRemoved = 0;
-            int edgesRemoved = 0;
-
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.VertexRemoved += v =>
-            {
-                Assert.IsNotNull(v);
-                // ReSharper disable once AccessToModifiedClosure
-                ++verticesRemoved;
-            };
-            graph.EdgeRemoved += e =>
-            {
-                Assert.IsNotNull(e);
-                // ReSharper disable once AccessToModifiedClosure
-                ++edgesRemoved;
-            };
-
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(1, edge => true));
-            CheckCounters(0, 0);
-            AssertEmptyGraph(graph);
-
-            var edge12 = new Edge<int>(1, 2);
-            var edge13 = new Edge<int>(1, 3);
-            var edge13Bis = new Edge<int>(1, 3);
-            var edge14 = new Edge<int>(1, 4);
-            var edge24 = new Edge<int>(2, 4);
-            var edge31 = new Edge<int>(3, 1);
-            var edge33 = new Edge<int>(3, 3);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
-
-            Assert.AreEqual(2, graph.RemoveInEdgeIf(3, edge => edge.Source == 1));
-            CheckCounters(0, 2);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
-
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(3, edge => edge.Target > 5));
-            CheckCounters(0, 0);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
-
-            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, edge => true));
-            CheckCounters(0, 1);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
-            AssertHasEdges(graph, new[] { edge14, edge24, edge31, edge33 });
-
-            #region Local function
-
-            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
-            {
-                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
-                verticesRemoved = 0;
-                edgesRemoved = 0;
-            }
-
-            #endregion
+            RemoveInEdgeIf_Test(graph);
         }
 
         [Test]
         public void RemoveInEdgeIf_Throws()
         {
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, edge => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, null));
-            // ReSharper restore AssignNullToNotNullAttribute
+            RemoveInEdgeIf_Throws_Test(graph);
         }
 
         #endregion
