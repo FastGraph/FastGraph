@@ -14,29 +14,10 @@ namespace QuikGraph
     public class NoPathFoundException : QuikGraphException
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="NoPathFoundException"/>.
+        /// Initializes a new instance of <see cref="NoPathFoundException"/> class.
         /// </summary>
         public NoPathFoundException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="NoPathFoundException"/> with the given message.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        public NoPathFoundException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="NoPathFoundException"/> with the given message
-        /// and a reference to exception that triggers this one.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        /// <param name="innerException">Exception that triggered this exception.</param>
-        public NoPathFoundException(string message, Exception innerException)
-            : base(message, innerException)
+            : base("No path found to join vertices in the graph.")
         {
         }
 

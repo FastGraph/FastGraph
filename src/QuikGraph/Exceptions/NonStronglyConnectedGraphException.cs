@@ -14,29 +14,10 @@ namespace QuikGraph
     public class NonStronglyConnectedGraphException : QuikGraphException
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/>.
+        /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/> class.
         /// </summary>
         public NonStronglyConnectedGraphException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/> with the given message.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        public NonStronglyConnectedGraphException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/> with the given message
-        /// and a reference to exception that triggers this one.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        /// <param name="innerException">Exception that triggered this exception.</param>
-        public NonStronglyConnectedGraphException(string message, Exception innerException)
-            : base(message, innerException)
+            : base("The graph is not strongly connected.")
         {
         }
 

@@ -14,29 +14,10 @@ namespace QuikGraph
     public class NonAcyclicGraphException : QuikGraphException
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="NonAcyclicGraphException"/>.
+        /// Initializes a new instance of <see cref="NonAcyclicGraphException"/> class.
         /// </summary>
         public NonAcyclicGraphException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="NonAcyclicGraphException"/> with the given message.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        public NonAcyclicGraphException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="NonAcyclicGraphException"/> with the given message
-        /// and a reference to exception that triggers this one.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        /// <param name="innerException">Exception that triggered this exception.</param>
-        public NonAcyclicGraphException(string message, Exception innerException)
-            : base(message, innerException)
+            : base("The graph contains at least one cycle.")
         {
         }
 

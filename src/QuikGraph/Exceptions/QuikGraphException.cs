@@ -14,29 +14,11 @@ namespace QuikGraph
     public abstract class QuikGraphException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="QuikGraphException"/>.
-        /// </summary>
-        protected QuikGraphException()
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of <see cref="QuikGraphException"/> with the given message.
         /// </summary>
         /// <param name="message">Exception message.</param>
         protected QuikGraphException(string message)
             : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="QuikGraphException"/> with the given message
-        /// and a reference to exception that triggers this one.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        /// <param name="innerException">Exception that triggered this exception.</param>
-        protected QuikGraphException(string message, Exception innerException)
-            : base(message, innerException)
         {
         }
 

@@ -14,29 +14,10 @@ namespace QuikGraph
     public class ParallelEdgeNotAllowedException : QuikGraphException
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/>.
+        /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> class.
         /// </summary>
         public ParallelEdgeNotAllowedException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> with the given message.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        public ParallelEdgeNotAllowedException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> with the given message
-        /// and a reference to exception that triggers this one.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        /// <param name="innerException">Exception that triggered this exception.</param>
-        public ParallelEdgeNotAllowedException(string message, Exception innerException) 
-            : base(message, innerException)
+            : base("Parallel edges are not allowed in the graph.")
         {
         }
 
