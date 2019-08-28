@@ -7,6 +7,13 @@ namespace QuikGraph.Tests
     /// </summary>
     internal class TestVertex
     {
+        private static int _counter;
+
+        public TestVertex()
+            : this($"TestVertex{_counter++}")
+        {
+        }
+
         public TestVertex([NotNull] string name)
         {
             Name = name;

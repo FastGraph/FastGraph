@@ -97,7 +97,7 @@ namespace QuikGraph
         private readonly Dictionary<TVertex, InOutEdges> _vertexEdges;
 
         /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => _vertexEdges.Keys;
+        public IEnumerable<TVertex> Vertices => _vertexEdges.Keys.AsEnumerable();
 
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
@@ -133,7 +133,7 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (_vertexEdges.TryGetValue(edge.Source, out InOutEdges inOutEdges) 
+            if (_vertexEdges.TryGetValue(edge.Source, out InOutEdges inOutEdges)
                 && inOutEdges.TryGetOutEdges(out TEdge[] edges))
             {
                 return edges.Any(e => e.Equals(edge));
@@ -160,7 +160,7 @@ namespace QuikGraph
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (_vertexEdges.TryGetValue(source, out InOutEdges inOutEdges) 
+            if (_vertexEdges.TryGetValue(source, out InOutEdges inOutEdges)
                 && inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
                 foreach (TEdge outEdge in outEdges)
@@ -212,18 +212,27 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
-                && inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
-                return outEdges.Length;
-            return 0;
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges))
+            {
+                return inOutEdges.TryGetOutEdges(out TEdge[] outEdges)
+                    ? outEdges.Length
+                    : 0;
+            }
+
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            if (TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
-                return outEdges;
-            return Enumerable.Empty<TEdge>();
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges))
+            {
+                return inOutEdges.TryGetOutEdges(out TEdge[] outEdges)
+                    ? outEdges.AsEnumerable()
+                    : Enumerable.Empty<TEdge>();
+            }
+
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -235,8 +244,8 @@ namespace QuikGraph
             if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) &&
                 inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
-                edges = outEdges;
-                return true;
+                edges = outEdges.AsEnumerable();
+                return outEdges.Length > 0;
             }
 
             edges = null;
@@ -249,11 +258,16 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges[vertex].TryGetOutEdges(out TEdge[] edges))
-                return edges[index];
-            throw new ArgumentOutOfRangeException(nameof(index));
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges))
+            {
+                if (inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
+                    return outEdges[index];
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            throw new VertexNotFoundException();
         }
-        
+
         #endregion
 
         #region IBidirectionalGraph<TVertex,TEdge>
@@ -270,18 +284,27 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
-                && inOutEdges.TryGetInEdges(out TEdge[] inEdges))
-                return inEdges.Length;
-            return 0;
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges))
+            {
+                return inOutEdges.TryGetInEdges(out TEdge[] inEdges) 
+                    ? inEdges.Length 
+                    : 0;
+            }
+
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
         public IEnumerable<TEdge> InEdges(TVertex vertex)
         {
-            if (TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
-                return inEdges;
-            return Enumerable.Empty<TEdge>();
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges))
+            {
+                return inOutEdges.TryGetInEdges(out TEdge[] inEdges) 
+                    ? inEdges.AsEnumerable() 
+                    : Enumerable.Empty<TEdge>();
+            }
+
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -290,11 +313,11 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges) 
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges)
                 && inOutEdges.TryGetInEdges(out TEdge[] inEdges))
             {
-                edges = inEdges;
-                return true;
+                edges = inEdges.AsEnumerable();
+                return inEdges.Length > 0;
             }
 
             edges = null;
@@ -307,9 +330,14 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges[vertex].TryGetInEdges(out TEdge[] edges))
-                return edges[index];
-            throw new ArgumentOutOfRangeException(nameof(index));
+            if (_vertexEdges.TryGetValue(vertex, out InOutEdges inOutEdges))
+            {
+                if (inOutEdges.TryGetInEdges(out TEdge[] inEdges))
+                    return inEdges[index];
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />

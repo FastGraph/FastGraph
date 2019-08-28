@@ -172,7 +172,7 @@ namespace QuikGraph
 
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
                 return edges.Count;
-            return 0;
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -182,8 +182,8 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
-                return edges;
-            return Enumerable.Empty<TEdge>();
+                return edges.AsEnumerable();
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -194,7 +194,7 @@ namespace QuikGraph
 
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edgeList))
             {
-                edges = edgeList;
+                edges = edgeList.AsEnumerable();
                 return edgeList.Count > 0;
             }
 
@@ -208,7 +208,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _inEdges[vertex][index];
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+                return inEdges[index];
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />

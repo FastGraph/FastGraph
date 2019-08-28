@@ -132,6 +132,12 @@ namespace QuikGraph
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
+            if (!ContainsVertex(source))
+            {
+                edge = default(TEdge);
+                return false;
+            }
+
             foreach (TEdge adjacentEdge in AdjacentEdges(source))
             {
                 if (EdgeEqualityComparer(adjacentEdge, source, target))

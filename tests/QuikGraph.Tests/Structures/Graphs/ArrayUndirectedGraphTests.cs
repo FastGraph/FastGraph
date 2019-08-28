@@ -203,8 +203,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AdjacentEdges_Throws()
         {
-            var wrappedGraph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            var graph = new ArrayUndirectedGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
+            var wrappedGraph = new UndirectedGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new ArrayUndirectedGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(wrappedGraph);
             AdjacentEdges_Throws_Test(graph);
         }
 

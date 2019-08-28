@@ -262,7 +262,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AdjacentEdges_Throws()
         {
-            var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new UndirectedGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
             AdjacentEdges_Throws_Test(graph);
         }
 
@@ -317,7 +317,13 @@ namespace QuikGraph.Tests.Structures
                 graph.AdjacentVertices(6));
 
             CollectionAssert.IsEmpty(graph.AdjacentVertices(7));
-            CollectionAssert.IsEmpty(graph.AdjacentVertices(10));
+        }
+
+        [Test]
+        public void AdjacentVertices_Throws()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentVertices(10));
         }
 
         #region Try Get Edges
@@ -555,7 +561,6 @@ namespace QuikGraph.Tests.Structures
             AssertEmptyGraph(graph);
 
             graph.Clear();
-
             AssertEmptyGraph(graph);
             CheckCounters(0, 0);
 
@@ -564,7 +569,6 @@ namespace QuikGraph.Tests.Structures
             graph.AddVerticesAndEdge(new Edge<int>(3, 1));
 
             graph.Clear();
-
             AssertEmptyGraph(graph);
             CheckCounters(3, 3);
 
@@ -594,6 +598,18 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertEmptyGraph(graph);
+
+            // Clear 1 => not in graph
+            clearEdges(graph, 1);
+            AssertEmptyGraph(graph);
+            CheckCounter(0);
+
+            // Clear 1 => In graph but no out edges
+            graph.AddVertex(1);
+            clearEdges(graph, 1);
+            AssertHasVertices(graph, new[] { 1 });
+            AssertNoEdge(graph);
+            CheckCounter(0);
 
             var edge12 = new Edge<int>(1, 2);
             var edge23 = new Edge<int>(2, 3);

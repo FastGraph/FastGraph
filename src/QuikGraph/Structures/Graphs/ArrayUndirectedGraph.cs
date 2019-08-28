@@ -69,7 +69,7 @@ namespace QuikGraph
         private readonly Dictionary<TVertex, TEdge[]> _vertexEdges;
 
         /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => _vertexEdges.Keys;
+        public IEnumerable<TVertex> Vertices => _vertexEdges.Keys.AsEnumerable();
 
         #endregion
 
@@ -98,7 +98,7 @@ namespace QuikGraph
         private readonly IList<TEdge> _edges;
 
         /// <inheritdoc />
-        public IEnumerable<TEdge> Edges => _edges;
+        public IEnumerable<TEdge> Edges => _edges.AsEnumerable();
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
@@ -122,8 +122,8 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
-                return edges;
-            return Enumerable.Empty<TEdge>();
+                return edges.AsEnumerable();
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -134,7 +134,7 @@ namespace QuikGraph
 
             if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
                 return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
-            return 0;
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -149,7 +149,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _vertexEdges[vertex][index];
+            if (_vertexEdges.TryGetValue(vertex, out TEdge[] adjacentEdges))
+                return adjacentEdges[index];
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -167,7 +169,13 @@ namespace QuikGraph
                 target = temp;
             }
 
-            foreach (TEdge adjacentEdge in AdjacentEdges(source))
+            if (!_vertexEdges.TryGetValue(source, out TEdge[] adjacentEdges))
+            {
+                edge = default(TEdge);
+                return false;
+            }
+
+            foreach (TEdge adjacentEdge in adjacentEdges)
             {
                 if (EdgeEqualityComparer(adjacentEdge, source, target))
                 {

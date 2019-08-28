@@ -161,8 +161,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void AdjacentEdges_Throws()
         {
-            var wrappedGraph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            var graph = new UndirectedBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
+            var wrappedGraph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new UndirectedBidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(wrappedGraph);
             AdjacentEdges_Throws_Test(graph);
         }
 

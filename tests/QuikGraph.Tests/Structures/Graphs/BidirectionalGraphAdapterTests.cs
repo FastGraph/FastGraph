@@ -211,8 +211,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdges_Throws()
         {
-            var wrappedGraph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var graph = new BidirectionalAdapterGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
+            var wrappedGraph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new BidirectionalAdapterGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(wrappedGraph);
             OutEdges_Throws_Test(graph);
         }
 
@@ -253,8 +253,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void InEdges_Throws()
         {
-            var wrappedGraph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var graph = new BidirectionalAdapterGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
+            var wrappedGraph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new BidirectionalAdapterGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(wrappedGraph);
             InEdges_Throws_Test(graph);
         }
 
@@ -302,6 +302,14 @@ namespace QuikGraph.Tests.Structures
             Degree_ImmutableGraph_Test(
                 wrappedGraph,
                 () => new BidirectionalAdapterGraph<int, Edge<int>>(wrappedGraph));
+        }
+
+        [Test]
+        public void Degree_Throws()
+        {
+            var wrappedGraph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new BidirectionalAdapterGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(wrappedGraph);
+            Degree_Throws_Test(graph);
         }
 
         #region Try Get Edges

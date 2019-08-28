@@ -105,7 +105,7 @@ namespace QuikGraph
         public int VertexCount => _adjacentEdges.Count;
 
         /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => _adjacentEdges.Keys;
+        public IEnumerable<TVertex> Vertices => _adjacentEdges.Keys.AsEnumerable();
 
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
@@ -130,7 +130,7 @@ namespace QuikGraph
         private readonly IList<TEdge> _edges = new List<TEdge>();
 
         /// <inheritdoc />
-        public IEnumerable<TEdge> Edges => _edges;
+        public IEnumerable<TEdge> Edges => _edges.AsEnumerable();
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
@@ -138,7 +138,10 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            foreach (TEdge adjacentEdge in AdjacentEdges(edge.Source))
+            if (!_adjacentEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> adjacentEdges))
+                return false;
+
+            foreach (TEdge adjacentEdge in adjacentEdges)
             {
                 if (adjacentEdge.Equals(edge))
                     return true;
@@ -174,8 +177,8 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             if (_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
-                return edges;
-            return Enumerable.Empty<TEdge>();
+                return edges.AsEnumerable();
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -186,7 +189,7 @@ namespace QuikGraph
 
             if (_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
                 return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
-            return 0;
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -201,7 +204,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _adjacentEdges[vertex][index];
+            if (_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> adjacentEdges))
+                return adjacentEdges[index];
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -219,7 +224,13 @@ namespace QuikGraph
                 target = temp;
             }
 
-            foreach (TEdge adjacentEdge in AdjacentEdges(source))
+            if (!_adjacentEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> adjacentEdges))
+            {
+                edge = default(TEdge);
+                return false;
+            }
+
+            foreach (TEdge adjacentEdge in adjacentEdges)
             {
                 if (EdgeEqualityComparer(adjacentEdge, source, target))
                 {
@@ -388,9 +399,11 @@ namespace QuikGraph
         {
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
+            if (!_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> adjacentEdges))
+                return 0;
 
             var edges = new List<TEdge>();
-            edges.AddRange(AdjacentEdges(vertex).Where(edge => predicate(edge)));
+            edges.AddRange(adjacentEdges.Where(edge => predicate(edge)));
 
             RemoveEdges(edges);
             return edges.Count;
@@ -482,7 +495,11 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            IEdgeList<TVertex, TEdge> sourceEdges = _adjacentEdges[edge.Source];
+            if (!_adjacentEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> sourceEdges))
+                throw new VertexNotFoundException();
+            if (!_adjacentEdges.TryGetValue(edge.Target, out IEdgeList<TVertex, TEdge> targetEdges))
+                throw new VertexNotFoundException();
+
             if (!AllowParallelEdges && ContainsEdgeBetweenVertices(sourceEdges, edge))
                 return false;
 
@@ -490,7 +507,6 @@ namespace QuikGraph
             sourceEdges.Add(edge);
             if (!edge.IsSelfEdge())
             {
-                IEdgeList<TVertex, TEdge> targetEdges = _adjacentEdges[edge.Target];
                 targetEdges.Add(edge);
             }
 

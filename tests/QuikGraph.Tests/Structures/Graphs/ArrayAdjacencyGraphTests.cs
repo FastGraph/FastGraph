@@ -195,8 +195,8 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdges_Throws()
         {
-            var wrappedGraph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var graph = new ArrayAdjacencyGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
+            var wrappedGraph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            var graph = new ArrayAdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(wrappedGraph);
             OutEdges_Throws_Test(graph);
         }
 

@@ -264,7 +264,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdges_Throws()
         {
-            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
             OutEdges_Throws_Test(graph);
         }
 
@@ -297,7 +297,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void InEdges_Throws()
         {
-            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
             InEdges_Throws_Test(graph);
         }
 
@@ -308,6 +308,13 @@ namespace QuikGraph.Tests.Structures
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
             Degree_Test(graph);
+        }
+
+        [Test]
+        public void Degree_Throws()
+        {
+            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            Degree_Throws_Test(graph);
         }
 
         #region Try Get Edges
@@ -510,7 +517,7 @@ namespace QuikGraph.Tests.Structures
         public void Merge_Throws()
         {
             var graph1 = new BidirectionalGraph<int, Edge<int>>();
-            Assert.Throws<KeyNotFoundException>(
+            Assert.Throws<VertexNotFoundException>(
                 () => graph1.MergeVertex(1, (source, target) => new Edge<int>(source, target)));
 
             var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
@@ -823,7 +830,6 @@ namespace QuikGraph.Tests.Structures
             AssertEmptyGraph(graph);
 
             graph.Clear();
-
             AssertEmptyGraph(graph);
             CheckCounters(0, 0);
 
@@ -832,7 +838,6 @@ namespace QuikGraph.Tests.Structures
             graph.AddVerticesAndEdge(new Edge<int>(3, 1));
 
             graph.Clear();
-
             AssertEmptyGraph(graph);
             CheckCounters(3, 3);
 
@@ -842,7 +847,6 @@ namespace QuikGraph.Tests.Structures
             graph.AddVerticesAndEdge(new Edge<int>(3, 3));
 
             graph.Clear();
-
             AssertEmptyGraph(graph);
             CheckCounters(3, 4);
 
@@ -873,6 +877,17 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertEmptyGraph(graph);
+
+            // Clear 1 => not in graph
+            graph.ClearOutEdges(1);
+            AssertEmptyGraph(graph);
+
+            // Clear 1 => In graph but no out edges
+            graph.AddVertex(1);
+            graph.ClearOutEdges(1);
+            AssertHasVertices(graph, new[] { 1 });
+            AssertNoEdge(graph);
+            CheckCounter(0);
 
             var edge12 = new Edge<int>(1, 2);
             var edge23 = new Edge<int>(2, 3);
@@ -921,7 +936,6 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ClearOutEdges_Throws()
         {
-            Assert.Throws<KeyNotFoundException>(() => new BidirectionalGraph<int, Edge<int>>().ClearOutEdges(1));
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(null));
         }
@@ -940,6 +954,18 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertEmptyGraph(graph);
+
+            // Clear 1 => not in graph
+            graph.ClearInEdges(1);
+            AssertEmptyGraph(graph);
+            CheckCounter(0);
+
+            // Clear 1 => In graph but no in edges
+            graph.AddVertex(1);
+            graph.ClearInEdges(1);
+            AssertHasVertices(graph, new[] { 1 });
+            AssertNoEdge(graph);
+            CheckCounter(0);
 
             var edge12 = new Edge<int>(1, 2);
             var edge23 = new Edge<int>(2, 3);
@@ -988,7 +1014,6 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ClearInEdges_Throws()
         {
-            Assert.Throws<KeyNotFoundException>(() => new BidirectionalGraph<int, Edge<int>>().ClearInEdges(1));
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearInEdges(null));
         }
@@ -1007,6 +1032,18 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertEmptyGraph(graph);
+
+            // Clear 1 => not in graph
+            graph.ClearEdges(1);
+            AssertEmptyGraph(graph);
+            CheckCounter(0);
+
+            // Clear 1 => In graph but not in/out edges
+            graph.AddVertex(1);
+            graph.ClearEdges(1);
+            AssertHasVertices(graph, new[] { 1 });
+            AssertNoEdge(graph);
+            CheckCounter(0);
 
             var edge12 = new Edge<int>(1, 2);
             var edge23 = new Edge<int>(2, 3);
@@ -1049,7 +1086,6 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ClearEdges_Throws()
         {
-            Assert.Throws<KeyNotFoundException>(() => new BidirectionalGraph<int, Edge<int>>().ClearEdges(1));
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearEdges(null));
         }
