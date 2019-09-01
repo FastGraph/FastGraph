@@ -20,7 +20,7 @@ namespace QuikGraph.Tests.Structures
         {
             return (TVertex vertex, out IEnumerable<TEdge> edges) =>
             {
-                edges = Enumerable.Empty<TEdge>();
+                edges = null;
                 return false;
             };
         }
@@ -34,10 +34,10 @@ namespace QuikGraph.Tests.Structures
                 {
                     ++_nbCalls;
 
-                    if (ShouldReturnValue && ShouldReturnEdges is null)
-                        edges = Enumerable.Empty<TEdge>();
+                    if (ShouldReturnValue)
+                        edges = ShouldReturnEdges ?? Enumerable.Empty<TEdge>();
                     else
-                        edges = ShouldReturnEdges;
+                        edges = null;
 
                     return ShouldReturnValue;
                 };
@@ -100,6 +100,15 @@ namespace QuikGraph.Tests.Structures
             data.ShouldReturnEdges = new[] { new Edge<int>(1, 3), new Edge<int>(1, 2) };
             Assert.IsTrue(hasEdge(1, 2));
             data.CheckCalls(1);
+        }
+
+        protected static void ContainsEdge_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IIncidenceGraph<int, Edge<int>> graph)
+        {
+            ContainsEdge_GenericTest(
+                data,
+                graph.ContainsEdge);
         }
 
         protected static void ContainsEdge_Test(
@@ -283,11 +292,39 @@ namespace QuikGraph.Tests.Structures
 
         protected static void TryGetEdge_Test(
             [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IIncidenceGraph<int, Edge<int>> graph)
+        {
+            ContainsEdge_GenericTest(
+                data,
+                (source, target) => graph.TryGetEdge(source, target, out _));
+        }
+
+        protected static void TryGetEdge_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
             [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             ContainsEdge_GenericTest(
                 data,
                 (source, target) => graph.TryGetEdge(source, target, out _));
+        }
+
+        protected static void TryGetEdges_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IIncidenceGraph<int, Edge<int>> graph)
+        {
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = false;
+            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            data.CheckCalls(1);
+
+            data.ShouldReturnValue = true;
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out _));
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 2) };
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out _));
+            data.CheckCalls(1);
         }
 
         protected static void TryGetOutEdges_Test(
@@ -303,6 +340,10 @@ namespace QuikGraph.Tests.Structures
             data.ShouldReturnValue = true;
             Assert.IsTrue(graph.TryGetOutEdges(1, out _));
             data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(1, 4), new Edge<int>(1, 2) };
+            Assert.IsTrue(graph.TryGetOutEdges(1, out _));
+            data.CheckCalls(1);
         }
 
         protected static void TryGetAdjacentEdges_Test(
@@ -316,6 +357,10 @@ namespace QuikGraph.Tests.Structures
             data.CheckCalls(1);
 
             data.ShouldReturnValue = true;
+            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out _));
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(1, 4), new Edge<int>(1, 2) };
             Assert.IsTrue(graph.TryGetAdjacentEdges(1, out _));
             data.CheckCalls(1);
         }
