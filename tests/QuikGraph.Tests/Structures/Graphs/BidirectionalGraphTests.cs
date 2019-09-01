@@ -285,8 +285,10 @@ namespace QuikGraph.Tests.Structures
         public void InEdge_Throws()
         {
             var graph1 = new BidirectionalGraph<int, Edge<int>>();
+            InEdge_Throws_Test(graph1);
+
             var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            InEdge_Throws_Test(graph1, graph2);
+            InEdge_NullThrows_Test(graph2);
         }
 
         [Test]

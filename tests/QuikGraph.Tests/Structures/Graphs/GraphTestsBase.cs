@@ -2133,46 +2133,43 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
         }
 
-        protected static void ContainsEdge_SourceTarget_Throws_Test(
-            [NotNull] IIncidenceGraph<TestVertex, Edge<TestVertex>> graph)
+        protected static void ContainsEdge_SourceTarget_Throws_Test<TVertex>(
+            [NotNull] IIncidenceGraph<TVertex, Edge<TVertex>> graph)
+            where TVertex : class, new()
         {
-            var vertex = new TestVertex("v1");
-
-            // ReSharper disable AssignNullToNotNullAttribute
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, vertex));
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), null));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, new TVertex()));
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        protected static void ContainsEdge_SourceTarget_Throws_ReversedTest(
-            [NotNull] IIncidenceGraph<TestVertex, SReversedEdge<TestVertex, Edge<TestVertex>>> graph)
+        protected static void ContainsEdge_SourceTarget_Throws_ReversedTest<TVertex>(
+            [NotNull] IIncidenceGraph<TVertex, SReversedEdge<TVertex, Edge<TVertex>>> graph)
+            where TVertex : class, new()
         {
-            var vertex = new TestVertex("v1");
-
-            // ReSharper disable AssignNullToNotNullAttribute
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, vertex));
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), null));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, new TVertex()));
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        protected static void ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test(
-            [NotNull] IImplicitUndirectedGraph<TestVertex, Edge<TestVertex>> graph)
+        protected static void ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test<TVertex>(
+            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph)
+            where TVertex : class, new()
         {
-            var vertex = new TestVertex("v1");
-
-            // ReSharper disable AssignNullToNotNullAttribute
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, vertex));
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), null));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, new TVertex()));
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         #endregion
@@ -2266,6 +2263,7 @@ namespace QuikGraph.Tests.Structures
 
             graph.AddEdge(new Edge<int>(1, 2));
             AssertIndexOutOfRange(() => graph.OutEdge(vertex1, 5));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void OutEdge_Throws_ImmutableGraph_Test(
@@ -2288,6 +2286,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddEdge(new Edge<int>(1, 2));
             graph = createGraph();
             AssertIndexOutOfRange(() => graph.OutEdge(vertex1, 5));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void OutEdge_Throws_ImmutableGraph_ReversedTest(
@@ -2310,6 +2309,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddEdge(new Edge<int>(1, 2));
             graph = createGraph();
             AssertIndexOutOfRange(() => graph.OutEdge(vertex1, 5));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void OutEdges_Test(
@@ -2458,53 +2458,53 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge24, graph.AdjacentEdge(4, 0));
         }
 
-        protected static void AdjacentEdge_Throws_Test<TVertex>(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph1,
-            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph2)
+        protected static void AdjacentEdge_NullThrows_Test<TVertex, TEdge>(
+            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
             where TVertex : class
+            where TEdge : IEdge<TVertex>
+        {
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdge(null, 0));
+        }
+
+        protected static void AdjacentEdge_Throws_Test(
+            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph1.AdjacentEdge(vertex1, 0));
+            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentEdge(vertex1, 0));
 
-            graph1.AddVertex(vertex1);
-            graph1.AddVertex(vertex2);
-            AssertIndexOutOfRange(() => graph1.AdjacentEdge(vertex1, 0));
+            graph.AddVertex(vertex1);
+            graph.AddVertex(vertex2);
+            AssertIndexOutOfRange(() => graph.AdjacentEdge(vertex1, 0));
 
-            graph1.AddEdge(new Edge<int>(1, 2));
-            AssertIndexOutOfRange(() => graph1.AdjacentEdge(vertex1, 5));
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.AdjacentEdge(null, 0));
+            graph.AddEdge(new Edge<int>(1, 2));
+            AssertIndexOutOfRange(() => graph.AdjacentEdge(vertex1, 5));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        protected static void AdjacentEdge_Throws_ImmutableGraph_Test<TVertex>(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph1,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph1,
-            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph2)
-            where TVertex : class
+        protected static void AdjacentEdge_Throws_ImmutableGraph_Test(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
 
-            IImplicitUndirectedGraph<int, Edge<int>> graph1 = createGraph1();
+            IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph1.AdjacentEdge(vertex1, 0));
+            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentEdge(vertex1, 0));
 
-            wrappedGraph1.AddVertex(vertex1);
-            wrappedGraph1.AddVertex(vertex2);
-            graph1 = createGraph1();
-            AssertIndexOutOfRange(() => graph1.AdjacentEdge(vertex1, 0));
+            wrappedGraph.AddVertex(vertex1);
+            wrappedGraph.AddVertex(vertex2);
+            graph = createGraph();
+            AssertIndexOutOfRange(() => graph.AdjacentEdge(vertex1, 0));
 
-            wrappedGraph1.AddEdge(new Edge<int>(1, 2));
-            graph1 = createGraph1();
-            AssertIndexOutOfRange(() => graph1.AdjacentEdge(vertex1, 5));
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.AdjacentEdge(null, 0));
+            wrappedGraph.AddEdge(new Edge<int>(1, 2));
+            graph = createGraph();
+            AssertIndexOutOfRange(() => graph.AdjacentEdge(vertex1, 5));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -2557,9 +2557,10 @@ namespace QuikGraph.Tests.Structures
             AssertNoAdjacentEdge(graph, 5);
         }
 
-        protected static void AdjacentEdges_Throws_Test<TVertex>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph)
-            where TVertex : class, IEquatable<TVertex>, new()
+        protected static void AdjacentEdges_NullThrows_Test<TVertex, TEdge>(
+            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : class
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
@@ -2567,7 +2568,16 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.AdjacentDegree(null));
             Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdges(null));
             // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
 
+        protected static void AdjacentEdges_Throws_Test<TVertex>(
+            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph)
+            where TVertex : class, IEquatable<TVertex>, new()
+        {
+            AdjacentEdges_NullThrows_Test(graph);
+
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var vertex = new TVertex();
             Assert.Throws<VertexNotFoundException>(() => graph.IsAdjacentEdgesEmpty(vertex));
             Assert.Throws<VertexNotFoundException>(() => graph.AdjacentDegree(vertex));
@@ -2628,77 +2638,75 @@ namespace QuikGraph.Tests.Structures
             AssertSameReversedEdge(edge34, graph.InEdge(3, 2));
         }
 
+        protected static void InEdge_NullThrows_Test<TVertex, TEdge>(
+            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : class
+            where TEdge : IEdge<TVertex>
+        {
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.InEdge(null, 0));
+        }
+
         protected static void InEdge_Throws_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph1,
-            [NotNull] IMutableBidirectionalGraph<TestVertex, Edge<TestVertex>> graph2)
+            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph1.InEdge(vertex1, 0));
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(vertex1, 0));
 
-            graph1.AddVertex(vertex1);
-            graph1.AddVertex(vertex2);
-            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
+            graph.AddVertex(vertex1);
+            graph.AddVertex(vertex2);
+            AssertIndexOutOfRange(() => graph.InEdge(vertex1, 0));
 
-            graph1.AddEdge(new Edge<int>(1, 2));
-            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
+            graph.AddEdge(new Edge<int>(1, 2));
+            AssertIndexOutOfRange(() => graph.InEdge(vertex1, 5));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void InEdge_Throws_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph1,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph1,
-            [NotNull] IBidirectionalIncidenceGraph<TestVertex, Edge<TestVertex>> graph2)
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            IBidirectionalIncidenceGraph<int, Edge<int>> graph1 = createGraph1();
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph1 = createGraph();
             Assert.Throws<VertexNotFoundException>(() => graph1.InEdge(vertex1, 0));
 
-            wrappedGraph1.AddVertex(vertex1);
-            wrappedGraph1.AddVertex(vertex2);
-            graph1 = createGraph1();
+            wrappedGraph.AddVertex(vertex1);
+            wrappedGraph.AddVertex(vertex2);
+            graph1 = createGraph();
             AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
 
-            wrappedGraph1.AddEdge(new Edge<int>(1, 2));
-            graph1 = createGraph1();
+            wrappedGraph.AddEdge(new Edge<int>(1, 2));
+            graph1 = createGraph();
             AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void InEdge_Throws_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph1,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph1,
-            [NotNull] IBidirectionalIncidenceGraph<TestVertex, SReversedEdge<TestVertex, Edge<TestVertex>>> graph2)
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph1 = createGraph1();
-            Assert.Throws<VertexNotFoundException>(() => graph1.InEdge(vertex1, 0));
+            IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(vertex1, 0));
 
-            wrappedGraph1.AddVertex(vertex1);
-            wrappedGraph1.AddVertex(vertex2);
-            graph1 = createGraph1();
-            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 0));
+            wrappedGraph.AddVertex(vertex1);
+            wrappedGraph.AddVertex(vertex2);
+            graph = createGraph();
+            AssertIndexOutOfRange(() => graph.InEdge(vertex1, 0));
 
-            wrappedGraph1.AddEdge(new Edge<int>(1, 2));
-            graph1 = createGraph1();
-            AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph2.InEdge(null, 0));
+            wrappedGraph.AddEdge(new Edge<int>(1, 2));
+            graph = createGraph();
+            AssertIndexOutOfRange(() => graph.InEdge(vertex1, 5));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -2789,9 +2797,9 @@ namespace QuikGraph.Tests.Structures
             AssertHasReversedInEdges(graph, 4, new[] { edge43 });
         }
 
-        protected static void InEdges_Throws_Test<TVertex, TEdge>(
+        protected static void InEdges_NullThrows_Test<TVertex, TEdge>(
             [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class, IEquatable<TVertex>, new()
+            where TVertex : class
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
@@ -2800,7 +2808,17 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.InDegree(null));
             Assert.Throws<ArgumentNullException>(() => graph.InEdges(null));
             // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
 
+        protected static void InEdges_Throws_Test<TVertex, TEdge>(
+            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : class, IEquatable<TVertex>, new()
+            where TEdge : IEdge<TVertex>
+        {
+            InEdges_NullThrows_Test(graph);
+
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var vertex = new TVertex();
             Assert.Throws<VertexNotFoundException>(() => graph.IsInEdgesEmpty(vertex));
             Assert.Throws<VertexNotFoundException>(() => graph.InDegree(vertex));
@@ -2900,6 +2918,7 @@ namespace QuikGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
+            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
@@ -2925,6 +2944,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
+            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
@@ -2950,6 +2970,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
+            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(4, 2, out SReversedEdge<int, Edge<int>> gotEdge));
@@ -2974,6 +2995,7 @@ namespace QuikGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
+            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
@@ -3009,6 +3031,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             var graph = createGraph();
 
+            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
@@ -3029,24 +3052,26 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge7, gotEdge);
         }
 
-        protected static void TryGetEdge_Throws_Test<TEdge>(
-            [NotNull] IIncidenceGraph<TestVertex, TEdge> graph)
-            where TEdge : IEdge<TestVertex>
+        protected static void TryGetEdge_Throws_Test<TVertex, TEdge>(
+            [NotNull] IIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : class, new()
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TestVertex("v2"), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TestVertex("v1"), null, out _));
+            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TVertex(), out _));
+            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TVertex(), null, out _));
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, null, out _));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
-        protected static void TryGetEdge_Throws_UndirectedGraph_Test<TEdge>(
-            [NotNull] IImplicitUndirectedGraph<TestVertex, TEdge> graph)
-            where TEdge : IEdge<TestVertex>
+        protected static void TryGetEdge_Throws_UndirectedGraph_Test<TVertex, TEdge>(
+            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : class, new()
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TestVertex("v2"), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TestVertex("v1"), null, out _));
+            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, new TVertex(), out _));
+            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TVertex(), null, out _));
             Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(null, null, out _));
             // ReSharper restore AssignNullToNotNullAttribute
         }

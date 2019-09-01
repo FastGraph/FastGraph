@@ -248,8 +248,10 @@ namespace QuikGraph.Tests.Structures
         public void AdjacentEdge_Throws()
         {
             var graph1 = new UndirectedGraph<int, Edge<int>>();
+            AdjacentEdge_Throws_Test(graph1);
+
             var graph2 = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            AdjacentEdge_Throws_Test(graph1, graph2);
+            AdjacentEdge_NullThrows_Test(graph2);
         }
 
         [Test]

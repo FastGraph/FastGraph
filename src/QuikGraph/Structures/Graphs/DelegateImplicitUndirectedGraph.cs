@@ -20,10 +20,14 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="DelegateImplicitUndirectedGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="tryGetAdjacentEdges">Getter of adjacent edges.</param>
-        /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
+        /// <param name="allowParallelEdges">
+        /// Indicates if parallel edges are allowed.
+        /// Note that get of edges is delegated so you may have bugs related
+        /// to parallel edges due to the delegated implementation.
+        /// </param>
         public DelegateImplicitUndirectedGraph(
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,
-            bool allowParallelEdges)
+            bool allowParallelEdges = true)
         {
             _tryGetAdjacencyEdges = tryGetAdjacentEdges ?? throw new ArgumentNullException(nameof(tryGetAdjacentEdges));
             AllowParallelEdges = allowParallelEdges;
@@ -52,17 +56,6 @@ namespace QuikGraph
         #region IImplicitUndirectedGraph<TVertex,TEdge>
 
         /// <inheritdoc />
-        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
-        {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-
-            if (_tryGetAdjacencyEdges(vertex, out IEnumerable<TEdge> result))
-                return result;
-            return Enumerable.Empty<TEdge>();
-        }
-
-        /// <inheritdoc />
         public int AdjacentDegree(TVertex vertex)
         {
             return AdjacentEdges(vertex).Count();
@@ -72,6 +65,17 @@ namespace QuikGraph
         public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
             return !AdjacentEdges(vertex).Any();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TEdge> AdjacentEdges(TVertex vertex)
+        {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (_tryGetAdjacencyEdges(vertex, out IEnumerable<TEdge> result))
+                return result;
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -107,7 +111,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <param name="edges">Edges found, otherwise null.</param>
-        /// <returns>True if at least one edge was found, false otherwise.</returns>
+        /// <returns>True if <paramref name="vertex"/> was found or/and edges were found, false otherwise.</returns>
         public bool TryGetAdjacentEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
             if (vertex == null)

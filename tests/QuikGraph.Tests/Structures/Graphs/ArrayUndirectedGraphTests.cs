@@ -183,12 +183,13 @@ namespace QuikGraph.Tests.Structures
         public void AdjacentEdge_Throws()
         {
             var wrappedGraph1 = new UndirectedGraph<int, Edge<int>>();
-            var wrappedGraph2 = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            var graph2 = new ArrayUndirectedGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
             AdjacentEdge_Throws_ImmutableGraph_Test(
                 wrappedGraph1, 
-                () => new ArrayUndirectedGraph<int, Edge<int>>(wrappedGraph1), 
-                graph2);
+                () => new ArrayUndirectedGraph<int, Edge<int>>(wrappedGraph1));
+
+            var wrappedGraph2 = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            var graph2 = new ArrayUndirectedGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
+            AdjacentEdge_NullThrows_Test(graph2);
         }
 
         [Test]

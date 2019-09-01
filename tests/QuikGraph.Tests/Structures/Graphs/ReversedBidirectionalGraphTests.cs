@@ -207,12 +207,13 @@ namespace QuikGraph.Tests.Structures
         public void InEdge_Throws()
         {
             var wrappedGraph1 = new BidirectionalGraph<int, Edge<int>>();
-            var wrappedGraph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            var graph2 = new ReversedBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
             InEdge_Throws_ImmutableGraph_ReversedTest(
                 wrappedGraph1,
-                () => new ReversedBidirectionalGraph<int, Edge<int>>(wrappedGraph1),
-                graph2);
+                () => new ReversedBidirectionalGraph<int, Edge<int>>(wrappedGraph1));
+
+            var wrappedGraph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            var graph2 = new ReversedBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
+            InEdge_NullThrows_Test(graph2);
         }
 
         [Test]
