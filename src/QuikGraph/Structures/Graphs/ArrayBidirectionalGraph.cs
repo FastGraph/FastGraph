@@ -45,13 +45,13 @@ namespace QuikGraph
             public bool TryGetOutEdges([NotNull] out TEdge[] edges)
             {
                 edges = _outEdges;
-                return _outEdges.Length > 0;
+                return true;
             }
 
             public bool TryGetInEdges([NotNull] out TEdge[] edges)
             {
                 edges = _inEdges;
-                return _inEdges.Length > 0;
+                return true;
             }
         }
 
@@ -189,7 +189,7 @@ namespace QuikGraph
                 && inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
                 edges = outEdges.Where(edge => edge.Target.Equals(target));
-                return edges.Any();
+                return true;
             }
 
             edges = null;
@@ -245,7 +245,7 @@ namespace QuikGraph
                 inOutEdges.TryGetOutEdges(out TEdge[] outEdges))
             {
                 edges = outEdges.AsEnumerable();
-                return outEdges.Length > 0;
+                return true;
             }
 
             edges = null;
@@ -317,7 +317,7 @@ namespace QuikGraph
                 && inOutEdges.TryGetInEdges(out TEdge[] inEdges))
             {
                 edges = inEdges.AsEnumerable();
-                return inEdges.Length > 0;
+                return true;
             }
 
             edges = null;

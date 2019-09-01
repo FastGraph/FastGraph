@@ -188,7 +188,7 @@ namespace QuikGraph
             if (_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
             {
                 edges = outEdges.AsEnumerable();
-                return outEdges.Count > 0;
+                return true;
             }
 
             edges = null;
@@ -257,7 +257,7 @@ namespace QuikGraph
             if (_vertexOutEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> outEdges))
             {
                 edges = outEdges.Where(edge => edge.Target.Equals(target));
-                return edges.Any();
+                return true;
             }
 
             edges = null;
@@ -305,7 +305,7 @@ namespace QuikGraph
             if (_vertexInEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> inEdges))
             {
                 edges = inEdges.AsEnumerable();
-                return inEdges.Count > 0;
+                return true;
             }
 
             edges = null;

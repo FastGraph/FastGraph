@@ -29,6 +29,7 @@ namespace QuikGraph.Algorithms.Services
         /// <param name="service">Found service.</param>
         /// <returns>True if the service was found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, service:notnull;=> false, service:null")]
         bool TryGetService<T>(out T service);
     }
 }

@@ -195,7 +195,7 @@ namespace QuikGraph
             if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edgeList))
             {
                 edges = edgeList.AsEnumerable();
-                return edgeList.Count > 0;
+                return true;
             }
 
             edges = null;

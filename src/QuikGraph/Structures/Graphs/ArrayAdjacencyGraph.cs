@@ -143,7 +143,7 @@ namespace QuikGraph
             if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] outEdges))
             {
                 edges = outEdges.AsEnumerable();
-                return outEdges.Length > 0;
+                return true;
             }
 
             edges = null;
@@ -206,7 +206,7 @@ namespace QuikGraph
             if (_vertexOutEdges.TryGetValue(source, out TEdge[] outEdges))
             {
                 edges = outEdges.Where(edge => edge.Target.Equals(target));
-                return edges.Any();
+                return true;
             }
 
             edges = null;

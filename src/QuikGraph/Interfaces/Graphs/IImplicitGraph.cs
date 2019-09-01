@@ -41,9 +41,10 @@ namespace QuikGraph
         /// Tries to get the out-edges of <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="edges">Out edges.</param>
-        /// <returns>True if out edges were found, false otherwise.</returns>
+        /// <param name="edges">Out-edges.</param>
+        /// <returns>True if <paramref name="vertex"/> was found or/and out-edges were found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetOutEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>

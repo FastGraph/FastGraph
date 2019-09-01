@@ -42,9 +42,10 @@ namespace QuikGraph
         /// Tries to get the in-edges of <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="edges">In edges.</param>
-        /// <returns>True if in-edges were found, false otherwise.</returns>
+        /// <param name="edges">In-edges.</param>
+        /// <returns>True if <paramref name="vertex"/> was found or/and in-edges were found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetInEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>

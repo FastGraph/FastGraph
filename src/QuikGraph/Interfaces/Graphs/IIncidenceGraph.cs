@@ -31,6 +31,7 @@ namespace QuikGraph
         /// <param name="edge">Edge found, otherwise null.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, edge:notnull;=> false, edge:null")]
         bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace QuikGraph
         /// <param name="edges">Edges found, otherwise null.</param>
         /// <returns>True if at least an edge was found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetEdges([NotNull] TVertex source, [NotNull] TVertex target, [ItemNotNull] out IEnumerable<TEdge> edges);
     }
 }

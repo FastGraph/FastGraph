@@ -55,8 +55,9 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
         /// <param name="edges">Out-edges found, otherwise null.</param>
-        /// <returns>True if out-edges were found, false otherwise.</returns>
+        /// <returns>True if <paramref name="vertex"/> was found or/and out-edges were found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetOutEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
 
         /// <summary>
@@ -101,8 +102,9 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
         /// <param name="edges">In-edges found, otherwise null.</param>
-        /// <returns>True if in-edges were found, false otherwise.</returns>
+        /// <returns>True if <paramref name="vertex"/> was found or/and in-edges were found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetInEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
     }
 }

@@ -107,7 +107,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
         {
-            if (OriginalGraph.TryGetEdges(target, source, out IEnumerable<TEdge> originalEdges))
+            if (OriginalGraph.TryGetEdges(target, source, out IEnumerable<TEdge> originalEdges)
+                && ContainsVertex(source))
             {
                 edges = originalEdges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge));
                 return true;
