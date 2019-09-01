@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 #if !SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;
@@ -316,7 +317,20 @@ namespace QuikGraph
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            return (edge.Source.Equals(source) && edge.Target.Equals(target)) 
+            return UndirectedVertexEqualityInternal(edge, source, target);
+        }
+
+        [Pure]
+        internal static bool UndirectedVertexEqualityInternal<TVertex>(
+            [NotNull] this IEdge<TVertex> edge,
+            [NotNull] TVertex source,
+            [NotNull] TVertex target)
+        {
+            Debug.Assert(edge != null);
+            Debug.Assert(source != null);
+            Debug.Assert(target != null);
+
+            return (edge.Source.Equals(source) && edge.Target.Equals(target))
                    || (edge.Target.Equals(source) && edge.Source.Equals(target));
         }
 
@@ -342,6 +356,19 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
+
+            return SortedVertexEqualityInternal(edge, source, target);
+        }
+
+        [Pure]
+        internal static bool SortedVertexEqualityInternal<TVertex>(
+            [NotNull] this IEdge<TVertex> edge,
+            [NotNull] TVertex source,
+            [NotNull] TVertex target)
+        {
+            Debug.Assert(edge != null);
+            Debug.Assert(source != null);
+            Debug.Assert(target != null);
 
             return edge.Source.Equals(source) && edge.Target.Equals(target);
         }
