@@ -190,13 +190,13 @@ namespace QuikGraph.Tests.Structures
         public void OutEdge_Throws()
         {
             var wrappedGraph1 = new AdjacencyGraph<int, Edge<int>>();
-            var wrappedGraph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var graph2 = new BidirectionalAdapterGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
-
             OutEdge_Throws_ImmutableGraph_Test(
                 wrappedGraph1,
-                () => new BidirectionalAdapterGraph<int, Edge<int>>(wrappedGraph1),
-                graph2);
+                () => new BidirectionalAdapterGraph<int, Edge<int>>(wrappedGraph1));
+
+            var wrappedGraph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            var graph2 = new BidirectionalAdapterGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
+            OutEdge_NullThrows_Test(graph2);
         }
 
         [Test]

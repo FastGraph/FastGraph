@@ -248,8 +248,10 @@ namespace QuikGraph.Tests.Structures
         public void OutEdge_Throws()
         {
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
+            OutEdge_Throws_Test(graph1);
+
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            OutEdge_Throws_Test(graph1, graph2);
+            OutEdge_NullThrows_Test(graph2);
         }
 
         [Test]

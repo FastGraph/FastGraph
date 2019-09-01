@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// A delegate-based implicit graph.
+    /// A delegate-based directed implicit graph data structure.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -20,9 +20,17 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="DelegateImplicitGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="tryGetOutEdges">Getter of out-edges.</param>
-        public DelegateImplicitGraph([NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
+        /// <param name="allowParallelEdges">
+        /// Indicates if parallel edges are allowed.
+        /// Note that get of edges is delegated so you may have bugs related
+        /// to parallel edges due to the delegated implementation.
+        /// </param>
+        public DelegateImplicitGraph(
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            bool allowParallelEdges = true)
         {
             _tryGetOutEdgesFunc = tryGetOutEdges ?? throw new ArgumentNullException(nameof(tryGetOutEdges));
+            AllowParallelEdges = allowParallelEdges;
         }
 
         /// <summary>
@@ -37,7 +45,7 @@ namespace QuikGraph
         public bool IsDirected => true;
 
         /// <inheritdoc />
-        public bool AllowParallelEdges => true;
+        public bool AllowParallelEdges { get; }
 
         #endregion
 
@@ -63,7 +71,7 @@ namespace QuikGraph
 
             if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge> result))
                 return result;
-            return Enumerable.Empty<TEdge>();
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
