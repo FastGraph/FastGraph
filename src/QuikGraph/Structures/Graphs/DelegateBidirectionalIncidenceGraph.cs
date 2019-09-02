@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// A delegate-based bidirectional implicit graph.
+    /// A delegate-based directed bidirectional graph data structure.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -21,10 +21,16 @@ namespace QuikGraph
         /// </summary>
         /// <param name="tryGetOutEdges">Getter of out-edges.</param>
         /// <param name="tryGetInEdges">Getter of in-edges.</param>
+        /// <param name="allowParallelEdges">
+        /// Indicates if parallel edges are allowed.
+        /// Note that get of edges is delegated so you may have bugs related
+        /// to parallel edges due to the delegated implementation.
+        /// </param>
         public DelegateBidirectionalIncidenceGraph(
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges)
-            : base(tryGetOutEdges)
+            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges,
+            bool allowParallelEdges = true)
+            : base(tryGetOutEdges, allowParallelEdges)
         {
             _tryGetInEdgesFunc = tryGetInEdges ?? throw new ArgumentNullException(nameof(tryGetInEdges));
         }
@@ -57,7 +63,7 @@ namespace QuikGraph
 
             if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge> result))
                 return result;
-            return Enumerable.Empty<TEdge>();
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />

@@ -13,11 +13,11 @@ namespace QuikGraph.Tests.Structures
         public void Construction()
         {
             var graph = new DelegateIncidenceGraph<int, Edge<int>>(
-                GetEmptyGraph<int, Edge<int>>());
+                GetEmptyGetter<int, Edge<int>>());
             AssertGraphProperties(graph);
 
             graph = new DelegateIncidenceGraph<int, Edge<int>>(
-                GetEmptyGraph<int, Edge<int>>(),
+                GetEmptyGetter<int, Edge<int>>(),
                 false);
             AssertGraphProperties(graph, false);
 
@@ -57,7 +57,7 @@ namespace QuikGraph.Tests.Structures
         public void ContainsVertex_Throws()
         {
             var graph = new DelegateIncidenceGraph<TestVertex, Edge<TestVertex>>(
-                GetEmptyGraph<TestVertex, Edge<TestVertex>>());
+                GetEmptyGetter<TestVertex, Edge<TestVertex>>());
             ContainsVertex_Throws_Test(graph);
         }
 
@@ -101,7 +101,7 @@ namespace QuikGraph.Tests.Structures
             OutEdge_Throws_Test(data, graph1);
 
             var graph2 = new DelegateIncidenceGraph<TestVertex, Edge<TestVertex>>(
-                GetEmptyGraph<TestVertex, Edge<TestVertex>>());
+                GetEmptyGetter<TestVertex, Edge<TestVertex>>());
             OutEdge_NullThrows_Test(graph2);
         }
 
@@ -121,7 +121,7 @@ namespace QuikGraph.Tests.Structures
             OutEdges_Throws_Test(data, graph1);
 
             var graph2 = new DelegateIncidenceGraph<EquatableTestVertex, Edge<EquatableTestVertex>>(
-                GetEmptyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>());
+                GetEmptyGetter<EquatableTestVertex, Edge<EquatableTestVertex>>());
             OutEdges_NullThrows_Test(graph2);
         }
 
@@ -173,7 +173,7 @@ namespace QuikGraph.Tests.Structures
         public void TryGetOutEdges_Throws()
         {
             var graph = new DelegateIncidenceGraph<TestVertex, Edge<TestVertex>>(
-                GetEmptyGraph<TestVertex, Edge<TestVertex>>());
+                GetEmptyGetter<TestVertex, Edge<TestVertex>>());
             TryGetOutEdges_Throws_Test(graph);
         }
 

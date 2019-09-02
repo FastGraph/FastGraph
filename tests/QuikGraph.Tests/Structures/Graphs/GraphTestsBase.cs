@@ -2828,6 +2828,8 @@ namespace QuikGraph.Tests.Structures
 
         #endregion
 
+        #region Degree
+
         protected static void Degree_Test(
             [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
@@ -2903,6 +2905,8 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<VertexNotFoundException>(() => graph.Degree(new TVertex()));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
+
+        #endregion
 
         #region Try Get Edges
 

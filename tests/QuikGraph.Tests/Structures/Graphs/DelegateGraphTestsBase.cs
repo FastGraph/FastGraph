@@ -15,7 +15,7 @@ namespace QuikGraph.Tests.Structures
     {
         [Pure]
         [NotNull]
-        protected static TryFunc<TVertex, IEnumerable<TEdge>> GetEmptyGraph<TVertex, TEdge>()
+        protected static TryFunc<TVertex, IEnumerable<TEdge>> GetEmptyGetter<TVertex, TEdge>()
             where TEdge : IEdge<TVertex>
         {
             return (TVertex vertex, out IEnumerable<TEdge> edges) =>
@@ -288,6 +288,143 @@ namespace QuikGraph.Tests.Structures
 
         #endregion
 
+        #region Out Edges
+
+        protected static void InEdge_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge21 = new Edge<int>(2, 1);
+            var edge31 = new Edge<int>(3, 1);
+
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = true;
+            data.ShouldReturnEdges = new[] { edge11, edge21, edge31 };
+            Assert.AreSame(edge11, graph.InEdge(1, 0));
+            data.CheckCalls(1);
+
+            Assert.AreSame(edge31, graph.InEdge(1, 2));
+            data.CheckCalls(1);
+        }
+
+        protected static void InEdge_Throws_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = false;
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(1, 0));
+            data.CheckCalls(1);
+
+            data.ShouldReturnValue = true;
+            AssertIndexOutOfRange(() => graph.InEdge(1, 0));
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(1, 2) };
+            AssertIndexOutOfRange(() => graph.InEdge(1, 1));
+            data.CheckCalls(1);
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void InEdges_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+        {
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = true;
+            AssertNoInEdge(graph, 1);
+            data.CheckCalls(3);
+
+            var edges = new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(1, 3)
+            };
+            data.ShouldReturnEdges = edges;
+            AssertHasInEdges(graph, 1, edges);
+            data.CheckCalls(3);
+        }
+
+        protected static void InEdges_Throws_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = false;
+            Assert.Throws<VertexNotFoundException>(() => graph.IsInEdgesEmpty(1));
+            data.CheckCalls(1);
+
+            Assert.Throws<VertexNotFoundException>(() => graph.InDegree(1));
+            data.CheckCalls(1);
+
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(1));
+            data.CheckCalls(1);
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        #endregion
+
+        #region Degree
+
+        protected static void Degree_Test(
+            [NotNull] GraphData<int, Edge<int>> data1,
+            [NotNull] GraphData<int, Edge<int>> data2,
+            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            data1.CheckCalls(0);
+            data2.CheckCalls(0);
+
+            data1.ShouldReturnValue = false;
+            data2.ShouldReturnValue = false;
+            Assert.Throws<VertexNotFoundException>(() => graph.Degree(1));
+            data1.CheckCalls(0);
+            data2.CheckCalls(1);
+
+            data1.ShouldReturnValue = true;
+            data2.ShouldReturnValue = false;
+            Assert.Throws<VertexNotFoundException>(() => graph.Degree(1));
+            data1.CheckCalls(0);
+            data2.CheckCalls(1);
+
+            data1.ShouldReturnValue = false;
+            data2.ShouldReturnValue = true;
+            Assert.Throws<VertexNotFoundException>(() => graph.Degree(1));
+            data1.CheckCalls(1);
+            data2.CheckCalls(1);
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+
+            data1.ShouldReturnValue = true;
+            data2.ShouldReturnValue = true;
+            Assert.AreEqual(0, graph.Degree(1));
+
+            data1.ShouldReturnEdges = new[] { new Edge<int>(1, 2) };
+            data2.ShouldReturnEdges = null;
+            Assert.AreEqual(1, graph.Degree(1));
+
+            data1.ShouldReturnEdges = null;
+            data2.ShouldReturnEdges = new[] { new Edge<int>(3, 1) };
+            Assert.AreEqual(1, graph.Degree(1));
+
+            data1.ShouldReturnEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 3) };
+            data2.ShouldReturnEdges = new[] { new Edge<int>(4, 1) };
+            Assert.AreEqual(3, graph.Degree(1));
+
+            // Self edge
+            data1.ShouldReturnEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 3), new Edge<int>(1, 1) };
+            data2.ShouldReturnEdges = new[] { new Edge<int>(4, 1), new Edge<int>(1, 1) };
+            Assert.AreEqual(5, graph.Degree(1));
+        }
+
+        #endregion
+
         #region Try Get Edges
 
         protected static void TryGetEdge_Test(
@@ -372,6 +509,25 @@ namespace QuikGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.TryGetAdjacentEdges(null, out _));
+        }
+
+        protected static void TryGetInEdges_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+        {
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = false;
+            Assert.IsFalse(graph.TryGetInEdges(1, out _));
+            data.CheckCalls(1);
+
+            data.ShouldReturnValue = true;
+            Assert.IsTrue(graph.TryGetInEdges(1, out _));
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(4, 1), new Edge<int>(2, 1) };
+            Assert.IsTrue(graph.TryGetInEdges(1, out _));
+            data.CheckCalls(1);
         }
 
         #endregion
