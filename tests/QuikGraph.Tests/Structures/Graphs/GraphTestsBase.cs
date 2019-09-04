@@ -634,6 +634,68 @@ namespace QuikGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge4 });
         }
 
+        protected static void AddEdge_ForbiddenParallelEdges_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            int edgeAdded = 0;
+
+            AssertNoEdge(graph);
+            graph.EdgeAdded += e =>
+            {
+                Assert.IsNotNull(e);
+                ++edgeAdded;
+            };
+
+            // Edge 1
+            var edge1 = new Edge<int>(1, 2);
+            Assert.IsTrue(graph.AddEdge(edge1));
+            Assert.AreEqual(1, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1 });
+
+            // Edge 2
+            var edge2 = new Edge<int>(2, 1);
+            Assert.IsTrue(graph.AddEdge(edge2));
+            Assert.AreEqual(2, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge2 });
+
+            // Edge 3 self edge
+            var edge3 = new Edge<int>(2, 2);
+            Assert.IsTrue(graph.AddEdge(edge3));
+            Assert.AreEqual(3, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
+        }
+
+        protected static void AddEdge_EquatableEdge_ForbiddenParallelEdges_Test(
+            [NotNull] BidirectionalMatrixGraph<EquatableEdge<int>> graph)
+        {
+            int edgeAdded = 0;
+
+            AssertNoEdge(graph);
+            graph.EdgeAdded += e =>
+            {
+                Assert.IsNotNull(e);
+                ++edgeAdded;
+            };
+
+            // Edge 1
+            var edge1 = new EquatableEdge<int>(1, 2);
+            Assert.IsTrue(graph.AddEdge(edge1));
+            Assert.AreEqual(1, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1 });
+
+            // Edge 2
+            var edge2 = new EquatableEdge<int>(2, 1);
+            Assert.IsTrue(graph.AddEdge(edge2));
+            Assert.AreEqual(2, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge2 });
+
+            // Edge 3 self edge
+            var edge3 = new EquatableEdge<int>(2, 2);
+            Assert.IsTrue(graph.AddEdge(edge3));
+            Assert.AreEqual(3, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
+        }
+
         protected static void AddEdge_Throws_EdgesOnly_Test(
             [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
         {
@@ -698,6 +760,33 @@ namespace QuikGraph.Tests.Structures
             AddEdgeRange_EdgesOnly_Test(graph);
         }
 
+        protected static void AddEdgeRange_ForbiddenParallelEdges_Test()
+        {
+            int edgeAdded = 0;
+            var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
+
+            AssertNoEdge(graph);
+            graph.EdgeAdded += e =>
+            {
+                Assert.IsNotNull(e);
+                ++edgeAdded;
+            };
+
+            // Edge 1, 2, 3
+            var edge1 = new Edge<int>(0, 1);
+            var edge2 = new Edge<int>(0, 2);
+            var edge3 = new Edge<int>(1, 2);
+            Assert.AreEqual(3, graph.AddEdgeRange(new[] { edge1, edge2, edge3 }));
+            Assert.AreEqual(3, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
+
+            // Edge 4
+            var edge4 = new Edge<int>(2, 2);
+            Assert.AreEqual(1, graph.AddEdgeRange(new[] { edge4 }));
+            Assert.AreEqual(4, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge4 });
+        }
+
         protected static void AddEdgeRange_Throws_EdgesOnly_Test(
             [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
         {
@@ -731,6 +820,42 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(3);
 
             AddEdgeRange_Throws_EdgesOnly_Test(graph);
+        }
+
+        protected static void AddEdgeRange_ForbiddenParallelEdges_Throws_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            int edgeAdded = 0;
+
+            AssertNoEdge(graph);
+            graph.EdgeAdded += e =>
+            {
+                Assert.IsNotNull(e);
+                ++edgeAdded;
+            };
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(null));
+            AssertNoEdge(graph);
+            Assert.AreEqual(0, edgeAdded);
+
+            // Edge 1, 2, 3
+            var edge1 = new Edge<int>(0, 1);
+            var edge3 = new Edge<int>(1, 2);
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, null, edge3 }));
+            Assert.AreEqual(0, edgeAdded);
+            AssertNoEdge(graph);
+
+            // Edge 1, 3, 4
+            var edge4 = new Edge<int>(0, 1);
+            Assert.Throws<ParallelEdgeNotAllowedException>(() => graph.AddEdgeRange(new[] { edge1, edge3, edge4 }));
+            Assert.AreEqual(2, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge3 });
+
+            // Out of range => vertex not found
+            Assert.Throws<VertexNotFoundException>(() => graph.AddEdgeRange(new[] { new Edge<int>(4, 5), }));
+            Assert.AreEqual(2, edgeAdded);
+            AssertHasEdges(graph, new[] { edge1, edge3 });
         }
 
 
@@ -1621,6 +1746,57 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 0)));
         }
 
+        protected static void ContainsEdge_ForbiddenParallelEdges_ImmutableVertices_Test(
+            [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 1);
+            var edge4 = new Edge<int>(2, 2);
+            var otherEdge1 = new Edge<int>(1, 2);
+
+            Assert.IsFalse(graph.ContainsEdge(edge1));
+            Assert.IsFalse(graph.ContainsEdge(edge2));
+            Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge1);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsFalse(graph.ContainsEdge(edge2));
+            Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge2);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge3);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge4);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            // Both vertices not in graph
+            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(10, 11)));
+            // Source not in graph
+            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(10, 1)));
+            // Target not in graph
+            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 10)));
+        }
+
         protected static void ContainsEdge_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -1883,6 +2059,57 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(1, 0)));
         }
 
+        protected static void ContainsEdge_EquatableEdges_ForbiddenParallelEdges_ImmutableVertices_Test(
+            [NotNull] IMutableEdgeListGraph<int, EquatableEdge<int>> graph)
+        {
+            var edge1 = new EquatableEdge<int>(1, 2);
+            var edge2 = new EquatableEdge<int>(1, 3);
+            var edge3 = new EquatableEdge<int>(2, 1);
+            var edge4 = new EquatableEdge<int>(2, 2);
+            var otherEdge1 = new EquatableEdge<int>(1, 2);
+
+            Assert.IsFalse(graph.ContainsEdge(edge1));
+            Assert.IsFalse(graph.ContainsEdge(edge2));
+            Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge1);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsFalse(graph.ContainsEdge(edge2));
+            Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge2);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsFalse(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge3);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsFalse(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            graph.AddEdge(edge4);
+            Assert.IsTrue(graph.ContainsEdge(edge1));
+            Assert.IsTrue(graph.ContainsEdge(edge2));
+            Assert.IsTrue(graph.ContainsEdge(edge3));
+            Assert.IsTrue(graph.ContainsEdge(edge4));
+            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+
+            // Both vertices not in graph
+            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(10, 11)));
+            // Source not in graph
+            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(10, 1)));
+            // Target not in graph
+            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(1, 10)));
+        }
+
         protected static void ContainsEdge_EquatableEdge_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, EquatableEdge<int>>>> createGraph)
@@ -2019,6 +2246,33 @@ namespace QuikGraph.Tests.Structures
 
             // Vertices is not present in the graph
             Assert.IsFalse(graph.ContainsEdge(0, 4));
+            Assert.IsFalse(graph.ContainsEdge(1, 4));
+            Assert.IsFalse(graph.ContainsEdge(4, 1));
+        }
+
+        protected static void ContainsEdge_SourceTarget_ForbiddenParallelEdges_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
+
+            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            Assert.IsFalse(graph.ContainsEdge(2, 1));
+
+            graph.AddEdge(edge1);
+            Assert.IsTrue(graph.ContainsEdge(1, 2));
+            Assert.IsFalse(graph.ContainsEdge(2, 1));
+
+            graph.AddEdge(edge2);
+            Assert.IsTrue(graph.ContainsEdge(1, 3));
+            Assert.IsFalse(graph.ContainsEdge(3, 1));
+
+            graph.AddEdge(edge3);
+            Assert.IsTrue(graph.ContainsEdge(2, 2));
+
+            // Vertices is not present in the graph
+            Assert.IsFalse(graph.ContainsEdge(4, 5));
             Assert.IsFalse(graph.ContainsEdge(1, 4));
             Assert.IsFalse(graph.ContainsEdge(4, 1));
         }
@@ -2216,6 +2470,25 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge41, graph.OutEdge(4, 0));
         }
 
+        protected static void OutEdge_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge24 = new Edge<int>(2, 4);
+            var edge33 = new Edge<int>(3, 3);
+            var edge41 = new Edge<int>(4, 1);
+
+            graph.AddEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
+
+            Assert.AreSame(edge11, graph.OutEdge(1, 0));
+            Assert.AreSame(edge13, graph.OutEdge(1, 2));
+            Assert.AreSame(edge24, graph.OutEdge(2, 0));
+            Assert.AreSame(edge33, graph.OutEdge(3, 0));
+            Assert.AreSame(edge41, graph.OutEdge(4, 0));
+        }
+
         protected static void OutEdge_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -2289,6 +2562,18 @@ namespace QuikGraph.Tests.Structures
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
+        protected static void OutEdge_Throws_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(-1, 0));
+            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(4, 0));
+
+            graph.AddEdge(new Edge<int>(1, 2));
+            AssertIndexOutOfRange(() => graph.OutEdge(1, 5));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
         protected static void OutEdge_Throws_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -2357,6 +2642,26 @@ namespace QuikGraph.Tests.Structures
             AssertNoOutEdge(graph, 4);
         }
 
+        protected static void OutEdges_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge01 = new Edge<int>(0, 1);
+            var edge02 = new Edge<int>(0, 2);
+            var edge03 = new Edge<int>(0, 3);
+            var edge13 = new Edge<int>(1, 3);
+            var edge20 = new Edge<int>(2, 0);
+            var edge22 = new Edge<int>(2, 2);
+
+            AssertNoOutEdge(graph, 1);
+
+            graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
+
+            AssertHasOutEdges(graph, 0, new[] { edge01, edge02, edge03 });
+            AssertHasOutEdges(graph, 1, new[] { edge13 });
+            AssertHasOutEdges(graph, 2, new[] { edge20, edge22 });
+            AssertNoOutEdge(graph, 3);
+        }
+
         protected static void OutEdges_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -2390,24 +2695,36 @@ namespace QuikGraph.Tests.Structures
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.IsOutEdgesEmpty(null));
             Assert.Throws<ArgumentNullException>(() => graph.OutDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph.OutEdges(null));
+            Assert.Throws<ArgumentNullException>(() => graph.OutEdges(null).ToArray());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void OutEdges_Throws_Test<TVertex, TEdge>(
             [NotNull] IImplicitGraph<TVertex, TEdge> graph)
-            where TVertex : class, IEquatable<TVertex>, new()
+            where TVertex : IEquatable<TVertex>, new()
             where TEdge : IEdge<TVertex>
         {
-            OutEdges_NullThrows_Test(graph);
-
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             var vertex = new TVertex();
             Assert.Throws<VertexNotFoundException>(() => graph.IsOutEdgesEmpty(vertex));
             Assert.Throws<VertexNotFoundException>(() => graph.OutDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(vertex));
+            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(vertex).ToArray());
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void OutEdges_Throws_Matrix_Test<TEdge>(
+            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            where TEdge : class, IEdge<int>
+        {
+            const int vertex = 10;
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<VertexNotFoundException>(() => graph.IsOutEdgesEmpty(vertex));
+            Assert.Throws<VertexNotFoundException>(() => graph.OutDegree(vertex));
+            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(vertex).ToArray());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -2621,6 +2938,25 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge13, graph.InEdge(3, 0));
         }
 
+        protected static void InEdge_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge14 = new Edge<int>(1, 4);
+            var edge21 = new Edge<int>(2, 1);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+            var edge42 = new Edge<int>(4, 2);
+
+            graph.AddEdgeRange(new[] { edge11, edge14, edge21, edge31, edge33, edge42 });
+
+            Assert.AreSame(edge11, graph.InEdge(1, 0));
+            Assert.AreSame(edge31, graph.InEdge(1, 2));
+            Assert.AreSame(edge42, graph.InEdge(2, 0));
+            Assert.AreSame(edge33, graph.InEdge(3, 0));
+            Assert.AreSame(edge14, graph.InEdge(4, 0));
+        }
+
         protected static void InEdge_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -2685,6 +3021,18 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddEdge(new Edge<int>(1, 2));
             graph1 = createGraph();
             AssertIndexOutOfRange(() => graph1.InEdge(vertex1, 5));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void InEdge_Throws_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(-1, 0));
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(4, 0));
+
+            graph.AddEdge(new Edge<int>(2, 1));
+            AssertIndexOutOfRange(() => graph.InEdge(1, 5));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -2767,6 +3115,26 @@ namespace QuikGraph.Tests.Structures
             AssertHasInEdges(graph, 4, new[] { edge14, edge24 });
         }
 
+        protected static void InEdges_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge02 = new Edge<int>(0, 2);
+            var edge10 = new Edge<int>(1, 0);
+            var edge20 = new Edge<int>(2, 0);
+            var edge22 = new Edge<int>(2, 2);
+            var edge30 = new Edge<int>(3, 0);
+            var edge31 = new Edge<int>(3, 1);
+
+            AssertNoInEdge(graph, 1);
+
+            graph.AddEdgeRange(new[] { edge02, edge10, edge20, edge22, edge30, edge31 });
+
+            AssertHasInEdges(graph, 0, new[] { edge10, edge20, edge30 });
+            AssertHasInEdges(graph, 1, new[] { edge31 });
+            AssertHasInEdges(graph, 2, new[] { edge02, edge22 });
+            AssertNoInEdge(graph, 3);
+        }
+
         protected static void InEdges_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -2806,23 +3174,35 @@ namespace QuikGraph.Tests.Structures
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.IsInEdgesEmpty(null));
             Assert.Throws<ArgumentNullException>(() => graph.InDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph.InEdges(null));
+            Assert.Throws<ArgumentNullException>(() => graph.InEdges(null).ToArray());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void InEdges_Throws_Test<TVertex, TEdge>(
             [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class, IEquatable<TVertex>, new()
+            where TVertex : IEquatable<TVertex>, new()
             where TEdge : IEdge<TVertex>
         {
-            InEdges_NullThrows_Test(graph);
-
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var vertex = new TVertex();
             Assert.Throws<VertexNotFoundException>(() => graph.IsInEdgesEmpty(vertex));
             Assert.Throws<VertexNotFoundException>(() => graph.InDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(vertex));
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(vertex).ToArray());
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void InEdges_Throws_Matrix_Test<TEdge>(
+            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            where TEdge : class, IEdge<int>
+        {
+            const int vertex = 10;
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<VertexNotFoundException>(() => graph.IsInEdgesEmpty(vertex));
+            Assert.Throws<VertexNotFoundException>(() => graph.InDegree(vertex));
+            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(vertex).ToArray());
+            // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -2872,6 +3252,25 @@ namespace QuikGraph.Tests.Structures
             Assert.AreEqual(0, graph.Degree(5));
         }
 
+        protected static void Degree_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(1, 4);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 2);
+            var edge6 = new Edge<int>(3, 3);
+
+            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+
+            Assert.AreEqual(0, graph.Degree(0));
+            Assert.AreEqual(3, graph.Degree(1));
+            Assert.AreEqual(3, graph.Degree(2));
+            Assert.AreEqual(4, graph.Degree(3)); // Self edge
+            Assert.AreEqual(2, graph.Degree(4));
+        }
+
         protected static void Degree_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -2903,6 +3302,16 @@ namespace QuikGraph.Tests.Structures
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.Degree(null));
             Assert.Throws<VertexNotFoundException>(() => graph.Degree(new TVertex()));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void Degree_Throws_Matrix_Test<TEdge>(
+            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            where TEdge : class, IEdge<int>
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<VertexNotFoundException>(() => graph.Degree(-1));
+            Assert.Throws<VertexNotFoundException>(() => graph.Degree(10));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -2953,6 +3362,29 @@ namespace QuikGraph.Tests.Structures
 
             Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
             Assert.AreSame(edge5, gotEdge);
+
+            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
+            Assert.AreSame(edge1, gotEdge);
+
+            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+        }
+
+        protected static void TryGetEdge_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 1);
+
+            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5 });
+
+            Assert.IsFalse(graph.TryGetEdge(6, 10, out _));
+            Assert.IsFalse(graph.TryGetEdge(6, 1, out _));
+
+            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
+            Assert.AreSame(edge4, gotEdge);
 
             Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
             Assert.AreSame(edge1, gotEdge);
@@ -3132,6 +3564,30 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.IsEmpty(gotEdges);
         }
 
+        protected static void TryGetEdges_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 1);
+
+            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5 });
+
+            Assert.IsFalse(graph.TryGetEdges(6, 10, out _));
+            Assert.IsFalse(graph.TryGetEdges(6, 1, out _));
+
+            Assert.IsTrue(graph.TryGetEdges(2, 4, out IEnumerable<Edge<int>> gotEdges));
+            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge1 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            CollectionAssert.IsEmpty(gotEdges);
+        }
+
         protected static void TryGetEdges_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -3222,6 +3678,30 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
         }
 
+        protected static void TryGetOutEdges_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 1);
+            var edge6 = new Edge<int>(4, 5);
+
+            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+
+            Assert.IsFalse(graph.TryGetOutEdges(6, out _));
+
+            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            CollectionAssert.IsEmpty(gotEdges);
+
+            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+        }
+
         protected static void TryGetOutEdges_ImmutableGraph_ReversedTest(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
             [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
@@ -3308,6 +3788,30 @@ namespace QuikGraph.Tests.Structures
 
             Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
+        }
+
+        protected static void TryGetInEdges_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 2);
+            var edge4 = new Edge<int>(2, 4);
+            var edge5 = new Edge<int>(3, 1);
+            var edge6 = new Edge<int>(5, 3);
+
+            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+
+            Assert.IsFalse(graph.TryGetInEdges(6, out _));
+
+            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            CollectionAssert.IsEmpty(gotEdges);
+
+            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+
+            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
+            CollectionAssert.AreEqual(new[] { edge1, edge3 }, gotEdges);
         }
 
         protected static void TryGetInEdges_ImmutableGraph_ReversedTest(
@@ -3608,6 +4112,64 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveEdge_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            int edgesRemoved = 0;
+
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            var edge01 = new Edge<int>(0, 1);
+            var edge02 = new Edge<int>(0, 2);
+            var edge03 = new Edge<int>(0, 3);
+            var edge13 = new Edge<int>(1, 3);
+            var edge20 = new Edge<int>(2, 0);
+            var edge22 = new Edge<int>(2, 2);
+            var edgeNotInGraph = new Edge<int>(2, 3);
+            var edgeNotEquatable = new Edge<int>(0, 1);
+            graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
+
+            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            CheckCounter(0);
+
+            Assert.IsTrue(graph.RemoveEdge(edgeNotEquatable));
+            CheckCounter(1);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertHasEdges(graph, new[] { edge02, edge03, edge13, edge20, edge22 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge02));
+            CheckCounter(1);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge20));
+            CheckCounter(1);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertHasEdges(graph, new[] { edge03, edge13, edge22 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge03));
+            Assert.IsTrue(graph.RemoveEdge(edge13));
+            Assert.IsTrue(graph.RemoveEdge(edge22));
+            CheckCounter(3);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertNoEdge(graph);
+
+            #region Local function
+
+            void CheckCounter(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
         protected static void RemoveEdge_EquatableEdge_Test(
             [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
         {
@@ -3720,6 +4282,64 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.RemoveEdge(edge33));
             CheckCounter(3);
             AssertEmptyGraph(graph);    // Vertices removed in the same time as edges
+
+            #region Local function
+
+            void CheckCounter(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        protected static void RemoveEdge_EquatableEdge_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<EquatableEdge<int>> graph)
+        {
+            int edgesRemoved = 0;
+
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            var edge01 = new EquatableEdge<int>(0, 1);
+            var edge02 = new EquatableEdge<int>(0, 2);
+            var edge03 = new EquatableEdge<int>(0, 3);
+            var edge13 = new EquatableEdge<int>(1, 3);
+            var edge20 = new EquatableEdge<int>(2, 0);
+            var edge22 = new EquatableEdge<int>(2, 2);
+            var edgeNotInGraph = new EquatableEdge<int>(2, 3);
+            var edgeNotEquatable = new EquatableEdge<int>(0, 1);
+            graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
+
+            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            CheckCounter(0);
+
+            Assert.IsTrue(graph.RemoveEdge(edgeNotEquatable));
+            CheckCounter(1);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertHasEdges(graph, new[] { edge02, edge03, edge13, edge20, edge22 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge02));
+            CheckCounter(1);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge20));
+            CheckCounter(1);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertHasEdges(graph, new[] { edge03, edge13, edge22 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge03));
+            Assert.IsTrue(graph.RemoveEdge(edge13));
+            Assert.IsTrue(graph.RemoveEdge(edge22));
+            CheckCounter(3);
+            AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
+            AssertNoEdge(graph);
 
             #region Local function
 
@@ -3903,6 +4523,61 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveOutEdgeIf_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            int edgesRemoved = 0;
+
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(6, edge => true));
+            CheckCounter(0);
+            AssertNoEdge(graph);
+
+            var edge01 = new Edge<int>(0, 1);
+            var edge02 = new Edge<int>(0, 2);
+            var edge03 = new Edge<int>(0, 3);
+            var edge13 = new Edge<int>(1, 3);
+            var edge20 = new Edge<int>(2, 0);
+            var edge22 = new Edge<int>(2, 2);
+            graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
+
+            Assert.AreEqual(2, graph.RemoveOutEdgeIf(0, edge => edge.Target >= 2));
+            CheckCounter(2);
+            AssertHasEdges(graph, new[] { edge01, edge13, edge20, edge22 });
+
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(2, edge => edge.Target > 4));
+            CheckCounter(0);
+            AssertHasEdges(graph, new[] { edge01, edge13, edge20, edge22 });
+
+            Assert.AreEqual(2, graph.RemoveOutEdgeIf(2, edge => true));
+            CheckCounter(2);
+            AssertHasEdges(graph, new[] { edge01, edge13 });
+
+            #region Local function
+
+            void CheckCounter(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        protected static void RemoveOutEdgeIf_Throws_Test<TEdge>(
+            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            where TEdge : class, IEdge<int>
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, null));
+        }
+
         protected static void RemoveOutEdgeIf_Throws_Test(
             [NotNull] IMutableIncidenceGraph<TestVertex, Edge<TestVertex>> graph)
         {
@@ -3969,6 +4644,61 @@ namespace QuikGraph.Tests.Structures
             }
 
             #endregion
+        }
+
+        protected static void RemoveInEdgeIf_ImmutableVertices_Test(
+            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+        {
+            int edgesRemoved = 0;
+
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(6, edge => true));
+            CheckCounter(0);
+            AssertNoEdge(graph);
+
+            var edge01 = new Edge<int>(0, 1);
+            var edge02 = new Edge<int>(0, 2);
+            var edge03 = new Edge<int>(0, 3);
+            var edge13 = new Edge<int>(1, 3);
+            var edge20 = new Edge<int>(2, 0);
+            var edge22 = new Edge<int>(2, 2);
+            graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
+
+            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, edge => edge.Source == 0));
+            CheckCounter(1);
+            AssertHasEdges(graph, new[] { edge01, edge03, edge13, edge20, edge22 });
+
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(2, edge => edge.Target > 4));
+            CheckCounter(0);
+            AssertHasEdges(graph, new[] { edge01, edge03, edge13, edge20, edge22 });
+
+            Assert.AreEqual(1, graph.RemoveInEdgeIf(1, edge => true));
+            CheckCounter(1);
+            AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
+
+            #region Local function
+
+            void CheckCounter(int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
+        protected static void RemoveInEdgeIf_Throws_Test<TEdge>(
+            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            where TEdge : class, IEdge<int>
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, null));
         }
 
         protected static void RemoveInEdgeIf_Throws_Test(

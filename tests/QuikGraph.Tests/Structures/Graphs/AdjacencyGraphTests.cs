@@ -264,8 +264,11 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdges_Throws()
         {
-            var graph = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
-            OutEdges_Throws_Test(graph);
+            var graph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            OutEdges_NullThrows_Test(graph1);
+
+            var graph2 = new AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            OutEdges_Throws_Test(graph2);
         }
 
         #endregion

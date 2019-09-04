@@ -266,8 +266,11 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdges_Throws()
         {
-            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
-            OutEdges_Throws_Test(graph);
+            var graph1 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            OutEdges_NullThrows_Test(graph1);
+
+            var graph2 = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            OutEdges_Throws_Test(graph2);
         }
 
         #endregion
@@ -301,8 +304,11 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void InEdges_Throws()
         {
-            var graph = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
-            InEdges_Throws_Test(graph);
+            var graph1 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            InEdges_NullThrows_Test(graph1);
+
+            var graph2 = new BidirectionalGraph<EquatableTestVertex, Edge<EquatableTestVertex>>();
+            InEdges_Throws_Test(graph2);
         }
 
         #endregion

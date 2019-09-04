@@ -2,6 +2,7 @@ using System;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public VertexNotFoundException()
             : base("Vertex is not present in the graph.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="VertexNotFoundException"/> class.
+        /// </summary>
+        public VertexNotFoundException([NotNull] string message)
+            : base(message)
         {
         }
 
