@@ -543,7 +543,8 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (_vertexOutEdges[edge.Source].Remove(edge))
+            if (_vertexOutEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> outEdges)
+                && outEdges.Remove(edge))
             {
                 _vertexInEdges[edge.Target].Remove(edge);
                 --EdgeCount;

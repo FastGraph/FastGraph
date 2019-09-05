@@ -555,8 +555,8 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            bool removed = _adjacentEdges[edge.Source].Remove(edge);
-            if (removed)
+            if (_adjacentEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> adjacentEdges)
+                && adjacentEdges.Remove(edge))
             {
                 _edges.Remove(edge);
 

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using static QuikGraph.Tests.AssertHelpers;
 
 namespace QuikGraph.Tests.Structures
 {

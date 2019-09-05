@@ -57,7 +57,7 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ContainsVertex_Throws()
         {
-            var graph = new DelegateImplicitGraph<TestVertex, Edge<TestVertex>>(
+            var graph = new DelegateImplicitUndirectedGraph<TestVertex, Edge<TestVertex>>(
                 GetEmptyGetter<TestVertex, Edge<TestVertex>>());
             ContainsVertex_Throws_Test(graph);
         }
@@ -71,7 +71,7 @@ namespace QuikGraph.Tests.Structures
         {
             var data = new GraphData<int, Edge<int>>();
             var graph = new DelegateImplicitUndirectedGraph<int, Edge<int>>(data.TryGetEdges);
-            ContainsEdge_Test(data, graph);
+            ContainsEdge_UndirectedGraph_Test(data, graph);
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace QuikGraph.Tests.Structures
         {
             var data = new GraphData<int, Edge<int>>();
             var graph = new DelegateImplicitUndirectedGraph<int, Edge<int>>(data.TryGetEdges);
-            TryGetEdge_Test(data, graph);
+            TryGetEdge_UndirectedGraph_Test(data, graph);
         }
 
         [Test]

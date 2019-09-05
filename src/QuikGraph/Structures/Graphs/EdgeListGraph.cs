@@ -170,9 +170,6 @@ namespace QuikGraph
             {
                 if (ContainsEdge(edge.Source, edge.Target))
                     return false;
-
-                if (!IsDirected && ContainsEdge(edge.Target, edge.Source))
-                    return false;
             }
 
             _edges.Add(edge, edge);

@@ -4014,10 +4014,22 @@ namespace QuikGraph.Tests.Structures
             var edge31 = new Edge<int>(3, 1);
             var edge33 = new Edge<int>(3, 3);
             var edgeNotInGraph = new Edge<int>(3, 4);
+            var edgeWithVertexNotInGraph1 = new Edge<int>(2, 10);
+            var edgeWithVertexNotInGraph2 = new Edge<int>(10, 2);
+            var edgeWithVerticesNotInGraph = new Edge<int>(10, 11);
             var edgeNotEquatable = new Edge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
             Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            CheckCounters(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            CheckCounters(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            CheckCounters(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
             CheckCounters(0);
 
             Assert.IsFalse(graph.RemoveEdge(edgeNotEquatable));
@@ -4131,10 +4143,22 @@ namespace QuikGraph.Tests.Structures
             var edge20 = new Edge<int>(2, 0);
             var edge22 = new Edge<int>(2, 2);
             var edgeNotInGraph = new Edge<int>(2, 3);
+            var edgeWithVertexNotInGraph1 = new Edge<int>(2, 10);
+            var edgeWithVertexNotInGraph2 = new Edge<int>(10, 2);
+            var edgeWithVerticesNotInGraph = new Edge<int>(10, 11);
             var edgeNotEquatable = new Edge<int>(0, 1);
             graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
 
             Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            CheckCounter(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            CheckCounter(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            CheckCounter(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
             CheckCounter(0);
 
             Assert.IsTrue(graph.RemoveEdge(edgeNotEquatable));
@@ -4196,10 +4220,22 @@ namespace QuikGraph.Tests.Structures
             var edge31 = new EquatableEdge<int>(3, 1);
             var edge33 = new EquatableEdge<int>(3, 3);
             var edgeNotInGraph = new EquatableEdge<int>(3, 4);
+            var edgeWithVertexNotInGraph1 = new EquatableEdge<int>(2, 10);
+            var edgeWithVertexNotInGraph2 = new EquatableEdge<int>(10, 2);
+            var edgeWithVerticesNotInGraph = new EquatableEdge<int>(10, 11);
             var edgeEquatable = new EquatableEdge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
             Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            CheckCounters(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            CheckCounters(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            CheckCounters(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
             CheckCounters(0);
 
             Assert.IsTrue(graph.RemoveEdge(edgeEquatable));
@@ -4313,10 +4349,22 @@ namespace QuikGraph.Tests.Structures
             var edge20 = new EquatableEdge<int>(2, 0);
             var edge22 = new EquatableEdge<int>(2, 2);
             var edgeNotInGraph = new EquatableEdge<int>(2, 3);
+            var edgeWithVertexNotInGraph1 = new EquatableEdge<int>(2, 10);
+            var edgeWithVertexNotInGraph2 = new EquatableEdge<int>(10, 2);
+            var edgeWithVerticesNotInGraph = new EquatableEdge<int>(10, 11);
             var edgeNotEquatable = new EquatableEdge<int>(0, 1);
             graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
 
             Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            CheckCounter(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            CheckCounter(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            CheckCounter(0);
+
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
             CheckCounter(0);
 
             Assert.IsTrue(graph.RemoveEdge(edgeNotEquatable));
