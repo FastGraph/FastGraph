@@ -143,8 +143,8 @@ namespace QuikGraph.Tests.Structures
         {
             var wrappedGraph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             var graph = new ReversedBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
-            ContainsEdge_Throws_ReversedTest(graph);
-            ContainsEdge_SourceTarget_Throws_ReversedTest(graph);
+            ContainsEdge_NullThrows_ReversedTest(graph);
+            ContainsEdge_SourceTarget_Throws_Test(graph);
         }
 
         #endregion
@@ -163,14 +163,14 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdge_Throws()
         {
-            var wrappedGraph1 = new BidirectionalGraph<int, Edge<int>>();
-            OutEdge_Throws_ImmutableGraph_ReversedTest(
-                wrappedGraph1,
-                () => new ReversedBidirectionalGraph<int, Edge<int>>(wrappedGraph1));
+            var wrappedGraph1 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            var graph1 = new ReversedBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph1);
+            OutEdge_NullThrows_Test(graph1);
 
-            var wrappedGraph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            var graph2 = new ReversedBidirectionalGraph<TestVertex, Edge<TestVertex>>(wrappedGraph2);
-            OutEdge_NullThrows_Test(graph2);
+            var wrappedGraph2 = new BidirectionalGraph<int, Edge<int>>();
+            OutEdge_Throws_ImmutableGraph_ReversedTest(
+                wrappedGraph2,
+                () => new ReversedBidirectionalGraph<int, Edge<int>>(wrappedGraph2));
         }
 
         [Test]

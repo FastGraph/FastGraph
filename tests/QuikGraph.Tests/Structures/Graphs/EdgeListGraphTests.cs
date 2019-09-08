@@ -226,7 +226,7 @@ namespace QuikGraph.Tests.Structures
         public void ContainsEdge_Throws()
         {
             var graph = new EdgeListGraph<TestVertex, Edge<TestVertex>>();
-            ContainsEdge_Throws_Test(graph);
+            ContainsEdge_NullThrows_Test(graph);
         }
 
         #endregion

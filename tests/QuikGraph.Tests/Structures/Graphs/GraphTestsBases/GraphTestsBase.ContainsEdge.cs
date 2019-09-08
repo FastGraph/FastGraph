@@ -132,6 +132,77 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 0)));
         }
 
+        protected static void ContainsEdge_ImmutableGraph_Test(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IEdgeSet<int, SEquatableEdge<int>>> createGraph)
+        {
+            IEdgeSet<int, SEquatableEdge<int>> graph = createGraph();
+
+            var edge1 = new Edge<int>(1, 2);
+            var equatableEdge1 = new SEquatableEdge<int>(edge1.Source, edge1.Target);
+            var edge2 = new Edge<int>(1, 3);
+            var equatableEdge2 = new SEquatableEdge<int>(edge2.Source, edge2.Target);
+            var edge3 = new Edge<int>(2, 1);
+            var equatableEdge3 = new SEquatableEdge<int>(edge3.Source, edge3.Target);
+            var edge4 = new Edge<int>(2, 2);
+            var equatableEdge4 = new SEquatableEdge<int>(edge4.Source, edge4.Target);
+            var otherEdge1 = new Edge<int>(1, 2);
+            var equatableOtherEdge1 = new SEquatableEdge<int>(otherEdge1.Source, otherEdge1.Target);
+
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge1));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge2));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge3));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
+            Assert.IsFalse(graph.ContainsEdge(equatableOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge1);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge2));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge3));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
+            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge2);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge3));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
+            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge3);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge3));
+            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
+            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(edge4);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge3));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge4));
+            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+
+            wrappedGraph.AddVerticesAndEdge(otherEdge1);
+            graph = createGraph();
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge3));
+            Assert.IsTrue(graph.ContainsEdge(equatableEdge4));
+            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+
+            // Both vertices not in graph
+            Assert.IsFalse(graph.ContainsEdge(new SEquatableEdge<int>(0, 10)));
+            // Source not in graph
+            Assert.IsFalse(graph.ContainsEdge(new SEquatableEdge<int>(0, 1)));
+            // Target not in graph
+            Assert.IsFalse(graph.ContainsEdge(new SEquatableEdge<int>(1, 0)));
+        }
+
         protected static void ContainsEdge_EdgesOnly_Test(
             [NotNull] EdgeListGraph<int, Edge<int>> graph)
         {
@@ -661,11 +732,12 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.ContainsEdge(4, 1));
         }
 
-        protected static void ContainsEdge_SourceTarget_ImmutableGraph_Test(
+        protected static void ContainsEdge_SourceTarget_ImmutableGraph_Test<TEdge>(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, Edge<int>>> createGraph)
+            [NotNull, InstantHandle] Func<IIncidenceGraph<int, TEdge>> createGraph)
+            where TEdge : IEdge<int>
         {
-            IIncidenceGraph<int, Edge<int>> graph = createGraph();
+            IIncidenceGraph<int, TEdge> graph = createGraph();
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -813,7 +885,7 @@ namespace QuikGraph.Tests.Structures
             Assert.IsFalse(graph.ContainsEdge(4, 1));
         }
 
-        protected static void ContainsEdge_Throws_Test<TVertex, TEdge>(
+        protected static void ContainsEdge_NullThrows_Test<TVertex, TEdge>(
             [NotNull] IEdgeSet<TVertex, TEdge> graph)
             where TEdge : class, IEdge<TVertex>
         {
@@ -822,7 +894,15 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null));
         }
 
-        protected static void ContainsEdge_Throws_ReversedTest<TVertex, TEdge>(
+        protected static void ContainsEdge_DefaultNullThrows_Test<TVertex>(
+            [NotNull] IEdgeSet<TVertex, SEquatableEdge<TVertex>> graph)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
+        }
+
+        protected static void ContainsEdge_NullThrows_ReversedTest<TVertex, TEdge>(
             [NotNull] IEdgeSet<TVertex, SReversedEdge<TVertex, TEdge>> graph)
             where TEdge : class, IEdge<TVertex>
         {
@@ -831,9 +911,10 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
         }
 
-        protected static void ContainsEdge_SourceTarget_Throws_Test<TVertex>(
-            [NotNull] IIncidenceGraph<TVertex, Edge<TVertex>> graph)
+        protected static void ContainsEdge_SourceTarget_Throws_Test<TVertex, TEdge>(
+            [NotNull] IIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : class, new()
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
@@ -844,22 +925,10 @@ namespace QuikGraph.Tests.Structures
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        protected static void ContainsEdge_SourceTarget_Throws_ReversedTest<TVertex>(
-            [NotNull] IIncidenceGraph<TVertex, SReversedEdge<TVertex, Edge<TVertex>>> graph)
+        protected static void ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test<TVertex, TEdge>(
+            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
             where TVertex : class, new()
-        {
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, new TVertex()));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
-            // ReSharper restore AssignNullToNotNullAttribute
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
-        }
-
-        protected static void ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test<TVertex>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph)
-            where TVertex : class, new()
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute

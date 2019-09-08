@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// Directed graph representation using a compressed sparse row representation.
+    /// Directed graph data structure using a compressed sparse row representation.
     /// (http://www.cs.utk.edu/~dongarra/etemplates/node373.html)
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
@@ -29,10 +29,8 @@ namespace QuikGraph
 
             public Range(int start, int end)
             {
-                if (start < 0)
-                    throw new ArgumentException("Must be positive", nameof(start));
-                if (start > end)
-                    throw new ArgumentException($"Must be less that {nameof(start)} ({start}).", nameof(end));
+                Debug.Assert(start >= 0, "Must be positive");
+                Debug.Assert(start <= end, $"Must be less that {nameof(start)} ({start}).");
 
                 Start = start;
                 End = end;
@@ -45,8 +43,11 @@ namespace QuikGraph
             [NotNull] Dictionary<TVertex, Range> outEdgeStartRanges,
             [NotNull, ItemNotNull] TVertex[] outEdges)
         {
-            _outEdgeStartRanges = outEdgeStartRanges ?? throw new ArgumentNullException(nameof(outEdgeStartRanges));
-            _outEdges = outEdges ?? throw new ArgumentNullException(nameof(outEdges));
+            Debug.Assert(outEdgeStartRanges != null);
+            Debug.Assert(outEdges != null);
+
+            _outEdgeStartRanges = outEdgeStartRanges;
+            _outEdges = outEdges;
         }
 
         /// <summary>
@@ -66,16 +67,20 @@ namespace QuikGraph
             var outEdgeStartRanges = new Dictionary<TVertex, Range>(visitedGraph.VertexCount);
             var outEdges = new TVertex[visitedGraph.EdgeCount];
 
-            const int start = 0;
+            int start = 0;
             int index = 0;
             foreach (TVertex vertex in visitedGraph.Vertices)
             {
                 int end = start + visitedGraph.OutDegree(vertex);
                 var range = new Range(start, end);
                 outEdgeStartRanges.Add(vertex, range);
-                foreach (TEdge edge in visitedGraph.OutEdges(vertex))
-                    outEdges[index++] = edge.Target;
 
+                foreach (TEdge edge in visitedGraph.OutEdges(vertex))
+                {
+                    outEdges[index++] = edge.Target;
+                }
+
+                start = end;
                 Debug.Assert(index == end);
             }
 
@@ -97,7 +102,7 @@ namespace QuikGraph
         #region IVertexSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => _outEdgeStartRanges.Count > 0;
+        public bool IsVerticesEmpty => VertexCount == 0;
 
         /// <inheritdoc />
         public int VertexCount => _outEdgeStartRanges.Count;
@@ -119,7 +124,7 @@ namespace QuikGraph
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => _outEdges.Length > 0;
+        public bool IsEdgesEmpty => EdgeCount == 0;
 
         /// <inheritdoc />
         public int EdgeCount => _outEdges.Length;
@@ -194,14 +199,32 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<SEquatableEdge<TVertex>> edges)
         {
-            if (ContainsEdge(source, target))
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
+            if (_outEdgeStartRanges.TryGetValue(source, out Range range))
             {
-                edges = new[] { new SEquatableEdge<TVertex>(source, target) };
+                edges = GetEdges();
                 return true;
             }
 
             edges = null;
             return false;
+
+            #region Local function
+
+            IEnumerable<SEquatableEdge<TVertex>> GetEdges()
+            {
+                for (int i = range.Start; i < range.End; ++i)
+                {
+                    if (_outEdges[i].Equals(target))
+                        yield return new SEquatableEdge<TVertex>(source, target);
+                }
+            }
+
+            #endregion
         }
 
         #endregion
@@ -220,16 +243,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _outEdgeStartRanges[vertex].Length;
-        }
-
-        [Pure]
-        [NotNull]
-        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator(TVertex vertex)
-        {
-            Range range = _outEdgeStartRanges[vertex];
-            for (int i = range.Start; i < range.End; ++i)
-                yield return new SEquatableEdge<TVertex>(vertex, _outEdges[i]);
+            if (_outEdgeStartRanges.TryGetValue(vertex, out Range range))
+                return range.Length;
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -238,7 +254,13 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return OutEdgesIterator(vertex);
+            if (_outEdgeStartRanges.TryGetValue(vertex, out Range range))
+            {
+                for (int i = range.Start; i < range.End; ++i)
+                    yield return new SEquatableEdge<TVertex>(vertex, _outEdges[i]);
+            }
+            else
+                throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -247,11 +269,10 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            Range range = _outEdgeStartRanges[vertex];
-            if (range.Length > 0)
+            if (_outEdgeStartRanges.ContainsKey(vertex))
             {
                 edges = OutEdges(vertex);
-                return false;
+                return true;
             }
 
             edges = null;
@@ -264,12 +285,13 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            Range range = _outEdgeStartRanges[vertex];
-            int targetIndex = range.Start + index;
+            if (_outEdgeStartRanges.TryGetValue(vertex, out Range range))
+            {
+                int targetIndex = range.Start + index;
+                return new SEquatableEdge<TVertex>(vertex, _outEdges[targetIndex]);
+            }
 
-            Debug.Assert(targetIndex < range.End);
-
-            return new SEquatableEdge<TVertex>(vertex, _outEdges[targetIndex]);
+            throw new VertexNotFoundException();
         }
 
         #endregion

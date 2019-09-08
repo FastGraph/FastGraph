@@ -229,7 +229,7 @@ namespace QuikGraph.Tests.Structures
         public void ContainsEdge_Throws()
         {
             var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            ContainsEdge_Throws_Test(graph);
+            ContainsEdge_NullThrows_Test(graph);
             ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test(graph);
         }
 

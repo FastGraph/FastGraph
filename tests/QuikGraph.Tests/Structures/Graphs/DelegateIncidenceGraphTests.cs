@@ -96,13 +96,13 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdge_Throws()
         {
-            var data = new GraphData<int, Edge<int>>();
-            var graph1 = new DelegateIncidenceGraph<int, Edge<int>>(data.TryGetEdges);
-            OutEdge_Throws_Test(data, graph1);
-
-            var graph2 = new DelegateIncidenceGraph<TestVertex, Edge<TestVertex>>(
+            var graph1 = new DelegateIncidenceGraph<TestVertex, Edge<TestVertex>>(
                 GetEmptyGetter<TestVertex, Edge<TestVertex>>());
-            OutEdge_NullThrows_Test(graph2);
+            OutEdge_NullThrows_Test(graph1);
+
+            var data = new GraphData<int, Edge<int>>();
+            var graph2 = new DelegateIncidenceGraph<int, Edge<int>>(data.TryGetEdges);
+            OutEdge_Throws_Test(data, graph2);
         }
 
         [Test]

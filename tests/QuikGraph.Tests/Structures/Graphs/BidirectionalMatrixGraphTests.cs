@@ -134,7 +134,7 @@ namespace QuikGraph.Tests.Structures
         public void ContainsEdge_Throws()
         {
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
-            ContainsEdge_Throws_Test(graph);
+            ContainsEdge_NullThrows_Test(graph);
         }
 
         #endregion

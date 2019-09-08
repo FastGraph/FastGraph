@@ -162,7 +162,7 @@ namespace QuikGraph.Tests.Structures
         {
             var wrappedGraph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
             var graph = new ArrayUndirectedGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
-            ContainsEdge_Throws_Test(graph);
+            ContainsEdge_NullThrows_Test(graph);
             ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test(graph);
         }
 

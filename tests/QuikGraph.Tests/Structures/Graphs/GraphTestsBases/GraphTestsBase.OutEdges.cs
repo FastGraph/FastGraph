@@ -50,6 +50,27 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge41, graph.OutEdge(4, 0));
         }
 
+        protected static void OutEdge_ImmutableGraph_Test(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge24 = new Edge<int>(2, 4);
+            var edge33 = new Edge<int>(3, 3);
+            var edge41 = new Edge<int>(4, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
+            IImplicitGraph<int, SEquatableEdge<int>> graph = createGraph();
+
+            Assert.AreEqual(new SEquatableEdge<int>(1, 1), graph.OutEdge(1, 0));
+            Assert.AreEqual(new SEquatableEdge<int>(1, 3), graph.OutEdge(1, 2));
+            Assert.AreEqual(new SEquatableEdge<int>(2, 4), graph.OutEdge(2, 0));
+            Assert.AreEqual(new SEquatableEdge<int>(3, 3), graph.OutEdge(3, 0));
+            Assert.AreEqual(new SEquatableEdge<int>(4, 1), graph.OutEdge(4, 0));
+        }
+
         protected static void OutEdge_ImmutableVertices_Test(
             [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
         {
@@ -119,11 +140,12 @@ namespace QuikGraph.Tests.Structures
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        protected static void OutEdge_Throws_ImmutableGraph_Test(
+        protected static void OutEdge_Throws_ImmutableGraph_Test<TEdge>(
             [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, Edge<int>>> createGraph)
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, TEdge>> createGraph)
+            where TEdge : IEdge<int>
         {
-            IImplicitGraph<int, Edge<int>> graph = createGraph();
+            IImplicitGraph<int, TEdge> graph = createGraph();
 
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -219,6 +241,48 @@ namespace QuikGraph.Tests.Structures
             AssertHasOutEdges(graph, 1, new[] { edge12, edge13, edge14 });
             AssertHasOutEdges(graph, 2, new[] { edge24 });
             AssertHasOutEdges(graph, 3, new[] { edge31, edge33 });
+            AssertNoOutEdge(graph, 4);
+        }
+
+        protected static void OutEdges_ImmutableGraph_Test(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [NotNull, InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+
+            wrappedGraph.AddVertex(1);
+            IImplicitGraph<int, SEquatableEdge<int>> graph = createGraph();
+            AssertNoOutEdge(graph, 1);
+
+            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
+            graph = createGraph();
+
+            AssertHasOutEdges(
+                graph, 
+                1, 
+                new[]
+                {
+                    new SEquatableEdge<int>(1, 2),
+                    new SEquatableEdge<int>(1, 3),
+                    new SEquatableEdge<int>(1, 4)
+                });
+            AssertHasOutEdges(
+                graph, 
+                2, 
+                new[] { new SEquatableEdge<int>(2, 4) });
+            AssertHasOutEdges(
+                graph, 
+                3, 
+                new[]
+                {
+                    new SEquatableEdge<int>(3, 1),
+                    new SEquatableEdge<int>(3, 3)
+                });
             AssertNoOutEdge(graph, 4);
         }
 

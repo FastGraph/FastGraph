@@ -229,7 +229,7 @@ namespace QuikGraph.Tests.Structures
         public void ContainsEdge_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            ContainsEdge_Throws_Test(graph);
+            ContainsEdge_NullThrows_Test(graph);
             ContainsEdge_SourceTarget_Throws_Test(graph);
         }
 
@@ -247,11 +247,11 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void OutEdge_Throws()
         {
-            var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            OutEdge_Throws_Test(graph1);
+            var graph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            OutEdge_NullThrows_Test(graph1);
 
-            var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            OutEdge_NullThrows_Test(graph2);
+            var graph2 = new AdjacencyGraph<int, Edge<int>>();
+            OutEdge_Throws_Test(graph2);
         }
 
         [Test]

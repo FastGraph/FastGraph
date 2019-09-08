@@ -90,8 +90,16 @@ namespace QuikGraph.Tests.Structures
 
         #region Graph helpers
 
-        protected static void AssertEmptyGraph<TVertex, TEdge>([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+        protected static void AssertEmptyGraph<TVertex, TEdge>(
+            [NotNull] IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
+        {
+            AssertNoVertex(graph);
+            AssertNoEdge(graph);
+        }
+
+        protected static void AssertEmptyGraph<TVertex>(
+            [NotNull] CompressedSparseRowGraph<TVertex> graph)
         {
             AssertNoVertex(graph);
             AssertNoEdge(graph);
