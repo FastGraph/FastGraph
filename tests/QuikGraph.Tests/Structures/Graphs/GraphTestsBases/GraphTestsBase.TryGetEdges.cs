@@ -10,7 +10,8 @@ namespace QuikGraph.Tests.Structures
         #region Try Get Edges
 
         protected static void TryGetEdge_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            [NotNull] IIncidenceGraph<int, Edge<int>> graph,
+            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -19,7 +20,7 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
             Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
@@ -31,6 +32,14 @@ namespace QuikGraph.Tests.Structures
             Assert.AreSame(edge1, gotEdge);
 
             Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+        }
+
+        protected static void TryGetEdge_Test(
+            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            TryGetEdge_Test(
+                graph,
+                edges => graph.AddVerticesAndEdgeRange(edges));
         }
 
         protected static void TryGetEdge_ImmutableGraph_Test(
@@ -229,7 +238,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetEdges_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            [NotNull] IIncidenceGraph<int, Edge<int>> graph,
+            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -238,7 +248,7 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
             Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
@@ -251,6 +261,14 @@ namespace QuikGraph.Tests.Structures
 
             Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
             CollectionAssert.IsEmpty(gotEdges);
+        }
+
+        protected static void TryGetEdges_Test(
+            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            TryGetEdges_Test(
+                graph,
+                edges => graph.AddVerticesAndEdgeRange(edges));
         }
 
         protected static void TryGetEdges_ImmutableGraph_Test(
@@ -378,7 +396,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetOutEdges_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            [NotNull] IImplicitGraph<int, Edge<int>> graph,
+            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -388,7 +407,7 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(4, 5);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
             Assert.IsFalse(graph.TryGetOutEdges(0, out _));
 
@@ -400,6 +419,14 @@ namespace QuikGraph.Tests.Structures
 
             Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
+        }
+
+        protected static void TryGetOutEdges_Test(
+            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            TryGetOutEdges_Test(
+                graph,
+                edges => graph.AddVerticesAndEdgeRange(edges));
         }
 
         protected static void TryGetOutEdges_ImmutableGraph_Test(

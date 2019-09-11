@@ -214,6 +214,89 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveEdge_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge13Bis = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+            var edgeNotInGraph = new Edge<int>(3, 4);
+            var edgeWithVertexNotInGraph1 = new Edge<int>(2, 10);
+            var edgeWithVertexNotInGraph2 = new Edge<int>(10, 2);
+            var edgeWithVerticesNotInGraph = new Edge<int>(10, 11);
+            var edgeNotEquatable = new Edge<int>(1, 2);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+            Assert.IsFalse(graph.RemoveEdge(edgeNotEquatable));
+
+            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge31));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge33 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge12));
+            Assert.IsTrue(graph.RemoveEdge(edge13));
+            Assert.IsTrue(graph.RemoveEdge(edge14));
+            Assert.IsTrue(graph.RemoveEdge(edge24));
+            Assert.IsTrue(graph.RemoveEdge(edge33));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertNoEdge(graph);
+
+
+            // With cluster
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31 });
+            AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge31 });
+
+            ClusteredAdjacencyGraph<int, Edge<int>> cluster1 = graph.AddCluster();
+            ClusteredAdjacencyGraph<int, Edge<int>> cluster2 = graph.AddCluster();
+            ClusteredAdjacencyGraph<int, Edge<int>> cluster3 = graph.AddCluster();
+
+            cluster1.AddVerticesAndEdgeRange(new[] { edge12, edge13 });
+            AssertHasEdges(cluster1, new[] { edge12, edge13 });
+
+            cluster2.AddVerticesAndEdgeRange(new[] { edge12, edge14, edge24 });
+            AssertHasEdges(cluster2, new[] { edge12, edge14, edge24 });
+
+            cluster3.AddVerticesAndEdge(edge12);
+            AssertHasEdges(cluster3, new[] { edge12 });
+
+
+            graph.RemoveEdge(edge12);
+            AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31 });
+            AssertHasEdges(cluster1, new[] { edge13 });
+            AssertHasEdges(cluster2, new[] { edge14, edge24 });
+            AssertNoEdge(cluster3);
+
+            graph.RemoveEdge(edge13);
+            AssertHasEdges(graph, new[] { edge14, edge24, edge31 });
+            AssertNoEdge(cluster1);
+            AssertHasEdges(cluster2, new[] { edge14, edge24 });
+            AssertNoEdge(cluster3);
+
+            graph.RemoveEdge(edge24);
+            AssertHasEdges(graph, new[] { edge14, edge31 });
+            AssertNoEdge(cluster1);
+            AssertHasEdges(cluster2, new[] { edge14 });
+            AssertNoEdge(cluster3);
+
+            graph.RemoveEdge(edge14);
+            AssertHasEdges(graph, new[] { edge31 });
+            AssertNoEdge(cluster1);
+            AssertNoEdge(cluster2);
+            AssertNoEdge(cluster3);
+        }
+
         protected static void RemoveEdge_EquatableEdge_Test(
             [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
         {
@@ -420,8 +503,58 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveEdge_EquatableEdge_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph)
+        {
+            var edge12 = new EquatableEdge<int>(1, 2);
+            var edge13 = new EquatableEdge<int>(1, 3);
+            var edge13Bis = new EquatableEdge<int>(1, 3);
+            var edge14 = new EquatableEdge<int>(1, 4);
+            var edge24 = new EquatableEdge<int>(2, 4);
+            var edge31 = new EquatableEdge<int>(3, 1);
+            var edge33 = new EquatableEdge<int>(3, 3);
+            var edgeNotInGraph = new EquatableEdge<int>(3, 4);
+            var edgeWithVertexNotInGraph1 = new EquatableEdge<int>(2, 10);
+            var edgeWithVertexNotInGraph2 = new EquatableEdge<int>(10, 2);
+            var edgeWithVerticesNotInGraph = new EquatableEdge<int>(10, 11);
+            var edgeEquatable = new EquatableEdge<int>(1, 2);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+
+            Assert.IsTrue(graph.RemoveEdge(edgeEquatable));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31, edge33 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge31));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge33 });
+
+            Assert.IsTrue(graph.RemoveEdge(edge13));
+            Assert.IsTrue(graph.RemoveEdge(edge14));
+            Assert.IsTrue(graph.RemoveEdge(edge24));
+            Assert.IsTrue(graph.RemoveEdge(edge33));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertNoEdge(graph);
+        }
+
         protected static void RemoveEdge_Throws_Test<TVertex, TEdge>(
             [NotNull] IMutableEdgeListGraph<TVertex, TEdge> graph)
+            where TEdge : class, IEdge<TVertex>
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(null));
+        }
+
+        protected static void RemoveEdge_Throws_Clusters_Test<TVertex, TEdge>(
+            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -525,8 +658,40 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveEdgeIf_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+        {
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge13Bis = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+            graph.AddVertexRange(new[] { 1, 2, 3, 4 });
+            graph.AddEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(0, graph.RemoveEdgeIf(edge => edge.Target == 5));
+
+            Assert.AreEqual(2, graph.RemoveEdgeIf(edge => edge.Source == 3));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
+
+            Assert.AreEqual(5, graph.RemoveEdgeIf(edge => true));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertNoEdge(graph);
+        }
+
         protected static void RemoveEdgeIf_Throws_Test<TVertex, TEdge>(
             [NotNull] IMutableEdgeListGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(null));
+        }
+
+        protected static void RemoveEdgeIf_Throws_Clusters_Test<TVertex, TEdge>(
+            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -638,6 +803,34 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveOutEdgeIf_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+        {
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, edge => true));
+            AssertEmptyGraph(graph);
+
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge13Bis = new Edge<int>(1, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge33 = new Edge<int>(3, 3);
+            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
+
+            Assert.AreEqual(3, graph.RemoveOutEdgeIf(1, edge => edge.Target >= 3));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
+
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(3, edge => edge.Target > 5));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
+
+            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, edge => true));
+            AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
+            AssertHasEdges(graph, new[] { edge12, edge24 });
+        }
+
         protected static void RemoveOutEdgeIf_Throws_Test<TEdge>(
             [NotNull] BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
@@ -646,12 +839,26 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, null));
         }
 
-        protected static void RemoveOutEdgeIf_Throws_Test(
-            [NotNull] IMutableIncidenceGraph<TestVertex, Edge<TestVertex>> graph)
+        protected static void RemoveOutEdgeIf_Throws_Test<TVertex, TEdge>(
+            [NotNull] IMutableIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : class, new()
+            where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TestVertex("v1"), null));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), null));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        protected static void RemoveOutEdgeIf_Throws_Test<TVertex, TEdge>(
+            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : class, new()
+            where TEdge : IEdge<TVertex>
+        {
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
         }

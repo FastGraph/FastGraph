@@ -53,6 +53,79 @@ namespace QuikGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge1, edge4 });
         }
 
+        protected static void AddEdge_ParallelEdges_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+        {
+            // Graph without parent
+            graph1.AddVertex(1);
+            graph1.AddVertex(2);
+
+            AssertNoEdge(graph1);
+
+            // Edge 1
+            var edge1 = new Edge<int>(1, 2);
+            Assert.IsTrue(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1 });
+
+            // Edge 2
+            var edge2 = new Edge<int>(1, 2);
+            Assert.IsTrue(graph1.AddEdge(edge2));
+            AssertHasEdges(graph1, new[] { edge1, edge2 });
+
+            // Edge 3
+            var edge3 = new Edge<int>(2, 1);
+            Assert.IsTrue(graph1.AddEdge(edge3));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3 });
+
+            // Edge 1 bis
+            Assert.IsTrue(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3, edge1 });
+
+            // Edge 4 self edge
+            var edge4 = new Edge<int>(2, 2);
+            Assert.IsTrue(graph1.AddEdge(edge4));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3, edge1, edge4 });
+
+
+            // Graph with parent
+            graph2.AddVertex(1);
+            graph2.AddVertex(2);
+
+            AssertNoEdge(parent2);
+            AssertNoEdge(graph2);
+
+            // Edge 1
+            Assert.IsTrue(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            // Edge 2
+            Assert.IsTrue(parent2.AddEdge(edge2));
+            AssertHasEdges(parent2, new[] { edge1, edge2 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            Assert.IsTrue(graph2.AddEdge(edge2));
+            AssertHasEdges(parent2, new[] { edge1, edge2 });
+            AssertHasEdges(graph2, new[] { edge1, edge2 });
+
+            // Edge 3
+            Assert.IsTrue(graph2.AddEdge(edge3));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3 });
+
+            // Edge 1 bis
+            Assert.IsTrue(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge1 });
+
+            // Edge 4 self edge
+            Assert.IsTrue(graph2.AddEdge(edge4));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3, edge4 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge1, edge4 });
+        }
+
         protected static void AddEdge_ParallelEdges_EquatableEdge_Test<TGraph>([NotNull] TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, EquatableEdge<int>>
         {
@@ -96,6 +169,79 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.AddEdge(edge4));
             Assert.AreEqual(5, edgeAdded);
             AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge1, edge4 });
+        }
+
+        protected static void AddEdge_ParallelEdges_EquatableEdge_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph1,
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> parent2,
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph2)
+        {
+            // Graph without parent
+            graph1.AddVertex(1);
+            graph1.AddVertex(2);
+
+            AssertNoEdge(graph1);
+
+            // Edge 1
+            var edge1 = new EquatableEdge<int>(1, 2);
+            Assert.IsTrue(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1 });
+
+            // Edge 2
+            var edge2 = new EquatableEdge<int>(1, 2);
+            Assert.IsTrue(graph1.AddEdge(edge2));
+            AssertHasEdges(graph1, new[] { edge1, edge2 });
+
+            // Edge 3
+            var edge3 = new EquatableEdge<int>(2, 1);
+            Assert.IsTrue(graph1.AddEdge(edge3));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3 });
+
+            // Edge 1 bis
+            Assert.IsTrue(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3, edge1 });
+
+            // Edge 4 self edge
+            var edge4 = new EquatableEdge<int>(2, 2);
+            Assert.IsTrue(graph1.AddEdge(edge4));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3, edge1, edge4 });
+
+
+            // Graph with parent
+            graph2.AddVertex(1);
+            graph2.AddVertex(2);
+
+            AssertNoEdge(parent2);
+            AssertNoEdge(graph2);
+
+            // Edge 1
+            Assert.IsTrue(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            // Edge 2
+            Assert.IsTrue(parent2.AddEdge(edge2));
+            AssertHasEdges(parent2, new[] { edge1, edge2 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            Assert.IsTrue(graph2.AddEdge(edge2));
+            AssertHasEdges(parent2, new[] { edge1, edge2 });
+            AssertHasEdges(graph2, new[] { edge1, edge2 });
+
+            // Edge 3
+            Assert.IsTrue(graph2.AddEdge(edge3));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3 });
+
+            // Edge 1 bis
+            Assert.IsTrue(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge1 });
+
+            // Edge 4 self edge
+            Assert.IsTrue(graph2.AddEdge(edge4));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3, edge4 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge1, edge4 });
         }
 
         protected static void AddEdge_NoParallelEdges_Test<TGraph>([NotNull] TGraph graph)
@@ -188,6 +334,79 @@ namespace QuikGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge4 });
         }
 
+        protected static void AddEdge_NoParallelEdges_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+        {
+            // Graph without parent
+            graph1.AddVertex(1);
+            graph1.AddVertex(2);
+
+            AssertNoEdge(graph1);
+
+            // Edge 1
+            var edge1 = new Edge<int>(1, 2);
+            Assert.IsTrue(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1 });
+
+            // Edge 2
+            var edge2 = new Edge<int>(1, 2);
+            Assert.IsFalse(graph1.AddEdge(edge2));
+            AssertHasEdges(graph1, new[] { edge1 });
+
+            // Edge 3
+            var edge3 = new Edge<int>(2, 1);
+            Assert.IsTrue(graph1.AddEdge(edge3));
+            AssertHasEdges(graph1, new[] { edge1, edge3 });
+
+            // Edge 1 bis
+            Assert.IsFalse(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1, edge3 });
+
+            // Edge 4 self edge
+            var edge4 = new Edge<int>(2, 2);
+            Assert.IsTrue(graph1.AddEdge(edge4));
+            AssertHasEdges(graph1, new[] { edge1, edge3, edge4 });
+
+
+            // Graph with parent
+            graph2.AddVertex(1);
+            graph2.AddVertex(2);
+
+            AssertNoEdge(parent2);
+            AssertNoEdge(graph2);
+
+            // Edge 1
+            Assert.IsTrue(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            // Edge 2
+            Assert.IsFalse(graph2.AddEdge(edge2));
+            AssertHasEdges(parent2, new[] { edge1 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            // Edge 3
+            Assert.IsTrue(parent2.AddEdge(edge3));
+            AssertHasEdges(parent2, new[] { edge1, edge3 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            Assert.IsTrue(graph2.AddEdge(edge3));
+            AssertHasEdges(parent2, new[] { edge1, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge3 });
+
+            // Edge 1 bis
+            Assert.IsFalse(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge3 });
+
+            // Edge 4 self edge
+            Assert.IsTrue(graph2.AddEdge(edge4));
+            AssertHasEdges(parent2, new[] { edge1, edge3, edge4 });
+            AssertHasEdges(graph2, new[] { edge1, edge3, edge4 });
+        }
+
         protected static void AddEdge_NoParallelEdges_EquatableEdge_Test<TGraph>([NotNull] TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, EquatableEdge<int>>
         {
@@ -276,6 +495,79 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.AddEdge(edge4));
             Assert.AreEqual(2, edgeAdded);
             AssertHasEdges(graph, new[] { edge1, edge4 });
+        }
+
+        protected static void AddEdge_NoParallelEdges_EquatableEdge_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph1,
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> parent2,
+            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph2)
+        {
+            // Graph without parent
+            graph1.AddVertex(1);
+            graph1.AddVertex(2);
+
+            AssertNoEdge(graph1);
+
+            // Edge 1
+            var edge1 = new EquatableEdge<int>(1, 2);
+            Assert.IsTrue(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1 });
+
+            // Edge 2
+            var edge2 = new EquatableEdge<int>(1, 2);
+            Assert.IsFalse(graph1.AddEdge(edge2));
+            AssertHasEdges(graph1, new[] { edge1 });
+
+            // Edge 3
+            var edge3 = new EquatableEdge<int>(2, 1);
+            Assert.IsTrue(graph1.AddEdge(edge3));
+            AssertHasEdges(graph1, new[] { edge1, edge3 });
+
+            // Edge 1 bis
+            Assert.IsFalse(graph1.AddEdge(edge1));
+            AssertHasEdges(graph1, new[] { edge1, edge3 });
+
+            // Edge 4 self edge
+            var edge4 = new EquatableEdge<int>(2, 2);
+            Assert.IsTrue(graph1.AddEdge(edge4));
+            AssertHasEdges(graph1, new[] { edge1, edge3, edge4 });
+
+
+            // Graph with parent
+            graph2.AddVertex(1);
+            graph2.AddVertex(2);
+
+            AssertNoEdge(parent2);
+            AssertNoEdge(graph2);
+
+            // Edge 1
+            Assert.IsTrue(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            // Edge 2
+            Assert.IsFalse(graph2.AddEdge(edge2));
+            AssertHasEdges(parent2, new[] { edge1 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            // Edge 3
+            Assert.IsTrue(parent2.AddEdge(edge3));
+            AssertHasEdges(parent2, new[] { edge1, edge3 });
+            AssertHasEdges(graph2, new[] { edge1 });
+
+            Assert.IsTrue(graph2.AddEdge(edge3));
+            AssertHasEdges(parent2, new[] { edge1, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge3 });
+
+            // Edge 1 bis
+            Assert.IsFalse(graph2.AddEdge(edge1));
+            AssertHasEdges(parent2, new[] { edge1, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge3 });
+
+            // Edge 4 self edge
+            Assert.IsTrue(graph2.AddEdge(edge4));
+            AssertHasEdges(parent2, new[] { edge1, edge3, edge4 });
+            AssertHasEdges(graph2, new[] { edge1, edge3, edge4 });
         }
 
         protected static void AddEdge_ForbiddenParallelEdges_Test(
@@ -367,6 +659,27 @@ namespace QuikGraph.Tests.Structures
             AssertNoEdge(graph);
         }
 
+        protected static void AddEdge_Throws_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(null));
+            AssertNoEdge(graph);
+
+            // Both vertices not in graph
+            Assert.Throws<VertexNotFoundException>(() => graph.AddEdge(new Edge<int>(0, 1)));
+            AssertNoEdge(graph);
+
+            // Source not in graph
+            graph.AddVertex(1);
+            Assert.Throws<VertexNotFoundException>(() => graph.AddEdge(new Edge<int>(0, 1)));
+            AssertNoEdge(graph);
+
+            // Target not in graph
+            Assert.Throws<VertexNotFoundException>(() => graph.AddEdge(new Edge<int>(1, 0)));
+            AssertNoEdge(graph);
+        }
+
         protected static void AddEdgeRange_EdgesOnly_Test(
             [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
         {
@@ -431,6 +744,54 @@ namespace QuikGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge4 });
         }
 
+        protected static void AddEdgeRange_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+        {
+            // Graph without parent
+            graph1.AddVertex(1);
+            graph1.AddVertex(2);
+            graph1.AddVertex(3);
+
+            AssertNoEdge(graph1);
+
+            // Edge 1, 2, 3
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 3);
+            Assert.AreEqual(3, graph1.AddEdgeRange(new[] { edge1, edge2, edge3 }));
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3 });
+
+            // Edge 1, 4
+            var edge4 = new Edge<int>(2, 2);
+            Assert.AreEqual(1, graph1.AddEdgeRange(new[] { edge1, edge4 })); // Showcase the add of only one edge
+            AssertHasEdges(graph1, new[] { edge1, edge2, edge3, edge4 });
+
+
+            // Graph with parent
+            graph2.AddVertex(1);
+            graph2.AddVertex(2);
+            graph2.AddVertex(3);
+
+            AssertNoEdge(parent2);
+            AssertNoEdge(graph2);
+
+            // Edge 1, 2, 3
+            Assert.AreEqual(3, graph2.AddEdgeRange(new[] { edge1, edge2, edge3 }));
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3 });
+
+            // Edge 1, 4
+            Assert.AreEqual(1, parent2.AddEdgeRange(new[] { edge1, edge4 })); // Showcase the add of only one edge
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3, edge4 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3 });
+
+            Assert.AreEqual(1, graph2.AddEdgeRange(new[] { edge1, edge4 })); // Showcase the add of only one edge
+            AssertHasEdges(parent2, new[] { edge1, edge2, edge3, edge4 });
+            AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge4 });
+        }
+
         protected static void AddEdgeRange_Throws_EdgesOnly_Test(
             [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
         {
@@ -464,6 +825,26 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(3);
 
             AddEdgeRange_Throws_EdgesOnly_Test(graph);
+        }
+
+        protected static void AddEdgeRange_Throws_Clusters_Test(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+        {
+            graph.AddVertex(1);
+            graph.AddVertex(2);
+            graph.AddVertex(3);
+
+            AssertNoEdge(graph);
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(null));
+            AssertNoEdge(graph);
+
+            // Edge 1, 2, 3
+            var edge1 = new Edge<int>(1, 2);
+            var edge3 = new Edge<int>(2, 3);
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, null, edge3 }));
+            AssertNoEdge(graph);
         }
 
         protected static void AddEdgeRange_ForbiddenParallelEdges_Throws_Test(

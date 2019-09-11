@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace QuikGraph
 {
     /// <summary>
-    /// Implementation for a clustered adjacency graph.
+    /// Mutable clustered adjacency graph data structure.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
@@ -54,7 +54,29 @@ namespace QuikGraph
         /// <summary>
         /// Wrapped graph.
         /// </summary>
+        [NotNull]
         protected AdjacencyGraph<TVertex, TEdge> Wrapped { get; }
+
+        /// <summary>
+        /// Gets or sets the edge capacity.
+        /// </summary>
+        public int EdgeCapacity
+        {
+            get => Wrapped.EdgeCapacity;
+            set => Wrapped.EdgeCapacity = value;
+        }
+
+        /// <summary>
+        /// Gets the type of vertices.
+        /// </summary>
+        [NotNull]
+        public Type VertexType => typeof(TVertex);
+
+        /// <summary>
+        /// Gets the type of edges.
+        /// </summary>
+        [NotNull]
+        public Type EdgeType => typeof(TEdge);
 
         #region IGraph<TVertex,TEdge>
 
@@ -75,7 +97,7 @@ namespace QuikGraph
         private readonly ArrayList _clusters;
 
         /// <inheritdoc />
-        public IEnumerable Clusters => _clusters;
+        public IEnumerable Clusters => _clusters.Cast<object>();
 
         /// <inheritdoc />
         public int ClustersCount => _clusters.Count;
@@ -126,118 +148,6 @@ namespace QuikGraph
         }
 
         #endregion
-
-        /// <summary>
-        /// Adds a vertex to this graph.
-        /// </summary>
-        /// <param name="vertex">Vertex to add.</param>
-        /// <returns>True if the vertex was added, false otherwise.</returns>
-        public virtual bool AddVertex([NotNull] TVertex vertex)
-        {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-
-            if (!(Parent is null || Parent.ContainsVertex(vertex)))
-            {
-                Parent.AddVertex(vertex);
-                return Wrapped.AddVertex(vertex);
-            }
-
-            return Wrapped.AddVertex(vertex);
-        }
-
-        /// <summary>
-        /// Adds given vertices to this graph.
-        /// </summary>
-        /// <param name="vertices">Vertices to add.</param>
-        /// <returns>The number of vertex added.</returns>
-        public virtual int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
-        {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            int count = 0;
-            foreach (TVertex vertex in vertices)
-            {
-                if (AddVertex(vertex))
-                    ++count;
-            }
-
-            return count;
-        }
-
-        /// <summary>
-        /// Removes the given vertex from clusters.
-        /// </summary>
-        /// <param name="vertex">Vertex to remove.</param>
-        private void RemoveChildVertex([NotNull] TVertex vertex)
-        {
-            Debug.Assert(vertex != null);
-
-            foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
-            {
-                if (cluster.ContainsVertex(vertex))
-                {
-                    cluster.Wrapped.RemoveVertex(vertex);
-                    cluster.RemoveChildVertex(vertex);
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Removes the given vertex from this graph.
-        /// </summary>
-        /// <param name="vertex">Vertex to remove.</param>
-        /// <returns>True if the vertex was removed, false otherwise.</returns>
-        public virtual bool RemoveVertex([NotNull] TVertex vertex)
-        {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-
-            if (!Wrapped.ContainsVertex(vertex))
-                return false;
-
-            RemoveChildVertex(vertex);
-            Wrapped.RemoveVertex(vertex);
-            Parent?.RemoveVertex(vertex);
-
-            return true;
-        }
-
-        /// <summary>
-        /// Removes all vertices matching the given <paramref name="predicate"/>.
-        /// </summary>
-        /// <param name="predicate">Predicate to check on each vertex.</param>
-        /// <returns>The number of vertex removed.</returns>
-        public int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate)
-        {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
-
-            var verticesToRemove = Vertices
-                .Where(vertex => predicate(vertex))
-                .ToArray();
-
-            foreach (var vertex in verticesToRemove)
-                RemoveVertex(vertex);
-
-            return verticesToRemove.Length;
-        }
-
-        /// <summary>
-        /// Gets or sets the edge capacity.
-        /// </summary>
-        public int EdgeCapacity
-        {
-            get => Wrapped.EdgeCapacity;
-            set => Wrapped.EdgeCapacity = value;
-        }
-
-        /// <summary>
-        /// Gives the type of edges.
-        /// </summary>
-        public static Type EdgeType => typeof(TEdge);
 
         #region IEdgeSet<TVertex,TEdge>
 
@@ -315,6 +225,106 @@ namespace QuikGraph
         #endregion
 
         /// <summary>
+        /// Adds a vertex to this graph.
+        /// </summary>
+        /// <param name="vertex">Vertex to add.</param>
+        /// <returns>True if the vertex was added, false otherwise.</returns>
+        public virtual bool AddVertex([NotNull] TVertex vertex)
+        {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (!(Parent is null || Parent.ContainsVertex(vertex)))
+            {
+                Parent.AddVertex(vertex);
+                return Wrapped.AddVertex(vertex);
+            }
+
+            return Wrapped.AddVertex(vertex);
+        }
+
+        /// <summary>
+        /// Adds given vertices to this graph.
+        /// </summary>
+        /// <param name="vertices">Vertices to add.</param>
+        /// <returns>The number of vertex added.</returns>
+        public virtual int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        {
+            if (vertices is null)
+                throw new ArgumentNullException(nameof(vertices));
+            TVertex[] verticesArray = vertices.ToArray();
+            if (verticesArray.Any(v => v == null))
+                throw new ArgumentNullException(nameof(vertices), "At least one vertex is null.");
+
+            int count = 0;
+            foreach (TVertex vertex in verticesArray)
+            {
+                if (AddVertex(vertex))
+                    ++count;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Removes the given vertex from clusters.
+        /// </summary>
+        /// <param name="vertex">Vertex to remove.</param>
+        private void RemoveChildVertex([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
+
+            foreach (ClusteredAdjacencyGraph<TVertex, TEdge> cluster in Clusters)
+            {
+                if (cluster.ContainsVertex(vertex))
+                {
+                    cluster.Wrapped.RemoveVertex(vertex);
+                    cluster.RemoveChildVertex(vertex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the given vertex from this graph.
+        /// </summary>
+        /// <param name="vertex">Vertex to remove.</param>
+        /// <returns>True if the vertex was removed, false otherwise.</returns>
+        public virtual bool RemoveVertex([NotNull] TVertex vertex)
+        {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (!Wrapped.ContainsVertex(vertex))
+                return false;
+
+            RemoveChildVertex(vertex);
+            Wrapped.RemoveVertex(vertex);
+            Parent?.RemoveVertex(vertex);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes all vertices matching the given <paramref name="predicate"/>.
+        /// </summary>
+        /// <param name="predicate">Predicate to check on each vertex.</param>
+        /// <returns>The number of vertex removed.</returns>
+        public int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate)
+        {
+            if (predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            TVertex[] verticesToRemove = Vertices
+                .Where(vertex => predicate(vertex))
+                .ToArray();
+
+            foreach (TVertex vertex in verticesToRemove)
+                RemoveVertex(vertex);
+
+            return verticesToRemove.Length;
+        }
+
+        /// <summary>
         /// Adds <paramref name="edge"/> and its vertices to this graph.
         /// </summary>
         /// <param name="edge">The edge to add.</param>
@@ -338,9 +348,12 @@ namespace QuikGraph
         {
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
+            TEdge[] edgesArray = edges.ToArray();
+            if (edgesArray.Any(e => e == null))
+                throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
             int count = 0;
-            foreach (TEdge edge in edges)
+            foreach (TEdge edge in edgesArray)
             {
                 if (AddVerticesAndEdge(edge))
                     ++count;
@@ -359,10 +372,9 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            Wrapped.AddEdge(edge);
             if (Parent != null && !Parent.ContainsEdge(edge))
                 Parent.AddEdge(edge);
-            return true;
+            return Wrapped.AddEdge(edge);
         }
 
         /// <summary>
@@ -374,9 +386,12 @@ namespace QuikGraph
         {
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
+            TEdge[] edgesArray = edges.ToArray();
+            if (edgesArray.Any(e => e == null))
+                throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
             int count = 0;
-            foreach (TEdge edge in edges)
+            foreach (TEdge edge in edgesArray)
             {
                 if (AddEdge(edge))
                     ++count;
@@ -395,7 +410,6 @@ namespace QuikGraph
                 {
                     cluster.Wrapped.RemoveEdge(edge);
                     cluster.RemoveChildEdge(edge);
-                    break;
                 }
             }
         }
@@ -461,7 +475,7 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Trims the out-edges of the given <paramref name="vertex"/>
+        /// Clears the out-edges of the given <paramref name="vertex"/>
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         public void ClearOutEdges([NotNull] TVertex vertex)

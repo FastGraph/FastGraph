@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -11,7 +12,8 @@ namespace QuikGraph.Tests.Structures
         #region Out Edges
 
         protected static void OutEdge_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            [NotNull] IImplicitGraph<int, Edge<int>> graph,
+            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -20,13 +22,21 @@ namespace QuikGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
             var edge41 = new Edge<int>(4, 1);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
+            addVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
 
             Assert.AreSame(edge11, graph.OutEdge(1, 0));
             Assert.AreSame(edge13, graph.OutEdge(1, 2));
             Assert.AreSame(edge24, graph.OutEdge(2, 0));
             Assert.AreSame(edge33, graph.OutEdge(3, 0));
             Assert.AreSame(edge41, graph.OutEdge(4, 0));
+        }
+
+        protected static void OutEdge_Test(
+            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            OutEdge_Test(
+                graph,
+                edges => graph.AddVerticesAndEdgeRange(edges));
         }
 
         protected static void OutEdge_ImmutableGraph_Test(
@@ -123,7 +133,9 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void OutEdge_Throws_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            [NotNull] IImplicitGraph<int, Edge<int>> graph,
+            [NotNull, InstantHandle] Action<int> addVertex,
+            [NotNull, InstantHandle] Action<Edge<int>> addEdge)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -131,13 +143,22 @@ namespace QuikGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(vertex1, 0));
 
-            graph.AddVertex(vertex1);
-            graph.AddVertex(vertex2);
+            addVertex(vertex1);
+            addVertex(vertex2);
             AssertIndexOutOfRange(() => graph.OutEdge(vertex1, 0));
 
-            graph.AddEdge(new Edge<int>(1, 2));
+            addEdge(new Edge<int>(1, 2));
             AssertIndexOutOfRange(() => graph.OutEdge(vertex1, 5));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        protected static void OutEdge_Throws_Test(
+            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            OutEdge_Throws_Test(
+                graph,
+                vertex => graph.AddVertex(vertex),
+                edge => graph.AddEdge(edge));
         }
 
         protected static void OutEdge_Throws_ImmutableGraph_Test<TEdge>(
@@ -200,7 +221,9 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void OutEdges_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            [NotNull] IImplicitGraph<int, Edge<int>> graph,
+            [NotNull, InstantHandle] Action<int> addVertex,
+            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -209,15 +232,24 @@ namespace QuikGraph.Tests.Structures
             var edge31 = new Edge<int>(3, 1);
             var edge33 = new Edge<int>(3, 3);
 
-            graph.AddVertex(1);
+            addVertex(1);
             AssertNoOutEdge(graph, 1);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
+            addVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
 
             AssertHasOutEdges(graph, 1, new[] { edge12, edge13, edge14 });
             AssertHasOutEdges(graph, 2, new[] { edge24 });
             AssertHasOutEdges(graph, 3, new[] { edge31, edge33 });
             AssertNoOutEdge(graph, 4);
+        }
+
+        protected static void OutEdges_Test(
+            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            OutEdges_Test(
+                graph,
+                vertex => graph.AddVertex(vertex),
+                edges => graph.AddVerticesAndEdgeRange(edges));
         }
 
         protected static void OutEdges_ImmutableGraph_Test(
