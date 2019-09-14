@@ -71,7 +71,7 @@ namespace QuikGraph.Tests.Structures
         {
             var data = new GraphData<int, Edge<int>>();
             var graph = new DelegateImplicitUndirectedGraph<int, Edge<int>>(data.TryGetEdges);
-            ContainsEdge_UndirectedGraph_Test(data, graph);
+            ContainsEdge_SourceTarget_UndirectedGraph_Test(data, graph);
         }
 
         [Test]
