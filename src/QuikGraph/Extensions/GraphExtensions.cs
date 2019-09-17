@@ -22,7 +22,7 @@ namespace QuikGraph
         [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToVertexAndEdgeListGraph<TVertex, TEdge, TValue>(
             [NotNull] this IDictionary<TVertex, TValue> dictionary)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
             where TValue : IEnumerable<TEdge>
         {
             return ToVertexAndEdgeListGraph(dictionary, kv => kv.Value);
@@ -46,7 +46,7 @@ namespace QuikGraph
 #else
             [NotNull] Func<KeyValuePair<TVertex,TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
 #endif
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             if (dictionary is null)
                 throw new ArgumentNullException(nameof(dictionary));
@@ -144,7 +144,7 @@ namespace QuikGraph
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateVertexAndEdgeListGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             return new DelegateVertexAndEdgeListGraph<TVertex, TEdge>(vertices, tryGetOutEdges);
         }
@@ -163,7 +163,7 @@ namespace QuikGraph
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateVertexAndEdgeListGraph<TVertex, TEdge>(
             [NotNull, ItemNotNull] this IEnumerable<TVertex> vertices,
             [NotNull] Func<TVertex, IEnumerable<TEdge>> getOutEdges)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             return ToDelegateVertexAndEdgeListGraph(vertices, ToTryFunc(getOutEdges));
         }
@@ -180,7 +180,7 @@ namespace QuikGraph
         [NotNull]
         public static DelegateVertexAndEdgeListGraph<TVertex, TEdge> ToDelegateUndirectedGraph<TVertex, TEdge, TValue>(
             [NotNull] this IDictionary<TVertex, TValue> dictionary)
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
             where TValue : IEnumerable<TEdge>
         {
             return ToDelegateUndirectedGraph(dictionary, kv => kv.Value);
@@ -204,7 +204,7 @@ namespace QuikGraph
 #else
             [NotNull] Func<KeyValuePair<TVertex, TValue>, IEnumerable<TEdge>> keyValueToOutEdges)
 #endif
-            where TEdge : IEdge<TVertex>, IEquatable<TEdge>
+            where TEdge : IEdge<TVertex>
         {
             if (dictionary is null)
                 throw new ArgumentNullException(nameof(dictionary));
@@ -242,7 +242,7 @@ namespace QuikGraph
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges)
             where TEdge : IEdge<TVertex>
         {
-            return new DelegateUndirectedGraph<TVertex, TEdge>(vertices, tryGetAdjacentEdges, true);
+            return new DelegateUndirectedGraph<TVertex, TEdge>(vertices, tryGetAdjacentEdges);
         }
 
         /// <summary>

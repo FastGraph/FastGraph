@@ -517,6 +517,60 @@ namespace QuikGraph.Tests.Structures
             data.CheckCalls(1);
         }
 
+        protected static void TryGetEdges_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] DelegateVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = false;
+            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            data.CheckCalls(0); // Vertex is not in graph so no need to call user code
+
+            data.ShouldReturnValue = true;
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out IEnumerable<Edge<int>> edges));
+            CollectionAssert.IsEmpty(edges);
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 2) };
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out edges));
+            CollectionAssert.AreEqual(data.ShouldReturnEdges, edges);
+            data.CheckCalls(1);
+
+            var edge14 = new Edge<int>(1, 4);
+            var edge12 = new Edge<int>(1, 2);
+            var edge12Bis = new Edge<int>(1, 2);
+            data.ShouldReturnValue = true;
+            data.ShouldReturnEdges = new[] { edge14, edge12 };
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out edges));
+            CollectionAssert.AreEqual(new[] { edge12 }, edges);
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { edge14, edge12, edge12Bis };
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out edges));
+            CollectionAssert.AreEqual(new[] { edge12, edge12Bis }, edges);
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { edge14, edge12 };
+            Assert.IsTrue(graph.TryGetEdges(2, 1, out edges));
+            CollectionAssert.IsEmpty(edges);
+            data.CheckCalls(1);
+
+            var edge41 = new Edge<int>(4, 1);
+            data.ShouldReturnEdges = new[] { edge14, edge41 };
+            Assert.IsTrue(graph.TryGetEdges(1, 4, out edges));
+            CollectionAssert.IsEmpty(edges);
+            data.CheckCalls(1);
+
+            Assert.IsFalse(graph.TryGetEdges(4, 1, out _));
+            data.CheckCalls(0);
+
+            var edge45 = new Edge<int>(4, 5);
+            data.ShouldReturnEdges = new[] { edge14, edge41, edge45 };
+            Assert.IsFalse(graph.TryGetEdges(4, 5, out _));
+            data.CheckCalls(0);
+        }
+
         protected static void TryGetOutEdges_Test(
             [NotNull] GraphData<int, Edge<int>> data,
             [NotNull] IImplicitGraph<int, Edge<int>> graph)
@@ -536,6 +590,49 @@ namespace QuikGraph.Tests.Structures
             Assert.IsTrue(graph.TryGetOutEdges(1, out edges));
             CollectionAssert.AreEqual(data.ShouldReturnEdges, edges);
             data.CheckCalls(1);
+        }
+
+        protected static void TryGetOutEdges_Test(
+            [NotNull] GraphData<int, Edge<int>> data,
+            [NotNull] DelegateVertexAndEdgeListGraph<int, Edge<int>> graph)
+        {
+            data.CheckCalls(0);
+
+            data.ShouldReturnValue = false;
+            Assert.IsFalse(graph.TryGetOutEdges(5, out _));
+            data.CheckCalls(0); // Vertex is not in graph so no need to call user code
+
+            data.ShouldReturnValue = true;
+            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>> edges));
+            CollectionAssert.IsEmpty(edges);
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = new[] { new Edge<int>(1, 4), new Edge<int>(1, 2) };
+            Assert.IsTrue(graph.TryGetOutEdges(1, out edges));
+            CollectionAssert.AreEqual(data.ShouldReturnEdges, edges);
+            data.CheckCalls(1);
+
+            data.ShouldReturnEdges = null;
+            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>> outEdges));
+            CollectionAssert.IsEmpty(outEdges);
+            data.CheckCalls(1);
+
+            var edge12 = new Edge<int>(1, 2);
+            var edge13 = new Edge<int>(1, 3);
+            var edge15 = new Edge<int>(1, 5);
+            var edge21 = new Edge<int>(2, 1);
+            var edge23 = new Edge<int>(2, 3);
+            data.ShouldReturnEdges = new[] { edge12, edge13, edge15, edge21, edge23 };
+            Assert.IsTrue(graph.TryGetOutEdges(1, out outEdges));
+            CollectionAssert.AreEqual(
+                new[] { edge12, edge13 },
+                outEdges);
+            data.CheckCalls(1);
+
+            var edge52 = new Edge<int>(5, 2);
+            data.ShouldReturnEdges = new[] { edge15, edge52 };
+            Assert.IsFalse(graph.TryGetOutEdges(5, out _));
+            data.CheckCalls(0); // Vertex is not in graph so no need to call user code
         }
 
         protected static void TryGetAdjacentEdges_Test(
@@ -588,7 +685,8 @@ namespace QuikGraph.Tests.Structures
             var edge13 = new Edge<int>(1, 3);
             var edge15 = new Edge<int>(1, 5);
             var edge21 = new Edge<int>(2, 1);
-            data.ShouldReturnEdges = new[] { edge12, edge13, edge15, edge21 };
+            var edge23 = new Edge<int>(2, 3);
+            data.ShouldReturnEdges = new[] { edge12, edge13, edge15, edge21, edge23 };
             Assert.IsTrue(graph.TryGetAdjacentEdges(1, out adjacentEdges));
             CollectionAssert.AreEqual(
                 new[] { edge12, edge13, edge21 },

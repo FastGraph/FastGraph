@@ -118,8 +118,12 @@ namespace QuikGraph.Tests.Structures
         public void AdjacentEdges_Throws()
         {
             var data = new GraphData<int, Edge<int>>();
-            var graph = new DelegateImplicitUndirectedGraph<int, Edge<int>>(data.TryGetEdges);
-            AdjacentEdges_Throws_Test(data, graph);
+            var graph1 = new DelegateImplicitUndirectedGraph<int, Edge<int>>(data.TryGetEdges);
+            AdjacentEdges_Throws_Test(data, graph1);
+
+            var graph2 = new DelegateImplicitUndirectedGraph<TestVertex, Edge<TestVertex>>(
+                GetEmptyGetter<TestVertex, Edge<TestVertex>>());
+            AdjacentEdges_NullThrows_Test(graph2);
         }
 
         #endregion

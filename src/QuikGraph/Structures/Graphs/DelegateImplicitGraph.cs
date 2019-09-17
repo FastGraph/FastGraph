@@ -63,19 +63,26 @@ namespace QuikGraph
             return OutEdges(vertex).Count();
         }
 
-        /// <inheritdoc />
-        public IEnumerable<TEdge> OutEdges(TVertex vertex)
+        [Pure]
+        [NotNull, ItemNotNull]
+        internal virtual IEnumerable<TEdge> OutEdgesInternal([NotNull] TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge> result))
-                return result;
+            if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge> outEdges))
+                return outEdges;
             throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public IEnumerable<TEdge> OutEdges(TVertex vertex)
+        {
+            return OutEdgesInternal(vertex);
+        }
+
+        [Pure]
+        internal virtual bool TryGetOutEdgesInternal([NotNull] TVertex vertex, out IEnumerable<TEdge> edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -84,18 +91,30 @@ namespace QuikGraph
         }
 
         /// <inheritdoc />
+        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        {
+            return TryGetOutEdgesInternal(vertex, out edges);
+        }
+
+        /// <inheritdoc />
         public TEdge OutEdge(TVertex vertex, int index)
         {
             return OutEdges(vertex).ElementAt(index);
         }
 
-        /// <inheritdoc />
-        public bool ContainsVertex(TVertex vertex)
+        [Pure]
+        internal virtual bool ContainsVertexInternal([NotNull] TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
             return _tryGetOutEdgesFunc(vertex, out _);
+        }
+
+        /// <inheritdoc />
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return ContainsVertexInternal(vertex);
         }
 
         #endregion

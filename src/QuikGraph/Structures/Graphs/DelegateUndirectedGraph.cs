@@ -40,7 +40,16 @@ namespace QuikGraph
         #region IVertexSet<TVertex>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => VertexCount == 0;
+        public bool IsVerticesEmpty
+        {
+            get
+            {
+                // Compute count for shortcut future calls
+                if (_vertexCount > -1)
+                    return _vertexCount == 0;
+                return !_vertices.Any();
+            }
+        }
 
         private int _vertexCount = -1;
 
@@ -117,6 +126,12 @@ namespace QuikGraph
 
         #region IImplicitUndirectedGraph<TVertex,TEdge>
 
+        private bool FilterEdges([NotNull] TEdge edge, [NotNull] TVertex vertex)
+        {
+            return IsInGraph(edge, vertex)
+                   && (edge.Source.Equals(vertex) || edge.Target.Equals(vertex));
+        }
+
         /// <summary>
         /// Checks if the given <paramref name="edge"/> is part of the graph
         /// by checking if the other vertex of the edge is also in the graph.
@@ -152,7 +167,7 @@ namespace QuikGraph
         {
             if (!ContainsVertexInternal(vertex))
                 throw new VertexNotFoundException();
-            return base.AdjacentEdgesInternal(vertex).Where(edge => IsInGraph(edge, vertex));
+            return base.AdjacentEdgesInternal(vertex).Where(edge => FilterEdges(edge, vertex));
         }
 
         /// <inheritdoc />
@@ -170,7 +185,7 @@ namespace QuikGraph
 
             edges = unfilteredEdges is null
                 ? Enumerable.Empty<TEdge>()
-                : unfilteredEdges.Where(edge => IsInGraph(edge, vertex));
+                : unfilteredEdges.Where(edge => FilterEdges(edge, vertex));
 
             return true;
         }

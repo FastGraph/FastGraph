@@ -253,6 +253,14 @@ namespace QuikGraph
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
+            return OutEdgesIterator(vertex);
+        }
+
+        [Pure]
+        [NotNull]
+        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
 
             if (_outEdgeStartRanges.TryGetValue(vertex, out Range range))
             {
@@ -271,7 +279,7 @@ namespace QuikGraph
 
             if (_outEdgeStartRanges.ContainsKey(vertex))
             {
-                edges = OutEdges(vertex);
+                edges = OutEdgesIterator(vertex);
                 return true;
             }
 

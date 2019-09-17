@@ -34,10 +34,16 @@ namespace QuikGraph
 
         #region IIncidenceGraph<TVertex,TEdge>
 
+        [Pure]
+        internal virtual bool ContainsEdgeInternal([NotNull] TVertex source, [NotNull] TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
         /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            return TryGetEdge(source, target, out _);
+            return ContainsEdgeInternal(source, target);
         }
 
         /// <inheritdoc />
