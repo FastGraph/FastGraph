@@ -30,7 +30,7 @@ namespace QuikGraph.Predicates
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the vertex is isolated, false otherwise.</returns>
         [Pure]
-        public bool Test(TVertex vertex)
+        public bool Test([NotNull] TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));

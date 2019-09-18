@@ -31,10 +31,10 @@ namespace QuikGraph.Predicates
         /// Checks if the given <paramref name="edge"/> is residual.
         /// </summary>
         /// <remarks>Check if the implemented predicate is matched.</remarks>
-        /// <param name="edge">Edge to check.</param>
+        /// <param name="edge">Edge to use in predicate.</param>
         /// <returns>True if the edge is residual, false otherwise.</returns>
         [Pure]
-        public bool Test(TEdge edge)
+        public bool Test([NotNull] TEdge edge)
         {
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));

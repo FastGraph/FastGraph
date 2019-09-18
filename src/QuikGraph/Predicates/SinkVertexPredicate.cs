@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Predicate that tests if a vertex is a root vertex (no input edge).
+    /// Predicate that tests if a vertex is a sink vertex (no output edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -27,11 +27,11 @@ namespace QuikGraph.Predicates
         }
 
         /// <summary>
-        /// Checks if the given <paramref name="vertex"/> is a root vertex.
+        /// Checks if the given <paramref name="vertex"/> is a sink vertex.
         /// </summary>
         /// <remarks>Check if the implemented predicate is matched.</remarks>
-        /// <param name="vertex">Vertex to check.</param>
-        /// <returns>True if the vertex is a root one, false otherwise.</returns>
+        /// <param name="vertex">Vertex to use in predicate.</param>
+        /// <returns>True if the vertex is a sink, false otherwise.</returns>
         [Pure]
         public bool Test([NotNull] TVertex vertex)
         {

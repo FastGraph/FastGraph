@@ -24,12 +24,8 @@ namespace QuikGraph.Predicates
             [NotNull] IDictionary<TEdge, double> residualCapacities,
             [NotNull] IDictionary<TEdge, TEdge> reversedEdges)
         {
-            if (residualCapacities is null)
-                throw new ArgumentNullException(nameof(residualCapacities));
-            if (reversedEdges is null)
-                throw new ArgumentNullException(nameof(reversedEdges));
-            ResidualCapacities = residualCapacities;
-            ReversedEdges = reversedEdges;
+            ResidualCapacities = residualCapacities ?? throw new ArgumentNullException(nameof(residualCapacities));
+            ReversedEdges = reversedEdges ?? throw new ArgumentNullException(nameof(reversedEdges));
         }
 
         /// <summary>
@@ -48,7 +44,7 @@ namespace QuikGraph.Predicates
         /// Checks if the given <paramref name="edge"/> reverse is residual.
         /// </summary>
         /// <remarks>Check if the implemented predicate is matched.</remarks>
-        /// <param name="edge">Edge to check.</param>
+        /// <param name="edge">Edge to use in predicate.</param>
         /// <returns>True if the reversed edge is residual, false otherwise.</returns>
         [Pure]
         public bool Test([NotNull] TEdge edge)

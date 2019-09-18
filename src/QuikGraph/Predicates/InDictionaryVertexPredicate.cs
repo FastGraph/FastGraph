@@ -30,9 +30,8 @@ namespace QuikGraph.Predicates
         /// Checks if the given <paramref name="vertex"/> is in the vertex map.
         /// </summary>
         /// <remarks>Check if the implemented predicate is matched.</remarks>
-        /// <param name="vertex">Vertex to check.</param>
+        /// <param name="vertex">Vertex to use in predicate.</param>
         /// <returns>True if the vertex is in the vertex map, false otherwise.</returns>
-
         [Pure]
         public bool Test([NotNull] TVertex vertex)
         {
