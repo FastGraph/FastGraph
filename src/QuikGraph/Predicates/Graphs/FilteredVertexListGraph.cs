@@ -8,8 +8,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents a vertex list graph that is filtered with a vertex predicate.
-    /// This means only vertex matching predicates are "accessible".
+    /// Vertex list graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -17,7 +17,7 @@ namespace QuikGraph.Predicates
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class FilteredVertexListGraph<TVertex, TEdge, TGraph> 
+    public class FilteredVertexListGraph<TVertex, TEdge, TGraph>
         : FilteredIncidenceGraph<TVertex, TEdge, TGraph>
         , IVertexListGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
@@ -38,7 +38,7 @@ namespace QuikGraph.Predicates
         }
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => VertexCount == 0;
+        public bool IsVerticesEmpty => !Vertices.Any();
 
         /// <inheritdoc />
         public int VertexCount => Vertices.Count();

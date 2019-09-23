@@ -4,8 +4,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents an implicit vertex set graph that is filtered with a vertex and an edge predicate.
-    /// This means only vertex and edge matching predicates are "accessible".
+    /// Implicit vertex set graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -13,7 +13,7 @@ namespace QuikGraph.Predicates
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class FilteredImplicitVertexSet<TVertex, TEdge, TGraph> 
+    public class FilteredImplicitVertexSet<TVertex, TEdge, TGraph>
         : FilteredGraph<TVertex, TEdge, TGraph>
         , IImplicitVertexSet<TVertex>
         where TEdge : IEdge<TVertex>

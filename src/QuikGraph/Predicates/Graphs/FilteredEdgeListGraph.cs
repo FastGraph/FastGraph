@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -6,8 +8,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents an edge list graph that is filtered with a vertex and an edge predicate.
-    /// This means only vertex and edge matching predicates are "accessible".
+    /// Edge list graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -38,7 +40,7 @@ namespace QuikGraph.Predicates
         #region IVertexSet<TVertex>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => VertexCount == 0;
+        public bool IsVerticesEmpty => !Vertices.Any();
 
         /// <inheritdoc />
         public int VertexCount => Vertices.Count();
@@ -51,7 +53,7 @@ namespace QuikGraph.Predicates
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount == 0;
+        public bool IsEdgesEmpty => !Edges.Any();
 
         /// <inheritdoc />
         public int EdgeCount => Edges.Count();

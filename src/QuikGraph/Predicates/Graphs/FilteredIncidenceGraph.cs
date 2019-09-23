@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents an incidence graph that is filtered with a vertex and an edge predicate.
-    /// This means only vertex and edge matching predicates are "accessible".
+    /// Incidence graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -38,18 +38,7 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-
-            if (!VertexPredicate(source))
-                return false;
-            if (!VertexPredicate(target))
-                return false;
-
-            return BaseGraph.OutEdges(source).FirstOrDefault(
-                       edge => edge.Target.Equals(target) && EdgePredicate(edge)) != null;
+            return TryGetEdge(source, target, out _);
         }
 
         /// <inheritdoc />
@@ -86,19 +75,15 @@ namespace QuikGraph.Predicates
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            edges = null;
-            if (!VertexPredicate(source))
-                return false;
-            if (!VertexPredicate(target))
-                return false;
-
-            if (BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
+            if (VertexPredicate(source)
+                && VertexPredicate(target)
+                && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
             {
-                TEdge[] filteredEdges = unfilteredEdges.Where(edge => EdgePredicate(edge)).ToArray();
-                edges = filteredEdges;
-                return filteredEdges.Length > 0;
+                edges = unfilteredEdges.Where(edge => EdgePredicate(edge));
+                return true;
             }
 
+            edges = null;
             return false;
         }
     }

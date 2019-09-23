@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents a bidirectional graph that is filtered with a vertex and an edge predicate.
-    /// This means only vertex and edge matching predicates are "accessible".
+    /// Bidirectional graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -38,7 +38,7 @@ namespace QuikGraph.Predicates
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount == 0;
+        public bool IsEdgesEmpty => !Edges.Any();
 
         /// <inheritdoc />
         public int EdgeCount => Edges.Count();
@@ -59,7 +59,7 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool IsInEdgesEmpty(TVertex vertex)
         {
-            return InDegree(vertex) == 0;
+            return !InEdges(vertex).Any();
         }
 
         /// <inheritdoc />
@@ -71,30 +71,40 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public IEnumerable<TEdge> InEdges(TVertex vertex)
         {
-            return BaseGraph.InEdges(vertex).Where(FilterEdge);
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (VertexPredicate(vertex))
+                return BaseGraph.InEdges(vertex).Where(FilterEdge);
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
         public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            if (ContainsVertex(vertex))
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (VertexPredicate(vertex)
+                && BaseGraph.TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
             {
-                TEdge[] inEdges = InEdges(vertex).ToArray();
-                edges = inEdges;
-                return inEdges.Length > 0;
+                edges = inEdges.Where(FilterEdge);
+                return true;
             }
 
             edges = null;
             return false;
         }
 
-        /// <summary>
-        /// <see cref="InEdge"/> is not supported for this kind of graph.
-        /// </summary>
-        /// <exception cref="NotSupportedException">This operation is not supported.</exception>
+        /// <inheritdoc />
         public TEdge InEdge(TVertex vertex, int index)
         {
-            throw new NotSupportedException();
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (VertexPredicate(vertex))
+                return BaseGraph.InEdges(vertex).Where(FilterEdge).ElementAt(index);
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />

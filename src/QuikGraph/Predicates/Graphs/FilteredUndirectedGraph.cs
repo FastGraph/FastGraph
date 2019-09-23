@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents an undirected graph that is filtered with a vertex and an edge predicate.
-    /// This means only vertex and edge matching predicates are "accessible".
+    /// Undirected graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -42,7 +42,7 @@ namespace QuikGraph.Predicates
         #region IVertexSet<TVertex>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty => VertexCount == 0;
+        public bool IsVerticesEmpty => !Vertices.Any();
 
         /// <inheritdoc />
         public int VertexCount => Vertices.Count();
@@ -65,7 +65,7 @@ namespace QuikGraph.Predicates
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount == 0;
+        public bool IsEdgesEmpty => !Edges.Any();
 
         /// <inheritdoc />
         public int EdgeCount => Edges.Count();
@@ -91,19 +91,20 @@ namespace QuikGraph.Predicates
 
             if (VertexPredicate(vertex))
                 return BaseGraph.AdjacentEdges(vertex).Where(FilterEdge);
-            return Enumerable.Empty<TEdge>();
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
         public int AdjacentDegree(TVertex vertex)
         {
-            return AdjacentEdges(vertex).Count();
+            return AdjacentEdges(vertex)
+                .Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
         }
 
         /// <inheritdoc />
         public bool IsAdjacentEdgesEmpty(TVertex vertex)
         {
-            return AdjacentDegree(vertex) == 0;
+            return !AdjacentEdges(vertex).Any();
         }
 
         /// <inheritdoc />
@@ -114,8 +115,7 @@ namespace QuikGraph.Predicates
 
             if (VertexPredicate(vertex))
                 return AdjacentEdges(vertex).ElementAt(index);
-
-            throw new ArgumentOutOfRangeException(nameof(index));
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
@@ -126,8 +126,7 @@ namespace QuikGraph.Predicates
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (VertexPredicate(source)
-                && VertexPredicate(target))
+            if (VertexPredicate(source) && VertexPredicate(target))
             {
                 // We need to find the edge
                 foreach (TEdge e in Edges)

@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents a vertex and edge list graph that is filtered with a vertex and an edge predicate.
-    /// This means only vertex and edge matching predicates are "accessible".
+    /// Vertex and edge list graph data structure that is filtered with a vertex and an edge
+    /// predicate. This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -38,7 +38,7 @@ namespace QuikGraph.Predicates
         #region IEdgeSet<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool IsEdgesEmpty => EdgeCount == 0;
+        public bool IsEdgesEmpty => !Edges.Any();
 
         /// <inheritdoc />
         public int EdgeCount => Edges.Count();

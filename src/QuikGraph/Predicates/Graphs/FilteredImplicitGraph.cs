@@ -15,7 +15,7 @@ namespace QuikGraph.Predicates
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class FilteredImplicitGraph<TVertex, TEdge, TGraph> 
+    public class FilteredImplicitGraph<TVertex, TEdge, TGraph>
         : FilteredImplicitVertexSet<TVertex, TEdge, TGraph>
         , IImplicitGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
@@ -40,7 +40,7 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public bool IsOutEdgesEmpty(TVertex vertex)
         {
-            return OutDegree(vertex) == 0;
+            return !OutEdges(vertex).Any();
         }
 
         /// <inheritdoc />
@@ -52,30 +52,40 @@ namespace QuikGraph.Predicates
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            return BaseGraph.OutEdges(vertex).Where(FilterEdge);
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (VertexPredicate(vertex))
+                return BaseGraph.OutEdges(vertex).Where(FilterEdge);
+            throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
         public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            if (BaseGraph.TryGetOutEdges(vertex, out _))
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (VertexPredicate(vertex)
+                && BaseGraph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
             {
-                TEdge[] outEdges = OutEdges(vertex).ToArray();
-                edges = outEdges;
-                return outEdges.Length > 0;
+                edges = outEdges.Where(FilterEdge);
+                return true;
             }
 
             edges = null;
             return false;
         }
 
-        /// <summary>
-        /// <see cref="OutEdge"/> is not supported for this kind of graph.
-        /// </summary>
-        /// <exception cref="NotSupportedException">This operation is not supported.</exception>
+        /// <inheritdoc />
         public TEdge OutEdge(TVertex vertex, int index)
         {
-            throw new NotSupportedException();
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            if (VertexPredicate(vertex))
+                return BaseGraph.OutEdges(vertex).Where(FilterEdge).ElementAt(index);
+            throw new VertexNotFoundException();
         }
 
         #endregion

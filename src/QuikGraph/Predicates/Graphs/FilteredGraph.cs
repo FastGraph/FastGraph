@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Predicates
 {
     /// <summary>
-    /// Represents a graph that is filtered with a vertex and an edge predicate.
+    /// Graph data structure that is filtered with a vertex and an edge predicate.
     /// This means only vertex and edge matching predicates are "accessible".
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
@@ -15,7 +15,7 @@ namespace QuikGraph.Predicates
 #endif
     public class FilteredGraph<TVertex, TEdge, TGraph> : IGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
-        where TGraph : IGraph<TVertex,TEdge>
+        where TGraph : IGraph<TVertex, TEdge>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FilteredGraph{TVertex,TEdge,TGraph}"/> class.
