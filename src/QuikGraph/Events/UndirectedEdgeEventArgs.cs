@@ -1,3 +1,5 @@
+
+using JetBrains.Annotations;
 #if SUPPORTS_SERIALIZATION
 using System;
 #endif
@@ -20,7 +22,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">The edge.</param>
         /// <param name="reversed">Indicates if the edge should be reversed or not.</param>
-        public UndirectedEdgeEventArgs(TEdge edge, bool reversed)
+        public UndirectedEdgeEventArgs([NotNull] TEdge edge, bool reversed)
             : base(edge)
         {
             Reversed = reversed;
@@ -34,11 +36,13 @@ namespace QuikGraph
         /// <summary>
         /// Edge source.
         /// </summary>
+        [NotNull]
         public TVertex Source => Reversed ? Edge.Target : Edge.Source;
 
         /// <summary>
         /// Edge target.
         /// </summary>
+        [NotNull]
         public TVertex Target => Reversed ? Edge.Source : Edge.Target;
     }
 }
