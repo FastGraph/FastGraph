@@ -30,14 +30,14 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Given a source <paramref name="vertex"/>, returns the other vertex in the edge
+        /// Given a <paramref name="vertex"/>, returns the other vertex in the edge.
         /// </summary>
-        /// <remarks>The edge must not be a self-edge.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <param name="edge">The edge.</param>
         /// <param name="vertex">The source or target vertex of the <paramref name="edge"/>.</param>
         /// <returns>The other edge vertex.</returns>
         [Pure]
+        [NotNull]
         public static TVertex GetOtherVertex<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
         {
             if (edge is null)
@@ -68,11 +68,11 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Checks if this set of edges make a path.
+        /// Checks if this sequence of edges makes a path.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="path">Set of edges.</param>
+        /// <param name="path">Sequence of edges.</param>
         /// <returns>True if the set makes a complete path, false otherwise.</returns>
         [Pure]
         public static bool IsPath<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
@@ -102,11 +102,12 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Checks if this set of edges make a cycle.
+        /// Checks if this sequence of edges makes a cycle.
         /// </summary>
+        /// <remarks>Note that this function only work when given a path.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="path">Set of edges.</param>
+        /// <param name="path">Sequence of edges.</param>
         /// <returns>True if the set makes a cycle, false otherwise.</returns>
         [Pure]
         public static bool HasCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
@@ -224,7 +225,7 @@ namespace QuikGraph
 
             while (predecessors.TryGetValue(currentVertex, out TEdge predecessor))
             {
-                var source = GetOtherVertex(predecessor, currentVertex);
+                TVertex source = GetOtherVertex(predecessor, currentVertex);
                 if (currentVertex.Equals(source))
                     return false;
                 if (source.Equals(root))
@@ -242,13 +243,14 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="predecessors">Predecessors map.</param>
         /// <param name="vertex">Path ending vertex.</param>
-        /// <param name="result">Path to the ending vertex.</param>
+        /// <param name="path">Path to the ending vertex.</param>
         /// <returns>True if a path was found, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         public static bool TryGetPath<TVertex, TEdge>(
             [NotNull] this IDictionary<TVertex, TEdge> predecessors,
             [NotNull] TVertex vertex,
-            [ItemNotNull] out IEnumerable<TEdge> result)
+            [ItemNotNull] out IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
             if (predecessors is null)
@@ -256,23 +258,26 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            var path = new List<TEdge>();
+            var computedPath = new List<TEdge>();
 
             TVertex currentVertex = vertex;
             while (predecessors.TryGetValue(currentVertex, out TEdge edge))
             {
-                path.Add(edge);
+                if (edge.IsSelfEdge())
+                    break;
+
+                computedPath.Add(edge);
                 currentVertex = GetOtherVertex(edge, currentVertex);
             }
 
-            if (path.Count > 0)
+            if (computedPath.Count > 0)
             {
-                path.Reverse();
-                result = path.ToArray();
+                computedPath.Reverse();
+                path = computedPath.AsEnumerable();
                 return true;
             }
 
-            result = null;
+            path = null;
             return false;
         }
 
@@ -286,6 +291,7 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>The best edge equality comparer.</returns>
         [Pure]
+        [NotNull]
         public static EdgeEqualityComparer<TVertex> GetUndirectedVertexEquality<TVertex, TEdge>()
         {
             if (typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge)))
