@@ -33,7 +33,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
                 new TaggedUndirectedEdge<int,double>(0, 1, 100),
                 new TaggedUndirectedEdge<int,double>(1, 2, 20),
                 new TaggedUndirectedEdge<int,double>(2, 3, 10),
-                new TaggedUndirectedEdge<int,double>(3, 1, 50)
+                new TaggedUndirectedEdge<int,double>(1, 3, 50)
             };
 
             UndirectedGraph<int, TaggedUndirectedEdge<int, double>> graph = CreateGraph(edges);
@@ -63,8 +63,8 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
                 new TaggedUndirectedEdge<int, double>(1, 2, 1),
                 new TaggedUndirectedEdge<int, double>(2, 3, 1),
                 new TaggedUndirectedEdge<int, double>(3, 4, 1),
-                new TaggedUndirectedEdge<int, double>(4, 0, 1),
-                new TaggedUndirectedEdge<int, double>(4, 1, 1)
+                new TaggedUndirectedEdge<int, double>(0, 4, 1),
+                new TaggedUndirectedEdge<int, double>(1, 4, 1)
             };
 
             UndirectedGraph<int, TaggedUndirectedEdge<int, double>> graph = CreateGraph(edges);
@@ -109,7 +109,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
                 new TaggedUndirectedEdge<int, double>(0, 1, 1),
                 new TaggedUndirectedEdge<int, double>(1, 2, 50),
                 new TaggedUndirectedEdge<int, double>(1, 4, 5),
-                new TaggedUndirectedEdge<int, double>(4, 3, 1),
+                new TaggedUndirectedEdge<int, double>(3, 4, 1),
                 new TaggedUndirectedEdge<int, double>(3, 6, 10),
                 new TaggedUndirectedEdge<int, double>(4, 5, 1),
                 new TaggedUndirectedEdge<int, double>(4, 7, 25),

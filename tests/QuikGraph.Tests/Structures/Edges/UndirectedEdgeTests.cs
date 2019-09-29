@@ -14,15 +14,13 @@ namespace QuikGraph.Tests.Structures
         {
             // Value type
             CheckEdge(new UndirectedEdge<int>(1, 2), 1, 2);
-            CheckEdge(new UndirectedEdge<int>(2, 1), 2, 1);
             CheckEdge(new UndirectedEdge<int>(1, 1), 1, 1);
 
             // Reference type
-            var v1 = new TestVertex("v1");
-            var v2 = new TestVertex("v2");
-            CheckEdge(new UndirectedEdge<TestVertex>(v1, v2), v1, v2);
-            CheckEdge(new UndirectedEdge<TestVertex>(v2, v1), v2, v1);
-            CheckEdge(new UndirectedEdge<TestVertex>(v1, v1), v1, v1);
+            var v1 = new ComparableTestVertex("v1");
+            var v2 = new ComparableTestVertex("v2");
+            CheckEdge(new UndirectedEdge<ComparableTestVertex>(v1, v2), v1, v2);
+            CheckEdge(new UndirectedEdge<ComparableTestVertex>(v1, v1), v1, v1);
         }
 
         [Test]
@@ -34,6 +32,17 @@ namespace QuikGraph.Tests.Structures
             Assert.Throws<ArgumentNullException>(() => new UndirectedEdge<TestVertex>(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => new UndirectedEdge<TestVertex>(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
+
+            Assert.Throws<ArgumentException>(() => new UndirectedEdge<int>(2, 1));
+
+            // Not comparable
+            var v1 = new TestVertex("v1");
+            var v2 = new TestVertex("v2");
+            Assert.Throws<ArgumentException>(() => new UndirectedEdge<TestVertex>(v1, v2));
+
+            var comparableV1 = new ComparableTestVertex("v1");
+            var comparableV2 = new ComparableTestVertex("v2");
+            Assert.Throws<ArgumentException>(() => new UndirectedEdge<ComparableTestVertex>(comparableV2, comparableV1));
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -42,11 +51,9 @@ namespace QuikGraph.Tests.Structures
         {
             var edge1 = new UndirectedEdge<int>(1, 2);
             var edge2 = new UndirectedEdge<int>(1, 2);
-            var edge3 = new UndirectedEdge<int>(2, 1);
 
             Assert.AreEqual(edge1, edge1);
             Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge1, edge3);
 
             Assert.AreNotEqual(edge1, null);
         }
@@ -54,11 +61,9 @@ namespace QuikGraph.Tests.Structures
         [Test]
         public void ObjectToString()
         {
-            var edge1 = new UndirectedEdge<int>(1, 2);
-            var edge2 = new UndirectedEdge<int>(2, 1);
+            var edge = new UndirectedEdge<int>(1, 2);
 
-            Assert.AreEqual("1 <-> 2", edge1.ToString());
-            Assert.AreEqual("2 <-> 1", edge2.ToString());
+            Assert.AreEqual("1 <-> 2", edge.ToString());
         }
     }
 }

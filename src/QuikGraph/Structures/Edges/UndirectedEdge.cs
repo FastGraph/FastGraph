@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
@@ -26,6 +27,8 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
+            if (Comparer<TVertex>.Default.Compare(source, target) > 0)
+                throw new ArgumentException($"{nameof(source)} must be lower than {nameof(target)} in {GetType().Name}.");
 
             Source = source;
             Target = target;

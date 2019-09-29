@@ -36,7 +36,7 @@ namespace QuikGraph.Tests.Algorithms
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
-                new Vertices(3, 1)
+                new Vertices(1, 3)
             });
 
             var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
@@ -51,7 +51,7 @@ namespace QuikGraph.Tests.Algorithms
                 new Vertices(1, 2),
                 new Vertices(2, 3),
                 new Vertices(3, 4),
-                new Vertices(4, 1),
+                new Vertices(1, 4),
                 new Vertices(1, 3)
             });
 
@@ -66,7 +66,7 @@ namespace QuikGraph.Tests.Algorithms
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
-                new Vertices(3, 1)
+                new Vertices(1, 3)
             });
 
             graph.AddVertex(4);
@@ -83,10 +83,10 @@ namespace QuikGraph.Tests.Algorithms
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
-                new Vertices(3, 1),
+                new Vertices(1, 3),
                 new Vertices(4, 5),
                 new Vertices(5, 6),
-                new Vertices(6, 4)
+                new Vertices(4, 6)
             });
 
             graph.AddVertex(7);
@@ -166,18 +166,21 @@ namespace QuikGraph.Tests.Algorithms
             Assert.IsFalse(algorithm.IsEulerian());
         }
 
-        [Test]
-        public void IsEulerianTwoVerticesTwoEdges()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
-            {
-                new Vertices(1, 2),
-                new Vertices(2, 1)
-            });
+        // Since changes to UndirectedEdge, edge 2 <-> 1 cannot be created
+        // And reversing edge does not help because Eulerian algorithm removes
+        // parallel edges
+        //[Test]
+        //public void IsEulerianTwoVerticesTwoEdges()
+        //{
+        //    UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+        //    {
+        //        new Vertices(1, 2),
+        //        new Vertices(2, 1)
+        //    });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsEulerian());
-        }
+        //    var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
+        //    Assert.IsTrue(algorithm.IsEulerian());
+        //}
 
         [Test]
         public void IsEulerianTwoVerticesOneEdge()

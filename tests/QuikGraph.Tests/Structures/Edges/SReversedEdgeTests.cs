@@ -109,12 +109,10 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
             var edge2 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
             var edge3 = new SReversedEdge<int, UndirectedEdge<int>>(new UndirectedEdge<int>(1, 2));
-            var edge4 = new SReversedEdge<int, UndirectedEdge<int>>(new UndirectedEdge<int>(2, 1));
 
             Assert.AreEqual("R(1 -> 2)", edge1.ToString());
             Assert.AreEqual("R(2 -> 1)", edge2.ToString());
             Assert.AreEqual("R(1 <-> 2)", edge3.ToString());
-            Assert.AreEqual("R(2 <-> 1)", edge4.ToString());
         }
     }
 }
