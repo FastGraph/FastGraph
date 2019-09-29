@@ -966,6 +966,115 @@ namespace QuikGraph.Tests.Structures
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
+
+        protected static void ContainsEdge_UndirectedEdge_UndirectedGraph_Test(
+            [NotNull] IMutableUndirectedGraph<int, EquatableEdge<int>> graph1,
+            [NotNull] IMutableUndirectedGraph<int, EquatableUndirectedEdge<int>> graph2)
+        {
+            ///////////////////////////////////
+            // ContainsEdge => Source/Target //
+            ///////////////////////////////////
+            // Equatable Edge
+            var equatableEdge1 = new EquatableEdge<int>(1, 2);
+            var equatableEdge2 = new EquatableEdge<int>(1, 3);
+
+            Assert.IsFalse(graph1.ContainsEdge(1, 2));
+            Assert.IsFalse(graph1.ContainsEdge(2, 1));
+
+            graph1.AddVerticesAndEdge(equatableEdge1);
+            Assert.IsTrue(graph1.ContainsEdge(1, 2));
+            Assert.IsTrue(graph1.ContainsEdge(2, 1));
+
+            graph1.AddVerticesAndEdge(equatableEdge2);
+            Assert.IsTrue(graph1.ContainsEdge(1, 3));
+            Assert.IsTrue(graph1.ContainsEdge(3, 1));
+
+            // Vertices is not present in the graph
+            Assert.IsFalse(graph1.ContainsEdge(0, 4));
+            Assert.IsFalse(graph1.ContainsEdge(1, 4));
+            Assert.IsFalse(graph1.ContainsEdge(4, 1));
+
+
+
+            // Undirected equatable edge
+            var equatableUndirectedEdge1 = new EquatableUndirectedEdge<int>(1, 2);
+            var equatableUndirectedEdge2 = new EquatableUndirectedEdge<int>(1, 3);
+
+            Assert.IsFalse(graph2.ContainsEdge(1, 2));
+            Assert.IsFalse(graph2.ContainsEdge(2, 1));
+
+            graph2.AddVerticesAndEdge(equatableUndirectedEdge1);
+            Assert.IsTrue(graph2.ContainsEdge(1, 2));
+            Assert.IsTrue(graph2.ContainsEdge(2, 1));
+
+            graph2.AddVerticesAndEdge(equatableUndirectedEdge2);
+            Assert.IsTrue(graph2.ContainsEdge(1, 3));
+            Assert.IsTrue(graph2.ContainsEdge(3, 1));
+
+            // Vertices is not present in the graph
+            Assert.IsFalse(graph2.ContainsEdge(0, 4));
+            Assert.IsFalse(graph2.ContainsEdge(1, 4));
+            Assert.IsFalse(graph2.ContainsEdge(4, 1));
+        }
+
+        protected static void ContainsEdge_UndirectedEdge_ImmutableGraph_UndirectedGraph_Test(
+            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph1,
+            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, EquatableEdge<int>>> createEquatableEdgeGraph,
+            [NotNull] IMutableVertexAndEdgeSet<int, EquatableUndirectedEdge<int>> wrappedGraph2,
+            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, EquatableUndirectedEdge<int>>> createEquatableUndirectedEdgeGraph)
+        {
+            ///////////////////////////////////
+            // ContainsEdge => Source/Target //
+            ///////////////////////////////////
+            // Equatable Edge
+            var equatableEdge1 = new EquatableEdge<int>(1, 2);
+            var equatableEdge2 = new EquatableEdge<int>(1, 3);
+
+            IImplicitUndirectedGraph<int, EquatableEdge<int>> graph1 = createEquatableEdgeGraph();
+            Assert.IsFalse(graph1.ContainsEdge(1, 2));
+            Assert.IsFalse(graph1.ContainsEdge(2, 1));
+
+            wrappedGraph1.AddVerticesAndEdge(equatableEdge1);
+            graph1 = createEquatableEdgeGraph();
+            Assert.IsTrue(graph1.ContainsEdge(1, 2));
+            Assert.IsTrue(graph1.ContainsEdge(2, 1));
+
+            wrappedGraph1.AddVerticesAndEdge(equatableEdge2);
+            graph1 = createEquatableEdgeGraph();
+            Assert.IsTrue(graph1.ContainsEdge(1, 3));
+            Assert.IsTrue(graph1.ContainsEdge(3, 1));
+
+            // Vertices is not present in the graph
+            Assert.IsFalse(graph1.ContainsEdge(0, 4));
+            Assert.IsFalse(graph1.ContainsEdge(1, 4));
+            Assert.IsFalse(graph1.ContainsEdge(4, 1));
+
+
+
+            // Undirected equatable edge
+            var equatableUndirectedEdge1 = new EquatableUndirectedEdge<int>(1, 2);
+            var equatableUndirectedEdge2 = new EquatableUndirectedEdge<int>(1, 3);
+
+            IImplicitUndirectedGraph<int, EquatableUndirectedEdge<int>> graph2 = createEquatableUndirectedEdgeGraph();
+            Assert.IsFalse(graph2.ContainsEdge(1, 2));
+            Assert.IsFalse(graph2.ContainsEdge(2, 1));
+
+            wrappedGraph2.AddVerticesAndEdge(equatableUndirectedEdge1);
+            graph2 = createEquatableUndirectedEdgeGraph();
+            Assert.IsTrue(graph2.ContainsEdge(1, 2));
+            Assert.IsTrue(graph2.ContainsEdge(2, 1));
+
+            wrappedGraph2.AddVerticesAndEdge(equatableUndirectedEdge2);
+            graph2 = createEquatableUndirectedEdgeGraph();
+            Assert.IsTrue(graph2.ContainsEdge(1, 3));
+            Assert.IsTrue(graph2.ContainsEdge(3, 1));
+
+            // Vertices is not present in the graph
+            Assert.IsFalse(graph2.ContainsEdge(0, 4));
+            Assert.IsFalse(graph2.ContainsEdge(1, 4));
+            Assert.IsFalse(graph2.ContainsEdge(4, 1));
+        }
+
         #endregion
     }
 }

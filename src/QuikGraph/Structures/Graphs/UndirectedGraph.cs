@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if !SUPPORTS_TYPE_FULL_FEATURES
+using System.Reflection;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Collections;
 
@@ -55,7 +58,36 @@ namespace QuikGraph
         {
             AllowParallelEdges = allowParallelEdges;
             EdgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
+
+            _reorder = typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge))
+                ? (ReorderVertices) ((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                {
+                    if (Comparer<TVertex>.Default.Compare(source, target) > 0)
+                    {
+                        orderedSource = target;
+                        orderedTarget = source;
+                    }
+                    else
+                    {
+                        orderedSource = source;
+                        orderedTarget = target;
+                    }
+                })
+                : (TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                {
+                    orderedSource = source;
+                    orderedTarget = target;
+                };
         }
+
+        private delegate void ReorderVertices(
+            [NotNull] TVertex source,
+            [NotNull] TVertex target,
+            [NotNull] out TVertex orderedSource,
+            [NotNull] out TVertex orderedTarget);
+
+        [NotNull]
+        private readonly ReorderVertices _reorder;
 
         /// <inheritdoc />
         public EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; }
@@ -217,12 +249,7 @@ namespace QuikGraph
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (Comparer<TVertex>.Default.Compare(source, target) > 0)
-            {
-                TVertex temp = source;
-                source = target;
-                target = temp;
-            }
+            _reorder(source, target, out source, out target);
 
             if (!_adjacentEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> adjacentEdges))
             {
@@ -630,17 +657,15 @@ namespace QuikGraph
             [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer,
             int edgeCapacity,
             bool allowParallelEdges)
+            : this(allowParallelEdges, edgeEqualityComparer)
         {
             Debug.Assert(edges != null);
             Debug.Assert(adjacentEdges != null);
-            Debug.Assert(edgeEqualityComparer != null);
 
             _edges = edges;
             _adjacentEdges = adjacentEdges;
-            EdgeEqualityComparer = edgeEqualityComparer;
             EdgeCount = edges.Count;
             EdgeCapacity = edgeCapacity;
-            AllowParallelEdges = allowParallelEdges;
         }
 
         /// <summary>

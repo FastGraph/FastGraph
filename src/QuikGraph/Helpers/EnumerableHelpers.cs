@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -13,20 +14,20 @@ namespace QuikGraph
         /// Performs an <see cref="Action{T}"/> on each item in an enumerable,
         /// used to shortcut a "foreach" loop.
         /// </summary>
-        /// <typeparam name="T">Enumerable element type.</typeparam>
-        /// <param name="enumerable">Enumerable to enumerate over.</param>
-        /// <param name="action">Acton to be performed on all elements.</param>
+        /// <typeparam name="T">Element type.</typeparam>
+        /// <param name="elements">Enumerable to iterate through.</param>
+        /// <param name="action">Acton to perform on each element.</param>
         public static void ForEach<T>(
-            [NotNull, ItemCanBeNull] this IEnumerable<T> enumerable, 
+            [NotNull, ItemCanBeNull] this IEnumerable<T> elements, 
             [NotNull, InstantHandle] Action<T> action)
         {
-            if (enumerable is null)
-                throw new ArgumentNullException(nameof(enumerable));
-            if (action is null)
-                throw new ArgumentNullException(nameof(action));
+            Debug.Assert(elements != null);
+            Debug.Assert(action != null);
 
-            foreach (T elem in enumerable)
+            foreach (T elem in elements)
+            {
                 action(elem);
+            }
         }
     }
 }

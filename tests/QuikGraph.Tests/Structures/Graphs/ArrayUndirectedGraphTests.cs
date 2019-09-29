@@ -166,6 +166,18 @@ namespace QuikGraph.Tests.Structures
             ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test(graph);
         }
 
+        [Test]
+        public void ContainsEdge_Undirected()
+        {
+            var wrappedGraph1 = new UndirectedGraph<int, EquatableEdge<int>>();
+            var wrappedGraph2 = new UndirectedGraph<int, EquatableUndirectedEdge<int>>();
+            ContainsEdge_UndirectedEdge_ImmutableGraph_UndirectedGraph_Test(
+                wrappedGraph1,
+                () => new ArrayUndirectedGraph<int, EquatableEdge<int>>(wrappedGraph1), 
+                wrappedGraph2,
+                () => new ArrayUndirectedGraph<int, EquatableUndirectedEdge<int>>(wrappedGraph2));
+        }
+
         #endregion
 
         #region Adjacent Edges

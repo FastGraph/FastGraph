@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if !SUPPORTS_TYPE_FULL_FEATURES
+using System.Reflection;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -26,7 +29,36 @@ namespace QuikGraph
         public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
             OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
+
+            _reorder = typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge))
+                ? (ReorderVertices)((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                {
+                    if (Comparer<TVertex>.Default.Compare(source, target) > 0)
+                    {
+                        orderedSource = target;
+                        orderedTarget = source;
+                    }
+                    else
+                    {
+                        orderedSource = source;
+                        orderedTarget = target;
+                    }
+                })
+                : (TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                {
+                    orderedSource = source;
+                    orderedTarget = target;
+                };
         }
+
+        private delegate void ReorderVertices(
+            [NotNull] TVertex source,
+            [NotNull] TVertex target,
+            [NotNull] out TVertex orderedSource,
+            [NotNull] out TVertex orderedTarget);
+
+        [NotNull]
+        private readonly ReorderVertices _reorder;
 
         /// <inheritdoc />
         public EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; } =
@@ -131,6 +163,8 @@ namespace QuikGraph
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
+
+            _reorder(source, target, out source, out target);
 
             if (!ContainsVertex(source))
             {

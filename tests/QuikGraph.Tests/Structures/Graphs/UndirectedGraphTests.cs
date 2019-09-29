@@ -233,6 +233,16 @@ namespace QuikGraph.Tests.Structures
             ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test(graph);
         }
 
+        [Test]
+        public void ContainsEdge_Undirected()
+        {
+            var graph1 = new UndirectedGraph<int, EquatableEdge<int>>();
+            var graph2 = new UndirectedGraph<int, EquatableUndirectedEdge<int>>();
+            ContainsEdge_UndirectedEdge_UndirectedGraph_Test(
+                graph1,
+                graph2);
+        }
+
         #endregion
 
         #region Adjacent Edges

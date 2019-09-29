@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -16,11 +17,11 @@ namespace QuikGraph
         /// <param name="func"></param>
         /// <returns></returns>
         [Pure]
+        [NotNull]
         public static TryFunc<T, TResult> ToTryFunc<T, TResult>([NotNull] Func<T, TResult> func)
             where TResult : class
         {
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            Debug.Assert(func != null);
 
             return (T value, out TResult result) =>
             {

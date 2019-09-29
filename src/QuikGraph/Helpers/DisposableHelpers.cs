@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Utils
@@ -25,7 +26,9 @@ namespace QuikGraph.Utils
 
             public FinallyScope([NotNull] Action action)
             {
-                _action = action ?? throw new ArgumentNullException(nameof(action));
+                Debug.Assert(action != null);
+
+                _action = action;
             }
 
             /// <inheritdoc />
