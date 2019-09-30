@@ -40,30 +40,10 @@ namespace QuikGraph
         #region IVertexSet<TVertex>
 
         /// <inheritdoc />
-        public bool IsVerticesEmpty
-        {
-            get
-            {
-                // Compute count for shortcut future calls
-                if (_vertexCount > -1)
-                    return _vertexCount == 0;
-                return !_vertices.Any();
-            }
-        }
-
-        private int _vertexCount = -1;
+        public bool IsVerticesEmpty => !_vertices.Any();
 
         /// <inheritdoc />
-        public int VertexCount
-        {
-            get
-            {
-                // Compute count for shortcut future calls
-                if (_vertexCount < 0)
-                    _vertexCount = _vertices.Count();
-                return _vertexCount;
-            }
-        }
+        public int VertexCount => _vertices.Count();
 
         [NotNull]
         private readonly IEnumerable<TVertex> _vertices;
