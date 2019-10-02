@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -21,6 +22,7 @@ namespace QuikGraph
         /// <param name="vertexEquality">Vertex equality comparer.</param>
         /// <param name="edgeEquality">Edge equality comparer.</param>
         /// <returns>True if both graphs are equal, false otherwise.</returns>
+        [Pure]
         public static bool Equate<TVertex, TEdge>(
             [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> g,
             [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> h,
@@ -28,6 +30,11 @@ namespace QuikGraph
             [NotNull] IEqualityComparer<TEdge> edgeEquality)
             where TEdge : IEdge<TVertex>
         {
+            if (vertexEquality is null)
+                throw new ArgumentNullException(nameof(vertexEquality));
+            if (edgeEquality is null)
+                throw new ArgumentNullException(nameof(edgeEquality));
+
             if (g is null)
                 return h is null;
             if (h is null)
@@ -42,13 +49,13 @@ namespace QuikGraph
             if (g.EdgeCount != h.EdgeCount)
                 return false;
 
-            foreach (var vertex in g.Vertices)
+            foreach (TVertex vertex in g.Vertices)
             {
                 if (!h.Vertices.Any(v => vertexEquality.Equals(v, vertex)))
                     return false;
             }
 
-            foreach (var edge in g.Edges)
+            foreach (TEdge edge in g.Edges)
             {
                 if (!h.Edges.Any(e => edgeEquality.Equals(e, edge)))
                     return false;
@@ -66,8 +73,9 @@ namespace QuikGraph
         /// <param name="g">First graph to compare.</param>
         /// <param name="h">Second graph to compare.</param>
         /// <returns>True if both graphs are equal, false otherwise.</returns>
+        [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> g, 
+            [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> g,
             [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> h)
             where TEdge : IEdge<TVertex>
         {
