@@ -8,15 +8,21 @@ using JetBrains.Annotations;
 namespace QuikGraph.Collections
 {
     /// <summary>
-    /// Fibonacci heap.
+    /// Heap following Fibonacci rules.
     /// </summary>
     /// <typeparam name="TValue">Value type.</typeparam>
     /// <typeparam name="TPriority">Priority metric type.</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class FibonacciHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
     {
-        [NotNull]
+        [NotNull, ItemNotNull]
         private readonly FibonacciHeapLinkedList<TPriority, TValue> _cells;
+
+        [NotNull]
+        private readonly Dictionary<int, FibonacciHeapCell<TPriority, TValue>> _degreeToCell;
 
         // Used to control the direction of the heap, set to 1 if the Heap is increasing,
         // -1 if it's decreasing. We use the approach to avoid unnecessary branches.
@@ -54,8 +60,6 @@ namespace QuikGraph.Collections
             Count = 0;
         }
 
-        private readonly Dictionary<int, FibonacciHeapCell<TPriority, TValue>> _degreeToCell;
-
         /// <summary>
         /// Priority comparer.
         /// </summary>
@@ -83,12 +87,15 @@ namespace QuikGraph.Collections
         public FibonacciHeapCell<TPriority, TValue> Top { get; private set; }
 
         /// <summary>
-        /// Enqueues an element in the queue.
+        /// Enqueues an element in the heap.
         /// </summary>
         /// <param name="priority">Value priority.</param>
         /// <param name="value">Value to add.</param>
-        public FibonacciHeapCell<TPriority, TValue> Enqueue(TPriority priority, TValue value)
+        public FibonacciHeapCell<TPriority, TValue> Enqueue([NotNull] TPriority priority, [CanBeNull] TValue value)
         {
+            if (priority == null)
+                throw new ArgumentNullException(nameof(priority));
+
             var newCell = new FibonacciHeapCell<TPriority, TValue>
             {
                 Priority = priority,
@@ -116,19 +123,6 @@ namespace QuikGraph.Collections
         }
 
         /// <summary>
-        /// Deletes the given <paramref name="cell"/> from this heap.
-        /// </summary>
-        /// <param name="cell">Cell to delete.</param>
-        public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
-        {
-            if (cell is null)
-                throw new ArgumentNullException(nameof(cell));
-
-            ChangeKeyInternal(cell, default(TPriority), true);
-            Dequeue();
-        }
-
-        /// <summary>
         /// Changes the priority of the given <paramref name="cell"/>.
         /// </summary>
         /// <param name="cell">Cell to update the priority.</param>
@@ -137,6 +131,8 @@ namespace QuikGraph.Collections
         {
             if (cell is null)
                 throw new ArgumentNullException(nameof(cell));
+            if (newPriority == null)
+                throw new ArgumentNullException(nameof(newPriority));
 
             ChangeKeyInternal(cell, newPriority, false);
         }
@@ -282,7 +278,20 @@ namespace QuikGraph.Collections
         }
 
         /// <summary>
-        /// Dequeues an element from the queue.
+        /// Deletes the given <paramref name="cell"/> from this heap.
+        /// </summary>
+        /// <param name="cell">Cell to delete.</param>
+        public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        {
+            if (cell is null)
+                throw new ArgumentNullException(nameof(cell));
+
+            ChangeKeyInternal(cell, default(TPriority), true);
+            Dequeue();
+        }
+
+        /// <summary>
+        /// Dequeues an element from the heap.
         /// </summary>
         /// <returns>Removed element.</returns>
         public KeyValuePair<TPriority, TValue> Dequeue()
@@ -418,12 +427,14 @@ namespace QuikGraph.Collections
         {
             if (heap is null)
                 throw new ArgumentNullException(nameof(heap));
-
             if (heap.Direction != Direction)
-                throw new InvalidOperationException("Error: Heaps must go in the same direction when merging.");
+                throw new InvalidOperationException("Heaps must go in the same direction when merging.");
+            if (heap.IsEmpty)
+                return;
 
+            bool isEmpty = IsEmpty;
             _cells.MergeLists(heap._cells);
-            if (PriorityComparison(heap.Top.Priority, Top.Priority) * _directionMultiplier < 0)
+            if (isEmpty || PriorityComparison(heap.Top.Priority, Top.Priority) * _directionMultiplier < 0)
             {
                 Top = heap.Top;
             }
@@ -470,6 +481,7 @@ namespace QuikGraph.Collections
         /// Enumerator for this heap that <see cref="Dequeue"/> elements in the same time.
         /// </summary>
         /// <returns>Heap elements.</returns>
+        [NotNull]
         public IEnumerable<KeyValuePair<TPriority, TValue>> GetDestructiveEnumerator()
         {
             while (!IsEmpty)

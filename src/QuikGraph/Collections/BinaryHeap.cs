@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
+using static QuikGraph.Collections.HeapConstants;
 
 namespace QuikGraph.Collections
 {
@@ -23,6 +24,9 @@ namespace QuikGraph.Collections
     /// </remarks>
     /// <typeparam name="TValue">Value type.</typeparam>
     /// <typeparam name="TPriority">Priority metric type.</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public class BinaryHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
     {
@@ -38,6 +42,15 @@ namespace QuikGraph.Collections
         /// </summary>
         public BinaryHeap()
             : this(DefaultCapacity, Comparer<TPriority>.Default.Compare)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryHeap{TPriority,TValue}"/> class.
+        /// </summary>
+        /// <param name="capacity">Heap capacity.</param>
+        public BinaryHeap(int capacity)
+            : this(capacity, Comparer<TPriority>.Default.Compare)
         {
         }
 
@@ -64,7 +77,6 @@ namespace QuikGraph.Collections
             PriorityComparison = priorityComparison ?? throw new ArgumentNullException(nameof(priorityComparison));
         }
 
-
         /// <summary>
         /// Priority comparer.
         /// </summary>
@@ -81,6 +93,30 @@ namespace QuikGraph.Collections
         /// </summary>
         public int Count { get; private set; }
 
+        #region Helpers
+
+        [Pure]
+        private bool Less(int i, int j)
+        {
+            Debug.Assert(i >= 0 && i < Count);
+            Debug.Assert(j >= 0 && j < Count);
+
+            return PriorityComparison(_items[i].Key, _items[j].Key) < 0;
+        }
+
+        private void Swap(int i, int j)
+        {
+            Debug.Assert(i >= 0 && i < Count);
+            Debug.Assert(j >= 0 && j < Count);
+            Debug.Assert(i != j);
+
+            KeyValuePair<TPriority, TValue> kv = _items[i];
+            _items[i] = _items[j];
+            _items[j] = kv;
+        }
+
+        #endregion
+
         /// <summary>
         /// Adds the given <paramref name="value"/> (with priority) into the heap.
         /// </summary>
@@ -89,8 +125,10 @@ namespace QuikGraph.Collections
         public void Add([NotNull] TPriority priority, [CanBeNull] TValue value)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine($"Add({priority}, {value})");
+            Console.WriteLine($"{nameof(Add)}({priority}, {value})");
 #endif
+            if (priority == null)
+                throw new ArgumentNullException(nameof(priority));
 
             ++_version;
             ResizeArray();
@@ -98,14 +136,28 @@ namespace QuikGraph.Collections
             MinHeapifyUp(Count - 1);
 
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("Add: {0}", ToString2());
+            Console.WriteLine($"{nameof(Add)}: {ToString2()}");
 #endif
+
+            #region Local function
+
+            void ResizeArray()
+            {
+                if (Count != _items.Length)
+                    return;
+
+                var newItems = new KeyValuePair<TPriority, TValue>[Count * 2 + 1];
+                Array.Copy(_items, newItems, Count);
+                _items = newItems;
+            }
+
+            #endregion
         }
 
         private void MinHeapifyUp(int start)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("MinHeapifyUp");
+            Console.WriteLine(nameof(MinHeapifyUp));
 #endif
             int current = start;
             int parent = (current - 1) / 2;
@@ -114,73 +166,6 @@ namespace QuikGraph.Collections
                 Swap(current, parent);
                 current = parent;
                 parent = (current - 1) / 2;
-            }
-        }
-
-        /// <summary>
-        /// Gets all heap values.
-        /// </summary>
-        /// <returns>Array of heap values.</returns>
-        [Pure]
-        [NotNull]
-        public TValue[] ToValueArray()
-        {
-            return _items.Select(pair => pair.Value).ToArray();
-        }
-
-        /// <summary>
-        /// Gets all values with their priorities.
-        /// </summary>
-        /// <returns>Array of heap priorities and values.</returns>
-        [Pure]
-        [NotNull]
-        public KeyValuePair<TPriority, TValue>[] ToPriorityValueArray()
-        {
-            return _items.ToArray();
-        }
-
-        /// <summary>
-        /// Checks if this heap is consistent (fulfill indexing rule).
-        /// </summary>
-        /// <returns>True if the heap is consistent, false otherwise.</returns>
-        public bool IsConsistent()
-        {
-            int wrong = -1;
-
-            for (int i = 0; i < Count; i++)
-            {
-                int l = 2 * i + 1;
-                int r = 2 * i + 2;
-                if (l < Count && !LessOrEqual(i, l))
-                    wrong = i;
-                if (r < Count && !LessOrEqual(i, r))
-                    wrong = i;
-            }
-
-            bool correct = wrong == -1;
-            return correct;
-        }
-
-        [NotNull]
-        private string EntryToString(int i)
-        {
-            if (i < 0 || i >= Count)
-                return "null";
-
-            KeyValuePair<TPriority, TValue> kvp = _items[i];
-            TPriority k = kvp.Key;
-            TValue v = kvp.Value;
-
-            return $"{k.ToString()} {(v == null ? "null" : v.ToString())}";
-        }
-
-        private void ResizeArray()
-        {
-            if (Count == _items.Length)
-            {
-                var newItems = new KeyValuePair<TPriority, TValue>[Count * 2 + 1];
-                Array.Copy(_items, newItems, Count);
-                _items = newItems;
             }
         }
 
@@ -204,18 +189,17 @@ namespace QuikGraph.Collections
         public KeyValuePair<TPriority, TValue> RemoveMinimum()
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("RemoveMinimum");
+            Console.WriteLine(nameof(RemoveMinimum));
 #endif
 
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty.");
 
+            ++_version;
+
             // Shortcut for heap with 1 element.
             if (Count == 1)
-            {
-                ++_version;
                 return _items[--Count];
-            }
 
             Swap(0, Count - 1);
             --Count;
@@ -227,7 +211,7 @@ namespace QuikGraph.Collections
         private void MinHeapifyDown(int index)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine("MinHeapifyDown");
+            Console.WriteLine(nameof(MinHeapifyDown));
 #endif
 
             while (true)
@@ -266,41 +250,14 @@ namespace QuikGraph.Collections
         }
 
         /// <summary>
-        /// Updates the <paramref name="value"/> priority if the new priority is lower
-        /// than the current <paramref name="value"/> priority (or add it if not present).
-        /// </summary>
-        /// <param name="priority">The priority.</param>
-        /// <param name="value">The value.</param>
-        /// <returns>True if the heap was updated, false otherwise.</returns>
-        public bool MinimumUpdate([NotNull] TPriority priority, [NotNull] TValue value)
-        {
-            // Find index
-            int index = IndexOf(value);
-            if (index >= 0)
-            {
-                if (PriorityComparison(priority, _items[index].Key) <= 0)
-                {
-                    Update(priority, value);
-                    return true;
-                }
-
-                return false;
-            }
-
-            // Not in collection
-            Add(priority, value);
-            return true;
-        }
-
-        /// <summary>
-        /// Updates the <paramref name="value"/> priority (or add it if not present).
+        /// Updates the priority of the given <paramref name="value"/> (or add it if not present).
         /// </summary>
         /// <param name="priority">The priority.</param>
         /// <param name="value">The value.</param>
         public void Update([NotNull] TPriority priority, [NotNull] TValue value)
         {
 #if BINARY_HEAP_DEBUG
-            Console.WriteLine($"Update({priority}, {value})");
+            Console.WriteLine($"{nameof(Update)}({priority}, {value})");
 #endif
 
             // Find index
@@ -324,34 +281,31 @@ namespace QuikGraph.Collections
             }
         }
 
-        [Pure]
-        private bool LessOrEqual(int i, int j)
+        /// <summary>
+        /// Updates the priority of the given <paramref name="value"/> if the new priority is lower
+        /// than the current <paramref name="value"/> priority (or add it if not present).
+        /// </summary>
+        /// <param name="priority">The priority.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>True if the heap was updated, false otherwise.</returns>
+        public bool MinimumUpdate([NotNull] TPriority priority, [NotNull] TValue value)
         {
-            Debug.Assert(i >= 0 && i < Count 
-                         && j >= 0 && j < Count 
-                         && i != j);
+            // Find index
+            int index = IndexOf(value);
+            if (index >= 0)
+            {
+                if (PriorityComparison(priority, _items[index].Key) <= 0)
+                {
+                    Update(priority, value);
+                    return true;
+                }
 
-            return PriorityComparison(_items[i].Key, _items[j].Key) <= 0;
-        }
+                return false;
+            }
 
-        [Pure]
-        private bool Less(int i, int j)
-        {
-            Debug.Assert(i >= 0 && i < Count && j >= 0 && j < Count);
-
-            return PriorityComparison(_items[i].Key, _items[j].Key) < 0;
-        }
-
-        private void Swap(int i, int j)
-        {
-            Debug.Assert(i >= 0 && i < Count && j >= 0 && j < Count);
-
-            if (i == j)
-                return;
-
-            KeyValuePair<TPriority, TValue> kv = _items[i];
-            _items[i] = _items[j];
-            _items[j] = kv;
+            // Not in collection
+            Add(priority, value);
+            return true;
         }
 
         #region IEnumerable
@@ -431,6 +385,82 @@ namespace QuikGraph.Collections
         #endregion
 
         /// <summary>
+        /// Gets all heap values.
+        /// </summary>
+        /// <returns>Array of heap values.</returns>
+        [Pure]
+        [NotNull]
+        public TValue[] ToArray()
+        {
+            var array = new TValue[Count];
+            for (int i = 0; i < Count; ++i)
+                array[i] = _items[i].Value;
+            return array;
+        }
+
+        /// <summary>
+        /// Gets all values with their priorities.
+        /// </summary>
+        /// <returns>Array of heap priorities and values.</returns>
+        [Pure]
+        [NotNull]
+        public KeyValuePair<TPriority, TValue>[] ToPairsArray()
+        {
+            var array = new KeyValuePair<TPriority, TValue>[Count];
+            Array.Copy(_items, 0, array, 0, Count);
+            return array;
+        }
+
+        [NotNull]
+        private string EntryToString(int i)
+        {
+            if (i < 0 || i >= Count)
+                return "null";
+
+            KeyValuePair<TPriority, TValue> kvp = _items[i];
+            TPriority k = kvp.Key;
+            TValue v = kvp.Value;
+
+            return $"{k.ToString()} {(v == null ? "null" : v.ToString())}";
+        }
+
+        /// <summary>
+        /// Checks if this heap is consistent (fulfill indexing rule).
+        /// </summary>
+        /// <returns>True if the heap is consistent, false otherwise.</returns>
+        internal bool IsConsistent()
+        {
+            int wrong = -1;
+
+            for (int i = 0; i < Count; i++)
+            {
+                int l = 2 * i + 1;
+                int r = 2 * i + 2;
+                if (l < Count && !LessOrEqual(i, l))
+                    wrong = i;
+                if (r < Count && !LessOrEqual(i, r))
+                    wrong = i;
+            }
+
+            bool correct = wrong == -1;
+            return correct;
+
+            #region Local function
+
+            bool LessOrEqual(int i, int j)
+            {
+                Debug.Assert(
+                    i >= 0 && i < Count
+                           && j >= 0 && j < Count
+                           && i != j);
+
+                return PriorityComparison(_items[i].Key, _items[j].Key) <= 0;
+            }
+
+            #endregion
+        }
+
+        /// <summary>
         /// Gets a string representation of this heap.
         /// </summary>
         /// <returns>String representation.</returns>
@@ -439,7 +469,7 @@ namespace QuikGraph.Collections
         public string ToString2()
         {
             bool status = IsConsistent();
-            return $"{status}: {string.Join(", ", Enumerable.Range(0, _items.Length).Select(EntryToString).ToArray())}";
+            return $"{(status ? Consistent : NotConsistent)}: {string.Join(", ", Enumerable.Range(0, _items.Length).Select(EntryToString).ToArray())}";
         }
 
         /// <summary>
@@ -451,15 +481,15 @@ namespace QuikGraph.Collections
         public string ToStringTree()
         {
             bool status = IsConsistent();
-            var str = new StringBuilder($"Consistent? {status}");
+            var str = new StringBuilder(status ? Consistent : NotConsistent);
 
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < Count; ++i)
             {
                 int l = 2 * i + 1;
                 int r = 2 * i + 2;
 
                 str.Append(
-                    $"{Environment.NewLine}index{i.ToString()} {EntryToString(i)} -> {EntryToString(l)} and {EntryToString(r)}");
+                    $"{Environment.NewLine}index{i} {EntryToString(i)} -> {EntryToString(l)} and {EntryToString(r)}");
             }
 
             return str.ToString();

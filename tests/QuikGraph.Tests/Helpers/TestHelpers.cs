@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Tests
@@ -37,6 +39,25 @@ namespace QuikGraph.Tests
             }
 
             return edges;
+        }
+
+        [Pure]
+        [NotNull]
+        public static T SerializeAndDeserialize<T>([NotNull] T @object)
+        {
+            // Round-trip the exception: Serialize and de-serialize with a BinaryFormatter
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                // "Save" object state
+                bf.Serialize(ms, @object);
+
+                // Re-use the same stream for de-serialization
+                ms.Seek(0, 0);
+
+                // Replace the original exception with de-serialized one
+                return (T)bf.Deserialize(ms);
+            }
         }
     }
 }

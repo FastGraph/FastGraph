@@ -1,10 +1,8 @@
-﻿
-#if SUPPORTS_SERIALIZATION
+﻿#if SUPPORTS_SERIALIZATION
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using static QuikGraph.Tests.TestHelpers;
 
 namespace QuikGraph.Tests.Exceptions
 {
@@ -18,27 +16,16 @@ namespace QuikGraph.Tests.Exceptions
             [NotNull, InstantHandle] Func<TException> createException)
             where TException : Exception
         {
-            Exception ex = createException();
+            Exception exception = createException();
 
             // Save the full ToString() value, including the exception message and stack trace.
-            string exceptionToString = ex.ToString();
+            string exceptionToString = exception.ToString();
 
-            // Round-trip the exception: Serialize and de-serialize with a BinaryFormatter
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
-            {
-                // "Save" object state
-                bf.Serialize(ms, ex);
-
-                // Re-use the same stream for de-serialization
-                ms.Seek(0, 0);
-
-                // Replace the original exception with de-serialized one
-                ex = (TException)bf.Deserialize(ms);
-            }
+            Exception deserializedException = SerializeAndDeserialize(exception);
 
             // Double-check that the exception message and stack trace (owned by the base Exception) are preserved
-            Assert.AreEqual(exceptionToString, ex.ToString());
+            Assert.AreNotSame(exception, deserializedException);
+            Assert.AreEqual(exceptionToString, deserializedException.ToString());
         }
 
         [Test]

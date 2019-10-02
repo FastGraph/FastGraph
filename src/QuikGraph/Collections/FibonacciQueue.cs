@@ -39,21 +39,21 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Initializes a new instance of the <see cref="FibonacciQueue{TVertex,TDistance}"/> class.
         /// </summary>
-        /// <param name="valueCount">Number of values.</param>
-        /// <param name="values">Set of vertices (null if <paramref name="valueCount"/> is 0).</param>
+        /// <param name="capacity">Initial capacity.</param>
+        /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         public FibonacciQueue(
-            int valueCount,
+            int capacity,
             [CanBeNull, ItemNotNull] IEnumerable<TVertex> values,
             [NotNull] Func<TVertex, TDistance> distanceFunc)
-            : this(valueCount, values, distanceFunc, Comparer<TDistance>.Default.Compare)
+            : this(capacity, values, distanceFunc, Comparer<TDistance>.Default.Compare)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FibonacciQueue{TVertex,TDistance}"/> class.
         /// </summary>
-        /// <param name="capacity">Number of values.</param>
+        /// <param name="capacity">Initial capacity.</param>
         /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <param name="distanceComparison">Comparer of distances.</param>
@@ -64,12 +64,12 @@ namespace QuikGraph.Collections
             [NotNull] Comparison<TDistance> distanceComparison)
         {
             if (capacity < 0)
-                throw new ArgumentException("Must be positive.", nameof(capacity));
+                throw new ArgumentException("Capacity must be positive.", nameof(capacity));
 
             _distanceFunc = distanceFunc ?? throw new ArgumentNullException(nameof(distanceFunc));
             _cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(capacity);
 
-            if (capacity > 0 && values != null)
+            if (values != null)
             {
                 foreach (TVertex vertex in values)
                 {
@@ -156,7 +156,7 @@ namespace QuikGraph.Collections
             FibonacciHeapCell<TDistance, TVertex> cell = _heap.Top;
 
             if (cell is null)
-                throw new InvalidOperationException("Heap is empty.");
+                throw new InvalidOperationException("Queue is empty.");
 
             _heap.Dequeue();
             return cell.Value;
@@ -166,7 +166,7 @@ namespace QuikGraph.Collections
         public TVertex Peek()
         {
             if (_heap.Top is null)
-                throw new InvalidOperationException("Heap is empty.");
+                throw new InvalidOperationException("Queue is empty.");
 
             return _heap.Top.Value;
         }

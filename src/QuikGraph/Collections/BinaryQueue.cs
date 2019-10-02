@@ -40,12 +40,10 @@ namespace QuikGraph.Collections
             [NotNull] Func<TVertex, TDistance> distanceFunc, 
             [NotNull] Comparison<TDistance> distanceComparison)
         {
-            if (distanceFunc is null)
-                throw new ArgumentNullException(nameof(distanceFunc));
             if (distanceComparison is null)
                 throw new ArgumentNullException(nameof(distanceComparison));
 
-            _distanceFunc = distanceFunc;
+            _distanceFunc = distanceFunc ?? throw new ArgumentNullException(nameof(distanceFunc));
             _heap = new BinaryHeap<TDistance, TVertex>(distanceComparison);
         }
 
@@ -83,7 +81,17 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public TVertex[] ToArray()
         {
-            return _heap.ToValueArray();
+            return _heap.ToArray();
+        }
+
+        #endregion
+
+        #region IPriorityQueue
+
+        /// <inheritdoc />
+        public void Update([NotNull] TVertex value)
+        {
+            _heap.Update(_distanceFunc(value), value);
         }
 
         #endregion
@@ -94,9 +102,9 @@ namespace QuikGraph.Collections
         /// <returns>Array composed of elements.</returns>
         [Pure]
         [NotNull]
-        public KeyValuePair<TDistance, TVertex>[] ToArray2()
+        public KeyValuePair<TDistance, TVertex>[] ToPairsArray()
         {
-            return _heap.ToPriorityValueArray();
+            return _heap.ToPairsArray();
         }
 
         /// <summary>
@@ -109,15 +117,5 @@ namespace QuikGraph.Collections
         {
             return _heap.ToString2();
         }
-
-        #region IPriorityQueue
-
-        /// <inheritdoc />
-        public void Update([NotNull] TVertex value)
-        {
-            _heap.Update(_distanceFunc(value), value);
-        }
-
-        #endregion
     }
 }

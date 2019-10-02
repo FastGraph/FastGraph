@@ -28,9 +28,9 @@ namespace QuikGraph.Collections
         /// Finds the set containing the <paramref name="value"/>.
         /// </summary>
         /// <param name="value">Value to search.</param>
-        /// <returns></returns>
+        /// <returns>Root value of the set.</returns>
         [Pure]
-        [CanBeNull]
+        [NotNull]
         T FindSet([NotNull] T value);
 
         /// <summary>

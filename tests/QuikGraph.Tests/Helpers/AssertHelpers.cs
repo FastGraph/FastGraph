@@ -23,5 +23,19 @@ namespace QuikGraph.Tests
                     .Or
                     .TypeOf<IndexOutOfRangeException>());
         }
+
+        /// <summary>
+        /// Asserts that both values are equal (or same if reference type).
+        /// </summary>
+        /// <typeparam name="T">Object type.</typeparam>
+        /// <param name="arg1">First object.</param>
+        /// <param name="arg2">Second object.</param>
+        public static void AssertEqual<T>([CanBeNull] T arg1, [CanBeNull] T arg2)
+        {
+            if (typeof(T).IsValueType)
+                Assert.AreEqual(arg1, arg2);
+            else
+                Assert.AreSame(arg1, arg2);
+        }
     }
 }

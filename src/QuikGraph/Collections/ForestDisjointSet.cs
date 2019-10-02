@@ -9,6 +9,9 @@ namespace QuikGraph.Collections
     /// Disjoint-set implementation with path compression and union-by-rank optimizations.
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     public class ForestDisjointSet<T> : IDisjointSet<T>
     {
 #if DEBUG
@@ -27,10 +30,12 @@ namespace QuikGraph.Collections
 
             public int Rank { get; set; }
 
+            [NotNull]
             public T Value { get; }
 
-            public Element(T value)
+            public Element([NotNull] T value)
             {
+                Debug.Assert(value != null);
 #if DEBUG
                 _id = _nextId++;
 #endif
@@ -59,7 +64,7 @@ namespace QuikGraph.Collections
         public ForestDisjointSet(int capacity)
         {
             if (capacity < 0 || capacity >= int.MaxValue)
-                throw new ArgumentOutOfRangeException(nameof(capacity));
+                throw new ArgumentException("Capacity must be positive nor max value.", nameof(capacity));
 
             _elements = new Dictionary<T, Element>(capacity);
             SetCount = 0;
@@ -87,21 +92,16 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public T FindSet(T value)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
             return Find(_elements[value]).Value;
         }
 
         /// <inheritdoc />
         public bool AreInSameSet(T left, T right)
         {
-            if (left == null)
-                throw new ArgumentNullException(nameof(left));
             if (right == null)
                 throw new ArgumentNullException(nameof(right));
 
-            return FindSet(left)?.Equals(FindSet(right)) ?? false;
+            return FindSet(left).Equals(FindSet(right));
         }
 
         /// <inheritdoc />
@@ -118,9 +118,6 @@ namespace QuikGraph.Collections
         /// <inheritdoc />
         public bool Contains(T value)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
             return _elements.ContainsKey(value);
         }
 
@@ -130,8 +127,7 @@ namespace QuikGraph.Collections
         [NotNull]
         private static Element FindNoCompression([NotNull] Element element)
         {
-            if (element is null)
-                throw new ArgumentNullException(nameof(element));
+            Debug.Assert(element != null);
 
             // Find root
             Element current = element;
@@ -150,8 +146,7 @@ namespace QuikGraph.Collections
         [NotNull]
         private static Element Find([NotNull] Element element)
         {
-            if (element is null)
-                throw new ArgumentNullException(nameof(element));
+            Debug.Assert(element != null);
 
             Element root = FindNoCompression(element);
             CompressPath(element, root);
@@ -179,7 +174,6 @@ namespace QuikGraph.Collections
         {
             Debug.Assert(left != null);
             Debug.Assert(right != null);
-            //Debug.Assert(FindNoCompression(left) == FindNoCompression(right));
 
             // Shortcut when already unioned
             if (left == right)
@@ -200,14 +194,17 @@ namespace QuikGraph.Collections
             else if (leftRoot != rightRoot)
             {
                 rightRoot.Parent = leftRoot;
-                leftRoot.Rank = leftRoot.Rank + 1;
+                leftRoot.Rank += 1;
             }
             else
             {
+                Debug.Assert(FindNoCompression(left) == FindNoCompression(right));
                 return false; // Do not update the SetCount
             }
 
             --SetCount;
+
+            Debug.Assert(FindNoCompression(left) == FindNoCompression(right));
             return true;
         }
     }

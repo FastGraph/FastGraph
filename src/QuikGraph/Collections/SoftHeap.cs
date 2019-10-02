@@ -13,6 +13,9 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TKey">Key type.</typeparam>
     /// <typeparam name="TValue">Value type.</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class SoftHeap<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
@@ -21,12 +24,16 @@ namespace QuikGraph.Collections
             [NotNull]
             public TKey Key { get; }
 
+            [CanBeNull]
             public TValue Value { get; }
 
+            [CanBeNull]
             public Cell Next { get; internal set; }
 
-            public Cell(TKey key, TValue value)
+            public Cell([NotNull] TKey key, [CanBeNull] TValue value)
             {
+                Debug.Assert(key != null);
+
                 Key = key;
                 Value = value;
             }
@@ -159,7 +166,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="key">Key.</param>
         /// <param name="value">Value to add.</param>
-        public void Add([NotNull] TKey key, TValue value)
+        public void Add([NotNull] TKey key, [CanBeNull] TValue value)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
@@ -317,10 +324,11 @@ namespace QuikGraph.Collections
         }
 
         /// <summary>
-        /// Deletes the element with minimal key.
+        /// Gets and removes the minimal pair.
         /// </summary>
-        /// <returns>Deleted element.</returns>
-        public KeyValuePair<TKey, TValue> DeleteMin()
+        /// <returns>The minimal pair.</returns>
+        /// <exception cref="InvalidOperationException">The heap is empty.</exception>
+        public KeyValuePair<TKey, TValue> RemoveMinimum()
         {
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty.");
