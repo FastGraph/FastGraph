@@ -403,8 +403,7 @@ namespace QuikGraph.Serialization
                                 break;
                             case TypeCode.Object:
                                 if (defaultValueType.IsArray)
-                                    throw new NotImplementedException(
-                                        "Default values for array types are not implemented.");
+                                    throw new NotImplementedException("Default values for array types are not implemented.");
                                 throw new NotSupportedException(
                                     $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
                             default:
@@ -509,12 +508,11 @@ namespace QuikGraph.Serialization
         }
 
         [Pure]
-        public static bool TryGetWriteValueMethod([NotNull] Type valueType, out MethodInfo method)
+        public static bool TryGetWriteValueMethod([NotNull] Type type, out MethodInfo method)
         {
-            if (valueType is null)
-                throw new ArgumentNullException(nameof(valueType));
+            Debug.Assert(type != null);
 
-            bool status = WriteContentMethods.TryGetValue(valueType, out method);
+            bool status = WriteContentMethods.TryGetValue(type, out method);
             return status;
         }
     }

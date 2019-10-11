@@ -42,7 +42,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void TarjanOfflineLeastCommonAncestorAlgorithmAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 if (graph.VertexCount == 0)
                     continue;

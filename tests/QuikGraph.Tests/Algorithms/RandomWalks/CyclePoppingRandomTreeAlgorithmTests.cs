@@ -12,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         [Test]
         public void CyclePoppingRandomTreeAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 foreach (string root in graph.Vertices)
                 {

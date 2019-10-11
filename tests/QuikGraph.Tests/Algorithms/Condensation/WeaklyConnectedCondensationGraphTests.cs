@@ -68,7 +68,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         [Test]
         public void WeaklyConnectedCondensateAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 RunWeaklyConnectedCondensateAndCheck(graph);
         }
     }

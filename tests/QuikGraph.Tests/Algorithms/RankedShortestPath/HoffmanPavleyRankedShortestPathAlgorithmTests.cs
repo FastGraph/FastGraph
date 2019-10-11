@@ -48,7 +48,7 @@ namespace QuikGraph.Tests.Algorithms.RankedShortestPath
         [Test]
         public void HoffmanPavleyRankedShortestPathAll()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_TMP())
             {
                 if (graph.VertexCount == 0)
                     continue;

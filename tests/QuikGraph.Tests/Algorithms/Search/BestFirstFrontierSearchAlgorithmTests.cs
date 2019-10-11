@@ -95,14 +95,14 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void BestFirstFrontierSearchAllGraphs()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_TMP())
                 RunSearch(graph);
         }
 
         [Test]
         public void CompareBestFirstFrontierSearchAllGraphs()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_TMP())
             {
                 if (graph.VertexCount == 0)
                     continue;

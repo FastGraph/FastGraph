@@ -49,7 +49,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void EulerianTrailAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 ComputeTrail(graph, (s, t) => new Edge<string>(s, t));
             }

@@ -235,21 +235,21 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         [Test]
         public void KruskalMinimumSpanningTreeAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
                 Kruskal(graph);
         }
 
         [Test]
         public void PrimMinimumSpanningTreeAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
                 Prim(graph);
         }
 
         [Test]
         public void PrimKruskalMinimumSpanningTreeAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
                 CompareRoot(graph);
         }
 
@@ -303,7 +303,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         public void Repro12273()
         {
             UndirectedGraph<string, TaggedEdge<string, double>> undirectedGraph = XmlReader
-                .Create(GetGraphFilePath("repro12273.xml"))
+                .Create(GetGraphFilePath("testGraph.xml"))
                 .DeserializeFromXml(
                     "graph",
                     "node",

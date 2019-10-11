@@ -54,7 +54,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         [Test]
         public void RoundRobinAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 NormalizedEdgeChainTest(graph);
         }
     }

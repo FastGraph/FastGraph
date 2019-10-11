@@ -31,7 +31,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void SortAll()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_TMP())
             {
                 Sort(graph, TopologicalSortDirection.Forward);
                 Sort(graph, TopologicalSortDirection.Backward);

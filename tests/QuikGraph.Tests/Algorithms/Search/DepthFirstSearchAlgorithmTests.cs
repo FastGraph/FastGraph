@@ -96,7 +96,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void DepthFirstSearchAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 RunDepthFirstSearchAndCheck(graph);
         }
     }

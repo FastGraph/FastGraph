@@ -60,7 +60,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void EdmondsKarpMaxFlowAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 if (graph.VertexCount > 0)
                     EdmondsKarpMaxFlow(graph, (source, target) => new Edge<string>(source, target));

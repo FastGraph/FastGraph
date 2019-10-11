@@ -1,8 +1,11 @@
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
+#if SUPPORTS_XML_DTD_PROCESSING
+using System.Diagnostics;
+using System.Xml.Schema;
+#endif
 using System.IO;
 using System.Xml;
-using System.Xml.Schema;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 
@@ -15,7 +18,33 @@ namespace QuikGraph.Serialization
     {
         #region Serialization
 
-        // The following use of XmlWriter.Create fails in Silverlight
+        [NotNull]
+        private const string SerializationIndent = "    ";
+
+        /// <summary>
+        /// Serializes the given <paramref name="graph"/> into GraphML in a file at given <paramref name="filePath"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TGraph">Graph type.</typeparam>
+        /// <param name="graph">Graph instance to serialize.</param>
+        /// <param name="filePath">Path to the file where serializing the graph.</param>
+        public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
+            [NotNull] this TGraph graph,
+            [NotNull] string filePath)
+            where TEdge : IEdge<TVertex>
+            where TGraph : IEdgeListGraph<TVertex, TEdge>
+        {
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("Must provide a file path.", nameof(filePath));
+
+            var settings = new XmlWriterSettings { Indent = true, IndentChars = SerializationIndent };
+            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
+            {
+                SerializeToGraphML<TVertex, TEdge, TGraph>(graph, writer);
+                writer.Flush();
+            }
+        }
 
         /// <summary>
         /// Serializes the given <paramref name="graph"/> into GraphML in a file at given <paramref name="filePath"/>.
@@ -38,7 +67,7 @@ namespace QuikGraph.Serialization
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
-            var settings = new XmlWriterSettings { Indent = true, IndentChars = "    " };
+            var settings = new XmlWriterSettings { Indent = true, IndentChars = SerializationIndent };
             using (XmlWriter writer = XmlWriter.Create(filePath, settings))
             {
                 SerializeToGraphML(graph, writer, vertexIdentities, edgeIdentities);
@@ -47,26 +76,26 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Serializes the given <paramref name="graph"/> into GraphML in a file at given <paramref name="filePath"/>.
+        /// Serializes the given <paramref name="graph"/> into GraphML in the given <paramref name="writer"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph instance to serialize.</param>
-        /// <param name="filePath">Path to the file where serializing the graph.</param>
-        public static void SerializeToGraphML<TVertex, TEdge, TGraph>([NotNull] this TGraph graph, [NotNull] string filePath)
+        /// <param name="writer">The XML writer.</param>
+        public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
+            [NotNull] this TGraph graph,
+            [NotNull] XmlWriter writer)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
-            if (string.IsNullOrEmpty(filePath))
-                throw new ArgumentException("Must provide a file path.", nameof(filePath));
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
 
-            var settings = new XmlWriterSettings { Indent = true, IndentChars = "    " };
-            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
-            {
-                SerializeToGraphML<TVertex, TEdge, TGraph>(graph, writer);
-                writer.Flush();
-            }
+            VertexIdentity<TVertex> vertexIdentity = graph.GetVertexIdentity();
+            EdgeIdentity<TVertex, TEdge> edgeIdentity = graph.GetEdgeIdentity();
+
+            SerializeToGraphML(graph, writer, vertexIdentity, edgeIdentity);
         }
 
         /// <summary>
@@ -87,41 +116,76 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
-            if (graph == null)
-                throw new ArgumentNullException(nameof(graph));
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
-
             var serializer = new GraphMLSerializer<TVertex, TEdge, TGraph>();
             serializer.Serialize(writer, graph, vertexIdentities, edgeIdentities);
-        }
-
-        /// <summary>
-        /// Serializes the given <paramref name="graph"/> into GraphML in the given <paramref name="writer"/>.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <typeparam name="TGraph">Graph type.</typeparam>
-        /// <param name="graph">Graph instance to serialize.</param>
-        /// <param name="writer">The XML writer.</param>
-        public static void SerializeToGraphML<TVertex, TEdge, TGraph>([NotNull] this TGraph graph, [NotNull] XmlWriter writer)
-            where TEdge : IEdge<TVertex>
-            where TGraph : IEdgeListGraph<TVertex, TEdge>
-        {
-            if (graph == null)
-                throw new ArgumentNullException(nameof(graph));
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
-
-            VertexIdentity<TVertex> vertexIdentity = graph.GetVertexIdentity();
-            EdgeIdentity<TVertex, TEdge> edgeIdentity = graph.GetEdgeIdentity();
-
-            SerializeToGraphML(graph, writer, vertexIdentity, edgeIdentity);
         }
 
         #endregion
 
         #region Deserialization
+
+        /// <summary>
+        /// Deserializes from XML <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TGraph">Graph type.</typeparam>
+        /// <param name="graph">Graph instance to fill.</param>
+        /// <param name="reader">The XML reader.</param>
+        /// <param name="vertexFactory">Vertex factory method.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
+        public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
+            [NotNull] this TGraph graph,
+            [NotNull] XmlReader reader,
+            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
+            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            where TEdge : IEdge<TVertex>
+            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+        {
+            var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
+            serializer.Deserialize(reader, graph, vertexFactory, edgeFactory);
+        }
+
+        /// <summary>
+        /// Deserializes from the given <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <typeparam name="TGraph">Graph type.</typeparam>
+        /// <param name="graph">Graph instance to fill.</param>
+        /// <param name="reader">Reader stream.</param>
+        /// <param name="vertexFactory">Vertex factory method.</param>
+        /// <param name="edgeFactory">Edge factory method.</param>
+        public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
+            [NotNull] this TGraph graph,
+            [NotNull] TextReader reader,
+            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
+            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            where TEdge : IEdge<TVertex>
+            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+        {
+            if (reader is null)
+                throw new ArgumentNullException(nameof(reader));
+
+#if SUPPORTS_XML_DTD_PROCESSING
+            var settings = new XmlReaderSettings
+            {
+                ValidationFlags = XmlSchemaValidationFlags.None,
+                XmlResolver = new GraphMLXmlResolver(),
+                DtdProcessing = DtdProcessing.Ignore
+            };
+
+            using (XmlReader xmlReader = XmlReader.Create(reader, settings))
+            {
+#else
+            var xmlReader = new XmlTextReader(reader);
+            {
+                xmlReader.ProhibitDtd = false;
+                xmlReader.XmlResolver = null;
+#endif
+                DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
+            }
+        }
 
         /// <summary>
         /// Deserializes the given file at <paramref name="filePath"/> (GraphML graph) into the given <paramref name="graph"/>.
@@ -148,59 +212,7 @@ namespace QuikGraph.Serialization
                 DeserializeFromGraphML(graph, reader, vertexFactory, edgeFactory);
         }
 
-        /// <summary>
-        /// Deserializes from the given <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <typeparam name="TGraph">Graph type.</typeparam>
-        /// <param name="graph">Graph instance to fill.</param>
-        /// <param name="reader">Reader stream.</param>
-        /// <param name="vertexFactory">Vertex factory method.</param>
-        /// <param name="edgeFactory">Edge factory method.</param>
-        public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] TextReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
-            where TEdge : IEdge<TVertex>
-            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
-        {
-            if (reader is null)
-                throw new ArgumentNullException(nameof(reader));
-
-            var settings = new XmlReaderSettings
-            {
-                ValidationFlags = XmlSchemaValidationFlags.None,
-                XmlResolver = new GraphMLXmlResolver()
-            };
-
-            using (XmlReader xmlReader = XmlReader.Create(reader, settings))
-                DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
-        }
-
-        /// <summary>
-        /// Deserializes from XML <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <typeparam name="TGraph">Graph type.</typeparam>
-        /// <param name="graph">Graph instance to fill.</param>
-        /// <param name="reader">The XML reader.</param>
-        /// <param name="vertexFactory">Vertex factory method.</param>
-        /// <param name="edgeFactory">Edge factory method.</param>
-        public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
-            where TEdge : IEdge<TVertex>
-            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
-        {
-            var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
-            serializer.Deserialize(reader, graph, vertexFactory, edgeFactory);
-        }
-
+#if SUPPORTS_XML_DTD_PROCESSING
         /// <summary>
         /// Deserializes from the given <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>
         /// and checks if content is valid.
@@ -224,12 +236,14 @@ namespace QuikGraph.Serialization
                 throw new ArgumentNullException(nameof(reader));
 
             var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
+
             var settings = new XmlReaderSettings
             {
                 ValidationType = ValidationType.Schema,
-                XmlResolver = new GraphMLXmlResolver()
+                XmlResolver = new GraphMLXmlResolver(),
+                DtdProcessing = DtdProcessing.Ignore
             };
-            
+
             // Add GraphML schema
             AddGraphMLSchema(settings);
 
@@ -251,8 +265,7 @@ namespace QuikGraph.Serialization
         {
             using (Stream xsdStream = typeof(GraphMLExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml.xsd"))
             {
-                if (xsdStream is null)
-                    throw new InvalidOperationException("Cannot load GraphML schema.");
+                Debug.Assert(xsdStream != null, "GraphML schema resource not found.");
 
                 using (XmlReader xsdReader = XmlReader.Create(xsdStream, settings))
                     settings.Schemas.Add(GraphMLXmlResolver.GraphMLNamespace, xsdReader);
@@ -264,6 +277,7 @@ namespace QuikGraph.Serialization
             if (args.Severity == XmlSeverityType.Error)
                 throw new InvalidOperationException(args.Message);
         }
+#endif
 
         #endregion
     }

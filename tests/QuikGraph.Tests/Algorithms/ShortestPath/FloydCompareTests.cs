@@ -84,7 +84,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void FloydVsBellmannGraphML()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 Compare(graph, e => 1, (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
 
@@ -99,7 +99,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void FloydVsDijkstraGraphML()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 Compare(graph, e => 1, (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
     }

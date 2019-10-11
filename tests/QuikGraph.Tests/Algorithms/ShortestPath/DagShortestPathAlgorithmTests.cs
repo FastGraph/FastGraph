@@ -95,7 +95,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void DagShortestPathAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 Compute(graph);
                 ComputeCriticalPath(graph);

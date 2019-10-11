@@ -20,6 +20,7 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the DirectedGraph XML serializer.
         /// </summary>
+        [NotNull]
         public static XmlSerializer DirectedGraphSerializer =>
             _directedGraphSerializer ?? (_directedGraphSerializer = new XmlSerializer(typeof(DirectedGraph)));
 
@@ -89,8 +90,10 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
         /// <returns>Converted graph.</returns>
+        [Pure]
         [NotNull]
-        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>([NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
+            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
             return ToDirectedGraphML(
@@ -107,12 +110,16 @@ namespace QuikGraph.Serialization
         /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
         /// <param name="vertexColors">Function that gives the color of a vertex.</param>
         /// <returns>Converted graph.</returns>
+        [Pure]
         [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TVertex, GraphColor> vertexColors)
             where TEdge : IEdge<TVertex>
         {
+            if (vertexColors is null)
+                throw new ArgumentNullException(nameof(vertexColors));
+
             return ToDirectedGraphML(
                 visitedGraph,
                 visitedGraph.GetVertexIdentity(),
@@ -145,6 +152,7 @@ namespace QuikGraph.Serialization
         /// <param name="vertexIdentities">Vertex identity method.</param>
         /// <param name="edgeIdentities">Edge identity method.</param>
         /// <returns>Converted graph.</returns>
+        [Pure]
         [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
@@ -171,6 +179,7 @@ namespace QuikGraph.Serialization
         /// <param name="formatNode">Formats a vertex into a <see cref="DirectedGraphNode"/>.</param>
         /// <param name="formatEdge">Formats an edge into a <see cref="DirectedGraphLink"/>.</param>
         /// <returns>Converted graph.</returns>
+        [Pure]
         [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,

@@ -81,40 +81,32 @@ namespace QuikGraph.Serialization
                 VertexAttributesReader =
                     (ReadVertexAttributesDelegate)CreateReadDelegate(
                     typeof(ReadVertexAttributesDelegate),
-                    typeof(TVertex)
-                    //,"id"
-                    );
+                    typeof(TVertex)); //,"id"
 
                 EdgeAttributesReader =
                     (ReadEdgeAttributesDelegate)CreateReadDelegate(
                     typeof(ReadEdgeAttributesDelegate),
-                    typeof(TEdge)
-                    //,"id", "source", "target"
-                    );
+                    typeof(TEdge)); //,"id", "source", "target"
 
                 GraphAttributesReader =
                     (ReadGraphAttributesDelegate)CreateReadDelegate(
                     typeof(ReadGraphAttributesDelegate),
-                    typeof(TGraph)
-                    );
+                    typeof(TGraph));
 
                 SetVertexDefault =
                     (Action<TVertex>)CreateSetDefaultDelegate(
                         typeof(Action<TVertex>),
-                        typeof(TVertex)
-                    );
+                        typeof(TVertex));
 
                 SetEdgeDefault =
                     (Action<TEdge>)CreateSetDefaultDelegate(
                         typeof(Action<TEdge>),
-                        typeof(TEdge)
-                    );
+                        typeof(TEdge));
 
                 SetGraphDefault =
                     (Action<TGraph>)CreateSetDefaultDelegate(
                         typeof(Action<TGraph>),
-                        typeof(TGraph)
-                    );
+                        typeof(TGraph));
             }
 
             [NotNull]
@@ -215,7 +207,7 @@ namespace QuikGraph.Serialization
                     // Do we have a set method?
                     MethodInfo setMethod = property.GetSetMethod();
                     if (setMethod is null)
-                        throw new InvalidOperationException($"Property {property.DeclaringType}.{property.Name} has no set method.");
+                        throw new InvalidOperationException($"Property {property.DeclaringType}.{property.Name} has no setter.");
 
                     // reader.ReadXXX
                     generator.Emit(OpCodes.Ldarg_2); // element
@@ -524,8 +516,7 @@ namespace QuikGraph.Serialization
         [Pure]
         public static bool TryGetReadContentMethod([NotNull] Type type, out MethodInfo method)
         {
-            if (type is null)
-                throw new ArgumentNullException(nameof(type));
+            Debug.Assert(type != null);
 
             bool result = ReadContentMethods.TryGetValue(type, out method);
 

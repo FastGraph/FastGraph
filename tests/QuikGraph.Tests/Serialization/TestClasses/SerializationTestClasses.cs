@@ -2,16 +2,12 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
-using System.Xml;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
-using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Serialization;
 
 namespace QuikGraph.Tests.Serialization
 {
-    #region Enumerations
+    #region Test enumerations
 
     /// <summary>
     /// Enumeration of the <see cref="Person"/>'s gender.
@@ -725,63 +721,4 @@ namespace QuikGraph.Tests.Serialization
     }
 
     #endregion
-
-    [TestFixture]
-    internal class Repro13482Tests
-    {
-        [Test]
-        public void Repro13482()
-        {
-            var graph = new AdjacencyGraph<Person, TaggedEdge<Person, string>>();
-
-            var jacob = new Person("Jacob", "Hochstetler")
-            {
-                BirthDate = new DateTime(1712, 01, 01),
-                BirthPlace = "Alsace, France",
-                DeathDate = new DateTime(1776, 01, 01),
-                DeathPlace = "Pennsylvania, USA",
-                Gender = Gender.Male
-            };
-
-            var john = new Person("John", "Hochstetler")
-            {
-                BirthDate = new DateTime(1735, 01, 01),
-                BirthPlace = "Alsace, France",
-                DeathDate = new DateTime(1805, 04, 15),
-                DeathPlace = "Summit Mills, PA",
-                Gender = Gender.Male
-            };
-
-            var jonathon = new Person("Jonathon", "Hochstetler")
-            {
-                BirthPlace = "Pennsylvania",
-                DeathDate = new DateTime(1823, 05, 08),
-                Gender = Gender.Male,
-            };
-
-            var emanuel = new Person("Emanuel", "Hochstedler")
-            {
-                BirthDate = new DateTime(1855, 01, 01),
-                DeathDate = new DateTime(1900, 01, 01),
-                Gender = Gender.Male
-            };
-
-            graph.AddVerticesAndEdge(new TaggedEdge<Person, string>(jacob, john, jacob.ChildRelationshipText));
-            graph.AddVerticesAndEdge(new TaggedEdge<Person, string>(john, jonathon, john.ChildRelationshipText));
-            graph.AddVerticesAndEdge(new TaggedEdge<Person, string>(jonathon, emanuel, jonathon.ChildRelationshipText));
-
-            var settings = new XmlWriterSettings { Indent = true, IndentChars = @"    " };
-            using (XmlWriter writer = XmlWriter.Create(Console.Out, settings))
-            {
-                graph.SerializeToXml(
-                    writer,
-                    vertex => vertex.Id,
-                    graph.GetEdgeIdentity(),
-                    "graph",
-                    "person",
-                    "relationship",
-                    "");
-            }
-        }
-    }
 }

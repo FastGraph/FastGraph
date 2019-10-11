@@ -42,7 +42,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void AllAdjacencyGraphRoots()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 Roots(graph);
         }
     }

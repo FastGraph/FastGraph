@@ -18,7 +18,9 @@ namespace QuikGraph.Serialization
         /// <returns>Boolean array.</returns>
         [Pure]
         [CanBeNull]
-        public static bool[] ReadElementContentAsBooleanArray([NotNull] XmlReader xmlReader, [NotNull] string localName,
+        public static bool[] ReadElementContentAsBooleanArray(
+            [NotNull] XmlReader xmlReader,
+            [NotNull] string localName,
             [NotNull] string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToBoolean);
@@ -33,7 +35,9 @@ namespace QuikGraph.Serialization
         /// <returns>Int array.</returns>
         [Pure]
         [CanBeNull]
-        public static int[] ReadElementContentAsInt32Array([NotNull] XmlReader xmlReader, [NotNull] string localName,
+        public static int[] ReadElementContentAsInt32Array(
+            [NotNull] XmlReader xmlReader,
+            [NotNull] string localName,
             [NotNull] string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToInt32);
@@ -48,7 +52,9 @@ namespace QuikGraph.Serialization
         /// <returns>Long array.</returns>
         [Pure]
         [CanBeNull]
-        public static long[] ReadElementContentAsInt64Array([NotNull] XmlReader xmlReader, [NotNull] string localName,
+        public static long[] ReadElementContentAsInt64Array(
+            [NotNull] XmlReader xmlReader,
+            [NotNull] string localName,
             [NotNull] string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToInt64);
@@ -63,7 +69,9 @@ namespace QuikGraph.Serialization
         /// <returns>Float array.</returns>
         [Pure]
         [CanBeNull]
-        public static float[] ReadElementContentAsSingleArray([NotNull] XmlReader xmlReader, [NotNull] string localName,
+        public static float[] ReadElementContentAsSingleArray(
+            [NotNull] XmlReader xmlReader,
+            [NotNull] string localName,
             [NotNull] string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToSingle);
@@ -78,8 +86,10 @@ namespace QuikGraph.Serialization
         /// <returns>Double array.</returns>
         [Pure]
         [CanBeNull]
-        public static double[] ReadElementContentAsDoubleArray([NotNull] XmlReader xmlReader,
-            [NotNull] string localName, [NotNull] string namespaceURI)
+        public static double[] ReadElementContentAsDoubleArray(
+            [NotNull] XmlReader xmlReader,
+            [NotNull] string localName,
+            [NotNull] string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToDouble);
         }
@@ -93,8 +103,10 @@ namespace QuikGraph.Serialization
         /// <returns>String array.</returns>
         [Pure]
         [CanBeNull]
-        public static string[] ReadElementContentAsStringArray([NotNull] XmlReader xmlReader,
-            [NotNull] string localName, [NotNull] string namespaceURI)
+        public static string[] ReadElementContentAsStringArray(
+            [NotNull] XmlReader xmlReader,
+            [NotNull] string localName,
+            [NotNull] string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, str => str);
         }

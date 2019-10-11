@@ -30,7 +30,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void ComputeAll()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_TMP())
                 Compute(graph);
         }
     }

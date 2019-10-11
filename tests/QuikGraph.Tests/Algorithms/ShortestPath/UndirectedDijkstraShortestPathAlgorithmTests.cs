@@ -53,7 +53,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void UndirectedDijkstraAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
             {
                 int cut = 0;
                 foreach (var root in graph.Vertices)

@@ -83,7 +83,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         [Test]
         public void StronglyConnectedCondensateAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 RunStronglyConnectedCondensateAndCheck(graph);
         }
     }

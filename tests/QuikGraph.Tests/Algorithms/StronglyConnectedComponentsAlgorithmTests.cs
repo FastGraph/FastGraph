@@ -122,7 +122,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void StronglyConnectedComponentAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 Compute(graph);
         }
     }

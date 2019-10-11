@@ -9,7 +9,8 @@ using QuikGraph.Serialization.DirectedGraphML;
 namespace QuikGraph.Serialization
 {
     /// <summary>
-    /// Algorithm that creates a <see cref="DirectedGraph"/> from a given directed graph.
+    /// Algorithm that creates a <see cref="DirectedGraphML.DirectedGraph"/>
+    /// from a given directed graph.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>

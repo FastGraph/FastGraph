@@ -71,7 +71,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void DijkstraAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 foreach (string root in graph.Vertices)
                     RunDijkstraAndCheck(graph, root);

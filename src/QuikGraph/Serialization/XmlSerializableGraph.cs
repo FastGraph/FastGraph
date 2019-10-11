@@ -12,13 +12,14 @@ namespace QuikGraph.Serialization
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     [XmlRoot("graph")]
     public class XmlSerializableGraph<TVertex, TEdge, TGraph>
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
     {
-        private XmlEdgeList _edges;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlSerializableGraph{TVertex,TEdge,TGraph}"/> class.
         /// </summary>
@@ -43,8 +44,23 @@ namespace QuikGraph.Serialization
         /// Gets the graph to serialize.
         /// </summary>
         [NotNull]
-        [XmlElement("graph-traits")]
         public TGraph Graph { get; }
+
+        private XmlVertexList _vertices;
+
+        /// <summary>
+        /// Gets the vertices to serialize.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        [XmlArray("vertices")]
+        [XmlArrayItem("vertex")]
+        public XmlVertexList Vertices
+        {
+            get => _vertices ?? (_vertices = new XmlVertexList(Graph));
+            set => _vertices = value;
+        }
+
+        private XmlEdgeList _edges;
 
         /// <summary>
         /// Gets the edges to serialize.
@@ -52,11 +68,66 @@ namespace QuikGraph.Serialization
         [NotNull, ItemNotNull]
         [XmlArray("edges")]
         [XmlArrayItem("edge")]
-        public IEnumerable<TEdge> Edges => _edges ?? (_edges = new XmlEdgeList(Graph));
+        public XmlEdgeList Edges
+        {
+            get => _edges ?? (_edges = new XmlEdgeList(Graph));
+            set => _edges = value;
+        }
+
+        /// <summary>
+        /// Represents an XML serializable list of vertices.
+        /// </summary>
+#if SUPPORTS_SERIALIZATION
+        [Serializable]
+#endif
+        public class XmlVertexList : IEnumerable<TVertex>
+        {
+            [NotNull]
+            private readonly TGraph _graph;
+
+            internal XmlVertexList([NotNull] TGraph graph)
+            {
+                if (graph == null)
+                    throw new ArgumentNullException(nameof(graph));
+
+                _graph = graph;
+            }
+
+            #region IEnumerable
+
+            /// <inheritdoc />
+            public IEnumerator<TVertex> GetEnumerator()
+            {
+                return _graph.Vertices.GetEnumerator();
+            }
+
+            /// <inheritdoc />
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            #endregion
+
+            /// <summary>
+            /// Adds a vertex to this serializable graph.
+            /// </summary>
+            /// <param name="vertex">Vertex to add.</param>
+            public void Add([NotNull] TVertex vertex)
+            {
+                if (vertex == null)
+                    throw new ArgumentNullException(nameof(vertex));
+
+                _graph.AddVertex(vertex);
+            }
+        }
 
         /// <summary>
         /// Represents an XML serializable list of edge.
         /// </summary>
+#if SUPPORTS_SERIALIZATION
+        [Serializable]
+#endif
         public class XmlEdgeList : IEnumerable<TEdge>
         {
             [NotNull]

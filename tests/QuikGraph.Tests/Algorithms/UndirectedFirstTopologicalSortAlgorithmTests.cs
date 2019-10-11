@@ -28,7 +28,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void UndirectedFirstTopologicalSortAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
                 Compute(graph);
 
             // TODO: Add assertions

@@ -56,7 +56,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Category(TestCategories.LongRunning)]
         public void AStartAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 foreach (string root in graph.Vertices)
                     RunAStarAndCheck(graph, root);

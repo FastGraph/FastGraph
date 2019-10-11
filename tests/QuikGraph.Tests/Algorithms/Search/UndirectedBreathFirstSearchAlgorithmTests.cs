@@ -163,7 +163,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void UndirectedBreadthFirstSearchAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
             {
                 foreach (string vertex in graph.Vertices)
                     RunBfsAndCheck(graph, vertex);

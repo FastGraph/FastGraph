@@ -80,7 +80,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void AugmentAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 AugmentAndCheck(graph);
         }
     }

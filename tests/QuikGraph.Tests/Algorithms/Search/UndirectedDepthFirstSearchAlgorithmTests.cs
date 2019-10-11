@@ -99,7 +99,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void UndirectedDepthFirstSearchAll()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
                 RunUndirectedDepthFirstSearchAndCheck(graph);
         }
     }

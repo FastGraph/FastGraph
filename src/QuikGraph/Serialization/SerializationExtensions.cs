@@ -69,8 +69,8 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="document">Input XML document.</param>
         /// <param name="graphXPath">XPath expression to the graph node. The first node is considered.</param>
-        /// <param name="verticesXPath">XPath expression from the graph node to the vertex nodes.</param>
-        /// <param name="edgesXPath">XPath expression from the graph node to the edge nodes.</param>
+        /// <param name="vertexXPath">XPath expression from the graph node to the vertex nodes.</param>
+        /// <param name="edgeXPath">XPath expression from the graph node to the edge nodes.</param>
         /// <param name="graphFactory">Delegate that instantiates the empty graph instance, given the graph node.</param>
         /// <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
@@ -83,8 +83,8 @@ namespace QuikGraph.Serialization
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this IXPathNavigable document,
             [NotNull] string graphXPath,
-            [NotNull] string verticesXPath,
-            [NotNull] string edgesXPath,
+            [NotNull] string vertexXPath,
+            [NotNull] string edgeXPath,
             [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
             [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
             [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
@@ -93,12 +93,12 @@ namespace QuikGraph.Serialization
         {
             if (document is null)
                 throw new ArgumentNullException(nameof(document));
-            if (graphXPath is null)
-                throw new ArgumentNullException(nameof(graphXPath));
-            if (verticesXPath is null)
-                throw new ArgumentNullException(nameof(verticesXPath));
-            if (edgesXPath is null)
-                throw new ArgumentNullException(nameof(edgesXPath));
+            if (string.IsNullOrEmpty(graphXPath))
+                throw new ArgumentException("Graph path cannot be null or empty", nameof(graphXPath));
+            if (string.IsNullOrEmpty(vertexXPath))
+                throw new ArgumentException("Vertex path cannot be null or empty", nameof(vertexXPath));
+            if (string.IsNullOrEmpty(edgeXPath))
+                throw new ArgumentException("Edge path cannot be null or empty", nameof(edgeXPath));
             if (graphFactory is null)
                 throw new ArgumentNullException(nameof(graphFactory));
             if (vertexFactory is null)
@@ -109,8 +109,8 @@ namespace QuikGraph.Serialization
             return DeserializeFromXmlInternal(
                 document,
                 graphXPath,
-                verticesXPath,
-                edgesXPath,
+                vertexXPath,
+                edgeXPath,
                 graphFactory,
                 vertexFactory,
                 edgeFactory);
@@ -119,8 +119,8 @@ namespace QuikGraph.Serialization
         private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
             [NotNull] this IXPathNavigable document,
             [NotNull] string graphXPath,
-            [NotNull] string verticesXPath,
-            [NotNull] string edgesXPath,
+            [NotNull] string vertexXPath,
+            [NotNull] string edgeXPath,
             [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
             [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
             [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
@@ -128,20 +128,17 @@ namespace QuikGraph.Serialization
             where TEdge : IEdge<TVertex>
         {
             XPathNavigator navigator = document.CreateNavigator();
-            if (navigator is null)
-                throw new InvalidOperationException("Document does not allow to get an XML navigator.");
-
-            XPathNavigator graphNode = navigator.SelectSingleNode(graphXPath);
+            XPathNavigator graphNode = navigator?.SelectSingleNode(graphXPath);
             if (graphNode is null)
                 throw new InvalidOperationException("Could not find graph node.");
             TGraph graph = graphFactory(graphNode);
-            foreach (XPathNavigator vertexNode in graphNode.Select(verticesXPath))
+            foreach (XPathNavigator vertexNode in graphNode.Select(vertexXPath))
             {
                 TVertex vertex = vertexFactory(vertexNode);
                 graph.AddVertex(vertex);
             }
 
-            foreach (XPathNavigator edgeNode in graphNode.Select(edgesXPath))
+            foreach (XPathNavigator edgeNode in graphNode.Select(edgeXPath))
             {
                 TEdge edge = edgeFactory(edgeNode);
                 graph.AddEdge(edge);
@@ -259,6 +256,15 @@ namespace QuikGraph.Serialization
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
+            if (string.IsNullOrEmpty(graphElementName))
+                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.", nameof(graphElementName));
+            if (string.IsNullOrEmpty(vertexElementName))
+                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.", nameof(vertexElementName));
+            if (string.IsNullOrEmpty(edgeElementName))
+                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.", nameof(edgeElementName));
+            if (namespaceUri is null)
+                throw new ArgumentNullException(nameof(namespaceUri));
+
             return DeserializeFromXml(
                 reader,
                 r => r.Name == graphElementName && r.NamespaceURI == namespaceUri,
@@ -350,11 +356,13 @@ namespace QuikGraph.Serialization
             if (edgeIdentity is null)
                 throw new ArgumentNullException(nameof(edgeIdentity));
             if (string.IsNullOrEmpty(graphElementName))
-                throw new ArgumentException($"{nameof(graphElementName)} must be set.", nameof(graphElementName));
+                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.", nameof(graphElementName));
             if (string.IsNullOrEmpty(vertexElementName))
-                throw new ArgumentException($"{nameof(vertexElementName)} must be set.", nameof(vertexElementName));
+                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.", nameof(vertexElementName));
             if (string.IsNullOrEmpty(edgeElementName))
-                throw new ArgumentException($"{nameof(edgeElementName)} must be set.", nameof(edgeElementName));
+                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.", nameof(edgeElementName));
+            if (namespaceUri is null)
+                throw new ArgumentNullException(nameof(namespaceUri));
 
             writer.WriteStartElement(graphElementName, namespaceUri);
 

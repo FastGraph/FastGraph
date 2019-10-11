@@ -151,7 +151,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void BreadthFirstSearchAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
             {
                 foreach (string vertex in graph.Vertices)
                     RunBfsAndCheck(graph, vertex);

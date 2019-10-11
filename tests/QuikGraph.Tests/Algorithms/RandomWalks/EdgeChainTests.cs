@@ -30,7 +30,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         [Test]
         public void GenerateAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 Generate(graph);
         }
     }

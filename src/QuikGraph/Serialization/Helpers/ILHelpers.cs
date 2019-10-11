@@ -1,5 +1,6 @@
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using JetBrains.Annotations;
@@ -13,6 +14,9 @@ namespace QuikGraph.Serialization
     {
         public static void EmitValue([NotNull] ILGenerator generator, [NotNull] PropertyInfo property, [NotNull] object value)
         {
+            Debug.Assert(generator != null);
+            Debug.Assert(property != null);
+
             switch (Type.GetTypeCode(property.PropertyType))
             {
                 case TypeCode.Int32:

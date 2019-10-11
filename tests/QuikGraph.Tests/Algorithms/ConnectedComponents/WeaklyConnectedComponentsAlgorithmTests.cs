@@ -46,7 +46,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         [Test]
         public void WeaklyConnectedComponentsAll()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_TMP())
                 Compute(graph);
         }
     }
