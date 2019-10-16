@@ -115,8 +115,14 @@ namespace QuikGraph
             return OriginalGraph.ContainsEdge(edge);
         }
 
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
         #endregion
-        
+
         #region IUndirectedGraph<TVertex,TEdge>
 
         /// <inheritdoc />
@@ -150,12 +156,6 @@ namespace QuikGraph
         public TEdge AdjacentEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
-        }
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            return TryGetEdge(source, target, out _);
         }
 
         /// <inheritdoc />

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -23,7 +22,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The parent vertex if there is one, otherwise null.</returns>
-        /// <exception cref="ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
+        /// <exception cref="System.ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]
         [CanBeNull]
         TVertex GetParent([NotNull] TVertex vertex);
@@ -33,7 +32,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The parent vertex edge.</returns>
-        /// <exception cref="ArgumentException">The <paramref name="vertex"/> is the root of the graph.</exception>
+        /// <exception cref="System.ArgumentException">The <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]
         [CanBeNull]
         TEdge GetParentEdge([NotNull] TVertex vertex);
@@ -71,8 +70,8 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>The number of edge between <paramref name="source"/> and <paramref name="target"/>.</returns>
-        /// <exception cref="ArgumentException">The <paramref name="source"/> is a predecessor of
-        /// <paramref name="target"/> or the otherway round.</exception>
+        /// <exception cref="System.ArgumentException">The <paramref name="source"/> is a predecessor of
+        /// <paramref name="target"/> or the other-way round.</exception>
         [Pure]
         int InducedEdgeCount([NotNull] TVertex source, [NotNull] TVertex target);
 

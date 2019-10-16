@@ -60,6 +60,87 @@ namespace QuikGraph.Serialization
             object result = formatter.Deserialize(stream);
             return (TGraph)result;
         }
+#endif
+
+        [Pure]
+        private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
+            [NotNull] XmlReader reader,
+            [NotNull, InstantHandle] Predicate<XmlReader> graphPredicate,
+            [NotNull, InstantHandle] Predicate<XmlReader> vertexPredicate,
+            [NotNull, InstantHandle] Predicate<XmlReader> edgePredicate,
+            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
+            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
+            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge> where TEdge : IEdge<TVertex>
+        {
+            // Find the graph node
+            TGraph graph = null;
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && graphPredicate(reader))
+                {
+                    graph = graphFactory(reader);
+                    break;
+                }
+            }
+
+            if (graph is null)
+                throw new InvalidOperationException("Could not find graph node.");
+
+            using (XmlReader graphReader = reader.ReadSubtree())
+            {
+                while (graphReader.Read())
+                {
+                    if (graphReader.NodeType == XmlNodeType.Element)
+                    {
+                        if (vertexPredicate(graphReader))
+                        {
+                            TVertex vertex = vertexFactory(graphReader);
+                            graph.AddVertex(vertex);
+                        }
+                        else if (edgePredicate(reader))
+                        {
+                            TEdge edge = edgeFactory(graphReader);
+                            graph.AddEdge(edge);
+                        }
+                    }
+                }
+            }
+
+            return graph;
+        }
+
+#if SUPPORTS_GRAPHS_SERIALIZATION
+        private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
+            [NotNull] this IXPathNavigable document,
+            [NotNull] string graphXPath,
+            [NotNull] string vertexXPath,
+            [NotNull] string edgeXPath,
+            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
+            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
+            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
+            where TEdge : IEdge<TVertex>
+        {
+            XPathNavigator navigator = document.CreateNavigator();
+            XPathNavigator graphNode = navigator?.SelectSingleNode(graphXPath);
+            if (graphNode is null)
+                throw new InvalidOperationException("Could not find graph node.");
+            TGraph graph = graphFactory(graphNode);
+            foreach (XPathNavigator vertexNode in graphNode.Select(vertexXPath))
+            {
+                TVertex vertex = vertexFactory(vertexNode);
+                graph.AddVertex(vertex);
+            }
+
+            foreach (XPathNavigator edgeNode in graphNode.Select(edgeXPath))
+            {
+                TEdge edge = edgeFactory(edgeNode);
+                graph.AddEdge(edge);
+            }
+
+            return graph;
+        }
 
         /// <summary>
         /// Deserializes a graph instance from a generic XML stream, using an <see cref="XPathDocument"/>.
@@ -115,37 +196,6 @@ namespace QuikGraph.Serialization
                 vertexFactory,
                 edgeFactory);
         }
-
-        private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
-            [NotNull] this IXPathNavigable document,
-            [NotNull] string graphXPath,
-            [NotNull] string vertexXPath,
-            [NotNull] string edgeXPath,
-            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
-            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
-            where TEdge : IEdge<TVertex>
-        {
-            XPathNavigator navigator = document.CreateNavigator();
-            XPathNavigator graphNode = navigator?.SelectSingleNode(graphXPath);
-            if (graphNode is null)
-                throw new InvalidOperationException("Could not find graph node.");
-            TGraph graph = graphFactory(graphNode);
-            foreach (XPathNavigator vertexNode in graphNode.Select(vertexXPath))
-            {
-                TVertex vertex = vertexFactory(vertexNode);
-                graph.AddVertex(vertex);
-            }
-
-            foreach (XPathNavigator edgeNode in graphNode.Select(edgeXPath))
-            {
-                TEdge edge = edgeFactory(edgeNode);
-                graph.AddEdge(edge);
-            }
-
-            return graph;
-        }
 #endif
 
         /// <summary>
@@ -190,41 +240,7 @@ namespace QuikGraph.Serialization
             if (edgeFactory is null)
                 throw new ArgumentNullException(nameof(edgeFactory));
 
-            // Find the graph node
-            TGraph graph = null;
-            while (reader.Read())
-            {
-                if (reader.NodeType == XmlNodeType.Element && graphPredicate(reader))
-                {
-                    graph = graphFactory(reader);
-                    break;
-                }
-            }
-
-            if (graph is null)
-                throw new InvalidOperationException("Could not find graph node.");
-
-            using (XmlReader graphReader = reader.ReadSubtree())
-            {
-                while (graphReader.Read())
-                {
-                    if (graphReader.NodeType == XmlNodeType.Element)
-                    {
-                        if (vertexPredicate(graphReader))
-                        {
-                            TVertex vertex = vertexFactory(graphReader);
-                            graph.AddVertex(vertex);
-                        }
-                        else if (edgePredicate(reader))
-                        {
-                            TEdge edge = edgeFactory(graphReader);
-                            graph.AddEdge(edge);
-                        }
-                    }
-                }
-            }
-
-            return graph;
+            return DeserializeFromXmlInternal(reader, graphPredicate, vertexPredicate, edgePredicate, graphFactory, vertexFactory, edgeFactory);
         }
 
         /// <summary>

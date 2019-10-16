@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
-using System.Xml.Serialization;
 using JetBrains.Annotations;
 using static QuikGraph.Serialization.ILHelpers;
 using static QuikGraph.Serialization.XmlConstants;
@@ -22,7 +21,7 @@ namespace QuikGraph.Serialization
     /// <remarks>
     /// <para>
     /// Custom vertex, edge and graph attributes can be specified by 
-    /// using the <see cref="XmlAttributeAttribute"/> attribute on properties (field not supported).
+    /// using the <see cref="System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
     /// </para>
     /// <para>
     /// The serializer uses LCG (lightweight code generation) to generate the 
@@ -355,28 +354,26 @@ namespace QuikGraph.Serialization
                     string name = info.Name;
                     Type propertyType = property.PropertyType;
 
+                    // <key id="d1" for="edge" attr.name="weight" attr.type="double"/>
+                    _writer.WriteStartElement("key", GraphMLXmlResolver.GraphMLNamespace);
+                    _writer.WriteAttributeString(IdAttribute, name);
+                    _writer.WriteAttributeString("for", nodeName);
+                    _writer.WriteAttributeString("attr.name", name);
+
+                    string typeCodeStr;
+                    try
                     {
-                        // <key id="d1" for="edge" attr.name="weight" attr.type="double"/>
-                        _writer.WriteStartElement("key", GraphMLXmlResolver.GraphMLNamespace);
-                        _writer.WriteAttributeString(IdAttribute, name);
-                        _writer.WriteAttributeString("for", nodeName);
-                        _writer.WriteAttributeString("attr.name", name);
-
-                        string typeCodeStr;
-                        try
-                        {
-                            typeCodeStr = ConstructTypeCode(propertyType);
-                        }
-                        catch (NotSupportedException)
-                        {
-                            throw new NotSupportedException(
-                                $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
-                        }
-
-                        _writer.WriteAttributeString("attr.type", typeCodeStr);
+                        typeCodeStr = ConstructTypeCode(propertyType);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        throw new NotSupportedException(
+                            $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
                     }
 
-                    // <default>...</default>
+                    _writer.WriteAttributeString("attr.type", typeCodeStr);
+
+                        // <default>...</default>
                     if (info.TryGetDefaultValue(out object defaultValue))
                     {
                         _writer.WriteStartElement("default");

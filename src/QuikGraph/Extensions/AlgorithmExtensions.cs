@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+#if SUPPORTS_TYPE_FULL_FEATURES
+using System.Reflection;
+#else
+using QuikGraph.Utils;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Condensation;
 using QuikGraph.Algorithms.ConnectedComponents;
@@ -14,9 +18,6 @@ using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.ShortestPath;
 using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Collections;
-#if !SUPPORTS_TYPE_FULL_FEATURES
-using QuikGraph.Utils;
-#endif
 
 namespace QuikGraph.Algorithms
 {

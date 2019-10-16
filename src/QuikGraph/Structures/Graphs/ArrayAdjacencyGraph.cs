@@ -102,6 +102,12 @@ namespace QuikGraph
             return false;
         }
 
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
         #endregion
 
         #region IImplicitGraph<TVertex,TEdge>
@@ -164,12 +170,6 @@ namespace QuikGraph
         #endregion
 
         #region IIncidenceGraph<TVertex,TEdge>
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            return TryGetEdge(source, target, out _);
-        }
 
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)

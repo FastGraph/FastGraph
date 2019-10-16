@@ -176,15 +176,16 @@ namespace QuikGraph.Serialization
             };
 
             using (XmlReader xmlReader = XmlReader.Create(reader, settings))
-            {
-#else
-            var xmlReader = new XmlTextReader(reader);
-            {
-                xmlReader.ProhibitDtd = false;
-                xmlReader.XmlResolver = null;
-#endif
                 DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
-            }
+#else
+            var xmlReader = new XmlTextReader(reader)
+            {
+                ProhibitDtd = false,
+                XmlResolver = null
+            };
+
+            DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
+#endif
         }
 
         /// <summary>

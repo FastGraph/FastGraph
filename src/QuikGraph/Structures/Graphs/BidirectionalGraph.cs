@@ -147,6 +147,17 @@ namespace QuikGraph
                    && outEdges.Contains(edge);
         }
 
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
+            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
+                return outEdges.Any(edge => edge.Target.Equals(target));
+            return false;
+        }
+
         #endregion
 
         #region IImplicitGraph<TVertex,TEdge>
@@ -209,17 +220,6 @@ namespace QuikGraph
         #endregion
 
         #region IIncidenceGraph<TVertex,TEdge>
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-
-            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
-                return outEdges.Any(edge => edge.Target.Equals(target));
-            return false;
-        }
 
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)

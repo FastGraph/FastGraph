@@ -186,29 +186,39 @@ namespace QuikGraph.Algorithms.RandomWalks
                 if (cancelManager.IsCancelling)
                     break;
 
-                // First pass: exploration 
-                {
-                    var visitedEdges = new Dictionary<TEdge, int>();
-                    TVertex current = vertex;
-                    while (NotInTree(current) && TryGetSuccessor(visitedEdges, current, out TEdge successor))
-                    {
-                        visitedEdges[successor] = 0;
-                        Tree(current, successor);
-                        if (!TryGetNextInTree(current, out current))
-                            break;
-                    }
-                }
+                // First pass: exploration
+                ExplorationPass(vertex);
 
                 // Second pass: coloration
-                {
-                    TVertex current = vertex;
-                    while (NotInTree(current))
-                    {
-                        SetInTree(current);
-                        if (!TryGetNextInTree(current, out current))
-                            break;
-                    }
-                }
+                ColorizationPass(vertex);
+            }
+        }
+
+        private void ExplorationPass([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
+
+            var visitedEdges = new Dictionary<TEdge, int>();
+            TVertex current = vertex;
+            while (NotInTree(current) && TryGetSuccessor(visitedEdges, current, out TEdge successor))
+            {
+                visitedEdges[successor] = 0;
+                Tree(current, successor);
+                if (!TryGetNextInTree(current, out current))
+                    break;
+            }
+        }
+
+        private void ColorizationPass([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
+
+            TVertex current = vertex;
+            while (NotInTree(current))
+            {
+                SetInTree(current);
+                if (!TryGetNextInTree(current, out current))
+                    break;
             }
         }
 

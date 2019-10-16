@@ -422,24 +422,6 @@ namespace QuikGraph.Algorithms
                 yield return trail;
         }
 
-        private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
-        {
-            int i;
-            for (i = 0; i < Circuit.Count; ++i)
-            {
-                TEdge edge = Circuit[i];
-                if (_temporaryEdges.Contains(edge))
-                    continue;
-                if (edge.Source.Equals(startingVertex))
-                    break;
-            }
-
-            if (i == Circuit.Count)
-                throw new InvalidOperationException("Did not find vertex in Eulerian trail?");
-
-            return i;
-        }
-
         /// <summary>
         /// Computes a set of Eulerian trails, starting at <paramref name="startingVertex"/>
         /// that spans the entire graph.
@@ -475,6 +457,24 @@ namespace QuikGraph.Algorithms
                 throw new ArgumentNullException(nameof(startingVertex));
 
             return TrailsInternal(startingVertex);
+        }
+
+        private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
+        {
+            int i;
+            for (i = 0; i < Circuit.Count; ++i)
+            {
+                TEdge edge = Circuit[i];
+                if (_temporaryEdges.Contains(edge))
+                    continue;
+                if (edge.Source.Equals(startingVertex))
+                    break;
+            }
+
+            if (i == Circuit.Count)
+                throw new InvalidOperationException("Did not find vertex in Eulerian trail?");
+
+            return i;
         }
 
         [NotNull, ItemNotNull]

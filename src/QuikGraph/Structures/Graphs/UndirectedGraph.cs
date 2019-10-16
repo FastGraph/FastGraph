@@ -182,6 +182,12 @@ namespace QuikGraph
             return false;
         }
 
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
         private bool ContainsEdgeBetweenVertices([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TEdge edge)
         {
             Debug.Assert(edges != null);
@@ -268,12 +274,6 @@ namespace QuikGraph
 
             edge = default(TEdge);
             return false;
-        }
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            return TryGetEdge(source, target, out _);
         }
 
         #endregion

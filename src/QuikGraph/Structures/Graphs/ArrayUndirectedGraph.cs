@@ -111,6 +111,12 @@ namespace QuikGraph
             return false;
         }
 
+        /// <inheritdoc />
+        public bool ContainsEdge(TVertex source, TVertex target)
+        {
+            return TryGetEdge(source, target, out _);
+        }
+
         #endregion
 
         #region IImplicitUndirectedGraph<TVertex,TEdge>
@@ -186,12 +192,6 @@ namespace QuikGraph
 
             edge = default(TEdge);
             return false;
-        }
-
-        /// <inheritdoc />
-        public bool ContainsEdge(TVertex source, TVertex target)
-        {
-            return TryGetEdge(source, target, out _);
         }
 
         #endregion

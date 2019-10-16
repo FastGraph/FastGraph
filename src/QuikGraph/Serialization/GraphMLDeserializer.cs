@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
-using System.Xml.Serialization;
 using JetBrains.Annotations;
 using static QuikGraph.Serialization.ILHelpers;
 using static QuikGraph.Serialization.XmlConstants;
@@ -22,7 +21,7 @@ namespace QuikGraph.Serialization
     /// <remarks>
     /// <para>
     /// Custom vertex, edge and graph attributes can be specified by 
-    /// using the <see cref="XmlAttributeAttribute"/> attribute on properties (field not supported).
+    /// using the <see cref="System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
     /// </para>
     /// <para>
     /// The serializer uses LCG (lightweight code generation) to generate the 
