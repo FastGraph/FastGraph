@@ -20,8 +20,8 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="VertexRecorderObserver{TVertex}"/> class.
         /// </summary>
         public VertexRecorderObserver()
-            : this(new List<TVertex>())
         {
+            _vertices = new List<TVertex>();
         }
 
         /// <summary>

@@ -29,13 +29,13 @@ namespace QuikGraph.Tests.Regression
                 dijkstra.Compute("A");
             }
 
-            foreach (KeyValuePair<string, Edge<string>> pair in predecessorObserver.VertexPredecessors)
+            foreach (KeyValuePair<string, Edge<string>> pair in predecessorObserver.VerticesPredecessors)
                 Console.WriteLine($"If you want to get to {pair.Key} you have to enter through the in edge {pair.Value}.");
 
             foreach (string vertex in graph.Vertices)
             {
                 double distance = AlgorithmExtensions.ComputePredecessorCost(
-                    predecessorObserver.VertexPredecessors,
+                    predecessorObserver.VerticesPredecessors,
                     edgeCosts,
                     vertex);
                 Console.WriteLine($"A -> {vertex}: {distance}");

@@ -21,7 +21,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="VertexDistanceRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
-        public VertexDistanceRecorderObserver(Func<TEdge, double> edgeWeights)
+        public VertexDistanceRecorderObserver([NotNull] Func<TEdge, double> edgeWeights)
             : this(edgeWeights, DistanceRelaxers.EdgeShortestDistance, new Dictionary<TVertex, double>())
         {
         }

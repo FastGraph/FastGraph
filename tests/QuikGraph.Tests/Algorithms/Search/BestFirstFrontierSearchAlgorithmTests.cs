@@ -38,7 +38,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             using (recorder.Attach(search))
                 search.Compute(root, target);
 
-            if (recorder.VertexPredecessors.ContainsKey(target))
+            if (recorder.VerticesPredecessors.ContainsKey(target))
             {
                 Assert.IsTrue(recorder.TryGetPath(target, out _));
             }

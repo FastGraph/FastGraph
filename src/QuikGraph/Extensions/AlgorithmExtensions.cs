@@ -141,7 +141,7 @@ namespace QuikGraph.Algorithms
             using (predecessorRecorder.Attach(algorithm))
                 algorithm.Compute(source);
 
-            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VertexPredecessors;
+            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
             return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
@@ -288,7 +288,7 @@ namespace QuikGraph.Algorithms
             using (predecessorRecorder.Attach(algorithm))
                 algorithm.Compute(root);
 
-            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VertexPredecessors;
+            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
             return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
@@ -350,7 +350,7 @@ namespace QuikGraph.Algorithms
             using (predecessorRecorder.Attach(algorithm))
                 algorithm.Compute(root);
 
-            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VertexPredecessors;
+            IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
             return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
@@ -1052,7 +1052,7 @@ namespace QuikGraph.Algorithms
             using (edgeRecorder.Attach(dijkstra))
                 dijkstra.Compute();
 
-            return edgeRecorder.VertexPredecessors.Values;
+            return edgeRecorder.VerticesPredecessors.Values;
         }
 
         /// <summary>

@@ -22,8 +22,8 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="EdgeRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         public EdgeRecorderObserver()
-            : this(new List<TEdge>())
         {
+            _edges = new List<TEdge>();
         }
 
         /// <summary>

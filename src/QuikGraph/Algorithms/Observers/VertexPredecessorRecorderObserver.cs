@@ -28,18 +28,18 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexPredecessorRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="vertexPredecessors">Vertex predecessors.</param>
+        /// <param name="verticesPredecessors">Vertices predecessors.</param>
         public VertexPredecessorRecorderObserver(
-            [NotNull] IDictionary<TVertex, TEdge> vertexPredecessors)
+            [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
         {
-            VertexPredecessors = vertexPredecessors ?? throw new ArgumentNullException(nameof(vertexPredecessors));
+            VerticesPredecessors = verticesPredecessors ?? throw new ArgumentNullException(nameof(verticesPredecessors));
         }
 
         /// <summary>
-        /// Vertex predecessors.
+        /// Vertices predecessors.
         /// </summary>
         [NotNull]
-        public IDictionary<TVertex, TEdge> VertexPredecessors { get; }
+        public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
 
         #region IObserver<TAlgorithm>
 
@@ -59,7 +59,7 @@ namespace QuikGraph.Algorithms.Observers
         {
             Debug.Assert(edge != null);
 
-            VertexPredecessors[edge.Target] = edge;
+            VerticesPredecessors[edge.Target] = edge;
         }
 
         /// <summary>
@@ -69,9 +69,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="path">Path to the ending vertex.</param>
         /// <returns>True if a path was found, false otherwise.</returns>
         [Pure]
-        public bool TryGetPath(TVertex vertex, out IEnumerable<TEdge> path)
+        public bool TryGetPath([NotNull] TVertex vertex, out IEnumerable<TEdge> path)
         {
-            return VertexPredecessors.TryGetPath(vertex, out path);
+            return VerticesPredecessors.TryGetPath(vertex, out path);
         }
     }
 }

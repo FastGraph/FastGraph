@@ -227,7 +227,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 shortestPath.Compute(target);
 
             successors = new Dictionary<TVertex, TEdge>();
-            foreach (KeyValuePair<TVertex, SReversedEdge<TVertex, TEdge>> pair in successorsObserver.VertexPredecessors)
+            foreach (KeyValuePair<TVertex, SReversedEdge<TVertex, TEdge>> pair in successorsObserver.VerticesPredecessors)
                 successors.Add(pair.Key, pair.Value.OriginalEdge);
 
             distances = distancesObserver.Distances;

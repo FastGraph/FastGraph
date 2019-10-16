@@ -38,7 +38,7 @@ namespace QuikGraph.Algorithms.Observers
         }
 
         /// <summary>
-        /// Vertex predecessors.
+        /// Vertices predecessors.
         /// </summary>
         [NotNull]
         public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
@@ -46,7 +46,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Path ending vertices.
         /// </summary>
-        [NotNull]
+        [NotNull, ItemNotNull]
         public ICollection<TVertex> EndPathVertices { get; } = new List<TVertex>();
 
         /// <summary>

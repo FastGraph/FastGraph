@@ -82,7 +82,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // Verify the result
             foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
             {
-                if (!predecessors.VertexPredecessors.TryGetValue(vertex, out TEdge predecessor))
+                if (!predecessors.VerticesPredecessors.TryGetValue(vertex, out TEdge predecessor))
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;

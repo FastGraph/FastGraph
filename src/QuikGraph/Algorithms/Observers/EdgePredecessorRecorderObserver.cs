@@ -22,7 +22,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="EdgePredecessorRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         public EdgePredecessorRecorderObserver()
-            : this(new Dictionary<TEdge, TEdge>(), new List<TEdge>())
+            : this(new Dictionary<TEdge, TEdge>())
         {
         }
 
@@ -30,18 +30,11 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="EdgePredecessorRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="edgesPredecessors">Edges predecessors.</param>
-        /// <param name="endPathEdges">Path ending edges.</param>
         public EdgePredecessorRecorderObserver(
-            [NotNull] IDictionary<TEdge, TEdge> edgesPredecessors,
-            [NotNull, ItemNotNull] ICollection<TEdge> endPathEdges)
+            [NotNull] IDictionary<TEdge, TEdge> edgesPredecessors)
         {
-            if (edgesPredecessors is null)
-                throw new ArgumentNullException(nameof(edgesPredecessors));
-            if (endPathEdges is null)
-                throw new ArgumentNullException(nameof(endPathEdges));
-
-            EdgesPredecessors = edgesPredecessors;
-            EndPathEdges = endPathEdges;
+            EdgesPredecessors = edgesPredecessors ?? throw new ArgumentNullException(nameof(edgesPredecessors));
+            EndPathEdges = new List<TEdge>();
         }
 
         /// <summary>
@@ -83,18 +76,21 @@ namespace QuikGraph.Algorithms.Observers
         /// <returns>Edge path.</returns>
         [Pure]
         [NotNull, ItemNotNull]
-        public ICollection<TEdge> Path(TEdge startingEdge)
+        public ICollection<TEdge> Path([NotNull] TEdge startingEdge)
         {
-            var path = new List<TEdge>();
+            if (startingEdge == null)
+                throw new ArgumentNullException(nameof(startingEdge));
+
+            var path = new List<TEdge> { startingEdge };
 
             TEdge currentEdge = startingEdge;
-            path.Insert(0, currentEdge);
             while (EdgesPredecessors.TryGetValue(currentEdge, out TEdge edge))
             {
-                path.Insert(0, edge);
+                path.Add(edge);
                 currentEdge = edge;
             }
 
+            path.Reverse();
             return path;
         }
 
@@ -134,18 +130,23 @@ namespace QuikGraph.Algorithms.Observers
                 return path;
             colors[currentEdge] = GraphColor.Black;
 
-            path.Insert(0, currentEdge);
+            path.Add(currentEdge);
             while (EdgesPredecessors.TryGetValue(currentEdge, out TEdge edge))
             {
                 color = colors[edge];
                 if (color != GraphColor.White)
+                {
+                    path.Reverse();
                     return path;
+                }
+
                 colors[edge] = GraphColor.Black;
 
-                path.Insert(0, edge);
+                path.Add(edge);
                 currentEdge = edge;
             }
 
+            path.Reverse();
             return path;
         }
 

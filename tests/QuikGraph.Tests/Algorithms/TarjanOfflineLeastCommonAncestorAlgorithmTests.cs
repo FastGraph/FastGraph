@@ -31,8 +31,8 @@ namespace QuikGraph.Tests.Algorithms
             {
                 if (lca(pair, out TVertex _))
                 {
-                    Assert.IsTrue(predecessors.VertexPredecessors.IsPredecessor(root, pair.Source));
-                    Assert.IsTrue(predecessors.VertexPredecessors.IsPredecessor(root, pair.Target));
+                    Assert.IsTrue(predecessors.VerticesPredecessors.IsPredecessor(root, pair.Source));
+                    Assert.IsTrue(predecessors.VerticesPredecessors.IsPredecessor(root, pair.Target));
                 }
             }
         }
