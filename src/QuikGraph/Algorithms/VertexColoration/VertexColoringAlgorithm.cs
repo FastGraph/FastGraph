@@ -10,14 +10,14 @@ namespace QuikGraph.Algorithms.VertexColoring
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public sealed class VertexColoringAlgorithm<TVertex, TEdge> : AlgorithmBase<UndirectedGraph<TVertex, TEdge>>
+    public sealed class VertexColoringAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexColoringAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
-        public VertexColoringAlgorithm([NotNull] UndirectedGraph<TVertex, TEdge> visitedGraph)
+        public VertexColoringAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -60,6 +60,8 @@ namespace QuikGraph.Algorithms.VertexColoring
         protected override void InternalCompute()
         {
             int vertexCount = VisitedGraph.VertexCount;
+            if (vertexCount == 0)
+                return;
             TVertex firstVertex = VisitedGraph.Vertices.First();
 
             // Assign the first color to first vertex

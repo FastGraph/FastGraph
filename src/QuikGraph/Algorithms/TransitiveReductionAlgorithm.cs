@@ -13,7 +13,8 @@ namespace QuikGraph.Algorithms
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public class TransitiveReductionAlgorithm<TVertex, TEdge> : AlgorithmBase<BidirectionalGraph<TVertex, TEdge>> where TEdge : IEdge<TVertex>
+    public class TransitiveReductionAlgorithm<TVertex, TEdge> : AlgorithmBase<BidirectionalGraph<TVertex, TEdge>>
+        where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransitiveReductionAlgorithm{TVertex,TEdge}"/> class.
@@ -41,9 +42,9 @@ namespace QuikGraph.Algorithms
             TransitiveReduction.AddVerticesAndEdgeRange(VisitedGraph.Edges);
 
             var algorithmHelper = new TransitiveAlgorithmHelper<TVertex, TEdge>(TransitiveReduction);
-            algorithmHelper.InternalCompute((graph, u, v, edge) =>
+            algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
             {
-                if (edge != null)
+                if (found)
                     graph.RemoveEdge(edge);
             });
         }

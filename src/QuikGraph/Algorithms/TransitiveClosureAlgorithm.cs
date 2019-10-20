@@ -5,24 +5,25 @@ namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Algorithm that computes the transitive closure of a graph, which is another directed graph
-    /// with the same vertices and every reachable vertices  by a given one linked by a single edge.
+    /// with the same vertices and every reachable vertices by a given one linked by a single edge.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public class TransitiveClosureAlgorithm<TVertex, TEdge> : AlgorithmBase<BidirectionalGraph<TVertex, TEdge>> where TEdge : IEdge<TVertex>
+    public class TransitiveClosureAlgorithm<TVertex, TEdge> : AlgorithmBase<BidirectionalGraph<TVertex, TEdge>>
+        where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransitiveClosureAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
-        /// <param name="createEdge">Function that create an edge between the 2 given vertices.</param>
+        /// <param name="edgeFactory">Function that create an edge between the 2 given vertices.</param>
         public TransitiveClosureAlgorithm(
             [NotNull] BidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TVertex, TVertex, TEdge> createEdge)
+            [NotNull] Func<TVertex, TVertex, TEdge> edgeFactory)
             : base(visitedGraph)
         {
             TransitiveClosure = new BidirectionalGraph<TVertex, TEdge>();
-            _createEdge = createEdge;
+            _createEdge = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
         }
 
         /// <summary>
@@ -42,9 +43,9 @@ namespace QuikGraph.Algorithms
             TransitiveClosure.AddVerticesAndEdgeRange(VisitedGraph.Edges);
 
             var algorithmHelper = new TransitiveAlgorithmHelper<TVertex, TEdge>(TransitiveClosure);
-            algorithmHelper.InternalCompute((graph, u, v, edge) =>
+            algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
             {
-                if (edge == null)
+                if (!found)
                     graph.AddEdge(_createEdge(u, v));
             });
         }

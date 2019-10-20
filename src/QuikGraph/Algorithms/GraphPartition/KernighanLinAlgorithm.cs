@@ -14,7 +14,7 @@ namespace QuikGraph.Algorithms.GraphPartition
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class KernighanLinAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
-        where TEdge : TaggedUndirectedEdge<TVertex, double>
+        where TEdge : IUndirectedEdge<TVertex>, ITagged<double>
     {
         private readonly int _nbIterations;
         private readonly int _partitionSize;
@@ -52,7 +52,7 @@ namespace QuikGraph.Algorithms.GraphPartition
 
             for (int i = 0; i < _partitionSize; i++)
             {
-                double cost = DoSingleSwap(swaps);
+                double cost = SingleSwap(swaps);
                 if (cost < minCost)
                 {
                     minCost = cost;
@@ -71,7 +71,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             return new Partition<TVertex>(_vertexSetA, _vertexSetB, minCost);
         }
 
-        private double DoSingleSwap([NotNull, ItemNotNull] ICollection<Tuple<TVertex, TVertex>> swaps)
+        private double SingleSwap([NotNull, ItemNotNull] ICollection<Tuple<TVertex, TVertex>> swaps)
         {
             Tuple<TVertex, TVertex> maxPair = null;
             double maxGain = double.MinValue;
@@ -135,7 +135,6 @@ namespace QuikGraph.Algorithms.GraphPartition
             {
                 neighbors.Add(edge.Source);
                 neighbors.Add(edge.Target);
-
             }
 
             if (neighbors.Contains(vertex))
@@ -168,6 +167,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             setB.Add(vertexA);
         }
 
+        [Pure]
         private double GetCutCost()
         {
             double cost = 0;
@@ -231,7 +231,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             var bestPartition = new Partition<TVertex>(_vertexSetA, _vertexSetB);
             double minCost = double.MaxValue;
 
-            for (int i = 0; i < _nbIterations; i++)
+            for (int i = 0; i < _nbIterations; ++i)
             {
                 Partition<TVertex> tmpPartition = DoAllSwaps();
                 double tmpCutCost = tmpPartition.CutCost;

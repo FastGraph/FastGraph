@@ -9,7 +9,7 @@ namespace QuikGraph.Tests
     /// <summary>
     /// A collection of utility methods for unit tests.
     /// </summary>
-    public static class TestHelpers
+    internal static class TestHelpers
     {
         /// <summary>
         /// Creates the set of all Edges {(left, right)}
@@ -21,6 +21,7 @@ namespace QuikGraph.Tests
         /// <param name="rightVertices">A collection of vertices.</param>
         /// <param name="edgeFactory">An object to use for creating edges.</param>
         /// <returns>List of edges.</returns>
+        [Pure]
         [NotNull, ItemNotNull]
         public static List<Edge<TVertex>> CreateAllPairwiseEdges<TVertex>(
             [NotNull, ItemNotNull] IEnumerable<TVertex> leftVertices,
@@ -39,6 +40,21 @@ namespace QuikGraph.Tests
             }
 
             return edges;
+        }
+
+        [Pure]
+        [NotNull]
+        public static UndirectedGraph<TVertex, TEdge> CreateUndirectedGraph<TVertex, TEdge>(
+            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            where TEdge : IEdge<TVertex>, ITagged<double>
+        {
+            var graph = new UndirectedGraph<TVertex, TEdge>(true);
+            foreach (TEdge edge in edges)
+            {
+                graph.AddVerticesAndEdge(edge);
+            }
+
+            return graph;
         }
 
         [Pure]

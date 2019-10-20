@@ -12,22 +12,33 @@ namespace QuikGraph.Algorithms.VertexCover
     /// This is a modified version (by Batov Nikita) of the original
     /// Mihalis Yannakakis and Fanica Gavril algorithm.
     /// </remarks>
-    public sealed class MinimumVertexCoverApproxAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+    public sealed class MinimumVertexCoverApproximationAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         [NotNull]
         private readonly VertexList<TVertex> _coverSet = new VertexList<TVertex>();
 
         [NotNull]
-        private readonly Random _rng = new Random();
+        private readonly Random _rng;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MinimumVertexCoverApproxAlgorithm{TVertex,TEdge}"/> class.
+        /// Initializes a new instance of the <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to compute the cover.</param>
-        public MinimumVertexCoverApproxAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        public MinimumVertexCoverApproximationAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            : this(graph, new Random())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to compute the cover.</param>
+        /// <param name="rng">Random number generator.</param>
+        public MinimumVertexCoverApproximationAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph, Random rng)
             : base(graph)
         {
+            _rng = rng;
         }
 
         /// <summary>
@@ -50,7 +61,7 @@ namespace QuikGraph.Algorithms.VertexCover
 
             while (!graph.IsEdgesEmpty)
             {
-                var graphEdges = graph.Edges.ToArray();
+                TEdge[] graphEdges = graph.Edges.ToArray();
 
                 // Get a random edge
                 int randomEdgeIndex = _rng.Next(graphEdges.Length - 1);
