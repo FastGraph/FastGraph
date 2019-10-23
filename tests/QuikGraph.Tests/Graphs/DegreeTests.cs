@@ -60,30 +60,30 @@ namespace QuikGraph.Tests.Graphs
         [Test]
         public void DegreeSumEqualsTwiceEdgeCount()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
                 AssertDegreeSumEqualsTwiceEdgeCount(graph);
         }
 
         [Test]
         public void InDegreeSumEqualsEdgeCount()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
                 AssertInDegreeSumEqualsEdgeCount(graph);
         }
 
         [Test]
         public void OutDegreeSumEqualsEdgeCount()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
                 OutDegreeSumEqualsEdgeCount(graph);
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
                 OutDegreeSumEqualsEdgeCount(graph);
         }
 
         [Test]
         public void AdjacentDegreeSumEqualsTwiceEdgeCount()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
                 AssertAdjacentDegreeSumEqualsTwiceEdgeCount(graph);
         }
     }

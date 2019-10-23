@@ -45,6 +45,8 @@ namespace QuikGraph.Algorithms.Search
         {
         }
 
+        private int _maxDepth = int.MaxValue;
+
         /// <summary>
         /// Gets or sets the maximum exploration depth, from the start vertex.
         /// </summary>
@@ -54,7 +56,16 @@ namespace QuikGraph.Algorithms.Search
         /// <value>
         /// Maximum exploration depth.
         /// </value>
-        public int MaxDepth { get; set; } = int.MaxValue;
+        public int MaxDepth
+        {
+            get => _maxDepth;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Must be positive.", nameof(value));
+                _maxDepth = value;
+            }
+        }
 
         #region Events
 

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -7,6 +8,7 @@ namespace QuikGraph.Algorithms
     /// <summary>
     /// Base class for all graph algorithm requiring a starting vertex (root).
     /// </summary>
+    /// <remarks>Requires a starting vertex (root).</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
 #if SUPPORTS_SERIALIZATION
@@ -14,7 +16,9 @@ namespace QuikGraph.Algorithms
 #endif
     public abstract class RootedAlgorithmBase<TVertex, TGraph> : AlgorithmBase<TGraph>
     {
+        [CanBeNull]
         private TVertex _root;
+
         private bool _hasRootVertex;
 
         /// <summary>
@@ -56,11 +60,12 @@ namespace QuikGraph.Algorithms
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
 
-            bool changed = !Equals(_root, root);
+            bool changed = !_hasRootVertex || !Equals(_root, root);
             _root = root;
+            _hasRootVertex = true;
+
             if (changed)
                 OnRootVertexChanged(EventArgs.Empty);
-            _hasRootVertex = true;
         }
 
         /// <summary>
@@ -68,8 +73,12 @@ namespace QuikGraph.Algorithms
         /// </summary>
         public void ClearRootVertex()
         {
+            bool hasRoot = _hasRootVertex;
             _root = default(TVertex);
             _hasRootVertex = false;
+
+            if (hasRoot)
+                OnRootVertexChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -83,8 +92,7 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnRootVertexChanged([NotNull] EventArgs args)
         {
-            if (args is null)
-                throw new ArgumentNullException(nameof(args));
+            Debug.Assert(args != null);
 
             RootVertexChanged?.Invoke(this, args);
         }

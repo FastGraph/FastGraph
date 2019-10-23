@@ -63,6 +63,14 @@ namespace QuikGraph.Algorithms.Search
         }
 
         /// <summary>
+        /// In case a root vertex has been set, indicates if the algorithm should
+        /// walk through graph parts of other components than the root component.
+        /// </summary>
+        public bool ProcessAllComponents { get; set; }
+
+        private int _maxDepth = int.MaxValue;
+
+        /// <summary>
         /// Gets or sets the maximum exploration depth, from the start vertex.
         /// </summary>
         /// <remarks>
@@ -71,7 +79,16 @@ namespace QuikGraph.Algorithms.Search
         /// <value>
         /// Maximum exploration depth.
         /// </value>
-        public int MaxDepth { get; set; } = int.MaxValue;
+        public int MaxDepth
+        {
+            get => _maxDepth;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Must be positive.", nameof(value));
+                _maxDepth = value;
+            }
+        }
 
         #region Events
 
@@ -200,7 +217,22 @@ namespace QuikGraph.Algorithms.Search
                 OnStartVertex(root);
 
                 // Process each out edge of the root one
-                foreach (TEdge edge in VisitedGraph.OutEdges(root))
+                VisitAllWhiteEdgesSet(VisitedGraph.OutEdges(root));
+
+                // Process the rest of the graph edges
+                if (ProcessAllComponents)
+                    VisitAllWhiteEdges();
+            }
+            else
+            {
+                VisitAllWhiteEdges();
+            }
+
+            #region Local functions
+
+            void VisitAllWhiteEdgesSet(IEnumerable<TEdge> edges)
+            {
+                foreach (TEdge edge in edges)
                 {
                     if (cancelManager.IsCancelling)
                         return;
@@ -213,18 +245,12 @@ namespace QuikGraph.Algorithms.Search
                 }
             }
 
-            // Process the rest of the graph edges
-            foreach (TEdge edge in VisitedGraph.Edges)
+            void VisitAllWhiteEdges()
             {
-                if (cancelManager.IsCancelling)
-                    return;
-
-                if (EdgesColors[edge] == GraphColor.White)
-                {
-                    OnStartEdge(edge);
-                    Visit(edge, 0);
-                }
+                VisitAllWhiteEdgesSet(VisitedGraph.Edges);
             }
+
+            #endregion
         }
 
         #endregion
@@ -239,9 +265,6 @@ namespace QuikGraph.Algorithms.Search
         private void Visit([NotNull] TEdge rootEdge, int depth)
         {
             Debug.Assert(rootEdge != null);
-
-            if (depth > MaxDepth)
-                return;
 
             ICancelManager cancelManager = Services.CancelManager;
 
@@ -261,7 +284,17 @@ namespace QuikGraph.Algorithms.Search
                 if (EdgesColors[edge] == GraphColor.White)
                 {
                     OnDiscoverTreeEdge(rootEdge, edge);
-                    Visit(edge, depth + 1);
+
+                    int newDepth = depth + 1;
+                    if (newDepth <= MaxDepth)
+                    {
+                        Visit(edge, newDepth);
+                    }
+                    else
+                    {
+                        EdgesColors[edge] = GraphColor.Black;
+                        OnFinishEdge(edge);
+                    }
                 }
                 else if (EdgesColors[edge] == GraphColor.Gray)
                 {

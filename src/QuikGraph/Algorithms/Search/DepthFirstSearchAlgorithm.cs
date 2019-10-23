@@ -80,19 +80,14 @@ namespace QuikGraph.Algorithms.Search
         /// them. All vertices passed to the method should be enumerated once and only once.
         /// </param>
         public DepthFirstSearchAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            IDictionary<TVertex, GraphColor> verticesColors,
-            Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgesFilter)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] IDictionary<TVertex, GraphColor> verticesColors,
+            [NotNull] Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgesFilter)
             : base(host, visitedGraph)
         {
-            if (verticesColors is null)
-                throw new ArgumentNullException(nameof(verticesColors));
-            if (outEdgesFilter is null)
-                throw new ArgumentNullException(nameof(outEdgesFilter));
-
-            VerticesColors = verticesColors;
-            OutEdgesFilter = outEdgesFilter;
+            VerticesColors = verticesColors ?? throw new ArgumentNullException(nameof(verticesColors));
+            OutEdgesFilter = outEdgesFilter ?? throw new ArgumentNullException(nameof(outEdgesFilter));
         }
 
         /// <summary>
@@ -100,6 +95,12 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         [NotNull]
         public Func<IEnumerable<TEdge>, IEnumerable<TEdge>> OutEdgesFilter { get; }
+
+        /// <summary>
+        /// In case a root vertex has been set, indicates if the algorithm should
+        /// walk through graph parts of other components than the root component.
+        /// </summary>
+        public bool ProcessAllComponents { get; set; }
 
         private int _maxDepth = int.MaxValue;
 
@@ -118,7 +119,7 @@ namespace QuikGraph.Algorithms.Search
             set
             {
                 if (value <= 0)
-                    throw new ArgumentException("Must be positive", nameof(value));
+                    throw new ArgumentException("Must be positive.", nameof(value));
                 _maxDepth = value;
             }
         }
@@ -224,6 +225,7 @@ namespace QuikGraph.Algorithms.Search
         {
             base.Initialize();
 
+            // Put all vertex to white
             VerticesColors.Clear();
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
@@ -235,17 +237,26 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            // If there is a starting vertex, start with him
+            // If there is a starting vertex, start with it
             if (TryGetRootVertex(out TVertex root))
             {
                 OnStartVertex(root);
                 Visit(root);
+
+                if (ProcessAllComponents)
+                    VisitAllWhiteVertices(); // All remaining vertices (because there are not white marked)
             }
             else
             {
-                ICancelManager cancelManager = Services.CancelManager;
+                VisitAllWhiteVertices();
+            }
 
+            #region Local function
+
+            void VisitAllWhiteVertices()
+            {
                 // Process each vertex 
+                ICancelManager cancelManager = Services.CancelManager;
                 foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
                     if (cancelManager.IsCancelling)
@@ -258,6 +269,8 @@ namespace QuikGraph.Algorithms.Search
                     }
                 }
             }
+
+            #endregion
         }
 
         #endregion
@@ -273,7 +286,9 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion
@@ -290,13 +305,12 @@ namespace QuikGraph.Algorithms.Search
 
             public SearchFrame([NotNull] TVertex vertex, [NotNull] IEnumerator<TEdge> edges, int depth)
             {
-                if (vertex == null)
-                    throw new ArgumentNullException(nameof(vertex));
-                if (depth < 0)
-                    throw new ArgumentException("Must be positive", nameof(depth));
+                Debug.Assert(vertex != null);
+                Debug.Assert(edges != null);
+                Debug.Assert(depth >= 0, "Must be positive.");
 
                 Vertex = vertex;
-                Edges = edges ?? throw new ArgumentNullException(nameof(edges));
+                Edges = edges;
                 Depth = depth;
             }
         }

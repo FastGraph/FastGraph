@@ -234,13 +234,17 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion
 
         internal void Visit([NotNull] TVertex root)
         {
+            Debug.Assert(root != null);
+
             EnqueueRoot(root);
             FlushVisitQueue();
         }
@@ -248,7 +252,9 @@ namespace QuikGraph.Algorithms.Search
         private void EnqueueRoot([NotNull] TVertex root)
         {
             OnStartVertex(root);
+
             VerticesColors[root] = GraphColor.Gray;
+
             OnDiscoverVertex(root);
             _vertexQueue.Enqueue(root);
         }

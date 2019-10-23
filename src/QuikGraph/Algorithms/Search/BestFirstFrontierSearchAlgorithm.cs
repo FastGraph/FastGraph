@@ -78,11 +78,10 @@ namespace QuikGraph.Algorithms.Search
 
             ICancelManager cancelManager = Services.CancelManager;
             var open = new BinaryHeap<double, TVertex>(_distanceRelaxer.Compare);
-            var graph = VisitedGraph;
 
             // (1) Place the initial node in Open, with all its operators marked unused
             open.Add(0, root);
-            Dictionary<TEdge, GraphColor> operators = graph.OutEdges(root).ToDictionary(edge => edge, edge => GraphColor.White);
+            Dictionary<TEdge, GraphColor> operators = VisitedGraph.OutEdges(root).ToDictionary(edge => edge, edge => GraphColor.White);
 
             while (open.Count > 0)
             {
@@ -112,7 +111,7 @@ namespace QuikGraph.Algorithms.Search
 
                 // (6) In a directed graph, generate each predecessor node n via an unused operator
                 // and create dummy nodes for each with costs of infinity
-                foreach (TEdge edge in graph.InEdges(n))
+                foreach (TEdge edge in VisitedGraph.InEdges(n))
                 {
                     if (operators.TryGetValue(edge, out GraphColor edgeColor)
                         && edgeColor == GraphColor.Gray)
@@ -125,8 +124,8 @@ namespace QuikGraph.Algorithms.Search
         }
 
         private void ExpandNode(
-            [NotNull] TVertex n, 
-            [NotNull] IDictionary<TEdge, GraphColor> operators, 
+            [NotNull] TVertex n,
+            [NotNull] IDictionary<TEdge, GraphColor> operators,
             double cost,
             [NotNull] BinaryHeap<double, TVertex> open)
         {

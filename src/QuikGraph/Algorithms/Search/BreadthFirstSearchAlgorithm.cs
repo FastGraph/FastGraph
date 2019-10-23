@@ -266,7 +266,9 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion

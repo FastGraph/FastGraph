@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
+using QuikGraph.Collections;
 
 namespace QuikGraph.Tests.Algorithms.Search
 {
@@ -9,11 +12,11 @@ namespace QuikGraph.Tests.Algorithms.Search
     /// Tests for <see cref="UndirectedBreadthFirstSearchAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class UndirectedBreadthFirstAlgorithmSearchTests
+    internal class UndirectedBreadthFirstAlgorithmSearchTests : RootedAlgorithmTestsBase
     {
-        #region Helpers
+        #region Test helpers
 
-        private static void RunBfsAndCheck<TVertex, TEdge>(
+        private static void RunBFSAndCheck<TVertex, TEdge>(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
             [NotNull] TVertex sourceVertex)
             where TEdge : IEdge<TVertex>
@@ -24,36 +27,41 @@ namespace QuikGraph.Tests.Algorithms.Search
             int currentDistance = 0;
             var algorithm = new UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge>(graph);
 
-            algorithm.InitializeVertex += u =>
+            algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(algorithm.VerticesColors[u], GraphColor.White);
+                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
             };
 
-            algorithm.DiscoverVertex += u =>
+            algorithm.StartVertex += vertex =>
             {
-                Assert.AreEqual(algorithm.VerticesColors[u], GraphColor.Gray);
-                if (u.Equals(sourceVertex))
+                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+            };
+
+            algorithm.DiscoverVertex += vertex =>
+            {
+                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+                if (vertex.Equals(sourceVertex))
                 {
                     currentVertex = sourceVertex;
                 }
                 else
                 {
                     Assert.IsNotNull(currentVertex);
-                    Assert.AreEqual(parents[u], currentVertex);
+                    Assert.AreEqual(parents[vertex], currentVertex);
                     // ReSharper disable once AccessToModifiedClosure
-                    Assert.AreEqual(distances[u], currentDistance + 1);
-                    Assert.AreEqual(distances[u], distances[parents[u]] + 1);
+                    Assert.AreEqual(distances[vertex], currentDistance + 1);
+                    Assert.AreEqual(distances[vertex], distances[parents[vertex]] + 1);
                 }
             };
 
-            algorithm.ExamineEdge += args =>
+            algorithm.ExamineEdge += edge =>
             {
-                Assert.IsTrue(args.Source.Equals(currentVertex) || args.Target.Equals(currentVertex));
+                Assert.IsTrue(edge.Source.Equals(currentVertex) || edge.Target.Equals(currentVertex));
             };
 
-            algorithm.ExamineVertex += args =>
+            algorithm.ExamineVertex += vertex =>
             {
-                TVertex u = args;
+                TVertex u = vertex;
                 currentVertex = u;
                 // Ensure that the distances monotonically increase.
                 // ReSharper disable AccessToModifiedClosure
@@ -75,7 +83,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                     v = temp;
                 }
 
-                Assert.AreEqual(algorithm.VerticesColors[v], GraphColor.White);
+                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[v]);
                 Assert.AreEqual(distances[u], currentDistance);
                 parents[v] = u;
                 distances[v] = distances[u] + 1;
@@ -111,22 +119,21 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             algorithm.GrayTarget += (sender, args) =>
             {
-                Assert.AreEqual(algorithm.VerticesColors[args.Edge.Target], GraphColor.Gray);
+                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[args.Target]);
             };
 
             algorithm.BlackTarget += (sender, args) =>
             {
-                Assert.AreEqual(algorithm.VerticesColors[args.Edge.Target], GraphColor.Black);
+                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[args.Target]);
 
-                foreach (TEdge edge in algorithm.VisitedGraph.AdjacentEdges(args.Edge.Target))
+                foreach (TEdge edge in algorithm.VisitedGraph.AdjacentEdges(args.Target))
                     Assert.IsFalse(algorithm.VerticesColors[edge.Target] == GraphColor.White);
             };
 
-            algorithm.FinishVertex += args =>
+            algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(algorithm.VerticesColors[args], GraphColor.Black);
+                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
             };
-
 
             parents.Clear();
             distances.Clear();
@@ -137,15 +144,29 @@ namespace QuikGraph.Tests.Algorithms.Search
                 distances[vertex] = int.MaxValue;
                 parents[vertex] = vertex;
             }
+
             distances[sourceVertex] = 0;
-            algorithm.Compute(sourceVertex);
+
+            var recorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
+            using (recorder.Attach(algorithm))
+            {
+                algorithm.Compute(sourceVertex);
+            }
 
             // All white vertices should be unreachable from the source.
             foreach (TVertex vertex in graph.Vertices)
             {
                 if (algorithm.VerticesColors[vertex] == GraphColor.White)
                 {
-                    //!IsReachable(start,u,g);
+                    // Check !IsReachable(sourceVertex, vertex, graph);
+                    if (recorder.TryGetPath(vertex, out IEnumerable<TEdge> path))
+                    {
+                        foreach (TEdge edge in path)
+                        {
+                            Assert.AreNotEqual(sourceVertex, edge.Source);
+                            Assert.AreNotEqual(sourceVertex, edge.Target);
+                        }
+                    }
                 }
             }
 
@@ -153,7 +174,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             // shortest path to the parent.
             foreach (TVertex vertex in graph.Vertices)
             {
-                if (!parents[vertex].Equals(vertex)) // Not the root of the bfs tree
+                if (!parents[vertex].Equals(vertex)) // Not the root of the BFS tree
                     Assert.AreEqual(distances[vertex], distances[parents[vertex]] + 1);
             }
         }
@@ -161,12 +182,178 @@ namespace QuikGraph.Tests.Algorithms.Search
         #endregion
 
         [Test]
-        public void UndirectedBreadthFirstSearchAll()
+        public void Constructor()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            AssertAlgorithmProperties(algorithm, graph);
+
+            var verticesColors = new Dictionary<int, GraphColor>();
+            var queue = new BinaryQueue<int, double>(vertex => 1.0);
+            algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, verticesColors);
+            AssertAlgorithmProperties(algorithm, graph, verticesColors);
+
+            algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, queue, verticesColors);
+            AssertAlgorithmProperties(algorithm, graph, verticesColors);
+
+            #region Local function
+
+            void AssertAlgorithmProperties<TVertex, TEdge>(
+                UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge> algo,
+                IUndirectedGraph<TVertex, TEdge> g,
+                IDictionary<TVertex, GraphColor> vColors = null)
+                where TEdge : IEdge<TVertex>
+            {
+                AssertAlgorithmState(algo, g);
+                if (vColors is null)
+                    CollectionAssert.IsEmpty(algo.VerticesColors);
+                else
+                    Assert.AreSame(vColors, algo.VerticesColors);
+            }
+
+            #endregion
+        }
+
+        [Test]
+        public void Constructor_Throws()
+        {
+            // ReSharper disable ObjectCreationAsStatement
+            // ReSharper disable AssignNullToNotNullAttribute
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var verticesColors = new Dictionary<int, GraphColor>();
+            var queue = new BinaryQueue<int, double>(vertex => 1.0);
+
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, queue, verticesColors));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, null, verticesColors));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, queue, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, queue, verticesColors));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, verticesColors));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, queue, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, verticesColors));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, queue, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null)); 
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ObjectCreationAsStatement
+        }
+
+        #region Rooted algorithm
+
+        [Test]
+        public void TryGetRootVertex()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            TryGetRootVertex_Test(algorithm);
+        }
+
+        [Test]
+        public void SetRootVertex()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            SetRootVertex_Test(algorithm);
+        }
+
+        [Test]
+        public void SetRootVertex_Throws()
+        {
+            var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph);
+            SetRootVertex_Throws_Test(algorithm);
+        }
+
+        [Test]
+        public void ClearRootVertex()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            ClearRootVertex_Test(algorithm);
+        }
+
+        [Test]
+        public void ComputeWithoutRoot_Throws()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            ComputeWithoutRoot_Throws_Test(algorithm);
+        }
+
+        [Test]
+        public void ComputeWithRoot()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVertex(0);
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            ComputeWithRoot_Test(algorithm);
+        }
+
+        [Test]
+        public void ComputeWithRoot_Throws()
+        {
+            var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph);
+            ComputeWithRoot_Throws_Test(algorithm);
+        }
+
+        #endregion
+
+        [Test]
+        public void GetVertexColor()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdge(new Edge<int>(1, 2));
+
+            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            // Algorithm not run
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
+
+            algorithm.Compute(1);
+
+            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
+            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+        }
+
+        [Test]
+        public void GetVertexColor_Throws()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<VertexNotFoundException>(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph).GetVertexColor(1));
+        }
+
+        [Test]
+        [Category(TestCategories.LongRunning)]
+        public void UndirectedBreadthFirstSearch()
+        {
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests())
             {
                 foreach (string vertex in graph.Vertices)
-                    RunBfsAndCheck(graph, vertex);
+                    RunBFSAndCheck(graph, vertex);
             }
         }
     }

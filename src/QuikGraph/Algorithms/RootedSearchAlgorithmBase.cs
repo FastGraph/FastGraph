@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -7,12 +8,14 @@ namespace QuikGraph.Algorithms
     /// <summary>
     /// Base class for all graph algorithm performing a search in a graph.
     /// </summary>
-    /// <remarks>Requires a starting vertex (root).</remarks>
+    /// <remarks>Requires a starting vertex (root) and an ending vertex (target).</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public abstract class RootedSearchAlgorithmBase<TVertex, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
     {
+        [CanBeNull]
         private TVertex _target;
+
         private bool _hasTargetVertex;
 
         /// <summary>
@@ -54,11 +57,12 @@ namespace QuikGraph.Algorithms
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            bool changed = !Equals(_target, target);
+            bool changed = !_hasTargetVertex || !Equals(_target, target);
             _target = target;
+            _hasTargetVertex = true;
+
             if (changed)
                 OnTargetVertexChanged(EventArgs.Empty);
-            _hasTargetVertex = true;
         }
 
         /// <summary>
@@ -66,8 +70,13 @@ namespace QuikGraph.Algorithms
         /// </summary>
         public void ClearTargetVertex()
         {
+            bool hasTarget = _hasTargetVertex;
+
             _target = default(TVertex);
             _hasTargetVertex = false;
+
+            if (hasTarget)
+                OnTargetVertexChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -81,8 +90,7 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnTargetVertexChanged([NotNull] EventArgs args)
         {
-            if (args is null)
-                throw new ArgumentNullException(nameof(args));
+            Debug.Assert(args != null);
 
             TargetVertexChanged?.Invoke(this, args);
         }

@@ -53,13 +53,13 @@ namespace QuikGraph.Tests
         }
 
         [Pure]
-        public static bool IsDescendant<TVertex>(
-            [NotNull] Dictionary<TVertex, TVertex> parents,
-            [NotNull] TVertex u,
-            [NotNull] TVertex v)
+        public static bool IsDescendant<TValue>(
+            [NotNull] Dictionary<TValue, TValue> parents,
+            [NotNull] TValue u,
+            [NotNull] TValue v)
         {
-            TVertex t;
-            TVertex current = u;
+            TValue t;
+            TValue current = u;
             do
             {
                 t = current;

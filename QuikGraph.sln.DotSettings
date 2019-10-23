@@ -51,7 +51,9 @@
     <s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CompareOfFloatsByEqualityOperator/@EntryIndexedValue">SUGGESTION</s:String>
 	
 	<!-- R# Code Style -->
+    <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=BFS/@EntryIndexedValue">BFS</s:String>
     <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DAG/@EntryIndexedValue">DAG</s:String>
+    <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DFS/@EntryIndexedValue">DFS</s:String>
     <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DGML/@EntryIndexedValue">DGML</s:String>
     <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=FR/@EntryIndexedValue">FR</s:String>
     <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=ID/@EntryIndexedValue">ID</s:String>

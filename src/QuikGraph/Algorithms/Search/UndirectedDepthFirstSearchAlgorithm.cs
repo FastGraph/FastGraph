@@ -85,6 +85,12 @@ namespace QuikGraph.Algorithms.Search
         [NotNull]
         public Func<IEnumerable<TEdge>, IEnumerable<TEdge>> AdjacentEdgesFilter { get; }
 
+        /// <summary>
+        /// In case a root vertex has been set, indicates if the algorithm should
+        /// walk through graph parts of other components than the root component.
+        /// </summary>
+        public bool ProcessAllComponents { get; set; }
+
         private int _maxDepth = int.MaxValue;
 
         /// <summary>
@@ -103,7 +109,6 @@ namespace QuikGraph.Algorithms.Search
             {
                 if (value < 0)
                     throw new ArgumentException("Must be positive", nameof(value));
-
                 _maxDepth = value;
             }
         }
@@ -245,24 +250,35 @@ namespace QuikGraph.Algorithms.Search
             {
                 OnStartVertex(rootVertex);
                 Visit(rootVertex);
+
+                if (ProcessAllComponents)
+                    VisitAllWhiteVertices(); // All remaining vertices (because there are not white marked)
             }
             else
             {
-                ICancelManager cancelManager = Services.CancelManager;
+                VisitAllWhiteVertices();
+            }
 
+            #region Local function
+
+            void VisitAllWhiteVertices()
+            {
                 // Process each vertex 
-                foreach (TVertex root in VisitedGraph.Vertices)
+                ICancelManager cancelManager = Services.CancelManager;
+                foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
                     if (cancelManager.IsCancelling)
                         return;
 
-                    if (VerticesColors[root] == GraphColor.White)
+                    if (VerticesColors[vertex] == GraphColor.White)
                     {
-                        OnStartVertex(root);
-                        Visit(root);
+                        OnStartVertex(vertex);
+                        Visit(vertex);
                     }
                 }
             }
+
+            #endregion
         }
 
         #endregion
@@ -278,7 +294,9 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion

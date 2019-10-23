@@ -71,7 +71,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         [Test]
         public void KruskalMinimumSpanningTree()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
                 Kruskal(graph);
         }
     }

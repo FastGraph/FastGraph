@@ -46,7 +46,9 @@ namespace QuikGraph.Algorithms.Search
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
         [NotNull]
-        public IDictionary<TVertex, GraphColor> VertexColors { get; } = new Dictionary<TVertex, GraphColor>();
+        public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
+
+        private int _maxDepth = int.MaxValue;
 
         /// <summary>
         /// Gets or sets the maximum exploration depth, from the start vertex.
@@ -57,7 +59,16 @@ namespace QuikGraph.Algorithms.Search
         /// <value>
         /// Maximum exploration depth.
         /// </value>
-        public int MaxDepth { get; set; } = int.MaxValue;
+        public int MaxDepth
+        {
+            get => _maxDepth;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Must be positive.", nameof(value));
+                _maxDepth = value;
+            }
+        }
 
         #region Events
 
@@ -159,7 +170,7 @@ namespace QuikGraph.Algorithms.Search
         {
             base.Initialize();
 
-            VertexColors.Clear();
+            VerticesColors.Clear();
         }
 
         /// <inheritdoc />
@@ -181,7 +192,7 @@ namespace QuikGraph.Algorithms.Search
             if (depth > MaxDepth)
                 return;
 
-            VertexColors[u] = GraphColor.Gray;
+            VerticesColors[u] = GraphColor.Gray;
             OnDiscoverVertex(u);
 
             ICancelManager cancelManager = Services.CancelManager;
@@ -193,7 +204,7 @@ namespace QuikGraph.Algorithms.Search
                 OnExamineEdge(edge);
                 TVertex v = edge.Target;
 
-                if (!VertexColors.TryGetValue(v, out GraphColor vColor))
+                if (!VerticesColors.TryGetValue(v, out GraphColor vColor))
                 {
                     OnTreeEdge(edge);
                     Visit(v, depth + 1);
@@ -211,7 +222,7 @@ namespace QuikGraph.Algorithms.Search
                 }
             }
 
-            VertexColors[u] = GraphColor.Black;
+            VerticesColors[u] = GraphColor.Black;
             OnVertexFinished(u);
         }
     }

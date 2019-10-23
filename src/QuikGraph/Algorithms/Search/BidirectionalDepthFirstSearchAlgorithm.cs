@@ -63,6 +63,14 @@ namespace QuikGraph.Algorithms.Search
         }
 
         /// <summary>
+        /// In case a root vertex has been set, indicates if the algorithm should
+        /// walk through graph parts of other components than the root component.
+        /// </summary>
+        public bool ProcessAllComponents { get; set; }
+
+        private int _maxDepth = int.MaxValue;
+
+        /// <summary>
         /// Gets or sets the maximum exploration depth, from the start vertex.
         /// </summary>
         /// <remarks>
@@ -71,7 +79,16 @@ namespace QuikGraph.Algorithms.Search
         /// <value>
         /// Maximum exploration depth.
         /// </value>
-        public int MaxDepth { get; set; } = int.MaxValue;
+        public int MaxDepth
+        {
+            get => _maxDepth;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Must be positive.", nameof(value));
+                _maxDepth = value;
+            }
+        }
 
         #region Events
 
@@ -186,26 +203,40 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            // If there is a starting vertex, start with him
+            // If there is a starting vertex, start with it
             if (TryGetRootVertex(out TVertex root))
             {
                 OnStartVertex(root);
                 Visit(root, 0);
+
+                if (ProcessAllComponents)
+                    VisitAllWhiteVertices(); // All remaining vertices (because there are not white marked)
+            }
+            else
+            {
+                VisitAllWhiteVertices();
             }
 
-            // Process each vertex 
-            ICancelManager cancelManager = Services.CancelManager;
-            foreach (TVertex vertex in VisitedGraph.Vertices)
-            {
-                if (cancelManager.IsCancelling)
-                    return;
+            #region Local function
 
-                if (VerticesColors[vertex] == GraphColor.White)
+            void VisitAllWhiteVertices()
+            {
+                // Process each vertex 
+                ICancelManager cancelManager = Services.CancelManager;
+                foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
-                    OnStartVertex(vertex);
-                    Visit(vertex, 0);
+                    if (cancelManager.IsCancelling)
+                        return;
+
+                    if (VerticesColors[vertex] == GraphColor.White)
+                    {
+                        OnStartVertex(vertex);
+                        Visit(vertex, 0);
+                    }
                 }
             }
+
+            #endregion
         }
 
         #endregion
@@ -221,7 +252,9 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion
