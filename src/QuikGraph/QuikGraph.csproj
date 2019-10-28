@@ -34,7 +34,22 @@ Supported platforms:
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph</PackageId>
-    <PackageReleaseNotes>➟ Release 1.0.0</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 1.0.0
+This package is a version of the original QuickGraph renamed QuikGraph and ported to .NET Core.
+
+It does not include every sub modules of the original library such as F# stuff, adapters, etc.
+This build is only the Core of QuikGraph taking advantage of .NET Core.
+
+This package should be seen as an alternative one to the old frozen QuickGraph from CodePlex but with fixes.
+
+The library has been cleaned a lot (code smells, etc) and is much more unit tested.
+Some implementations have been fixed (Yen algorithm, etc).
+Note that some public API of the original QuickGraph may have slighly changed but the migration should remain easy.
+This goal of this release was also to uniformize the more it is possible the behavior of various graph structures and algorithms.
+
+It also has been fully documented and most of the library is using JetBrains annotations.
+
+Finally the targets supported by the library has been extended to .NET Framework 3.5+ and also works for .NET Core 1.0+.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET</PackageTags>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

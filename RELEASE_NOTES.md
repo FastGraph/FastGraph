@@ -1,26 +1,23 @@
-#### 3.7.5-deta January 17 2019
-* Code cleanup 
-* Minor fixes
-* DotParser is turned off
+# Release notes
 
-#### 3.7.4 August 27 2018
-* More algorithms (TransitiveClosure, YenShortestPaths, etc.)
-* Code cleanup 
-* Minor fixes
+## What's new in 1.0.0 December 10 2019
 
-#### 3.7.3 August 23 2016
-* Minor fix in packet dependences specification
+This release is was based on YC.QuikGraph 3.7.5-deta with a lot of updates.
 
-#### 3.7.2 August 18 2016
-* Update DotParser to latest version (1.0.6)
+### General:
+* Fully clean the library code.
+* Extend support of the library to .NET Framework 3.5+.
+* Extend support of the library to .NET Core 1.0+.
+* Various fixes for graphs and algorithms implementations.
+* Uniformize APIs and behaviors of graphs and algorithms implementations.
 
-#### 3.7.1 July 12 2016
-* Minor fixes
-* New graph algorithms for graph partition, coloring, searching paths, etc
-* Graphs now can be loaded from DOT
-* Drop Portable Class Library support
+Note: Only keep the Core of QuikGraph for this package (feature split).
 
-#### 3.7.0 July 12 2016
-* New graph algorithms for graph partition, coloring, searching paths, etc
-* Graphs now can be loaded from DOT
-* Drop Portable Class Library support
+### API Breaks
+* Some public API breaks (but should remain simple to do a migration).
+* Some edges structures are removed, the classes implementations are preferred due to C# limitations.
+* Some algorithms are not usable for now (wrong implementations) and are removed from public API.
+
+### Misc:
+* Generate a documentation for the library via DocFX.
+* Use JetBrains annotations all over the library as much as possible.
