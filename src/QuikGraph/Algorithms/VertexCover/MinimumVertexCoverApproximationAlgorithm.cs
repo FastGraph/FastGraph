@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Collections;
+#if SUPPORTS_CRYPTO_RANDOM
+using QuikGraph.Utils;
+#endif
 
 namespace QuikGraph.Algorithms.VertexCover
 {
@@ -21,24 +24,40 @@ namespace QuikGraph.Algorithms.VertexCover
         [NotNull]
         private readonly Random _rng;
 
+#if SUPPORTS_CRYPTO_RANDOM
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <remarks>This constructor will use <see cref="CryptoRandom"/> ad random number generator.</remarks>
+        /// <param name="graph">Graph to compute the cover.</param>
+        public MinimumVertexCoverApproximationAlgorithm(
+            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            : this(graph, new CryptoRandom())
+        {
+        }
+#else
         /// <summary>
         /// Initializes a new instance of the <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to compute the cover.</param>
-        public MinimumVertexCoverApproximationAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        public MinimumVertexCoverApproximationAlgorithm(
+            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
             : this(graph, new Random())
         {
         }
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to compute the cover.</param>
         /// <param name="rng">Random number generator.</param>
-        public MinimumVertexCoverApproximationAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph, Random rng)
+        public MinimumVertexCoverApproximationAlgorithm(
+            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
+            [NotNull] Random rng)
             : base(graph)
         {
-            _rng = rng;
+            _rng = rng ?? throw new ArgumentNullException(nameof(rng));
         }
 
         /// <summary>
@@ -55,7 +74,7 @@ namespace QuikGraph.Algorithms.VertexCover
         protected override void InternalCompute()
         {
             var graph = new UndirectedGraph<TVertex, TEdge>(
-                VisitedGraph.AllowParallelEdges, 
+                VisitedGraph.AllowParallelEdges,
                 VisitedGraph.EdgeEqualityComparer);
             graph.AddVerticesAndEdgeRange(VisitedGraph.Edges);
 
@@ -80,7 +99,7 @@ namespace QuikGraph.Algorithms.VertexCover
                     _coverSet.Add(target);
                 }
 
-                if (graph.AdjacentDegree(randomEdge.Target) == 1 
+                if (graph.AdjacentDegree(randomEdge.Target) == 1
                     && graph.AdjacentDegree(randomEdge.Source) == 1)
                 {
                     if (!_coverSet.Contains(source))

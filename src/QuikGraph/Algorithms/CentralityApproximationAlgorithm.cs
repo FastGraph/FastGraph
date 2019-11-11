@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
+#if SUPPORTS_CRYPTO_RANDOM
+using QuikGraph.Utils;
+#endif
 
 namespace QuikGraph.Algorithms
 {
@@ -56,8 +59,12 @@ namespace QuikGraph.Algorithms
         /// Gets or sets the random number generator.
         /// </summary>
         [NotNull]
-        public Random Rand { get; set; } = new Random();
-
+        public Random Rand { get; set; } =
+#if SUPPORTS_CRYPTO_RANDOM
+            new CryptoRandom();
+#else
+            new Random();
+#endif
         /// <summary>
         /// Maximum number of iterations.
         /// </summary>
