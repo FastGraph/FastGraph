@@ -12,5 +12,11 @@ namespace QuikGraph.Tests
         /// </summary>
         [NotNull]
         public const string LongRunning = "LongRunning";
+
+        /// <summary>
+        /// Verbose unit tests (not really relevant to test a feature).
+        /// </summary>
+        [NotNull]
+        public const string Verbose = "VerboseTest";
     }
 }

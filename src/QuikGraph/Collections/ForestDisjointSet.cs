@@ -64,7 +64,7 @@ namespace QuikGraph.Collections
         public ForestDisjointSet(int capacity)
         {
             if (capacity < 0 || capacity >= int.MaxValue)
-                throw new ArgumentException("Capacity must be positive nor max value.", nameof(capacity));
+                throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be positive nor max value.");
 
             _elements = new Dictionary<T, Element>(capacity);
             SetCount = 0;

@@ -62,7 +62,7 @@ namespace QuikGraph.Algorithms.Search
             set
             {
                 if (value <= 0)
-                    throw new ArgumentException("Must be positive.", nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(value), "Must be positive.");
                 _maxDepth = value;
             }
         }
@@ -174,8 +174,7 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex root))
-                throw new InvalidOperationException("Root vertex not set.");
+            TVertex root = GetAndAssertRootInGraph();
 
             // Start with root vertex
             OnStartVertex(root);

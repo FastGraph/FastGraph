@@ -38,7 +38,21 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         public HoffmanPavleyRankedShortestPathAlgorithm(
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)
-            : this(null, visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="edgeWeights">Function that for a given edge provide its weight.</param>
+        /// <param name="distanceRelaxer">Distance relaxer.</param>
+        public HoffmanPavleyRankedShortestPathAlgorithm(
+            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
+            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
 
@@ -65,8 +79,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="target">Target vertex.</param>
         public void SetTargetVertex([NotNull] TVertex target)
         {
-            if (!VisitedGraph.ContainsVertex(target))
-                throw new ArgumentException("Target must be in the graph.", nameof(target));
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
 
             _target = target;
             _hasTargetVertex = true;
@@ -95,15 +109,14 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <param name="target">Target vertex.</param>
-        public void Compute(TVertex root, TVertex target)
+        public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
         {
-            if (!VisitedGraph.ContainsVertex(root))
-                throw new ArgumentException("Root must be in the graph.", nameof(root));
-            SetRootVertex(root);
-
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
             SetTargetVertex(target);
-
-            Compute();
+            if (!VisitedGraph.ContainsVertex(target))
+                throw new ArgumentException("Graph does not contain the provided target vertex.", nameof(target));
+            Compute(root);
         }
 
         #region AlgorithmBase<TGraph>
@@ -113,10 +126,11 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         {
             ICancelManager cancelManager = Services.CancelManager;
 
-            if (!TryGetRootVertex(out TVertex root))
-                throw new InvalidOperationException("Root vertex not set.");
+            TVertex root = GetAndAssertRootInGraph();
             if (!TryGetTargetVertex(out TVertex target))
                 throw new InvalidOperationException("Target vertex not set.");
+            if (!VisitedGraph.ContainsVertex(target))
+                throw new VertexNotFoundException("Target vertex is not part of the graph.");
 
             // Start by building the minimum tree starting from the target vertex.
             ComputeMinimumTree(
@@ -331,14 +345,13 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         }
 
         private void AppendShortestPath(
-            [NotNull, ItemNotNull] IList<TEdge> path,
+            [NotNull, ItemNotNull] ICollection<TEdge> path,
             [NotNull] IDictionary<TVertex, TEdge> successors,
             [NotNull] TVertex startVertex)
         {
             Debug.Assert(path != null);
             Debug.Assert(successors != null);
             Debug.Assert(startVertex != null);
-            //Debug.Assert(path.Count == 0 || path[path.Count - 1].Target.Equals(_target));
 
             TVertex current = startVertex;
             while (successors.TryGetValue(current, out TEdge edge))
@@ -346,6 +359,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 path.Add(edge);
                 current = edge.Target;
             }
+
+            Debug.Assert(path.Count == 0 || path.ElementAt(path.Count - 1).Target.Equals(_target));
         }
 
         [DebuggerDisplay("Weight = {" + nameof(Weight) + "}, Index = {" + nameof(DeviationIndex) + "}, Edge = {" + nameof(DeviationEdge) + "}")]

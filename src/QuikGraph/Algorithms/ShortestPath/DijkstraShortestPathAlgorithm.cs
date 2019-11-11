@@ -43,9 +43,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
         public DijkstraShortestPathAlgorithm(
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer)
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
             : this(null, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -58,10 +58,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
         public DijkstraShortestPathAlgorithm(
-            IAlgorithmComponent host,
-            IVertexListGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -183,6 +183,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         {
             if (TryGetRootVertex(out TVertex rootVertex))
             {
+                AssertRootInGraph(rootVertex);
                 ComputeFromRoot(rootVertex);
             }
             else
@@ -200,9 +201,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         private void ComputeFromRoot([NotNull] TVertex rootVertex)
         {
             Debug.Assert(rootVertex != null);
-            // Will require more attention to fully test the library and assert states of algorithm are fulfilled
-            // Here the vertex must be in the graph but unit test are not doing this.
-            //Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
+            Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
             Debug.Assert(VerticesColors[rootVertex] == GraphColor.White);
 
             VerticesColors[rootVertex] = GraphColor.Gray;
@@ -226,8 +225,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                 bfs.DiscoverVertex += DiscoverVertex;
                 bfs.StartVertex += StartVertex;
                 bfs.ExamineEdge += ExamineEdge;
-#if SUPERDEBUG
-                bfs.ExamineEdge += edge => this.AssertHeap();
+#if DEBUG
+                bfs.ExamineEdge += edge => AssertHeap();
 #endif
                 bfs.ExamineVertex += ExamineVertex;
                 bfs.FinishVertex += FinishVertex;

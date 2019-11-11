@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
 
@@ -10,9 +12,9 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class UndirectedDijkstraShortestPathAlgorithmTests
+    internal class UndirectedDijkstraShortestPathAlgorithmTests : ShortestPathAlgorithmTestsBase
     {
-        #region Helpers
+        #region Test helpers
 
         private static void RunUndirectedDijkstraAndCheck<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph, [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
@@ -25,6 +27,24 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var predecessors = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessors.Attach(algorithm))
                 algorithm.Compute(root);
+
+            algorithm.InitializeVertex += vertex =>
+            {
+                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+            };
+
+            algorithm.DiscoverVertex += vertex =>
+            {
+                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+            };
+
+            algorithm.FinishVertex += vertex =>
+            {
+                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+            };
+
+            Assert.IsNotNull(algorithm.Distances);
+            Assert.AreEqual(graph.VertexCount, algorithm.Distances.Count);
 
             Verify(algorithm, predecessors);
         }
@@ -41,22 +61,220 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;
-                bool found = algorithm.TryGetDistance(vertex, out double vd);
-                Assert.AreEqual(found, algorithm.TryGetDistance(predecessor.Source, out double vp));
-                if (found)
-                    Assert.AreEqual(vd, vp + 1);
+                Assert.AreEqual(
+                    algorithm.TryGetDistance(vertex, out double currentDistance),
+                    algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance));
+                Assert.GreaterOrEqual(currentDistance, predecessorDistance);
             }
         }
 
         #endregion
 
         [Test]
-        public void UndirectedDijkstraAll()
+        public void Constructor()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_TMP())
+            Func<Edge<int>, double> Weights = e => 1.0;
+
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
+            AssertAlgorithmProperties(algorithm, graph, Weights);
+
+            algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights, DistanceRelaxers.CriticalDistance);
+            AssertAlgorithmProperties(algorithm, graph, Weights, DistanceRelaxers.CriticalDistance);
+
+            algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, DistanceRelaxers.CriticalDistance);
+            AssertAlgorithmProperties(algorithm, graph, Weights, DistanceRelaxers.CriticalDistance);
+
+            #region Local function
+
+            void AssertAlgorithmProperties<TVertex, TEdge>(
+                UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge> algo,
+                IUndirectedGraph<TVertex, TEdge> g,
+                Func<TEdge, double> eWeights = null,
+                IDistanceRelaxer relaxer = null)
+                where TEdge : IEdge<TVertex>
+            {
+                AssertAlgorithmState(algo, g);
+                Assert.IsNull(algo.VerticesColors);
+                if (eWeights is null)
+                    Assert.IsNotNull(algo.Weights);
+                else
+                    Assert.AreSame(eWeights, algo.Weights);
+                Assert.IsNull(algo.Distances);
+                if (relaxer is null)
+                    Assert.IsNotNull(algo.DistanceRelaxer);
+                else
+                    Assert.AreSame(relaxer, algo.DistanceRelaxer);
+            }
+
+            #endregion
+        }
+
+        [Test]
+        public void Constructor_Throws()
+        {
+            // ReSharper disable ObjectCreationAsStatement
+            // ReSharper disable AssignNullToNotNullAttribute
+            var graph = new UndirectedGraph<int, Edge<int>>();
+
+            Func<Edge<int>, double> Weights = e => 1.0;
+
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ObjectCreationAsStatement
+        }
+
+        #region Rooted algorithm
+
+        [Test]
+        public void TryGetRootVertex()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            TryGetRootVertex_Test(algorithm);
+        }
+
+        [Test]
+        public void SetRootVertex()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            SetRootVertex_Test(algorithm);
+        }
+
+        [Test]
+        public void SetRootVertex_Throws()
+        {
+            var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0);
+            SetRootVertex_Throws_Test(algorithm);
+        }
+
+        [Test]
+        public void ClearRootVertex()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            ClearRootVertex_Test(algorithm);
+        }
+
+        [Test]
+        public void ComputeWithoutRoot_Throws()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            ComputeWithoutRoot_NoThrows_Test(
+                graph,
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0));
+        }
+
+        [Test]
+        public void ComputeWithRoot()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVertex(0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            ComputeWithRoot_Test(algorithm);
+        }
+
+        [Test]
+        public void ComputeWithRoot_Throws()
+        {
+            var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            ComputeWithRoot_Throws_Test(
+                () => new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0));
+        }
+
+        #endregion
+
+        #region Shortest path algorithm
+
+        [Test]
+        public void TryGetDistance()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVertex(1);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            TryGetDistance_Test(algorithm);
+        }
+
+        [Test]
+        public void TryGetDistance_Throws()
+        {
+            var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0);
+            TryGetDistance_Throws_Test(algorithm);
+        }
+
+        #endregion
+
+        [Test]
+        public void GetVertexColor()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdge(new Edge<int>(1, 2));
+
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            algorithm.Compute(1);
+
+            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
+            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+        }
+
+        [Test]
+        public void GetVertexColor_Throws()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVertex(0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            algorithm.Compute(0);
+
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
+        }
+
+        [Test]
+        [Category(TestCategories.LongRunning)]
+        public void UndirectedDijkstra()
+        {
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests())
             {
                 int cut = 0;
-                foreach (var root in graph.Vertices)
+                foreach (string root in graph.Vertices)
                 {
                     if (cut++ > 10)
                         break;
@@ -66,7 +284,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         [Test]
-        public void Repro42450()
+        public void UndirectedDijkstraSimpleGraph()
         {
             var undirectedGraph = new UndirectedGraph<object, Edge<object>>(true);
             object v1 = "vertex1";

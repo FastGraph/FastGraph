@@ -16,6 +16,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         protected static void TryGetTargetVertex_Test<TVertex, TGraph>(
             [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             Assert.IsFalse(algorithm.TryGetTargetVertex(out _));
 
@@ -27,6 +28,7 @@ namespace QuikGraph.Tests.Algorithms.Search
 
         protected static void SetTargetVertex_Test<TGraph>(
             [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+            where TGraph : IImplicitVertexSet<int>
         {
             int targetVertexChangeCount = 0;
             algorithm.TargetVertexChanged += (sender, args) => ++targetVertexChangeCount;
@@ -58,6 +60,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         protected static void SetTargetVertex_Throws_Test<TVertex, TGraph>(
             [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : class
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => algorithm.SetTargetVertex(null));
@@ -66,6 +69,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         protected static void ClearTargetVertex_Test<TVertex, TGraph>(
             [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             int targetVertexChangeCount = 0;
             // ReSharper disable once AccessToModifiedClosure
@@ -93,22 +97,62 @@ namespace QuikGraph.Tests.Algorithms.Search
             #endregion
         }
 
-        protected static void ComputeWithRootAndTarget_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : new()
+        protected static void ComputeWithoutRoot_Throws_Test<TGraph>(
+            [NotNull] IMutableVertexSet<int> graph,
+            [NotNull, InstantHandle] Func<RootedSearchAlgorithmBase<int, TGraph>> createAlgorithm)
+            where TGraph : IImplicitVertexSet<int>
         {
-            var start = new TVertex();
-            var end = new TVertex();
+            RootedSearchAlgorithmBase<int, TGraph> algorithm = createAlgorithm();
+            Assert.Throws<InvalidOperationException>(algorithm.Compute);
+
+            // Source (and target) vertex set but not to a vertex in the graph
+            const int vertex1 = 1;
+            algorithm = createAlgorithm();
+            algorithm.SetRootVertex(vertex1);
+            algorithm.SetTargetVertex(vertex1);
+            Assert.Throws<VertexNotFoundException>(algorithm.Compute);
+
+            const int vertex2 = 2;
+            graph.AddVertex(vertex1);
+            algorithm = createAlgorithm();
+            algorithm.SetRootVertex(vertex1);
+            algorithm.SetTargetVertex(vertex2);
+            Assert.Throws<VertexNotFoundException>(algorithm.Compute);
+        }
+
+        protected static void ComputeWithRootAndTarget_Test<TGraph>(
+            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+            where TGraph : IImplicitVertexSet<int>
+        {
+            const int start = 0;
+            const int end = 1;
             Assert.DoesNotThrow(() => algorithm.Compute(start, end));
-            Assert.IsTrue(algorithm.TryGetRootVertex(out TVertex root));
-            Assert.IsTrue(algorithm.TryGetTargetVertex(out TVertex target));
+            Assert.IsTrue(algorithm.TryGetRootVertex(out int root));
+            Assert.IsTrue(algorithm.TryGetTargetVertex(out int target));
             AssertEqual(start, root);
             AssertEqual(end, target);
+        }
+
+        protected static void ComputeWithRootAndTarget_Throws_Test<TGraph>(
+            [NotNull] IMutableVertexSet<int> graph,
+            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+            where TGraph : IImplicitVertexSet<int>
+        {
+            const int start = 1;
+            const int end = 2;
+
+            Assert.Throws<ArgumentException>(() => algorithm.Compute(start));
+            graph.AddVertex(start);
+
+            Assert.Throws<InvalidOperationException>(() => algorithm.Compute(start));
+
+            Assert.Throws<ArgumentException>(() => algorithm.Compute(start, end));
         }
 
         protected static void ComputeWithRootAndTarget_Throws_Test<TVertex, TGraph>(
             [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : class, new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             var start = new TVertex();
             var end = new TVertex();
@@ -116,7 +160,6 @@ namespace QuikGraph.Tests.Algorithms.Search
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null));
             Assert.Throws<ArgumentNullException>(() => algorithm.Compute(start, null));
-            Assert.Throws<InvalidOperationException>(() => algorithm.Compute(start));
             Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, end));
             Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, null));
             // ReSharper restore AssignNullToNotNullAttribute

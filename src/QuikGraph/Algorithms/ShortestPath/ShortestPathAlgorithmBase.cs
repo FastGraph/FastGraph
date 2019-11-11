@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -64,7 +65,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
             if (Distances is null)
-                throw new InvalidOperationException("Runt the algorithm before.");
+                throw new InvalidOperationException("Run the algorithm before.");
 
             return Distances.TryGetValue(vertex, out distance);
         }
@@ -119,7 +120,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion
@@ -137,8 +140,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edge">Concerned edge.</param>
         protected virtual void OnTreeEdge([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(edge);
         }
@@ -150,8 +152,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
         protected bool Relax([NotNull] TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TVertex source = edge.Source;
             TVertex target = edge.Target;

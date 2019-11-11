@@ -297,8 +297,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithoutRoot_Throws()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
-            ComputeWithoutRoot_Throws_Test(algorithm);
+            ComputeWithoutRoot_Throws_Test(
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph));
         }
 
         [Test]
@@ -314,8 +314,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRoot_Throws()
         {
             var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new UndirectedBreadthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph);
-            ComputeWithRoot_Throws_Test(algorithm);
+            ComputeWithRoot_Throws_Test(
+                () => new UndirectedBreadthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion

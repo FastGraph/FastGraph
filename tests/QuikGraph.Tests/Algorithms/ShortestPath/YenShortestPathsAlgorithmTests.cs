@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms.ShortestPath;
@@ -11,13 +11,59 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     [TestFixture]
     internal class YenShortestPathsAlgorithmTests
     {
+        [Test]
+        public void Constructor()
+        {
+            Func<EquatableTaggedEdge<int, double>, double> Weights = e => 1.0;
+
+            var graph = new AdjacencyGraph<int, EquatableTaggedEdge<int, double>>();
+            // ReSharper disable ObjectCreationAsStatement
+            Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue));
+            Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, 10));
+
+            Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue, Weights, paths => paths.Where(path => path.Count() > 2)));
+            // ReSharper restore ObjectCreationAsStatement
+        }
+
+        [Test]
+        public void Constructor_Throws()
+        {
+            // ReSharper disable ObjectCreationAsStatement
+            // ReSharper disable AssignNullToNotNullAttribute
+            var graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
+            var vertex1 = new TestVertex("1");
+            var vertex2 = new TestVertex("2");
+
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(null, vertex1, vertex2, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, null, vertex2, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(null, null, vertex2, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(null, vertex1, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, null, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(null, null, null, int.MaxValue));
+            // ReSharper restore AssignNullToNotNullAttribute
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, -1));
+            // ReSharper restore ObjectCreationAsStatement
+        }
+
         /// <summary>
         /// Attempt to use non existing vertices.
         /// </summary>
         [Test]
-        public void YenZeroCaseTest()
+        public void YenEmptyGraph()
         {
-            AdjacencyGraph<char, EquatableTaggedEdge<char, double>> graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
+            var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
 
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
             Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
@@ -28,7 +74,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         /// Expecting that Dijkstra’s algorithm couldn't find any ways.
         /// </summary>
         [Test]
-        public void YenOneVertexCaseTest()
+        public void YenOneVertex()
         {
             var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
             graph.AddVertexRange("1");
@@ -42,7 +88,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         /// Expecting that Dijkstra’s algorithm couldn't find any ways.
         /// </summary>
         [Test]
-        public void YenLoopCaseTest()
+        public void YenLoop()
         {
             var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
             graph.AddVertexRange("1");
@@ -53,7 +99,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         [Test]
-        public void YenNormalCaseTest()
+        public void YenNormal()
         {
             AdjacencyGraph<char, EquatableTaggedEdge<char, double>> graph = GenerateGraph();
 
@@ -93,8 +139,10 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 return g;
             }
 
-            void RunYenAndCheck(YenShortestPathsAlgorithm<char> yen, AdjacencyGraph<char, EquatableTaggedEdge<char, double>> g)
+            void RunYenAndCheck(YenShortestPathsAlgorithm<char> yen, IEdgeListGraph<char, EquatableTaggedEdge<char, double>> g)
             {
+                CollectionAssert.IsEmpty(yen.RemovedEdges());
+
                 // Generate simple graph
                 // like this https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
                 // but with directed edges input graph
@@ -106,19 +154,27 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 // 3 => 1-2-3-4-5
                 // Consistently checking the result
                 Assert.AreEqual(3, paths.Length);
+                var edges = g.Edges.ToArray();
                 // 1
-                Assert.AreEqual(paths[0].ToArray()[0], g.Edges.ToArray()[1]);
-                Assert.AreEqual(paths[0].ToArray()[1], g.Edges.ToArray()[5]);
-                Assert.AreEqual(paths[0].ToArray()[2], g.Edges.ToArray()[7]);
+                EquatableTaggedEdge<char, double>[] path0 = paths[0].ToArray();
+                Assert.AreEqual(path0[0], edges[1]);
+                Assert.AreEqual(path0[1], edges[5]);
+                Assert.AreEqual(path0[2], edges[7]);
                 // 2
-                Assert.AreEqual(paths[1].ToArray()[0], g.Edges.ToArray()[0]);
-                Assert.AreEqual(paths[1].ToArray()[1], g.Edges.ToArray()[4]);
-                Assert.AreEqual(paths[1].ToArray()[2], g.Edges.ToArray()[7]);
+                EquatableTaggedEdge<char, double>[] path1 = paths[1].ToArray();
+                Assert.AreEqual(path1[0], edges[0]);
+                Assert.AreEqual(path1[1], edges[4]);
+                Assert.AreEqual(path1[2], edges[7]);
                 // 3
-                Assert.AreEqual(paths[2].ToArray()[0], g.Edges.ToArray()[0]);
-                Assert.AreEqual(paths[2].ToArray()[1], g.Edges.ToArray()[3]);
-                Assert.AreEqual(paths[2].ToArray()[2], g.Edges.ToArray()[5]);
-                Assert.AreEqual(paths[2].ToArray()[3], g.Edges.ToArray()[7]);
+                EquatableTaggedEdge<char, double>[] path2 = paths[2].ToArray();
+                Assert.AreEqual(path2[0], edges[0]);
+                Assert.AreEqual(path2[1], edges[3]);
+                Assert.AreEqual(path2[2], edges[5]);
+                Assert.AreEqual(path2[3], edges[7]);
+
+                CollectionAssert.AreEqual(
+                    new[] { edges[1], edges[4] },
+                    yen.RemovedEdges());
             }
 
             #endregion

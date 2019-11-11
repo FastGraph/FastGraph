@@ -194,7 +194,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentException>(() => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
         }
 
         #region Rooted algorithm
@@ -235,8 +235,9 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithoutRoot_Throws()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            var algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
-            ComputeWithoutRoot_NoThrows_Test(algorithm);
+            ComputeWithoutRoot_NoThrows_Test(
+                graph,
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph));
         }
 
         [Test]
@@ -252,8 +253,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRoot_Throws()
         {
             var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new UndirectedDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph);
-            ComputeWithRoot_Throws_Test(algorithm);
+            ComputeWithRoot_Throws_Test(() => new UndirectedDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion

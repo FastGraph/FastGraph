@@ -122,14 +122,14 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         /// <summary>
-        /// Tries to get the distance (<paramref name="cost"/>) between
+        /// Tries to get the distance (<paramref name="distance"/>) between
         /// <paramref name="source"/> and <paramref name="target"/>.
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
-        /// <param name="cost">Associated distance (cost).</param>
+        /// <param name="distance">Associated distance (cost).</param>
         /// <returns>True if the distance was found, false otherwise.</returns>
-        public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double cost)
+        public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double distance)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -138,11 +138,11 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             if (_data.TryGetValue(new SEquatableEdge<TVertex>(source, target), out VertexData data))
             {
-                cost = data.Distance;
+                distance = data.Distance;
                 return true;
             }
 
-            cost = -1;
+            distance = -1;
             return false;
         }
 

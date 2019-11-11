@@ -64,10 +64,11 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex root))
-                throw new InvalidOperationException("Root vertex not set.");
+            TVertex root = GetAndAssertRootInGraph();
             if (!TryGetTargetVertex(out TVertex target))
                 throw new InvalidOperationException("Target vertex not set.");
+            if (!VisitedGraph.ContainsVertex(target))
+                throw new VertexNotFoundException("Target vertex is not part of the graph.");
 
             // Little shortcut
             if (root.Equals(target))

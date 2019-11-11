@@ -183,8 +183,9 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithoutRoot_Throws()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            var algorithm = new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(graph, edge => 1.0, DistanceRelaxers.EdgeShortestDistance);
-            ComputeWithoutRoot_Throws_Test(algorithm);
+            ComputeWithoutRoot_Throws_Test(
+                graph,
+                () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(graph, edge => 1.0, DistanceRelaxers.EdgeShortestDistance));
         }
 
         #endregion
@@ -227,6 +228,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRootAndTarget()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVertexRange(new[] { 0, 1 });
             var algorithm = new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(graph, edge => 1.0, DistanceRelaxers.EdgeShortestDistance);
             ComputeWithRootAndTarget_Test(algorithm);
         }
@@ -234,9 +236,13 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Test]
         public void ComputeWithRootAndTarget_Throws()
         {
-            var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new BestFirstFrontierSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0, DistanceRelaxers.EdgeShortestDistance);
-            ComputeWithRootAndTarget_Throws_Test(algorithm);
+            var graph1 = new BidirectionalGraph<int, Edge<int>>();
+            var algorithm1 = new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(graph1, edge => 1.0, DistanceRelaxers.EdgeShortestDistance);
+            ComputeWithRootAndTarget_Throws_Test(graph1, algorithm1);
+
+            var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
+            var algorithm2 = new BestFirstFrontierSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph2, edge => 1.0, DistanceRelaxers.EdgeShortestDistance);
+            ComputeWithRootAndTarget_Throws_Test(algorithm2);
         }
 
         #endregion

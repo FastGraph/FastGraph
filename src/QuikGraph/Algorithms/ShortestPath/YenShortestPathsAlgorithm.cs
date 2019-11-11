@@ -56,7 +56,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         private readonly int _k;
 
         [NotNull]
-        private readonly AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> _graph;
+        private readonly IMutableVertexAndEdgeListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> _graph;
 
         [NotNull, ItemNotNull]
         private readonly List<EquatableTaggedEdge<TVertex, double>> _removedEdges = new List<EquatableTaggedEdge<TVertex, double>>();
@@ -87,6 +87,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
+            if (k < 1)
+                throw new ArgumentOutOfRangeException(nameof(k), "Value must be positive.");
 
             _sourceVertex = source;
             _targetVertex = target;
@@ -113,7 +115,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         private SortedPath? GetShortestPathInGraph(
-            [NotNull] AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph)
+            [NotNull] IVertexListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph)
         {
             // Compute distances between the start vertex and other
             var algorithm = new DijkstraShortestPathAlgorithm<TVertex, EquatableTaggedEdge<TVertex, double>>(graph, _weights);

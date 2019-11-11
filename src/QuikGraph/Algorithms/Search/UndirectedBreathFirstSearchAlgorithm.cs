@@ -215,8 +215,7 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex root))
-                throw new InvalidOperationException("Root vertex not set.");
+            TVertex root = GetAndAssertRootInGraph();
             EnqueueRoot(root);
             FlushVisitQueue();
         }

@@ -12,6 +12,7 @@ namespace QuikGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public abstract class RootedSearchAlgorithmBase<TVertex, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
+        where TGraph : IImplicitVertexSet<TVertex>
     {
         [CanBeNull]
         private TVertex _target;
@@ -117,10 +118,9 @@ namespace QuikGraph.Algorithms
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-
             SetTargetVertex(target);
+            if (!VisitedGraph.ContainsVertex(target))
+                throw new ArgumentException("Graph does not contain the provided target vertex.", nameof(target));
             Compute(root);
         }
     }

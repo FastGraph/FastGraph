@@ -62,6 +62,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
+            if (Distances is null)
+                throw new InvalidOperationException("Run the algorithm before.");
 
             return Distances.TryGetValue(vertex, out distance);
         }
@@ -116,7 +118,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion
@@ -135,8 +139,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="reversed">Indicates if the edge is reversed.</param>
         protected virtual void OnTreeEdge([NotNull] TEdge edge, bool reversed)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(
                 this,

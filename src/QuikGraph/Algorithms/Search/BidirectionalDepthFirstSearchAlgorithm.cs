@@ -85,7 +85,7 @@ namespace QuikGraph.Algorithms.Search
             set
             {
                 if (value <= 0)
-                    throw new ArgumentException("Must be positive.", nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(value), "Must be positive.");
                 _maxDepth = value;
             }
         }
@@ -206,6 +206,8 @@ namespace QuikGraph.Algorithms.Search
             // If there is a starting vertex, start with it
             if (TryGetRootVertex(out TVertex root))
             {
+                AssertRootInGraph(root);
+
                 OnStartVertex(root);
                 Visit(root, 0);
 

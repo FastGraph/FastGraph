@@ -30,9 +30,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         public UndirectedDijkstraShortestPathAlgorithm(
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights)
-            : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights)
+            : base(null, visitedGraph, edgeWeights)
         {
         }
 
@@ -43,9 +43,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
         public UndirectedDijkstraShortestPathAlgorithm(
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer)
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
             : this(null, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -58,10 +58,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
         public UndirectedDijkstraShortestPathAlgorithm(
-            IAlgorithmComponent host,
-            IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            Func<TEdge, double> edgeWeights,
-            IDistanceRelaxer distanceRelaxer)
+            [CanBeNull] IAlgorithmComponent host,
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull] IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -168,9 +168,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (TryGetRootVertex(out TVertex rootVertex))
+            if (TryGetRootVertex(out TVertex root))
             {
-                ComputeFromRoot(rootVertex);
+                AssertRootInGraph(root);
+                ComputeFromRoot(root);
             }
             else
             {

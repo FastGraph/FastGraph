@@ -68,8 +68,7 @@ namespace QuikGraph.Algorithms
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex root))
-                throw new InvalidOperationException("Root vertex not set.");
+            TVertex root = GetAndAssertRootInGraph();
             if (_pairs is null)
                 throw new InvalidProgramException("Pairs not set.");
 

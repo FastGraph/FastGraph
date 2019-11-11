@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -14,7 +15,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public abstract class RankedShortestPathAlgorithmBase<TVertex, TEdge, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
         where TEdge : IEdge<TVertex>
-        where TGraph : IGraph<TVertex, TEdge>
+        where TGraph : IGraph<TVertex, TEdge>, IImplicitVertexSet<TVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RankedShortestPathAlgorithmBase{TVertex,TEdge,TGraph}"/> class.
@@ -42,8 +43,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             set
             {
                 if (value <= 1)
-                    throw new ArgumentException("Must be more than 1.", nameof(value));
-
+                    throw new ArgumentOutOfRangeException(nameof(value), "Must be more than 1.");
                 _shortestPathCount = value;
             }
         }
@@ -78,11 +78,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="path">Path to add.</param>
         protected void AddComputedShortestPath([NotNull, ItemNotNull] IEnumerable<TEdge> path)
         {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
+            Debug.Assert(path != null);
             TEdge[] pathArray = path.ToArray();
-            if (pathArray.Any(edge => edge == null))
-                throw new ArgumentException("There is at least one null edge is the path.", nameof(path));
+            Debug.Assert(pathArray.All(edge => edge != null), "There is at least one null edge is the path.");
 
             _computedShortestPaths.Add(pathArray);
         }

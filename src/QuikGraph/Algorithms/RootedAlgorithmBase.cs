@@ -1,5 +1,8 @@
 using System;
 using System.Diagnostics;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -15,6 +18,7 @@ namespace QuikGraph.Algorithms
     [Serializable]
 #endif
     public abstract class RootedAlgorithmBase<TVertex, TGraph> : AlgorithmBase<TGraph>
+        where TGraph : IImplicitVertexSet<TVertex>
     {
         [CanBeNull]
         private TVertex _root;
@@ -98,12 +102,49 @@ namespace QuikGraph.Algorithms
         }
 
         /// <summary>
+        /// Gets the root vertex if set and checks it is part of the
+        /// <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
+        /// </summary>
+        /// <returns>Root vertex.</returns>
+        /// <exception cref="InvalidOperationException">If the root vertex has not been set.</exception>
+        /// <exception cref="VertexNotFoundException">
+        /// If the set root vertex is not part of the <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
+        /// </exception>
+        [NotNull]
+        protected TVertex GetAndAssertRootInGraph()
+        {
+            if (!TryGetRootVertex(out TVertex root))
+                throw new InvalidOperationException("Root vertex not set.");
+            AssertRootInGraph(root);
+            return root;
+        }
+
+        /// <summary>
+        /// Asserts that the given <paramref name="root"/> vertex is in the <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
+        /// </summary>
+        /// <param name="root">Vertex to check.</param>
+        /// <exception cref="VertexNotFoundException">
+        /// If the set root vertex is not part of the <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
+        /// </exception>
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        protected void AssertRootInGraph([NotNull] TVertex root)
+        {
+            if (!VisitedGraph.ContainsVertex(root))
+                throw new VertexNotFoundException("Root vertex is not part of the graph.");
+        }
+
+        /// <summary>
         /// Runs the algorithm with the given <paramref name="root"/> vertex.
         /// </summary>
         /// <param name="root">Root vertex.</param>
         public void Compute([NotNull] TVertex root)
         {
             SetRootVertex(root);
+            if (!VisitedGraph.ContainsVertex(root))
+                throw new ArgumentException("Graph does not contain the provided root vertex.", nameof(root));
+
             Compute();
         }
     }

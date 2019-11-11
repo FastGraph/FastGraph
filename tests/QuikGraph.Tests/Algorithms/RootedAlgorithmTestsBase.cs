@@ -16,6 +16,7 @@ namespace QuikGraph.Tests.Algorithms
         protected static void TryGetRootVertex_Test<TVertex, TGraph>(
             [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             Assert.IsFalse(algorithm.TryGetRootVertex(out _));
 
@@ -27,6 +28,7 @@ namespace QuikGraph.Tests.Algorithms
 
         protected static void SetRootVertex_Test<TGraph>(
             [NotNull] RootedAlgorithmBase<int, TGraph> algorithm)
+            where TGraph : IImplicitVertexSet<int>
         {
             int rootVertexChangeCount = 0;
             algorithm.RootVertexChanged += (sender, args) => ++rootVertexChangeCount;
@@ -58,6 +60,7 @@ namespace QuikGraph.Tests.Algorithms
         protected static void SetRootVertex_Throws_Test<TVertex, TGraph>(
             [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : class
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => algorithm.SetRootVertex(null));
@@ -66,6 +69,7 @@ namespace QuikGraph.Tests.Algorithms
         protected static void ClearRootVertex_Test<TVertex, TGraph>(
             [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             int rootVertexChangeCount = 0;
             // ReSharper disable once AccessToModifiedClosure
@@ -93,23 +97,37 @@ namespace QuikGraph.Tests.Algorithms
             #endregion
         }
 
-        protected static void ComputeWithoutRoot_NoThrows_Test<TVertex, TGraph>(
-            [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : new()
+        protected static void ComputeWithoutRoot_NoThrows_Test<TGraph>(
+            [NotNull] IMutableVertexSet<int> graph,
+            [NotNull, InstantHandle] Func<RootedAlgorithmBase<int, TGraph>> createAlgorithm)
+            where TGraph : IImplicitVertexSet<int>
         {
+            RootedAlgorithmBase<int, TGraph> algorithm = createAlgorithm();
+            Assert.DoesNotThrow(algorithm.Compute);
+
+            graph.AddVertexRange(new[] { 1, 2 });
+            algorithm = createAlgorithm();
             Assert.DoesNotThrow(algorithm.Compute);
         }
 
         protected static void ComputeWithoutRoot_Throws_Test<TVertex, TGraph>(
-            [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
+            [NotNull, InstantHandle] Func<RootedAlgorithmBase<TVertex, TGraph>> createAlgorithm)
             where TVertex : new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
+            RootedAlgorithmBase<TVertex, TGraph> algorithm = createAlgorithm();
             Assert.Throws<InvalidOperationException>(algorithm.Compute);
+
+            // Source vertex set but not to a vertex in the graph
+            algorithm = createAlgorithm();
+            algorithm.SetRootVertex(new TVertex());
+            Assert.Throws<VertexNotFoundException>(algorithm.Compute);
         }
 
         protected static void ComputeWithRoot_Test<TVertex, TGraph>(
             [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
             var vertex = new TVertex();
             Assert.DoesNotThrow(() => algorithm.Compute(vertex));
@@ -118,12 +136,18 @@ namespace QuikGraph.Tests.Algorithms
         }
 
         protected static void ComputeWithRoot_Throws_Test<TVertex, TGraph>(
-            [NotNull] RootedAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : class
+            [NotNull, InstantHandle] Func<RootedAlgorithmBase<TVertex, TGraph>> createAlgorithm)
+            where TVertex : class, new()
+            where TGraph : IImplicitVertexSet<TVertex>
         {
+            RootedAlgorithmBase<TVertex, TGraph> algorithm = createAlgorithm();
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null));
             Assert.IsFalse(algorithm.TryGetRootVertex(out _));
+
+            // Vertex not in the graph
+            algorithm = createAlgorithm();
+            Assert.Throws<ArgumentException>(() => algorithm.Compute(new TVertex()));
         }
 
         #endregion

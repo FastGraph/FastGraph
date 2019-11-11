@@ -71,7 +71,7 @@ namespace QuikGraph.Collections
         public BinaryHeap(int capacity, [NotNull] Comparison<TPriority> priorityComparison)
         {
             if (capacity < 0)
-                throw new ArgumentException("Capacity must be positive.", nameof(capacity));
+                throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be positive.");
 
             _items = new KeyValuePair<TPriority, TValue>[capacity];
             PriorityComparison = priorityComparison ?? throw new ArgumentNullException(nameof(priorityComparison));

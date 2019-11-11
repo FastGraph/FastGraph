@@ -99,9 +99,9 @@ namespace QuikGraph.Tests.Collections
                 () => new FibonacciQueue<int, double>((Func<int, double>)null));
 
 
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), vertex => 1.0));
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null));
             Assert.Throws<ArgumentNullException>(
                 () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), null));
@@ -109,13 +109,13 @@ namespace QuikGraph.Tests.Collections
                 () => new FibonacciQueue<int, double>(12, null, null));
 
 
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), vertex => 1.0, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), vertex => 1.0, null));
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null, null));
             Assert.Throws<ArgumentNullException>(
                 () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), vertex => 1.0, null));

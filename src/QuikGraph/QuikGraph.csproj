@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -86,13 +86,17 @@ Supported platforms:
     <AssemblyTitle>QuikGraph .NET 4.0</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+    <AssemblyTitle>QuikGraph .NET 4.5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET45;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_AGGRESSIVE_INLINING;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
     <AssemblyTitle>QuikGraph .NET Standard 1.3</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD1_3;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NETSTANDARD1_3;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_AGGRESSIVE_INLINING;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <AssemblyTitle>QuikGraph .NET Standard 2.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_KERNIGHANLIN_ALGORITHM;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_AGGRESSIVE_INLINING;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   
   <!-- Dependencies -->

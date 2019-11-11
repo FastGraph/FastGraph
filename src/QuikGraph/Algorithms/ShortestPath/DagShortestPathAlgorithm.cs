@@ -153,8 +153,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             double initialDistance = DistanceRelaxer.InitialDistance;
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                VerticesColors.Add(vertex, GraphColor.White);
-                Distances.Add(vertex, initialDistance);
+                VerticesColors[vertex] = GraphColor.White;
+                Distances[vertex] = initialDistance;
                 OnVertexInitialized(vertex);
             }
         }
@@ -162,12 +162,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex rootVertex))
-                throw new InvalidOperationException("Root vertex not set.");
-
-            VerticesColors[rootVertex] = GraphColor.Gray;
-            Distances[rootVertex] = 0;
-            ComputeNoInit(rootVertex);
+            TVertex root = GetAndAssertRootInGraph();
+            VerticesColors[root] = GraphColor.Gray;
+            Distances[root] = 0;
+            ComputeNoInit(root);
         }
 
         #endregion
@@ -180,9 +178,13 @@ namespace QuikGraph.Algorithms.ShortestPath
             foreach (TVertex vertex in orderedVertices)
             {
                 OnStartVertex(vertex);
+
+                VerticesColors[vertex] = GraphColor.Gray;
                 OnExamineVertex(vertex);
+
                 foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
                 {
+                    VerticesColors[edge.Target] = GraphColor.Gray;
                     OnExamineEdge(edge);
                     OnDiscoverVertex(edge.Target);
 
@@ -192,6 +194,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                     else
                         OnEdgeNotRelaxed(edge);
                 }
+
+                VerticesColors[vertex] = GraphColor.Black;
                 OnFinishVertex(vertex);
             }
         }

@@ -46,8 +46,8 @@ namespace QuikGraph.Tests.Collections
         public void Constructor_Throws()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.Throws<ArgumentException>(() => new ForestDisjointSet<int>(-1));
-            Assert.Throws<ArgumentException>(() => new ForestDisjointSet<int>(int.MaxValue));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ForestDisjointSet<int>(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ForestDisjointSet<int>(int.MaxValue));
             // ReSharper restore ObjectCreationAsStatement
         }
 

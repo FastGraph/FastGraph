@@ -186,7 +186,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentException>(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
         }
 
         #region Rooted algorithm
@@ -227,8 +227,9 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithoutRoot_Throws()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            var algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
-            ComputeWithoutRoot_NoThrows_Test(algorithm);
+            ComputeWithoutRoot_NoThrows_Test(
+                graph,
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph));
         }
 
         [Test]
@@ -244,8 +245,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRoot_Throws()
         {
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new BidirectionalDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph);
-            ComputeWithRoot_Throws_Test(algorithm);
+            ComputeWithRoot_Throws_Test(
+                () => new BidirectionalDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion

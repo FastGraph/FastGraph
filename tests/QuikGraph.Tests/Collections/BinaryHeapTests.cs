@@ -195,9 +195,9 @@ namespace QuikGraph.Tests.Collections
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => new BinaryHeap<int, Edge<int>>(null));
             Assert.Throws<ArgumentNullException>(() => new BinaryHeap<int, Edge<int>>(12, null));
-            Assert.Throws<ArgumentException>(() => new BinaryHeap<int, Edge<int>>(-1));
-            Assert.Throws<ArgumentException>(() => new BinaryHeap<int, Edge<int>>(-1, null));
-            Assert.Throws<ArgumentException>(() => new BinaryHeap<int, Edge<int>>(-1, (x, y) => x.CompareTo(y)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, (x, y) => x.CompareTo(y)));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

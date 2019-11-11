@@ -169,6 +169,10 @@ namespace QuikGraph.Algorithms.ShortestPath
                 // Try to fallback on first vertex, will throw if the graph is empty
                 root = VisitedGraph.Vertices.First();
             }
+            else if (!VisitedGraph.ContainsVertex(root))
+            {
+                throw new VertexNotFoundException("Root vertex is not part of the graph.");
+            }
 
             Distances[root] = 0;
         }
@@ -208,10 +212,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             IDistanceRelaxer relaxer = DistanceRelaxer;
             foreach (TEdge edge in VisitedGraph.Edges)
             {
-                var edgeWeight = Weights(edge);
-                if (edgeWeight < 0)
-                    throw new InvalidOperationException("Non negative edge weight.");
-
+                double edgeWeight = Weights(edge);
                 if (relaxer.Compare(
                         relaxer.Combine(Distances[edge.Source], edgeWeight),
                         Distances[edge.Target]) < 0)
@@ -225,6 +226,17 @@ namespace QuikGraph.Algorithms.ShortestPath
             }
 
             FoundNegativeCycle = false;
+        }
+
+        /// <inheritdoc />
+        protected override void Clean()
+        {
+            base.Clean();
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                VerticesColors[vertex] = GraphColor.Black;
+            }
         }
 
         #endregion

@@ -204,9 +204,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (TryGetRootVertex(out TVertex rootVertex))
+            if (TryGetRootVertex(out TVertex root))
             {
-                ComputeFromRoot(rootVertex);
+                AssertRootInGraph(root);
+                ComputeFromRoot(root);
             }
             else
             {
