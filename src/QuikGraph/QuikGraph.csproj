@@ -100,17 +100,21 @@ Supported platforms:
   </PropertyGroup>
   
   <!-- Dependencies -->
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="All" />
+  </ItemGroup>
+  
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-	<PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
-	<PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-	<PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
-	<PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-	<PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
+    <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
-	<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
-	<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
   <!-- Source Link -->
