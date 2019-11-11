@@ -15,6 +15,8 @@ namespace QuikGraph.Tests
     /// </summary>
     internal static class TestGraphFactory
     {
+        private const int SlowTestRate = 5;
+
         /// <summary>
         /// Gets graph ML file paths.
         /// </summary>
@@ -119,8 +121,8 @@ namespace QuikGraph.Tests
         {
             return GetAdjacencyGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
-                // 1 over 4
-                (filePath, i) => i % 4 == 0
+                // 1 over SlowTestRate
+                (filePath, i) => i % SlowTestRate == 0
 #endif
             );
         }
@@ -174,8 +176,8 @@ namespace QuikGraph.Tests
         {
             return GetBidirectionalGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
-                // 1 over 4
-                (filePath, i) => i % 4 == 0
+                // 1 over SlowTestRate
+                (filePath, i) => i % SlowTestRate == 0
 #endif
             );
         }
@@ -229,8 +231,8 @@ namespace QuikGraph.Tests
         {
             return GetUndirectedGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
-                // 1 over 4
-                (filePath, i) => i % 4 == 0
+                // 1 over SlowTestRate
+                (filePath, i) => i % SlowTestRate == 0
 #endif
             );
         }

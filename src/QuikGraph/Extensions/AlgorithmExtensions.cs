@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 #if SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;
@@ -134,8 +135,7 @@ namespace QuikGraph.Algorithms
             where TEdge : IEdge<TVertex>
             where TAlgorithm : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>, ITreeBuilderAlgorithm<TVertex, TEdge>
         {
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
+            Debug.Assert(algorithm != null);
 
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
@@ -149,7 +149,7 @@ namespace QuikGraph.Algorithms
         /// Computes a breadth first tree and gets a function that allow to get edges
         /// connected to a vertex in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -172,7 +172,7 @@ namespace QuikGraph.Algorithms
         /// Computes a depth first tree and gets a function that allow to get edges
         /// connected to a vertex in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="DepthFirstSearchAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="DepthFirstSearchAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -195,7 +195,7 @@ namespace QuikGraph.Algorithms
         /// Computes a cycle popping tree and gets a function that allow to get edges
         /// connected to a vertex in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> algorithm and
+        /// <remarks>Uses <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> algorithm and
         /// <see cref="NormalizedMarkovEdgeChain{TVertex,TEdge}"/>.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -216,7 +216,7 @@ namespace QuikGraph.Algorithms
         /// Computes a cycle popping tree and gets a function that allow to get edges
         /// connected to a vertex in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -243,7 +243,7 @@ namespace QuikGraph.Algorithms
         /// Computes shortest path with the Dijkstra algorithm and gets a function that allows
         /// to get paths in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -254,7 +254,7 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
@@ -268,7 +268,7 @@ namespace QuikGraph.Algorithms
         /// Computes shortest path with the Dijkstra algorithm and gets a function that allows
         /// to get paths in an undirected graph.
         /// </summary>
-        /// <remarks>Use <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="UndirectedDijkstraShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -279,7 +279,7 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
@@ -296,7 +296,7 @@ namespace QuikGraph.Algorithms
         /// Computes shortest path with the A* algorithm and gets a function that allows
         /// to get paths in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="AStarShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -308,8 +308,8 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsAStar<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] Func<TVertex, double> costHeuristic,
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
+            [NotNull, InstantHandle] Func<TVertex, double> costHeuristic,
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
@@ -323,19 +323,21 @@ namespace QuikGraph.Algorithms
         /// Computes shortest path with the Bellman Ford algorithm and gets a function that allows
         /// to get paths in a directed graph.
         /// </summary>
-        /// <remarks>Use <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
+        /// <param name="hasNegativeCycle">Indicates if a negative cycle has been found or not.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsBellmanFord<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] TVertex root)
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
+            [NotNull] TVertex root,
+            out bool hasNegativeCycle)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -350,6 +352,8 @@ namespace QuikGraph.Algorithms
             using (predecessorRecorder.Attach(algorithm))
                 algorithm.Compute(root);
 
+            hasNegativeCycle = algorithm.FoundNegativeCycle;
+
             IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
             return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
         }
@@ -358,7 +362,7 @@ namespace QuikGraph.Algorithms
         /// Computes shortest path with an algorithm made for DAG (Directed ACyclic graph) and gets a function
         /// that allows to get paths.
         /// </summary>
-        /// <remarks>Use <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -369,7 +373,7 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDag<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
             [NotNull] TVertex root)
             where TEdge : IEdge<TVertex>
         {
@@ -393,7 +397,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Computes k-shortest path with the Hoffman Pavley algorithm and gets those paths.
         /// </summary>
-        /// <remarks>Use <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
+        /// <remarks>Uses <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/> algorithm.</remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
@@ -401,15 +405,15 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Starting vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <param name="maxCount">Maximal number of path to search.</param>
-        /// <returns>ENumeration of paths to go from <paramref name="root"/> vertex to <paramref name="target"/>.</returns>
+        /// <returns>Enumeration of paths to go from <paramref name="root"/> vertex to <paramref name="target"/>.</returns>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<IEnumerable<TEdge>> RankedShortestPathHoffmanPavley<TVertex, TEdge>(
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights,
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
             [NotNull] TVertex root,
             [NotNull] TVertex target,
-            int maxCount)
+            int maxCount = 3)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights)
@@ -438,7 +442,6 @@ namespace QuikGraph.Algorithms
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-
             return graph.Vertices.Where(graph.IsOutEdgesEmpty);
         }
 
@@ -482,7 +485,6 @@ namespace QuikGraph.Algorithms
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-
             return graph.Vertices.Where(graph.IsInEdgesEmpty);
         }
 
@@ -501,7 +503,6 @@ namespace QuikGraph.Algorithms
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-
             return graph.Vertices.Where(vertex => graph.Degree(vertex) == 0);
         }
 
@@ -911,7 +912,7 @@ namespace QuikGraph.Algorithms
 
             // Odds
             return counts
-                .Where(pair => pair.Value % 2 == 0)
+                .Where(pair => pair.Value % 2 != 0)
                 .Select(pair => pair.Key);
         }
 
@@ -926,12 +927,12 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <returns>True if the graph contains a cycle, false otherwise.</returns>
         [Pure]
-        public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(this IVertexListGraph<TVertex, TEdge> graph)
+        public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(
+            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-
             return new DagTester<TVertex, TEdge>().IsDag(graph);
         }
 
@@ -943,6 +944,8 @@ namespace QuikGraph.Algorithms
             [Pure]
             public bool IsDag([NotNull] IVertexListGraph<TVertex, TEdge> graph)
             {
+                Debug.Assert(graph != null);
+
                 var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
                 try
                 {
@@ -1035,7 +1038,7 @@ namespace QuikGraph.Algorithms
         [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreePrim<TVertex, TEdge>(
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -1067,7 +1070,7 @@ namespace QuikGraph.Algorithms
         [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreeKruskal<TVertex, TEdge>(
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -1237,6 +1240,7 @@ namespace QuikGraph.Algorithms
             if (clone is null)
                 throw new ArgumentNullException(nameof(clone));
 
+            clone.Clear();
             var vertexClones = new Dictionary<TVertex, TVertex>(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)
             {
