@@ -106,8 +106,7 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStateChanged([NotNull] EventArgs args)
         {
-            if (args is null)
-                throw new ArgumentNullException(nameof(args));
+            Debug.Assert(args != null);
 
             StateChanged?.Invoke(this, args);
         }
@@ -121,8 +120,7 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStarted([NotNull] EventArgs args)
         {
-            if (args is null)
-                throw new ArgumentNullException(nameof(args));
+            Debug.Assert(args != null);
 
             Started?.Invoke(this, args);
         }
@@ -136,8 +134,7 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnFinished([NotNull] EventArgs args)
         {
-            if (args is null)
-                throw new ArgumentNullException(nameof(args));
+            Debug.Assert(args != null);
 
             Finished?.Invoke(this, args);
         }
@@ -151,8 +148,7 @@ namespace QuikGraph.Algorithms
         /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnAborted([NotNull] EventArgs args)
         {
-            if (args is null)
-                throw new ArgumentNullException(nameof(args));
+            Debug.Assert(args != null);
 
             Aborted?.Invoke(this, args);
         }
@@ -263,7 +259,10 @@ namespace QuikGraph.Algorithms
 
         private void EndComputation()
         {
-            Debug.Assert(State == ComputationState.Running || State == ComputationState.Aborted);
+            Debug.Assert(
+                State == ComputationState.Running
+                ||
+                State == ComputationState.PendingAbortion);
 
             lock (SyncRoot)
             {
