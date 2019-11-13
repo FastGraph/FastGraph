@@ -24,7 +24,6 @@ namespace QuikGraph.Algorithms
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-
             return GetVertex(graph.Vertices, graph.VertexCount, rng);
         }
 
@@ -48,14 +47,13 @@ namespace QuikGraph.Algorithms
             if (rng is null)
                 throw new ArgumentNullException(nameof(rng));
             if (count <= 0)
-                throw new ArgumentException("Must be positive.", nameof(count));
+                throw new ArgumentOutOfRangeException(nameof(count), "Must be positive.");
 
             int i = rng.Next(count);
             foreach (TVertex vertex in vertices)
             {
                 if (i == 0)
                     return vertex;
-
                 --i;
             }
 
@@ -80,7 +78,6 @@ namespace QuikGraph.Algorithms
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-
             return GetEdge<TVertex, TEdge>(graph.Edges, graph.EdgeCount, rng);
         }
 
@@ -106,14 +103,13 @@ namespace QuikGraph.Algorithms
             if (rng is null)
                 throw new ArgumentNullException(nameof(rng));
             if (count <= 0)
-                throw new ArgumentException("Must be positive.", nameof(count));
+                throw new ArgumentOutOfRangeException(nameof(count), "Must be positive.");
 
             int i = rng.Next(count);
             foreach (TEdge edge in edges)
             {
                 if (i == 0)
                     return edge;
-
                 --i;
             }
 
@@ -140,9 +136,9 @@ namespace QuikGraph.Algorithms
             if (rng is null)
                 throw new ArgumentNullException(nameof(rng));
             if (vertexCount <= 0)
-                throw new ArgumentException("Must have at least one vertex.", nameof(vertexCount));
+                throw new ArgumentOutOfRangeException(nameof(vertexCount), "Must have at least one vertex.");
             if (edgeCount <= 0)
-                throw new ArgumentException("Must not be negative.", nameof(edgeCount));
+                throw new ArgumentOutOfRangeException(nameof(edgeCount), "Must not be negative.");
 
             var vertices = new TVertex[vertexCount];
             for (int i = 0; i < vertexCount; ++i)

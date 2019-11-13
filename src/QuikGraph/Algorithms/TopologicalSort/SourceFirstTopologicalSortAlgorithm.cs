@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -21,22 +22,28 @@ namespace QuikGraph.Algorithms.TopologicalSort
         [NotNull]
         private readonly BinaryQueue<TVertex, int> _heap;
 
+        [NotNull, ItemNotNull]
+        private readonly IList<TVertex> _sortedVertices;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SourceFirstTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <param name="capacity">Sorted vertices capacity.</param>
         public SourceFirstTopologicalSortAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            int capacity = -1)
             : base(visitedGraph)
         {
             _heap = new BinaryQueue<TVertex, int>(vertex => InDegrees[vertex]);
+            _sortedVertices = capacity > 0 ? new List<TVertex>(capacity) : new List<TVertex>();
         }
 
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
-        public ICollection<TVertex> SortedVertices { get; private set; } = new List<TVertex>();
+        [ItemNotNull]
+        public TVertex[] SortedVertices { get; private set; }
 
         /// <summary>
         /// Vertices in degrees.
@@ -66,7 +73,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
             foreach (TEdge edge in VisitedGraph.Edges)
             {
                 if (edge.IsSelfEdge())
-                    continue;
+                    throw new NonAcyclicGraphException();
 
                 ++InDegrees[edge.Target];
             }
@@ -77,24 +84,24 @@ namespace QuikGraph.Algorithms.TopologicalSort
             }
         }
 
-        /// <summary>
-        /// Runs the topological sort and puts the result in the provided list.
-        /// </summary>
-        /// <param name="vertices">Set of sorted vertices.</param>
-        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
-        {
-            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
-            SortedVertices.Clear();
-            Compute();
-        }
-
         #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            SortedVertices = null;
+            _sortedVertices.Clear();
+            InDegrees.Clear();
+
+            InitializeInDegrees();
+        }
 
         /// <inheritdoc />
         protected override void InternalCompute()
         {
             ICancelManager cancelManager = Services.CancelManager;
-            InitializeInDegrees();
 
             while (_heap.Count != 0)
             {
@@ -105,15 +112,12 @@ namespace QuikGraph.Algorithms.TopologicalSort
                 if (InDegrees[vertex] != 0)
                     throw new NonAcyclicGraphException();
 
-                SortedVertices.Add(vertex);
+                _sortedVertices.Add(vertex);
                 OnVertexAdded(vertex);
 
                 // Update the count of its adjacent vertices
                 foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
                 {
-                    if (edge.IsSelfEdge())
-                        continue;
-
                     --InDegrees[edge.Target];
 
                     Debug.Assert(InDegrees[edge.Target] >= 0);
@@ -121,6 +125,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
                     _heap.Update(edge.Target);
                 }
             }
+
+            SortedVertices = _sortedVertices.ToArray();
         }
 
         #endregion

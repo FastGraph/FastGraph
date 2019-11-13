@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 
@@ -16,33 +17,27 @@ namespace QuikGraph.Algorithms.TopologicalSort
     public sealed class UndirectedTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UndirectedTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
-        /// </summary>
-        /// <param name="visitedGraph">Graph to visit.</param>
-        public UndirectedTopologicalSortAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
-            : this(visitedGraph, new List<TVertex>())
-        {
-        }
+        [NotNull, ItemNotNull]
+        private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UndirectedTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
-        /// <param name="vertices">Set of sorted vertices.</param>
+        /// <param name="capacity">Sorted vertices capacity.</param>
         public UndirectedTopologicalSortAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices)
+            int capacity = -1)
             : base(visitedGraph)
         {
-            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
+            _sortedVertices = capacity > 0 ? new List<TVertex>(capacity) : new List<TVertex>();
         }
 
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
-        public IList<TVertex> SortedVertices { get; private set; }
+        [ItemNotNull]
+        public TVertex[] SortedVertices { get; private set; }
 
         /// <summary>
         /// Gets or sets the flag that indicates if cyclic graph are supported or not.
@@ -57,21 +52,19 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            SortedVertices.Insert(0, vertex);
-        }
-
-        /// <summary>
-        /// Runs the topological sort and puts the result in the provided list.
-        /// </summary>
-        /// <param name="vertices">Set of sorted vertices.</param>
-        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
-        {
-            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
-            SortedVertices.Clear();
-            Compute();
+            _sortedVertices.Add(vertex);
         }
 
         #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            SortedVertices = null;
+            _sortedVertices.Clear();
+        }
 
         /// <inheritdoc />
         protected override void InternalCompute()
@@ -94,6 +87,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
                 {
                     dfs.BackEdge -= BackEdge;
                     dfs.FinishVertex -= OnVertexFinished;
+
+                    SortedVertices = _sortedVertices.Reverse().ToArray();
                 }
             }
         }

@@ -509,56 +509,12 @@ namespace QuikGraph.Algorithms
         #region Topological sorts
 
         /// <summary>
-        /// Creates a topological sort of an undirected acyclic graph.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="graph">Graph to visit.</param>
-        /// <returns>Sorted vertices (topological sort)</returns>
-        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        [Pure]
-        [NotNull, ItemNotNull]
-        public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
-            where TEdge : IEdge<TVertex>
-        {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
-            var vertices = new List<TVertex>(graph.VertexCount);
-            TopologicalSort(graph, vertices);
-            return vertices.AsEnumerable();
-        }
-
-        /// <summary>
-        /// Creates a topological sort of an undirected acyclic graph.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="graph">Graph to visit.</param>
-        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
-        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        public static void TopologicalSort<TVertex, TEdge>(
-            this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices)
-            where TEdge : IEdge<TVertex>
-        {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            var algorithm = new UndirectedTopologicalSortAlgorithm<TVertex, TEdge>(graph);
-            algorithm.Compute(vertices);
-        }
-
-        /// <summary>
         /// Creates a topological sort of a directed acyclic graph.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <returns>Sorted vertices (topological sort).</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -569,31 +525,31 @@ namespace QuikGraph.Algorithms
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
 
-            var vertices = new List<TVertex>(graph.VertexCount);
-            TopologicalSort(graph, vertices);
-            return vertices.AsEnumerable();
+            var algorithm = new TopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
+            algorithm.Compute();
+            return algorithm.SortedVertices.AsEnumerable();
         }
 
         /// <summary>
-        /// Creates a topological sort of a directed acyclic graph.
+        /// Creates a topological sort of an undirected acyclic graph.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <returns>Sorted vertices (topological sort).</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        public static void TopologicalSort<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices)
+        [Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
 
-            var algorithm = new TopologicalSortAlgorithm<TVertex, TEdge>(graph);
-            algorithm.Compute(vertices);
+            var algorithm = new UndirectedTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
+            algorithm.Compute();
+            return algorithm.SortedVertices.AsEnumerable();
         }
 
         /// <summary>
@@ -602,7 +558,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <returns>Sorted vertices (topological sort).</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -613,55 +569,9 @@ namespace QuikGraph.Algorithms
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
 
-            var vertices = new List<TVertex>(graph.VertexCount);
-            SourceFirstTopologicalSort(graph, vertices);
-            return vertices.AsEnumerable();
-        }
-
-        /// <summary>
-        /// Creates a topological sort (source first) of a directed acyclic graph.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="graph">Graph to visit.</param>
-        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
-        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        public static void SourceFirstTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices)
-            where TEdge : IEdge<TVertex>
-        {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
-
-            var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph);
-            algorithm.Compute(vertices);
-        }
-
-        /// <summary>
-        /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="graph">Graph to visit.</param>
-        /// <param name="direction">Topological sort direction.</param>
-        /// <returns>Sorted vertices (topological sort)</returns>
-        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        [Pure]
-        [NotNull, ItemNotNull]
-        public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
-            TopologicalSortDirection direction)
-            where TEdge : IEdge<TVertex>
-        {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
-            var vertices = new List<TVertex>(graph.VertexCount);
-            SourceFirstBidirectionalTopologicalSort(graph, vertices, direction);
-            return vertices.AsEnumerable();
+            var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
+            algorithm.Compute();
+            return algorithm.SortedVertices.AsEnumerable();
         }
 
         /// <summary>
@@ -671,7 +581,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <returns>Sorted vertices (topological sort)</returns>
+        /// <returns>Sorted vertices (topological sort).</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
@@ -687,39 +597,44 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
         /// <param name="direction">Topological sort direction.</param>
+        /// <returns>Sorted vertices (topological sort).</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        public static void SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
+        [Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices,
             TopologicalSortDirection direction)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
 
-            var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction);
-            algorithm.Compute(vertices);
+            var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction, graph.VertexCount);
+            algorithm.Compute();
+            return algorithm.SortedVertices.AsEnumerable();
         }
 
         /// <summary>
-        /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
-        /// Uses the <see cref="TopologicalSortDirection.Forward"/> direction.
+        /// Creates a topological sort (source first) of an undirected acyclic graph.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <param name="vertices">Collection in which sorted vertices will be put.</param>
+        /// <returns>Sorted vertices (topological sort).</returns>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        public static void SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices)
+        [Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            SourceFirstBidirectionalTopologicalSort(graph, vertices, TopologicalSortDirection.Forward);
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+
+            var algorithm = new UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
+            algorithm.Compute();
+            return algorithm.SortedVertices.AsEnumerable();
         }
 
         #endregion

@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Collections;
 using QuikGraph.Tests.Structures;
 
@@ -208,6 +209,8 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
+
+        #region Shortest paths
 
         [Test]
         public void ShortestPaths_Dijkstra_AStar_BellmanFord_Dag()
@@ -458,6 +461,10 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
+        #endregion
+
+        #region K-Shortest path
+
         [Test]
         public void RankedShortestPathHoffmanPavley()
         {
@@ -553,6 +560,8 @@ namespace QuikGraph.Tests.Extensions
                 () => graph.RankedShortestPathHoffmanPavley(edge => 1.0, vertex, vertex, -1));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
+
+        #endregion
 
         [Pure]
         [NotNull, ItemNotNull]
@@ -881,6 +890,160 @@ namespace QuikGraph.Tests.Extensions
             Assert.Throws<ArgumentNullException>(
                 () => ((BidirectionalGraph<int, Edge<int>>)null).IsolatedVertices());
         }
+
+        #region Topological sort
+
+        [Test]
+        public void TopologicalSort()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 4),
+                new Edge<int>(3, 1),
+                new Edge<int>(3, 5),
+                new Edge<int>(5, 7),
+                new Edge<int>(6, 3),
+                new Edge<int>(6, 7)
+            });
+
+            CollectionAssert.AreEqual(
+                new[] { 6, 3, 5, 7, 1, 2, 4 },
+                graph.TopologicalSort());
+        }
+
+        [Test]
+        public void TopologicalSort_Undirected()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 4),
+                new Edge<int>(3, 1),
+                new Edge<int>(3, 5),
+                new Edge<int>(5, 7),
+                new Edge<int>(6, 7)
+            });
+
+            CollectionAssert.AreEqual(
+                new[] { 1, 3, 5, 7, 6, 2, 4 },
+                graph.TopologicalSort());
+        }
+
+        [Test]
+        public void TopologicalSort_Throws()
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.TopologicalSort((IVertexListGraph<int, Edge<int>>) null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.TopologicalSort((IUndirectedGraph<int, Edge<int>>)null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        [Test]
+        public void SourceFirstTopologicalSort()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 4),
+                new Edge<int>(3, 1),
+                new Edge<int>(3, 5),
+                new Edge<int>(5, 7),
+                new Edge<int>(6, 3),
+                new Edge<int>(6, 7)
+            });
+
+            CollectionAssert.AreEqual(
+                new[] { 6, 3, 1, 5, 2, 7, 4 },
+                graph.SourceFirstTopologicalSort());
+        }
+
+        [Test]
+        public void SourceFirstTopologicalSort_Undirected()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 4),
+                new Edge<int>(3, 1),
+                new Edge<int>(3, 5),
+                new Edge<int>(5, 7),
+                new Edge<int>(6, 7)
+            });
+
+            CollectionAssert.AreEqual(
+                new[] { 4, 6, 2, 7, 1, 5, 3 },
+                graph.SourceFirstTopologicalSort());
+        }
+
+        [Test]
+        public void SourceFirstTopologicalSort_Throws()
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.SourceFirstTopologicalSort((IVertexAndEdgeListGraph<int, Edge<int>>)null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.SourceFirstTopologicalSort((IUndirectedGraph<int, Edge<int>>)null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        [Test]
+        public void SourceFirstBidirectionalTopologicalSort()
+        {
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(2, 4),
+                new Edge<int>(3, 1),
+                new Edge<int>(3, 5),
+                new Edge<int>(5, 7),
+                new Edge<int>(6, 3),
+                new Edge<int>(6, 7)
+            });
+
+            CollectionAssert.AreEqual(
+                new[] { 6, 3, 1, 5, 2, 7, 4 },
+                graph.SourceFirstBidirectionalTopologicalSort());
+
+            CollectionAssert.AreEqual(
+                new[] { 6, 3, 1, 5, 2, 7, 4 },
+                graph.SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Forward));
+
+            CollectionAssert.AreEqual(
+                new[] { 4, 7, 2, 5, 1, 3, 6 },
+                graph.SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Backward));
+        }
+
+        [Test]
+        public void SourceFirstBidirectionalTopologicalSort_Throws()
+        {
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>)null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>)null, TopologicalSortDirection.Forward));
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>)null, TopologicalSortDirection.Backward));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        #endregion
 
         [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> OddVerticesTestCases

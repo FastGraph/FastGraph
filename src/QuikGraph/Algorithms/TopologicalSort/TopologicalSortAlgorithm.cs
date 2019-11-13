@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 
@@ -18,56 +20,53 @@ namespace QuikGraph.Algorithms.TopologicalSort
         , IVertexTimeStamperAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TopologicalSortAlgorithm{TVertex,TEdge}"/> class.
-        /// </summary>
-        /// <param name="visitedGraph">Graph to visit.</param>
-        public TopologicalSortAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
-            : this(visitedGraph, new List<TVertex>())
-        {
-        }
+        [NotNull, ItemNotNull]
+        private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TopologicalSortAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
-        /// <param name="vertices">Set of sorted vertices.</param>
+        /// <param name="capacity">Sorted vertices capacity.</param>
         public TopologicalSortAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull, ItemNotNull] IList<TVertex> vertices)
+            int capacity = -1)
             : base(visitedGraph)
         {
-            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
+            _sortedVertices = capacity > 0 ? new List<TVertex>(capacity) : new List<TVertex>();
         }
 
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
-        public IList<TVertex> SortedVertices { get; private set; }
+        /// <remarks>It is null if the algorithm has not been run yet.</remarks>
+        [ItemNotNull]
+        public TVertex[] SortedVertices { get; private set; }
 
-        private static void OnBackEdge([NotNull] TEdge args)
+        private static void OnBackEdge([NotNull] TEdge edge)
         {
+            Debug.Assert(edge != null);
+
             throw new NonAcyclicGraphException();
         }
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            SortedVertices.Insert(0, vertex);
-        }
+            Debug.Assert(vertex != null);
 
-        /// <summary>
-        /// Runs the topological sort and puts the result in the provided list.
-        /// </summary>
-        /// <param name="vertices">Set of sorted vertices.</param>
-        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
-        {
-            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
-            SortedVertices.Clear();
-            Compute();
+            _sortedVertices.Add(vertex);
         }
 
         #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            SortedVertices = null;
+            _sortedVertices.Clear();
+        }
 
         /// <inheritdoc />
         protected override void InternalCompute()
@@ -94,6 +93,8 @@ namespace QuikGraph.Algorithms.TopologicalSort
                     dfs.FinishVertex -= OnVertexFinished;
                     dfs.DiscoverVertex -= DiscoverVertex;
                     dfs.FinishVertex -= FinishVertex;
+
+                    SortedVertices = _sortedVertices.Reverse().ToArray();
                 }
             }
         }

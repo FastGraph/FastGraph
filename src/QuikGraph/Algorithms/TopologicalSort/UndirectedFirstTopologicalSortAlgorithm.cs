@@ -22,21 +22,28 @@ namespace QuikGraph.Algorithms.TopologicalSort
         [NotNull]
         private readonly BinaryQueue<TVertex, int> _heap;
 
+        [NotNull, ItemNotNull]
+        private readonly IList<TVertex> _sortedVertices;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UndirectedFirstTopologicalSortAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
-        public UndirectedFirstTopologicalSortAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        /// <param name="capacity">Sorted vertices capacity.</param>
+        public UndirectedFirstTopologicalSortAlgorithm(
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            int capacity = -1)
             : base(visitedGraph)
         {
             _heap = new BinaryQueue<TVertex, int>(vertex => Degrees[vertex]);
+            _sortedVertices = capacity > 0 ? new List<TVertex>(capacity) : new List<TVertex>();
         }
 
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
-        public ICollection<TVertex> SortedVertices { get; private set; } = new List<TVertex>();
+        [ItemNotNull]
+        public TVertex[] SortedVertices { get; private set; }
 
         /// <summary>
         /// Vertices degrees.
@@ -63,6 +70,9 @@ namespace QuikGraph.Algorithms.TopologicalSort
 
         private void InitializeInDegrees()
         {
+            if (!AllowCyclicGraph && VisitedGraph.Edges.Any(edge => edge.IsSelfEdge()))
+                throw new NonAcyclicGraphException();
+
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 Degrees.Add(vertex, VisitedGraph.AdjacentDegree(vertex));
@@ -70,24 +80,24 @@ namespace QuikGraph.Algorithms.TopologicalSort
             }
         }
 
-        /// <summary>
-        /// Runs the topological sort and puts the result in the provided list.
-        /// </summary>
-        /// <param name="vertices">Set of sorted vertices.</param>
-        public void Compute([NotNull, ItemNotNull] IList<TVertex> vertices)
-        {
-            SortedVertices = vertices ?? throw new ArgumentNullException(nameof(vertices));
-            SortedVertices.Clear();
-            Compute();
-        }
-
         #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            SortedVertices = null;
+            _sortedVertices.Clear();
+            Degrees.Clear();
+
+            InitializeInDegrees();
+        }
 
         /// <inheritdoc />
         protected override void InternalCompute()
         {
             ICancelManager cancelManager = Services.CancelManager;
-            InitializeInDegrees();
 
             while (_heap.Count != 0)
             {
@@ -95,15 +105,20 @@ namespace QuikGraph.Algorithms.TopologicalSort
                     return;
 
                 TVertex vertex = _heap.Dequeue();
-                if (Degrees[vertex] != 0 && !AllowCyclicGraph)
+                int degree = Degrees[vertex];
+                // 0 => isolated vertex
+                // 1 => single adjacent edge
+                if (degree != 0 && degree != 1 && !AllowCyclicGraph)
                     throw new NonAcyclicGraphException();
 
-                SortedVertices.Add(vertex);
+                _sortedVertices.Add(vertex);
                 OnVertexAdded(vertex);
 
                 // Update the count of its adjacent vertices
                 UpdateAdjacentDegree(vertex);
             }
+
+            SortedVertices = _sortedVertices.ToArray();
 
             #region Local function
 
@@ -111,13 +126,14 @@ namespace QuikGraph.Algorithms.TopologicalSort
             {
                 foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex).Where(e => !e.IsSelfEdge()))
                 {
-                    --Degrees[edge.Target];
+                    TVertex other = edge.GetOtherVertex(vertex);
+                    --Degrees[other];
 
-                    if (Degrees[edge.Target] < 0 && !AllowCyclicGraph)
+                    if (Degrees[other] < 0 && !AllowCyclicGraph)
                         throw new InvalidOperationException("Degree is negative, and cannot be.");
 
-                    if (_heap.Contains(edge.Target))
-                        _heap.Update(edge.Target);
+                    if (_heap.Contains(other))
+                        _heap.Update(other);
                 }
             }
 
