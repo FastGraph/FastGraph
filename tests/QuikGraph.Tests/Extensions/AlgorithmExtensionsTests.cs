@@ -1045,6 +1045,193 @@ namespace QuikGraph.Tests.Extensions
 
         #endregion
 
+        #region Connected components
+
+        [Test]
+        public void ConnectedComponents()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(1, 4),
+                new Edge<int>(2, 3),
+                new Edge<int>(3, 1),
+                new Edge<int>(4, 5),
+                new Edge<int>(5, 6),
+                new Edge<int>(6, 7),
+                new Edge<int>(7, 5),
+
+                new Edge<int>(8, 9)
+            });
+
+            var components = new Dictionary<int, int>();
+
+            Assert.AreEqual(2, graph.ConnectedComponents(components));
+            CollectionAssert.AreEquivalent(
+                new Dictionary<int, int>
+                {
+                    [1] = 0,
+                    [2] = 0,
+                    [3] = 0,
+                    [4] = 0,
+                    [5] = 0,
+                    [6] = 0,
+                    [7] = 0,
+                    [8] = 1,
+                    [9] = 1
+                },
+                components);
+        }
+
+        [Test]
+        public void ConnectedComponents_Throws()
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            var components = new Dictionary<int, int>();
+
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.ConnectedComponents(graph, null));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(null, components));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        [Test]
+        public void IncrementalConnectedComponent()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVertexRange(new[] { 0, 1, 2, 3 });
+            using (graph.IncrementalConnectedComponents(
+                out Func<KeyValuePair<int, IDictionary<int, int>>> getComponents))
+            {
+                KeyValuePair<int, IDictionary<int, int>> current = getComponents();
+                Assert.AreEqual(4, current.Key);
+
+                graph.AddEdge(new Edge<int>(0, 1));
+                current = getComponents();
+                Assert.AreEqual(3, current.Key);
+
+                graph.AddEdge(new Edge<int>(2, 3));
+                current = getComponents();
+                Assert.AreEqual(2, current.Key);
+
+                graph.AddEdge(new Edge<int>(1, 3));
+                current = getComponents();
+                Assert.AreEqual(1, current.Key);
+
+                graph.AddVertex(4);
+                current = getComponents();
+                Assert.AreEqual(2, current.Key);
+            }
+        }
+
+        [Test]
+        public void IncrementalConnectedComponent_Throws()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => AlgorithmExtensions.IncrementalConnectedComponents<int, Edge<int>>(null, out _));
+        }
+
+        [Test]
+        public void StronglyConnectedComponents()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(1, 4),
+                new Edge<int>(2, 3),
+                new Edge<int>(3, 1),
+                new Edge<int>(4, 5),
+                new Edge<int>(5, 6),
+                new Edge<int>(6, 7),
+                new Edge<int>(7, 5)
+            });
+
+            var components = new Dictionary<int, int>();
+
+            Assert.AreEqual(3, graph.StronglyConnectedComponents(components));
+            CollectionAssert.AreEquivalent(
+                new Dictionary<int, int>
+                {
+                    [1] = 2,
+                    [2] = 2,
+                    [3] = 2,
+                    [4] = 1,
+                    [5] = 0,
+                    [6] = 0,
+                    [7] = 0
+                },
+                components);
+        }
+
+        [Test]
+        public void StronglyConnectedComponents_Throws()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var components = new Dictionary<int, int>();
+
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.StronglyConnectedComponents(graph, null));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(null, components));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        [Test]
+        public void WeaklyConnectedComponents()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(1, 2),
+                new Edge<int>(1, 4),
+                new Edge<int>(2, 3),
+                new Edge<int>(3, 1),
+                new Edge<int>(4, 5),
+                new Edge<int>(5, 6),
+                new Edge<int>(6, 7),
+                new Edge<int>(7, 5),
+                
+                new Edge<int>(8, 9)
+            });
+
+            var components = new Dictionary<int, int>();
+
+            Assert.AreEqual(2, graph.WeaklyConnectedComponents(components));
+            CollectionAssert.AreEquivalent(
+                new Dictionary<int, int>
+                {
+                    [1] = 0,
+                    [2] = 0,
+                    [3] = 0,
+                    [4] = 0,
+                    [5] = 0,
+                    [6] = 0,
+                    [7] = 0,
+                    [8] = 1,
+                    [9] = 1
+                },
+                components);
+        }
+
+        [Test]
+        public void WeaklyConnectedComponents_Throws()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var components = new Dictionary<int, int>();
+
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.WeaklyConnectedComponents(graph, null));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(null, components));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(null, null));
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+        #endregion
+
         [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> OddVerticesTestCases
         {

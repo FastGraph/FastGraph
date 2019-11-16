@@ -667,16 +667,18 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
-        /// <returns>A function retrieve components of the <paramref name="graph"/>.</returns>
+        /// <param name="getComponents">A function retrieve components of the <paramref name="graph"/>.</param>
+        /// <returns>A <see cref="IDisposable"/> of the used algorithm.</returns>
         [NotNull]
-        public static Func<KeyValuePair<int, IDictionary<TVertex, int>>> IncrementalConnectedComponents<TVertex, TEdge>(
-            [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph)
+        public static IDisposable IncrementalConnectedComponents<TVertex, TEdge>(
+            [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph,
+            [NotNull] out Func<KeyValuePair<int, IDictionary<TVertex, int>>> getComponents)
             where TEdge : IEdge<TVertex>
         {
             var incrementalComponents = new IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             incrementalComponents.Compute();
-
-            return () => incrementalComponents.GetComponents();
+            getComponents = () => incrementalComponents.GetComponents();
+            return incrementalComponents;
         }
 
         /// <summary>
@@ -710,11 +712,6 @@ namespace QuikGraph.Algorithms
             [NotNull] IDictionary<TVertex, int> components)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (components is null)
-                throw new ArgumentNullException(nameof(components));
-
             var algorithm = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
             algorithm.Compute();
             return algorithm.ComponentCount;
@@ -734,9 +731,6 @@ namespace QuikGraph.Algorithms
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
             var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(graph)
             {
                 StronglyConnected = true
@@ -759,9 +753,6 @@ namespace QuikGraph.Algorithms
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
             var algorithm = new CondensationGraphAlgorithm<TVertex, TEdge, TGraph>(graph)
             {
                 StronglyConnected = false
@@ -784,18 +775,12 @@ namespace QuikGraph.Algorithms
             [NotNull] VertexPredicate<TVertex> vertexPredicate)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (vertexPredicate is null)
-                throw new ArgumentNullException(nameof(vertexPredicate));
-
             var condensedGraph = new BidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>>();
             var algorithm = new EdgeMergeCondensationGraphAlgorithm<TVertex, TEdge>(
                 graph,
                 condensedGraph,
                 vertexPredicate);
             algorithm.Compute();
-
             return condensedGraph;
         }
 

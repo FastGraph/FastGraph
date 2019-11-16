@@ -14,9 +14,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class ConnectedComponentsAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>,
-        IConnectedComponentAlgorithm<TVertex, TEdge, IUndirectedGraph<TVertex, TEdge>>
+    public sealed class ConnectedComponentsAlgorithm<TVertex, TEdge>
+        : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+        , IConnectedComponentAlgorithm<TVertex, TEdge, IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -58,14 +58,19 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            Components.Clear();
+            ComponentCount = 0;
+        }
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            Components.Clear();
             if (VisitedGraph.VertexCount == 0)
-            {
-                ComponentCount = 0;
                 return;
-            }
 
             ComponentCount = -1;
             UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;

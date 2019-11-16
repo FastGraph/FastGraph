@@ -5,6 +5,9 @@ using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
+#if !SUPPORTS_SORTEDSET
+using QuikGraph.Collections;
+#endif
 
 namespace QuikGraph.Algorithms.ConnectedComponents
 {
@@ -21,9 +24,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class WeaklyConnectedComponentsAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IVertexListGraph<TVertex, TEdge>>,
-        IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
+    public sealed class WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>
+        : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
+        , IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         [NotNull]
@@ -65,27 +68,24 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             [NotNull] IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
-            if (components is null)
-                throw new ArgumentNullException(nameof(components));
-
-            Components = components;
+            Components = components ?? throw new ArgumentNullException(nameof(components));
         }
 
         [ItemNotNull]
-        private List<BidirectionalGraph<TVertex, TEdge>> _graphs;
+        private BidirectionalGraph<TVertex, TEdge>[] _graphs;
 
         /// <summary>
         /// Weakly connected components.
         /// </summary>
         [NotNull, ItemNotNull]
-        public List<BidirectionalGraph<TVertex, TEdge>> Graphs
+        public BidirectionalGraph<TVertex, TEdge>[] Graphs
         {
             get
             {
-                _graphs = new List<BidirectionalGraph<TVertex, TEdge>>(ComponentCount + 1);
+                _graphs = new BidirectionalGraph<TVertex, TEdge>[ComponentCount];
                 for (int i = 0; i < ComponentCount; ++i)
                 {
-                    _graphs.Add(new BidirectionalGraph<TVertex, TEdge>());
+                    _graphs[i] = new BidirectionalGraph<TVertex, TEdge>();
                 }
 
                 foreach (TVertex componentName in Components.Keys)
@@ -124,11 +124,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            Debug.Assert(0 <= ComponentCount && ComponentCount <= VisitedGraph.VertexCount);
-            Debug.Assert(
-                VisitedGraph.Vertices.All(
-                    vertex => 0 <= Components[vertex] && Components[vertex] < ComponentCount));
-
             // Shortcut for empty graph
             if (VisitedGraph.IsVerticesEmpty)
                 return;
@@ -148,8 +143,36 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 dfs.TreeEdge -= OnEdgeDiscovered;
                 dfs.ForwardOrCrossEdge -= OnForwardOrCrossEdge;
             }
+        }
 
-            // Updating component numbers
+        /// <inheritdoc />
+        protected override void Clean()
+        {
+            base.Clean();
+
+            // Merge component numbers
+            MergeEquivalentComponents();
+
+            _componentEquivalences.Clear();
+
+            // If there are more than one component
+            // then it can have some blanks between components indexes
+            // Apply a compression to reduce spacing between components
+            if (ComponentCount > 1)
+            {
+                ReduceComponentsIndexes();
+
+                _componentEquivalences.Clear();
+            }
+
+            Debug.Assert(ComponentCount >= 0 && ComponentCount <= VisitedGraph.VertexCount);
+            Debug.Assert(
+                VisitedGraph.Vertices.All(
+                    vertex => Components[vertex] >= 0 && Components[vertex] < ComponentCount));
+        }
+
+        private void MergeEquivalentComponents()
+        {
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 int component = Components[vertex];
@@ -157,7 +180,37 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 if (component != equivalent)
                     Components[vertex] = equivalent;
             }
-            _componentEquivalences.Clear();
+        }
+
+        private void ReduceComponentsIndexes()
+        {
+            // Extract unique component indexes (sorted)
+            var components = new SortedSet<int>();
+            foreach (int componentNumber in Components.Values)
+            {
+                components.Add(componentNumber);
+            }
+
+            int[] sortedComponents = components.ToArray();
+
+            // Compute component index reduction (via component equivalences)
+            for (int i = 0; i < sortedComponents.Length - 1; ++i)
+            {
+                if (sortedComponents[i + 1] - sortedComponents[i] > 1)
+                {
+                    int newComponentNumber = sortedComponents[i] + 1;
+                    _componentEquivalences.Add(sortedComponents[i + 1], newComponentNumber);
+                    sortedComponents[i + 1] = newComponentNumber;
+                }
+            }
+
+            // Apply the reduction of component indexes
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                int component = Components[vertex];
+                if (_componentEquivalences.TryGetValue(component, out int newComponentValue))
+                    Components[vertex] = newComponentValue;
+            }
         }
 
         #endregion

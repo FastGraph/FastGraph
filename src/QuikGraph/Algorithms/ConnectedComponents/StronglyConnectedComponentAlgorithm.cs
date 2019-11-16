@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
@@ -20,9 +21,11 @@ namespace QuikGraph.Algorithms.ConnectedComponents
     [Serializable]
 #endif
     public sealed class StronglyConnectedComponentsAlgorithm<TVertex, TEdge> 
-        : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>, IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
+        : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
+        , IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
+        [NotNull]
         private readonly Stack<TVertex> _stack;
 
         private int _dfsTime;
@@ -97,20 +100,20 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         public List<TVertex> VerticesPerStep { get; private set; }
 
         [ItemNotNull]
-        private List<BidirectionalGraph<TVertex, TEdge>> _graphs;
+        private BidirectionalGraph<TVertex, TEdge>[] _graphs;
 
         /// <summary>
         /// Strongly connected components.
         /// </summary>
         [NotNull, ItemNotNull]
-        public List<BidirectionalGraph<TVertex, TEdge>> Graphs
+        public BidirectionalGraph<TVertex, TEdge>[] Graphs
         {
             get
             {
-                _graphs = new List<BidirectionalGraph<TVertex, TEdge>>(ComponentCount + 1);
-                for (int i = 0; i < ComponentCount; i++)
+                _graphs = new BidirectionalGraph<TVertex, TEdge>[ComponentCount];
+                for (int i = 0; i < ComponentCount; ++i)
                 {
-                    _graphs.Add(new BidirectionalGraph<TVertex, TEdge>());
+                    _graphs[i] = new BidirectionalGraph<TVertex, TEdge>();
                 }
 
                 foreach (TVertex componentName in Components.Keys)
@@ -132,7 +135,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
                 return _graphs;
             }
-
         }
 
         [Pure]
@@ -151,13 +153,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
-        protected override void InternalCompute()
+        protected override void Initialize()
         {
-            Debug.Assert(ComponentCount >= 0);
-            Debug.Assert(VisitedGraph.VertexCount >= 0 || ComponentCount == 0);
-            //Debug.Assert(VisitedGraph.Vertices.All(v => Components.ContainsKey(v)));
-            //Debug.Assert(VisitedGraph.VertexCount == Components.Count);
-            //Debug.Assert(Components.Values.All(c => c <= ComponentCount));
+            base.Initialize();
 
             ComponentsPerStep = new List<int>();
             VerticesPerStep = new List<TVertex>();
@@ -168,7 +166,11 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             _stack.Clear();
             ComponentCount = 0;
             _dfsTime = 0;
+        }
 
+        /// <inheritdoc />
+        protected override void InternalCompute()
+        {
             DepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
             try
             {
@@ -189,6 +191,12 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                     dfs.FinishVertex -= OnVertexFinished;
                 }
             }
+
+            Debug.Assert(ComponentCount >= 0);
+            Debug.Assert(VisitedGraph.VertexCount >= 0 || ComponentCount == 0);
+            Debug.Assert(VisitedGraph.Vertices.All(v => Components.ContainsKey(v)));
+            Debug.Assert(VisitedGraph.VertexCount == Components.Count);
+            Debug.Assert(Components.Values.All(c => c <= ComponentCount));
         }
 
         #endregion
