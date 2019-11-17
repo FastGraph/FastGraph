@@ -1,5 +1,8 @@
-#if SUPPORTS_KERNIGHANLIN_ALGORITHM
+#if SUPPORTS_SORTEDSET
 using System.Collections.Generic;
+#else
+using QuikGraph.Collections;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.GraphPartition
@@ -77,4 +80,3 @@ namespace QuikGraph.Algorithms.GraphPartition
         }
     }
 }
-#endif

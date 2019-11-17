@@ -1,8 +1,10 @@
-#if SUPPORTS_KERNIGHANLIN_ALGORITHM
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Algorithms.GraphPartition;
+#if !SUPPORTS_SORTEDSET
+using QuikGraph.Collections;
+#endif
 using static QuikGraph.Tests.TestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.GraphPartitioning
@@ -148,4 +150,3 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
         }
     }
 }
-#endif

@@ -1,9 +1,11 @@
-#if SUPPORTS_KERNIGHANLIN_ALGORITHM
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using System.Linq;
+#if !SUPPORTS_SORTEDSET
+using QuikGraph.Collections;
+#endif
 
 namespace QuikGraph.Algorithms.GraphPartition
 {
@@ -44,13 +46,28 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// </summary>
         public Partition<TVertex> Partition { get; private set; }
 
+        private class SwapPair
+        {
+            public TVertex Vertex1 { get; }
+            public TVertex Vertex2 { get; }
+
+            public SwapPair([NotNull] TVertex vertex1, [NotNull] TVertex vertex2)
+            {
+                Debug.Assert(vertex1 != null);
+                Debug.Assert(vertex2 != null);
+
+                Vertex1 = vertex1;
+                Vertex2 = vertex2;
+            }
+        }
+
         private Partition<TVertex> DoAllSwaps()
         {
-            var swaps = new List<Tuple<TVertex, TVertex>>();
+            var swaps = new List<SwapPair>();
             double minCost = double.MaxValue;
             int minId = -1;
 
-            for (int i = 0; i < _partitionSize; i++)
+            for (int i = 0; i < _partitionSize; ++i)
             {
                 double cost = SingleSwap(swaps);
                 if (cost < minCost)
@@ -63,17 +80,17 @@ namespace QuikGraph.Algorithms.GraphPartition
             // Back to swap step with min cut cost
             while (swaps.Count - 1 > minId)
             {
-                Tuple<TVertex, TVertex> pair = swaps.Last();
+                SwapPair pair = swaps.Last();
                 swaps.Remove(pair);
-                SwapVertices(_vertexSetA, pair.Item2, _vertexSetB, pair.Item1);
+                SwapVertices(_vertexSetA, pair.Vertex2, _vertexSetB, pair.Vertex1);
             }
 
             return new Partition<TVertex>(_vertexSetA, _vertexSetB, minCost);
         }
 
-        private double SingleSwap([NotNull, ItemNotNull] ICollection<Tuple<TVertex, TVertex>> swaps)
+        private double SingleSwap([NotNull, ItemNotNull] ICollection<SwapPair> swaps)
         {
-            Tuple<TVertex, TVertex> maxPair = null;
+            SwapPair maxPair = null;
             double maxGain = double.MinValue;
             foreach (TVertex vertexFromA in _unSwappedSetA)
             {
@@ -85,7 +102,7 @@ namespace QuikGraph.Algorithms.GraphPartition
                     double gain = GetVertexCost(vertexFromA) + GetVertexCost(vertexFromB) - 2 * edgeCost;
                     if (gain > maxGain)
                     {
-                        maxPair = new Tuple<TVertex, TVertex>(vertexFromA, vertexFromB);
+                        maxPair = new SwapPair(vertexFromA, vertexFromB);
                         maxGain = gain;
                     }
                 }
@@ -93,10 +110,10 @@ namespace QuikGraph.Algorithms.GraphPartition
 
             Debug.Assert(maxPair != null, "Must find a swap.");
 
-            SwapVertices(_vertexSetA, maxPair.Item1, _vertexSetB, maxPair.Item2);
+            SwapVertices(_vertexSetA, maxPair.Vertex1, _vertexSetB, maxPair.Vertex2);
             swaps.Add(maxPair);
-            _unSwappedSetA.Remove(maxPair.Item1);
-            _unSwappedSetB.Remove(maxPair.Item2);
+            _unSwappedSetA.Remove(maxPair.Vertex1);
+            _unSwappedSetB.Remove(maxPair.Vertex2);
 
             return GetCutCost();
         }
@@ -254,4 +271,3 @@ namespace QuikGraph.Algorithms.GraphPartition
         #endregion
     }
 }
-#endif
