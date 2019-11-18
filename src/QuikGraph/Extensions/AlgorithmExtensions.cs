@@ -649,6 +649,7 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="components">Found components.</param>
         /// <returns>Number of component found.</returns>
+        [Pure]
         public static int ConnectedComponents<TVertex, TEdge>(
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -689,6 +690,7 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="components">Found components.</param>
         /// <returns>Number of component found.</returns>
+        [Pure]
         public static int StronglyConnectedComponents<TVertex, TEdge>(
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -707,6 +709,7 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="components">Found components.</param>
         /// <returns>Number of component found.</returns>
+        [Pure]
         public static int WeaklyConnectedComponents<TVertex, TEdge>(
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -725,6 +728,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>The condensed graph.</returns>
+        [Pure]
         [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateStronglyConnected<TVertex, TEdge, TGraph>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
@@ -747,6 +751,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>The condensed graph.</returns>
+        [Pure]
         [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateWeaklyConnected<TVertex, TEdge, TGraph>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
@@ -769,6 +774,7 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="vertexPredicate">Vertex predicate used to filter the vertices to put in the condensed graph.</param>
         /// <returns>The condensed graph.</returns>
+        [Pure]
         [NotNull]
         public static IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensateEdges<TVertex, TEdge>(
             [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,

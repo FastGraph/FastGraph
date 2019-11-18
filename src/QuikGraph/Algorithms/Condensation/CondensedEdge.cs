@@ -24,7 +24,7 @@ namespace QuikGraph.Algorithms.Condensation
         /// </summary>
         /// <param name="source">The source graph.</param>
         /// <param name="target">The target graph.</param>
-        public CondensedEdge(TGraph source, TGraph target)
+        public CondensedEdge([NotNull] TGraph source, [NotNull] TGraph target)
             : base(source, target)
         {
         }

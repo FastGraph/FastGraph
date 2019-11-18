@@ -20,7 +20,7 @@ namespace QuikGraph.Algorithms.Condensation
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
-        public MergedEdge(TVertex source, TVertex target)
+        public MergedEdge([NotNull] TVertex source, [NotNull] TVertex target)
             : base(source, target)
         {
         }
@@ -29,7 +29,7 @@ namespace QuikGraph.Algorithms.Condensation
         private List<TEdge> _edges = new List<TEdge>();
 
         /// <summary>
-        /// Edges merged.
+        /// Merged edges.
         /// </summary>
         [NotNull, ItemNotNull]
         public IList<TEdge> Edges => _edges;
@@ -40,6 +40,8 @@ namespace QuikGraph.Algorithms.Condensation
         /// <param name="inEdge">First edge.</param>
         /// <param name="outEdge">Second edge.</param>
         /// <returns>The merged edge.</returns>
+        [Pure]
+        [NotNull]
         public static MergedEdge<TVertex, TEdge> Merge(
             [NotNull] MergedEdge<TVertex, TEdge> inEdge,
             [NotNull] MergedEdge<TVertex, TEdge> outEdge)
@@ -53,10 +55,27 @@ namespace QuikGraph.Algorithms.Condensation
             {
                 _edges = new List<TEdge>(inEdge.Edges.Count + outEdge.Edges.Count)
             };
-            newEdge._edges.AddRange(inEdge.Edges);
+            newEdge._edges.AddRange(inEdge._edges);
             newEdge._edges.AddRange(outEdge._edges);
 
             return newEdge;
+        }
+    }
+
+    /// <summary>
+    /// Helpers for <see cref="Condensation.MergedEdge{TVertex,TEdge}"/>.
+    /// </summary>
+    public static class MergedEdge
+    {
+        /// <inheritdoc cref="MergedEdge{TVertex,TEdge}.Merge"/>
+        [Pure]
+        [NotNull]
+        public static MergedEdge<TVertex, TEdge> Merge<TVertex, TEdge>(
+            [NotNull] MergedEdge<TVertex, TEdge> inEdge,
+            [NotNull] MergedEdge<TVertex, TEdge> outEdge)
+            where TEdge : IEdge<TVertex>
+        {
+            return MergedEdge<TVertex, TEdge>.Merge(inEdge, outEdge);
         }
     }
 }
