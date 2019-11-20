@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using QuikGraph.Algorithms.Services;
 using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Algorithms.TSP
@@ -41,15 +42,6 @@ namespace QuikGraph.Algorithms.TSP
             [NotNull] Func<TEdge, double> edgeWeights)
             : base(null, visitedGraph, edgeWeights)
         {
-            var path = new BidirectionalGraph<TVertex, TEdge>();
-            path.AddVertexRange(visitedGraph.Vertices);
-
-            _taskManager.AddTask(
-                new Task<TVertex, TEdge>(
-                    visitedGraph,
-                    BuildWeightsDictionary(visitedGraph, edgeWeights),
-                    path,
-                    0));
         }
 
         [Pure]
@@ -70,11 +62,29 @@ namespace QuikGraph.Algorithms.TSP
         #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            var path = new BidirectionalGraph<TVertex, TEdge>();
+            path.AddVertexRange(VisitedGraph.Vertices);
+
+            _taskManager.AddTask(
+                new Task<TVertex, TEdge>(
+                    VisitedGraph,
+                    BuildWeightsDictionary(VisitedGraph, Weights),
+                    path,
+                    0));
+        }
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
+            ICancelManager cancelManager = Services.CancelManager;
+
             while (_taskManager.HasTasks())
             {
-                if (State == ComputationState.Aborted)
+                if (cancelManager.IsCancelling)
                     return;
 
                 Task<TVertex, TEdge> task = _taskManager.GetTask();

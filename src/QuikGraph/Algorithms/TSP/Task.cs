@@ -157,7 +157,7 @@ namespace QuikGraph.Algorithms.TSP
         }
 
         [NotNull, ItemNotNull]
-        private List<TEdge> GetZeroEdges()
+        private IEnumerable<TEdge> GetZeroEdges()
         {
             var zeros = new List<TEdge>();
             foreach (TVertex vertex in _graph.Vertices)

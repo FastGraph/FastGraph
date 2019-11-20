@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.TSP
 {
@@ -23,7 +24,7 @@ namespace QuikGraph.Algorithms.TSP
             return obj is TaskPriority priority && Equals(priority);
         }
 
-        protected bool Equals(TaskPriority other)
+        protected bool Equals([NotNull] TaskPriority other)
         {
             return _cost.Equals(other._cost) 
                    && _pathSize == other._pathSize;

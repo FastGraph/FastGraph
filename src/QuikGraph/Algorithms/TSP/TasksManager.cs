@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Collections;
 
@@ -21,8 +21,7 @@ namespace QuikGraph.Algorithms.TSP
         /// <param name="task">Task to add.</param>
         public void AddTask([NotNull] Task<TVertex, TEdge> task)
         {
-            if (task is null)
-                throw new ArgumentNullException(nameof(task));
+            Debug.Assert(task != null);
 
             if (task.MinCost < double.PositiveInfinity)
             {
