@@ -77,10 +77,7 @@ namespace QuikGraph.Algorithms.Assignment
         /// <param name="costs">Costs matrix.</param>
         public HungarianAlgorithm([NotNull] int[,] costs)
         {
-            if (costs is null)
-                throw new ArgumentNullException(nameof(costs));
-
-            _costs = costs;
+            _costs = costs ?? throw new ArgumentNullException(nameof(costs));
             _step = Steps.Init;
         }
 
@@ -289,7 +286,6 @@ namespace QuikGraph.Algorithms.Assignment
             return Steps.Step2;
         }
 
-
         private static Steps RunStep3(
             [NotNull] byte[,] masks,
             [NotNull] bool[] rowsCovered,
@@ -441,7 +437,6 @@ namespace QuikGraph.Algorithms.Assignment
 
             return -1;
         }
-
 
         private static void ClearCovers(
             [NotNull] bool[] rowsCovered,
