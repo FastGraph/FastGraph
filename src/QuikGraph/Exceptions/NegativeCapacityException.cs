@@ -6,29 +6,29 @@ using System.Runtime.Serialization;
 namespace QuikGraph
 {
     /// <summary>
-    /// Exception raised when an algorithm find or computed a negative weight in a graph.
+    /// Exception raised when an algorithm find a negative capacity in a graph.
     /// </summary>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NegativeWeightException : QuikGraphException
+    public class NegativeCapacityException : QuikGraphException
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="NegativeWeightException"/> class.
+        /// Initializes a new instance of <see cref="NegativeCapacityException"/> class.
         /// </summary>
-        public NegativeWeightException()
-            : base("The graph contains at least one negative weight.")
+        public NegativeCapacityException()
+            : base("The graph contains at least one negative capacity.")
         {
         }
 
 #if SUPPORTS_SERIALIZATION
         /// <summary>
-        /// Initializes a new instance of <see cref="NegativeWeightException"/> with serialized data.
+        /// Initializes a new instance of <see cref="NegativeCapacityException"/> with serialized data.
         /// </summary>
         /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data
         /// concerning the thrown exception.</param>
         /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
-        protected NegativeWeightException(SerializationInfo info, StreamingContext context)
+        protected NegativeCapacityException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

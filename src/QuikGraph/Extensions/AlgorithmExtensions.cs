@@ -1042,11 +1042,6 @@ namespace QuikGraph.Algorithms
         /// Computes the maximum flow for a graph with positive capacities and flows
         /// using Edmonds-Karp algorithm.
         /// </summary>
-        /// <remarks>
-        /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex,TEdge}.AddReversedEdges()"/> if TEdge is a value type,
-        /// e.g. <see cref="SEdge{TVertex}"/>.
-        /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
-        /// </remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
@@ -1057,7 +1052,6 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
         /// <returns>The maximum flow.</returns>
-        [Pure]
         public static double MaximumFlow<TVertex, TEdge>(
             [NotNull] this IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
             [NotNull] Func<TEdge, double> edgeCapacities,

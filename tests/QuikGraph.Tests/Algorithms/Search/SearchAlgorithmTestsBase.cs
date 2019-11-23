@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.Search
     /// <summary>
     /// Base class for search algorithms.
     /// </summary>
-    internal class SearchAlgorithmTestsBase : RootedAlgorithmTestsBase
+    internal abstract class SearchAlgorithmTestsBase : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

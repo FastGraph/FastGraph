@@ -227,7 +227,10 @@ namespace QuikGraph.Algorithms
 
         private void BeginComputation()
         {
-            Debug.Assert(State == ComputationState.NotRunning);
+            Debug.Assert(
+                State == ComputationState.NotRunning
+                || State == ComputationState.Finished
+                || State == ComputationState.Aborted);
 
             lock (SyncRoot)
             {

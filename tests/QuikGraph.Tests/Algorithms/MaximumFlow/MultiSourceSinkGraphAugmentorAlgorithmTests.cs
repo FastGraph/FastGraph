@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.MaximumFlow;
@@ -6,21 +7,24 @@ using QuikGraph.Algorithms.MaximumFlow;
 namespace QuikGraph.Tests.Algorithms.MaximumFlow
 {
     /// <summary>
-    /// Tests for <see cref="AllVerticesGraphAugmentorAlgorithm{TVertex,TEdge}"/>.
+    /// Tests for <see cref="MultiSourceSinkGraphAugmentorAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class AllVerticesGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
+    internal class MultiSourceSinkGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
     {
         #region Test helpers
 
         private static void RunAugmentationAndCheck(
-            [NotNull] IMutableVertexAndEdgeListGraph<string, Edge<string>> graph)
+            [NotNull] IMutableBidirectionalGraph<string, Edge<string>> graph)
         {
             int vertexCount = graph.VertexCount;
             int edgeCount = graph.EdgeCount;
             int vertexId = graph.VertexCount + 1;
 
-            using (var augmentor = new AllVerticesGraphAugmentorAlgorithm<string, Edge<string>>(
+            string[] noInEdgesVertices = graph.Vertices.Where(graph.IsInEdgesEmpty).ToArray();
+            string[] noOutEdgesVertices = graph.Vertices.Where(graph.IsOutEdgesEmpty).ToArray();
+
+            using (var augmentor = new MultiSourceSinkGraphAugmentorAlgorithm<string, Edge<string>>(
                 graph,
                 () => (vertexId++).ToString(),
                 (s, t) => new Edge<string>(s, t)))
@@ -31,8 +35,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                 augmentor.Compute();
                 Assert.IsTrue(added);
                 VerifyVertexCount(graph, augmentor, vertexCount);
-                VerifySourceConnector(graph, augmentor);
-                VerifySinkConnector(graph, augmentor);
+                VerifySourceConnector(graph, augmentor, noInEdgesVertices);
+                VerifySinkConnector(graph, augmentor, noOutEdgesVertices);
             }
 
             Assert.AreEqual(graph.VertexCount, vertexCount);
@@ -42,7 +46,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         private static void VerifyVertexCount<TVertex, TEdge>(
             [NotNull] IVertexSet<TVertex> graph,
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+            [NotNull] MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
             int vertexCount)
             where TEdge : IEdge<TVertex>
         {
@@ -53,31 +57,45 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
 
         private static void VerifySourceConnector<TVertex, TEdge>(
             [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+            [NotNull] MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+            [NotNull, ItemNotNull] TVertex[] noInEdgesVertices)
             where TEdge : IEdge<TVertex>
         {
-            foreach (TVertex vertex in graph.Vertices)
+            foreach (TVertex vertex in noInEdgesVertices)
+            {
+                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource, vertex));
+            }
+
+            foreach (TVertex vertex in graph.Vertices.Except(noInEdgesVertices))
             {
                 if (vertex.Equals(augmentor.SuperSource))
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource, vertex));
+                Assert.IsFalse(graph.ContainsEdge(augmentor.SuperSource, vertex));
             }
         }
 
         private static void VerifySinkConnector<TVertex, TEdge>(
             [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+            [NotNull] MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+            [NotNull, ItemNotNull] TVertex[] noOutEdgesVertices)
             where TEdge : IEdge<TVertex>
         {
-            foreach (TVertex vertex in graph.Vertices)
+            foreach (TVertex vertex in noOutEdgesVertices)
+            {
+                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink));
+            }
+
+            foreach (TVertex vertex in graph.Vertices.Except(noOutEdgesVertices))
             {
                 if (vertex.Equals(augmentor.SuperSource))
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink));
+                Assert.IsFalse(graph.ContainsEdge(vertex, augmentor.SuperSink));
             }
         }
 
@@ -86,21 +104,21 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void Constructor()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
-            var algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
+            var algorithm = new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
             AssertAlgorithmProperties(algorithm, graph, vertexFactory, edgeFactory);
 
-            algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, vertexFactory, edgeFactory);
+            algorithm = new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, vertexFactory, edgeFactory);
             AssertAlgorithmProperties(algorithm, graph, vertexFactory, edgeFactory);
 
             #region Local function
 
             void AssertAlgorithmProperties<TVertex, TEdge>(
-                AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> algo,
-                IMutableVertexAndEdgeSet<TVertex, TEdge> g,
+                MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> algo,
+                IMutableBidirectionalGraph<TVertex, TEdge> g,
                 VertexFactory<int> vFactory,
                 EdgeFactory<int, Edge<int>> eFactory)
                 where TEdge : IEdge<TVertex>
@@ -120,41 +138,41 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void Constructor_Throws()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, vertexFactory, edgeFactory));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, vertexFactory, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, null, edgeFactory));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, null, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, null));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, edgeFactory));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, null, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, vertexFactory, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, vertexFactory, null));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, null, null));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null));
 
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, vertexFactory, edgeFactory));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, null, vertexFactory, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, null, edgeFactory));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, null, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, vertexFactory, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, vertexFactory, null));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null, edgeFactory));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, vertexFactory, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, null, vertexFactory, null));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, null, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, null, null));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -164,11 +182,11 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void CreateAndSetSuperSource()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
+            var algorithm = new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
 
             CreateAndSetSuperSource_Test(algorithm);
         }
@@ -176,11 +194,11 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         [Test]
         public void CreateAndSetSuperSink()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
+            var algorithm = new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
 
             CreateAndSetSuperSink_Test(algorithm);
         }
@@ -193,17 +211,17 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
             RunAugmentation_Test(
-                graph => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory));
+                graph => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory));
         }
 
         [Test]
         public void RunAugmentation_Throws()
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var graph = new BidirectionalGraph<int, Edge<int>>();
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
+            var algorithm = new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
 
             RunAugmentation_Throws_Test(algorithm);
         }
@@ -211,9 +229,9 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         #endregion
 
         [Test]
-        public void AllVerticesAugmentor()
+        public void MultiSourceSinkGraphAugmentor()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
                 RunAugmentationAndCheck(graph);
         }
     }

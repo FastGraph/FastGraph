@@ -30,13 +30,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
-            if (vertexFactory is null)
-                throw new ArgumentNullException(nameof(vertexFactory));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
-
-            VertexFactory = vertexFactory;
-            EdgeFactory = edgeFactory;
+            VertexFactory = vertexFactory ?? throw new ArgumentNullException(nameof(vertexFactory));
+            EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
         }
 
         /// <summary>
@@ -66,11 +61,14 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public bool Augmented { get; private set; }
 
+        [NotNull, ItemNotNull]
+        private readonly List<TEdge> _augmentedEdges = new List<TEdge>();
+
         /// <summary>
         /// Gets the collections of edges added to augment the graph.
         /// </summary>
         [NotNull, ItemNotNull]
-        public ICollection<TEdge> AugmentedEdges { get; } = new List<TEdge>();
+        public TEdge[] AugmentedEdges => _augmentedEdges.ToArray();
 
         /// <summary>
         /// Fired when the super source vertex is added.
@@ -143,7 +141,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             VisitedGraph.RemoveVertex(SuperSink);
             SuperSource = default(TVertex);
             SuperSink = default(TVertex);
-            AugmentedEdges.Clear();
+            _augmentedEdges.Clear();
         }
 
         /// <summary>
@@ -158,13 +156,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="target">Target vertex.</param>
         protected void AddAugmentedEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            Debug.Assert(source != null);
+            Debug.Assert(target != null);
 
             TEdge edge = EdgeFactory(source, target);
-            AugmentedEdges.Add(edge);
+            _augmentedEdges.Add(edge);
             VisitedGraph.AddEdge(edge);
             OnEdgeAdded(edge);
         }

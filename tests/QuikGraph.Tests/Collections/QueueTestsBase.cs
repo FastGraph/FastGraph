@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Collections
     /// <summary>
     /// Base class for queue tests.
     /// </summary>
-    internal class QueueTestsBase
+    internal abstract class QueueTestsBase
     {
         protected static void Contains_Test<TVertex>(
             [NotNull] IQueue<TVertex> queue,

@@ -38,6 +38,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             using (predecessors.Attach(algorithm))
                 algorithm.Compute(root);
 
+            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors.Count);
             foreach (TVertex vertex in graph.Vertices)
             {
                 Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);

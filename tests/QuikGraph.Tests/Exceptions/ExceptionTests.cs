@@ -31,6 +31,7 @@ namespace QuikGraph.Tests.Exceptions
         [Test]
         public void ExceptionsSerialization()
         {
+            ExceptionSerializationTest(() => new NegativeCapacityException());
             ExceptionSerializationTest(() => new NegativeCycleGraphException());
             ExceptionSerializationTest(() => new NegativeWeightException());
             ExceptionSerializationTest(() => new NonAcyclicGraphException());

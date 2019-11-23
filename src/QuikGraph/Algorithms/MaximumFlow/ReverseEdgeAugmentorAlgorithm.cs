@@ -8,16 +8,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/> 
-    /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex, TEdge}.InternalCompute()"/>. 
+    /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}.InternalCompute"/>. 
     /// Remember to call <see cref="RemoveReversedEdges()"/> to remove auxiliary edges.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    /// <remarks>
-    /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges()"/> if TEdge is a value type,
-    /// e.g. <see cref="SEdge{TVertex}"/>.
-    /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
-    /// </remarks>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
@@ -62,7 +57,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// Edges associated to their reversed edges.
         /// </summary>
         [NotNull]
-        public Dictionary<TEdge, TEdge> ReversedEdges { get; } = new Dictionary<TEdge, TEdge>();
+        public IDictionary<TEdge, TEdge> ReversedEdges { get; } = new Dictionary<TEdge, TEdge>();
 
         /// <summary>
         /// Gets the state augmented or not of the graph (reversed edges added or not).
@@ -79,6 +74,29 @@ namespace QuikGraph.Algorithms.MaximumFlow
             Debug.Assert(edge != null);
 
             ReversedEdgeAdded?.Invoke(edge);
+        }
+
+        /// <summary>
+        /// Finds the reversed edge of the given one.
+        /// </summary>
+        /// <param name="edge">Edge to find its corresponding reversed one.</param>
+        /// <param name="foundReversedEdge">Found reversed edge.</param>
+        /// <returns>True if the reversed edge was found, false otherwise.</returns>
+        private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
+        {
+            Debug.Assert(edge != null);
+
+            foreach (TEdge reversedEdge in VisitedGraph.OutEdges(edge.Target))
+            {
+                if (reversedEdge.Target.Equals(edge.Source))
+                {
+                    foundReversedEdge = reversedEdge;
+                    return true;
+                }
+            }
+
+            foundReversedEdge = default(TEdge);
+            return false;
         }
 
         [NotNull, ItemNotNull]
@@ -137,10 +155,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Adds auxiliary edges to <see cref="VisitedGraph"/> to store residual flows.
         /// </summary>
-        /// <remarks>
-        /// Will throw an exception if TEdge is a value type, e.g. <see cref="SEdge{TVertex}"/>.
-        /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
-        /// </remarks>
+        /// <exception cref="InvalidOperationException">If the graph is already augmented.</exception>
         public void AddReversedEdges()
         {
             if (Augmented)
@@ -162,7 +177,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         public void RemoveReversedEdges()
         {
             if (!Augmented)
-                throw new InvalidOperationException("Graph is not yet augmented.");
+                throw new InvalidOperationException("Graph is not augmented yet.");
 
             foreach (TEdge edge in _augmentedEdges)
                 VisitedGraph.RemoveEdge(edge);
@@ -171,30 +186,6 @@ namespace QuikGraph.Algorithms.MaximumFlow
             ReversedEdges.Clear();
 
             Augmented = false;
-        }
-
-        /// <summary>
-        /// Finds the reversed edge of the given one.
-        /// </summary>
-        /// <param name="edge">Edge to find its corresponding reversed one.</param>
-        /// <param name="foundReversedEdge">Found reversed edge.</param>
-        /// <returns>True if the reversed edge was found, false otherwise.</returns>
-        private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
-        {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
-
-            foreach (TEdge reversedEdge in VisitedGraph.OutEdges(edge.Target))
-            {
-                if (reversedEdge.Target.Equals(edge.Source))
-                {
-                    foundReversedEdge = reversedEdge;
-                    return true;
-                }
-            }
-
-            foundReversedEdge = default(TEdge);
-            return false;
         }
 
         #region IDisposable

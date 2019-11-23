@@ -33,7 +33,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             : base(host, visitedGraph)
         {
             Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
-            EdgeFactory = edgeFactory;
+            EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
         }
 
         #region Properties
@@ -66,7 +66,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// Graph reversed edges.
         /// </summary>
         /// <remarks>Should be not null but may be empty.</remarks>
-        public Dictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
+        public IDictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
 
         /// <summary>
         /// Flow source vertex.
@@ -96,7 +96,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion

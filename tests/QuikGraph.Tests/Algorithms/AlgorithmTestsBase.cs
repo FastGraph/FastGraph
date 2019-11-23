@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Algorithms
     /// <summary>
     /// Base class for algorithm tests.
     /// </summary>
-    internal class AlgorithmTestsBase
+    internal abstract class AlgorithmTestsBase
     {
         #region Test helpers
 

@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// <summary>
     /// Base class for shortest path algorithms.
     /// </summary>
-    internal class ShortestPathAlgorithmTestsBase : RootedAlgorithmTestsBase
+    internal abstract class ShortestPathAlgorithmTestsBase : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

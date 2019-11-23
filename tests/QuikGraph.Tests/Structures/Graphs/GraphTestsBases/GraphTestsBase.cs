@@ -8,8 +8,7 @@ namespace QuikGraph.Tests.Structures
     /// <summary>
     /// Base class for graph tests.
     /// </summary>
-    [TestFixture]
-    internal partial class GraphTestsBase
+    internal abstract partial class GraphTestsBase
     {
         #region Vertices helpers
 

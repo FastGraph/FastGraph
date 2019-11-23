@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
@@ -13,30 +14,28 @@ namespace QuikGraph.Algorithms.MaximumFlow
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    /// <remarks>
-    /// Will throw an exception in <see cref="ReversedEdgeAugmentorAlgorithm{TVertex, TEdge}.AddReversedEdges()"/> if TEdge is a value type,
-    /// e.g. <see cref="SEdge{TVertex}"/>.
-    /// <seealso href="https://github.com/YaccConstructor/QuickGraph/issues/183#issue-377613647"/>.
-    /// </remarks>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
     public sealed class EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge> : MaximumFlowAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
+        [NotNull]
+        private readonly ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> _reverserAlgorithm;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
-        /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
+        /// <param name="reverseEdgesAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
         public EdmondsKarpMaximumFlowAlgorithm(
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> capacities,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
-            : this(null, visitedGraph, capacities, edgeFactory, reversedEdgeAugmentorAlgorithm)
+            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
+            : this(null, visitedGraph, capacities, edgeFactory, reverseEdgesAugmentorAlgorithm)
         {
         }
 
@@ -47,16 +46,22 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
-        /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge augmenting the graph (creating missing reversed edges).</param>
+        /// <param name="reverseEdgesAugmentorAlgorithm">Algorithm that is in of charge augmenting the graph (creating missing reversed edges).</param>
         public EdmondsKarpMaximumFlowAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> capacities,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
             : base(host, visitedGraph, capacities, edgeFactory)
         {
-            ReversedEdges = reversedEdgeAugmentorAlgorithm.ReversedEdges;
+            if (reverseEdgesAugmentorAlgorithm is null)
+                throw new ArgumentNullException(nameof(reverseEdgesAugmentorAlgorithm));
+            if (!ReferenceEquals(visitedGraph, reverseEdgesAugmentorAlgorithm.VisitedGraph))
+                throw new ArgumentException("Must target the same graph.", nameof(reverseEdgesAugmentorAlgorithm));
+
+            _reverserAlgorithm = reverseEdgesAugmentorAlgorithm;
+            ReversedEdges = reverseEdgesAugmentorAlgorithm.ReversedEdges;
         }
 
         [NotNull]
@@ -68,10 +73,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
         private void Augment([NotNull] TVertex source, [NotNull] TVertex sink)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (sink == null)
-                throw new ArgumentNullException(nameof(sink));
+            Debug.Assert(source != null);
+            Debug.Assert(sink != null);
 
             // Find minimum residual capacity along the augmenting path
             double delta = double.MaxValue;
@@ -98,16 +101,36 @@ namespace QuikGraph.Algorithms.MaximumFlow
             } while (!u.Equals(source));
         }
 
-        /// <summary>
-        /// Computes the maximum flow between Source and Sink.
-        /// </summary>
-        protected override void InternalCompute()
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
         {
+            base.Initialize();
+
+            if (!_reverserAlgorithm.Augmented)
+            {
+                throw new InvalidOperationException(
+                    $"The graph has not been augmented yet.{Environment.NewLine}" +
+                    $"Call {nameof(ReversedEdgeAugmentorAlgorithm<int, Edge<int>>)}.{nameof(ReversedEdgeAugmentorAlgorithm<int, Edge<int>>.AddReversedEdges)}() before running this algorithm.");
+            }
+
             if (Source == null)
                 throw new InvalidOperationException("Source is not specified.");
             if (Sink == null)
                 throw new InvalidOperationException("Sink is not specified.");
+            if (!VisitedGraph.ContainsVertex(Source))
+                throw new VertexNotFoundException("Source vertex is not part of the graph.");
+            if (!VisitedGraph.ContainsVertex(Sink))
+                throw new VertexNotFoundException("Sink vertex is not part of the graph.");
+        }
 
+        /// <summary>
+        /// Computes the maximum flow between <see cref="MaximumFlowAlgorithm{TVertex,TEdge}.Source"/>
+        /// and <see cref="MaximumFlowAlgorithm{TVertex,TEdge}.Sink"/>.
+        /// </summary>
+        protected override void InternalCompute()
+        {
             if (Services.CancelManager.IsCancelling)
                 return;
 
@@ -118,7 +141,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
                 {
                     double capacity = Capacities(edge);
                     if (capacity < 0)
-                        throw new InvalidOperationException("Negative edge capacity.");
+                        throw new NegativeCapacityException();
                     ResidualCapacities[edge] = capacity;
                 }
             }
@@ -144,5 +167,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             foreach (TEdge edge in graph.OutEdges(Source))
                 MaxFlow += (Capacities(edge) - ResidualCapacities[edge]);
         }
+
+        #endregion
     }
 }

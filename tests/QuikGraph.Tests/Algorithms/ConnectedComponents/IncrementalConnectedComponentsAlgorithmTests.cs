@@ -160,6 +160,18 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         }
 
         [Test]
+        public void IncrementalConnectedComponentMultiRun()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
+            Assert.DoesNotThrow(() =>
+            {
+                algorithm.Compute();
+                algorithm.Compute();
+            });
+        }
+
+        [Test]
         public void Dispose()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();

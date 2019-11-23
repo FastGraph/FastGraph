@@ -10,8 +10,7 @@ namespace QuikGraph.Tests.Predicates
     /// <summary>
     /// Base class for filtered graph tests.
     /// </summary>
-    [TestFixture]
-    internal class FilteredGraphTestsBase : GraphTestsBase
+    internal abstract class FilteredGraphTestsBase : GraphTestsBase
     {
         #region Vertices & Edges
 

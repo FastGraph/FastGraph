@@ -73,10 +73,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="capacities">Edges capacities.</param>
         public GraphBalancerAlgorithm(
             [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
             [NotNull] TVertex source,
             [NotNull] TVertex sink,
+            [NotNull] VertexFactory<TVertex> vertexFactory,
+            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
             [NotNull] IDictionary<TEdge, double> capacities)
         {
             if (source == null)
@@ -87,6 +87,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
             VertexFactory = vertexFactory ?? throw new ArgumentNullException(nameof(vertexFactory));
             EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
+            Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
 
             if (!VisitedGraph.ContainsVertex(source))
                 throw new ArgumentException("Source must be in the graph", nameof(source));
@@ -94,8 +95,6 @@ namespace QuikGraph.Algorithms.MaximumFlow
                 throw new ArgumentException("Sink must be in the graph", nameof(sink));
             Source = source;
             Sink = sink;
-
-            Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
 
             // Setting preflow = l(e) = 1
             foreach (TEdge edge in VisitedGraph.Edges)
@@ -264,6 +263,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         /// <param name="vertex">Vertex to get balancing index.</param>
         /// <returns>Balancing index.</returns>
+        [Pure]
         public int GetBalancingIndex([NotNull] TVertex vertex)
         {
             if (vertex == null)

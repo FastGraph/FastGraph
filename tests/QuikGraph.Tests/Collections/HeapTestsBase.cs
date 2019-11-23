@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Collections
     /// Base class for heap tests.
     /// </summary>
     [TestFixture]
-    internal class HeapTestsBase
+    internal abstract class HeapTestsBase
     {
         #region Test classes
 

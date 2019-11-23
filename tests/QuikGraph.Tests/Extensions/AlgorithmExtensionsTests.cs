@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
+using QuikGraph.Algorithms.MaximumFlow;
 using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Collections;
 using QuikGraph.Tests.Structures;
@@ -1590,6 +1591,22 @@ namespace QuikGraph.Tests.Extensions
                 () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        [Test]
+        public void MaximumFlow_Throws()
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVertexRange(new[] { 1, 2 });
+            Func<Edge<int>, double> capacities = edge => 1.0;
+            EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
+            var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
+
+            Assert.Throws<ArgumentException>(
+                () => graph.MaximumFlow(capacities, 1, 1, out _, edgeFactory, reverseEdgesAlgorithm));
+
+            Assert.Throws<InvalidOperationException>(
+                () => graph.MaximumFlow(capacities, 1, 2, out _, edgeFactory, reverseEdgesAlgorithm));
         }
 
         [NotNull, ItemNotNull]

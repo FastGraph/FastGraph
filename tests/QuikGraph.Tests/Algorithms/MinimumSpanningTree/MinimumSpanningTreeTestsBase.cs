@@ -16,7 +16,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
     /// <summary>
     /// Base class for minimum spanning tree tests.
     /// </summary>
-    internal class MinimumSpanningTreeTestsBase : AlgorithmTestsBase
+    internal abstract class MinimumSpanningTreeTestsBase : AlgorithmTestsBase
     {
         #region Test helpers
 

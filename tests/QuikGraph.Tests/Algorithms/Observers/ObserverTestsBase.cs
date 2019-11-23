@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
     /// <summary>
     /// Base class for observer tests.
     /// </summary>
-    internal class ObserverTestsBase
+    internal abstract class ObserverTestsBase
     {
         protected static void Attach_Throws_Test<TAlgorithm>(
             [NotNull] QuikGraph.Algorithms.Observers.IObserver<TAlgorithm> observer) 

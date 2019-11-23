@@ -17,6 +17,13 @@ namespace QuikGraph.Tests
     {
         private const int SlowTestRate = 5;
 
+        private static int GetSlowTestRate(int rate = -1)
+        {
+            if (rate > 0)
+                return rate;
+            return SlowTestRate;
+        }
+
         /// <summary>
         /// Gets graph ML file paths.
         /// </summary>
@@ -117,12 +124,15 @@ namespace QuikGraph.Tests
         /// </summary>
         [Pure]
         [NotNull, ItemNotNull]
-        public static IEnumerable<AdjacencyGraph<string, Edge<string>>> GetAdjacencyGraphs_SlowTests()
+        public static IEnumerable<AdjacencyGraph<string, Edge<string>>> GetAdjacencyGraphs_SlowTests(int rate = -1)
         {
+#if !FULL_SLOW_TESTS_RUN
+            int r = GetSlowTestRate(rate);
+#endif
             return GetAdjacencyGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
                 // 1 over SlowTestRate
-                (filePath, i) => i % SlowTestRate == 0
+                (filePath, i) => i % r == 0
 #endif
             );
         }
@@ -172,12 +182,15 @@ namespace QuikGraph.Tests
         /// </summary>
         [Pure]
         [NotNull, ItemNotNull]
-        public static IEnumerable<BidirectionalGraph<string, Edge<string>>> GetBidirectionalGraphs_SlowTests()
+        public static IEnumerable<BidirectionalGraph<string, Edge<string>>> GetBidirectionalGraphs_SlowTests(int rate = -1)
         {
+#if !FULL_SLOW_TESTS_RUN
+            int r = GetSlowTestRate(rate);
+#endif
             return GetBidirectionalGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
                 // 1 over SlowTestRate
-                (filePath, i) => i % SlowTestRate == 0
+                (filePath, i) => i % r == 0
 #endif
             );
         }
@@ -227,12 +240,15 @@ namespace QuikGraph.Tests
         /// </summary>
         [Pure]
         [NotNull, ItemNotNull]
-        public static IEnumerable<UndirectedGraph<string, Edge<string>>> GetUndirectedGraphs_SlowTests()
+        public static IEnumerable<UndirectedGraph<string, Edge<string>>> GetUndirectedGraphs_SlowTests(int rate = -1)
         {
+#if !FULL_SLOW_TESTS_RUN
+            int r = GetSlowTestRate(rate);
+#endif
             return GetUndirectedGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
                 // 1 over SlowTestRate
-                (filePath, i) => i % SlowTestRate == 0
+                (filePath, i) => i % r == 0
 #endif
             );
         }
