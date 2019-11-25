@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
+using static QuikGraph.Tests.TestHelpers;
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -12,27 +13,20 @@ namespace QuikGraph.Tests.Algorithms
     [TestFixture]
     internal class HamiltonianGraphAlgorithmTests
     {
-        #region Helpers
-
-        [Pure]
-        [NotNull]
-        private static UndirectedGraph<int, UndirectedEdge<int>> ConstructGraph([NotNull] IEnumerable<Vertices> vertices)
+        [Test]
+        public void IsHamiltonianEmpty()
         {
-            var graph = new UndirectedGraph<int, UndirectedEdge<int>>();
-            foreach (Vertices pair in vertices)
-            {
-                graph.AddVerticesAndEdge(new UndirectedEdge<int>(pair.Source, pair.Target));
-            }
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(Enumerable.Empty<Vertices>());
 
-            return graph;
+            var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
+            Assert.IsFalse(algorithm.IsHamiltonian());
         }
 
-        #endregion
-
         [Test]
-        public void IsHamiltonianTrue()
+        public void IsHamiltonian()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            // Hamiltonian
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
@@ -43,12 +37,9 @@ namespace QuikGraph.Tests.Algorithms
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
             Assert.IsTrue(algorithm.IsHamiltonian());
-        }
 
-        [Test]
-        public void IsHamiltonianFalse()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            // Not Hamiltonian
+            graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
@@ -56,23 +47,14 @@ namespace QuikGraph.Tests.Algorithms
                 new Vertices(3, 4)
             });
 
-            var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsHamiltonian());
-        }
-
-        [Test]
-        public void IsHamiltonianEmpty()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(Enumerable.Empty<Vertices>());
-
-            var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
+            algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
             Assert.IsFalse(algorithm.IsHamiltonian());
         }
 
         [Test]
         public void IsHamiltonianOneVertexWithCycle()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1)
             });
@@ -82,34 +64,32 @@ namespace QuikGraph.Tests.Algorithms
         }
 
         [Test]
-        public void IsHamiltonianTwoVerticesTrue()
+        public void IsHamiltonianTwoVertices()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            // Hamiltonian
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2)
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
             Assert.IsTrue(algorithm.IsHamiltonian());
-        }
 
-        [Test]
-        public void IsHamiltonianTwoVerticesFalse()
-        {
-            var graph = ConstructGraph(new[]
+            // Not Hamiltonian
+            graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1),
                 new Vertices(2, 2)
             });
 
-            var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
+            algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
             Assert.IsFalse(algorithm.IsHamiltonian());
         }
 
         [Test]
         public void IsHamiltonianWithLoops()
         {
-            var graph = ConstructGraph(new[]
+            var graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1),
                 new Vertices(1, 1),
@@ -127,7 +107,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void IsHamiltonianWithParallelEdges()
         {
-            var graph = ConstructGraph(new[]
+            var graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(1, 2),
@@ -140,10 +120,10 @@ namespace QuikGraph.Tests.Algorithms
         }
 
         [Test]
-        public void IsHamiltonian10VerticesDiracsTheorem()
+        public void IsHamiltonianDiracsTheorem()
         {
-            // This graph is hamiltonian and satisfies Dirac's theorem. This test should work faster
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            // This graph is Hamiltonian and satisfies Dirac's theorem. This test should work faster
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(1, 3),
@@ -181,10 +161,10 @@ namespace QuikGraph.Tests.Algorithms
         }
 
         [Test]
-        public void IsHamiltonian10VerticesNotDiracsTheorem()
+        public void IsHamiltonianNotDiracsTheorem()
         {
-            // This graph is hamiltonian but don't satisfy Dirac's theorem. This test should work slowlier
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            // This graph is Hamiltonian but don't satisfy Dirac's theorem. This test should work slowlier
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(1, 3),
@@ -219,7 +199,7 @@ namespace QuikGraph.Tests.Algorithms
             Assert.IsTrue(algorithm.IsHamiltonian());
         }
 
-        #region Helpers
+        #region Test helpers
 
         private class SequenceComparer<T>
 #if SUPPORTS_ENUMERABLE_COVARIANT
@@ -264,9 +244,9 @@ namespace QuikGraph.Tests.Algorithms
         #endregion
 
         [Test]
-        public void IsHamiltonianTestCyclesBuilder()
+        public void IsHamiltonianCyclesBuilder()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(1, 3),
@@ -303,6 +283,21 @@ namespace QuikGraph.Tests.Algorithms
             hashSet.UnionWith(algorithm.GetPermutations());
 
             Assert.AreEqual(hashSet.Count, Factorial(graph.VertexCount));
+        }
+
+        [Test]
+        public void IsHamiltonian_Throws()
+        {
+            // ReSharper disable ObjectCreationAsStatement
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(null));
+
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<ArgumentNullException>(
+                () => IsHamiltonianGraphAlgorithm.IsHamiltonian<int, UndirectedEdge<int>>(null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ObjectCreationAsStatement
         }
     }
 }

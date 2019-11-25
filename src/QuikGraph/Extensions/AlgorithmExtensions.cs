@@ -575,6 +575,28 @@ namespace QuikGraph.Algorithms
         }
 
         /// <summary>
+        /// Creates a topological sort (source first) of an undirected acyclic graph.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to visit.</param>
+        /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
+        [Pure]
+        [NotNull, ItemNotNull]
+        public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
+            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
+            where TEdge : IEdge<TVertex>
+        {
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
+
+            var algorithm = new UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
+            algorithm.Compute();
+            return algorithm.SortedVertices.AsEnumerable();
+        }
+
+        /// <summary>
         /// Creates a topological sort (source first) of a bidirectional directed acyclic graph.
         /// Uses the <see cref="TopologicalSortDirection.Forward"/> direction.
         /// </summary>
@@ -611,28 +633,6 @@ namespace QuikGraph.Algorithms
                 throw new ArgumentNullException(nameof(graph));
 
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction, graph.VertexCount);
-            algorithm.Compute();
-            return algorithm.SortedVertices.AsEnumerable();
-        }
-
-        /// <summary>
-        /// Creates a topological sort (source first) of an undirected acyclic graph.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="graph">Graph to visit.</param>
-        /// <returns>Sorted vertices (topological sort).</returns>
-        /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
-        [Pure]
-        [NotNull, ItemNotNull]
-        public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
-            where TEdge : IEdge<TVertex>
-        {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-
-            var algorithm = new UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
             algorithm.Compute();
             return algorithm.SortedVertices.AsEnumerable();
         }
@@ -1021,8 +1021,6 @@ namespace QuikGraph.Algorithms
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
-            if (!graph.ContainsVertex(root))
-                throw new ArgumentException($"{nameof(root)} must be in the {nameof(graph)}.", nameof(root));
             if (pairs is null)
                 throw new ArgumentNullException(nameof(pairs));
             SEquatableEdge<TVertex>[] pairsArray = pairs.ToArray();
@@ -1034,7 +1032,7 @@ namespace QuikGraph.Algorithms
             var algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute(root, pairsArray);
 
-            var ancestors = algorithm.Ancestors;
+            IDictionary<SEquatableEdge<TVertex>, TVertex> ancestors = algorithm.Ancestors;
             return (SEquatableEdge<TVertex> pair, out TVertex vertex) => ancestors.TryGetValue(pair, out vertex);
         }
 

@@ -9,7 +9,7 @@ using QuikGraph.Collections;
 namespace QuikGraph.Algorithms
 {
     /// <summary>
-    /// Off line least common ancestor in a rooted tree.
+    /// Offline least common ancestor in a rooted tree.
     /// </summary>
     /// <remarks>
     /// Reference:
@@ -70,7 +70,7 @@ namespace QuikGraph.Algorithms
         {
             TVertex root = GetAndAssertRootInGraph();
             if (_pairs is null)
-                throw new InvalidProgramException("Pairs not set.");
+                throw new InvalidOperationException("Pairs not set.");
 
             var graph = _pairs.ToAdjacencyGraph();
             var disjointSet = new ForestDisjointSet<TVertex>();
@@ -113,7 +113,7 @@ namespace QuikGraph.Algorithms
         /// Tries to get vertices pairs if set.
         /// </summary>
         /// <param name="pairs">Vertices pairs if set.</param>
-        /// <returns></returns>
+        /// <returns>True if vertex pairs were set, false otherwise.</returns>
         [Pure]
         public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
@@ -131,6 +131,13 @@ namespace QuikGraph.Algorithms
                 throw new ArgumentNullException(nameof(pairs));
 
             _pairs = pairs.ToArray();
+
+            if (_pairs.Length == 0)
+                throw new ArgumentException("Must have at least one vertex pair.", nameof(pairs));
+            if (_pairs.Any(pair => !VisitedGraph.ContainsVertex(pair.Source)))
+                throw new ArgumentException("All pairs sources must be in the graph.", nameof(pairs));
+            if (_pairs.Any(pair => !VisitedGraph.ContainsVertex(pair.Target)))
+                throw new ArgumentException("All pairs targets must be in the graph.", nameof(pairs));
         }
 
         /// <summary>
@@ -140,10 +147,7 @@ namespace QuikGraph.Algorithms
         /// <param name="pairs">Vertices pairs.</param>
         public void Compute([NotNull] TVertex root, [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
-            if (pairs is null)
-                throw new ArgumentNullException(nameof(pairs));
-
-            _pairs = pairs.ToArray();
+            SetVertexPairs(pairs);
             Compute(root);
         }
     }

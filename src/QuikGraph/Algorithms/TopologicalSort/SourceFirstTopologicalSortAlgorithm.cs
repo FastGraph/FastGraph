@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

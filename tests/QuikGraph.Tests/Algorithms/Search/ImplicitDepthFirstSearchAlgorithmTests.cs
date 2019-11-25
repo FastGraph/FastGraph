@@ -210,7 +210,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Category(TestCategories.LongRunning)]
         public void ImplicitDepthFirstSearch()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests(10))
             {
                 foreach (string vertex in graph.Vertices)
                 {

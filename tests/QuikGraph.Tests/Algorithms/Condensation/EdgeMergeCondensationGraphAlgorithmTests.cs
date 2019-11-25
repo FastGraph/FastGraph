@@ -201,7 +201,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         public void EdgeCondensation()
         {
             var rand = new Random(123456);
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
             {
                 RunEdgesCondensationAndCheck(graph, v => true);
                 RunEdgesCondensationAndCheck(graph, v => rand.Next(0, 1) == 1);

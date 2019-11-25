@@ -8,7 +8,7 @@ namespace QuikGraph.Algorithms
 {
     /// <summary>
     /// Algorithm that checks if a graph is Eulerian.
-    /// (has a path use all edges one and only one time).
+    /// (has a path using all edges one and only one time).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>

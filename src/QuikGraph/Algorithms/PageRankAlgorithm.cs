@@ -33,31 +33,76 @@ namespace QuikGraph.Algorithms.Ranking
         [NotNull]
         public IDictionary<TVertex, double> Ranks { get; private set; } = new Dictionary<TVertex, double>();
 
+        private double _damping = 0.85;
+
         /// <summary>
-        /// Gets or sets the damping rate.
+        /// Gets or sets the damping rate [0-1].
         /// </summary>
-        public double Damping { get; set; } = 0.85;
+        /// <remarks>By default it uses 0.85 which is the value generally used.</remarks>
+        public double Damping
+        {
+            get => _damping;
+            set
+            {
+                if (value < 0 || value > 1)
+                    throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Damping)} must be in interval [0-1].");
+                _damping = value;
+            }
+        }
+
+        private double _tolerance = 2 * double.Epsilon;
 
         /// <summary>
         /// Gets or sets the error tolerance (used to stop the algorithm).
         /// </summary>
-        public double Tolerance { get; set; } = 2 * double.Epsilon;
+        public double Tolerance
+        {
+            get => _tolerance;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Tolerance)} must be positive or 0.");
+                _tolerance = value;
+            }
+        }
+
+        private int _maxIterations = 60;
 
         /// <summary>
         /// Gets or sets the maximum number of iterations.
         /// </summary>
-        public int MaxIterations { get; set; } = 60;
+        public int MaxIterations
+        {
+            get => _maxIterations;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxIterations)} must be positive.");
+                _maxIterations = value;
+            }
+        }
+
+        #region AlgorithmBase<TGraph>
 
         /// <summary>
-        /// Initializes all vertices ranks to 0.
+        /// Initializes all vertices ranks (1 / VertexCount).
         /// </summary>
-        public void InitializeRanks()
+        private void InitializeRanks()
         {
             Ranks.Clear();
+            double initialRank = 1 / (double)VisitedGraph.VertexCount;
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                Ranks.Add(vertex, 0);
+                Ranks.Add(vertex, initialRank);
             }
+        }
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            InitializeRanks();
         }
 
         /// <inheritdoc />
@@ -89,7 +134,7 @@ namespace QuikGraph.Algorithms.Ranking
                     TVertex vertex = pair.Key;
                     double rank = pair.Value;
 
-                    // Compute ARi
+                    // Compute sum of PR(pj)/L(pj)
                     double r = 0;
                     foreach (TEdge edge in filterGraph.InEdges(vertex))
                     {
@@ -99,9 +144,9 @@ namespace QuikGraph.Algorithms.Ranking
                     // Add sourceRank and store it
                     double newRank = (1 - Damping) + Damping * r;
                     tempRanks[vertex] = newRank;
-                    
+
                     // Compute deviation
-                    error += Math.Abs(rank - newRank);
+                    error += Math.Abs(newRank - rank);
                 }
 
                 // Swap ranks
@@ -112,6 +157,8 @@ namespace QuikGraph.Algorithms.Ranking
                 ++iteration;
             } while (error > Tolerance && iteration < MaxIterations);
         }
+
+        #endregion
 
         /// <summary>
         /// Gets the sum of all ranks.

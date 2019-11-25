@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
+using QuikGraph.Tests.Algorithms;
 
 namespace QuikGraph.Tests
 {
@@ -23,23 +24,34 @@ namespace QuikGraph.Tests
         /// <returns>List of edges.</returns>
         [Pure]
         [NotNull, ItemNotNull]
-        public static List<Edge<TVertex>> CreateAllPairwiseEdges<TVertex>(
+        public static IEnumerable<Edge<TVertex>> CreateAllPairwiseEdges<TVertex>(
             [NotNull, ItemNotNull] IEnumerable<TVertex> leftVertices,
             [NotNull, ItemNotNull] IEnumerable<TVertex> rightVertices,
             [NotNull] EdgeFactory<TVertex, Edge<TVertex>> edgeFactory)
         {
-            var edges = new List<Edge<TVertex>>();
-            var rightVerticesArray = rightVertices.ToArray();
+            TVertex[] rightVerticesArray = rightVertices.ToArray();
 
             foreach (TVertex left in leftVertices)
             {
                 foreach (TVertex right in rightVerticesArray)
                 {
-                    edges.Add(edgeFactory(left, right));
+                    yield return edgeFactory(left, right);
                 }
             }
+        }
 
-            return edges;
+        [Pure]
+        [NotNull]
+        public static UndirectedGraph<int, UndirectedEdge<int>> CreateUndirectedGraph(
+            [NotNull] IEnumerable<Vertices> vertices)
+        {
+            var graph = new UndirectedGraph<int, UndirectedEdge<int>>();
+            foreach (Vertices pair in vertices)
+            {
+                graph.AddVerticesAndEdge(new UndirectedEdge<int>(pair.Source, pair.Target));
+            }
+
+            return graph;
         }
 
         [Pure]

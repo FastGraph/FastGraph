@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
+using static QuikGraph.Tests.TestHelpers;
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -12,41 +13,50 @@ namespace QuikGraph.Tests.Algorithms
     [TestFixture]
     internal class EulerianGraphAlgorithmTests
     {
-        #region Helpers
+        #region Test helpers
 
-        [Pure]
-        [NotNull]
-        private static UndirectedGraph<int, UndirectedEdge<int>> ConstructGraph([NotNull] IEnumerable<Vertices> vertices)
+        private static void AssertIsEulerian(
+            bool expectedEulerian,
+            [NotNull] IUndirectedGraph<int, UndirectedEdge<int>> graph)
         {
-            var graph = new UndirectedGraph<int, UndirectedEdge<int>>();
-            foreach (Vertices pair in vertices)
-            {
-                graph.AddVerticesAndEdge(new UndirectedEdge<int>(pair.Source, pair.Target));
-            }
-
-            return graph;
+            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
+            Assert.AreEqual(expectedEulerian, algorithm.IsEulerian());
+            Assert.AreEqual(expectedEulerian, IsEulerianGraphAlgorithm.IsEulerian(graph));
         }
 
         #endregion
 
         [Test]
-        public void IsEulerianOneComponentTrue()
+        public void IsEulerianEmpty()
         {
-            var graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(Enumerable.Empty<Vertices>());
+            AssertIsEulerian(false, graph);
+        }
+
+        [Test]
+        public void IsEulerianOneVertex()
+        {
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(Enumerable.Empty<Vertices>());
+            graph.AddVertex(42);
+
+            AssertIsEulerian(true, graph);
+        }
+
+        [Test]
+        public void IsEulerianOneComponent()
+        {
+            // Eulerian
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
                 new Vertices(1, 3)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsEulerian());
-        }
+            AssertIsEulerian(true, graph);
 
-        [Test]
-        public void IsEulerianOneComponentFalse()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[] 
+            // Not Eulerian
+            graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
@@ -55,14 +65,14 @@ namespace QuikGraph.Tests.Algorithms
                 new Vertices(1, 3)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsEulerian());
+            AssertIsEulerian(false, graph);
         }
 
         [Test]
-        public void IsEulerianManyComponentsTrue()
+        public void IsEulerianManyComponents()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            // Eulerian
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
@@ -72,14 +82,10 @@ namespace QuikGraph.Tests.Algorithms
             graph.AddVertex(4);
             graph.AddVertex(5);
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsEulerian());
-        }
+            AssertIsEulerian(true, graph);
 
-        [Test]
-        public void IsEulerianManyComponentsFalse()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[] 
+            // Not Eulerian
+            graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 3),
@@ -91,107 +97,80 @@ namespace QuikGraph.Tests.Algorithms
 
             graph.AddVertex(7);
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsEulerian());
-        }
-
-
-        [Test]
-        public void IsEulerianEmpty()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(Enumerable.Empty<Vertices>());
-
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsEulerian());
-        }
-
-        [Test]
-        public void IsEulerianOneVertex()
-        {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(Enumerable.Empty<Vertices>());
-            graph.AddVertex(420);
-
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsEulerian());
+            AssertIsEulerian(false, graph);
         }
 
         [Test]
         public void IsEulerianOneVertexWithLoop()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsEulerian());
+            AssertIsEulerian(true, graph);
         }
 
         [Test]
         public void IsEulerianOneVertexWithTwoLoops()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1),
                 new Vertices(1, 1)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsEulerian());
+            AssertIsEulerian(true, graph);
         }
 
         [Test]
         public void IsEulerianTwoVertices()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(2, 2)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsEulerian());
+            AssertIsEulerian(false, graph);
         }
 
         [Test]
         public void IsEulerianTwoVerticesWithLoops()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1),
                 new Vertices(2, 2)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsEulerian());
+            AssertIsEulerian(false, graph);
         }
-
-        // Since changes to UndirectedEdge, edge 2 <-> 1 cannot be created
-        // And reversing edge does not help because Eulerian algorithm removes
-        // parallel edges
-        //[Test]
-        //public void IsEulerianTwoVerticesTwoEdges()
-        //{
-        //    UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
-        //    {
-        //        new Vertices(1, 2),
-        //        new Vertices(2, 1)
-        //    });
-
-        //    var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-        //    Assert.IsTrue(algorithm.IsEulerian());
-        //}
 
         [Test]
         public void IsEulerianTwoVerticesOneEdge()
         {
-            UndirectedGraph<int, UndirectedEdge<int>> graph = ConstructGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2)
             });
 
-            var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsEulerian());
+            AssertIsEulerian(false, graph);
+        }
+
+        [Test]
+        public void IsEulerian_Throws()
+        {
+            // ReSharper disable ObjectCreationAsStatement
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(null));
+
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<ArgumentNullException>(
+                () => IsEulerianGraphAlgorithm.IsEulerian<int, UndirectedEdge<int>>(null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ObjectCreationAsStatement
         }
     }
 }

@@ -213,7 +213,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         [Category(TestCategories.LongRunning)]
         public void ConnectedComponents()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests(10))
             {
                 while (graph.EdgeCount > 0)
                 {

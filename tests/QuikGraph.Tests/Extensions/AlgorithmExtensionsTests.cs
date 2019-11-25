@@ -1594,6 +1594,45 @@ namespace QuikGraph.Tests.Extensions
         }
 
         [Test]
+        public void OfflineLeastCommonAncestor_Throws()
+        {
+            var vertex1 = new TestVertex("1");
+            var vertex2 = new TestVertex("2");
+            var graph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+            graph1.AddVertexRange(new[] { vertex1, vertex2 });
+            var pairs1 = new[] { new SEquatableEdge<TestVertex>(vertex1, vertex2) };
+            
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(vertex1, pairs1));
+            Assert.Throws<ArgumentNullException>(
+                () => graph1.OfflineLeastCommonAncestor(null, pairs1));
+            Assert.Throws<ArgumentNullException>(
+                () => graph1.OfflineLeastCommonAncestor(vertex1, null));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(null, pairs1));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(vertex1, null));
+            Assert.Throws<ArgumentNullException>(
+                () => graph1.OfflineLeastCommonAncestor(null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(null, null));
+
+            var pairs2 = new[] { new SEquatableEdge<int>(1, 2) };
+            var graph2 = new AdjacencyGraph<int, Edge<int>>();
+            Assert.Throws<ArgumentException>(
+                () => graph2.OfflineLeastCommonAncestor(1, pairs2));
+
+            var graph3 = new AdjacencyGraph<int, Edge<int>>();
+            graph3.AddVertex(1);
+            Assert.Throws<ArgumentException>(
+                () => graph3.OfflineLeastCommonAncestor(1, pairs2));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        [Test]
         public void MaximumFlow_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();

@@ -350,7 +350,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         [Category(TestCategories.LongRunning)]
         public void UndirectedBreadthFirstSearch()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests(10))
             {
                 foreach (string vertex in graph.Vertices)
                     RunBFSAndCheck(graph, vertex);

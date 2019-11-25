@@ -31,16 +31,10 @@ namespace QuikGraph.Algorithms
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(visitedGraph)
         {
-            if (vertexFactory is null)
-                throw new ArgumentNullException(nameof(vertexFactory));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
-
-            SourceToVertices = sourceToVertices;
-            VerticesToSink = verticesToSink;
-            VertexFactory = vertexFactory;
-            EdgeFactory = edgeFactory;
-            MatchedEdges = new List<TEdge>();
+            SourceToVertices = sourceToVertices ?? throw new ArgumentNullException(nameof(sourceToVertices));
+            VerticesToSink = verticesToSink ?? throw new ArgumentNullException(nameof(verticesToSink));
+            VertexFactory = vertexFactory ?? throw new ArgumentNullException(nameof(vertexFactory));
+            EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
         }
 
         /// <summary>
@@ -67,19 +61,30 @@ namespace QuikGraph.Algorithms
         [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
+
+        [NotNull, ItemNotNull]
+        private readonly List<TEdge> _matchedEdges = new List<TEdge>();
+
         /// <summary>
         /// Maximal edges matching.
         /// </summary>
-        [NotNull]
-        public ICollection<TEdge> MatchedEdges { get; }
+        [NotNull, ItemNotNull]
+        public TEdge[] MatchedEdges => _matchedEdges.ToArray();
 
         #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _matchedEdges.Clear();
+        }
 
         /// <inheritdoc />
         protected override void InternalCompute()
         {
             ICancelManager cancelManager = Services.CancelManager;
-            MatchedEdges.Clear();
 
             BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge> augmentor = null;
             ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverser = null;
@@ -115,7 +120,7 @@ namespace QuikGraph.Algorithms
                 var flow = new EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>(
                     this,
                     VisitedGraph,
-                    edge => 1,
+                    edge => 1.0,
                     EdgeFactory,
                     reverser);
 
@@ -137,7 +142,7 @@ namespace QuikGraph.Algorithms
                             continue;
                         }
 
-                        MatchedEdges.Add(edge);
+                        _matchedEdges.Add(edge);
                     }
                 }
             }
