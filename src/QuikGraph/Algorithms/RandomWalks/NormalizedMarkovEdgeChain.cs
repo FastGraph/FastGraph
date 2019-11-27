@@ -36,7 +36,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
         {
             TEdge[] edgeArray = edges.ToArray();
-            if (edgeArray.Any())
+            if (edgeArray.Length > 0)
             {
                 int index = Rand.Next(0, edgeArray.Length);
                 successor = edgeArray[index];

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -63,10 +64,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <returns>True if a successor was found, false otherwise.</returns>
         protected bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, double position, out TEdge successor)
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            Debug.Assert(graph != null);
+            Debug.Assert(vertex != null);
 
             IEnumerable<TEdge> edges = graph.OutEdges(vertex);
             return TryGetSuccessor(edges, position, out successor);
@@ -81,8 +80,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <returns>True if a successor was found, false otherwise.</returns>
         protected bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, double position, out TEdge successor)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            Debug.Assert(edges != null);
 
             double pos = 0;
             foreach (TEdge edge in edges)

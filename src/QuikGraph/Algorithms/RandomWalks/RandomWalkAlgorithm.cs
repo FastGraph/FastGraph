@@ -36,14 +36,21 @@ namespace QuikGraph.Algorithms.RandomWalks
             [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
             : base(null, visitedGraph)
         {
-            EdgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
+            _edgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
         }
+
+        [NotNull]
+        private IEdgeChain<TVertex, TEdge> _edgeChain;
 
         /// <summary>
         /// Edge chain strategy for the random walk.
         /// </summary>
         [NotNull]
-        public IEdgeChain<TVertex, TEdge> EdgeChain { get; set; }
+        public IEdgeChain<TVertex, TEdge> EdgeChain
+        {
+            get => _edgeChain;
+            set => _edgeChain = value ?? throw new ArgumentNullException(nameof(value), $"{nameof(EdgeChain)} cannot be null.");
+        }
 
         /// <summary>
         /// Predicate to prematurely ends the walk.
@@ -94,8 +101,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         {
             if (!TryGetRootVertex(out TVertex root))
                 throw new InvalidOperationException("Root vertex not set.");
-
-            OnStartVertex(root);
             Generate(root);
         }
 
@@ -117,13 +122,13 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="walkCount">Number of steps for the random walk.</param>
         public void Generate([NotNull] TVertex root, int walkCount)
         {
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
+            AssertRootInGraph(root);
 
             int count = 0;
             TVertex current = root;
 
             OnStartVertex(root);
+
             while (count < walkCount && TryGetSuccessor(current, out TEdge edge))
             {
                 // If dead end stop

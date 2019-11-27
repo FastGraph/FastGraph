@@ -30,9 +30,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <inheritdoc />
         public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
         {
-            // Get the number of out-edges
-            int n = graph.OutDegree(vertex);
-            if (n > 0)
+            if (!graph.IsOutEdgesEmpty(vertex))
             {
                 // Compute out-edge su
                 double outWeight = GetOutWeight(graph, vertex);
@@ -48,7 +46,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <inheritdoc />
         public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
         {
-            var edgeArray = edges.ToArray();
+            TEdge[] edgeArray = edges.ToArray();
             // Compute out-edge su
             double outWeight = GetWeights(edgeArray);
             // Scale and get next edge
