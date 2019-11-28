@@ -139,7 +139,7 @@ namespace QuikGraph.Algorithms
         /// Runs the algorithm with the given <paramref name="root"/> vertex.
         /// </summary>
         /// <param name="root">Root vertex.</param>
-        public void Compute([NotNull] TVertex root)
+        public virtual void Compute([NotNull] TVertex root)
         {
             SetRootVertex(root);
             if (!VisitedGraph.ContainsVertex(root))

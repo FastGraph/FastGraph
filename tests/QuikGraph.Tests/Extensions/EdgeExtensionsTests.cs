@@ -92,7 +92,7 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<ArgumentNullException>(() => ((Edge<int>)null).GetOtherVertex(1));
 
-            var testEdge = new Edge<TestVertex>(new TestVertex(), new TestVertex());
+            var testEdge = new Edge<TestVertex>(new TestVertex("1"), new TestVertex("2"));
             Assert.Throws<ArgumentNullException>(() => testEdge.GetOtherVertex(null));
 
             Assert.Throws<ArgumentNullException>(() => ((Edge<TestVertex>)null).GetOtherVertex(null));
@@ -148,7 +148,7 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<ArgumentNullException>(() => ((Edge<int>)null).IsAdjacent(1));
 
-            var testEdge = new Edge<TestVertex>(new TestVertex(), new TestVertex());
+            var testEdge = new Edge<TestVertex>(new TestVertex("1"), new TestVertex("2"));
             Assert.Throws<ArgumentNullException>(() => testEdge.IsAdjacent(null));
 
             Assert.Throws<ArgumentNullException>(() => ((Edge<TestVertex>)null).IsAdjacent(null));

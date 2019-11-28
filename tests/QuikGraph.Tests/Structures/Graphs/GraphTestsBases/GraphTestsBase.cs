@@ -31,6 +31,34 @@ namespace QuikGraph.Tests.Structures
             CollectionAssert.AreEquivalent(vertexArray, graph.Vertices);
         }
 
+        protected static void AssertNoVertices<TVertex>(
+            [NotNull] IImplicitVertexSet<TVertex> graph,
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        {
+            AssertImplicitHasVertices(graph, vertices, false);
+        }
+
+        protected static void AssertHasVertices<TVertex>(
+            [NotNull] IImplicitVertexSet<TVertex> graph,
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        {
+            AssertImplicitHasVertices(graph, vertices, true);
+        }
+
+        private static void AssertImplicitHasVertices<TVertex>(
+            [NotNull] IImplicitVertexSet<TVertex> graph,
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
+            bool expectedContains)
+        {
+            TVertex[] vertexArray = vertices.ToArray();
+            CollectionAssert.IsNotEmpty(vertexArray);
+
+            foreach (TVertex vertex in vertexArray)
+            {
+                Assert.AreEqual(expectedContains, graph.ContainsVertex(vertex));
+            }
+        }
+
         #endregion
 
         #region Edges helpers
@@ -179,6 +207,8 @@ namespace QuikGraph.Tests.Structures
                 edgeArray.Select(edge => new SReversedEdge<TVertex, TEdge>(edge)),
                 graph.OutEdges(vertex));
         }
+
+
 
         protected static void AssertNoAdjacentEdge<TVertex, TEdge>([NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
             where TEdge : IEdge<TVertex>

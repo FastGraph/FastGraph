@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms.Exploration
     public sealed class CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeSet<TVertex, TEdge>>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
-        where TVertex : ICloneable, IComparable<TVertex>
+        where TVertex : ICloneable
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -45,33 +45,61 @@ namespace QuikGraph.Algorithms.Exploration
         /// Transitions factories.
         /// </summary>
         [NotNull, ItemNotNull]
-        public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories { get; } =
+        private readonly List<ITransitionFactory<TVertex, TEdge>> _transitionFactories =
             new List<ITransitionFactory<TVertex, TEdge>>();
+
+        [NotNull]
+        private VertexPredicate<TVertex> _addVertexPredicate = vertex => true;
 
         /// <summary>
         /// Predicate that a vertex must match to be added in the graph.
         /// </summary>
         [NotNull]
-        public VertexPredicate<TVertex> AddVertexPredicate { get; set; } = vertex => true;
+        public VertexPredicate<TVertex> AddVertexPredicate
+        {
+            get => _addVertexPredicate;
+            set => _addVertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        [NotNull]
+        private VertexPredicate<TVertex> _exploreVertexPredicate = vertex => true;
 
         /// <summary>
         /// Predicate that checks if a given vertex should be explored or ignored.
         /// </summary>
         [NotNull]
-        public VertexPredicate<TVertex> ExploreVertexPredicate { get; set; } = vertex => true;
+        public VertexPredicate<TVertex> ExploreVertexPredicate
+        {
+            get => _exploreVertexPredicate;
+            set => _exploreVertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        [NotNull]
+        private EdgePredicate<TVertex, TEdge> _addEdgePredicate = edge => true;
 
         /// <summary>
         /// Predicate that an edge must match to be added in the graph.
         /// </summary>
         [NotNull]
-        public EdgePredicate<TVertex, TEdge> AddEdgePredicate { get; set; } = edge => true;
+        public EdgePredicate<TVertex, TEdge> AddEdgePredicate
+        {
+            get => _addEdgePredicate;
+            set => _addEdgePredicate = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        [NotNull]
+        private Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> _finishedPredicate =
+            new DefaultFinishedPredicate().Test;
 
         /// <summary>
         /// Predicate that checks if the exploration is finished or not.
         /// </summary>
         [NotNull]
-        public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate { get; set; } =
-            new DefaultFinishedPredicate().Test;
+        public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate
+        {
+            get => _finishedPredicate;
+            set => _finishedPredicate = value ?? throw new ArgumentNullException(nameof(value));
+        }
 
         [NotNull, ItemNotNull]
         private readonly Queue<TVertex> _unExploredVertices = new Queue<TVertex>();
@@ -142,20 +170,72 @@ namespace QuikGraph.Algorithms.Exploration
 
         #endregion
 
+        /// <summary>
+        /// Adds a new <see cref="ITransitionFactory{TVertex,TEdge}"/> to this algorithm.
+        /// </summary>
+        /// <param name="transitionFactory">Transition factory to add.</param>
+        public void AddTransitionFactory([NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            if (transitionFactory is null)
+                throw new ArgumentNullException(nameof(transitionFactory));
+
+            _transitionFactories.Add(transitionFactory);
+        }
+
+        /// <summary>
+        /// Adds new <see cref="ITransitionFactory{TVertex,TEdge}"/>s to this algorithm.
+        /// </summary>
+        /// <param name="transitionFactories">Transition factories to add.</param>
+        public void AddTransitionFactories(
+            [NotNull, ItemNotNull] IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
+        {
+            if (transitionFactories is null)
+                throw new ArgumentNullException(nameof(transitionFactories));
+
+            _transitionFactories.AddRange(transitionFactories);
+        }
+
+        /// <summary>
+        /// Removes the given <paramref name="transitionFactory"/> from this algorithm.
+        /// </summary>
+        /// <param name="transitionFactory">Transition factory to remove.</param>
+        public bool RemoveTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            return _transitionFactories.Remove(transitionFactory);
+        }
+
+        /// <summary>
+        /// Clears all <see cref="ITransitionFactory{TVertex,TEdge}"/> from this algorithm.
+        /// </summary>
+        public void ClearTransitionFactories()
+        {
+            _transitionFactories.Clear();
+        }
+
+        /// <summary>
+        /// Checks if this algorithm contains the given <paramref name="transitionFactory"/>.
+        /// </summary>
+        /// <param name="transitionFactory">Transition factory to check.</param>
+        [Pure]
+        public bool ContainsTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            return _transitionFactories.Contains(transitionFactory);
+        }
+
         #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
         protected override void InternalCompute()
         {
             if (!TryGetRootVertex(out TVertex root))
-                throw new InvalidOperationException("RootVertex is not specified.");
+                throw new InvalidOperationException("Root vertex not set.");
 
             VisitedGraph.Clear();
             _unExploredVertices.Clear();
             FinishedSuccessfully = false;
 
             if (!AddVertexPredicate(root))
-                throw new ArgumentException($"StartVertex does not satisfy the {nameof(AddVertexPredicate)}.");
+                throw new InvalidOperationException($"Starting vertex does not satisfy the {nameof(AddVertexPredicate)}.");
             OnVertexDiscovered(root);
 
             while (_unExploredVertices.Count > 0)
@@ -174,7 +254,7 @@ namespace QuikGraph.Algorithms.Exploration
                 if (!ExploreVertexPredicate(clone))
                     continue;
 
-                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in TransitionFactories)
+                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in _transitionFactories)
                 {
                     GenerateFromTransitionFactory(clone, transitionFactory);
                 }
@@ -183,16 +263,21 @@ namespace QuikGraph.Algorithms.Exploration
             FinishedSuccessfully = true;
         }
 
+        /// <inheritdoc />
+        public override void Compute(TVertex root)
+        {
+            SetRootVertex(root);
+            Compute();
+        }
+
         #endregion
 
         private void GenerateFromTransitionFactory(
             [NotNull] TVertex current,
             [NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
-            if (current == null)
-                throw new ArgumentNullException(nameof(current));
-            if (transitionFactory is null)
-                throw new ArgumentNullException(nameof(transitionFactory));
+            Debug.Assert(current != null);
+            Debug.Assert(transitionFactory != null);
 
             if (!transitionFactory.IsValid(current))
                 return;

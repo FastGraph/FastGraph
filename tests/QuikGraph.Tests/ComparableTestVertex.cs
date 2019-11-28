@@ -8,10 +8,8 @@ namespace QuikGraph.Tests
     /// </summary>
     internal class ComparableTestVertex : IComparable
     {
-        private static int _counter;
-
         public ComparableTestVertex()
-            : this($"ComparableTestVertex{_counter++}")
+            : this("Default")
         {
         }
 

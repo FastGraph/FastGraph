@@ -1,6 +1,7 @@
 #if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Collections;
@@ -24,24 +25,141 @@ namespace QuikGraph.Algorithms.Exploration
         private readonly VertexEdgeDictionary<TVertex, TEdge> _verticesEdgesCache =
             new VertexEdgeDictionary<TVertex, TEdge>();
 
+        [NotNull]
+        private readonly Dictionary<TVertex, HashSet<ITransitionFactory<TVertex, TEdge>>> _verticesNotProcessedCache =
+            new Dictionary<TVertex, HashSet<ITransitionFactory<TVertex, TEdge>>>();
+
         /// <summary>
         /// Transitions factories.
         /// </summary>
         [NotNull, ItemNotNull]
-        public IList<ITransitionFactory<TVertex, TEdge>> TransitionFactories { get; } =
+        private readonly List<ITransitionFactory<TVertex, TEdge>> _transitionFactories =
             new List<ITransitionFactory<TVertex, TEdge>>();
+
+        /// <summary>
+        /// Clears the <see cref="_verticesEdgesCache"/> but keep a trace of explored vertices
+        /// in the <see cref="_verticesNotProcessedCache"/>.
+        /// </summary>
+        private void MoveMainCacheToNotProcessedVertices()
+        {
+            foreach (TVertex vertex in _verticesEdgesCache.Keys)
+            {
+                Debug.Assert(!_verticesNotProcessedCache.ContainsKey(vertex));
+                _verticesNotProcessedCache.Add(vertex, new HashSet<ITransitionFactory<TVertex, TEdge>>());
+            }
+
+            _verticesEdgesCache.Clear();    // Cache no longer valid
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="ITransitionFactory{TVertex,TEdge}"/> to this graph.
+        /// </summary>
+        /// <param name="transitionFactory">Transition factory to add.</param>
+        public void AddTransitionFactory([NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            if (transitionFactory is null)
+                throw new ArgumentNullException(nameof(transitionFactory));
+
+            _transitionFactories.Add(transitionFactory);
+            MoveMainCacheToNotProcessedVertices();
+        }
+
+        /// <summary>
+        /// Adds new <see cref="ITransitionFactory{TVertex,TEdge}"/>s to this graph.
+        /// </summary>
+        /// <param name="transitionFactories">Transition factories to add.</param>
+        public void AddTransitionFactories(
+            [NotNull, ItemNotNull] IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
+        {
+            if (transitionFactories is null)
+                throw new ArgumentNullException(nameof(transitionFactories));
+
+            _transitionFactories.AddRange(transitionFactories);
+            MoveMainCacheToNotProcessedVertices();
+        }
+
+        /// <summary>
+        /// Removes the given <paramref name="transitionFactory"/> from this graph.
+        /// </summary>
+        /// <param name="transitionFactory">Transition factory to remove.</param>
+        public bool RemoveTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            if (_transitionFactories.Remove(transitionFactory))
+            {
+                _verticesEdgesCache.Clear();    // Cache no longer valid
+                CleanNotProcessedCache();
+                return true;
+            }
+
+            return false;
+
+            #region Local function
+
+            void CleanNotProcessedCache()
+            {
+                foreach (var pair in _verticesNotProcessedCache.ToArray())
+                {
+                    if (pair.Value.Count == 0 || pair.Value.Contains(transitionFactory))
+                        _verticesNotProcessedCache.Remove(pair.Key);
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Clears all <see cref="ITransitionFactory{TVertex,TEdge}"/> from this graph.
+        /// </summary>
+        public void ClearTransitionFactories()
+        {
+            _transitionFactories.Clear();
+            _verticesEdgesCache.Clear();    // Cache no longer valid
+            _verticesNotProcessedCache.Clear();    // Cache no longer valid
+        }
+
+        /// <summary>
+        /// Checks if this graph contains the given <paramref name="transitionFactory"/>.
+        /// </summary>
+        /// <param name="transitionFactory">Transition factory to check.</param>
+        [Pure]
+        public bool ContainsTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            return _transitionFactories.Contains(transitionFactory);
+        }
+
+        [NotNull]
+        private VertexPredicate<TVertex> _vertexPredicate = vertex => true;
 
         /// <summary>
         /// Predicate that a vertex must match to be the successor (target) of an edge.
         /// </summary>
         [NotNull]
-        public VertexPredicate<TVertex> SuccessorVertexPredicate { get; set; } = vertex => true;
+        public VertexPredicate<TVertex> SuccessorVertexPredicate
+        {
+            get => _vertexPredicate;
+            set
+            {
+                _vertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
+                _verticesEdgesCache.Clear();    // Cache is no longer valid
+            }
+        }
+
+        [NotNull]
+        private EdgePredicate<TVertex, TEdge> _edgePredicate = edge => true;
 
         /// <summary>
         /// Predicate that an edge must match to be the successor of a source vertex.
         /// </summary>
         [NotNull]
-        public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate { get; set; } = edge => true;
+        public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate
+        {
+            get => _edgePredicate;
+            set
+            {
+                _edgePredicate = value ?? throw new ArgumentNullException(nameof(value));
+                _verticesEdgesCache.Clear();    // Cache is no longer valid
+            }
+        }
 
         #region IGraph<TVertex,TEdge>
 
@@ -59,7 +177,8 @@ namespace QuikGraph.Algorithms.Exploration
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _verticesEdgesCache.ContainsKey(vertex);
+            return _verticesEdgesCache.ContainsKey(vertex)
+                || _verticesNotProcessedCache.ContainsKey(vertex);
         }
 
         #region IImplicitGraph<TVertex,TEdge>
@@ -79,28 +198,62 @@ namespace QuikGraph.Algorithms.Exploration
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
+            if (TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+                return outEdges;
+            throw new VertexNotFoundException();
+        }
 
-            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
+        private void AddToNotProcessedCacheIfNecessary(
+            [NotNull] TVertex vertex,
+            [NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        {
+            Debug.Assert(vertex != null);
+            Debug.Assert(transitionFactory != null);
+
+            if (!_verticesEdgesCache.ContainsKey(vertex))
             {
-                edges = new EdgeList<TVertex, TEdge>();
-                foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in TransitionFactories)
+                if (_verticesNotProcessedCache.TryGetValue(
+                    vertex,
+                    out HashSet<ITransitionFactory<TVertex, TEdge>> factories))
                 {
-                    if (!transitionFactory.IsValid(vertex))
-                        continue;
+                    factories.Add(transitionFactory);
+                }
+                else
+                {
+                    _verticesNotProcessedCache.Add(
+                        vertex,
+                        new HashSet<ITransitionFactory<TVertex, TEdge>> { transitionFactory });
+                }
+            }
+        }
 
-                    foreach (TEdge edge in transitionFactory.Apply(vertex))
+        [Pure]
+        [CanBeNull, ItemNotNull]
+        private IEdgeList<TVertex, TEdge> ExploreFactoriesForVertex([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
+
+            IEdgeList<TVertex, TEdge> edges = null;
+            foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in _transitionFactories)
+            {
+                if (!transitionFactory.IsValid(vertex))
+                    continue;
+
+                if (edges is null)
+                    edges = new EdgeList<TVertex, TEdge>();
+
+                foreach (TEdge edge in transitionFactory.Apply(vertex))
+                {
+                    if (SuccessorVertexPredicate(edge.Target))
                     {
-                        if (SuccessorVertexPredicate(edge.Target)
-                            && SuccessorEdgePredicate(edge))
+                        AddToNotProcessedCacheIfNecessary(edge.Target, transitionFactory);
+
+                        if (SuccessorEdgePredicate(edge))
                         {
                             edges.Add(edge);
                         }
                     }
                 }
-
-                _verticesEdgesCache[vertex] = edges;
             }
 
             return edges;
@@ -109,9 +262,34 @@ namespace QuikGraph.Algorithms.Exploration
         /// <inheritdoc />
         public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
         {
-            TEdge[] outEdges = OutEdges(vertex).ToArray();
-            edges = outEdges;
-            return outEdges.Length > 0;
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            bool wasNotProcessed = _verticesNotProcessedCache.Remove(vertex);
+
+            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> e))
+            {
+                e = ExploreFactoriesForVertex(vertex);
+
+                if (e is null)
+                {
+                    // Vertex has no out edges
+                    if (wasNotProcessed)
+                    {
+                        e = new EdgeList<TVertex, TEdge>();
+                    }
+                    else
+                    {
+                        edges = null;
+                        return false;
+                    }
+                }
+
+                _verticesEdgesCache[vertex] = e;
+            }
+
+            edges = e.AsEnumerable();
+            return true;
         }
 
         /// <inheritdoc />

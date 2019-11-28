@@ -8,10 +8,8 @@ namespace QuikGraph.Tests
     /// </summary>
     internal sealed class EquatableTestVertex : TestVertex, IEquatable<EquatableTestVertex>
     {
-        private static int _counter;
-
         public EquatableTestVertex()
-            : this($"EquatableTestVertex{_counter++}")
+            : this("Default")
         {
         }
 
