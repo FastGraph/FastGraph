@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
+using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.ShortestPath
 {
@@ -17,10 +19,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Class representing a sorted path.
         /// </summary>
-        public struct SortedPath : IEnumerable<EquatableTaggedEdge<TVertex, double>>
+        public struct SortedPath : IEnumerable<EquatableTaggedEdge<TVertex, double>>, IEquatable<SortedPath>
         {
             [NotNull, ItemNotNull]
-            private readonly IList<EquatableTaggedEdge<TVertex, double>> _edges;
+            private readonly List<EquatableTaggedEdge<TVertex, double>> _edges;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="SortedPath"/> struct.
@@ -28,6 +30,59 @@ namespace QuikGraph.Algorithms.ShortestPath
             public SortedPath([NotNull, ItemNotNull] IEnumerable<EquatableTaggedEdge<TVertex, double>> edges)
             {
                 _edges = edges.ToList();
+            }
+
+            /// <summary>
+            /// Number of edges in this path.
+            /// </summary>
+            public int Count => _edges.Count;
+
+            [Pure]
+            [NotNull]
+            internal TVertex GetVertex(int i)
+            {
+                Debug.Assert(i >= 0 && i < _edges.Count);
+
+                return _edges[i].Source;
+            }
+
+            [Pure]
+            [NotNull]
+            internal EquatableTaggedEdge<TVertex, double> GetEdge(int i)
+            {
+                Debug.Assert(i >= 0 && i < _edges.Count);
+
+                return _edges[i];
+            }
+
+            [Pure]
+            [NotNull, ItemNotNull]
+            internal EquatableTaggedEdge<TVertex, double>[] GetEdges(int count)
+            {
+                if (count > _edges.Count)
+                    count = _edges.Count;
+
+                Debug.Assert(count >= 0 && count <= _edges.Count);
+
+                return _edges.GetRange(0, count).ToArray();
+            }
+
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                return obj is SortedPath path && Equals(path);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(SortedPath other)
+            {
+                return _edges.SequenceEqual(other._edges);
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return _edges.GetHashCode();
             }
 
             /// <inheritdoc />
@@ -57,9 +112,6 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         [NotNull]
         private readonly IMutableVertexAndEdgeListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> _graph;
-
-        [NotNull, ItemNotNull]
-        private readonly List<EquatableTaggedEdge<TVertex, double>> _removedEdges = new List<EquatableTaggedEdge<TVertex, double>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YenShortestPathsAlgorithm{TVertex}"/> class.
@@ -114,87 +166,184 @@ namespace QuikGraph.Algorithms.ShortestPath
             return edges.Sum(edge => _weights(edge));
         }
 
-        private SortedPath? GetShortestPathInGraph(
-            [NotNull] IVertexListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph)
+        private void AssertSourceAndTargetInGraph()
         {
+            // In case the root or target vertex is not in the graph then there is no path found
+            if (!_graph.ContainsVertex(_sourceVertex) || !_graph.ContainsVertex(_targetVertex))
+                throw new NoPathFoundException();
+        }
+
+        [Pure]
+        private SortedPath GetInitialShortestPath()
+        {
+            AssertSourceAndTargetInGraph();
+
+            // Find the first shortest way from source to target
+            SortedPath? shortestPath = GetShortestPathInGraph(_graph, _sourceVertex, _targetVertex);
+            // In case of Dijkstra’s algorithm couldn't find any ways
+            if (!shortestPath.HasValue)
+                throw new NoPathFoundException();
+
+            return shortestPath.Value;
+        }
+
+        [Pure]
+        [CanBeNull]
+        private SortedPath? GetShortestPathInGraph(
+            [NotNull] IVertexListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
+            [NotNull] TVertex source,
+            [NotNull] TVertex target)
+        {
+            Debug.Assert(graph != null);
+            Debug.Assert(source != null);
+            Debug.Assert(target != null);
+
             // Compute distances between the start vertex and other
             var algorithm = new DijkstraShortestPathAlgorithm<TVertex, EquatableTaggedEdge<TVertex, double>>(graph, _weights);
             var recorder = new VertexPredecessorRecorderObserver<TVertex, EquatableTaggedEdge<TVertex, double>>();
 
             using (recorder.Attach(algorithm))
-                algorithm.Compute(_sourceVertex);
+                algorithm.Compute(source);
 
             // Get shortest path from start (source) vertex to target
-            return recorder.TryGetPath(_targetVertex, out IEnumerable<EquatableTaggedEdge<TVertex, double>> path)
+            return recorder.TryGetPath(target, out IEnumerable<EquatableTaggedEdge<TVertex, double>> path)
                 ? new SortedPath(path)
                 : (SortedPath?)null;
+        }
+
+        [CanBeNull]
+        private static SortedPath? ExtractShortestPathCandidate(
+            [NotNull] List<SortedPath> shortestPaths,
+            [NotNull] IQueue<SortedPath> shortestPathCandidates)
+        {
+            bool isNewPath = false;
+            SortedPath? newPath = null;
+            while (shortestPathCandidates.Count > 0 && !isNewPath)
+            {
+                newPath = shortestPathCandidates.Dequeue();
+                isNewPath = true;
+                foreach (SortedPath path in shortestPaths)
+                {
+                    // Check to see if this candidate path duplicates a previously found path
+                    if (newPath.Value.Equals(path))
+                    {
+                        isNewPath = false;
+                        newPath = null;
+                        break;
+                    }
+                }
+            }
+
+            return newPath;
+        }
+
+        private bool SearchAndAddKthShortestPath(
+            SortedPath previousPath,
+            [NotNull] List<SortedPath> shortestPaths,
+            [NotNull] IQueue<SortedPath> shortestPathCandidates)
+        {
+            // Iterate over all of the nodes in the (k-1)st shortest path except for the target node
+            // For each node (up to) one new candidate path is generated by temporarily modifying
+            // the graph and then running Dijkstra's algorithm to find the shortest path between
+            // the node and the target in the modified graph
+            for (int i = 0; i < previousPath.Count; ++i)
+            {
+                // Spur node is retrieved from the previous k-shortest path = currently visited vertex in the previous path
+                TVertex spurVertex = previousPath.GetVertex(i);
+
+                // The sequence of nodes from the source to the spur node of the previous k-shortest path
+                EquatableTaggedEdge<TVertex, double>[] rootPath = previousPath.GetEdges(i);
+
+                foreach (SortedPath path in shortestPaths)
+                {
+                    if (rootPath.SequenceEqual(path.GetEdges(i)))
+                    {
+                        // Remove the links that are part of the previous shortest paths which share the same root path
+                        EquatableTaggedEdge<TVertex, double> edgeToRemove = path.GetEdge(i);
+                        _edgesToRestore.Add(edgeToRemove);
+                        _graph.RemoveEdge(edgeToRemove);
+                    }
+                }
+
+                var verticesToRestore = new List<TVertex>();
+                foreach (EquatableTaggedEdge<TVertex, double> rootPathEdge in rootPath)
+                {
+                    TVertex source = rootPathEdge.Source;
+                    if (!spurVertex.Equals(source))
+                    {
+                        verticesToRestore.Add(source);
+
+                        _graph.EdgeRemoved += OnGraphEdgeRemoved;
+                        _graph.RemoveVertex(source);
+                        _graph.EdgeRemoved -= OnGraphEdgeRemoved;
+                    }
+                }
+
+                SortedPath? spurPath = GetShortestPathInGraph(_graph, spurVertex, _targetVertex);
+                if (spurPath.HasValue)
+                {
+                    // Entire path is made up of the root path and spur path
+                    var totalPath = new SortedPath(previousPath.GetEdges(i).Concat(spurPath.Value));
+
+                    // Add the potential k-shortest path to the heap
+                    if (!shortestPathCandidates.Contains(totalPath))
+                        shortestPathCandidates.Enqueue(totalPath);
+                }
+
+                // Add back the edges and nodes that were removed from the graph
+                _graph.AddVertexRange(verticesToRestore);
+                _graph.AddEdgeRange(_edgesToRestore);
+                _edgesToRestore.Clear();
+            }
+
+            // Identify the candidate path with the shortest cost
+            SortedPath? newPath = ExtractShortestPathCandidate(shortestPaths, shortestPathCandidates);
+            if (newPath is null)
+            {
+                // This handles the case of there being no spur paths, or no spur paths left.
+                // This could happen if the spur paths have already been exhausted (added to A),
+                // or there are no spur paths at all - such as when both the source and sink vertices
+                // lie along a "dead end".
+                return false;
+            }
+
+            // Add the best, non-duplicate candidate identified as the k shortest path
+            shortestPaths.Add(newPath.Value);
+            return true;
         }
 
         /// <summary>
         /// Runs the algorithm.
         /// </summary>
         /// <returns>Found paths.</returns>
+        [Pure]
+        [NotNull]
         public IEnumerable<SortedPath> Execute()
         {
-            // In case the root vertex is not in the graph then there is no path found
-            if (!_graph.ContainsVertex(_sourceVertex))
-                throw new NoPathFoundException();
+            SortedPath initialPath = GetInitialShortestPath();
+            var shortestPaths = new List<SortedPath> { initialPath };
 
-            var shortestWays = new List<SortedPath>();
-            // Find the first shortest way
-            SortedPath? shortestWay = GetShortestPathInGraph(_graph);
+            // Initialize the set to store the potential k-th shortest path
+            var shortestPathCandidates = new BinaryQueue<SortedPath, double>(GetPathDistance);
 
-            // In case of Dijkstra’s algorithm couldn't find any ways
-            if (shortestWay is null)
-                throw new NoPathFoundException();
-
-            shortestWays.Add(shortestWay.Value);
-
-            for (int i = 0; i < _k - 1; ++i)
+            for (int k = 1; k < _k; ++k)
             {
-                double minDistance = double.MaxValue;
-                SortedPath? pathSlot = null;
-                EquatableTaggedEdge<TVertex, double> removedEdge = null;
-                foreach (EquatableTaggedEdge<TVertex, double> edge in shortestWay.Value)
-                {
-                    _graph.RemoveEdge(edge);
+                SortedPath previousPath = shortestPaths[k - 1];
 
-                    // Find shortest way in the graph without this edge
-                    SortedPath? newPath = GetShortestPathInGraph(_graph);
-                    _graph.AddEdge(edge);
-
-                    if (newPath is null)
-                        continue;
-
-                    double pathWeight = GetPathDistance(newPath.Value);
-                    if (pathWeight >= minDistance)
-                        continue;
-
-                    minDistance = pathWeight;
-                    pathSlot = newPath;
-                    removedEdge = edge;
-                }
-
-                if (pathSlot is null)
+                if (!SearchAndAddKthShortestPath(previousPath, shortestPaths, shortestPathCandidates))
                     break;
-
-                shortestWays.Add(pathSlot.Value);
-                _removedEdges.Add(removedEdge);
-                shortestWay = pathSlot;
-                _graph.RemoveEdge(removedEdge);
             }
 
-            return _filter(shortestWays);
+            return _filter(shortestPaths);
         }
 
-        /// <summary>
-        /// Gets removed edges during algorithm run.
-        /// </summary>
-        /// <returns>Removed edges.</returns>
         [NotNull, ItemNotNull]
-        public IEnumerable<EquatableTaggedEdge<TVertex, double>> RemovedEdges()
+        private readonly List<EquatableTaggedEdge<TVertex, double>> _edgesToRestore =
+            new List<EquatableTaggedEdge<TVertex, double>>();
+
+        private void OnGraphEdgeRemoved([NotNull] EquatableTaggedEdge<TVertex, double> edge)
         {
-            return _removedEdges.AsEnumerable();
+            _edgesToRestore.Add(edge);
         }
     }
 }
