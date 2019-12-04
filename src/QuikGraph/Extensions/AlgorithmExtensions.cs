@@ -221,7 +221,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
-        /// <param name="edgeChain">Edge chain handler.</param>
+        /// <param name="edgeChain">Markov edge chain.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
         [Pure]
         [NotNull]

@@ -71,7 +71,9 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            return VerticesColors[vertex];
+            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+                return color;
+            throw new VertexNotFoundException();
         }
 
         #endregion
@@ -96,14 +98,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         [NotNull]
         public Random Rand
         {
-            get
-            {
-                return _rand;
-            }
-            set
-            {
-                _rand = value ?? throw new ArgumentNullException(nameof(value));
-            }
+            get => _rand;
+            set => _rand = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>
@@ -181,14 +177,13 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex rootVertex))
-                throw new InvalidOperationException("Root vertex not set.");
+            TVertex root = GetAndAssertRootInGraph();
+
+            // Process root
+            ClearTree(root);
+            SetInTree(root);
 
             ICancelManager cancelManager = Services.CancelManager;
-            // Process root
-            ClearTree(rootVertex);
-            SetInTree(rootVertex);
-
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 if (cancelManager.IsCancelling)
@@ -252,10 +247,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void Tree([NotNull] TVertex vertex, [NotNull] TEdge next)
         {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-            if (next == null)
-                throw new ArgumentNullException(nameof(next));
+            Debug.Assert(vertex != null);
+            Debug.Assert(next != null);
 
             Successors[vertex] = next;
             OnTreeEdge(next);
@@ -304,19 +297,19 @@ namespace QuikGraph.Algorithms.RandomWalks
         {
             ICancelManager cancelManager = Services.CancelManager;
 
-            double eps = 1;
+            double epsilon = 1;
             bool success;
             do
             {
                 if (cancelManager.IsCancelling)
                     break;
 
-                eps /= 2;
-                success = Attempt(eps);
+                epsilon /= 2;
+                success = Attempt(epsilon);
             } while (!success);
         }
 
-        private bool Attempt(double eps)
+        private bool Attempt(double epsilon)
         {
             Initialize();
             int numRoots = 0;
@@ -328,7 +321,7 @@ namespace QuikGraph.Algorithms.RandomWalks
                     break;
 
                 // First pass: exploration
-                if (!Explore(eps, vertex, ref numRoots))
+                if (!Explore(epsilon, vertex, ref numRoots))
                     return false;
 
                 // Second pass: coloration

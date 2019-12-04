@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MaximumFlow;
+using QuikGraph.Algorithms.RandomWalks;
 using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Collections;
 using QuikGraph.Tests.Structures;
@@ -207,6 +208,71 @@ namespace QuikGraph.Tests.Extensions
             Assert.Throws<ArgumentNullException>(() => graph.TreeDepthFirstSearch(null));
             Assert.Throws<ArgumentNullException>(
                 () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeDepthFirstSearch(null));
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        [Test]
+        public void TreeCyclePoppingRandom()
+        {
+            var edge1 = new Edge<int>(1, 2);
+            var edge2 = new Edge<int>(1, 3);
+            var edge3 = new Edge<int>(2, 1);
+            var edge4 = new Edge<int>(2, 3);
+            var edge5 = new Edge<int>(2, 4);
+            var edge6 = new Edge<int>(3, 2);
+            var edge7 = new Edge<int>(3, 5);
+            var edge8 = new Edge<int>(3, 6);
+            var edge9 = new Edge<int>(4, 1);
+            var edge10 = new Edge<int>(4, 2);
+            var edge11 = new Edge<int>(4, 5);
+            var edge12 = new Edge<int>(4, 6);
+            var edge13 = new Edge<int>(5, 6);
+            var edge14 = new Edge<int>(6, 2);
+            var edge15 = new Edge<int>(6, 3);
+
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                edge1, edge2, edge3, edge4, edge5, edge6,
+                edge7, edge8, edge9, edge10, edge11,
+                edge12, edge13, edge14, edge15
+            });
+            graph.AddVertex(7);
+
+            TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeCyclePoppingRandom(2);
+
+            Assert.IsFalse(pathAccessor(7, out _));
+
+            // Would require more tests...
+        }
+
+        [Test]
+        public void TreeCyclePoppingRandom_Throws()
+        {
+            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
+
+            var vertex = new TestVertex("1");
+            var chain = new NormalizedMarkovEdgeChain<TestVertex, Edge<TestVertex>>();
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex));
+            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(null));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex, chain));
+            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(null, chain));
+            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(vertex, null));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null, chain));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex, null));
+            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(null, null));
+            Assert.Throws<ArgumentNullException>(
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
