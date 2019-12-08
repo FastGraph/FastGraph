@@ -17,9 +17,9 @@ namespace QuikGraph.Algorithms
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class EulerianTrailAlgorithm<TVertex, TEdge> :
-        RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeListGraph<TVertex, TEdge>>,
-        ITreeBuilderAlgorithm<TVertex, TEdge>
+    public sealed class EulerianTrailAlgorithm<TVertex, TEdge>
+        : RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
+        , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         [NotNull, ItemNotNull]
@@ -54,16 +54,19 @@ namespace QuikGraph.Algorithms
             _currentVertex = default(TVertex);
         }
 
+        [NotNull, ItemNotNull]
+        private List<TEdge> _circuit = new List<TEdge>();
+
         /// <summary>
         /// Circuit.
         /// </summary>
         [NotNull, ItemNotNull]
-        public List<TEdge> Circuit { get; private set; } = new List<TEdge>();
+        public TEdge[] Circuit => _circuit.ToArray();
 
         [Pure]
         private bool NotInCircuit([NotNull] TEdge edge)
         {
-            return !Circuit.Contains(edge)
+            return !_circuit.Contains(edge)
                    && !_temporaryCircuit.Contains(edge);
         }
 
@@ -75,15 +78,19 @@ namespace QuikGraph.Algorithms
         }
 
         [Pure]
-        [CanBeNull]
-        private TEdge SelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex)
+        private bool TrySelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex, out TEdge edge)
         {
             IEnumerable<TEdge> edgesNotInCircuit = SelectOutEdgesNotInCircuit(vertex);
             using (IEnumerator<TEdge> enumerator = edgesNotInCircuit.GetEnumerator())
             {
                 if (!enumerator.MoveNext())
-                    return default(TEdge);
-                return enumerator.Current;
+                {
+                    edge = default(TEdge);
+                    return false;
+                }
+
+                edge = enumerator.Current;
+                return true;
             }
         }
 
@@ -156,10 +163,10 @@ namespace QuikGraph.Algorithms
         private bool Visit()
         {
             // Find a vertex that needs to be visited
-            foreach (TEdge edge in Circuit)
+            foreach (TEdge edge in _circuit)
             {
-                TEdge foundEdge = SelectSingleOutEdgeNotInCircuit(edge.Source);
-                if (foundEdge == null)
+                bool edgeFound = TrySelectSingleOutEdgeNotInCircuit(edge.Source, out TEdge foundEdge);
+                if (!edgeFound)
                     continue;
 
                 OnVisitEdge(foundEdge);
@@ -200,13 +207,13 @@ namespace QuikGraph.Algorithms
         /// <returns>True if all the graph edges are in the circuit.</returns>
         private bool CircuitAugmentation()
         {
-            var newCircuit = new List<TEdge>(Circuit.Count + _temporaryCircuit.Count);
+            var newCircuit = new List<TEdge>(_circuit.Count + _temporaryCircuit.Count);
             int i, j;
 
             // Follow C until w is found
-            for (i = 0; i < Circuit.Count; ++i)
+            for (i = 0; i < _circuit.Count; ++i)
             {
-                TEdge edge = Circuit[i];
+                TEdge edge = _circuit[i];
                 if (edge.Source.Equals(_currentVertex))
                     break;
                 newCircuit.Add(edge);
@@ -224,17 +231,17 @@ namespace QuikGraph.Algorithms
             _temporaryCircuit.Clear();
 
             // Continue C
-            for (; i < Circuit.Count; ++i)
+            for (; i < _circuit.Count; ++i)
             {
-                TEdge edge = Circuit[i];
+                TEdge edge = _circuit[i];
                 newCircuit.Add(edge);
             }
 
             // Set as new circuit
-            Circuit = newCircuit;
+            _circuit = newCircuit;
 
             // Check if contains all edges
-            if (Circuit.Count == VisitedGraph.EdgeCount)
+            if (_circuit.Count == VisitedGraph.EdgeCount)
                 return true;
 
             return false;
@@ -248,10 +255,10 @@ namespace QuikGraph.Algorithms
             if (VisitedGraph.VertexCount == 0)
                 return;
 
-            if (!TryGetRootVertex(out TVertex rootVertex))
-                rootVertex = VisitedGraph.Vertices.First();
+            if (!TryGetRootVertex(out TVertex root))
+                root = VisitedGraph.Vertices.First();
 
-            _currentVertex = rootVertex;
+            _currentVertex = root;
 
             // Start search
             // ReSharper disable once AssignNullToNotNullAttribute, Justification: Found vertex cannot be null
@@ -287,7 +294,7 @@ namespace QuikGraph.Algorithms
 
         private bool FindAdjacentOddVertex(
             [NotNull] TVertex u,
-            [NotNull, ItemNotNull] List<TVertex> oddVertices,
+            [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
             [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
             out bool foundAdjacent)
         {
@@ -321,14 +328,17 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <returns>Temporary edges list.</returns>
         [NotNull, ItemNotNull]
-        public List<TEdge> AddTemporaryEdges([NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+        public TEdge[] AddTemporaryEdges([NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
+            if (edgeFactory is null)
+                throw new ArgumentNullException(nameof(edgeFactory));
+
             // First gather odd edges
-            var oddVertices = VisitedGraph.OddVertices().ToList();
+            List<TVertex> oddVertices = VisitedGraph.OddVertices().ToList();
 
             // Check that there are an even number of them
             if (oddVertices.Count % 2 != 0)
-                throw new InvalidOperationException("Number of odd vertices in not even!");
+                throw new InvalidOperationException("Number of odd vertices in not even.");
 
             // Add temporary edges to create even edges
             _temporaryEdges = new List<TEdge>();
@@ -359,18 +369,18 @@ namespace QuikGraph.Algorithms
                 }
             }
 
-            return _temporaryEdges;
+            return _temporaryEdges.ToArray();
         }
 
         private void AddTemporaryEdge(
             [NotNull] TVertex u,
             [NotNull] TVertex v,
-            [NotNull, ItemNotNull] List<TVertex> oddVertices,
+            [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
             [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             TEdge tempEdge = edgeFactory(u, v);
             if (!VisitedGraph.AddEdge(tempEdge))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Cannot add temporary edge.");
 
             // Add to temporary edges
             _temporaryEdges.Add(tempEdge);
@@ -403,7 +413,7 @@ namespace QuikGraph.Algorithms
         public IEnumerable<ICollection<TEdge>> Trails()
         {
             var trail = new List<TEdge>();
-            foreach (TEdge edge in Circuit)
+            foreach (TEdge edge in _circuit)
             {
                 if (_temporaryEdges.Contains(edge))
                 {
@@ -462,16 +472,16 @@ namespace QuikGraph.Algorithms
         private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
         {
             int i;
-            for (i = 0; i < Circuit.Count; ++i)
+            for (i = 0; i < _circuit.Count; ++i)
             {
-                TEdge edge = Circuit[i];
+                TEdge edge = _circuit[i];
                 if (_temporaryEdges.Contains(edge))
                     continue;
                 if (edge.Source.Equals(startingVertex))
                     break;
             }
 
-            if (i == Circuit.Count)
+            if (i == _circuit.Count)
                 throw new InvalidOperationException("Did not find vertex in Eulerian trail?");
 
             return i;
@@ -482,7 +492,7 @@ namespace QuikGraph.Algorithms
         {
             int index = FindFirstEdgeInCircuit(startingVertex);
 
-            // Create collections
+            // Create trail
             var trail = new List<TEdge>();
             var bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(VisitedGraph);
             var vis = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
@@ -492,9 +502,9 @@ namespace QuikGraph.Algorithms
 
                 // Go through the edges and build the predecessor table
                 int start = index;
-                for (; index < Circuit.Count; ++index)
+                for (; index < _circuit.Count; ++index)
                 {
-                    TEdge edge = Circuit[index];
+                    TEdge edge = _circuit[index];
                     if (_temporaryEdges.Contains(edge))
                     {
                         // Store previous trail and start new one
@@ -502,8 +512,7 @@ namespace QuikGraph.Algorithms
                             yield return trail;
 
                         // Start new trail
-                        // Take the shortest path from the start vertex to
-                        // the target vertex
+                        // Take the shortest path from the start vertex to the target vertex
                         if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge> path))
                             throw new InvalidOperationException();
                         trail = new List<TEdge>(path);
@@ -515,7 +524,7 @@ namespace QuikGraph.Algorithms
                 // Starting again on the circuit
                 for (index = 0; index < start; ++index)
                 {
-                    TEdge edge = Circuit[index];
+                    TEdge edge = _circuit[index];
                     if (_temporaryEdges.Contains(edge))
                     {
                         // Store previous trail and start new one
@@ -523,8 +532,7 @@ namespace QuikGraph.Algorithms
                             yield return trail;
 
                         // Start new trail
-                        // Take the shortest path from the start vertex to
-                        // the target vertex
+                        // Take the shortest path from the start vertex to the target vertex
                         if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge> path))
                             throw new InvalidOperationException();
                         trail = new List<TEdge>(path);

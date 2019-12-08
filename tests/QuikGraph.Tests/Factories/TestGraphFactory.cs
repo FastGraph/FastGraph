@@ -138,21 +138,6 @@ namespace QuikGraph.Tests
         }
 
         /// <summary>
-        /// Creates adjacency graphs.
-        /// </summary>
-        [Pure]
-        [NotNull, ItemNotNull]
-        public static IEnumerable<AdjacencyGraph<string, Edge<string>>> GetAdjacencyGraphs_TMP()
-        {
-            // TODO Need to be merged with previous method,
-            // but for now it will make build slow and some tests failing
-            // This need to be investigated, but there are some tests that
-            // are not doing much thing since there is no input graph!
-            // Do the same for all methods with _TMP suffix.
-            yield return new AdjacencyGraph<string, Edge<string>>();
-        }
-
-        /// <summary>
         /// Creates bidirectional graphs (filterable).
         /// </summary>
         [Pure]
@@ -196,21 +181,6 @@ namespace QuikGraph.Tests
         }
 
         /// <summary>
-        /// Creates bidirectional graphs.
-        /// </summary>
-        [Pure]
-        [NotNull, ItemNotNull]
-        public static IEnumerable<BidirectionalGraph<string, Edge<string>>> GetBidirectionalGraphs_TMP()
-        {
-            // TODO Need to be merged with previous method,
-            // but for now it will make build slow and some tests failing
-            // This need to be investigated, but there are some tests that
-            // are not doing much thing since there is no input graph!
-            // Do the same for all methods with _TMP suffix.
-            yield return new BidirectionalGraph<string, Edge<string>>();
-        }
-
-        /// <summary>
         /// Creates undirected graphs (filterable).
         /// </summary>
         [Pure]
@@ -251,21 +221,6 @@ namespace QuikGraph.Tests
                 (filePath, i) => i % r == 0
 #endif
             );
-        }
-
-        /// <summary>
-        /// Creates undirected graphs.
-        /// </summary>
-        [Pure]
-        [NotNull, ItemNotNull]
-        public static IEnumerable<UndirectedGraph<string, Edge<string>>> GetUndirectedGraphs_TMP()
-        {
-            // TODO Need to be merged with previous method,
-            // but for now it will make build slow and some tests failing
-            // This need to be investigated, but there are some tests that
-            // are not doing much thing since there is no input graph!
-            // Do the same for all methods with _TMP suffix.
-            yield return new UndirectedGraph<string, Edge<string>>();
         }
     }
 }
