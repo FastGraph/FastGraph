@@ -403,6 +403,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         [Test]
+        [Category(TestCategories.CISkip)]
         public void DijkstraRepro12359()
         {
             AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("repro12359.graphml"));

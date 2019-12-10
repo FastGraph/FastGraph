@@ -12,6 +12,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for comparing <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/> and other shortest path finder algorithms.
     /// </summary>
     [TestFixture]
+    [Category(TestCategories.CISkip)]
     internal class FloydCompareTests : FloydWarshallTestsBase
     {
         #region Test helpers

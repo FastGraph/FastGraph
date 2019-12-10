@@ -324,7 +324,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Category(TestCategories.LongRunning)]
         public void DagShortestPath()
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests(10))
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests(50))
             {
                 DagShortestPath_Test(graph);
                 DagCriticalPath_Test(graph);

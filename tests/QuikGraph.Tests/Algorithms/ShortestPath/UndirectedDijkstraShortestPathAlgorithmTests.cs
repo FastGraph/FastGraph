@@ -271,7 +271,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Category(TestCategories.LongRunning)]
         public void UndirectedDijkstra()
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests())
+            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests(20))
             {
                 int cut = 0;
                 foreach (string root in graph.Vertices)

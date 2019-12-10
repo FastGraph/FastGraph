@@ -108,7 +108,7 @@ after_test:
           $coveralls = (Resolve-Path "tools\csmacnz.Coveralls.exe").ToString()
           $testAssemblies = (ls tests\*.Tests\bin\$env:Configuration\net45\*Tests.dll | Where-Object { $_ -Match "net*" -and $_ -NotMatch "netcoreapp*" } | % FullName | sort-object -Unique)
           
-          & $opencover -register:Path64 -filter:"+[*]* -[*.Test*]*" -excludebyfile:"*\Dgml.cs;*\SortedSet.cs;*\BitHelper.cs" -hideskipped:File -target:"$nunitConsole" -targetargs:"$testAssemblies --where \`"cat != VerboseTest\`"" -log:Warn -output:coverage.xml
+          & $opencover -register:Path64 -filter:"+[*]* -[*.Test*]*" -excludebyfile:"*\Dgml.cs;*\SortedSet.cs;*\BitHelper.cs" -hideskipped:File -target:"$nunitConsole" -targetargs:"$testAssemblies --where \`"cat != VerboseTest and cat != CISkip\`"" -log:Warn -output:coverage.xml
           
           & $sonarScanner end /d:"sonar.login=$env:SONARQUBE_TOKEN"
           
