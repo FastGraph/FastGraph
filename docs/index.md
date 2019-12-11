@@ -26,7 +26,7 @@ The plan would be to fully clean the original library and all its non Core parts
 
 You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph).
 
-## Target
+## Targets
 
 - .NET Standard 1.3+
 - .NET Core 1.0+

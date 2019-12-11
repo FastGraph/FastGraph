@@ -24,7 +24,7 @@ The plan would be to fully clean the original library and all its non Core parts
 
 ---
 
-## Target
+## Targets
 
 - [![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%201.3-blue.svg)](#)
 - [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%201.0-blue.svg)](#)
