@@ -1,2 +1,4 @@
 - name: History
   href: history.md
+- name: Release Notes
+  href: ~/../RELEASE_NOTES.md
