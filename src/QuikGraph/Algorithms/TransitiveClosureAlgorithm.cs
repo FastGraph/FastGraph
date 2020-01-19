@@ -40,7 +40,8 @@ namespace QuikGraph.Algorithms
         protected override void InternalCompute()
         {
             // Clone the visited graph
-            TransitiveClosure.AddVerticesAndEdgeRange(VisitedGraph.Edges);
+            TransitiveClosure.AddVertexRange(VisitedGraph.Vertices);
+            TransitiveClosure.AddEdgeRange(VisitedGraph.Edges);
 
             var algorithmHelper = new TransitiveAlgorithmHelper<TVertex, TEdge>(TransitiveClosure);
             algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
