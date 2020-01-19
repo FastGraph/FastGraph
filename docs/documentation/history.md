@@ -75,4 +75,4 @@ This version of QuickGraph also get rid of:
 
 ### Versions
 
-- QuikGraph 1.0.0 See [release notes](https://www.nuget.org/packages/QuikGraph/1.0.0).
+- See QuikGraph [repository tags](https://github.com/KeRNeLith/QuikGraph/releases) or NuGet [package page](https://www.nuget.org/packages/QuikGraph).

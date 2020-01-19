@@ -1,5 +1,11 @@
 # Release notes
 
+## What's new in 1.0.1 January 20 2020
+
+### Fixes:
+* Properly deal with isolated vertices for transitive reduction algorithm.
+* Properly deal with isolated vertices for transitive closure algorithm.
+
 ## What's new in 1.0.0 December 10 2019
 
 This release is was based on YC.QuikGraph 3.7.5-deta with a lot of updates.
