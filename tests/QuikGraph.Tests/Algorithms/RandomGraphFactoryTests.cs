@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Tests.Structures;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms
 {

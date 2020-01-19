@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Tests.Structures;
 using static QuikGraph.Tests.AssertHelpers;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Predicates
 {

@@ -9,6 +9,7 @@ using QuikGraph.Algorithms.RandomWalks;
 using QuikGraph.Algorithms.TopologicalSort;
 using QuikGraph.Collections;
 using QuikGraph.Tests.Structures;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Extensions
 {

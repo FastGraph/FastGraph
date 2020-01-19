@@ -9,6 +9,7 @@ using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization;
 using QuikGraph.Tests.Structures;
+using static QuikGraph.Tests.GraphTestHelpers;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 namespace QuikGraph.Tests.Serialization

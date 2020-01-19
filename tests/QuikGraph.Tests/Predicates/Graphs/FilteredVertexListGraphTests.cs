@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using QuikGraph.Predicates;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Predicates
 {

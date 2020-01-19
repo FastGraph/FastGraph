@@ -5,6 +5,7 @@ using NUnit.Framework;
 using QuikGraph.Algorithms.Exploration;
 using QuikGraph.Tests.Structures;
 using static QuikGraph.Tests.AssertHelpers;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.Exploration
 {

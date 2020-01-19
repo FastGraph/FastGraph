@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Structures
 {

@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.AssertHelpers;
+using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Structures
 {
