@@ -70,13 +70,32 @@ namespace QuikGraph.Tests.Structures
             Assert.AreEqual(edge5, edge5);
 
             Assert.AreNotEqual(edge1, edge2);
+            Assert.AreNotEqual(edge2, edge1);
+            Assert.IsFalse(edge1.Equals(edge2));
+            Assert.IsFalse(edge2.Equals(edge1));
+
             Assert.AreNotEqual(edge1, edge3);
+            Assert.AreNotEqual(edge3, edge1);
+            Assert.IsFalse(edge1.Equals(edge3));
+            Assert.IsFalse(edge3.Equals(edge1));
+
             Assert.AreNotEqual(edge1, edge5);
+            Assert.AreNotEqual(edge5, edge1);
+            Assert.IsFalse(edge1.Equals(edge5));
+            Assert.IsFalse(edge5.Equals(edge1));
 
             Assert.AreNotEqual(edge3, edge4);
+            Assert.AreNotEqual(edge4, edge3);
+            Assert.IsFalse(edge3.Equals(edge4));
+            Assert.IsFalse(edge4.Equals(edge3));
+
             Assert.AreNotEqual(edge5, edge6);
+            Assert.AreNotEqual(edge6, edge5);
+            Assert.IsFalse(edge5.Equals(edge6));
+            Assert.IsFalse(edge6.Equals(edge5));
 
             Assert.AreNotEqual(edge1, null);
+            Assert.IsFalse(edge1.Equals(null));
         }
 
         [Test]

@@ -52,13 +52,16 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(SReversedEdge<TVertex, TEdge> other)
         {
-            return OriginalEdge.Equals(other.OriginalEdge);
+            return Equals(OriginalEdge, other.OriginalEdge);
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return OriginalEdge.GetHashCode() ^ 16777619;
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
+            // Justification: Because of struct default constructor
+            return (OriginalEdge != null ? OriginalEdge.GetHashCode() : 0) ^ 16777619;
+            // ReSharper restore ConditionIsAlwaysTrueOrFalse
         }
 
         /// <inheritdoc />

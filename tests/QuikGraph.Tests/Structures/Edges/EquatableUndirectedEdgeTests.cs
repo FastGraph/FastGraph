@@ -53,11 +53,15 @@ namespace QuikGraph.Tests.Structures
             var edge2 = new EquatableUndirectedEdge<int>(1, 2);
 
             Assert.AreEqual(edge1, edge1);
-            Assert.AreEqual(edge1, edge2);
-            Assert.IsTrue(edge1.Equals((object)edge2));
 
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.AreEqual(edge1, edge2);
+            Assert.AreEqual(edge2, edge1);
+            Assert.IsTrue(edge1.Equals((object)edge2));
+            Assert.IsTrue(edge1.Equals(edge2));
+            Assert.IsTrue(edge2.Equals(edge1));
+
             Assert.AreNotEqual(edge1, null);
+            Assert.IsFalse(edge1.Equals(null));
         }
 
         [Test]

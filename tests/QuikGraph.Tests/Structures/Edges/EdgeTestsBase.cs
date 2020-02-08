@@ -17,6 +17,12 @@ namespace QuikGraph.Tests.Structures
                 Assert.AreSame(left, right);
         }
 
+        protected static void CheckStructEdge<T>([NotNull] IEdge<T> edge, T source, T target)
+        {
+            AssertAreEqual(source, edge.Source);
+            AssertAreEqual(target, edge.Target);
+        }
+
         protected static void CheckEdge<T>([NotNull] IEdge<T> edge, [NotNull] T source, [NotNull] T target)
         {
             Assert.IsNotNull(edge.Source);
@@ -37,6 +43,13 @@ namespace QuikGraph.Tests.Structures
             where TEdge : IEdge<TVertex>, ITagged<TTag>
         {
             CheckEdge(edge, source, target);
+            AssertAreEqual(tag, edge.Tag);
+        }
+
+        protected static void CheckStructTaggedEdge<TVertex, TEdge, TTag>([NotNull] TEdge edge, TVertex source, TVertex target, [CanBeNull] TTag tag)
+            where TEdge : IEdge<TVertex>, ITagged<TTag>
+        {
+            CheckStructEdge(edge, source, target);
             AssertAreEqual(tag, edge.Tag);
         }
     }

@@ -52,11 +52,24 @@ namespace QuikGraph.Tests.Structures
             var edge4 = new TaggedEdge<int, TestObject>(1, 2, null);
 
             Assert.AreEqual(edge1, edge1);
+
             Assert.AreNotEqual(edge1, edge2);
+            Assert.AreNotEqual(edge2, edge1);
+            Assert.IsFalse(edge1.Equals(edge2));
+            Assert.IsFalse(edge2.Equals(edge1));
+
             Assert.AreNotEqual(edge1, edge3);
+            Assert.AreNotEqual(edge3, edge1);
+            Assert.IsFalse(edge1.Equals(edge3));
+            Assert.IsFalse(edge3.Equals(edge1));
+
             Assert.AreNotEqual(edge1, edge4);
+            Assert.AreNotEqual(edge4, edge1);
+            Assert.IsFalse(edge1.Equals(edge4));
+            Assert.IsFalse(edge4.Equals(edge1));
 
             Assert.AreNotEqual(edge1, null);
+            Assert.IsFalse(edge1.Equals(null));
         }
 
         [Test]

@@ -1,28 +1,30 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
 {
     /// <summary>
-    /// A struct based <see cref="IEdge{TVertex}"/> implementation that supports equality.
+    /// The default implementation of an <see cref="IEdge{TVertex}"/> that supports tagging (struct).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TTag">Tag type.</typeparam>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     [StructLayout(LayoutKind.Auto)]
-    public struct SEquatableEdge<TVertex> : IEdge<TVertex>, IEquatable<SEquatableEdge<TVertex>>
+    [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
+    public struct SEquatableTaggedEdge<TVertex, TTag> : IEdge<TVertex>, ITagged<TTag>, IEquatable<SEquatableTaggedEdge<TVertex, TTag>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SEquatableEdge{TVertex}"/> struct.
+        /// Initializes a new instance of the <see cref="SEquatableTaggedEdge{TVertex, TTag}"/> struct.
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
-        public SEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        /// <param name="tag">Edge tag.</param>
+        public SEquatableTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -31,6 +33,8 @@ namespace QuikGraph
 
             Source = source;
             Target = target;
+            _tag = tag;
+            TagChanged = null;
         }
 
         /// <inheritdoc />
@@ -40,14 +44,44 @@ namespace QuikGraph
         public TVertex Target { get; }
 
         /// <inheritdoc />
+        public event EventHandler TagChanged;
+
+        /// <summary>
+        /// Event invoker for <see cref="TagChanged"/> event.
+        /// </summary>
+        /// <param name="args">Event arguments.</param>
+        private void OnTagChanged([NotNull] EventArgs args)
+        {
+            Debug.Assert(args != null);
+
+            TagChanged?.Invoke(this, args);
+        }
+
+        private TTag _tag;
+
+        /// <inheritdoc />
+        public TTag Tag
+        {
+            get => _tag;
+            set
+            {
+                if (Equals(_tag, value))
+                    return;
+
+                _tag = value;
+                OnTagChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return obj is SEquatableEdge<TVertex> edge
+            return obj is SEquatableTaggedEdge<TVertex, TTag> edge
                    && Equals(edge);
         }
 
         /// <inheritdoc />
-        public bool Equals(SEquatableEdge<TVertex> other)
+        public bool Equals(SEquatableTaggedEdge<TVertex, TTag> other)
         {
             // ReSharper disable ConstantConditionalAccessQualifier
             // ReSharper disable ConstantNullCoalescingCondition
@@ -74,7 +108,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format(EdgeConstants.EdgeFormatString, Source, Target);
+            return string.Format(EdgeConstants.TaggedEdgeFormatString, Source, Target, Tag?.ToString() ?? "no tag");
         }
     }
 }

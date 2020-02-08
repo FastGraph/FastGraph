@@ -45,10 +45,19 @@ namespace QuikGraph.Tests.Structures
             var edge3 = new Edge<int>(2, 1);
 
             Assert.AreEqual(edge1, edge1);
+
             Assert.AreNotEqual(edge1, edge2);
+            Assert.AreNotEqual(edge2, edge1);
+            Assert.IsFalse(edge1.Equals(edge2));
+            Assert.IsFalse(edge2.Equals(edge1));
+
             Assert.AreNotEqual(edge1, edge3);
+            Assert.AreNotEqual(edge3, edge1);
+            Assert.IsFalse(edge1.Equals(edge2));
+            Assert.IsFalse(edge2.Equals(edge1));
 
             Assert.AreNotEqual(edge1, null);
+            Assert.IsFalse(edge1.Equals(null));
         }
 
         [Test]

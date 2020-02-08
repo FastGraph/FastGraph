@@ -56,13 +56,41 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new SUndirectedEdge<int>(2, 1);
 
             Assert.AreEqual(edge1, edge1);
+
             Assert.AreEqual(edge1, edge2);  // Is equatable
+            Assert.AreEqual(edge2, edge1);  // Is equatable
+            Assert.IsTrue(edge1.Equals(edge2));  // Is equatable
+            Assert.IsTrue(edge2.Equals(edge1));  // Is equatable
+
             Assert.AreNotEqual(edge1, edge3);
+            Assert.AreNotEqual(edge3, edge1);
+            Assert.IsFalse(edge1.Equals(edge3));
+            Assert.IsFalse(edge3.Equals(edge1));
 
             Assert.AreEqual(edge3, edge4);
+            Assert.AreEqual(edge4, edge3);
+            Assert.IsTrue(edge3.Equals(edge4));
+            Assert.IsTrue(edge4.Equals(edge3));
+
             Assert.AreNotEqual(edge3, edge5);
+            Assert.AreNotEqual(edge5, edge3);
+            Assert.IsFalse(edge3.Equals(edge5));
+            Assert.IsFalse(edge5.Equals(edge3));
 
             Assert.AreNotEqual(edge1, null);
+            Assert.IsFalse(edge1.Equals(null));
+        }
+
+        [Test]
+        public void EqualsDefaultEdge_ReferenceTypeExtremities()
+        {
+            var edge1 = default(SUndirectedEdge<int>);
+            var edge2 = new SUndirectedEdge<int>();
+
+            Assert.AreEqual(edge1, edge2);
+            Assert.AreEqual(edge2, edge1);
+            Assert.IsTrue(edge1.Equals(edge2));
+            Assert.IsTrue(edge2.Equals(edge1));
         }
 
         [Test]
