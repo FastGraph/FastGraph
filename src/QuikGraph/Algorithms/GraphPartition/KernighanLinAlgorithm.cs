@@ -108,7 +108,8 @@ namespace QuikGraph.Algorithms.GraphPartition
                 }
             }
 
-            Debug.Assert(maxPair != null, "Must find a swap.");
+            if (maxPair is null)
+                throw new InvalidOperationException("Must find a swap.");
 
             SwapVertices(_vertexSetA, maxPair.Vertex1, _vertexSetB, maxPair.Vertex2);
             swaps.Add(maxPair);

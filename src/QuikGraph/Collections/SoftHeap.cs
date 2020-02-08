@@ -409,7 +409,7 @@ namespace QuikGraph.Collections
 
             public bool MoveNext()
             {
-                // TODO
+                // Currently it is not possible to enumerate a soft heap
                 return false;
             }
 
