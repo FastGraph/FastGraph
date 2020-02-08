@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0</TargetFrameworks>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <Title>QuikGraph.Serialization</Title>
+    <RootNamespace>QuikGraph.Serialization</RootNamespace>
+    <AssemblyName>QuikGraph.Serialization</AssemblyName>
+
+    <!-- Overridden by CI -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+
+    <Copyright>Copyright © 2020</Copyright>
+    <Description>.NET library that provides serialization features related to QuikGraph data structures.
+
+This package is the serialization subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
+
+Supported platforms:
+- .NET Standard 1.3+
+- .NET Core 1.0+
+- .NET Framework 3.5+
+
+Supports Source Link</Description>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>QuikGraph.Serialization</PackageId>
+    <PackageReleaseNotes>➟ Release 1.0.0</PackageReleaseNotes>
+    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard1.3'">
+    <EmbeddedResource Include="graphml-structure.xsd" />
+    <EmbeddedResource Include="graphml.dtd" />
+    <EmbeddedResource Include="graphml.xsd" />
+  </ItemGroup>
+  
+  <!-- Targets defines -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <AssemblyTitle>QuikGraph.Serialization .NET 3.5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <AssemblyTitle>QuikGraph.Serialization .NET 4.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <AssemblyTitle>QuikGraph.Serialization .NET Standard 1.3</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD1_3;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <AssemblyTitle>QuikGraph.Serialization .NET Standard 2.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  
+  <!-- Dependencies -->
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
+  </ItemGroup>
+</Project>

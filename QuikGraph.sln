@@ -1,22 +1,25 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiscProject", "MiscProject", "{FAAD5B1C-1217-48D6-B1EF-7CAC0440D6A4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{FAAD5B1C-1217-48D6-B1EF-7CAC0440D6A4}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7A2A3C07-B652-4759-AFC4-49378D764784}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{7A2A3C07-B652-4759-AFC4-49378D764784}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{22937B93-4129-4F68-AB14-F7AFE020BA8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph", "src\QuikGraph\QuikGraph.csproj", "{A9A5C115-0680-44B3-A87E-5ECF4C93814E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Serialization", "src\QuikGraph.Serialization\QuikGraph.Serialization.csproj", "{C8B5E125-4624-44D9-1234-5CAF4C25876E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Tests", "tests\QuikGraph.Tests\QuikGraph.Tests.csproj", "{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Serialization.Tests", "tests\QuikGraph.Serialization.Tests\QuikGraph.Serialization.Tests.csproj", "{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,17 +31,27 @@ Global
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8B5E125-4624-44D9-1234-5CAF4C25876E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8B5E125-4624-44D9-1234-5CAF4C25876E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8B5E125-4624-44D9-1234-5CAF4C25876E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8B5E125-4624-44D9-1234-5CAF4C25876E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A9A5C115-0680-44B3-A87E-5ECF4C93814E} = {7A2A3C07-B652-4759-AFC4-49378D764784}
+		{C8B5E125-4624-44D9-1234-5CAF4C25876E} = {7A2A3C07-B652-4759-AFC4-49378D764784}
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
+		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C26EFBC1-5149-4422-AFD3-172667AA018F}
