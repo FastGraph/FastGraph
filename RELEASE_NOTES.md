@@ -8,7 +8,7 @@
 
 ## What's new in 1.0.0 December 10 2019
 
-This release is was based on YC.QuikGraph 3.7.5-deta with a lot of updates.
+This release is based on YC.QuikGraph 3.7.5-deta with a lot of updates.
 
 ### General:
 * Fully clean the library code.
