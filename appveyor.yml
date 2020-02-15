@@ -45,7 +45,7 @@ init:
     {
         $env:Build_Version = "$($env:APPVEYOR_REPO_TAG_NAME.Replace('v', ''))";
         $env:Build_Assembly_Version = $env:Build_Version;
-        $env:IsFullIntegrationBuild = $true;
+        $env:IsFullIntegrationBuild = $env:Configuration -eq "Release";
     }
     else
     {
@@ -165,10 +165,12 @@ test_script:
       $wc = New-Object 'System.Net.WebClient';
       $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit3/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml));
 
-# Artifact
-artifacts:  
+# Artifacts
+artifacts:
   - path: '**\bin\Release\*.nupkg'
     name: NuGet
+  - path: '**\bin\Release\*.snupkg'
+    name: NuGet symbols
 
 # Documentation
 before_deploy:
@@ -180,17 +182,27 @@ deploy:
 # MyGet
   - provider: NuGet
     server: https://www.myget.org/F/kernelith-ci/api/v2/package
+    symbol_server: https://www.myget.org/F/kernelith-ci/symbols/api/v2/package
     api_key:
       secure: ANF+joC2B+NahxCFbLPOjNvEAo36F2F4QJu6zLwoIf2I9KwkxKyCSuNxDpLmJmtU
-    skip_symbols: true
     on:
       configuration: Release
+# GitHub packages
+  - provider: NuGet
+    server: https://nuget.pkg.github.com/KeRNeLith/index.json
+    username: KeRNeLith
+    api_key:
+      secure: 6N37NtnuKSzKQXlPOCtPSFJGOvJUdJjPK8LcuWx2PjHs2WVdngenZvYixk6br72b
+    skip_symbols: true
+    artifact: NuGet
+    on:
+      configuration: Release
+      APPVEYOR_REPO_TAG: true
 # NuGet
   - provider: NuGet
     api_key:
       secure: a/0jxqKB5mP/ED1AIQ6YxAoiYZP93M5NQpyZbq40Tkzg+ye0MhFHlDQFBUefrseY
     on:
-      branch: master
       configuration: Release
       APPVEYOR_REPO_TAG: true
 # GitHub
@@ -204,6 +216,5 @@ deploy:
     prerelease: false
     force_update: true
     on:
-      branch: master
       configuration: Release
       APPVEYOR_REPO_TAG: true
