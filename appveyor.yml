@@ -37,6 +37,10 @@ environment:
     secure: fLTTmcGOM55kigJC4vErpObFmybCtzQtwb4QN55BTNq3GDGaOCoHDoIPxexzO59d
   GITHUB_EMAIL:
     secure: wcfqCHOmeRLZf/BX6u6qQSV89Q4jFs9fHNDgMpKAcqE=
+# Environments for Git tagged and not tagged build
+  matrix:
+    - GIT_TAG: false
+    - GIT_TAG: true
 
 # Setup build version
 init:
@@ -65,22 +69,40 @@ init:
         "Without full integration";
     }
 
-# Assembly infos & csproj patching
-assembly_info:
-  patch: true
-  file: '**\\AssemblyInfo.*'
-  assembly_version: '$(Build_Assembly_Version)'
-  assembly_file_version: '$(Build_Assembly_Version)'
-  assembly_informational_version: '$(Build_Version)'
 
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: '$(Build_Assembly_Version)'
-  package_version: '$(Build_Version)'
-  assembly_version: '$(Build_Assembly_Version)'
-  file_version: '$(Build_Assembly_Version)'
-  informational_version: '$(Build_Version)'
+# Assembly infos & csproj patching
+for:
+-
+  # For NON-git-tagged build
+  matrix:
+    only:
+      - GIT_TAG: false
+  skip_tags: true
+  
+  # Only patch for non git tagged build
+  assembly_info:
+    patch: true
+    file: '**\\AssemblyInfo.*'
+    assembly_version: '$(Build_Assembly_Version)'
+    assembly_file_version: '$(Build_Assembly_Version)'
+    assembly_informational_version: '$(Build_Version)'
+  
+  dotnet_csproj:
+    patch: true
+    file: '**\*.csproj'
+    version: '$(Build_Assembly_Version)'
+    package_version: '$(Build_Version)'
+    assembly_version: '$(Build_Assembly_Version)'
+    file_version: '$(Build_Assembly_Version)'
+    informational_version: '$(Build_Version)'
+  
+-
+  # For git-tagged build
+  matrix:
+    only:
+      - GIT_TAG: true
+  skip_non_tags: true
+
 
 # Build configurations
 platform:
