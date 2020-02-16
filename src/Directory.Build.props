@@ -4,7 +4,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuickGraph/master/docs/images/quikgraph_logo.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuikGraph/master/docs/images/quikgraph_logo.png</PackageIconUrl>
 
     <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
     <IncludeSymbols>true</IncludeSymbols>
@@ -39,6 +39,6 @@
 
   <!-- Source Link -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="$(SourceLinkVersion)" PrivateAssets="All" />
   </ItemGroup>
 </Project>

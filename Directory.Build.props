@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+  <Import Project="./PackagesVersions.props" />
   <PropertyGroup>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 
@@ -11,8 +12,8 @@
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/KeRNeLith/QuickGraph</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/KeRNeLith/QuikGraph</PackageProjectUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
+    <RepositoryUrl>https://github.com/KeRNeLith/QuikGraph</RepositoryUrl>
   </PropertyGroup>
 </Project>
