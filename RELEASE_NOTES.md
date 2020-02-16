@@ -1,10 +1,32 @@
 # Release notes
 
+## What's new in 2.0.0 February 16 2020
+
+### QuikGraph
+
+Split QuikGraph package into 2 packages to extract serialization features:
+- QuikGraph
+- QuikGraph.Serialization
+
+#### New:
+* Add struct based edge implementations that were in original QuickGraph (STaggedEdge, STaggedUndirectedEdge and SEquatableTaggedEdge).
+
+#### Misc:
+* Package no more reference JetBrains.Annotations package, it rather uses some as internal implementation (same development experience for package consumer).
+
+### QuikGraph.Serialization
+
+Serialization features extracted from core package.
+
+---
+
 ## What's new in 1.0.1 January 20 2020
 
 ### Fixes:
 * Properly deal with isolated vertices for transitive reduction algorithm.
 * Properly deal with isolated vertices for transitive closure algorithm.
+
+---
 
 ## What's new in 1.0.0 December 10 2019
 

@@ -34,11 +34,16 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph</PackageId>
-    <PackageReleaseNotes>➟ Release 1.0.1
-Fixes:
-- Properly deal with isolated vertices for transitive reduction algorithm.
-- Properly deal with isolated vertices for transitive closure algorithm.
-</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.0.0
+Split QuikGraph package into 2 packages to extract serialization features:
+- QuikGraph
+- QuikGraph.Serialization
+
+New:
+- Add struct based edge implementations that were in original QuickGraph (STaggedEdge, STaggedUndirectedEdge and SEquatableTaggedEdge).
+
+Misc:
+- Package no more reference JetBrains.Annotations package, it rather uses some as internal implementation (same development experience for package consumer).</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET</PackageTags>
   </PropertyGroup>
 

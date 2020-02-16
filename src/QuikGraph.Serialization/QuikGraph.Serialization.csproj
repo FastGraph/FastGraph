@@ -28,7 +28,8 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Serialization</PackageId>
-    <PackageReleaseNotes>➟ Release 1.0.0</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.0.0
+Extracts serialization features from QuikGraph package.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization</PackageTags>
   </PropertyGroup>
 
