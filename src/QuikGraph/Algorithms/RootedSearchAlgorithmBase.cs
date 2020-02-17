@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -58,7 +59,7 @@ namespace QuikGraph.Algorithms
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            bool changed = !_hasTargetVertex || !Equals(_target, target);
+            bool changed = !_hasTargetVertex || !EqualityComparer<TVertex>.Default.Equals(_target, target);
             _target = target;
             _hasTargetVertex = true;
 

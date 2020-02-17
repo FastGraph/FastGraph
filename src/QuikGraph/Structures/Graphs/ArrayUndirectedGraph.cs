@@ -107,7 +107,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(edge));
 
             if (_vertexEdges.TryGetValue(edge.Source, out TEdge[] edges))
-                return edges.Any(e => e.Equals(edge));
+                return edges.Any(e => EqualityComparer<TEdge>.Default.Equals(e, edge));
             return false;
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
@@ -11,7 +12,7 @@ namespace QuikGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TTag">Tag type.</typeparam>
 #if SUPPORTS_SERIALIZATION
-	[Serializable]
+    [Serializable]
 #endif
     public class TaggedEdge<TVertex, TTag> : Edge<TVertex>, ITagged<TTag>
     {
@@ -49,7 +50,7 @@ namespace QuikGraph
             get => _tag;
             set
             {
-                if (Equals(_tag, value))
+                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;

@@ -56,7 +56,7 @@ namespace QuikGraph
             {
                 foreach (TEdge outEdge in outEdges)
                 {
-                    if (outEdge.Target.Equals(target))
+                    if (EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target))
                     {
                         edge = outEdge;
                         return true;
@@ -76,7 +76,7 @@ namespace QuikGraph
 
             if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
             {
-                edges = outEdges.Where(edge => edge.Target.Equals(target));
+                edges = outEdges.Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
                 return true;
             }
 

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
+using System.Collections.Generic;
 
 namespace QuikGraph
 {
@@ -65,7 +66,7 @@ namespace QuikGraph
             get => _tag;
             set
             {
-                if (Equals(_tag, value))
+                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;
@@ -86,8 +87,8 @@ namespace QuikGraph
             // ReSharper disable ConstantConditionalAccessQualifier
             // ReSharper disable ConstantNullCoalescingCondition
             // Justification: Because of struct default constructor
-            return Equals(Source, other.Source)
-                   && Equals(Target, other.Target);
+            return EqualityComparer<TVertex>.Default.Equals(Source, other.Source)
+                   && EqualityComparer<TVertex>.Default.Equals(Target, other.Target);
             // ReSharper restore ConstantNullCoalescingCondition
             // ReSharper restore ConstantConditionalAccessQualifier
         }

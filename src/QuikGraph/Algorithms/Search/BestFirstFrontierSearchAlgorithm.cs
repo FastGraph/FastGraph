@@ -71,7 +71,7 @@ namespace QuikGraph.Algorithms.Search
                 throw new VertexNotFoundException("Target vertex is not part of the graph.");
 
             // Little shortcut
-            if (root.Equals(target))
+            if (EqualityComparer<TVertex>.Default.Equals(root, target))
             {
                 OnTargetReached();
                 return; // Found it
@@ -95,7 +95,7 @@ namespace QuikGraph.Algorithms.Search
                 TVertex n = entry.Value;
 
                 // (4) If node n is a target node, terminate with success
-                if (n.Equals(target))
+                if (EqualityComparer<TVertex>.Default.Equals(n, target))
                 {
                     OnTargetReached();
                     return;

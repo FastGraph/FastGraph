@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
@@ -52,7 +53,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(SReversedEdge<TVertex, TEdge> other)
         {
-            return Equals(OriginalEdge, other.OriginalEdge);
+            return EqualityComparer<TEdge>.Default.Equals(OriginalEdge, other.OriginalEdge);
         }
 
         /// <inheritdoc />

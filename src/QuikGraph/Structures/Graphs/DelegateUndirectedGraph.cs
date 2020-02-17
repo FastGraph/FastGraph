@@ -72,7 +72,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public virtual IEnumerable<TEdge> Edges =>
             _vertices.SelectMany(
-                vertex => AdjacentEdges(vertex).Where(edge => edge.Source.Equals(vertex)));
+                vertex => AdjacentEdges(vertex).Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)));
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
@@ -81,7 +81,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(edge));
 
             if (TryGetAdjacentEdges(edge.Source, out IEnumerable<TEdge> edges))
-                return edges.Any(e => e.Equals(edge));
+                return edges.Any(e => EqualityComparer<TEdge>.Default.Equals(e, edge));
             return false;
         }
 
@@ -99,7 +99,7 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return _vertices.Any(v => vertex.Equals(v));
+            return _vertices.Any(v => EqualityComparer<TVertex>.Default.Equals(vertex, v));
         }
 
         #endregion
@@ -109,7 +109,7 @@ namespace QuikGraph
         private bool FilterEdges([NotNull] TEdge edge, [NotNull] TVertex vertex)
         {
             return IsInGraph(edge, vertex)
-                   && (edge.Source.Equals(vertex) || edge.Target.Equals(vertex));
+                   && (EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex) || EqualityComparer<TVertex>.Default.Equals(edge.Target, vertex));
         }
 
         /// <summary>

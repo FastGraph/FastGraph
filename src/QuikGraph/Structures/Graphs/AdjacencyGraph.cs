@@ -152,7 +152,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(target));
 
             if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
-                return outEdges.Any(edge => edge.Target.Equals(target));
+                return outEdges.Any(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
             return false;
         }
 
@@ -169,7 +169,7 @@ namespace QuikGraph
             {
                 foreach (TEdge e in edgeList)
                 {
-                    if (e.Target.Equals(target))
+                    if (EqualityComparer<TVertex>.Default.Equals(e.Target, target))
                     {
                         edge = e;
                         return true;
@@ -191,7 +191,7 @@ namespace QuikGraph
 
             if (_vertexEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> outEdges))
             {
-                edges = outEdges.Where(edge => edge.Target.Equals(target));
+                edges = outEdges.Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
                 return true;
             }
 
@@ -331,13 +331,13 @@ namespace QuikGraph
             // Run over edges and remove each edge touching the vertex
             foreach (KeyValuePair<TVertex, IEdgeList<TVertex, TEdge>> pair in _vertexEdges)
             {
-                if (pair.Key.Equals(vertex))
+                if (EqualityComparer<TVertex>.Default.Equals(pair.Key, vertex))
                     continue; // We've already
 
                 // Collect edges to remove
                 foreach (TEdge edge in pair.Value.Clone())
                 {
-                    if (edge.Target.Equals(vertex))
+                    if (EqualityComparer<TVertex>.Default.Equals(edge.Target, vertex))
                     {
                         pair.Value.Remove(edge);
                         OnEdgeRemoved(edge);

@@ -20,7 +20,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class StronglyConnectedComponentsAlgorithm<TVertex, TEdge> 
+    public sealed class StronglyConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
         , IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
@@ -233,7 +233,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                     Roots[vertex] = MinDiscoverTime(Roots[vertex], Roots[target]);
             }
 
-            if (Roots[vertex].Equals(vertex))
+            if (EqualityComparer<TVertex>.Default.Equals(Roots[vertex], vertex))
             {
                 TVertex w;
                 do
@@ -245,7 +245,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                     VerticesPerStep.Add(w);
                     ++Steps;
                 }
-                while (!w.Equals(vertex));
+                while (!EqualityComparer<TVertex>.Default.Equals(w, vertex));
 
                 ++ComponentCount;
             }

@@ -159,9 +159,11 @@ namespace QuikGraph.Algorithms.ShortestPath
             Debug.Assert(source != null);
             Debug.Assert(target != null);
             Debug.Assert(
-                (edge.Source.Equals(source) && edge.Target.Equals(target))
+                (EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
+                    && EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
                 ||
-                (edge.Source.Equals(target) && edge.Target.Equals(source)));
+                (EqualityComparer<TVertex>.Default.Equals(edge.Source, target)
+                    && EqualityComparer<TVertex>.Default.Equals(edge.Target, source)));
 
             double du = Distances[source];
             double dv = Distances[target];

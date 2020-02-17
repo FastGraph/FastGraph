@@ -52,7 +52,7 @@ namespace QuikGraph.Predicates
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            return Edges.Any(e => Equals(edge, e));
+            return Edges.Any(e => EqualityComparer<TEdge>.Default.Equals(edge, e));
         }
 
         #endregion

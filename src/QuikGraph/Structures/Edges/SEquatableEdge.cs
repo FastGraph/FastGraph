@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
@@ -52,8 +53,8 @@ namespace QuikGraph
             // ReSharper disable ConstantConditionalAccessQualifier
             // ReSharper disable ConstantNullCoalescingCondition
             // Justification: Because of struct default constructor
-            return Equals(Source, other.Source)
-                   && Equals(Target, other.Target);
+            return EqualityComparer<TVertex>.Default.Equals(Source, other.Source)
+                   && EqualityComparer<TVertex>.Default.Equals(Target, other.Target);
             // ReSharper restore ConstantNullCoalescingCondition
             // ReSharper restore ConstantConditionalAccessQualifier
         }

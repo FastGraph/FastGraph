@@ -269,7 +269,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                 foreach (EquatableTaggedEdge<TVertex, double> rootPathEdge in rootPath)
                 {
                     TVertex source = rootPathEdge.Source;
-                    if (!spurVertex.Equals(source))
+                    if (!EqualityComparer<TVertex>.Default.Equals(spurVertex, source))
                     {
                         verticesToRestore.Add(source);
 

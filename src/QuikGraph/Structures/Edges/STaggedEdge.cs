@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
+using System.Collections.Generic;
 
 namespace QuikGraph
 {
@@ -65,7 +66,7 @@ namespace QuikGraph
             get => _tag;
             set
             {
-                if (Equals(_tag, value))
+                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;

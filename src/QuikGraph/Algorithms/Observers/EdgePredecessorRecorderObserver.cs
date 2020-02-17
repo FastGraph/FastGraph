@@ -174,7 +174,7 @@ namespace QuikGraph.Algorithms.Observers
             Debug.Assert(edge != null);
             Debug.Assert(targetEdge != null);
 
-            if (!edge.Equals(targetEdge))
+            if (!EqualityComparer<TEdge>.Default.Equals(edge, targetEdge))
                 EdgesPredecessors[targetEdge] = edge;
         }
 
@@ -184,7 +184,7 @@ namespace QuikGraph.Algorithms.Observers
 
             foreach (TEdge edge in EdgesPredecessors.Values)
             {
-                if (finishedEdge.Equals(edge))
+                if (EqualityComparer<TEdge>.Default.Equals(finishedEdge, edge))
                     return;
             }
 

@@ -174,18 +174,18 @@ namespace QuikGraph.Algorithms.TSP
         [Pure]
         private double ComputeMaxCandidate(
             [NotNull, ItemNotNull] IEnumerable<TEdge> row,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> column, 
+            [NotNull, ItemNotNull] IEnumerable<TEdge> column,
             [NotNull] TVertex source,
             [NotNull] TVertex target)
         {
             return
-                row.Where(edge => !edge.Target.Equals(target))
+                row.Where(edge => !EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
                     .DefaultIfEmpty(null)
                     .Min(edge => edge is null
                         ? double.PositiveInfinity
                         : _weight[edge])
                 +
-                column.Where(edge => !edge.Source.Equals(source))
+                column.Where(edge => !EqualityComparer<TVertex>.Default.Equals(edge.Source, source))
                     .DefaultIfEmpty(null)
                     .Min(edge => edge is null
                         ? double.PositiveInfinity
@@ -239,7 +239,7 @@ namespace QuikGraph.Algorithms.TSP
             var weightsTake = new Dictionary<EquatableEdge<TVertex>, double>(_weight);
             var reverseEdge = new EquatableEdge<TVertex>(edgeForSplit.Target, edgeForSplit.Source);
             weightsTake.Remove(reverseEdge);
-            graphTake.RemoveEdgeIf(edge => edge.Equals(reverseEdge));
+            graphTake.RemoveEdgeIf(edge => reverseEdge.Equals(edge));
 
             foreach (TEdge outEdge in graphTake.OutEdges(v1))
             {

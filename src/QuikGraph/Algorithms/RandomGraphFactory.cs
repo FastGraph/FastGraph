@@ -157,7 +157,7 @@ namespace QuikGraph.Algorithms
                 {
                     b = vertices[rng.Next(vertexCount)];
                 }
-                while (!selfEdges && a.Equals(b));
+                while (!selfEdges && EqualityComparer<TVertex>.Default.Equals(a, b));
 
                 if (graph.AddEdge(edgeFactory(a, b)))
                     ++j;
@@ -210,7 +210,7 @@ namespace QuikGraph.Algorithms
             [NotNull] Random rng,
             int vertexCount,
             int edgeCount,
-            bool selfEdges) 
+            bool selfEdges)
             where TEdge : IEdge<TVertex>
         {
             CreateInternal(graph, vertexFactory, edgeFactory, rng, vertexCount, edgeCount, selfEdges);

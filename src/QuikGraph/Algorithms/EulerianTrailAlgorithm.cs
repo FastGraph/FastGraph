@@ -141,7 +141,7 @@ namespace QuikGraph.Algorithms
                 _temporaryCircuit.Add(edge);
 
                 // edge.Target should be equal to CurrentVertex.
-                if (edge.Target.Equals(_currentVertex))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, _currentVertex))
                     return true;
 
                 // Continue search
@@ -214,7 +214,7 @@ namespace QuikGraph.Algorithms
             for (i = 0; i < _circuit.Count; ++i)
             {
                 TEdge edge = _circuit[i];
-                if (edge.Source.Equals(_currentVertex))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Source, _currentVertex))
                     break;
                 newCircuit.Add(edge);
             }
@@ -225,7 +225,7 @@ namespace QuikGraph.Algorithms
                 TEdge edge = _temporaryCircuit[j];
                 newCircuit.Add(edge);
                 OnCircuitEdge(edge);
-                if (edge.Target.Equals(_currentVertex))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, _currentVertex))
                     break;
             }
             _temporaryCircuit.Clear();
@@ -282,7 +282,7 @@ namespace QuikGraph.Algorithms
             bool foundEdge = false;
             foreach (TEdge edge in VisitedGraph.OutEdges(v))
             {
-                if (edge.Target.Equals(u))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, u))
                 {
                     foundEdge = true;
                     break;
@@ -303,7 +303,7 @@ namespace QuikGraph.Algorithms
             foreach (TEdge edge in VisitedGraph.OutEdges(u))
             {
                 TVertex v = edge.Target;
-                if (!v.Equals(u) && oddVertices.Contains(v))
+                if (!EqualityComparer<TVertex>.Default.Equals(v, u) && oddVertices.Contains(v))
                 {
                     foundAdjacent = true;
                     // Check that v does not have an out-edge towards u
@@ -477,7 +477,7 @@ namespace QuikGraph.Algorithms
                 TEdge edge = _circuit[i];
                 if (_temporaryEdges.Contains(edge))
                     continue;
-                if (edge.Source.Equals(startingVertex))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Source, startingVertex))
                     break;
             }
 

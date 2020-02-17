@@ -60,7 +60,7 @@ namespace QuikGraph
             EdgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
 
             _reorder = typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge))
-                ? (ReorderVertices) ((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                ? (ReorderVertices)((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
                 {
                     if (Comparer<TVertex>.Default.Compare(source, target) > 0)
                     {
@@ -175,7 +175,7 @@ namespace QuikGraph
 
             foreach (TEdge adjacentEdge in adjacentEdges)
             {
-                if (adjacentEdge.Equals(edge))
+                if (EqualityComparer<TEdge>.Default.Equals(adjacentEdge, edge))
                     return true;
             }
 

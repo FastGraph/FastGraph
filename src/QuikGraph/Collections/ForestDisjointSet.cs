@@ -101,7 +101,7 @@ namespace QuikGraph.Collections
             if (right == null)
                 throw new ArgumentNullException(nameof(right));
 
-            return FindSet(left).Equals(FindSet(right));
+            return EqualityComparer<T>.Default.Equals(FindSet(left), FindSet(right));
         }
 
         /// <inheritdoc />
