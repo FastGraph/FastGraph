@@ -4,7 +4,8 @@
       "src": [
         {
           "files": [
-            "src/QuikGraph/**.csproj"
+            "src/QuikGraph/**.csproj",
+            "src/QuikGraph.Serialization/**.csproj"
           ],
           "exclude": [
             "**/obj/**",

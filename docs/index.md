@@ -7,7 +7,6 @@
 | **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/KeRNeLith/QuikGraph?branch=master&svg=true)](https://ci.appveyor.com/project/KeRNeLith/quikgraph) |
 | **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/KeRNeLith/QuikGraph/badge.svg?branch=master)](https://coveralls.io/github/KeRNeLith/quikgraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=quikgraph) | 
 | **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=quikgraph) | 
-| **Nuget** | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) |
 | **License** | MS-PL |
 
 ## Introduction
@@ -32,10 +31,16 @@ You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph)
 - .NET Core 1.0+
 - .NET Framework 3.5+
 
-## Installation
+## Packages
 
-QuikGraph is available on [NuGet](https://www.nuget.org/packages/QuikGraph)
+QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
+
+[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) [QuikGraph](https://www.nuget.org/packages/QuikGraph) (Core)
 
     PM> Install-Package QuikGraph
+
+[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
+
+    PM> Install-Package QuikGraph.Serialization
 
 <img src="images/quikgraph_logo.png" width="128" height="128" style="display: block; margin-left: auto; margin-right: auto" />

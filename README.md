@@ -30,6 +30,13 @@ The plan would be to fully clean the original library and all its non Core parts
 - [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%201.0-blue.svg)](#)
 - [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%203.5-blue.svg)](#)
 
+Supports Source Link (use dedicated symbol package)
+
+To get it working you need to:
+- Uncheck option "Enable Just My Code"
+- Add the NuGet symbol server (*https://symbols.nuget.org/download/symbols*)
+- Check option "Enable Source Link support"
+
 ---
 
 ## Contributing
@@ -45,12 +52,25 @@ The library get rid of PEX that was previously used for unit tests and now uses 
 
 I would be very pleased to receive pull requests to further **test** or **improve** the library.
 
+---
+
+## Usage
+
+### Packages
+
+QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
+
+- [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) [QuikGraph](https://www.nuget.org/packages/QuikGraph) (Core)
+- [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
+
 ### Where to go next?
 
 * [Documentation](https://kernelith.github.io/QuikGraph/)
 * [External Information](https://quickgraph.codeplex.com/documentation) (The website was closed)
 
-### Maintainer(s)
+---
+
+## Maintainer(s)
 
 * [@KeRNeLith](https://github.com/KeRNeLith)
 

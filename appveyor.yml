@@ -114,10 +114,10 @@ test_script:
       
       # Only take test assemblies matching their folder name
       # Example:
-      # Directory = src\TestProject.Tests\bin\CONFIGURATION\TARGET
-      # Directory.Parent = src\TestProject.Tests\bin\CONFIGURATION
-      # Directory.Parent.Parent = src\TestProject.Tests\bin
-      # Directory.Parent.Parent.Parent = src\TestProject.Tests
+      # Directory = tests\TestProject.Tests\bin\CONFIGURATION\TARGET
+      # Directory.Parent = tests\TestProject.Tests\bin\CONFIGURATION
+      # Directory.Parent.Parent = tests\TestProject.Tests\bin
+      # Directory.Parent.Parent.Parent = tests\TestProject.Tests
       
       $testAssemblies = (ls tests\*.Tests\bin\$env:Configuration\net45\*Tests.dll | Where-Object { $_ -Match "net*" -and $_ -NotMatch "netcoreapp*" -and [System.IO.Path]::GetFileNameWithoutExtension($_.FullName) -Match $_.Directory.Parent.Parent.Parent.Name } | % FullName | sort-object -Unique)
       
