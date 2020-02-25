@@ -175,7 +175,7 @@ namespace QuikGraph
             {
                 for (int i = range.Start; i < range.End; ++i)
                 {
-                    if (_outEdges[i].Equals(target))
+                    if (EqualityComparer<TVertex>.Default.Equals(_outEdges[i], target))
                         return true;
                 }
             }
@@ -219,7 +219,7 @@ namespace QuikGraph
             {
                 for (int i = range.Start; i < range.End; ++i)
                 {
-                    if (_outEdges[i].Equals(target))
+                    if (EqualityComparer<TVertex>.Default.Equals(_outEdges[i], target))
                         yield return new SEquatableEdge<TVertex>(source, target);
                 }
             }

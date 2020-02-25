@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -12,7 +13,7 @@ namespace QuikGraph
     [Serializable]
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}<->{" + nameof(Target) + "}")]
-    public class EquatableUndirectedEdge<TVertex>: UndirectedEdge<TVertex>, IEquatable<EquatableUndirectedEdge<TVertex>>
+    public class EquatableUndirectedEdge<TVertex> : UndirectedEdge<TVertex>, IEquatable<EquatableUndirectedEdge<TVertex>>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EquatableUndirectedEdge{TVertex}"/> class.
@@ -29,7 +30,8 @@ namespace QuikGraph
         {
             if (other is null)
                 return false;
-            return Source.Equals(other.Source) && Target.Equals(other.Target);
+            return EqualityComparer<TVertex>.Default.Equals(Source, other.Source)
+                && EqualityComparer<TVertex>.Default.Equals(Target, other.Target);
         }
 
         /// <inheritdoc />

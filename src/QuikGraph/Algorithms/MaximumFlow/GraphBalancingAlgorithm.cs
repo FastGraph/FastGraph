@@ -366,10 +366,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
             bool IsSourceOrSink(TVertex v)
             {
-                return v.Equals(BalancingSource)
-                       || v.Equals(BalancingSink)
-                       || v.Equals(Source)
-                       || v.Equals(Sink);
+                return EqualityComparer<TVertex>.Default.Equals(v, BalancingSource)
+                       || EqualityComparer<TVertex>.Default.Equals(v, BalancingSink)
+                       || EqualityComparer<TVertex>.Default.Equals(v, Source)
+                       || EqualityComparer<TVertex>.Default.Equals(v, Sink);
             }
 
             #endregion

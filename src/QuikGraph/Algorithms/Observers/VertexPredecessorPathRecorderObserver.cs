@@ -99,7 +99,7 @@ namespace QuikGraph.Algorithms.Observers
 
             foreach (TEdge edge in VerticesPredecessors.Values)
             {
-                if (edge.Source.Equals(vertex))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex))
                     return;
             }
 

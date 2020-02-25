@@ -81,7 +81,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             return Edges.Any(
-                edge => edge.Source.Equals(vertex) || edge.Target.Equals(vertex));
+                edge => EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex) || EqualityComparer<TVertex>.Default.Equals(edge.Target, vertex));
         }
 
         #endregion
@@ -89,7 +89,7 @@ namespace QuikGraph
         #region IEdgeSet<TVertex,TEdge>
 
         [NotNull]
-        private readonly EdgeEdgeDictionary<TVertex, TEdge> _edges 
+        private readonly EdgeEdgeDictionary<TVertex, TEdge> _edges
             = new EdgeEdgeDictionary<TVertex, TEdge>();
 
         /// <inheritdoc />

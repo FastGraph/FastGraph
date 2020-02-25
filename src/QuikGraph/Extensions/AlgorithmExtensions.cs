@@ -1060,7 +1060,7 @@ namespace QuikGraph.Algorithms
             [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
             where TEdge : IEdge<TVertex>
         {
-            if (Equals(source, sink))
+            if (EqualityComparer<TVertex>.Default.Equals(source, sink))
                 throw new ArgumentException($"{nameof(source)} and {nameof(sink)} must be different.");
 
             // Compute maximum flow

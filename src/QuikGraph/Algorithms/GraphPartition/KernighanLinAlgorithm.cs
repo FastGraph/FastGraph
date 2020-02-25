@@ -33,7 +33,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="nbIterations">Number of iterations to perform.</param>
         public KernighanLinAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph, 
+            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int nbIterations)
             : base(visitedGraph)
         {
@@ -208,7 +208,8 @@ namespace QuikGraph.Algorithms.GraphPartition
         {
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertexFromA))
             {
-                if (edge.Target.Equals(vertexFromB) || edge.Source.Equals(vertexFromB))
+                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, vertexFromB)
+                    || EqualityComparer<TVertex>.Default.Equals(edge.Source, vertexFromB))
                 {
                     foundEdge = edge;
                     return true;

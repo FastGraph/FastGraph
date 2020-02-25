@@ -242,7 +242,7 @@ namespace QuikGraph.Collections
         {
             for (int i = 0; i < Count; i++)
             {
-                if (Equals(value, _items[i].Value))
+                if (EqualityComparer<TValue>.Default.Equals(value, _items[i].Value))
                     return i;
             }
 

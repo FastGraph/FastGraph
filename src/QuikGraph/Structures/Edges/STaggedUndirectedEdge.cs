@@ -69,7 +69,7 @@ namespace QuikGraph
             get => _tag;
             set
             {
-                if (Equals(_tag, value))
+                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;

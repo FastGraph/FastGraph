@@ -231,9 +231,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 new VertexDistanceRecorderObserver<TVertex, SReversedEdge<TVertex, TEdge>>(ReversedEdgeWeight);
             var shortestPath =
                 new DijkstraShortestPathAlgorithm<TVertex, SReversedEdge<TVertex, TEdge>>(
-                    this, 
-                    reversedGraph, 
-                    ReversedEdgeWeight, 
+                    this,
+                    reversedGraph,
+                    ReversedEdgeWeight,
                     DistanceRelaxer);
 
             using (successorsObserver.Attach(shortestPath))
@@ -294,7 +294,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 // Detection of loops
                 if (edgeIndex == 0)
                     pathVertices[edge.Source] = 0;
-                
+
                 // We should really allow only one key
                 if (pathVertices.ContainsKey(edge.Target))
                     break;
@@ -320,7 +320,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             foreach (TEdge deviationEdge in VisitedGraph.OutEdges(previousVertex))
             {
                 // Skip self edges and equal edges
-                if (deviationEdge.Equals(edge) || deviationEdge.IsSelfEdge())
+                if (EqualityComparer<TEdge>.Default.Equals(deviationEdge, edge) || deviationEdge.IsSelfEdge())
                     continue;
 
                 // Any edge obviously creating a loop
@@ -360,7 +360,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 current = edge.Target;
             }
 
-            Debug.Assert(path.Count == 0 || path.ElementAt(path.Count - 1).Target.Equals(_target));
+            Debug.Assert(path.Count == 0 || EqualityComparer<TVertex>.Default.Equals(path.ElementAt(path.Count - 1).Target, _target));
         }
 
         [DebuggerDisplay("Weight = {" + nameof(Weight) + "}, Index = {" + nameof(DeviationIndex) + "}, Edge = {" + nameof(DeviationEdge) + "}")]

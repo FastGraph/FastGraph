@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -43,8 +44,8 @@ namespace QuikGraph
         {
             if (other is null)
                 return false;
-            return Source.Equals(other.Source)
-                   && Target.Equals(other.Target)
+            return EqualityComparer<TVertex>.Default.Equals(Source, other.Source)
+                   && EqualityComparer<TVertex>.Default.Equals(Target, other.Target)
                    && SourceTerminal.Equals(other.SourceTerminal)
                    && TargetTerminal.Equals(other.TargetTerminal);
         }

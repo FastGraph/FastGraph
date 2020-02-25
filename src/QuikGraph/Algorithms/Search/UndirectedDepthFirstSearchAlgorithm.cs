@@ -369,7 +369,7 @@ namespace QuikGraph.Algorithms.Search
                         continue; // Edge already visited
 
                     visitedEdges.Add(edge, 0);
-                    bool reversed = edge.Target.Equals(u);
+                    bool reversed = EqualityComparer<TVertex>.Default.Equals(edge.Target, u);
                     OnExamineEdge(edge, reversed);
                     TVertex v = reversed ? edge.Source : edge.Target;
                     GraphColor vColor = VerticesColors[v];

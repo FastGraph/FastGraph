@@ -135,7 +135,7 @@ namespace QuikGraph.Algorithms.Search
             Debug.Assert(edge != null);
 
             TreeEdge?.Invoke(
-                this, 
+                this,
                 new UndirectedEdgeEventArgs<TVertex, TEdge>(edge, reversed));
         }
 
@@ -163,7 +163,7 @@ namespace QuikGraph.Algorithms.Search
             Debug.Assert(edge != null);
 
             GrayTarget?.Invoke(
-                this, 
+                this,
                 new UndirectedEdgeEventArgs<TVertex, TEdge>(edge, reversed));
         }
 
@@ -282,7 +282,7 @@ namespace QuikGraph.Algorithms.Search
         {
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(u))
             {
-                bool reversed = edge.Target.Equals(u);
+                bool reversed = EqualityComparer<TVertex>.Default.Equals(edge.Target, u);
                 TVertex v = reversed ? edge.Source : edge.Target;
                 OnExamineEdge(edge);
 

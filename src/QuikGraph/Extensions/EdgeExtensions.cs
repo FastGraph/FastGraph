@@ -26,7 +26,7 @@ namespace QuikGraph
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
 
-            return edge.Source.Equals(edge.Target);
+            return EqualityComparer<TVertex>.Default.Equals(edge.Source, edge.Target);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return edge.Source.Equals(vertex) ? edge.Target : edge.Source;
+            return EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex) ? edge.Target : edge.Source;
         }
 
         /// <summary>
@@ -64,7 +64,8 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            return edge.Source.Equals(vertex) || edge.Target.Equals(vertex);
+            return EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)
+                || EqualityComparer<TVertex>.Default.Equals(edge.Target, vertex);
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace QuikGraph
                 }
                 else
                 {
-                    if (!lastTarget.Equals(edge.Source))
+                    if (!EqualityComparer<TVertex>.Default.Equals(lastTarget, edge.Source))
                         return false;
                     lastTarget = edge.Target;
                 }
@@ -169,7 +170,7 @@ namespace QuikGraph
                 }
                 else
                 {
-                    if (!lastTarget.Equals(edge.Source))
+                    if (!EqualityComparer<TVertex>.Default.Equals(lastTarget, edge.Source))
                         return false;
                     if (vertices.ContainsKey(edge.Target))
                         return false;
@@ -220,15 +221,15 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             TVertex currentVertex = vertex;
-            if (root.Equals(currentVertex))
+            if (EqualityComparer<TVertex>.Default.Equals(root, currentVertex))
                 return true;
 
             while (predecessors.TryGetValue(currentVertex, out TEdge predecessor))
             {
                 TVertex source = GetOtherVertex(predecessor, currentVertex);
-                if (currentVertex.Equals(source))
+                if (EqualityComparer<TVertex>.Default.Equals(currentVertex, source))
                     return false;
-                if (source.Equals(root))
+                if (EqualityComparer<TVertex>.Default.Equals(source, root))
                     return true;
                 currentVertex = source;
             }
@@ -336,8 +337,10 @@ namespace QuikGraph
             Debug.Assert(source != null);
             Debug.Assert(target != null);
 
-            return (edge.Source.Equals(source) && edge.Target.Equals(target))
-                   || (edge.Target.Equals(source) && edge.Source.Equals(target));
+            return (EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
+                        && EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
+                   || (EqualityComparer<TVertex>.Default.Equals(edge.Target, source)
+                        && EqualityComparer<TVertex>.Default.Equals(edge.Source, target));
         }
 
         /// <summary>
@@ -352,7 +355,7 @@ namespace QuikGraph
         /// <paramref name="target"/> match edge vertices, false otherwise.</returns>
         [Pure]
         public static bool SortedVertexEquality<TVertex>(
-            [NotNull] this IEdge<TVertex> edge, 
+            [NotNull] this IEdge<TVertex> edge,
             [NotNull] TVertex source,
             [NotNull] TVertex target)
         {
@@ -376,7 +379,8 @@ namespace QuikGraph
             Debug.Assert(source != null);
             Debug.Assert(target != null);
 
-            return edge.Source.Equals(source) && edge.Target.Equals(target);
+            return EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
+                && EqualityComparer<TVertex>.Default.Equals(edge.Target, target);
         }
 
         /// <summary>

@@ -91,12 +91,12 @@ namespace QuikGraph.Algorithms.Condensation
             // Add condensed edges
             foreach (MergedEdge<TVertex, TEdge> inEdge in inEdges)
             {
-                if (inEdge.Source.Equals(vertex))
+                if (EqualityComparer<TVertex>.Default.Equals(inEdge.Source, vertex))
                     continue;
 
                 foreach (MergedEdge<TVertex, TEdge> outEdge in outEdges)
                 {
-                    if (outEdge.Target.Equals(vertex))
+                    if (EqualityComparer<TVertex>.Default.Equals(outEdge.Target, vertex))
                         continue;
 
                     var newEdge = MergedEdge<TVertex, TEdge>.Merge(inEdge, outEdge);

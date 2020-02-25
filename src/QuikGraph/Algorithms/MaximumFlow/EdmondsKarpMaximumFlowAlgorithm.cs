@@ -85,7 +85,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
                 e = Predecessors[u];
                 delta = Math.Min(delta, ResidualCapacities[e]);
                 u = e.Source;
-            } while (!u.Equals(source));
+            } while (!System.Collections.Generic.EqualityComparer<TVertex>.Default.Equals(u, source));
 
             // Push delta units of flow along the augmenting path
             u = sink;
@@ -98,7 +98,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
                     ResidualCapacities[ReversedEdges[e]] += delta;
                 }
                 u = e.Source;
-            } while (!u.Equals(source));
+            } while (!System.Collections.Generic.EqualityComparer<TVertex>.Default.Equals(u, source));
         }
 
         #region AlgorithmBase<TGraph>
