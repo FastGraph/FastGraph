@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
 using QuikGraph.Predicates;
 
 namespace QuikGraph.Algorithms.MaximumFlow
@@ -85,7 +85,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
                 e = Predecessors[u];
                 delta = Math.Min(delta, ResidualCapacities[e]);
                 u = e.Source;
-            } while (!System.Collections.Generic.EqualityComparer<TVertex>.Default.Equals(u, source));
+            } while (!EqualityComparer<TVertex>.Default.Equals(u, source));
 
             // Push delta units of flow along the augmenting path
             u = sink;
@@ -98,7 +98,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
                     ResidualCapacities[ReversedEdges[e]] += delta;
                 }
                 u = e.Source;
-            } while (!System.Collections.Generic.EqualityComparer<TVertex>.Default.Equals(u, source));
+            } while (!EqualityComparer<TVertex>.Default.Equals(u, source));
         }
 
         #region AlgorithmBase<TGraph>
@@ -150,7 +150,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             while (VerticesColors[Sink] != GraphColor.White)
             {
                 var verticesPredecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>(Predecessors);
-                var queue = new Queue<TVertex>();
+                var queue = new Collections.Queue<TVertex>();
                 var bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(
                     ResidualGraph,
                     queue,
