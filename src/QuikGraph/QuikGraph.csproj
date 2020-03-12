@@ -72,7 +72,7 @@ Misc:
   
   <!-- Dependencies -->
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-    <PackageReference Include="System.Collections.NonGeneric" Version="$(SystemCollectionsNonGenericVersion)" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="$(SystemReflectionTypeExtensionsVersion)" />
+    <PackageReference Include="$(SystemCollectionsNonGenericName)" Version="$(SystemCollectionsNonGenericVersion)" />
+    <PackageReference Include="$(SystemReflectionTypeExtensionsName)" Version="$(SystemReflectionTypeExtensionsVersion)" />
   </ItemGroup>
 </Project>

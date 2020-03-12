@@ -5,6 +5,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
+    <PackageIcon>quikgraph_logo.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuikGraph/master/docs/images/quikgraph_logo.png</PackageIconUrl>
 
     <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
@@ -19,6 +20,7 @@
 
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="..\..\docs\images\quikgraph_logo.png" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 
   <!-- Optimization configurations -->
@@ -40,6 +42,6 @@
 
   <!-- Source Link -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="$(SourceLinkVersion)" PrivateAssets="All" />
+    <PackageReference Include="$(SourceLinkName)" Version="$(SourceLinkVersion)" PrivateAssets="All" />
   </ItemGroup>
 </Project>

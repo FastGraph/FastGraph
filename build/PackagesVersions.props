@@ -3,19 +3,38 @@
   <PropertyGroup>
     <!-- Packages versions -->
     <!-- Dev packages -->
+    <SourceLinkName>Microsoft.SourceLink.GitHub</SourceLinkName>
     <SourceLinkVersion>1.0.0</SourceLinkVersion>
 
+
     <!-- Standard packages -->
+    <SystemCollectionsNonGenericName>System.Collections.NonGeneric</SystemCollectionsNonGenericName>
     <SystemCollectionsNonGenericVersion>4.3.0</SystemCollectionsNonGenericVersion>
+    
+    <SystemComponentModelPrimitivesName>System.ComponentModel.Primitives</SystemComponentModelPrimitivesName>
     <SystemComponentModelPrimitivesVersion>4.3.0</SystemComponentModelPrimitivesVersion>
+
+    <SystemDiagnosticsProcessName>System.Diagnostics.Process</SystemDiagnosticsProcessName>
     <SystemDiagnosticsProcessVersion>4.3.0</SystemDiagnosticsProcessVersion>
+
+    <SystemReflectionEmitLightweightName>System.Reflection.Emit.Lightweight</SystemReflectionEmitLightweightName>
     <SystemReflectionEmitLightweightVersion>4.3.0</SystemReflectionEmitLightweightVersion>
+
+    <SystemReflectionTypeExtensionsName>System.Reflection.TypeExtensions</SystemReflectionTypeExtensionsName>
     <SystemReflectionTypeExtensionsVersion>4.3.0</SystemReflectionTypeExtensionsVersion>
+
+    <SystemXmlXmlSerializerName>System.Xml.XmlSerializer</SystemXmlXmlSerializerName>
     <SystemXmlXmlSerializerVersion>4.3.0</SystemXmlXmlSerializerVersion>
 
+
     <!-- Packages for tests -->
+    <MicrosoftNETTestSdkName>Microsoft.NET.Test.Sdk</MicrosoftNETTestSdkName>
     <MicrosoftNETTestSdkVersion>16.5.0</MicrosoftNETTestSdkVersion>
+    
+    <NUnit3Name>NUnit</NUnit3Name>
     <NUnit3Version>3.12.0</NUnit3Version>
+    
+    <NUnit3TestAdapterName>NUnit3TestAdapter</NUnit3TestAdapterName>
     <NUnit3TestAdapterVersion>3.15.1</NUnit3TestAdapterVersion>
   </PropertyGroup>
 </Project>
