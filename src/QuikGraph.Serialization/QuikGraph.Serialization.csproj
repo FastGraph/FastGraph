@@ -60,13 +60,13 @@ Extracts serialization features from QuikGraph package.</PackageReleaseNotes>
   
   <!-- Dependencies -->
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-    <PackageReference Include="$(SystemComponentModelPrimitivesName)" Version="$(SystemComponentModelPrimitivesVersion)" />
-    <PackageReference Include="$(SystemDiagnosticsProcessName)" Version="$(SystemDiagnosticsProcessVersion)" />
-    <PackageReference Include="$(SystemXmlXmlSerializerName)" Version="$(SystemXmlXmlSerializerVersion)" />
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="$(SystemReflectionEmitLightweightName)" Version="$(SystemReflectionEmitLightweightVersion)" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

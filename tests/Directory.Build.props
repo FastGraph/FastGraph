@@ -24,11 +24,11 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="$(MicrosoftNETTestSdkName)" Version="$(MicrosoftNETTestSdkVersion)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="$(NUnit3Name)" Version="$(NUnit3Version)" />
-    <PackageReference Include="$(NUnit3TestAdapterName)" Version="$(NUnit3TestAdapterVersion)" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>
 </Project>
