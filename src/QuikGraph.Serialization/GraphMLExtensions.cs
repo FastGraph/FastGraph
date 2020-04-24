@@ -180,7 +180,6 @@ namespace QuikGraph.Serialization
 #else
             var xmlReader = new XmlTextReader(reader)
             {
-                ProhibitDtd = false,
                 XmlResolver = null
             };
 
