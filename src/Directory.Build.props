@@ -13,32 +13,15 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <!-- C# configuration -->
-  <PropertyGroup>
-    <LangVersion>7</LangVersion>
-  </PropertyGroup>
+  <!-- JetBrains annotations -->
+  <ItemGroup>
+    <Compile Include="..\..\externs\JetBrains.Annotations.cs" Link="Externs\JetBrains.Annotations.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
     <None Include="..\..\docs\images\quikgraph_logo.png" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
-
-  <!-- Optimization configurations -->
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>portable</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
 
   <!-- Source Link -->
   <ItemGroup>
