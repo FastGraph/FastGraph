@@ -82,12 +82,14 @@ namespace QuikGraph.Tests.Algorithms
             {
                 InitializeEvent.Set();
                 InitializedEvent.WaitOne(TimeoutDelay);
+                ThrowIfCancellationRequested();
             }
 
             protected override void InternalCompute()
             {
                 ComputeEvent.Set();
                 ComputedEvent.WaitOne(TimeoutDelay);
+                ThrowIfCancellationRequested();
             }
 
             protected override void Clean()
@@ -155,7 +157,10 @@ namespace QuikGraph.Tests.Algorithms
             Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
 
             // Run the algorithm
-            Task.Run(() => algorithm.Compute());
+            Task.Run(() =>
+            {
+                Assert.DoesNotThrow(algorithm.Compute);
+            });
 
             initialize.WaitOne(TimeoutDelay);
             Assert.AreEqual(ComputationState.Running, algorithm.State);
@@ -211,9 +216,12 @@ namespace QuikGraph.Tests.Algorithms
             // Abort the algorithm
             Task.Run(() =>
             {
-                algorithm.Abort();
-                Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
-                end.Set();
+                Assert.DoesNotThrow(() =>
+                {
+                    algorithm.Abort();
+                    Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+                    end.Set();
+                });
             });
 
             end.WaitOne(TimeoutDelay);
@@ -262,7 +270,10 @@ namespace QuikGraph.Tests.Algorithms
             Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
 
             // Run the algorithm
-            Task.Run(() => algorithm.Compute());
+            Task.Run(() =>
+            {
+                Assert.DoesNotThrow(algorithm.Compute);
+            });
 
             initialize.WaitOne(TimeoutDelay);
             Assert.AreEqual(ComputationState.Running, algorithm.State);
@@ -328,7 +339,10 @@ namespace QuikGraph.Tests.Algorithms
             Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
 
             // Run the algorithm
-            Task.Run(() => algorithm.Compute());
+            Task.Run(() =>
+            {
+                Assert.DoesNotThrow(algorithm.Compute);
+            });
 
             initialize.WaitOne(TimeoutDelay);
             Assert.AreEqual(ComputationState.Running, algorithm.State);

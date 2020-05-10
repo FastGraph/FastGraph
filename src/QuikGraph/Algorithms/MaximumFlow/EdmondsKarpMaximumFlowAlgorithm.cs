@@ -131,10 +131,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         protected override void InternalCompute()
         {
-            if (Services.CancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
-            var graph = VisitedGraph;
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph = VisitedGraph;
             foreach (TVertex vertex in graph.Vertices)
             {
                 foreach (TEdge edge in graph.OutEdges(vertex))

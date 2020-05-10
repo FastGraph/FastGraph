@@ -124,8 +124,6 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             TVertex root = GetAndAssertRootInGraph();
             if (!TryGetTargetVertex(out TVertex target))
                 throw new InvalidOperationException("Target vertex not set.");
@@ -138,8 +136,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
                 out IDictionary<TVertex, TEdge> successors,
                 out IDictionary<TVertex, double> distances);
 
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             var queue = new FibonacciQueue<DeviationPath, double>(deviationPath => deviationPath.Weight);
             int vertexCount = VisitedGraph.VertexCount;
@@ -150,8 +147,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
             while (queue.Count > 0
                    && ComputedShortestPathCount < ShortestPathCount)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 DeviationPath deviation = queue.Dequeue();
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.MaximumFlow;
-using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
 {
@@ -84,15 +83,12 @@ namespace QuikGraph.Algorithms
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge> augmentor = null;
             ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverser = null;
 
             try
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // Augmenting the graph
                 augmentor = new BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge>(
@@ -104,8 +100,7 @@ namespace QuikGraph.Algorithms
                     EdgeFactory);
                 augmentor.Compute();
 
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // Adding reverse edges
                 reverser = new ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>(
@@ -113,8 +108,7 @@ namespace QuikGraph.Algorithms
                     EdgeFactory);
                 reverser.AddReversedEdges();
 
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // Compute maximum flow
                 var flow = new EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>(
@@ -126,8 +120,7 @@ namespace QuikGraph.Algorithms
 
                 flow.Compute(augmentor.SuperSource, augmentor.SuperSink);
 
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 foreach (TEdge edge in VisitedGraph.Edges)
                 {

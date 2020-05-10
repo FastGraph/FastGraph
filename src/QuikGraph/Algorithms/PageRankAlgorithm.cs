@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
 using QuikGraph.Predicates;
 
 namespace QuikGraph.Algorithms.Ranking
@@ -108,7 +107,6 @@ namespace QuikGraph.Algorithms.Ranking
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
             IDictionary<TVertex, double> tempRanks = new Dictionary<TVertex, double>();
 
             // Create filtered graph
@@ -121,15 +119,13 @@ namespace QuikGraph.Algorithms.Ranking
             double error;
             do
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // Compute page ranks
                 error = 0;
                 foreach (KeyValuePair<TVertex, double> pair in Ranks)
                 {
-                    if (cancelManager.IsCancelling)
-                        return;
+                    ThrowIfCancellationRequested();
 
                     TVertex vertex = pair.Key;
                     double rank = pair.Value;

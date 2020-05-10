@@ -255,9 +255,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             TVertex[] vertices = VisitedGraph.Vertices.ToArray();
 
@@ -265,14 +263,12 @@ namespace QuikGraph.Algorithms.ShortestPath
             foreach (TVertex vertex in vertices)
                 _data[new SEquatableEdge<TVertex>(vertex, vertex)] = new VertexData(0, default(TEdge));
 
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             // Iterate k, i, j
             foreach (TVertex vk in vertices)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 FillIData(vertices, vk);
             }

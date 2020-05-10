@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.ConnectedComponents;
-using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Condensation
 {
@@ -50,9 +49,7 @@ namespace QuikGraph.Algorithms.Condensation
             var components = new Dictionary<TVertex, int>(VisitedGraph.VertexCount);
             int componentCount = ComputeComponentCount(components);
 
-            ICancelManager cancelManager = Services.CancelManager;
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             // Create vertices list
             var condensedVertices = new Dictionary<int, TGraph>(componentCount);
@@ -69,8 +66,7 @@ namespace QuikGraph.Algorithms.Condensation
                 condensedVertices[components[vertex]].AddVertex(vertex);
             }
 
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             // Condensed edges
             var condensedEdges = new Dictionary<EdgeKey, CondensedEdge<TVertex, TEdge, TGraph>>(componentCount);

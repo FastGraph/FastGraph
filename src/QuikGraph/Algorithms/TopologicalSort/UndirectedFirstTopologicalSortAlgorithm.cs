@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TopologicalSort
@@ -97,12 +96,9 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             while (_heap.Count != 0)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 TVertex vertex = _heap.Dequeue();
                 int degree = Degrees[vertex];

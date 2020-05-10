@@ -183,11 +183,9 @@ namespace QuikGraph.Algorithms.RandomWalks
             ClearTree(root);
             SetInTree(root);
 
-            ICancelManager cancelManager = Services.CancelManager;
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling)
-                    break;
+                ThrowIfCancellationRequested();
 
                 // First pass: exploration
                 ExplorationPass(vertex);
@@ -295,14 +293,11 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         public void RandomTree()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             double epsilon = 1;
             bool success;
             do
             {
-                if (cancelManager.IsCancelling)
-                    break;
+                ThrowIfCancellationRequested();
 
                 epsilon /= 2;
                 success = Attempt(epsilon);
@@ -313,12 +308,10 @@ namespace QuikGraph.Algorithms.RandomWalks
         {
             Initialize();
             int numRoots = 0;
-            ICancelManager cancelManager = Services.CancelManager;
 
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling)
-                    break;
+                ThrowIfCancellationRequested();
 
                 // First pass: exploration
                 if (!Explore(epsilon, vertex, ref numRoots))

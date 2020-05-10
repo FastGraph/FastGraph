@@ -193,11 +193,9 @@ namespace QuikGraph.Algorithms.Search
             VerticesColors[u] = GraphColor.Gray;
             OnDiscoverVertex(u);
 
-            ICancelManager cancelManager = Services.CancelManager;
             foreach (TEdge edge in VisitedGraph.OutEdges(u))
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 OnExamineEdge(edge);
                 TVertex v = edge.Target;

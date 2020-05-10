@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -65,18 +68,22 @@ namespace QuikGraph.Algorithms
         {
             BeginComputation();
 
-            Initialize();
-
             try
             {
+                Initialize();
+
                 InternalCompute();
+            }
+            catch (OperationCanceledException)
+            {
+                // Just catch it to clean and end computing.
             }
             finally
             {
                 Clean();
-            }
 
-            EndComputation();
+                EndComputation();
+            }
         }
 
         /// <inheritdoc />
@@ -224,6 +231,21 @@ namespace QuikGraph.Algorithms
         }
 
         #endregion
+
+        /// <summary>
+        /// Throws if a cancellation of the algorithm was requested.
+        /// </summary>
+        /// <exception cref="OperationCanceledException">
+        /// If the algorithm cancellation service indicates <see cref="ICancelManager.IsCancelling"/> is true.
+        /// </exception>
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        protected void ThrowIfCancellationRequested()
+        {
+            if (_algorithmServices.CancelManager.IsCancelling)
+                throw new OperationCanceledException("Algorithm aborted.");
+        }
 
         private void BeginComputation()
         {

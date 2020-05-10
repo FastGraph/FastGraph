@@ -132,8 +132,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
 
             InitializeVerticesToEdges();
 
-            if (Services.CancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             InitializeQueue();
         }
@@ -141,8 +140,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (Services.CancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             while (_edges.Count > 0 && _visitedVertices.Count < VisitedGraph.VertexCount)
             {

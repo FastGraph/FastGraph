@@ -193,11 +193,9 @@ namespace QuikGraph.Algorithms.Search
         protected override void Initialize()
         {
             // Put all edges to white
-            ICancelManager cancelManager = Services.CancelManager;
             foreach (TEdge edge in VisitedGraph.Edges)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 EdgesColors[edge] = GraphColor.White;
                 OnEdgeInitialized(edge);
@@ -207,9 +205,7 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             // Start with root vertex
             if (TryGetRootVertex(out TVertex root))
@@ -236,8 +232,7 @@ namespace QuikGraph.Algorithms.Search
             {
                 foreach (TEdge edge in edges)
                 {
-                    if (cancelManager.IsCancelling)
-                        return;
+                    ThrowIfCancellationRequested();
 
                     if (EdgesColors[edge] == GraphColor.White)
                     {
@@ -268,8 +263,6 @@ namespace QuikGraph.Algorithms.Search
         {
             Debug.Assert(rootEdge != null);
 
-            ICancelManager cancelManager = Services.CancelManager;
-
             // Mark edge as gray
             EdgesColors[rootEdge] = GraphColor.Gray;
             // Add edge to the search tree
@@ -278,8 +271,7 @@ namespace QuikGraph.Algorithms.Search
             // Iterate over out-edges
             foreach (TEdge edge in VisitedGraph.OutEdges(rootEdge.Target))
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // Check edge is not explored yet,
                 // If not, explore it

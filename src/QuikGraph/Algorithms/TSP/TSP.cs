@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
 using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Algorithms.TSP
@@ -80,12 +79,9 @@ namespace QuikGraph.Algorithms.TSP
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             while (_taskManager.HasTasks())
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 Task<TVertex, TEdge> task = _taskManager.GetTask();
 

@@ -46,12 +46,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <inheritdoc />
         protected override void AugmentGraph()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling)
-                    break;
+                ThrowIfCancellationRequested();
 
                 AddAugmentedEdge(SuperSource, vertex);
                 AddAugmentedEdge(vertex, SuperSink);

@@ -220,9 +220,7 @@ namespace QuikGraph.Algorithms.Search
         {
             base.Initialize();
 
-            ICancelManager cancelManager = Services.CancelManager;
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             // Initialize vertices
             foreach (TVertex vertex in VisitedGraph.Vertices)
@@ -295,12 +293,9 @@ namespace QuikGraph.Algorithms.Search
 
         private void FlushVisitQueue()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             while (_vertexQueue.Count > 0)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 TVertex u = _vertexQueue.Dequeue();
                 OnExamineVertex(u);

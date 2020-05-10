@@ -80,21 +80,17 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
-
             var sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
             foreach (TVertex vertex in VisitedGraph.Vertices)
                 sets.MakeSet(vertex);
 
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             var queue = new BinaryQueue<TEdge, double>(_edgeWeights);
             foreach (TEdge edge in VisitedGraph.Edges)
                 queue.Enqueue(edge);
 
-            if (cancelManager.IsCancelling)
-                return;
+            ThrowIfCancellationRequested();
 
             while (queue.Count > 0)
             {

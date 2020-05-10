@@ -179,12 +179,10 @@ namespace QuikGraph.Algorithms.Search
             // Start with root vertex
             OnStartVertex(root);
 
-            ICancelManager cancelManager = Services.CancelManager;
             // Process each out edge of the root one
             foreach (TEdge edge in VisitedGraph.OutEdges(root))
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 if (!EdgesColors.ContainsKey(edge))
                 {
@@ -216,13 +214,10 @@ namespace QuikGraph.Algorithms.Search
             // Add edge to the search tree
             OnTreeEdge(startingEdge);
 
-            ICancelManager cancelManager = Services.CancelManager;
-            
             // Iterate over out-edges
             foreach (TEdge edge in VisitedGraph.OutEdges(startingEdge.Target))
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // Check edge is not explored yet,
                 // if not, explore it

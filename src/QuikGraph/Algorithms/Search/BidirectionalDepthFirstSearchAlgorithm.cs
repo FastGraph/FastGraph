@@ -223,12 +223,10 @@ namespace QuikGraph.Algorithms.Search
 
             void VisitAllWhiteVertices()
             {
-                // Process each vertex 
-                ICancelManager cancelManager = Services.CancelManager;
+                // Process each vertex
                 foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
-                    if (cancelManager.IsCancelling)
-                        return;
+                    ThrowIfCancellationRequested();
 
                     if (VerticesColors[vertex] == GraphColor.White)
                     {
@@ -271,11 +269,9 @@ namespace QuikGraph.Algorithms.Search
             VerticesColors[u] = GraphColor.Gray;
             OnDiscoverVertex(u);
 
-            ICancelManager cancelManager = Services.CancelManager;
             foreach (TEdge edge in VisitedGraph.OutEdges(u))
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 OnExamineEdge(edge);
                 TVertex v = edge.Target;
@@ -284,8 +280,7 @@ namespace QuikGraph.Algorithms.Search
 
             foreach (TEdge edge in VisitedGraph.InEdges(u))
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 OnExamineEdge(edge);
                 TVertex v = edge.Source;

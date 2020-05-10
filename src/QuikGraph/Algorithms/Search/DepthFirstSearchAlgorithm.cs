@@ -257,12 +257,10 @@ namespace QuikGraph.Algorithms.Search
 
             void VisitAllWhiteVertices()
             {
-                // Process each vertex 
-                ICancelManager cancelManager = Services.CancelManager;
+                // Process each vertex
                 foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
-                    if (cancelManager.IsCancelling)
-                        return;
+                    ThrowIfCancellationRequested();
 
                     if (VerticesColors[vertex] == GraphColor.White)
                     {
@@ -325,14 +323,12 @@ namespace QuikGraph.Algorithms.Search
             VerticesColors[root] = GraphColor.Gray;
             OnDiscoverVertex(root);
 
-            ICancelManager cancelManager = Services.CancelManager;
             var enumerable = OutEdgesFilter(VisitedGraph.OutEdges(root));
             todoStack.Push(new SearchFrame(root, enumerable.GetEnumerator(), 0));
 
             while (todoStack.Count > 0)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 SearchFrame frame = todoStack.Pop();
                 TVertex u = frame.Vertex;
@@ -349,9 +345,9 @@ namespace QuikGraph.Algorithms.Search
 
                 while (edges.MoveNext())
                 {
+                    ThrowIfCancellationRequested();
+
                     TEdge edge = edges.Current;
-                    if (cancelManager.IsCancelling)
-                        return;
 
                     // ReSharper disable once AssignNullToNotNullAttribute
                     // Justification: Enumerable items are not null so if the MoveNext succeed it can't be null

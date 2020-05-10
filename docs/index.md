@@ -31,6 +31,8 @@ You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph)
 - .NET Core 1.0+
 - .NET Framework 3.5+
 
+Supports Source Link
+
 ## Packages
 
 QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.

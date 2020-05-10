@@ -14,6 +14,7 @@ namespace QuikGraph.Utils
         /// </summary>
         /// <param name="action">The action to call.</param>
         /// <returns>A <see cref="IDisposable"/> object to give to a using clause.</returns>
+        [Pure]
         [NotNull]
         public static IDisposable Finally([NotNull] Action action)
         {

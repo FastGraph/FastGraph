@@ -77,7 +77,6 @@ namespace QuikGraph.Algorithms.Search
                 return; // Found it
             }
 
-            ICancelManager cancelManager = Services.CancelManager;
             var open = new BinaryHeap<double, TVertex>(_distanceRelaxer.Compare);
 
             // (1) Place the initial node in Open, with all its operators marked unused
@@ -86,8 +85,7 @@ namespace QuikGraph.Algorithms.Search
 
             while (open.Count > 0)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 // (3) Else, choose an Open node n of lowest cost for expansion
                 KeyValuePair<double, TVertex> entry = open.RemoveMinimum();

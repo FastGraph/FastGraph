@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.Services;
 using QuikGraph.Serialization.DirectedGraphML;
 
 namespace QuikGraph.Serialization
@@ -49,14 +48,12 @@ namespace QuikGraph.Serialization
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            ICancelManager cancelManager = Services.CancelManager;
             DirectedGraph = new DirectedGraph();
 
             var nodes = new List<DirectedGraphNode>(VisitedGraph.VertexCount);
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 var node = new DirectedGraphNode { Id = _vertexIdentities(vertex) };
                 OnFormatNode(vertex, node);
@@ -68,8 +65,7 @@ namespace QuikGraph.Serialization
             var links = new List<DirectedGraphLink>(VisitedGraph.EdgeCount);
             foreach (TEdge edge in VisitedGraph.Edges)
             {
-                if (cancelManager.IsCancelling)
-                    return;
+                ThrowIfCancellationRequested();
 
                 var link = new DirectedGraphLink
                 {
