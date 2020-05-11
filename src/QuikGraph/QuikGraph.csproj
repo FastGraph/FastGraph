@@ -34,16 +34,12 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph</PackageId>
-    <PackageReleaseNotes>➟ Release 2.0.0
-Split QuikGraph package into 2 packages to extract serialization features:
-- QuikGraph
-- QuikGraph.Serialization
+    <PackageReleaseNotes>➟ Release 2.1.0
+Optims:
+- Use EqualityComparer&lt;T&gt; instead of non-generic object.Equals.
 
-New:
-- Add struct based edge implementations that were in original QuickGraph (STaggedEdge, STaggedUndirectedEdge and SEquatableTaggedEdge).
-
-Misc:
-- Package no more reference JetBrains.Annotations package, it rather uses some as internal implementation (same development experience for package consumer).</PackageReleaseNotes>
+Updates:
+- Cancellation of algorithm internally use exception to abort algorithm run.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET</PackageTags>
   </PropertyGroup>
 

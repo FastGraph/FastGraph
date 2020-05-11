@@ -1,5 +1,22 @@
 # Release notes
 
+## What's new in 2.1.0 May 11 2020
+
+### QuikGraph
+
+#### Optims:
+* Use EqualityComparer&lt;T&gt; instead of non-generic object.Equals.
+
+#### Updates:
+* Cancellation of algorithm internally use exception to abort algorithm run.
+
+### QuikGraph.Serialization
+
+#### Fixes:
+* Fix a security vulnerability regarding XML serialization on target .NET Framework 3.5.
+
+---
+
 ## What's new in 2.0.0 February 16 2020
 
 ### QuikGraph
