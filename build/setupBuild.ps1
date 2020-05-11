@@ -57,17 +57,28 @@ if ($env:APPVEYOR_REPO_TAG -eq "true")
 {
     $tagParts = $env:APPVEYOR_REPO_TAG_NAME.split("/", 2);
 
-    # Retrieve MSBuild property name for which enabling package generation
-    $tagSlug = $tagParts[0];
-    $propertyName = GetPropertyNameFromSlug $tagSlug;
-    $tagVersion = $tagParts[1];
+    # Full release
+    if ($tagParts.Length -eq 1) # X.Y.Z
+    {
+        UpdateAllPackagesGeneration;
+        $env:Build_Version = $env:APPVEYOR_REPO_TAG_NAME;
+        $env:Release_Name = $env:Build_Version;
+    }
+    # Partial release
+    else # Slug/X.Y.Z
+    {
+        # Retrieve MSBuild property name for which enabling package generation
+        $tagSlug = $tagParts[0];
+        $propertyName = GetPropertyNameFromSlug $tagSlug;
+        $tagVersion = $tagParts[1];
 
-    UpdatePackagesGeneration $propertyName;
-    $env:Build_Version = $tagVersion;
-    $projectName = $propertyName -replace "Generate_","";
-    $projectName = $projectName -replace "_",".";
-    $env:Release_Name = "$projectName $tagVersion";
-    
+        UpdatePackagesGeneration $propertyName;
+        $env:Build_Version = $tagVersion;
+        $projectName = $propertyName -replace "Generate_","";
+        $projectName = $projectName -replace "_",".";
+        $env:Release_Name = "$projectName $tagVersion";
+    }
+
     $env:IsFullIntegrationBuild = $env:Configuration -eq "Release";
 }
 else
