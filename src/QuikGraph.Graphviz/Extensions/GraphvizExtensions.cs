@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Net;
+using JetBrains.Annotations;
 using QuikGraph;
 
 namespace QuickGraph.Graphviz
@@ -12,18 +12,15 @@ namespace QuickGraph.Graphviz
     public static class GraphvizExtensions
     {
         /// <summary>
-        /// Renders a graph to the Graphviz DOT format.
+        /// Renders a graph to the GraphViz DOT format.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <typeparam name="TEdge"></typeparam>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        public static string ToGraphviz<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-            IEdgeListGraph<TVertex, TEdge> graph
-            )
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>Graph serialized in DOT format.</returns>
+        [Pure]
+        [NotNull]
+        public static string ToGraphviz<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(graph);
@@ -31,92 +28,93 @@ this
         }
 
         /// <summary>
-        /// Renders a graph to the Graphviz DOT format.
+        /// Renders a graph to the GraphViz DOT format.
         /// </summary>
-        /// <typeparam name="TVertex"></typeparam>
-        /// <typeparam name="TEdge"></typeparam>
-        /// <param name="graph"></param>
-        /// <param name="initialization">delegate that initializes the algorithm</param>
-        /// <returns></returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <param name="initAlgorithm">Delegate that initializes the DOT generation algorithm.</param>
+        /// <returns>Graph serialized in DOT format.</returns>
         public static string ToGraphviz<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-            IEdgeListGraph<TVertex, TEdge> graph,
-            Action<GraphvizAlgorithm<TVertex, TEdge>> initialization
-            )
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
             where TEdge : IEdge<TVertex>
         {
+            if (initAlgorithm is null)
+                throw new ArgumentNullException(nameof(initAlgorithm));
+
             var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(graph);
-            initialization(algorithm);
+            initAlgorithm(algorithm);
             return algorithm.Generate();
         }
 
         /// <summary>
-        /// Performs a layout .dot in an SVG (Scalable Vector Graphics) file
-        /// by calling Agl through the http://rise4fun.com/ REST services.
-        /// </summary>        
-        /// <returns>the svg graph</returns>
-        public static string ToSvg<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-            IEdgeListGraph<TVertex, TEdge> graph
-            )
+        /// Performs a layout of <paramref name="graph"/> from DOT format to an
+        /// SVG (Scalable Vector Graphics) file by calling Agl through
+        /// the http://rise4fun.com/ REST services.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <returns>The svg graph.</returns>
+        [Pure]
+        [NotNull]
+        public static string ToSvg<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            Contract.Requires(graph != null);
-            Contract.Ensures(Contract.Result<string>() != null);
-
-            return ToSvg(ToGraphviz<TVertex, TEdge>(graph));
+            return ToSvg(ToGraphviz(graph));
         }
 
-
         /// <summary>
-        /// Performs a layout .dot in an SVG (Scalable Vector Graphics) file
-        /// by calling Agl through the http://rise4fun.com/ REST services.
+        /// Performs a layout of <paramref name="graph"/> from DOT format to an
+        /// SVG (Scalable Vector Graphics) file by calling Agl through
+        /// the http://rise4fun.com/ REST services.
         /// </summary>
-        /// <param name="dot">the dot graph</param>
-        /// <returns>the svg graph</returns>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert.</param>
+        /// <param name="initAlgorithm">Delegate that initializes the DOT generation algorithm.</param>
+        /// <returns>The svg graph.</returns>
+        [Pure]
+        [NotNull]
         public static string ToSvg<TVertex, TEdge>(
-#if !NET20
-this 
-#endif
-            IEdgeListGraph<TVertex, TEdge> graph,
-            Action<GraphvizAlgorithm<TVertex, TEdge>> initialization
-            )
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
             where TEdge : IEdge<TVertex>
         {
-            Contract.Requires(graph != null);
-            Contract.Requires(initialization != null);
-            Contract.Ensures(Contract.Result<string>() != null);
-
-            return ToSvg(ToGraphviz<TVertex, TEdge>(graph, initialization));
+            return ToSvg(ToGraphviz(graph, initAlgorithm));
         }
 
-
         /// <summary>
-        /// Performs a layout .dot in an SVG (Scalable Vector Graphics) file
+        /// Performs a layout from DOT to  an SVG (Scalable Vector Graphics) file
         /// by calling Agl through the http://rise4fun.com/ REST services.
         /// </summary>
-        /// <param name="dot">the dot graph</param>
-        /// <returns>the svg graph</returns>
-        public static string ToSvg(string dot)
+        /// <param name="dot">The dot graph</param>
+        /// <returns>The svg graph.</returns>
+        [Pure]
+        [NotNull]
+        public static string ToSvg([NotNull] string dot)
         {
-            Contract.Requires(dot != null);
-            Contract.Ensures(Contract.Result<string>() != null);
+            if (dot is null)
+                throw new ArgumentNullException(nameof(dot));
 
             var request = WebRequest.Create("http://rise4fun.com/rest/ask/Agl/");
             request.Method = "POST";
-            // write dot
+            // Write dot
             using (var writer = new StreamWriter(request.GetRequestStream()))
+            {
                 writer.Write(dot);
-            // read svg
-            var response = request.GetResponse();
-            string svg;
-            using (var reader = new StreamReader(response.GetResponseStream()))
-                svg = reader.ReadToEnd();
-            return svg;
+            }
+
+            // Read Svg
+            WebResponse response = request.GetResponse();
+            Stream streamResponse = response.GetResponseStream();
+            if (streamResponse is null)
+                return string.Empty;
+            using (var reader = new StreamReader(streamResponse))
+            {
+                return reader.ReadToEnd();  // Svg
+            }
         }
     }
 }

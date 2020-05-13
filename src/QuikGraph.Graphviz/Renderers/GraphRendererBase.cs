@@ -1,43 +1,80 @@
-﻿using QuikGraph;
+﻿using System;
+using System.Drawing;
+using JetBrains.Annotations;
 using QuickGraph.Graphviz.Dot;
+using QuikGraph;
+using QuikGraph.Utils;
 
 namespace QuickGraph.Graphviz
 {
-    public abstract class GraphRendererBase<TVertex,TEdge>
+    /// <summary>
+    /// Base class for Graph to DOT renderer.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public abstract class GraphRendererBase<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private GraphvizAlgorithm<TVertex, TEdge> graphviz;
-
-        public GraphRendererBase(
-            IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to convert to DOT.</param>
+        protected GraphRendererBase([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
         {
-            this.graphviz = new GraphvizAlgorithm<TVertex, TEdge>(visitedGraph);
-            this.Initialize();
+            Graphviz = new GraphvizAlgorithm<TVertex, TEdge>(graph);
+            InternalInitialize();
         }
 
-        protected virtual void Initialize()        
+        private void InternalInitialize()
         {
-            this.graphviz.CommonVertexFormat.Style = GraphvizVertexStyle.Filled;
-            this.graphviz.CommonVertexFormat.FillColor = System.Drawing.Color.LightYellow;
-            this.graphviz.CommonVertexFormat.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.graphviz.CommonVertexFormat.Shape = GraphvizVertexShape.Box;
+            Graphviz.CommonVertexFormat.Style = GraphvizVertexStyle.Filled;
+            Graphviz.CommonVertexFormat.FillColor = Color.LightYellow;
+            Graphviz.CommonVertexFormat.Font = new Font("Tahoma", 8.25F);
+            Graphviz.CommonVertexFormat.Shape = GraphvizVertexShape.Box;
 
-            this.graphviz.CommonEdgeFormat.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            Graphviz.CommonEdgeFormat.Font = new Font("Tahoma", 8.25F);
         }
 
-        public GraphvizAlgorithm<TVertex, TEdge> Graphviz
+        /// <summary>
+        /// Initializes renderer for generation.
+        /// </summary>
+        protected virtual void Initialize()
         {
-            get { return this.graphviz; }
         }
 
-        public IEdgeListGraph<TVertex, TEdge> VisitedGraph
+        /// <summary>
+        /// Cleans renderer after generation.
+        /// </summary>
+        protected virtual void Clean()
         {
-            get { return this.graphviz.VisitedGraph; }
         }
 
-        public string Generate(IDotEngine dot, string fileName)
+        /// <summary>
+        /// Graph to DOT algorithm.
+        /// </summary>
+        [NotNull]
+        public GraphvizAlgorithm<TVertex, TEdge> Graphviz { get; }
+
+        /// <inheritdoc cref="GraphvizAlgorithm{TVertex,TEdge}.VisitedGraph"/>
+        public IEdgeListGraph<TVertex, TEdge> VisitedGraph => Graphviz.VisitedGraph;
+
+        /// <inheritdoc cref="GraphvizAlgorithm{TVertex,TEdge}.Generate(IDotEngine,string)"/>
+        public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
         {
-            return this.graphviz.Generate(dot, fileName);
+            using (GenerationScope())
+            {
+                return Graphviz.Generate(dot, outputFilePath);
+            }
+
+            #region Local function
+
+            IDisposable GenerationScope()
+            {
+                Initialize();
+                return DisposableHelpers.Finally(Clean);
+            }
+
+            #endregion
         }
     }
 }

@@ -1,46 +1,78 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using JetBrains.Annotations;
 using QuikGraph;
 using QuikGraph.Algorithms.Condensation;
 
 namespace QuickGraph.Graphviz
 {
-    public class CondensatedGraphRenderer<TVertex,TEdge,TGraph> :
-        GraphRendererBase<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>
+    /// <summary>
+    /// Condensation graph to DOT renderer.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    /// <typeparam name="TGraph">Graph type.</typeparam>
+    public class CondensatedGraphRenderer<TVertex, TEdge, TGraph> : GraphRendererBase<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CondensatedGraphRenderer{TVertex,TEdge,TGraph}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to convert to DOT.</param>
         public CondensatedGraphRenderer(
-            IVertexAndEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> visitedGraph)
-            :base(visitedGraph)
-        {}
+            [NotNull] IEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> graph)
+            : base(graph)
+        {
+        }
 
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
-            this.Graphviz.FormatVertex+=new FormatVertexEventHandler<TGraph>(Graphviz_FormatVertex);
-            this.Graphviz.FormatEdge += new FormatEdgeAction<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>(Graphviz_FormatEdge);
+
+            Graphviz.FormatVertex += OnFormatVertex;
+            Graphviz.FormatEdge += OnFormatEdge;
         }
 
-
-        void Graphviz_FormatVertex(Object sender, FormatVertexEventArgs<TGraph> e)
+        /// <inheritdoc />
+        protected override void Clean()
         {
-            StringWriter sw = new StringWriter();
-            sw.WriteLine("{0}-{1}", e.Vertex.VertexCount, e.Vertex.EdgeCount);
-            foreach (var v in e.Vertex.Vertices)
-                sw.WriteLine("  {0}", v);
-            foreach(TEdge edge in e.Vertex.Edges)
-                sw.WriteLine("  {0}", edge);
-            e.VertexFormat.Label = this.Graphviz.Escape(sw.ToString());
+            Graphviz.FormatEdge -= OnFormatEdge;
+            Graphviz.FormatVertex -= OnFormatVertex;
+
+            base.Clean();
         }
 
-        void Graphviz_FormatEdge(object sender, FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> e)
+        private void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TGraph> args)
         {
-            StringWriter sw = new StringWriter();
-            sw.WriteLine("{0}", e.Edge.Edges.Count);
-            foreach (var edge in e.Edge.Edges)
-                sw.WriteLine("  {0}", edge);
-            e.EdgeFormat.Label.Value = this.Graphviz.Escape(sw.ToString());
+            using (var writer = new StringWriter())
+            {
+                writer.WriteLine($"{args.Vertex.VertexCount}-{args.Vertex.EdgeCount}");
+                foreach (TVertex vertex in args.Vertex.Vertices)
+                {
+                    writer.WriteLine($"  {vertex}");
+                }
+                foreach (TEdge edge in args.Vertex.Edges)
+                {
+                    writer.WriteLine($"  {edge}");
+                }
+                args.VertexFormat.Label = Graphviz.Escape(writer.ToString());
+            }
+        }
+
+        private void OnFormatEdge(
+            [NotNull] object sender,
+            [NotNull] FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
+        {
+            using (var writer = new StringWriter())
+            {
+                writer.WriteLine(args.Edge.Edges.Count);
+                foreach (TEdge edge in args.Edge.Edges)
+                {
+                    writer.WriteLine($"  {edge}");
+                }
+                args.EdgeFormat.Label.Value = Graphviz.Escape(writer.ToString());
+            }
         }
     }
 }

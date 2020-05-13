@@ -1,33 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 using QuickGraph.Graphviz.Dot;
-using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Graphviz
 {
-    [ContractClass(typeof(IDotEngineContract))]
+    /// <summary>
+    /// Represents a Dot engine runner.
+    /// </summary>
     public interface IDotEngine
     {
+        /// <summary>
+        /// Runs the Dot engine using the given <paramref name="dot"/> content and outputs
+        /// the result in given <paramref name="outputFilePath"/> respecting <paramref name="imageType"/>.
+        /// </summary>
+        /// <param name="imageType">Image type.</param>
+        /// <param name="dot">Graph serialized using Dot language.</param>
+        /// <param name="outputFilePath">Target file path.</param>
+        /// <returns>Path to the saved result.</returns>
+        [Pure]
+        [NotNull]
         string Run(
             GraphvizImageType imageType,
-            string dot,
-            string outputFileName);
-    }
-
-    [ContractClassFor(typeof(IDotEngine))]
-    abstract class IDotEngineContract
-        : IDotEngine
-    {
-        #region IDotEngine Members
-        string IDotEngine.Run(GraphvizImageType imageType, string dot, string outputFileName)
-        {
-            Contract.Requires(!String.IsNullOrEmpty(dot));
-            Contract.Requires(!String.IsNullOrEmpty(outputFileName));
-            Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
-
-            return null;
-        }
-        #endregion
+            [NotNull] string dot,
+            [NotNull] string outputFilePath);
     }
 }

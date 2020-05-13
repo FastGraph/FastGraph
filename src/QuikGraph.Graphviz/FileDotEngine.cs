@@ -1,22 +1,25 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using QuickGraph.Graphviz.Dot;
 using System.IO;
-using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Graphviz
 {
     /// <summary>
-    /// Default dot engine implementation, writes dot code to disk
+    /// Default dot engine implementation, writes dot code to disk.
     /// </summary>
     public sealed class FileDotEngine : IDotEngine
     {
-        public string Run(GraphvizImageType imageType, string dot, string outputFileName)
+        /// <inheritdoc />
+        public string Run(GraphvizImageType imageType, string dot, string outputFilePath)
         {
-            string output = outputFileName;
-            if (!output.EndsWith(".dot", StringComparison.InvariantCultureIgnoreCase))
-                output = output + ".dot";
+            if (string.IsNullOrEmpty(dot))
+                throw new ArgumentException("Dot content must not be null or empty.", nameof(dot));
+            if (string.IsNullOrEmpty(dot))
+                throw new ArgumentException("Output file path content must not be null or empty.", nameof(outputFilePath));
+
+            string output = outputFilePath;
+            if (!output.EndsWith(".dot", StringComparison.OrdinalIgnoreCase))
+                output += ".dot";
 
             File.WriteAllText(output, dot);
             return output;

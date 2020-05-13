@@ -1,305 +1,329 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using QuikGraph;
+using JetBrains.Annotations;
 using QuickGraph.Graphviz.Dot;
+using QuikGraph;
 
 namespace QuickGraph.Graphviz
 {
     /// <summary>
-    /// An algorithm that renders a graph to the Graphviz DOT format.
+    /// An algorithm that renders a graph to the GraphViz DOT format.
     /// </summary>
-    /// <typeparam name="TVertex">type of the vertices</typeparam>
-    /// <typeparam name="TEdge">type of the edges</typeparam>
-    public class GraphvizAlgorithm<TVertex,TEdge>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public class GraphvizAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly static Regex writeLineReplace = new Regex("\n", RegexOptions.Compiled | RegexOptions.Multiline);
-        private IEdgeListGraph<TVertex, TEdge> visitedGraph;
-        private StringWriter output;
-        private GraphvizImageType imageType;
-        private readonly Dictionary<TVertex, int> vertexIds = new Dictionary<TVertex, int>();
-        private int clusterCount;
-        private GraphvizGraph graphFormat;
-        private GraphvizVertex commonVertexFormat;
-        private GraphvizEdge commonEdgeFormat;
+        [NotNull]
+        private readonly Dictionary<TVertex, int> _verticesIds = new Dictionary<TVertex, int>();
 
-        public GraphvizAlgorithm(IEdgeListGraph<TVertex, TEdge> g)
-            :this(g,".",GraphvizImageType.Png)
-        {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to convert to DOT.</param>
+        public GraphvizAlgorithm([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+            : this(graph, GraphvizImageType.Png)
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to convert to DOT.</param>
+        /// <param name="imageType">Target output image type.</param>
         public GraphvizAlgorithm(
-            IEdgeListGraph<TVertex, TEdge> g,
-            String path,
-            GraphvizImageType imageType
-            )
+            [NotNull] IEdgeListGraph<TVertex, TEdge> graph,
+            GraphvizImageType imageType)
         {
-            Contract.Requires(g != null);
-            Contract.Requires(!String.IsNullOrEmpty(path));
-
-            this.clusterCount = 0;
-            this.visitedGraph = g;
-            this.imageType = imageType;
-            this.graphFormat = new GraphvizGraph();
-            this.commonVertexFormat = new GraphvizVertex();
-            this.commonEdgeFormat = new GraphvizEdge();
+            ClusterCount = 0;
+            _visitedGraph = graph ?? throw new ArgumentNullException(nameof(graph));
+            ImageType = imageType;
+            GraphFormat = new GraphvizGraph();
+            CommonVertexFormat = new GraphvizVertex();
+            CommonEdgeFormat = new GraphvizEdge();
         }
 
-        public string Escape(string value)
-        {
-            return writeLineReplace.Replace(value, "\\n");
-        }
+        /// <summary>
+        /// Graph format.
+        /// </summary>
+        [NotNull]
+        public GraphvizGraph GraphFormat { get; }
 
-        public GraphvizGraph GraphFormat
-        {
-            get
-            {
-                return graphFormat;
-            }
-        }
+        /// <summary>
+        /// Common vertex format.
+        /// </summary>
+        [NotNull]
+        public GraphvizVertex CommonVertexFormat { get; }
 
-        public GraphvizVertex CommonVertexFormat
-        {
-            get
-            {
-                return commonVertexFormat;
-            }
-        }
+        /// <summary>
+        /// Common edge format.
+        /// </summary>
+        [NotNull]
+        public GraphvizEdge CommonEdgeFormat { get; }
 
-        public GraphvizEdge CommonEdgeFormat
-        {
-            get
-            {
-                return commonEdgeFormat;
-            }
-        }
+        [NotNull]
+        private IEdgeListGraph<TVertex, TEdge> _visitedGraph;
 
+        /// <summary>
+        /// Graph to convert.
+        /// </summary>
+        [NotNull]
         public IEdgeListGraph<TVertex, TEdge> VisitedGraph
         {
-            get
-            {
-                return visitedGraph;
-            }
-            set
-            {
-                Contract.Requires(value != null);
-
-                visitedGraph = value;
-            }
+            get => _visitedGraph;
+            set => _visitedGraph = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>
         /// Dot output stream.
         /// </summary>
-        public StringWriter Output
+        /// <remarks>Not null after a run of <see cref="Generate()"/> or <see cref="Generate(IDotEngine,string)"/>.</remarks>
+        public StringWriter Output { get; private set; }
+
+        /// <summary>
+        /// Current image output type.
+        /// </summary>
+        public GraphvizImageType ImageType { get; set; }
+
+        internal int ClusterCount { get; set; }
+
+        /// <summary>
+        /// Fired when formatting a clustered graph.
+        /// </summary>
+        public event FormatClusterEventHandler<TVertex, TEdge> FormatCluster;
+
+        private void OnFormatCluster([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> cluster)
         {
-            get
-            {
-                return output;
-            }
+            Debug.Assert(cluster != null);
+
+            FormatClusterEventHandler<TVertex, TEdge> formatCluster = FormatCluster;
+            if (formatCluster is null)
+                return;
+
+            var args = new FormatClusterEventArgs<TVertex, TEdge>(cluster, new GraphvizGraph());
+            formatCluster(this, args);
+            string dot = args.GraphFormat.ToDot();
+            if (dot.Length != 0)
+                Output.WriteLine(dot);
         }
 
         /// <summary>
-        /// Current image output type
+        /// Fired when formatting a vertex.
         /// </summary>
-        public GraphvizImageType ImageType
-        {
-            get
-            {
-                return imageType;
-            }
-            set
-            {
-                imageType = value;
-            }
-        }
-
-        internal int ClusterCount
-        {
-            get
-            {
-                return clusterCount;
-            }
-            set
-            {
-                clusterCount = value;
-            }
-        }
-
-
-        public event FormatClusterEventHandler<TVertex,TEdge> FormatCluster;
-        private void OnFormatCluster(IVertexAndEdgeListGraph<TVertex,TEdge> cluster)
-        {
-            if (FormatCluster != null)
-            {
-                FormatClusterEventArgs<TVertex,TEdge> args =
-                    new FormatClusterEventArgs<TVertex,TEdge>(cluster, new GraphvizGraph());
-                FormatCluster(this, args);
-                string s = args.GraphFormat.ToDot();
-                if (s.Length != 0)
-                    Output.WriteLine(s);
-            }
-      }
-
         public event FormatVertexEventHandler<TVertex> FormatVertex;
-        private void OnFormatVertex(TVertex v)
-        {
-            Output.Write("{0} ", this.vertexIds[v]);
-            if (FormatVertex != null)
-            {
-                var gv = new GraphvizVertex();
-                gv.Label = v.ToString();
-                FormatVertex(this, new FormatVertexEventArgs<TVertex>(v, gv));
 
-                string s = gv.ToDot();
-                if (s.Length != 0)
-                    Output.Write("[{0}]", s);
+        private void OnFormatVertex([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
+
+            Output.Write($"{_verticesIds[vertex]} ");
+            FormatVertexEventHandler<TVertex> formatVertex = FormatVertex;
+            if (formatVertex != null)
+            {
+                var vertexFormat = new GraphvizVertex
+                {
+                    Label = vertex.ToString()
+                };
+                formatVertex(this, new FormatVertexEventArgs<TVertex>(vertex, vertexFormat));
+
+                string dot = vertexFormat.ToDot();
+                if (dot.Length != 0)
+                    Output.Write($"[{dot}]");
             }
             Output.WriteLine(";");
         }
 
-        public event FormatEdgeAction<TVertex,TEdge> FormatEdge;
-        private void OnFormatEdge(TEdge e)
+        /// <summary>
+        /// Fired when formatting an edge.
+        /// </summary>
+        public event FormatEdgeAction<TVertex, TEdge> FormatEdge;
+
+        private void OnFormatEdge([NotNull] TEdge edge)
         {
-            if (FormatEdge != null)
+            Debug.Assert(edge != null);
+
+            FormatEdgeAction<TVertex, TEdge> formatEdge = FormatEdge;
+            if (formatEdge != null)
             {
-                var ev = new GraphvizEdge();
-                FormatEdge(this, new FormatEdgeEventArgs<TVertex,TEdge>(e, ev));
-                Output.Write(" {0}", ev.ToDot());
+                var edgeFormat = new GraphvizEdge();
+                formatEdge(this, new FormatEdgeEventArgs<TVertex, TEdge>(edge, edgeFormat));
+                Output.Write($" {edgeFormat.ToDot()}");
             }
         }
 
+        /// <summary>
+        /// Generates the DOT corresponding to <see cref="VisitedGraph"/>.
+        /// </summary>
+        /// <returns>DOT serialization of <see cref="VisitedGraph"/>.</returns>
+        [Pure]
+        [NotNull]
         public string Generate()
         {
             ClusterCount = 0;
-            this.vertexIds.Clear();
-            this.output = new StringWriter();
-            // build vertex id map
+            _verticesIds.Clear();
+            Output = new StringWriter();
+            // Build vertex id map
             int i = 0;
-            foreach (TVertex v in this.VisitedGraph.Vertices)
-                this.vertexIds.Add(v, i++);
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                _verticesIds.Add(vertex, i++);
+            }
 
-            if (this.VisitedGraph.IsDirected)
-                this.Output.Write("digraph ");
-            else
-                this.Output.Write("graph ");
-            this.Output.Write(this.GraphFormat.Name);
-            this.Output.WriteLine(" {");
+            Output.Write(VisitedGraph.IsDirected ? "digraph " : "graph ");
+            Output.Write(GraphFormat.Name);
+            Output.WriteLine(" {");
 
-            String gf = GraphFormat.ToDot();
-            if (gf.Length > 0)
-                Output.WriteLine(gf);
-            String vf = CommonVertexFormat.ToDot();
-            if (vf.Length > 0)
-                Output.WriteLine("node [{0}];", vf);
-            String ef = CommonEdgeFormat.ToDot();
-            if (ef.Length > 0)
-                Output.WriteLine("edge [{0}];", ef);
+            string graphFormat = GraphFormat.ToDot();
+            if (graphFormat.Length > 0)
+                Output.WriteLine(graphFormat);
+            string vertexFormat = CommonVertexFormat.ToDot();
+            if (vertexFormat.Length > 0)
+                Output.WriteLine($"node [{vertexFormat}];");
+            string edgeFormat = CommonEdgeFormat.ToDot();
+            if (edgeFormat.Length > 0)
+                Output.WriteLine($"edge [{edgeFormat}];");
 
-            // initialize vertex map
-            var colors = new Dictionary<TVertex, GraphColor>();
-            foreach (var v in VisitedGraph.Vertices)
-                colors[v] = GraphColor.White;
+            // Initialize vertices map
+            var verticesColors = new Dictionary<TVertex, GraphColor>();
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                verticesColors[vertex] = GraphColor.White;
+            }
+
             var edgeColors = new Dictionary<TEdge, GraphColor>();
-            foreach (var e in VisitedGraph.Edges)
-                edgeColors[e] = GraphColor.White;
+            foreach (TEdge edge in VisitedGraph.Edges)
+            {
+                edgeColors[edge] = GraphColor.White;
+            }
 
-            if (VisitedGraph is IClusteredGraph)
-                WriteClusters(colors, edgeColors, VisitedGraph as IClusteredGraph);
+            if (VisitedGraph is IClusteredGraph clusteredGraph)
+            {
+                WriteClusters(verticesColors, edgeColors, clusteredGraph);
+            }
 
-            WriteVertices(colors, VisitedGraph.Vertices);
+            WriteVertices(verticesColors, VisitedGraph.Vertices);
             WriteEdges(edgeColors, VisitedGraph.Edges);
 
             Output.WriteLine("}");
             return Output.ToString();
         }
 
-        public string Generate(IDotEngine dot, string outputFileName)
+        /// <summary>
+        /// Generates the DOT corresponding to <see cref="VisitedGraph"/> using <paramref name="dot"/> engine
+        /// and puts result in <paramref name="outputFilePath"/>.
+        /// </summary>
+        /// <returns>File path containing DOT serialization of <see cref="VisitedGraph"/>.</returns>
+        [Pure]
+        [NotNull]
+        public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
         {
-            Contract.Requires(dot != null);
-            Contract.Requires(!String.IsNullOrEmpty(outputFileName));
+            if (dot is null)
+                throw new ArgumentNullException(nameof(dot));
+            if (string.IsNullOrEmpty(outputFilePath))
+                throw new ArgumentException("Output file path cannot be null or empty.", nameof(outputFilePath));
 
-            var output = this.Generate();
-            return dot.Run(ImageType, Output.ToString(), outputFileName);
+            return dot.Run(ImageType, Generate(), outputFilePath);
         }
-        internal void WriteClusters (
-        IDictionary<TVertex, GraphColor> colors,
-        IDictionary<TEdge, GraphColor> edgeColors,
-        IClusteredGraph parent
-    ) 
+
+        /// <summary>
+        /// Escapes line breaks in the given <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">String to escape.</param>
+        /// <returns>Escaped string.</returns>
+        [NotNull]
+        public string Escape([NotNull] string value)
         {
+            return GraphvizAlgorithmHelpers.WriteLineReplace.Replace(value, "\\n");
+        }
+
+        private void WriteClusters(
+            [NotNull] IDictionary<TVertex, GraphColor> verticesColors, 
+            [NotNull] IDictionary<TEdge, GraphColor> edgeColors, 
+            [NotNull] IClusteredGraph parent)
+        {
+            Debug.Assert(verticesColors != null);
+            Debug.Assert(edgeColors != null);
+            Debug.Assert(parent != null);
+
             ++ClusterCount;
-            foreach (IVertexAndEdgeListGraph<TVertex,TEdge> g in parent.Clusters)
+            foreach (IVertexAndEdgeListGraph<TVertex, TEdge> subGraph in parent.Clusters)
             {
-                Output.Write("subgraph cluster{0}", ClusterCount.ToString());
+                Output.Write($"subgraph cluster{ClusterCount}");
                 Output.WriteLine(" {");
-                OnFormatCluster(g);
-                if (g is IClusteredGraph)
-                    WriteClusters(colors, edgeColors, g as IClusteredGraph);
+                OnFormatCluster(subGraph);
+                if (subGraph is IClusteredGraph clusteredGraph)
+                {
+                    WriteClusters(verticesColors, edgeColors, clusteredGraph);
+                }
+
                 if (parent.Collapsed)
                 {
-                    foreach (TVertex v in g.Vertices)
+                    foreach (TVertex vertex in subGraph.Vertices)
                     {
-                        colors[v] = GraphColor.Black;
+                        verticesColors[vertex] = GraphColor.Black;
                     }
-                    foreach (TEdge e in g.Edges)
-                        edgeColors[e] = GraphColor.Black;
+
+                    foreach (TEdge edge in subGraph.Edges)
+                    {
+                        edgeColors[edge] = GraphColor.Black;
+                    }
                 }
                 else
                 {
-                    WriteVertices(colors, g.Vertices);
-                    WriteEdges(edgeColors, g.Edges);
+                    WriteVertices(verticesColors, subGraph.Vertices);
+                    WriteEdges(edgeColors, subGraph.Edges);
                 }
                 Output.WriteLine("}");
             }
         }
 
         private void WriteVertices(
-            IDictionary<TVertex,GraphColor> colors,
-            IEnumerable<TVertex> vertices)
+            [NotNull] IDictionary<TVertex, GraphColor> verticesColors,
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
-            Contract.Requires(colors != null);
-            Contract.Requires(vertices != null);
+            Debug.Assert(verticesColors != null);
+            Debug.Assert(vertices != null);
 
-            foreach (var v in vertices)
+            foreach (TVertex vertex in vertices)
             {
-                if (colors[v] == GraphColor.White)
-                {
-                    OnFormatVertex(v);
-                    colors[v] = GraphColor.Black;
-                }
+                if (verticesColors[vertex] != GraphColor.White)
+                    continue;
+
+                OnFormatVertex(vertex);
+                verticesColors[vertex] = GraphColor.Black;
             }
         }
 
         private void WriteEdges(
-            IDictionary<TEdge,GraphColor> edgeColors,
-            IEnumerable<TEdge> edges)
+            [NotNull] IDictionary<TEdge, GraphColor> edgesColors,
+            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
-            Contract.Requires(edgeColors != null);
-            Contract.Requires(edges != null);
+            Debug.Assert(edgesColors != null);
+            Debug.Assert(edges != null);
 
-            foreach (var e in edges)
+            foreach (TEdge edge in edges)
             {
-                if (edgeColors[e] != GraphColor.White)
+                if (edgesColors[edge] != GraphColor.White)
                     continue;
-                if (this.VisitedGraph.IsDirected)
-                    Output.Write("{0} -> {1} [",
-                        this.vertexIds[e.Source],
-                        this.vertexIds[e.Target]
-                    );
-                else
-                    Output.Write("{0} -- {1} [",
-                       this.vertexIds[e.Source],
-                       this.vertexIds[e.Target]
-                   );
 
-                OnFormatEdge(e);
+                Output.Write(VisitedGraph.IsDirected
+                    ? $"{_verticesIds[edge.Source]} -> {_verticesIds[edge.Target]} ["
+                    : $"{_verticesIds[edge.Source]} -- {_verticesIds[edge.Target]} [");
+
+                OnFormatEdge(edge);
                 Output.WriteLine("];");
 
-                edgeColors[e] = GraphColor.Black;
+                edgesColors[edge] = GraphColor.Black;
             }
         }
+    }
+
+    internal static class GraphvizAlgorithmHelpers
+    {
+        [NotNull]
+        public static readonly Regex WriteLineReplace = new Regex("\n", RegexOptions.Compiled | RegexOptions.Multiline);
     }
 }

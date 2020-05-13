@@ -1,38 +1,62 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using JetBrains.Annotations;
 using QuikGraph;
 using QuikGraph.Algorithms.Condensation;
 
 namespace QuickGraph.Graphviz
 {
-    public class EdgeMergeCondensatedGraphRenderer<TVertex, TEdge> :
-        GraphRendererBase<TVertex, MergedEdge<TVertex, TEdge>>
+    /// <summary>
+    /// Edge merge condensation graph to DOT renderer.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
+    public class EdgeMergeCondensatedGraphRenderer<TVertex, TEdge> : GraphRendererBase<TVertex, MergedEdge<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeMergeCondensatedGraphRenderer{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="graph">Graph to convert to DOT.</param>
         public EdgeMergeCondensatedGraphRenderer(
-            IVertexAndEdgeListGraph<TVertex, MergedEdge<TVertex, TEdge>> visitedGraph)
-            :base(visitedGraph)
-        { }
+            [NotNull] IEdgeListGraph<TVertex, MergedEdge<TVertex, TEdge>> graph)
+            : base(graph)
+        {
+        }
 
+        /// <inheritdoc />
         protected override void Initialize()
         {
             base.Initialize();
-            this.Graphviz.FormatVertex += new FormatVertexEventHandler<TVertex>(Graphviz_FormatVertex);
-            this.Graphviz.FormatEdge += new FormatEdgeAction<TVertex, MergedEdge<TVertex, TEdge>>(Graphviz_FormatEdge);
+
+            Graphviz.FormatVertex += OnFormatVertex;
+            Graphviz.FormatEdge += OnFormatEdge;
+        }
+        
+        /// <inheritdoc />
+        protected override void Clean()
+        {
+            Graphviz.FormatEdge -= OnFormatEdge;
+            Graphviz.FormatVertex -= OnFormatVertex;
+
+            base.Clean();
         }
 
-        void Graphviz_FormatEdge(object sender, FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> e)
+        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TVertex> args)
         {
-            StringWriter sw = new StringWriter();
-            sw.WriteLine("{0}", e.Edge.Edges.Count);
-            foreach (var edge in e.Edge.Edges)
-                sw.WriteLine("  {0}", edge);
-            e.EdgeFormat.Label.Value = this.Graphviz.Escape(sw.ToString());
+            args.VertexFormat.Label = args.Vertex.ToString();
         }
 
-        void Graphviz_FormatVertex(Object sender, FormatVertexEventArgs<TVertex> e)
+        private void OnFormatEdge([NotNull] object sender, [NotNull] FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> args)
         {
-            e.VertexFormat.Label = e.Vertex.ToString();
+            using (var writer = new StringWriter())
+            {
+                writer.WriteLine(args.Edge.Edges.Count);
+                foreach (TEdge edge in args.Edge.Edges)
+                {
+                    writer.WriteLine($"  {edge}");
+                }
+                args.EdgeFormat.Label.Value = Graphviz.Escape(writer.ToString());
+            }
         }
     }
 }
