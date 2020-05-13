@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// Delegate for a vertex formatting event.

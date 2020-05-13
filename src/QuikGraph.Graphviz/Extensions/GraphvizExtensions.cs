@@ -2,9 +2,8 @@
 using System.IO;
 using System.Net;
 using JetBrains.Annotations;
-using QuikGraph;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// Helper extensions to render graphs to graphviz

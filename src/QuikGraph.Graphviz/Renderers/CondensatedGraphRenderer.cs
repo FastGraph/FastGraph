@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using JetBrains.Annotations;
-using QuikGraph;
 using QuikGraph.Algorithms.Condensation;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// Condensation graph to DOT renderer.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuickGraph.Graphviz.Dot
+namespace QuikGraph.Graphviz.Dot
 {
     public sealed class GraphvizPoint
     {

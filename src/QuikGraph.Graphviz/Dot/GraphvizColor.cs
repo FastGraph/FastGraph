@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics.Contracts;
 
-namespace QuickGraph.Graphviz.Dot
+namespace QuikGraph.Graphviz.Dot
 {
     public struct GraphvizColor
         : IEquatable<GraphvizColor>

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
    public static class SvgHtmlWrapper
    {

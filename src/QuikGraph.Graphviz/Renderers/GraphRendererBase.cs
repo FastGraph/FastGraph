@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using JetBrains.Annotations;
-using QuickGraph.Graphviz.Dot;
-using QuikGraph;
+using QuikGraph.Graphviz.Dot;
 using QuikGraph.Utils;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// Base class for Graph to DOT renderer.

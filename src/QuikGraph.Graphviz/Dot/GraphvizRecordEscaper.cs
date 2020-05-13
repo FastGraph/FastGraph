@@ -1,4 +1,4 @@
-namespace QuickGraph.Graphviz.Dot
+namespace QuikGraph.Graphviz.Dot
 {
     using System;
     using System.Text.RegularExpressions;

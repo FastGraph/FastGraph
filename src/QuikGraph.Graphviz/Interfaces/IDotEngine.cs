@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
-using QuickGraph.Graphviz.Dot;
+using QuikGraph.Graphviz.Dot;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// Represents a Dot engine runner.

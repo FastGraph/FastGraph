@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace QuickGraph.Graphviz.Dot
+namespace QuikGraph.Graphviz.Dot
 {
     [DebuggerDisplay("{Width}x{Height}")]
     public struct GraphvizSizeF

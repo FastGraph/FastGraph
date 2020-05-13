@@ -4,10 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using QuickGraph.Graphviz.Dot;
-using QuikGraph;
+using QuikGraph.Graphviz.Dot;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// An algorithm that renders a graph to the GraphViz DOT format.

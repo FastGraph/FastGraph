@@ -3,10 +3,9 @@ using System;
 #endif
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph;
-using QuickGraph.Graphviz.Dot;
+using QuikGraph.Graphviz.Dot;
 
-namespace QuickGraph.Graphviz
+namespace QuikGraph.Graphviz
 {
     /// <summary>
     /// Arguments of an event related to the formatting of an edge.
