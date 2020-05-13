@@ -1,37 +1,34 @@
-﻿using QuikGraph;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+using System.Diagnostics;
+using JetBrains.Annotations;
+using QuikGraph;
 using QuickGraph.Graphviz.Dot;
 
 namespace QuickGraph.Graphviz
 {
-    public sealed class FormatEdgeEventArgs<TVertex,TEdge> 
-        : EdgeEventArgs<TVertex,TEdge>
+    /// <summary>
+    /// Arguments of an event related to the formatting of an edge.
+    /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
+    public sealed class FormatEdgeEventArgs<TVertex, TEdge> : EdgeEventArgs<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly GraphvizEdge edgeFormatter;
-
-        internal FormatEdgeEventArgs(TEdge e, GraphvizEdge edgeFormatter)
-			: base(e)
+        /// <summary />
+        internal FormatEdgeEventArgs([NotNull] TEdge edge, [NotNull] GraphvizEdge edgeFormat)
+            : base(edge)
         {
-#if CONTRACTS_BUG
-            Contract.Requires(edgeFormatter != null);
-#endif
-            this.edgeFormatter = edgeFormatter;
+            Debug.Assert(edgeFormat != null);
+
+            EdgeFormat = edgeFormat;
         }
 
         /// <summary>
-        /// Edge formatter
+        /// Edge format.
         /// </summary>
-        public GraphvizEdge EdgeFormatter
-        {
-            get
-            {
-                return edgeFormatter;
-            }
-        }
+        public GraphvizEdge EdgeFormat { get; }
     }
-
-    public delegate void FormatEdgeAction<TVertex, TEdge>(
-        object sender, 
-        FormatEdgeEventArgs<TVertex,TEdge> e)
-        where TEdge : IEdge<TVertex>;
 }

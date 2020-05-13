@@ -27,12 +27,12 @@ namespace QuickGraph.Graphviz
             sw.WriteLine("{0}", e.Edge.Edges.Count);
             foreach (var edge in e.Edge.Edges)
                 sw.WriteLine("  {0}", edge);
-            e.EdgeFormatter.Label.Value = this.Graphviz.Escape(sw.ToString());
+            e.EdgeFormat.Label.Value = this.Graphviz.Escape(sw.ToString());
         }
 
         void Graphviz_FormatVertex(Object sender, FormatVertexEventArgs<TVertex> e)
         {
-            e.VertexFormatter.Label = e.Vertex.ToString();
+            e.VertexFormat.Label = e.Vertex.ToString();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace QuickGraph.Graphviz
                 sw.WriteLine("  {0}", v);
             foreach(TEdge edge in e.Vertex.Edges)
                 sw.WriteLine("  {0}", edge);
-            e.VertexFormatter.Label = this.Graphviz.Escape(sw.ToString());
+            e.VertexFormat.Label = this.Graphviz.Escape(sw.ToString());
         }
 
         void Graphviz_FormatEdge(object sender, FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> e)
@@ -40,7 +40,7 @@ namespace QuickGraph.Graphviz
             sw.WriteLine("{0}", e.Edge.Edges.Count);
             foreach (var edge in e.Edge.Edges)
                 sw.WriteLine("  {0}", edge);
-            e.EdgeFormatter.Label.Value = this.Graphviz.Escape(sw.ToString());
+            e.EdgeFormat.Label.Value = this.Graphviz.Escape(sw.ToString());
         }
     }
 }

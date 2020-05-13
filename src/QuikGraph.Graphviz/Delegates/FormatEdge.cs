@@ -1,14 +1,17 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using QuikGraph;
 
-namespace QuikGraph
+namespace QuickGraph.Graphviz
 {
     /// <summary>
-    /// Delegate for an handler dealing with an undirected edge.
+    /// Delegate for an edge formatting event.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="sender">Event sender.</param>
     /// <param name="args">Event arguments.</param>
-    public delegate void UndirectedEdgeAction<TVertex, TEdge>([NotNull] object sender, [NotNull] UndirectedEdgeEventArgs<TVertex, TEdge> args)
+    public delegate void FormatEdgeAction<TVertex, TEdge>(
+        [NotNull] object sender,
+        [NotNull] FormatEdgeEventArgs<TVertex, TEdge> args)
         where TEdge : IEdge<TVertex>;
 }

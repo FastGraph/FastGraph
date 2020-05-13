@@ -12,5 +12,4 @@ namespace QuikGraph.Algorithms
     public delegate void AlgorithmEventHandler<in TGraph>(
         [NotNull] IAlgorithm<TGraph> sender,
         [NotNull] EventArgs args);
-
 }

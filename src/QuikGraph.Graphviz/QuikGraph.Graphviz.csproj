@@ -30,6 +30,13 @@ Supports Source Link</Description>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization GraphViz</PackageTags>
   </PropertyGroup>
 
+  <!-- Targets defines -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <AssemblyTitle>QuikGraph.GraphViz .NET 4.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Dependencies -->
   <ItemGroup>
     <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
   </ItemGroup>

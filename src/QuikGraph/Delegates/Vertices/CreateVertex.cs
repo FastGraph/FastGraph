@@ -1,6 +1,3 @@
-#if SUPPORTS_SERIALIZATION
-using System;
-#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -12,9 +9,7 @@ namespace QuikGraph
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="graph">Graph in with adding the vertex.</param>
     /// <returns>The created vertex.</returns>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
+    [NotNull]
     public delegate TVertex CreateVertexDelegate<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
         where TEdge : IEdge<TVertex>;
 }

@@ -1,45 +1,40 @@
 ﻿using System;
-using QuikGraph;
+using JetBrains.Annotations;
 using QuickGraph.Graphviz.Dot;
+using QuikGraph;
 
 namespace QuickGraph.Graphviz
 {
     /// <summary>
-    /// A clustered graph event argument.
+    /// Arguments of an event related to the formatting of a clustered graph.
     /// </summary>
-    public class FormatClusterEventArgs<TVertex, TEdge> : EventArgs where TEdge : IEdge<TVertex>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
+    public class FormatClusterEventArgs<TVertex, TEdge> : EventArgs
+        where TEdge : IEdge<TVertex>
     {
-        private IVertexAndEdgeListGraph<TVertex,TEdge> cluster;
-        private GraphvizGraph graphFormat;
-
-        public FormatClusterEventArgs(IVertexAndEdgeListGraph<TVertex,TEdge> cluster, GraphvizGraph graphFormat)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeEventArgs{TVertex, TEdge}"/> class.
+        /// </summary>
+        /// <param name="clusteredGraph">Graph to format.</param>
+        /// <param name="graphFormat">Graph format.</param>
+        public FormatClusterEventArgs([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> clusteredGraph, [NotNull] GraphvizGraph graphFormat)
         {
-            if (cluster == null)
-                throw new ArgumentNullException("cluster");
-            this.cluster = cluster;
-            this.graphFormat = graphFormat;
+            Cluster = clusteredGraph ?? throw new ArgumentNullException(nameof(clusteredGraph));
+            GraphFormat = graphFormat ?? throw new ArgumentNullException(nameof(graphFormat));
         }
 
-        public IVertexAndEdgeListGraph<TVertex,TEdge> Cluster
-        {
-            get
-            {
-                return cluster;
-            }
-        }
+        /// <summary>
+        /// Graph to format.
+        /// </summary>
+        [NotNull]
+        public IVertexAndEdgeListGraph<TVertex, TEdge> Cluster { get; }
 
-        public GraphvizGraph GraphFormat
-        {
-            get
-            {
-                return graphFormat;
-            }
-        }
+        /// <summary>
+        /// Graph format.
+        /// </summary>
+        [NotNull]
+        public GraphvizGraph GraphFormat { get; }
     }
-
-    public delegate void FormatClusterEventHandler<TVertex, TEdge>(
-        Object sender,
-        FormatClusterEventArgs<TVertex,TEdge> e)
-        where TEdge: IEdge<TVertex>;
-
 }

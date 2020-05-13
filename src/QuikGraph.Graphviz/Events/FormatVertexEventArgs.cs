@@ -1,33 +1,34 @@
-﻿using System;
+﻿#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+using System.Diagnostics;
+using JetBrains.Annotations;
 using QuikGraph;
 using QuickGraph.Graphviz.Dot;
 
 namespace QuickGraph.Graphviz
 {
-    public sealed class FormatVertexEventArgs<TVertex> 
-        : VertexEventArgs<TVertex>
-    {
-        private readonly GraphvizVertex vertexFormatter;
-
-        internal FormatVertexEventArgs(TVertex v, GraphvizVertex vertexFormatter)
-			: base(v)
-        {
-#if CONTRACTS_BUG
-            Contract.Requires(vertexFormatter != null);
+    /// <summary>
+    /// Arguments of an event related to the formatting of an edge.
+    /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
 #endif
-            this.vertexFormatter = vertexFormatter;
-        }
-
-        public GraphvizVertex VertexFormatter
+    public sealed class FormatVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
+    {
+        /// <summary />
+        internal FormatVertexEventArgs([NotNull] TVertex vertex, [NotNull] GraphvizVertex vertexFormat)
+            : base(vertex)
         {
-            get
-            {
-                return vertexFormatter;
-            }
-        }
-    }
+            Debug.Assert(vertexFormat != null);
 
-    public delegate void FormatVertexEventHandler<TVertex>(
-        Object sender,
-        FormatVertexEventArgs<TVertex> e);
+            VertexFormat = vertexFormat;
+        }
+
+        /// <summary>
+        /// Vertex format.
+        /// </summary>
+        [NotNull]
+        public GraphvizVertex VertexFormat { get; }
+    }
 }
