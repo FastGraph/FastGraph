@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net40</TargetFrameworks>
+    <TargetFrameworks>net35</TargetFrameworks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <GeneratePackageOnBuild>$(Generate_QuikGraph_GraphViz)</GeneratePackageOnBuild>
 
@@ -20,7 +20,7 @@
 This package is the GraphViz subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
 
 Supported platforms:
-- .NET Framework 4.0+
+- .NET Framework 3.5+
 
 Supports Source Link</Description>
 
@@ -31,9 +31,9 @@ Supports Source Link</Description>
   </PropertyGroup>
 
   <!-- Targets defines -->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
-    <AssemblyTitle>QuikGraph.GraphViz .NET 4.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <AssemblyTitle>QuikGraph.GraphViz .NET 3.5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
   <!-- Dependencies -->
