@@ -1,21 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QuikGraph.Graphviz.Dot
+﻿namespace QuikGraph.Graphviz.Dot
 {
+    /// <summary>
+    /// GraphViz point.
+    /// </summary>
     public sealed class GraphvizPoint
     {
-        readonly int x;
-        readonly int y;
+        /// <summary>
+        /// X.
+        /// </summary>
+        public int X { get; }
+        
+        /// <summary>
+        /// Y.
+        /// </summary>
+        public int Y { get; }
 
-        public int X { get { return this.x; } }
-        public int Y { get { return this.y; } }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizPoint"/> class.
+        /// </summary>
+        /// <param name="x">X value.</param>
+        /// <param name="y">Y value.</param>
         public GraphvizPoint(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            X = x;
+            Y = y;
         }
     }
 }

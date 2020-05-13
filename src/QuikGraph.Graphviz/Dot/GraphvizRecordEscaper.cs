@@ -1,28 +1,43 @@
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Text.RegularExpressions;
-    using System.Diagnostics.Contracts;
-
+    /// <summary>
+    /// Record escape helpers.
+    /// </summary>
     public sealed class GraphvizRecordEscaper
     {
-        private Regex escapeRegExp = new Regex("(?<Eol>\\n)|(?<Common>\\[|\\]|\\||<|>|\"| )", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+        [NotNull]
+        private const string EolGroupName = "Eol";
 
-        public string Escape(string text)
+        [NotNull]
+        private const string CommonGroupName = "Common";
+
+        [NotNull]
+        private static readonly Regex EscapeRegex = new Regex(
+            $"(?<{EolGroupName}>\\n)|(?<{CommonGroupName}>\\[|\\]|\\||<|>|\"| )",
+            RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Escapes the given <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">String value top escape.</param>
+        /// <returns>Escaped string.</returns>
+        [Pure]
+        [NotNull]
+        public string Escape([NotNull] string value)
         {
-            Contract.Requires(text != null);
-
-            return this.escapeRegExp.Replace(text, new System.Text.RegularExpressions.MatchEvaluator(this.MatchEvaluator));
-        }
-
-        public string MatchEvaluator(Match m)
-        {
-            if (m.Groups["Common"] != null)
-            {
-                return string.Format(@"\{0}", m.Value);
-            }
-            return @"\n";
+            return EscapeRegex.Replace(
+                value,
+                match =>
+                {
+                    if (match.Groups[CommonGroupName] != null)
+                    {
+                        return $@"\{match.Value}";
+                    }
+                    return @"\n";
+                });
         }
     }
 }
-

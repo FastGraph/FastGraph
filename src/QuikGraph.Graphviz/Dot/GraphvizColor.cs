@@ -1,60 +1,72 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics.Contracts;
+﻿using System;
 
 namespace QuikGraph.Graphviz.Dot
 {
-    public struct GraphvizColor
-        : IEquatable<GraphvizColor>
+    /// <summary>
+    /// Represents a color.
+    /// </summary>
+    public struct GraphvizColor : IEquatable<GraphvizColor>
     {
-        readonly byte a;
-        readonly byte r;
-        readonly byte g;
-        readonly byte b;
-
-        public GraphvizColor(
-            byte a, byte r, byte g, byte b)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizColor"/> struct.
+        /// </summary>
+        /// <param name="a">Alpha channel value.</param>
+        /// <param name="r">Red channel value.</param>
+        /// <param name="g">Green channel value.</param>
+        /// <param name="b">Blue channel value.</param>
+        public GraphvizColor(byte a, byte r, byte g, byte b)
         {
-            Contract.Requires(a >= 0);
-            Contract.Requires(r >= 0);
-            Contract.Requires(g >= 0);
-            Contract.Requires(b >= 0);
-
-            this.a = a;
-            this.r = r;
-            this.g = g;
-            this.b = b;
+            A = a;
+            R = r;
+            G = g;
+            B = b;
         }
 
-        public byte A { get { return this.a; } }
-        public byte R { get { return this.r; } }
-        public byte G { get { return this.g; } }
-        public byte B { get { return this.b; } }
+        /// <summary>
+        /// Alpha channel value.
+        /// </summary>
+        public byte A { get; }
 
-        public static GraphvizColor Black
-        {
-            get { return new GraphvizColor(0xFF, 0, 0, 0); }
-        }
+        /// <summary>
+        /// Red channel value.
+        /// </summary>
+        public byte R { get; }
 
-        public static GraphvizColor White
-        {
-            get { return new GraphvizColor(0xFF, 0xFF, 0xFF, 0xFF); }
-        }
+        /// <summary>
+        /// Green channel value.
+        /// </summary>
+        public byte G { get; }
 
-        public static GraphvizColor LightYellow
-        {
-            get { return new GraphvizColor(0xFF, 0xFF, 0xFF, 0xE0); }
-        }
+        /// <summary>
+        /// Blue channel value.
+        /// </summary>
+        public byte B { get; }
 
+        /// <inheritdoc />
         public bool Equals(GraphvizColor other)
         {
-            return this.a == other.a && this.r == other.r && this.g == other.g && this.b == other.b;
+            return A == other.A && R == other.R && G == other.G && B == other.B;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (int)(this.a << 24 | this.r << 16 | this.g << 8 | this.b);
+            return A << 24 | R << 16 | G << 8 | B;
         }
+
+        /// <summary>
+        /// Black color.
+        /// </summary>
+        public static GraphvizColor Black { get; } = new GraphvizColor(0xFF, 0, 0, 0);
+
+        /// <summary>
+        /// White color.
+        /// </summary>
+        public static GraphvizColor White { get; } = new GraphvizColor(0xFF, 0xFF, 0xFF, 0xFF);
+
+        /// <summary>
+        /// Light yellow color.
+        /// </summary>
+        public static GraphvizColor LightYellow { get; } = new GraphvizColor(0xFF, 0xFF, 0xFF, 0xE0);
     }
 }

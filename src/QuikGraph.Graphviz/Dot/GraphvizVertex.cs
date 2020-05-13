@@ -1,501 +1,354 @@
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Collections;
-    using System.Drawing;
-    using System.IO;
-    using System.Collections.Generic;
-
+    /// <summary>
+    /// GraphViz vertex.
+    /// </summary>
     public class GraphvizVertex
     {
-        private string bottomLabel = null;
-        private string comment = null;
-        private double distorsion = 0;
-        private Color fillColor = Color.White;
-        private bool fixedSize = false;
-        private System.Drawing.Font font = null;
-        private Color fontColor = Color.Black;
-        private string group = null;
-        private string label = null;
-        private GraphvizLayer layer = null;
-        private double orientation = 0;
-        private int peripheries = -1;
-        private GraphvizRecord record = new GraphvizRecord();
-        private bool regular = false;
-        private GraphvizVertexShape shape = GraphvizVertexShape.Unspecified;
-        private int sides = 4;
-        private SizeF size = new SizeF(0f, 0f);
-        private double skew = 0;
-        private Color strokeColor = Color.Black;
-        private GraphvizVertexStyle style = GraphvizVertexStyle.Unspecified;
-        private string toolTip = null;
-        private string topLabel = null;
-        private string url = null;
-        private double z = -1;
-        private System.Drawing.Point? position;
+        /// <summary>
+        /// Position.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:pos">See more</see>
+        /// </summary>
+        public Point? Position { get; set; }
 
-        internal string GenerateDot(Dictionary<string, object> pairs)
+        /// <summary>
+        /// Comment.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
+        /// </summary>
+        public string Comment { get; set; }
+
+        /// <summary>
+        /// Label.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
+        /// </summary>
+        public string Label { get; set; }
+
+        /// <summary>
+        /// Top label.
+        /// </summary>
+        public string TopLabel { get; set; }
+
+        /// <summary>
+        /// Bottom label.
+        /// </summary>
+        public string BottomLabel { get; set; }
+
+        /// <summary>
+        /// Tooltip.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tooltip">See more</see>
+        /// </summary>
+        public string ToolTip { get; set; }
+
+        /// <summary>
+        /// URL.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Distortion.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:distortion">See more</see>
+        /// </summary>
+        public double Distortion { get; set; }
+
+        /// <summary>
+        /// Filling color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fillcolor">See more</see>
+        /// </summary>
+        public Color FillColor { get; set; } = Color.White;
+
+        /// <summary>
+        /// Font.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
+        /// </summary>
+        public Font Font { get; set; }
+
+        /// <summary>
+        /// Font color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontcolor">See more</see>
+        /// </summary>
+        public Color FontColor { get; set; } = Color.Black;
+
+        /// <summary>
+        /// Vertex group.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:group">See more</see>
+        /// </summary>
+        public string Group { get; set; }
+
+        /// <summary>
+        /// Layer.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layer">See more</see>
+        /// </summary>
+        public GraphvizLayer Layer { get; set; }
+
+        /// <summary>
+        /// Orientation.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:orientation">See more</see>
+        /// </summary>
+        public double Orientation { get; set; }
+
+        /// <summary>
+        /// Peripheries.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:peripheries">See more</see>
+        /// </summary>
+        public int Peripheries { get; set; } = -1;
+
+        /// <summary>
+        /// Indicates if is regular vertex.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:regular">See more</see>
+        /// </summary>
+        public bool Regular { get; set; }
+
+        /// <summary>
+        /// Record info.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
+        /// </summary>
+        public GraphvizRecord Record { get; set; } = new GraphvizRecord();
+
+        /// <summary>
+        /// Vertex shape.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:shape">See more</see>
+        /// </summary>
+        public GraphvizVertexShape Shape { get; set; } = GraphvizVertexShape.Unspecified;
+
+        /// <summary>
+        /// Vertex sides.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:sides">See more</see>
+        /// </summary>
+        public int Sides { get; set; } = 4;
+
+        /// <summary>
+        /// Vertex size.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:width">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:height">See more</see>
+        /// </summary>
+        public SizeF Size { get; set; } = new SizeF(0f, 0f);
+
+        /// <summary>
+        /// Fixed size.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fixedsize">See more</see>
+        /// </summary>
+        public bool FixedSize { get; set; }
+
+        /// <summary>
+        /// Skew.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:skew">See more</see>
+        /// </summary>
+        public double Skew { get; set; }
+
+        /// <summary>
+        /// Stroke color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:color">See more</see>
+        /// </summary>
+        public Color StrokeColor { get; set; } = Color.Black;
+
+        /// <summary>
+        /// Vertex style.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:style">See more</see>
+        /// </summary>
+        public GraphvizVertexStyle Style { get; set; } = GraphvizVertexStyle.Unspecified;
+
+        /// <summary>
+        /// Z index.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:z">See more</see>
+        /// </summary>
+        public double Z { get; set; } = -1;
+
+        [Pure]
+        [NotNull]
+        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
         {
-            bool flag = false;
-            var writer = new StringWriter();
-            foreach (var entry in pairs)
+            using (var writer = new StringWriter())
             {
-                if (flag)
+                bool flag = false;
+                foreach (KeyValuePair<string, object> pair in properties)
                 {
-                    writer.Write(", ");
+                    if (flag)
+                    {
+                        writer.Write(", ");
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+
+                    switch (pair.Value)
+                    {
+                        case string strValue:
+                            writer.Write($"{pair.Key}=\"{strValue}\"");
+                            continue;
+
+                        case GraphvizVertexShape shape:
+                            writer.Write($"{pair.Key}={shape.ToString().ToLower()}");
+                            continue;
+
+                        case GraphvizVertexStyle style:
+                            writer.Write($"{pair.Key}={style.ToString().ToLower()}");
+                            continue;
+
+                        case Color color:
+                        {
+                            writer.Write(
+                                "{0}=\"#{1}{2}{3}{4}\"",
+                                pair.Key,
+                                color.R.ToString("x2").ToUpper(),
+                                color.G.ToString("x2").ToUpper(),
+                                color.B.ToString("x2").ToUpper(),
+                                color.A.ToString("x2").ToUpper());
+                            continue;
+                        }
+
+                        case GraphvizRecord record:
+                            writer.WriteLine($"{pair.Key}=\"{record.ToDot()}\"");
+                            continue;
+
+                        default:
+                            writer.Write($" {pair.Key}={pair.Value.ToString().ToLower()}");
+                            break;
+                    }
                 }
-                else
-                {
-                    flag = true;
-                }
-                if (entry.Value is string)
-                {
-                    writer.Write("{0}=\"{1}\"", entry.Key, entry.Value.ToString());
-                    continue;
-                }
-                if (entry.Value is GraphvizVertexShape)
-                {
-                    writer.Write("{0}={1}", entry.Key, ((GraphvizVertexShape) entry.Value).ToString().ToLower());
-                    continue;
-                }
-                if (entry.Value is GraphvizVertexStyle)
-                {
-                    writer.Write("{0}={1}", entry.Key, ((GraphvizVertexStyle) entry.Value).ToString().ToLower());
-                    continue;
-                }
-                if (entry.Value is Color)
-                {
-                    Color color = (Color) entry.Value;
-                    writer.Write("{0}=\"#{1}{2}{3}{4}\"", entry.Key, color.R.ToString("x2").ToUpper(), color.G.ToString("x2").ToUpper(), color.B.ToString("x2").ToUpper(), color.A.ToString("x2").ToUpper());
-                    continue;
-                }
-                if (entry.Value is GraphvizRecord)
-                {
-                    writer.WriteLine("{0}=\"{1}\"", entry.Key, ((GraphvizRecord) entry.Value).ToDot());
-                    continue;
-                }
-                writer.Write(" {0}={1}", entry.Key, entry.Value.ToString().ToLower());
+
+                return writer.ToString();
             }
-            return writer.ToString();
         }
 
+        /// <summary>
+        /// Converts this vertex to DOT.
+        /// </summary>
+        /// <returns>Vertex as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            var pairs = new Dictionary<string, object>();
-            if (this.Font != null)
+            var properties = new Dictionary<string, object>();
+            if (Font != null)
             {
-                pairs["fontname"] = this.Font.Name;
-                pairs["fontsize"] = this.Font.SizeInPoints;
+                properties["fontname"] = Font.Name;
+                properties["fontsize"] = Font.SizeInPoints;
             }
-            if (this.FontColor != Color.Black)
+            if (FontColor != Color.Black)
             {
-                pairs["fontcolor"] = this.FontColor;
+                properties["fontcolor"] = FontColor;
             }
-            if (this.Shape != GraphvizVertexShape.Unspecified)
+            if (Shape != GraphvizVertexShape.Unspecified)
             {
-                pairs["shape"] = this.Shape;
+                properties["shape"] = Shape;
             }
-            if (this.Style != GraphvizVertexStyle.Unspecified)
+            if (Style != GraphvizVertexStyle.Unspecified)
             {
-                pairs["style"] = this.Style;
+                properties["style"] = Style;
             }
-            if (this.Shape == GraphvizVertexShape.Record)
+            if (Shape == GraphvizVertexShape.Record)
             {
-                pairs["label"] = this.Record;
+                properties["label"] = Record;
             }
-            else if (this.Label != null)
+            else if (Label != null)
             {
-                pairs["label"] = this.Label;
+                properties["label"] = Label;
             }
-            if (this.FixedSize)
+            if (FixedSize)
             {
-                pairs["fixedsize"] = true;
-                if (this.Size.Height > 0f)
+                properties["fixedsize"] = true;
+                if (Size.Height > 0f)
                 {
-                    pairs["height"] = this.Size.Height;
+                    properties["height"] = Size.Height;
                 }
-                if (this.Size.Width > 0f)
+                if (Size.Width > 0f)
                 {
-                    pairs["width"] = this.Size.Width;
-                }
-            }
-            if (this.StrokeColor != Color.Black)
-            {
-                pairs["color"] = this.StrokeColor;
-            }
-            if (this.FillColor != Color.White)
-            {
-                pairs["fillcolor"] = this.FillColor;
-            }
-            if (this.Regular)
-            {
-                pairs["regular"] = this.Regular;
-            }
-            if (this.Url != null)
-            {
-                pairs["URL"] = this.Url;
-            }
-            if (this.ToolTip != null)
-            {
-                pairs["tooltip"] = this.ToolTip;
-            }
-            if (this.Comment != null)
-            {
-                pairs["comment"] = this.Comment;
-            }
-            if (this.Group != null)
-            {
-                pairs["group"] = this.Group;
-            }
-            if (this.Layer != null)
-            {
-                pairs["layer"] = this.Layer.Name;
-            }
-            if (this.Orientation > 0)
-            {
-                pairs["orientation"] = this.Orientation;
-            }
-            if (this.Peripheries >= 0)
-            {
-                pairs["peripheries"] = this.Peripheries;
-            }
-            if (this.Z > 0)
-            {
-                pairs["z"] = this.Z;
-            }
-            if (this.position.HasValue)
-            {
-                var p = this.position.Value;
-                pairs["pos"] = String.Format("{0},{1}!", p.X, p.Y);
-            }
-            if (((this.Style == GraphvizVertexStyle.Diagonals) || (this.Shape == GraphvizVertexShape.MCircle)) || ((this.Shape == GraphvizVertexShape.MDiamond) || (this.Shape == GraphvizVertexShape.MSquare)))
-            {
-                if (this.TopLabel != null)
-                {
-                    pairs["toplabel"] = this.TopLabel;
-                }
-                if (this.BottomLabel != null)
-                {
-                    pairs["bottomlable"] = this.BottomLabel;
+                    properties["width"] = Size.Width;
                 }
             }
-            if (this.Shape == GraphvizVertexShape.Polygon)
+            if (StrokeColor != Color.Black)
             {
-                if (this.Sides != 0)
+                properties["color"] = StrokeColor;
+            }
+            if (FillColor != Color.White)
+            {
+                properties["fillcolor"] = FillColor;
+            }
+            if (Regular)
+            {
+                properties["regular"] = Regular;
+            }
+            if (Url != null)
+            {
+                properties["URL"] = Url;
+            }
+            if (ToolTip != null)
+            {
+                properties["tooltip"] = ToolTip;
+            }
+            if (Comment != null)
+            {
+                properties["comment"] = Comment;
+            }
+            if (Group != null)
+            {
+                properties["group"] = Group;
+            }
+            if (Layer != null)
+            {
+                properties["layer"] = Layer.Name;
+            }
+            if (Orientation > 0)
+            {
+                properties["orientation"] = Orientation;
+            }
+            if (Peripheries >= 0)
+            {
+                properties["peripheries"] = Peripheries;
+            }
+            if (Z > 0)
+            {
+                properties["z"] = Z;
+            }
+            if (Position.HasValue)
+            {
+                properties["pos"] = $"{Position.Value.X},{Position.Value.Y}!";
+            }
+            if (Style == GraphvizVertexStyle.Diagonals
+                || Shape == GraphvizVertexShape.MCircle
+                || Shape == GraphvizVertexShape.MDiamond
+                || Shape == GraphvizVertexShape.MSquare)
+            {
+                if (TopLabel != null)
                 {
-                    pairs["sides"] = this.Sides;
+                    properties["toplabel"] = TopLabel;
                 }
-                if (this.Skew != 0)
+                if (BottomLabel != null)
                 {
-                    pairs["skew"] = this.Skew;
+                    properties["bottomlabel"] = BottomLabel;
                 }
-                if (this.Distorsion != 0)
+            }
+            if (Shape == GraphvizVertexShape.Polygon)
+            {
+                if (Sides != 0)
                 {
-                    pairs["distorsion"] = this.Distorsion;
+                    properties["sides"] = Sides;
+                }
+                if (Skew != 0)
+                {
+                    properties["skew"] = Skew;
+                }
+                if (Distortion != 0)
+                {
+                    properties["distorsion"] = Distortion;
                 }
             }
 
-            return this.GenerateDot(pairs);
+            return GenerateDot(properties);
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.ToDot();
-        }
-
-        public System.Drawing.Point? Position
-        {
-            get { return this.position; }
-            set { this.position = value; }
-        }
-
-        public string BottomLabel
-        {
-            get
-            {
-                return this.bottomLabel;
-            }
-            set
-            {
-                this.bottomLabel = value;
-            }
-        }
-
-        public string Comment
-        {
-            get
-            {
-                return this.comment;
-            }
-            set
-            {
-                this.comment = value;
-            }
-        }
-
-        public double Distorsion
-        {
-            get
-            {
-                return this.distorsion;
-            }
-            set
-            {
-                this.distorsion = value;
-            }
-        }
-
-        public Color FillColor
-        {
-            get
-            {
-                return this.fillColor;
-            }
-            set
-            {
-                this.fillColor = value;
-            }
-        }
-
-        public bool FixedSize
-        {
-            get
-            {
-                return this.fixedSize;
-            }
-            set
-            {
-                this.fixedSize = value;
-            }
-        }
-
-        public System.Drawing.Font Font
-        {
-            get
-            {
-                return this.font;
-            }
-            set
-            {
-                this.font = value;
-            }
-        }
-
-        public Color FontColor
-        {
-            get
-            {
-                return this.fontColor;
-            }
-            set
-            {
-                this.fontColor = value;
-            }
-        }
-
-        public string Group
-        {
-            get
-            {
-                return this.group;
-            }
-            set
-            {
-                this.group = value;
-            }
-        }
-
-        public string Label
-        {
-            get
-            {
-                return this.label;
-            }
-            set
-            {
-                this.label = value;
-            }
-        }
-
-        public GraphvizLayer Layer
-        {
-            get
-            {
-                return this.layer;
-            }
-            set
-            {
-                this.layer = value;
-            }
-        }
-
-        public double Orientation
-        {
-            get
-            {
-                return this.orientation;
-            }
-            set
-            {
-                this.orientation = value;
-            }
-        }
-
-        public int Peripheries
-        {
-            get
-            {
-                return this.peripheries;
-            }
-            set
-            {
-                this.peripheries = value;
-            }
-        }
-
-        public GraphvizRecord Record
-        {
-            get
-            {
-                return this.record;
-            }
-            set
-            {
-                this.record = value;
-            }
-        }
-
-        public bool Regular
-        {
-            get
-            {
-                return this.regular;
-            }
-            set
-            {
-                this.regular = value;
-            }
-        }
-
-        public GraphvizVertexShape Shape
-        {
-            get
-            {
-                return this.shape;
-            }
-            set
-            {
-                this.shape = value;
-            }
-        }
-
-        public int Sides
-        {
-            get
-            {
-                return this.sides;
-            }
-            set
-            {
-                this.sides = value;
-            }
-        }
-
-        public SizeF Size
-        {
-            get
-            {
-                return this.size;
-            }
-            set
-            {
-                this.size = value;
-            }
-        }
-
-        public double Skew
-        {
-            get
-            {
-                return this.skew;
-            }
-            set
-            {
-                this.skew = value;
-            }
-        }
-
-        public Color StrokeColor
-        {
-            get
-            {
-                return this.strokeColor;
-            }
-            set
-            {
-                this.strokeColor = value;
-            }
-        }
-
-        public GraphvizVertexStyle Style
-        {
-            get
-            {
-                return this.style;
-            }
-            set
-            {
-                this.style = value;
-            }
-        }
-
-        public string ToolTip
-        {
-            get
-            {
-                return this.toolTip;
-            }
-            set
-            {
-                this.toolTip = value;
-            }
-        }
-
-        public string TopLabel
-        {
-            get
-            {
-                return this.topLabel;
-            }
-            set
-            {
-                this.topLabel = value;
-            }
-        }
-
-        public string Url
-        {
-            get
-            {
-                return this.url;
-            }
-            set
-            {
-                this.url = value;
-            }
-        }
-
-        public double Z
-        {
-            get
-            {
-                return this.z;
-            }
-            set
-            {
-                this.z = value;
-            }
+            return ToDot();
         }
     }
 }
-

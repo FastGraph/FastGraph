@@ -1,21 +1,36 @@
+using System.Collections.ObjectModel;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Reflection;
-    using System.Collections.ObjectModel;
-
+    /// <summary>
+    /// GraphViz record cell collection.
+    /// </summary>
     public sealed class GraphvizRecordCellCollection : Collection<GraphvizRecordCell>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizRecordCellCollection"/> class.
+        /// </summary>
         public GraphvizRecordCellCollection()
-        {}
+        {
+        }
 
-        public GraphvizRecordCellCollection(GraphvizRecordCell[] items)
-            :base(items)
-        {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizRecordCellCollection"/> class.
+        /// </summary>
+        /// <param name="list">The list that is wrapped by the new collection.</param>
+        public GraphvizRecordCellCollection([NotNull, ItemNotNull] GraphvizRecordCell[] list)
+            : base(list)
+        {
+        }
 
-        public GraphvizRecordCellCollection(GraphvizRecordCellCollection items)
-            :base(items)
-        {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizRecordCellCollection"/> class.
+        /// </summary>
+        /// <param name="list">The list that is wrapped by the new collection.</param>
+        public GraphvizRecordCellCollection([NotNull, ItemNotNull] GraphvizRecordCellCollection list)
+            : base(list)
+        {
+        }
     }
 }
-

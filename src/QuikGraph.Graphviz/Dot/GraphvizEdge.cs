@@ -1,377 +1,283 @@
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Collections;
-    using System.Drawing;
-    using System.IO;
-
+    /// <summary>
+    /// GraphViz edge.
+    /// </summary>
     public class GraphvizEdge
     {
-        private string comment = null;
-        private GraphvizEdgeDirection dir = GraphvizEdgeDirection.Forward;
-        private System.Drawing.Font font = null;
-        private Color fontColor = Color.Black;
-        private GraphvizEdgeExtremity head = new GraphvizEdgeExtremity(true);
-        private GraphvizArrow headArrow = null;
-        private bool isConstrained = true;
-        private bool isDecorated = false;
-        private GraphvizEdgeLabel label = new GraphvizEdgeLabel();
-        private GraphvizLayer layer = null;
-        private int minLength = 1;
-        private Color strokeColor = Color.Black;
-        private GraphvizEdgeStyle style = GraphvizEdgeStyle.Unspecified;
-        private GraphvizEdgeExtremity tail = new GraphvizEdgeExtremity(false);
-        private GraphvizArrow tailArrow = null;
-        private string tooltip = null;
-        private string url = null;
-        private double weight = 1;
-        private int length = 1;
+        /// <summary>
+        /// Comment.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
+        /// </summary>
+        public string Comment { get; set; }
 
-        internal string GenerateDot(Hashtable pairs)
+        /// <summary>
+        /// Label.
+        /// </summary>
+        public GraphvizEdgeLabel Label { get; set; } = new GraphvizEdgeLabel();
+
+        /// <summary>
+        /// Tooltip.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tooltip">See more</see>
+        /// </summary>
+        public string ToolTip { get; set; }
+
+        /// <summary>
+        /// URL.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Direction.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:dir">See more</see>
+        /// </summary>
+        public GraphvizEdgeDirection Direction { get; set; } = GraphvizEdgeDirection.Forward;
+
+        /// <summary>
+        /// Font.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
+        /// </summary>
+        public Font Font { get; set; }
+
+        /// <summary>
+        /// Font color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontcolor">See more</see>
+        /// </summary>
+        public Color FontColor { get; set; } = Color.Black;
+
+        /// <summary>
+        /// Edge head.
+        /// </summary>
+        public GraphvizEdgeExtremity Head { get; set; } = new GraphvizEdgeExtremity(true);
+
+        /// <summary>
+        /// Edge arrow.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:arrowhead">See more</see>
+        /// </summary>
+        public GraphvizArrow HeadArrow { get; set; }
+
+        /// <summary>
+        /// Head port.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headport">See more</see>
+        /// </summary>
+        public string HeadPort { get; set; }
+
+        /// <summary>
+        /// Tail.
+        /// </summary>
+        public GraphvizEdgeExtremity Tail { get; set; } = new GraphvizEdgeExtremity(false);
+
+        /// <summary>
+        /// Tail arrow.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:arrowtail">See more</see>
+        /// </summary>
+        public GraphvizArrow TailArrow { get; set; }
+
+        /// <summary>
+        /// Tail port.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailport">See more</see>
+        /// </summary>
+        public string TailPort { get; set; }
+
+        /// <summary>
+        /// Indicates if edge is constrained.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:constraint">See more</see>
+        /// </summary>
+        public bool IsConstrained { get; set; } = true;
+
+        /// <summary>
+        /// Indicates if edge is decorated.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:decorate">See more</see>
+        /// </summary>
+        public bool IsDecorated { get; set; }
+
+        /// <summary>
+        /// Layer.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layer">See more</see>
+        /// </summary>
+        public GraphvizLayer Layer { get; set; }
+
+        /// <summary>
+        /// Stroke color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:color">See more</see>
+        /// </summary>
+        public Color StrokeColor { get; set; } = Color.Black;
+
+        /// <summary>
+        /// Edge style.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:style">See more</see>
+        /// </summary>
+        public GraphvizEdgeStyle Style { get; set; } = GraphvizEdgeStyle.Unspecified;
+
+        /// <summary>
+        /// Weight.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:weight">See more</see>
+        /// </summary>
+        public double Weight { get; set; } = 1;
+
+        /// <summary>
+        /// Length.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:len">See more</see>
+        /// </summary>
+        public int Length { get; set; } = 1;
+
+        /// <summary>
+        /// Minimal length.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:minlen">See more</see>
+        /// </summary>
+        public int MinLength { get; set; } = 1;
+
+        [Pure]
+        [NotNull]
+        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
         {
-            bool flag = false;
-            StringWriter writer = new StringWriter();
-            foreach (DictionaryEntry entry in pairs)
+            using (var writer = new StringWriter())
             {
-                if (flag)
+                bool flag = false;
+                foreach (KeyValuePair<string, object> pair in properties)
                 {
-                    writer.Write(", ");
+                    if (flag)
+                    {
+                        writer.Write(", ");
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+
+                    switch (pair.Value)
+                    {
+                        case string strValue:
+                            writer.Write($"{pair.Key}=\"{strValue}\"");
+                            continue;
+
+                        case GraphvizEdgeDirection direction:
+                            writer.Write($"{pair.Key}={direction.ToString().ToLower()}");
+                            continue;
+
+                        case GraphvizEdgeStyle edgeStyle:
+                            writer.Write($"{pair.Key}={edgeStyle.ToString().ToLower()}");
+                            continue;
+
+                        case Color color:
+                            writer.Write(
+                                "{0}=\"#{1}{2}{3}{4}\"",
+                                pair.Key,
+                                color.R.ToString("x2").ToUpper(),
+                                color.G.ToString("x2").ToUpper(),
+                                color.B.ToString("x2").ToUpper(),
+                                color.A.ToString("x2").ToUpper());
+                            continue;
+
+                        default:
+                            writer.Write($" {pair.Key}={pair.Value.ToString().ToLower()}");
+                            break;
+                    }
                 }
-                else
-                {
-                    flag = true;
-                }
-                if (entry.Value is string)
-                {
-                    writer.Write("{0}=\"{1}\"", entry.Key.ToString(), entry.Value.ToString());
-                    continue;
-                }
-                if (entry.Value is GraphvizEdgeDirection)
-                {
-                    writer.Write("{0}={1}", entry.Key.ToString(), ((GraphvizEdgeDirection) entry.Value).ToString().ToLower());
-                    continue;
-                }
-                if (entry.Value is GraphvizEdgeStyle)
-                {
-                    writer.Write("{0}={1}", entry.Key.ToString(), ((GraphvizEdgeStyle) entry.Value).ToString().ToLower());
-                    continue;
-                }
-                if (entry.Value is Color)
-                {
-                    Color color = (Color) entry.Value;
-                    writer.Write("{0}=\"#{1}{2}{3}{4}\"", new object[] { entry.Key.ToString(), color.R.ToString("x2").ToUpper(), color.G.ToString("x2").ToUpper(), color.B.ToString("x2").ToUpper(), color.A.ToString("x2").ToUpper() });
-                    continue;
-                }
-                writer.Write(" {0}={1}", entry.Key.ToString(), entry.Value.ToString().ToLower());
+
+                return writer.ToString();
             }
-            return writer.ToString();
         }
 
+        /// <summary>
+        /// Converts this edge to DOT.
+        /// </summary>
+        /// <returns>Edge as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            Hashtable dic = new Hashtable();
-            if (this.Comment != null)
+            var properties = new Dictionary<string, object>();
+            if (Comment != null)
             {
-                dic["comment"] = this.Comment;
+                properties["comment"] = Comment;
             }
-            if (this.Dir != GraphvizEdgeDirection.Forward)
+            if (Direction != GraphvizEdgeDirection.Forward)
             {
-                dic["dir"] = this.Dir.ToString().ToLower();
+                properties["dir"] = Direction.ToString().ToLower();
             }
-            if (this.Font != null)
+            if (Font != null)
             {
-                dic["fontname"] = this.Font.Name;
-                dic["fontsize"] = this.Font.SizeInPoints;
+                properties["fontname"] = Font.Name;
+                properties["fontsize"] = Font.SizeInPoints;
             }
-            if (this.FontColor != Color.Black)
+            if (FontColor != Color.Black)
             {
-                dic["fontcolor"] = this.FontColor;
+                properties["fontcolor"] = FontColor;
             }
-            this.Head.AddParameters(dic);
-            if (this.HeadArrow != null)
+            Head.AddParameters(properties);
+            if (HeadArrow != null)
             {
-                dic["arrowhead"] = this.HeadArrow.ToDot();
+                properties["arrowhead"] = HeadArrow.ToDot();
             }
-            if (!this.IsConstrained)
+            if (!IsConstrained)
             {
-                dic["constraint"] = this.IsConstrained;
+                properties["constraint"] = IsConstrained;
             }
-            if (this.IsDecorated)
+            if (IsDecorated)
             {
-                dic["decorate"] = this.IsDecorated;
+                properties["decorate"] = IsDecorated;
             }
-            this.Label.AddParameters(dic);
-            if (this.Layer != null)
+            Label.AddParameters(properties);
+            if (Layer != null)
             {
-                dic["layer"] = this.Layer.Name;
+                properties["layer"] = Layer.Name;
             }
-            if (this.MinLength != 1)
+            if (MinLength != 1)
             {
-                dic["minlen"] = this.MinLength;
+                properties["minlen"] = MinLength;
             }
-            if (this.StrokeColor != Color.Black)
+            if (StrokeColor != Color.Black)
             {
-                dic["color"] = this.StrokeColor;
+                properties["color"] = StrokeColor;
             }
-            if (this.Style != GraphvizEdgeStyle.Unspecified)
+            if (Style != GraphvizEdgeStyle.Unspecified)
             {
-                dic["style"] = this.Style.ToString().ToLower();
+                properties["style"] = Style.ToString().ToLower();
             }
-            this.Tail.AddParameters(dic);
-            if (this.TailArrow != null)
+            Tail.AddParameters(properties);
+            if (TailArrow != null)
             {
-                dic["arrowtail"] = this.TailArrow.ToDot();
+                properties["arrowtail"] = TailArrow.ToDot();
             }
-            if (this.ToolTip != null)
+            if (ToolTip != null)
             {
-                dic["tooltip"] = this.ToolTip;
+                properties["tooltip"] = ToolTip;
             }
-            if (this.Url != null)
+            if (Url != null)
             {
-                dic["URL"] = this.Url;
+                properties["URL"] = Url;
             }
-            if (this.Weight != 1)
+            if (Weight != 1)
             {
-                dic["weight"] = this.Weight;
+                properties["weight"] = Weight;
             }
-            if (this.HeadPort != null)
-                dic["headport"] = this.HeadPort;
-            if (this.TailPort != null)
-                dic["tailport"] = this.TailPort;
-            if (this.length != 1)
-                dic["len"] = this.length;
-            return this.GenerateDot(dic);
+            if (HeadPort != null)
+            {
+                properties["headport"] = HeadPort;
+            }
+            if (TailPort != null)
+            {
+                properties["tailport"] = TailPort;
+            }
+            if (Length != 1)
+            {
+                properties["len"] = Length;
+            }
+            return GenerateDot(properties);
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.ToDot();
-        }
-
-        public string Comment
-        {
-            get
-            {
-                return this.comment;
-            }
-            set
-            {
-                this.comment = value;
-            }
-        }
-
-        public GraphvizEdgeDirection Dir
-        {
-            get
-            {
-                return this.dir;
-            }
-            set
-            {
-                this.dir = value;
-            }
-        }
-
-        public System.Drawing.Font Font
-        {
-            get
-            {
-                return this.font;
-            }
-            set
-            {
-                this.font = value;
-            }
-        }
-
-        public Color FontColor
-        {
-            get
-            {
-                return this.fontColor;
-            }
-            set
-            {
-                this.fontColor = value;
-            }
-        }
-
-        public GraphvizEdgeExtremity Head
-        {
-            get
-            {
-                return this.head;
-            }
-            set
-            {
-                this.head = value;
-            }
-        }
-
-        public GraphvizArrow HeadArrow
-        {
-            get
-            {
-                return this.headArrow;
-            }
-            set
-            {
-                this.headArrow = value;
-            }
-        }
-
-        public bool IsConstrained
-        {
-            get
-            {
-                return this.isConstrained;
-            }
-            set
-            {
-                this.isConstrained = value;
-            }
-        }
-
-        public bool IsDecorated
-        {
-            get
-            {
-                return this.isDecorated;
-            }
-            set
-            {
-                this.isDecorated = value;
-            }
-        }
-
-        public GraphvizEdgeLabel Label
-        {
-            get
-            {
-                return this.label;
-            }
-            set
-            {
-                this.label = value;
-            }
-        }
-
-        public GraphvizLayer Layer
-        {
-            get
-            {
-                return this.layer;
-            }
-            set
-            {
-                this.layer = value;
-            }
-        }
-
-        public int MinLength
-        {
-            get
-            {
-                return this.minLength;
-            }
-            set
-            {
-                this.minLength = value;
-            }
-        }
-
-        public Color StrokeColor
-        {
-            get
-            {
-                return this.strokeColor;
-            }
-            set
-            {
-                this.strokeColor = value;
-            }
-        }
-
-        public GraphvizEdgeStyle Style
-        {
-            get
-            {
-                return this.style;
-            }
-            set
-            {
-                this.style = value;
-            }
-        }
-
-        public GraphvizEdgeExtremity Tail
-        {
-            get
-            {
-                return this.tail;
-            }
-            set
-            {
-                this.tail = value;
-            }
-        }
-
-        public GraphvizArrow TailArrow
-        {
-            get
-            {
-                return this.tailArrow;
-            }
-            set
-            {
-                this.tailArrow = value;
-            }
-        }
-
-        public string ToolTip
-        {
-            get
-            {
-                return this.tooltip;
-            }
-            set
-            {
-                this.tooltip = value;
-            }
-        }
-
-        public string Url
-        {
-            get
-            {
-                return this.url;
-            }
-            set
-            {
-                this.url = value;
-            }
-        }
-
-        public double Weight
-        {
-            get
-            {
-                return this.weight;
-            }
-            set
-            {
-                this.weight = value;
-            }
-        }
-
-        public string HeadPort { get; set; }
-        public string TailPort {get;set;}
-
-        public int Length
-        {
-            get { return this.length; }
-            set { this.length = value; }
+            return ToDot();
         }
     }
 }
-

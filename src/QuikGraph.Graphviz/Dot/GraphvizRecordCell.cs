@@ -1,31 +1,87 @@
+using System.Text;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Text;
-
+    /// <summary>
+    /// GraphViz record cell.
+    /// </summary>
     public class GraphvizRecordCell
     {
-        private readonly GraphvizRecordCellCollection cells = new GraphvizRecordCellCollection();
-        private GraphvizRecordEscaper escaper = new GraphvizRecordEscaper();
-        private string port = null;
-        private string text = null;
+        /// <summary>
+        /// Record cells.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public GraphvizRecordCellCollection Cells { get; } = new GraphvizRecordCellCollection();
 
+        /// <summary>
+        /// Record escaper.
+        /// </summary>
+        [NotNull]
+        protected GraphvizRecordEscaper Escaper { get; } = new GraphvizRecordEscaper();
+
+        /// <summary>
+        /// Indicates if record has port.
+        /// </summary>
+        public bool HasPort
+        {
+            get
+            {
+                if (Port != null)
+                {
+                    return (Port.Length > 0);
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Port.
+        /// </summary>
+        public string Port { get; set; }
+
+        /// <summary>
+        /// Indicates if record has text.
+        /// </summary>
+        public bool HasText
+        {
+            get
+            {
+                if (Text != null)
+                {
+                    return (Text.Length > 0);
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Text.
+        /// </summary>
+        public string Text { get; set; }
+
+        /// <summary>
+        /// Converts this record cell to DOT.
+        /// </summary>
+        /// <returns>Record cell as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            StringBuilder builder = new StringBuilder();
-            if (this.HasPort)
+            var builder = new StringBuilder();
+            if (HasPort)
             {
-                builder.AppendFormat("<{0}> ", this.Escaper.Escape(this.Port));
+                builder.AppendFormat("<{0}> ", Escaper.Escape(Port));
             }
-            if (this.HasText)
+            if (HasText)
             {
-                builder.AppendFormat("{0}", this.Escaper.Escape(this.Text));
+                builder.AppendFormat("{0}", Escaper.Escape(Text));
             }
-            if (this.Cells.Count > 0)
+            if (Cells.Count > 0)
             {
                 builder.Append(" { ");
                 bool flag = false;
-                foreach (GraphvizRecordCell cell in this.Cells)
+                foreach (GraphvizRecordCell cell in Cells)
                 {
                     if (flag)
                     {
@@ -40,74 +96,10 @@ namespace QuikGraph.Graphviz.Dot
             return builder.ToString();
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.ToDot();
-        }
-
-        public GraphvizRecordCellCollection Cells
-        {
-            get
-            {
-                return this.cells;
-            }
-        }
-
-        protected GraphvizRecordEscaper Escaper
-        {
-            get
-            {
-                return this.escaper;
-            }
-        }
-
-        public bool HasPort
-        {
-            get
-            {
-                if (this.Port != null)
-                {
-                    return (this.Port.Length > 0);
-                }
-                return false;
-            }
-        }
-
-        public bool HasText
-        {
-            get
-            {
-                if (this.text != null)
-                {
-                    return (this.text.Length > 0);
-                }
-                return false;
-            }
-        }
-
-        public string Port
-        {
-            get
-            {
-                return this.port;
-            }
-            set
-            {
-                this.port = value;
-            }
-        }
-
-        public string Text
-        {
-            get
-            {
-                return this.text;
-            }
-            set
-            {
-                this.text = value;
-            }
+            return ToDot();
         }
     }
 }
-

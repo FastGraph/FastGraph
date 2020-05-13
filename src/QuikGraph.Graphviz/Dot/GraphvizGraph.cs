@@ -1,618 +1,403 @@
+using System.Collections.Generic;
+using System.Drawing;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.IO;
-
+    /// <summary>
+    /// GraphViz graph.
+    /// </summary>
     public class GraphvizGraph
     {
-        private string name = "G";
-        private Color backgroundColor = Color.White;
-        private GraphvizClusterMode clusterRank = GraphvizClusterMode.Local;
-        private string comment = null;
-        private System.Drawing.Font font = null;
-        private Color fontColor = Color.Black;
-        private bool isCentered = false;
-        private bool isCompounded = false;
-        private bool isConcentrated = false;
-        private bool isLandscape = false;
-        private bool isNormalized = false;
-        private bool isReMinCross = false;
-        private string label = null;
-        private GraphvizLabelJustification labelJustification = GraphvizLabelJustification.C;
-        private GraphvizLabelLocation labelLocation = GraphvizLabelLocation.B;
-        private readonly GraphvizLayerCollection layers = new GraphvizLayerCollection();
-        private double mcLimit = 1;
-        private double nodeSeparation = 0.25;
-        private int nsLimit = -1;
-        private int nsLimit1 = -1;
-        private GraphvizOutputMode outputOrder = GraphvizOutputMode.BreadthFirst;
-        private GraphvizPageDirection pageDirection = GraphvizPageDirection.BL;
-        private System.Drawing.SizeF pageSize = new System.Drawing.SizeF(0, 0);
-        private double quantum = 0;
-        private GraphvizRankDirection rankDirection = GraphvizRankDirection.TB;
-        private double rankSeparation = 0.5;
-        private GraphvizRatioMode ratio = GraphvizRatioMode.Auto;
-        private double resolution = 0.96;
-        private int rotate = 0;
-        private int samplePoints = 8;
-        private int searchSize = 30;
-        private System.Drawing.SizeF size = new System.Drawing.SizeF(0, 0);
-        private string styleSheet = null;
-        private string url = null;
+        /// <summary>
+        /// Graph name.
+        /// </summary>
+        public string Name { get; set; } = "G";
 
-        internal string GenerateDot(Hashtable pairs)
+        /// <summary>
+        /// Comment.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
+        /// </summary>
+        public string Comment { get; set; }
+
+        /// <summary>
+        /// URL.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Background color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:bgcolor">See more</see>
+        /// </summary>
+        public Color BackgroundColor { get; set; } = Color.White;
+
+        /// <summary>
+        /// Cluster rank mode.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:clusterrank">See more</see>
+        /// </summary>
+        public GraphvizClusterMode ClusterRank { get; set; } = GraphvizClusterMode.Local;
+
+        /// <summary>
+        /// Font.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
+        /// </summary>
+        public Font Font { get; set; }
+
+        /// <summary>
+        /// Font color.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontcolor">See more</see>
+        /// </summary>
+        public Color FontColor { get; set; } = Color.Black;
+
+        /// <summary>
+        /// Graph should be centered?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:center">See more</see>
+        /// </summary>
+        public bool IsCentered { get; set; }
+
+        /// <summary>
+        /// Graph is compound?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:compound">See more</see>
+        /// </summary>
+        public bool IsCompounded { get; set; }
+
+        /// <summary>
+        /// Graph is concentrated?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:concentrate">See more</see>
+        /// </summary>
+        public bool IsConcentrated { get; set; }
+
+        /// <summary>
+        /// Graph is landscape?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#dd:orientation">See more</see>
+        /// </summary>
+        public bool IsLandscape { get; set; }
+
+        /// <summary>
+        /// Graph should be normalized?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:normalize">See more</see>
+        /// </summary>
+        public bool IsNormalized { get; set; }
+
+        /// <summary>
+        /// Should run crossing minimization?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:remincross">See more</see>
+        /// </summary>
+        public bool IsReMinCross { get; set; }
+
+        /// <summary>
+        /// Label.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
+        /// </summary>
+        public string Label { get; set; }
+
+        /// <summary>
+        /// Label justification.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:labeljust">See more</see>
+        /// </summary>
+        public GraphvizLabelJustification LabelJustification { get; set; } = GraphvizLabelJustification.C;
+
+        /// <summary>
+        /// Label location.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:labelloc">See more</see>
+        /// </summary>
+        public GraphvizLabelLocation LabelLocation { get; set; } = GraphvizLabelLocation.B;
+
+        /// <summary>
+        /// Layers.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layers">See more</see>
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public GraphvizLayerCollection Layers { get; } = new GraphvizLayerCollection();
+
+        /// <summary>
+        /// Crossing minimization improvement tries limit.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:mclimit">See more</see>
+        /// </summary>
+        public double McLimit { get; set; } = 1;
+
+        /// <summary>
+        /// Node separation.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:nodesep">See more</see>
+        /// </summary>
+        public double NodeSeparation { get; set; } = 0.25;
+
+        /// <summary>
+        /// Iterations limit for simplex applications.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:nslimit">See more</see>
+        /// </summary>
+        public int NsLimit { get; set; } = -1;
+
+        /// <summary>
+        /// Iterations limit for simplex applications.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:nslimit1">See more</see>
+        /// </summary>
+        public int NsLimit1 { get; set; } = -1;
+
+        /// <summary>
+        /// Output order.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:outputorder">See more</see>
+        /// </summary>
+        public GraphvizOutputMode OutputOrder { get; set; } = GraphvizOutputMode.BreadthFirst;
+
+        /// <summary>
+        /// Page direction.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:pagedir">See more</see>
+        /// </summary>
+        public GraphvizPageDirection PageDirection { get; set; } = GraphvizPageDirection.BL;
+
+        /// <summary>
+        /// Page size.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:page">See more</see>
+        /// </summary>
+        public SizeF PageSize { get; set; } = new SizeF(0, 0);
+
+        /// <summary>
+        /// Quantum.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:quantum">See more</see>
+        /// </summary>
+        public double Quantum { get; set; }
+
+        /// <summary>
+        /// Rank direction.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:rankdir">See more</see>
+        /// </summary>
+        public GraphvizRankDirection RankDirection { get; set; } = GraphvizRankDirection.TB;
+
+        /// <summary>
+        /// Rank separation.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:ranksep">See more</see>
+        /// </summary>
+        public double RankSeparation { get; set; } = 0.5;
+
+        /// <summary>
+        /// Aspect ratio.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:ratio">See more</see>
+        /// </summary>
+        public GraphvizRatioMode Ratio { get; set; } = GraphvizRatioMode.Auto;
+
+        /// <summary>
+        /// Resolution.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:resolution">See more</see>
+        /// </summary>
+        public double Resolution { get; set; } = 0.96;
+
+        /// <summary>
+        /// Graph rotation.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:rotate">See more</see>
+        /// </summary>
+        public int Rotate { get; set; }
+
+        /// <summary>
+        /// Sample points.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:samplepoints">See more</see>
+        /// </summary>
+        public int SamplePoints { get; set; } = 8;
+
+        /// <summary>
+        /// Search size.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:searchsize">See more</see>
+        /// </summary>
+        public int SearchSize { get; set; } = 30;
+
+        /// <summary>
+        /// Size.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:size">See more</see>
+        /// </summary>
+        public SizeF Size { get; set; } = new SizeF(0, 0);
+
+        /// <summary>
+        /// Stylesheet.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:stylesheet">See more</see>
+        /// </summary>
+        public string StyleSheet { get; set; }
+
+        [Pure]
+        [NotNull]
+        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
         {
-            List<string> entries = new List<string>(pairs.Count);
-            foreach (DictionaryEntry entry in pairs)
+            var entries = new List<string>(properties.Count);
+            foreach (KeyValuePair<string, object> pair in properties)
             {
-                if (entry.Value is string)
+                switch (pair.Value)
                 {
-                    entries.Add(String.Format("{0}=\"{1}\"", entry.Key.ToString(), entry.Value.ToString()));
-                    continue;
+                    case string strValue:
+                        entries.Add($"{pair.Key}=\"{strValue}\"");
+                        continue;
+                    
+                    case Color color:
+                        entries.Add(
+                            $"{pair.Key}=\"#{color.R.ToString("x2").ToUpper()}{color.G.ToString("x2").ToUpper()}{color.B.ToString("x2").ToUpper()}{color.A.ToString("x2").ToUpper()}\"");
+                        continue;
+                    
+                    case GraphvizRankDirection _:
+                    case GraphvizPageDirection _:
+                        entries.Add($"{pair.Key}={pair.Value}");
+                        continue;
+                    default:
+                        entries.Add($" {pair.Key}={pair.Value.ToString().ToLower()}");
+                        break;
                 }
-                if (entry.Value is Color)
-                {
-                    Color color = (Color) entry.Value;
-                    entries.Add(String.Format("{0}=\"#{1}{2}{3}{4}\"", new object[] { entry.Key.ToString(), color.R.ToString("x2").ToUpper(), color.G.ToString("x2").ToUpper(), color.B.ToString("x2").ToUpper(), color.A.ToString("x2").ToUpper() }));
-                    continue;
-                }
-                if ((entry.Value is GraphvizRankDirection) || (entry.Value is GraphvizPageDirection))
-                {
-                    entries.Add(String.Format("{0}={1}", entry.Key.ToString(), entry.Value.ToString()));
-                    continue;
-                }
-                entries.Add(String.Format(" {0}={1}", entry.Key.ToString(), entry.Value.ToString().ToLower()));
             }
-            string result = String.Join(";", entries);
+
+            string result = string.Join(";", entries);
             result = entries.Count > 1 ? result + ";" : result;
 
             return result;
         }
 
+        /// <summary>
+        /// Converts this graph to DOT.
+        /// </summary>
+        /// <returns>Graph as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            Hashtable pairs = new Hashtable();
-            if (this.Url != null)
+            var properties = new Dictionary<string, object>();
+            if (Url != null)
             {
-                pairs["URL"] = this.Url;
+                properties["URL"] = Url;
             }
-            if (this.BackgroundColor != Color.White)
+            if (BackgroundColor != Color.White)
             {
-                pairs["bgcolor"] = this.BackgroundColor;
+                properties["bgcolor"] = BackgroundColor;
             }
-            if (this.IsCentered)
+            if (IsCentered)
             {
-                pairs["center"] = true;
+                properties["center"] = true;
             }
-            if (this.ClusterRank != GraphvizClusterMode.Local)
+            if (ClusterRank != GraphvizClusterMode.Local)
             {
-                pairs["clusterrank"] = this.ClusterRank.ToString().ToLower();
+                properties["clusterrank"] = ClusterRank.ToString().ToLower();
             }
-            if (this.Comment != null)
+            if (Comment != null)
             {
-                pairs["comment"] = this.Comment;
+                properties["comment"] = Comment;
             }
-            if (this.IsCompounded)
+            if (IsCompounded)
             {
-                pairs["compound"] = this.IsCompounded;
+                properties["compound"] = IsCompounded;
             }
-            if (this.IsConcentrated)
+            if (IsConcentrated)
             {
-                pairs["concentrated"] = this.IsConcentrated;
+                properties["concentrate"] = IsConcentrated;
             }
-            if (this.Font != null)
+            if (Font != null)
             {
-                pairs["fontname"] = this.Font.Name;
-                pairs["fontsize"] = this.Font.SizeInPoints;
+                properties["fontname"] = Font.Name;
+                properties["fontsize"] = Font.SizeInPoints;
             }
-            if (this.FontColor != Color.Black)
+            if (FontColor != Color.Black)
             {
-                pairs["fontcolor"] = this.FontColor;
+                properties["fontcolor"] = FontColor;
             }
-            if (this.Label != null)
+            if (Label != null)
             {
-                pairs["label"] = this.Label;
+                properties["label"] = Label;
             }
-            if (this.LabelJustification != GraphvizLabelJustification.C)
+            if (LabelJustification != GraphvizLabelJustification.C)
             {
-                pairs["labeljust"] = this.LabelJustification.ToString().ToLower();
+                properties["labeljust"] = LabelJustification.ToString().ToLower();
             }
-            if (this.LabelLocation != GraphvizLabelLocation.B)
+            if (LabelLocation != GraphvizLabelLocation.B)
             {
-                pairs["labelloc"] = this.LabelLocation.ToString().ToLower();
+                properties["labelloc"] = LabelLocation.ToString().ToLower();
             }
-            if (this.Layers.Count != 0)
+            if (Layers.Count != 0)
             {
-                pairs["layers"] = this.Layers.ToDot();
+                properties["layers"] = Layers.ToDot();
             }
-            if (this.McLimit != 1)
+            if (McLimit != 1)
             {
-                pairs["mclimit"] = this.McLimit;
+                properties["mclimit"] = McLimit;
             }
-            if (this.NodeSeparation != 0.25)
+            if (NodeSeparation != 0.25)
             {
-                pairs["nodesep"] = this.NodeSeparation;
+                properties["nodesep"] = NodeSeparation;
             }
-            if (this.IsNormalized)
+            if (IsNormalized)
             {
-                pairs["normalize"] = this.IsNormalized;
+                properties["normalize"] = IsNormalized;
             }
-            if (this.NsLimit > 0)
+            if (NsLimit > 0)
             {
-                pairs["nslimit"] = this.NsLimit;
+                properties["nslimit"] = NsLimit;
             }
-            if (this.NsLimit1 > 0)
+            if (NsLimit1 > 0)
             {
-                pairs["nslimit1"] = this.NsLimit1;
+                properties["nslimit1"] = NsLimit1;
             }
-            if (this.OutputOrder != GraphvizOutputMode.BreadthFirst)
+            if (OutputOrder != GraphvizOutputMode.BreadthFirst)
             {
-                pairs["outputorder"] = this.OutputOrder.ToString().ToLower();
+                properties["outputorder"] = OutputOrder.ToString().ToLower();
             }
-            if (!this.PageSize.IsEmpty)
+            if (!PageSize.IsEmpty)
             {
-                pairs["page"] = string.Format("{0},{1}", this.PageSize.Width, this.PageSize.Height);
+                properties["page"] = string.Format("{0},{1}", PageSize.Width, PageSize.Height);
             }
-            if (this.PageDirection != GraphvizPageDirection.BL)
+            if (PageDirection != GraphvizPageDirection.BL)
             {
-                pairs["pagedir"] = this.PageDirection.ToString().ToLower();
+                properties["pagedir"] = PageDirection.ToString().ToLower();
             }
-            if (this.Quantum > 0)
+            if (Quantum > 0)
             {
-                pairs["quantum"] = this.Quantum;
+                properties["quantum"] = Quantum;
             }
-            if (this.RankSeparation != 0.5)
+            if (RankSeparation != 0.5)
             {
-                pairs["ranksep"] = this.RankSeparation;
+                properties["ranksep"] = RankSeparation;
             }
-            if (this.Ratio != GraphvizRatioMode.Auto)
+            if (Ratio != GraphvizRatioMode.Auto)
             {
-                pairs["ratio"] = this.Ratio.ToString().ToLower();
+                properties["ratio"] = Ratio.ToString().ToLower();
             }
-            if (this.IsReMinCross)
+            if (IsReMinCross)
             {
-                pairs["remincross"] = this.IsReMinCross;
+                properties["remincross"] = IsReMinCross;
             }
-            if (this.Resolution != 0.96)
+            if (Resolution != 0.96)
             {
-                pairs["resolution"] = this.Resolution;
+                properties["resolution"] = Resolution;
             }
-            if (this.Rotate != 0)
+            if (Rotate != 0)
             {
-                pairs["rotate"] = this.Rotate;
+                properties["rotate"] = Rotate;
             }
-            else if (this.IsLandscape)
+            else if (IsLandscape)
             {
-                pairs["orientation"] = "[1L]*";
+                properties["orientation"] = "[1L]*";
             }
-            if (this.SamplePoints != 8)
+            if (SamplePoints != 8)
             {
-                pairs["samplepoints"] = this.SamplePoints;
+                properties["samplepoints"] = SamplePoints;
             }
-            if (this.SearchSize != 30)
+            if (SearchSize != 30)
             {
-                pairs["searchsize"] = this.SearchSize;
+                properties["searchsize"] = SearchSize;
             }
-            if (!this.Size.IsEmpty)
+            if (!Size.IsEmpty)
             {
-                pairs["size"] = string.Format("{0},{1}", this.Size.Width, this.Size.Height);
+                properties["size"] = string.Format("{0},{1}", Size.Width, Size.Height);
             }
-            if (this.StyleSheet != null)
+            if (StyleSheet != null)
             {
-                pairs["stylesheet"] = this.StyleSheet;
+                properties["stylesheet"] = StyleSheet;
             }
-            if (this.RankDirection != GraphvizRankDirection.TB)
+            if (RankDirection != GraphvizRankDirection.TB)
             {
-                pairs["rankdir"] = this.RankDirection;
+                properties["rankdir"] = RankDirection;
             }
-            return this.GenerateDot(pairs);
+
+            return this.GenerateDot(properties);
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.ToDot();
-        }
-
-        public string Name
-        {
-            get { return this.name; }
-            set { this.name = value; }
-        }
-
-        public Color BackgroundColor
-        {
-            get
-            {
-                return this.backgroundColor;
-            }
-            set
-            {
-                this.backgroundColor = value;
-            }
-        }
-
-        public GraphvizClusterMode ClusterRank
-        {
-            get
-            {
-                return this.clusterRank;
-            }
-            set
-            {
-                this.clusterRank = value;
-            }
-        }
-
-        public string Comment
-        {
-            get
-            {
-                return this.comment;
-            }
-            set
-            {
-                this.comment = value;
-            }
-        }
-
-        public System.Drawing.Font Font
-        {
-            get
-            {
-                return this.font;
-            }
-            set
-            {
-                this.font = value;
-            }
-        }
-
-        public Color FontColor
-        {
-            get
-            {
-                return this.fontColor;
-            }
-            set
-            {
-                this.fontColor = value;
-            }
-        }
-
-        public bool IsCentered
-        {
-            get
-            {
-                return this.isCentered;
-            }
-            set
-            {
-                this.isCentered = value;
-            }
-        }
-
-        public bool IsCompounded
-        {
-            get
-            {
-                return this.isCompounded;
-            }
-            set
-            {
-                this.isCompounded = value;
-            }
-        }
-
-        public bool IsConcentrated
-        {
-            get
-            {
-                return this.isConcentrated;
-            }
-            set
-            {
-                this.isConcentrated = value;
-            }
-        }
-
-        public bool IsLandscape
-        {
-            get
-            {
-                return this.isLandscape;
-            }
-            set
-            {
-                this.isLandscape = value;
-            }
-        }
-
-        public bool IsNormalized
-        {
-            get
-            {
-                return this.isNormalized;
-            }
-            set
-            {
-                this.isNormalized = value;
-            }
-        }
-
-        public bool IsReMinCross
-        {
-            get
-            {
-                return this.isReMinCross;
-            }
-            set
-            {
-                this.isReMinCross = value;
-            }
-        }
-
-        public string Label
-        {
-            get
-            {
-                return this.label;
-            }
-            set
-            {
-                this.label = value;
-            }
-        }
-
-        public GraphvizLabelJustification LabelJustification
-        {
-            get
-            {
-                return this.labelJustification;
-            }
-            set
-            {
-                this.labelJustification = value;
-            }
-        }
-
-        public GraphvizLabelLocation LabelLocation
-        {
-            get
-            {
-                return this.labelLocation;
-            }
-            set
-            {
-                this.labelLocation = value;
-            }
-        }
-
-        public GraphvizLayerCollection Layers
-        {
-            get
-            {
-                return this.layers;
-            }
-        }
-
-        public double McLimit
-        {
-            get
-            {
-                return this.mcLimit;
-            }
-            set
-            {
-                this.mcLimit = value;
-            }
-        }
-
-        public double NodeSeparation
-        {
-            get
-            {
-                return this.nodeSeparation;
-            }
-            set
-            {
-                this.nodeSeparation = value;
-            }
-        }
-
-        public int NsLimit
-        {
-            get
-            {
-                return this.nsLimit;
-            }
-            set
-            {
-                this.nsLimit = value;
-            }
-        }
-
-        public int NsLimit1
-        {
-            get
-            {
-                return this.nsLimit1;
-            }
-            set
-            {
-                this.nsLimit1 = value;
-            }
-        }
-
-        public GraphvizOutputMode OutputOrder
-        {
-            get
-            {
-                return this.outputOrder;
-            }
-            set
-            {
-                this.outputOrder = value;
-            }
-        }
-
-        public GraphvizPageDirection PageDirection
-        {
-            get
-            {
-                return this.pageDirection;
-            }
-            set
-            {
-                this.pageDirection = value;
-            }
-        }
-
-        public System.Drawing.SizeF PageSize
-        {
-            get
-            {
-                return this.pageSize;
-            }
-            set
-            {
-                this.pageSize = value;
-            }
-        }
-
-        public double Quantum
-        {
-            get
-            {
-                return this.quantum;
-            }
-            set
-            {
-                this.quantum = value;
-            }
-        }
-
-        public GraphvizRankDirection RankDirection
-        {
-            get
-            {
-                return this.rankDirection;
-            }
-            set
-            {
-                this.rankDirection = value;
-            }
-        }
-
-        public double RankSeparation
-        {
-            get
-            {
-                return this.rankSeparation;
-            }
-            set
-            {
-                this.rankSeparation = value;
-            }
-        }
-
-        public GraphvizRatioMode Ratio
-        {
-            get
-            {
-                return this.ratio;
-            }
-            set
-            {
-                this.ratio = value;
-            }
-        }
-
-        public double Resolution
-        {
-            get
-            {
-                return this.resolution;
-            }
-            set
-            {
-                this.resolution = value;
-            }
-        }
-
-        public int Rotate
-        {
-            get
-            {
-                return this.rotate;
-            }
-            set
-            {
-                this.rotate = value;
-            }
-        }
-
-        public int SamplePoints
-        {
-            get
-            {
-                return this.samplePoints;
-            }
-            set
-            {
-                this.samplePoints = value;
-            }
-        }
-
-        public int SearchSize
-        {
-            get
-            {
-                return this.searchSize;
-            }
-            set
-            {
-                this.searchSize = value;
-            }
-        }
-
-        public System.Drawing.SizeF Size
-        {
-            get
-            {
-                return this.size;
-            }
-            set
-            {
-                this.size = value;
-            }
-        }
-
-        public string StyleSheet
-        {
-            get
-            {
-                return this.styleSheet;
-            }
-            set
-            {
-                this.styleSheet = value;
-            }
-        }
-
-        public string Url
-        {
-            get
-            {
-                return this.url;
-            }
-            set
-            {
-                this.url = value;
-            }
+            return ToDot();
         }
     }
 }
-

@@ -1,31 +1,38 @@
+using System;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Diagnostics.Contracts;
-
+    /// <summary>
+    /// GraphViz layer.
+    /// </summary>
     public class GraphvizLayer
     {
-        private string name;
-
-        public GraphvizLayer(string name)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizLayer"/> class.
+        /// </summary>
+        /// <param name="name">Layer name.</param>
+        public GraphvizLayer([NotNull] string name)
         {
-            Contract.Requires(!String.IsNullOrEmpty(name));
-            
-            this.name = name;
+            SetName(name);
         }
 
+        private void SetName([NotNull] string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
+            _name = name;
+        }
+
+        private string _name;
+
+        /// <summary>
+        /// Layer name.
+        /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
-            set
-            {
-                Contract.Requires(!String.IsNullOrEmpty(value));
-                this.name = value;
-            }
+            get => _name;
+            set => SetName(value);
         }
     }
 }
-

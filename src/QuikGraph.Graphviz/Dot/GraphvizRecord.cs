@@ -1,21 +1,33 @@
+using System.Text;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Text;
-
+    /// <summary>
+    /// GraphViz record.
+    /// </summary>
     public class GraphvizRecord
     {
-        private readonly GraphvizRecordCellCollection cells = new GraphvizRecordCellCollection();
+        /// <summary>
+        /// Record cells.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public GraphvizRecordCellCollection Cells { get; } = new GraphvizRecordCellCollection();
 
+        /// <summary>
+        /// Converts this record to DOT.
+        /// </summary>
+        /// <returns>Record as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            if (this.Cells.Count == 0)
-            {
-                return "";
-            }
-            StringBuilder builder = new StringBuilder();
+            if (Cells.Count == 0)
+                return string.Empty;
+
+            var builder = new StringBuilder();
             bool flag = false;
-            foreach (GraphvizRecordCell cell in this.Cells)
+            foreach (GraphvizRecordCell cell in Cells)
             {
                 if (flag)
                 {
@@ -28,18 +40,10 @@ namespace QuikGraph.Graphviz.Dot
             return builder.ToString();
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.ToDot();
-        }
-
-        public GraphvizRecordCellCollection Cells
-        {
-            get
-            {
-                return this.cells;
-            }
+            return ToDot();
         }
     }
 }
-

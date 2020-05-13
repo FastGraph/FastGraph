@@ -1,37 +1,68 @@
+using System.IO;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.IO;
-
+    /// <summary>
+    /// GraphViz arrow.
+    /// </summary>
     public class GraphvizArrow
     {
-        private GraphvizArrowClipping clipping;
-        private GraphvizArrowFilling filling;
-        private GraphvizArrowShape shape;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizArrow"/> class.
+        /// </summary>
+        /// <param name="shape">Arrow shape.</param>
         public GraphvizArrow(GraphvizArrowShape shape)
         {
-            this.shape = shape;
-            this.clipping = GraphvizArrowClipping.None;
-            this.filling = GraphvizArrowFilling.Close;
+            Shape = shape;
+            Clipping = GraphvizArrowClipping.None;
+            Filling = GraphvizArrowFilling.Close;
         }
 
-        public GraphvizArrow(GraphvizArrowShape shape, GraphvizArrowClipping clip, GraphvizArrowFilling fill)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizArrow"/> class.
+        /// </summary>
+        /// <param name="shape">Arrow shape.</param>
+        /// <param name="clipping">Arrow clipping.</param>
+        /// <param name="filling">Arrow filling.</param>
+        public GraphvizArrow(GraphvizArrowShape shape, GraphvizArrowClipping clipping, GraphvizArrowFilling filling)
         {
-            this.shape = shape;
-            this.clipping = clip;
-            this.filling = fill;
+            Shape = shape;
+            Clipping = clipping;
+            Filling = filling;
         }
 
+        /// <summary>
+        /// Arrow shape.
+        /// </summary>
+        public GraphvizArrowShape Shape { get; set; }
+
+        /// <summary>
+        /// Arrow clipping.
+        /// </summary>
+        public GraphvizArrowClipping Clipping { get; set; }
+
+        /// <summary>
+        /// Arrow filling.
+        /// </summary>
+        public GraphvizArrowFilling Filling { get; set; }
+
+        /// <summary>
+        /// Converts this arrow to DOT.
+        /// </summary>
+        /// <returns>Arrow as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            using (StringWriter writer = new StringWriter())
+            using (var writer = new StringWriter())
             {
-                if (this.filling == GraphvizArrowFilling.Open)
+                if (Filling == GraphvizArrowFilling.Open)
                 {
                     writer.Write('o');
                 }
-                switch (this.clipping)
+
+                switch (Clipping)
                 {
                     case GraphvizArrowClipping.Left:
                         writer.Write('l');
@@ -41,51 +72,17 @@ namespace QuikGraph.Graphviz.Dot
                         writer.Write('r');
                         break;
                 }
-                writer.Write(this.shape.ToString().ToLower());
+
+                writer.Write(Shape.ToString().ToLower());
+
                 return writer.ToString();
             }
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return this.ToDot();
-        }
-
-        public GraphvizArrowClipping Clipping
-        {
-            get
-            {
-                return this.clipping;
-            }
-            set
-            {
-                this.clipping = value;
-            }
-        }
-
-        public GraphvizArrowFilling Filling
-        {
-            get
-            {
-                return this.filling;
-            }
-            set
-            {
-                this.filling = value;
-            }
-        }
-
-        public GraphvizArrowShape Shape
-        {
-            get
-            {
-                return this.shape;
-            }
-            set
-            {
-                this.shape = value;
-            }
+            return ToDot();
         }
     }
 }
-

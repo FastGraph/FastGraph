@@ -1,79 +1,90 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using System.Globalization;
 
 namespace QuikGraph.Graphviz.Dot
 {
-    [DebuggerDisplay("{Width}x{Height}")]
+    /// <summary>
+    /// GraphViz size (float).
+    /// </summary>
+    [DebuggerDisplay("{" + nameof(Width) + "}x{" + nameof(Height) + "}")]
     public struct GraphvizSizeF
     {
-        readonly float height;
-        readonly float width;
+        /// <summary>
+        /// Width.
+        /// </summary>
+        public float Width { get; }
 
-        public float Height
-        {
-            get { return this.height; }
-        }
-        public float Width
-        {
-            get { return this.width; }
-        }
+        /// <summary>
+        /// Height.
+        /// </summary>
+        public float Height { get; }
 
+        /// <summary>
+        /// Indicates if this size is empty.
+        /// </summary>
+        public bool IsEmpty => Width == 0 || Height == 0;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizSizeF"/> struct.
+        /// </summary>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
         public GraphvizSizeF(float width, float height)
         {
-            Contract.Requires(width >= 0);
-            Contract.Requires(height >= 0);
+            if (width < 0.0 || height < 0.0)
+                throw new ArgumentException("Width and height must be positive or 0.");
 
-            this.width = width;
-            this.height = height;
+            Width = width;
+            Height = height;
         }
 
-        public bool IsEmpty
-        {
-            get { return this.width == 0 || this.height == 0; }
-        }
-
+        /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0}x{1}", this.width, this.height);
+            return string.Format(CultureInfo.InvariantCulture, "{0}x{1}", Width, Height);
         }
     }
 
-    [DebuggerDisplay("{Width}x{Height}")]
+    /// <summary>
+    /// GraphViz size.
+    /// </summary>
+    [DebuggerDisplay("{" + nameof(Width) + "}x{" + nameof(Height) + "}")]
     public struct GraphvizSize
     {
-        readonly int height;
-        readonly int width;
+        /// <summary>
+        /// Width.
+        /// </summary>
+        public int Width { get; }
 
-        public int Height
-        {
-            get { return this.height; }
-        }
-        public int Width
-        {
-            get { return this.width; }
-        }
+        /// <summary>
+        /// Height.
+        /// </summary>
+        public int Height { get; }
 
+        /// <summary>
+        /// Indicates if this size is empty.
+        /// </summary>
+        public bool IsEmpty => Width == 0 || Height == 0;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizSize"/> struct.
+        /// </summary>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
         public GraphvizSize(int width, int height)
         {
-            Contract.Requires(width >= 0);
-            Contract.Requires(height >= 0);
+            if (width < 0.0 || height < 0.0)
+                throw new ArgumentException("Width and height must be positive or 0.");
 
-            this.width = width;
-            this.height = height;
+            Width = width;
+            Height = height;
         }
 
-        public bool IsEmpty
-        {
-            get { return this.width == 0 || this.height == 0; }
-        }
-
+        /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0}x{1}", this.width, this.height);
+            return string.Format(CultureInfo.InvariantCulture, "{0}x{1}", Width, Height);
         }
     }
 }

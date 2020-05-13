@@ -1,25 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Graphviz.Dot
 {
+    /// <summary>
+    /// GraphViz font.
+    /// </summary>
     public sealed class GraphvizFont
     {
-        readonly string name;
-        readonly float sizeInPoints;
+        /// <summary>
+        /// Font name.
+        /// </summary>
+        public string Name { get; }
 
-        public string Name { get { return this.name; } }
-        public float SizeInPoints { get { return this.sizeInPoints; } }
+        /// <summary>
+        /// Font size (in points).
+        /// </summary>
+        public float SizeInPoints { get; }
 
-        public GraphvizFont(string name, float sizeInPoints)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizFont"/> class.
+        /// </summary>
+        /// <param name="name">Font name.</param>
+        /// <param name="sizeInPoints">Font size.</param>
+        public GraphvizFont([NotNull] string name, float sizeInPoints)
         {
-            Contract.Requires(!String.IsNullOrEmpty(name));
-            Contract.Requires(sizeInPoints > 0);
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Font name cannot be null or empty.", nameof(name));
+            if (sizeInPoints <= 0)
+                throw new ArgumentOutOfRangeException(nameof(sizeInPoints), "Size must be positive.");
 
-            this.name = name;
-            this.sizeInPoints = sizeInPoints;
+            Name = name;
+            SizeInPoints = sizeInPoints;
         }
     }
 }

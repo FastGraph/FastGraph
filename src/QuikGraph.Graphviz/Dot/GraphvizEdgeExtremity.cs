@@ -1,148 +1,101 @@
+using System;
+using System.Collections;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.Collections;
-    using System.Diagnostics.Contracts;
-
+    /// <summary>
+    /// GraphViz edge extremity.
+    /// </summary>
     public class GraphvizEdgeExtremity
     {
-        private bool isClipped;
-        private bool isHead;
-        private string label;
-        private string logical;
-        private string same;
-        private string tooltip;
-        private string url;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizEdgeExtremity"/> class.
+        /// </summary>
+        /// <param name="isHead">Indicates if this edge extremity is the head.</param>
         public GraphvizEdgeExtremity(bool isHead)
         {
-            this.isHead = isHead;
-            this.url = null;
-            this.isClipped = true;
-            this.label = null;
-            this.tooltip = null;
-            this.logical = null;
-            this.same = null;
+            IsHead = isHead;
+            Url = null;
+            IsClipped = true;
+            Label = null;
+            ToolTip = null;
+            Logical = null;
+            Same = null;
         }
 
-        public void AddParameters(IDictionary dic)
-        {
-            Contract.Requires(dic != null);
-            
-            string text = null;
-            if (this.IsHead)
-            {
-                text = "head";
-            }
-            else
-            {
-                text = "tail";
-            }
-            if (this.Url != null)
-            {
-                dic.Add(text + "URL", this.Url);
-            }
-            if (!this.IsClipped)
-            {
-                dic.Add(text + "clip", this.IsClipped);
-            }
-            if (this.Label != null)
-            {
-                dic.Add(text + "label", this.Label);
-            }
-            if (this.ToolTip != null)
-            {
-                dic.Add(text + "tooltip", this.ToolTip);
-            }
-            if (this.Logical != null)
-            {
-                dic.Add("l" + text, this.Logical);
-            }
-            if (this.Same != null)
-            {
-                dic.Add("same" + text, this.Same);
-            }
-        }
+        /// <summary>
+        /// Indicates if this extremity is edge head.
+        /// </summary>
+        public bool IsHead { get; }
 
-        public bool IsClipped
-        {
-            get
-            {
-                return this.isClipped;
-            }
-            set
-            {
-                this.isClipped = value;
-            }
-        }
+        /// <summary>
+        /// Is clipped edge?
+        /// </summary>
+        public bool IsClipped { get; set; }
 
-        public bool IsHead
-        {
-            get
-            {
-                return this.isHead;
-            }
-        }
+        /// <summary>
+        /// Label.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
+        /// </summary>
+        public string Label { get; set; }
 
-        public string Label
-        {
-            get
-            {
-                return this.label;
-            }
-            set
-            {
-                this.label = value;
-            }
-        }
+        /// <summary>
+        /// Tooltip.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tooltip">See more</see>
+        /// </summary>
+        public string ToolTip { get; set; }
 
-        public string Logical
-        {
-            get
-            {
-                return this.logical;
-            }
-            set
-            {
-                this.logical = value;
-            }
-        }
+        /// <summary>
+        /// URL.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
+        /// </summary>
+        public string Url { get; set; }
 
-        public string Same
-        {
-            get
-            {
-                return this.same;
-            }
-            set
-            {
-                this.same = value;
-            }
-        }
+        /// <summary>
+        /// Logical.
+        /// </summary>
+        public string Logical { get; set; }
 
-        public string ToolTip
-        {
-            get
-            {
-                return this.tooltip;
-            }
-            set
-            {
-                this.tooltip = value;
-            }
-        }
+        /// <summary>
+        /// Same.
+        /// </summary>
+        public string Same { get; set; }
 
-        public string Url
+        /// <summary>
+        /// Adds this edge extremity parameters to the given <paramref name="parameters"/> map.
+        /// </summary>
+        /// <param name="parameters">Parameter map to fill.</param>
+        public void AddParameters([NotNull] IDictionary parameters)
         {
-            get
+            if (parameters is null)
+                throw new ArgumentNullException(nameof(parameters));
+
+            string text = IsHead ? "head" : "tail";
+            if (Url != null)
             {
-                return this.url;
+                parameters.Add(text + "URL", Url);
             }
-            set
+            if (!IsClipped)
             {
-                this.url = value;
+                parameters.Add(text + "clip", IsClipped);
+            }
+            if (Label != null)
+            {
+                parameters.Add(text + "label", Label);
+            }
+            if (ToolTip != null)
+            {
+                parameters.Add(text + "tooltip", ToolTip);
+            }
+            if (Logical != null)
+            {
+                parameters.Add("l" + text, Logical);
+            }
+            if (Same != null)
+            {
+                parameters.Add("same" + text, Same);
             }
         }
     }
 }
-

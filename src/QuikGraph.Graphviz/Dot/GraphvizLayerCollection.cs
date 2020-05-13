@@ -1,33 +1,71 @@
+using System;
+using System.IO;
+using System.Collections.ObjectModel;
+using JetBrains.Annotations;
+
 namespace QuikGraph.Graphviz.Dot
 {
-    using System;
-    using System.IO;
-    using System.Reflection;
-    using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
-
+    /// <summary>
+    /// GraphViz layer collection.
+    /// </summary>
     public class GraphvizLayerCollection : Collection<GraphvizLayer>
     {
-        private string m_Separators = ":";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizLayerCollection"/> class.
+        /// </summary>
         public GraphvizLayerCollection()
-        {}
+        {
+        }
 
-        public GraphvizLayerCollection(GraphvizLayer[] items)
-            :base(items)
-        {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizLayerCollection"/> class.
+        /// </summary>
+        /// <param name="list">The list that is wrapped by the new collection.</param>
+        public GraphvizLayerCollection(GraphvizLayer[] list)
+            : base(list)
+        {
+        }
 
-        public GraphvizLayerCollection(GraphvizLayerCollection items)
-            :base(items)
-        {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GraphvizLayerCollection"/> class.
+        /// </summary>
+        /// <param name="list">The list that is wrapped by the new collection.</param>
+        public GraphvizLayerCollection(GraphvizLayerCollection list)
+            : base(list)
+        {
+        }
 
+        private string _separators = ":";
+
+        /// <summary>
+        /// Allowed collection item separators.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layersep">See more</see>
+        /// </summary>
+        public string Separators
+        {
+            get => _separators;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("Value cannot be null or empty.", nameof(Separators));
+
+                _separators = value;
+            }
+        }
+
+        /// <summary>
+        /// Converts this collection to DOT.
+        /// </summary>
+        /// <returns>Collection as DOT.</returns>
+        [Pure]
+        [NotNull]
         public string ToDot()
         {
-            if (base.Count == 0)
-            {
-                return null;
-            }
-            using (StringWriter writer = new StringWriter())
+            if (Count == 0)
+                return string.Empty;
+
+            using (var writer = new StringWriter())
             {
                 writer.Write("layers=\"");
                 bool flag = false;
@@ -35,7 +73,7 @@ namespace QuikGraph.Graphviz.Dot
                 {
                     if (flag)
                     {
-                        writer.Write(this.Separators);
+                        writer.Write(Separators);
                     }
                     else
                     {
@@ -44,24 +82,10 @@ namespace QuikGraph.Graphviz.Dot
                     writer.Write(layer.Name);
                 }
                 writer.WriteLine("\";");
-                writer.WriteLine("layersep=\"{0}\"", this.Separators);
+                writer.WriteLine("layersep=\"{0}\"", Separators);
+                
                 return writer.ToString();
-            }
-        }
-
-        public string Separators
-        {
-            get
-            {
-                return this.m_Separators;
-            }
-            set
-            {
-                Contract.Requires(!String.IsNullOrEmpty(value));
-
-                this.m_Separators = value;
             }
         }
     }
 }
-
