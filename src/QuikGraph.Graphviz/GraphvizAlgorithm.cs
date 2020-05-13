@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
+using QuikGraph;
 using QuickGraph.Graphviz.Dot;
-using System.Diagnostics.Contracts;
 
 namespace QuickGraph.Graphviz
 {
@@ -237,7 +238,7 @@ namespace QuickGraph.Graphviz
                 OnFormatCluster(g);
                 if (g is IClusteredGraph)
                     WriteClusters(colors, edgeColors, g as IClusteredGraph);
-                if (parent.Colapsed)
+                if (parent.Collapsed)
                 {
                     foreach (TVertex v in g.Vertices)
                     {

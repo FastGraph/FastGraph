@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using QuickGraph.Algorithms.Condensation;
+using QuikGraph;
+using QuikGraph.Algorithms.Condensation;
 
 namespace QuickGraph.Graphviz
 {

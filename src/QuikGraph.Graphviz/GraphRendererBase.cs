@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using QuikGraph;
 using QuickGraph.Graphviz.Dot;
 
 namespace QuickGraph.Graphviz

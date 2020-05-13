@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net40</TargetFrameworks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GeneratePackageOnBuild>$(Generate_QuikGraph_GraphViz)</GeneratePackageOnBuild>
+
+    <Title>QuikGraph.GraphViz</Title>
+    <RootNamespace>QuikGraph.GraphViz</RootNamespace>
+    <AssemblyName>QuikGraph.GraphViz</AssemblyName>
+
+    <!-- Overridden by CI -->
+    <Version>0.0.0</Version>
+    <AssemblyVersion>0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0</FileVersion>
+
+    <Copyright>Copyright © 2020</Copyright>
+    <Description>.NET library that provides a bridge from QuikGraph graphs structures to GraphViz and Dot language serialization.
+
+This package is the GraphViz subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
+
+Supported platforms:
+- .NET Framework 4.0+
+
+Supports Source Link</Description>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>QuikGraph.GraphViz</PackageId>
+    <PackageReleaseNotes>➟ Release 2.1.0</PackageReleaseNotes>
+    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization GraphViz</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
+  </ItemGroup>
+</Project>

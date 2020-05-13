@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Net;
+using QuikGraph;
 
 namespace QuickGraph.Graphviz
 {
