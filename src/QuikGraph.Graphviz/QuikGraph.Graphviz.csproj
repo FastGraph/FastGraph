@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35</TargetFrameworks>
+    <TargetFrameworks>net35;net40</TargetFrameworks>
 
     <GeneratePackageOnBuild>$(Generate_QuikGraph_GraphViz)</GeneratePackageOnBuild>
 
@@ -34,6 +34,10 @@ Supports Source Link</Description>
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <AssemblyTitle>QuikGraph.GraphViz .NET 3.5</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <AssemblyTitle>QuikGraph.GraphViz .NET 4.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_STRING_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
   <!-- Dependencies -->

@@ -242,7 +242,12 @@ namespace QuikGraph.Graphviz.Dot
                 }
             }
 
-            string result = string.Join(";", entries);
+            string result = string.Join(";", entries
+#if !SUPPORTS_STRING_FULL_FEATURES
+                .ToArray()
+#endif
+            );
+
             result = entries.Count > 1 ? result + ";" : result;
 
             return result;
