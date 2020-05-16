@@ -13,11 +13,13 @@ namespace QuikGraph.Graphviz.Dot
     {
         /// <summary>
         /// Width.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:width">See more</see>
         /// </summary>
         public float Width { get; }
 
         /// <summary>
         /// Height.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:height">See more</see>
         /// </summary>
         public float Height { get; }
 
@@ -55,11 +57,13 @@ namespace QuikGraph.Graphviz.Dot
     {
         /// <summary>
         /// Width.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:width">See more</see>
         /// </summary>
         public int Width { get; }
 
         /// <summary>
         /// Height.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:height">See more</see>
         /// </summary>
         public int Height { get; }
 

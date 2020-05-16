@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
@@ -15,7 +14,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Position.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:pos">See more</see>
         /// </summary>
-        public Point? Position { get; set; }
+        public GraphvizPoint Position { get; set; }
 
         /// <summary>
         /// Comment.
@@ -61,20 +60,20 @@ namespace QuikGraph.Graphviz.Dot
         /// Filling color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fillcolor">See more</see>
         /// </summary>
-        public Color FillColor { get; set; } = Color.White;
+        public GraphvizColor FillColor { get; set; } = GraphvizColor.White;
 
         /// <summary>
         /// Font.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public Font Font { get; set; }
+        public GraphvizFont Font { get; set; }
 
         /// <summary>
         /// Font color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontcolor">See more</see>
         /// </summary>
-        public Color FontColor { get; set; } = Color.Black;
+        public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
         /// Vertex group.
@@ -129,7 +128,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:width">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:height">See more</see>
         /// </summary>
-        public SizeF Size { get; set; } = new SizeF(0f, 0f);
+        public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0f, 0f);
 
         /// <summary>
         /// Fixed size.
@@ -147,7 +146,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Stroke color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:color">See more</see>
         /// </summary>
-        public Color StrokeColor { get; set; } = Color.Black;
+        public GraphvizColor StrokeColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
         /// Vertex style.
@@ -193,7 +192,7 @@ namespace QuikGraph.Graphviz.Dot
                             writer.Write($"{pair.Key}={style.ToString().ToLower()}");
                             continue;
 
-                        case Color color:
+                        case GraphvizColor color:
                         {
                             writer.Write(
                                 "{0}=\"#{1}{2}{3}{4}\"",
@@ -233,7 +232,7 @@ namespace QuikGraph.Graphviz.Dot
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
             }
-            if (FontColor != Color.Black)
+            if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
             }
@@ -265,11 +264,11 @@ namespace QuikGraph.Graphviz.Dot
                     properties["width"] = Size.Width;
                 }
             }
-            if (StrokeColor != Color.Black)
+            if (StrokeColor != GraphvizColor.Black)
             {
                 properties["color"] = StrokeColor;
             }
-            if (FillColor != Color.White)
+            if (FillColor != GraphvizColor.White)
             {
                 properties["fillcolor"] = FillColor;
             }
@@ -309,9 +308,9 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["z"] = Z;
             }
-            if (Position.HasValue)
+            if (Position != null)
             {
-                properties["pos"] = $"{Position.Value.X},{Position.Value.Y}!";
+                properties["pos"] = $"{Position.X},{Position.Y}!";
             }
             if (Style == GraphvizVertexStyle.Diagonals
                 || Shape == GraphvizVertexShape.MCircle

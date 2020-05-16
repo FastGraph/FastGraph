@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
 
@@ -31,7 +30,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Background color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:bgcolor">See more</see>
         /// </summary>
-        public Color BackgroundColor { get; set; } = Color.White;
+        public GraphvizColor BackgroundColor { get; set; } = GraphvizColor.White;
 
         /// <summary>
         /// Cluster rank mode.
@@ -44,13 +43,13 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public Font Font { get; set; }
+        public GraphvizFont Font { get; set; }
 
         /// <summary>
         /// Font color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontcolor">See more</see>
         /// </summary>
-        public Color FontColor { get; set; } = Color.Black;
+        public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
         /// Graph should be centered?
@@ -153,7 +152,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Page size.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:page">See more</see>
         /// </summary>
-        public SizeF PageSize { get; set; } = new SizeF(0, 0);
+        public GraphvizSizeF PageSize { get; set; } = new GraphvizSizeF(0, 0);
 
         /// <summary>
         /// Quantum.
@@ -207,7 +206,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Size.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:size">See more</see>
         /// </summary>
-        public SizeF Size { get; set; } = new SizeF(0, 0);
+        public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0, 0);
 
         /// <summary>
         /// Stylesheet.
@@ -228,7 +227,7 @@ namespace QuikGraph.Graphviz.Dot
                         entries.Add($"{pair.Key}=\"{strValue}\"");
                         continue;
                     
-                    case Color color:
+                    case GraphvizColor color:
                         entries.Add(
                             $"{pair.Key}=\"#{color.R.ToString("x2").ToUpper()}{color.G.ToString("x2").ToUpper()}{color.B.ToString("x2").ToUpper()}{color.A.ToString("x2").ToUpper()}\"");
                         continue;
@@ -267,7 +266,7 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["URL"] = Url;
             }
-            if (BackgroundColor != Color.White)
+            if (BackgroundColor != GraphvizColor.White)
             {
                 properties["bgcolor"] = BackgroundColor;
             }
@@ -296,7 +295,7 @@ namespace QuikGraph.Graphviz.Dot
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
             }
-            if (FontColor != Color.Black)
+            if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
             }

@@ -1,6 +1,8 @@
 ﻿using System;
+#if SUPPORTS_SVG_CONVERSION
 using System.IO;
 using System.Net;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph.Graphviz
@@ -47,6 +49,7 @@ namespace QuikGraph.Graphviz
             return algorithm.Generate();
         }
 
+#if SUPPORTS_SVG_CONVERSION
         /// <summary>
         /// Performs a layout of <paramref name="graph"/> from DOT format to an
         /// SVG (Scalable Vector Graphics) file by calling Agl through
@@ -115,5 +118,6 @@ namespace QuikGraph.Graphviz
                 return reader.ReadToEnd();  // Svg
             }
         }
+#endif
     }
 }

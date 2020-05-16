@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;net40</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>$(Generate_QuikGraph_GraphViz)</GeneratePackageOnBuild>
 
@@ -33,11 +33,19 @@ Supports Source Link</Description>
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <AssemblyTitle>QuikGraph.GraphViz .NET 3.5</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_DESCRIPTION;SUPPORTS_SVG_CONVERSION;SUPPORTS_STREAM_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
     <AssemblyTitle>QuikGraph.GraphViz .NET 4.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_STRING_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_STRING_FULL_FEATURES;SUPPORTS_DESCRIPTION;SUPPORTS_SVG_CONVERSION;SUPPORTS_STREAM_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <AssemblyTitle>QuikGraph.GraphViz .NET Standard 1.3</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD1_3;SUPPORTS_STRING_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <AssemblyTitle>QuikGraph.GraphViz .NET Standard 2.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_STRING_FULL_FEATURES;SUPPORTS_DESCRIPTION;SUPPORTS_SVG_CONVERSION;SUPPORTS_STREAM_FULL_FEATURES;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
   <!-- Dependencies -->

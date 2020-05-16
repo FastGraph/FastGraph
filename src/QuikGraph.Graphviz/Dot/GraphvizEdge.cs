@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
@@ -45,13 +44,13 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public Font Font { get; set; }
+        public GraphvizFont Font { get; set; }
 
         /// <summary>
         /// Font color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontcolor">See more</see>
         /// </summary>
-        public Color FontColor { get; set; } = Color.Black;
+        public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
         /// Edge head.
@@ -109,7 +108,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Stroke color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:color">See more</see>
         /// </summary>
-        public Color StrokeColor { get; set; } = Color.Black;
+        public GraphvizColor StrokeColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
         /// Edge style.
@@ -167,7 +166,7 @@ namespace QuikGraph.Graphviz.Dot
                             writer.Write($"{pair.Key}={edgeStyle.ToString().ToLower()}");
                             continue;
 
-                        case Color color:
+                        case GraphvizColor color:
                             writer.Write(
                                 "{0}=\"#{1}{2}{3}{4}\"",
                                 pair.Key,
@@ -209,7 +208,7 @@ namespace QuikGraph.Graphviz.Dot
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
             }
-            if (FontColor != Color.Black)
+            if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
             }
@@ -235,7 +234,7 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["minlen"] = MinLength;
             }
-            if (StrokeColor != Color.Black)
+            if (StrokeColor != GraphvizColor.Black)
             {
                 properties["color"] = StrokeColor;
             }

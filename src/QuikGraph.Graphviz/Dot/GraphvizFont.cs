@@ -10,11 +10,13 @@ namespace QuikGraph.Graphviz.Dot
     {
         /// <summary>
         /// Font name.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see>
         /// </summary>
         public string Name { get; }
 
         /// <summary>
         /// Font size (in points).
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
         public float SizeInPoints { get; }
 

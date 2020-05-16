@@ -42,10 +42,40 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public byte B { get; }
 
+        /// <summary>
+        /// Indicates whether both <see cref="GraphvizColor"/> are equal.
+        /// </summary>
+        /// <param name="color1">First <see cref="GraphvizColor"/> to compare.</param>
+        /// <param name="color2">Second <see cref="GraphvizColor"/> to compare.</param>
+        /// <returns>True if both <see cref="GraphvizColor"/> are equal, otherwise false.</returns>
+        public static bool operator ==(GraphvizColor color1, GraphvizColor color2)
+        {
+            return color1.Equals(color2);
+        }
+
+        /// <summary>
+        /// Indicates whether both <see cref="GraphvizColor"/> are not equal.
+        /// </summary>
+        /// <param name="color1">First <see cref="GraphvizColor"/> to compare.</param>
+        /// <param name="color2">Second <see cref="GraphvizColor"/> to compare.</param>
+        /// <returns>True if both <see cref="GraphvizColor"/> are equal, otherwise false.</returns>
+        public static bool operator !=(GraphvizColor color1, GraphvizColor color2)
+        {
+            return !(color1 == color2);
+        }
+
         /// <inheritdoc />
         public bool Equals(GraphvizColor other)
         {
             return A == other.A && R == other.R && G == other.G && B == other.B;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (obj is GraphvizColor color)
+                return Equals(color);
+            return false;
         }
 
         /// <inheritdoc />

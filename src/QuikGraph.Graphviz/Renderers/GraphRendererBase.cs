@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Dot;
 using QuikGraph.Utils;
@@ -27,11 +26,11 @@ namespace QuikGraph.Graphviz
         private void InternalInitialize()
         {
             Graphviz.CommonVertexFormat.Style = GraphvizVertexStyle.Filled;
-            Graphviz.CommonVertexFormat.FillColor = Color.LightYellow;
-            Graphviz.CommonVertexFormat.Font = new Font("Tahoma", 8.25F);
+            Graphviz.CommonVertexFormat.FillColor = GraphvizColor.LightYellow;
+            Graphviz.CommonVertexFormat.Font = new GraphvizFont("Tahoma", 8.25F);
             Graphviz.CommonVertexFormat.Shape = GraphvizVertexShape.Box;
 
-            Graphviz.CommonEdgeFormat.Font = new Font("Tahoma", 8.25F);
+            Graphviz.CommonEdgeFormat.Font = new GraphvizFont("Tahoma", 8.25F);
         }
 
         /// <summary>

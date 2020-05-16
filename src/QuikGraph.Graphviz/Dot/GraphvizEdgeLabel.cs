@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Drawing;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
 
@@ -34,13 +33,13 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public Font Font { get; set; }
+        public GraphvizFont Font { get; set; }
 
         /// <summary>
         /// Font color.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:labelfontcolor">See more</see>
         /// </summary>
-        public Color FontColor { get; set; } = Color.Black;
+        public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
         /// Label text.
@@ -77,7 +76,7 @@ namespace QuikGraph.Graphviz.Dot
                     parameters["labelfontname"] = Font.Name;
                     parameters["labelfontsize"] = Font.SizeInPoints;
                 }
-                if (FontColor != Color.Black)
+                if (FontColor != GraphvizColor.Black)
                 {
                     parameters["fontcolor"] = FontColor;
                 }

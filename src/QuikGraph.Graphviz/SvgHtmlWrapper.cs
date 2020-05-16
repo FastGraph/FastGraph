@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz
 {
@@ -19,13 +19,18 @@ namespace QuikGraph.Graphviz
         /// <returns>Dumped HTML file path.</returns>
         [Pure]
         [NotNull]
-        public static string DumpHtml(Size size, [NotNull] string svgFilePath)
+        public static string DumpHtml(GraphvizSize size, [NotNull] string svgFilePath)
         {
             if (svgFilePath is null)
                 throw new ArgumentNullException(nameof(svgFilePath));
 
             string outputFile = $"{svgFilePath}.html";
+#if SUPPORTS_STREAM_FULL_FEATURES
             using (var html = new StreamWriter(outputFile))
+#else
+            using (var fileWriter = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+            using (var html = new StreamWriter(fileWriter))
+#endif
             {
                 html.WriteLine("<html>");
                 html.WriteLine("<body>");
@@ -50,12 +55,23 @@ namespace QuikGraph.Graphviz
         [NotNull]
         public static string WrapSvg([NotNull] string svgFilePath)
         {
+#if SUPPORTS_STREAM_FULL_FEATURES
             using (var reader = new StreamReader(svgFilePath))
             {
-                Size size = ParseSize(reader.ReadToEnd());
+                GraphvizSize size = ParseSize(reader.ReadToEnd());
                 reader.Close();
                 return DumpHtml(size, svgFilePath);
             }
+#else
+            GraphvizSize size;
+            using (var fileReader = new FileStream(svgFilePath, FileMode.Open, FileAccess.Read))
+            using (var reader = new StreamReader(fileReader))
+            {
+                size = ParseSize(reader.ReadToEnd());
+            }
+
+            return DumpHtml(size, svgFilePath);
+#endif
         }
 
         [NotNull]
@@ -75,15 +91,15 @@ namespace QuikGraph.Graphviz
         /// <param name="svg">SVG content.</param>
         /// <returns>SVG size.</returns>
         [Pure]
-        public static Size ParseSize([NotNull] string svg)
+        public static GraphvizSize ParseSize([NotNull] string svg)
         {
             Match match = SizeRegex.Match(svg);
             if (!match.Success)
-                return new Size(400, 400);
+                return new GraphvizSize(400, 400);
             
             int size = int.Parse(match.Groups[WidthGroupName].Value);
             int height = int.Parse(match.Groups[HeightGroupName].Value);
-            return new Size(size, height);
+            return new GraphvizSize(size, height);
         }
     }
 }
