@@ -1,6 +1,6 @@
 using System;
-using System.IO;
 using System.Collections.ObjectModel;
+using System.IO;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Graphviz.Dot

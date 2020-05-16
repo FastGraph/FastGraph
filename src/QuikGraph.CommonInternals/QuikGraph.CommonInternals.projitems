@@ -9,7 +9,8 @@
     <Import_RootNamespace>QuikGraph.CommonInternals</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)\Externs\JetBrains.Annotations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Externs\JetBrains.Annotations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DisposableHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MathUtils.cs" />
   </ItemGroup>
 </Project>

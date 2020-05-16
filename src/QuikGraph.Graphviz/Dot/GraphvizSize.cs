@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -23,7 +24,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Indicates if this size is empty.
         /// </summary>
-        public bool IsEmpty => Width == 0 || Height == 0;
+        public bool IsEmpty =>  IsZero(Width) || IsZero(Height);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizSizeF"/> struct.

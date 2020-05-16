@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using JetBrains.Annotations;
+using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -59,11 +60,11 @@ namespace QuikGraph.Graphviz.Dot
             if (Value != null)
             {
                 parameters["label"] = Value;
-                if (Angle != -25)
+                if (!NearEqual(Angle, -25.0))
                 {
                     parameters["labelangle"] = Angle;
                 }
-                if (Distance != 1)
+                if (!NearEqual(Distance, 1))
                 {
                     parameters["labeldistance"] = Distance;
                 }

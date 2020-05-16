@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using JetBrains.Annotations;
+using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -315,11 +316,11 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["layers"] = Layers.ToDot();
             }
-            if (McLimit != 1)
+            if (!NearEqual(McLimit, 1.0))
             {
                 properties["mclimit"] = McLimit;
             }
-            if (NodeSeparation != 0.25)
+            if (!NearEqual(NodeSeparation, 0.25))
             {
                 properties["nodesep"] = NodeSeparation;
             }
@@ -341,7 +342,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (!PageSize.IsEmpty)
             {
-                properties["page"] = string.Format("{0},{1}", PageSize.Width, PageSize.Height);
+                properties["page"] = $"{PageSize.Width},{PageSize.Height}";
             }
             if (PageDirection != GraphvizPageDirection.BL)
             {
@@ -351,7 +352,7 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["quantum"] = Quantum;
             }
-            if (RankSeparation != 0.5)
+            if (!NearEqual(RankSeparation, 0.5))
             {
                 properties["ranksep"] = RankSeparation;
             }
@@ -363,7 +364,7 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["remincross"] = IsReMinCross;
             }
-            if (Resolution != 0.96)
+            if (!NearEqual(Resolution, 0.96))
             {
                 properties["resolution"] = Resolution;
             }
@@ -385,7 +386,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (!Size.IsEmpty)
             {
-                properties["size"] = string.Format("{0},{1}", Size.Width, Size.Height);
+                properties["size"] = $"{Size.Width},{Size.Height}";
             }
             if (StyleSheet != null)
             {
@@ -396,7 +397,7 @@ namespace QuikGraph.Graphviz.Dot
                 properties["rankdir"] = RankDirection;
             }
 
-            return this.GenerateDot(properties);
+            return GenerateDot(properties);
         }
 
         /// <inheritdoc />

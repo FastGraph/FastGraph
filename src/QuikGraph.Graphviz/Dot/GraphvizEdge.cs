@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using JetBrains.Annotations;
+using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -255,7 +256,7 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["URL"] = Url;
             }
-            if (Weight != 1)
+            if (!NearEqual(Weight, 1.0))
             {
                 properties["weight"] = Weight;
             }

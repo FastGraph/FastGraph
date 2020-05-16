@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using JetBrains.Annotations;
+using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -332,11 +333,11 @@ namespace QuikGraph.Graphviz.Dot
                 {
                     properties["sides"] = Sides;
                 }
-                if (Skew != 0)
+                if (!IsZero(Skew))
                 {
                     properties["skew"] = Skew;
                 }
-                if (Distortion != 0)
+                if (!IsZero(Distortion))
                 {
                     properties["distorsion"] = Distortion;
                 }
