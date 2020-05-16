@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Tests", "tests\Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Serialization.Tests", "tests\QuikGraph.Serialization.Tests\QuikGraph.Serialization.Tests.csproj", "{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.GraphViz.Tests", "tests\QuikGraph.GraphViz.Tests\QuikGraph.GraphViz.Tests.csproj", "{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{20713F1D-74E0-44E0-A533-0D3DC30D3898} = {7A2A3C07-B652-4759-AFC4-49378D764784}
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
+		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C26EFBC1-5149-4422-AFD3-172667AA018F}
