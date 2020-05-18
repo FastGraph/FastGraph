@@ -641,7 +641,7 @@ namespace QuikGraph.Tests.Serialization
         #endregion
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateGraphSerializationTestCases
+        private static IEnumerable<TestCaseData> GraphSerializationTestCases
         {
             [UsedImplicitly]
             get
@@ -663,7 +663,7 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        [TestCaseSource(nameof(CreateGraphSerializationTestCases))]
+        [TestCaseSource(nameof(GraphSerializationTestCases))]
         public void GraphMLSerializationWithValidation_WriteVertex(
             [NotNull, InstantHandle] Func<TestGraph, string> serializeGraph,
             bool _)
@@ -739,7 +739,7 @@ namespace QuikGraph.Tests.Serialization
             CollectionAssert.AreEqual(vertex.IntIList, serializedVertex.IntIList);
         }
 
-        [TestCaseSource(nameof(CreateGraphSerializationTestCases))]
+        [TestCaseSource(nameof(GraphSerializationTestCases))]
         public void GraphMLSerializationWithValidation_WriteEdge(
             [NotNull, InstantHandle] Func<TestGraph, string> serializeGraph,
             bool keepIds)

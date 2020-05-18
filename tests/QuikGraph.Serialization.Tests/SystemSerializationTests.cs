@@ -42,7 +42,7 @@ namespace QuikGraph.Tests.Serialization
         #endregion
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateBinarySerializationAdjacencyGraphTestCases
+        private static IEnumerable<TestCaseData> BinarySerializationAdjacencyGraphTestCases
         {
             [UsedImplicitly]
             get
@@ -64,7 +64,7 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        [TestCaseSource(nameof(CreateBinarySerializationAdjacencyGraphTestCases))]
+        [TestCaseSource(nameof(BinarySerializationAdjacencyGraphTestCases))]
         public void BinarySerialization_AdjacencyGraph([NotNull] AdjacencyGraph<int, EquatableEdge<int>> graph)
         {
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
@@ -73,7 +73,7 @@ namespace QuikGraph.Tests.Serialization
         }
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateBinarySerializationBidirectionalGraphTestCases
+        private static IEnumerable<TestCaseData> BinarySerializationBidirectionalGraphTestCases
         {
             [UsedImplicitly]
             get
@@ -95,7 +95,7 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        [TestCaseSource(nameof(CreateBinarySerializationBidirectionalGraphTestCases))]
+        [TestCaseSource(nameof(BinarySerializationBidirectionalGraphTestCases))]
         public void BinarySerialization_BidirectionalGraph([NotNull] BidirectionalGraph<int, EquatableEdge<int>> graph)
         {
             BidirectionalGraph<int, EquatableEdge<int>> deserializedGraph =
@@ -104,7 +104,7 @@ namespace QuikGraph.Tests.Serialization
         }
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateBinarySerializationUndirectedGraphTestCases
+        private static IEnumerable<TestCaseData> BinarySerializationUndirectedGraphTestCases
         {
             [UsedImplicitly]
             get
@@ -126,7 +126,7 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        [TestCaseSource(nameof(CreateBinarySerializationUndirectedGraphTestCases))]
+        [TestCaseSource(nameof(BinarySerializationUndirectedGraphTestCases))]
         public void BinarySerialization_UndirectedGraph([NotNull] UndirectedGraph<int, EquatableEdge<int>> graph)
         {
             UndirectedGraph<int, EquatableEdge<int>> deserializedGraph =

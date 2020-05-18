@@ -250,7 +250,7 @@ namespace QuikGraph.Tests.Collections
         }
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateRemoveMinimumTestCases
+        private static IEnumerable<TestCaseData> RemoveMinimumTestCases
         {
             [UsedImplicitly]
             get
@@ -293,7 +293,7 @@ namespace QuikGraph.Tests.Collections
             }
         }
 
-        [TestCaseSource(nameof(CreateRemoveMinimumTestCases))]
+        [TestCaseSource(nameof(RemoveMinimumTestCases))]
         public void RemoveMinimum([NotNull] int[] keys, double errorRate)
         {
             QuikGraphAssert.TrueForAll(keys, k => k < int.MaxValue);

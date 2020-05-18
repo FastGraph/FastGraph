@@ -49,7 +49,7 @@ namespace QuikGraph.Tests.Structures
         #region Test cases
 
         [NotNull, ItemNotNull]
-        private static IEnumerable CreateEquateWithComparerTestCases
+        private static IEnumerable<TestCaseData> EquateWithComparerTestCases
         {
             [UsedImplicitly]
             get
@@ -182,7 +182,7 @@ namespace QuikGraph.Tests.Structures
 
         #endregion
 
-        [TestCaseSource(nameof(CreateEquateWithComparerTestCases))]
+        [TestCaseSource(nameof(EquateWithComparerTestCases))]
         public bool EquateWithComparer(
             [NotNull] IVertexAndEdgeListGraph<int, Edge<int>> g,
             [NotNull] IVertexAndEdgeListGraph<int, Edge<int>> h,
@@ -210,7 +210,7 @@ namespace QuikGraph.Tests.Structures
         #region Test cases
 
         [NotNull, ItemNotNull]
-        private static IEnumerable CreateEquateTestCases
+        private static IEnumerable<TestCaseData> EquateTestCases
         {
             [UsedImplicitly]
             get
@@ -326,7 +326,7 @@ namespace QuikGraph.Tests.Structures
 
         #endregion
 
-        [TestCaseSource(nameof(CreateEquateTestCases))]
+        [TestCaseSource(nameof(EquateTestCases))]
         public bool Equate(
             [NotNull] IVertexAndEdgeListGraph<int, Edge<int>> g,
             [NotNull] IVertexAndEdgeListGraph<int, Edge<int>> h)

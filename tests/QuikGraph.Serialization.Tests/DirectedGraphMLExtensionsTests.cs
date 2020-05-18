@@ -66,7 +66,7 @@ namespace QuikGraph.Tests.Serialization
             Path.Combine(GetTemporaryTestDirectory(), "serialization_from_directegraph_to_xml_throws_test.xml");
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateWriteXmlTestCases
+        private static IEnumerable<TestCaseData> WriteXmlTestCases
         {
             [UsedImplicitly]
             get
@@ -132,7 +132,7 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        [TestCaseSource(nameof(CreateWriteXmlTestCases))]
+        [TestCaseSource(nameof(WriteXmlTestCases))]
         public void WriteXml(
             [NotNull] Func<DirectedGraph, string> onSerialize)
         {

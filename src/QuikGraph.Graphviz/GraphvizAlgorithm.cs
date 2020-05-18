@@ -118,7 +118,7 @@ namespace QuikGraph.Graphviz
         {
             Debug.Assert(vertex != null);
 
-            Output.Write($"{_verticesIds[vertex]} ");
+            Output.Write($"{_verticesIds[vertex]}");
             FormatVertexEventHandler<TVertex> formatVertex = FormatVertex;
             if (formatVertex != null)
             {
@@ -130,7 +130,7 @@ namespace QuikGraph.Graphviz
 
                 string dot = vertexFormat.ToDot();
                 if (dot.Length != 0)
-                    Output.Write($"[{dot}]");
+                    Output.Write($" [{dot}]");
             }
             Output.WriteLine(";");
         }
@@ -149,8 +149,12 @@ namespace QuikGraph.Graphviz
             {
                 var edgeFormat = new GraphvizEdge();
                 formatEdge(this, new FormatEdgeEventArgs<TVertex, TEdge>(edge, edgeFormat));
-                Output.Write($" {edgeFormat.ToDot()}");
+
+                string dot = edgeFormat.ToDot();
+                if (dot.Length != 0)
+                    Output.Write($" [{dot}]");
             }
+            Output.WriteLine(";");
         }
 
         /// <summary>
@@ -206,7 +210,7 @@ namespace QuikGraph.Graphviz
             WriteVertices(verticesColors, VisitedGraph.Vertices);
             WriteEdges(edgeColors, VisitedGraph.Edges);
 
-            Output.WriteLine("}");
+            Output.Write("}");
             return Output.ToString();
         }
 
@@ -309,12 +313,10 @@ namespace QuikGraph.Graphviz
                     continue;
 
                 Output.Write(VisitedGraph.IsDirected
-                    ? $"{_verticesIds[edge.Source]} -> {_verticesIds[edge.Target]} ["
-                    : $"{_verticesIds[edge.Source]} -- {_verticesIds[edge.Target]} [");
+                    ? $"{_verticesIds[edge.Source]} -> {_verticesIds[edge.Target]}"
+                    : $"{_verticesIds[edge.Source]} -- {_verticesIds[edge.Target]}");
 
                 OnFormatEdge(edge);
-                Output.WriteLine("];");
-
                 edgesColors[edge] = GraphColor.Black;
             }
         }

@@ -52,6 +52,10 @@
   </PropertyGroup>
 
   <!-- Dependencies -->
+  <!-- Shared Projects -->
+  <Import Project="..\..\src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems" Label="Shared" />
+
+  <!-- Projects -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\QuikGraph.GraphViz\QuikGraph.GraphViz.csproj" />
   </ItemGroup>

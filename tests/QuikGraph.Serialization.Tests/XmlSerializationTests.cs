@@ -93,7 +93,7 @@ namespace QuikGraph.Tests.Serialization
             }
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreateXmlSerializationGraphTestCases
+        private static IEnumerable<TestCaseData> XmlSerializationGraphTestCases
         {
             [UsedImplicitly]
             get
@@ -103,7 +103,7 @@ namespace QuikGraph.Tests.Serialization
             }
         }
 
-        [TestCaseSource(nameof(CreateXmlSerializationGraphTestCases))]
+        [TestCaseSource(nameof(XmlSerializationGraphTestCases))]
         public void SerializeToXml<TGraph>([NotNull] TGraph graph)
             where TGraph 
             : IVertexAndEdgeListGraph<Person, TaggedEdge<Person, string>>

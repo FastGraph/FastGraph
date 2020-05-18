@@ -30,7 +30,7 @@ namespace QuikGraph.Tests.Predicates
         }
 
         [NotNull, ItemNotNull]
-        private static IEnumerable<TestCaseData> CreatePredicateTestCases
+        private static IEnumerable<TestCaseData> PredicateTestCases
         {
             [UsedImplicitly]
             get
@@ -39,7 +39,7 @@ namespace QuikGraph.Tests.Predicates
             }
         }
 
-        [TestCaseSource(nameof(CreatePredicateTestCases))]
+        [TestCaseSource(nameof(PredicateTestCases))]
         public void Predicate<TGraph>([NotNull] TGraph graph)
             where TGraph 
             : IBidirectionalGraph<int, Edge<int>>

@@ -1,4 +1,4 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -28,6 +28,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.GraphViz.Tests", "tests\QuikGraph.GraphViz.Tests\QuikGraph.GraphViz.Tests.csproj", "{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems*{69dfd21c-d3a3-4764-b3f0-2fdf612e1f65}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
