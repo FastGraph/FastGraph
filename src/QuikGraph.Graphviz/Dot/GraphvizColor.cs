@@ -5,7 +5,7 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Represents a color.
     /// </summary>
-    public struct GraphvizColor : IEquatable<GraphvizColor>
+    public partial struct GraphvizColor : IEquatable<GraphvizColor>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizColor"/> struct.
@@ -83,20 +83,5 @@ namespace QuikGraph.Graphviz.Dot
         {
             return A << 24 | R << 16 | G << 8 | B;
         }
-
-        /// <summary>
-        /// Black color.
-        /// </summary>
-        public static GraphvizColor Black { get; } = new GraphvizColor(0xFF, 0, 0, 0);
-
-        /// <summary>
-        /// White color.
-        /// </summary>
-        public static GraphvizColor White { get; } = new GraphvizColor(0xFF, 0xFF, 0xFF, 0xFF);
-
-        /// <summary>
-        /// Light yellow color.
-        /// </summary>
-        public static GraphvizColor LightYellow { get; } = new GraphvizColor(0xFF, 0xFF, 0xFF, 0xE0);
     }
 }
