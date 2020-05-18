@@ -11,6 +11,7 @@ param(
     {
         'core' { return "Generate_QuikGraph_Core"; }
         'serialization' { return "Generate_QuikGraph_Serialization"; }
+        'graphviz' { return "Generate_QuikGraph_GraphViz"; }
         default { throw "Invalid tag slug." }
     }
 }

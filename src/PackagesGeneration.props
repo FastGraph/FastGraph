@@ -4,5 +4,6 @@
     <!-- Packages generation control -->
     <Generate_QuikGraph_Core>false</Generate_QuikGraph_Core>
     <Generate_QuikGraph_Serialization>false</Generate_QuikGraph_Serialization>
+    <Generate_QuikGraph_GraphViz>false</Generate_QuikGraph_GraphViz>
   </PropertyGroup>
 </Project>
