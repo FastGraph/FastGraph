@@ -8,7 +8,7 @@ using QuikGraph.Graphviz.Dot;
 namespace QuikGraph.Graphviz.Tests
 {
     /// <summary>
-    /// Tests related to <see cref="GraphvizAlgorithm{TVertex,TEdge}"/>
+    /// Tests related to <see cref="GraphvizAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
     internal class GraphVizAlgorithmTests

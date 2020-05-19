@@ -28,16 +28,15 @@ namespace QuikGraph.Graphviz
 #if SUPPORTS_STREAM_FULL_FEATURES
             using (var html = new StreamWriter(outputFile))
 #else
-            using (var fileWriter = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+            var fileWriter = new FileStream(outputFile, FileMode.Create, FileAccess.Write);
             using (var html = new StreamWriter(fileWriter))
 #endif
             {
                 html.WriteLine("<html>");
                 html.WriteLine("<body>");
                 html.WriteLine($"<object data=\"{svgFilePath}\" type=\"image/svg+xml\" width=\"{size.Width}\" height=\"{size.Height}\">");
-                html.WriteLine($"  <embed src=\"{svgFilePath}\" type=\"image/svg+xml\" width=\"{size.Width}\" height=\"{size.Height}\">");
+                html.WriteLine($"  <embed src=\"{svgFilePath}\" type=\"image/svg+xml\" width=\"{size.Width}\" height=\"{size.Height}\" />");
                 html.WriteLine("If you see this, you need to install a SVG viewer");
-                html.WriteLine("  </embed>");
                 html.WriteLine("</object>");
                 html.WriteLine("</body>");
                 html.WriteLine("</html>");
@@ -64,7 +63,7 @@ namespace QuikGraph.Graphviz
             }
 #else
             GraphvizSize size;
-            using (var fileReader = new FileStream(svgFilePath, FileMode.Open, FileAccess.Read))
+            var fileReader = new FileStream(svgFilePath, FileMode.Open, FileAccess.Read);
             using (var reader = new StreamReader(fileReader))
             {
                 size = ParseSize(reader.ReadToEnd());
@@ -82,7 +81,7 @@ namespace QuikGraph.Graphviz
 
         [NotNull]
         private static readonly Regex SizeRegex = new Regex(
-            $"<svg width=\"(?<{WidthGroupName}>\\d+)px\" height=\"(?<{HeightGroupName}>\\d+)px",
+            $@"<\s*svg.*width\s*=\s*""\s*(?<{WidthGroupName}>\d+)\s*(px|)\s*"".*height\s*=\s*""\s*(?<{HeightGroupName}>\d+)\s*(px|)\s*""",
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
         /// <summary>
