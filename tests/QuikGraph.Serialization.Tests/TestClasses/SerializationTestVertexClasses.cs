@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     #region Test classes
 

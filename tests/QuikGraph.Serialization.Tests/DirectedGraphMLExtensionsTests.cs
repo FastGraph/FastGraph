@@ -8,11 +8,11 @@ using System.Xml;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
-using QuikGraph.Serialization;
 using QuikGraph.Serialization.DirectedGraphML;
+using QuikGraph.Tests;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests for <see cref="DirectedGraphMLExtensions"/>.
@@ -208,7 +208,7 @@ namespace QuikGraph.Tests.Serialization
                     graphContent.Append(@"<\/Links>");
 
                     var regex = new Regex(
-                        $@"{XmlHeaderRegex}\s*<DirectedGraph\s*.*?\s*>\s*{graphContent.ToString()}\s*<\/DirectedGraph>");
+                        $@"{XmlHeaderRegex}\s*<DirectedGraph\s*.*?\s*>\s*{graphContent}\s*<\/DirectedGraph>");
                     Assert.IsTrue(regex.Match(content).Success);
                 });
         }

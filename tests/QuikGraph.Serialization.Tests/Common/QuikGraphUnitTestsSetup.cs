@@ -1,6 +1,7 @@
 using NUnit.Framework;
+using QuikGraph.Tests;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     /// <summary>
     /// QuikGraph.Serialization unit tests setup.

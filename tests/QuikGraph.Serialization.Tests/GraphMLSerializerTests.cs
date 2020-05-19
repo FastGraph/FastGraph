@@ -10,10 +10,10 @@ using System.Xml;
 using System.Xml.XPath;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
+using QuikGraph.Tests;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests for <see cref="GraphMLSerializer{TVertex,TEdge,TGraph}"/>.

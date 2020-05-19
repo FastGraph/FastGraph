@@ -5,9 +5,8 @@ using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests relative to XML serialization of some serializable structures.

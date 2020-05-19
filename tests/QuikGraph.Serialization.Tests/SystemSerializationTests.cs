@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
+using QuikGraph.Tests;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests relative to serialization via standard API.

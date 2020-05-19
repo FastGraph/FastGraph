@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Serialization
+namespace QuikGraph.Serialization.Tests
 {
     #region Test classes
 

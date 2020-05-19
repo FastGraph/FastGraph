@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace QuikGraph.Tests
+namespace QuikGraph.Serialization.Tests
 {
     /// <summary>
     /// <see cref="IComparer{Single}"/> for floats with user-specified tolerance.
