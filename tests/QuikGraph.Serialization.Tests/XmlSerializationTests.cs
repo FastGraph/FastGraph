@@ -8,7 +8,6 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization;
-using QuikGraph.Tests.Structures;
 using static QuikGraph.Tests.GraphTestHelpers;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
@@ -18,7 +17,7 @@ namespace QuikGraph.Tests.Serialization
     /// Tests relative to XML serialization.
     /// </summary>
     [TestFixture]
-    internal class XmlSerializationTests : GraphTestsBase
+    internal class XmlSerializationTests
     {
         #region Serialization
 

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>52f3ffcf-1638-48d8-b124-0347c23f2fc</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>QuikGraph.Tests.CommonInternals</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Factories\TestGraphFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\AssertHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\GraphTestHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuikGraphAssert.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuikGraphUnitTestsHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuikGraphUnitTestsSetupBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestCategories.cs" />
+  </ItemGroup>
+</Project>

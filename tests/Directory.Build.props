@@ -21,4 +21,7 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>
+
+  <!-- Shared Projects -->
+  <Import Project="QuikGraph.Tests.CommonInternals\QuikGraph.Tests.CommonInternals.projitems" Label="Shared" />
 </Project>

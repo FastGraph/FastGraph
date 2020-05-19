@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Serialization;
-using QuikGraph.Tests.Structures;
 
 namespace QuikGraph.Tests.Serialization
 {
@@ -14,7 +13,7 @@ namespace QuikGraph.Tests.Serialization
     /// Tests relative to XML serialization of some serializable structures.
     /// </summary>
     [TestFixture]
-    internal class XmlSerializableStructuresTests : GraphTestsBase
+    internal class XmlSerializableStructuresTests
     {
         [NotNull]
         private const string XmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -101,7 +100,7 @@ namespace QuikGraph.Tests.Serialization
                     graphContent.Append(@"<\/edges>");
 
                     var regex = new Regex(
-                        $@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*{graphContent.ToString()}\s*<\/graph>");
+                        $@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*{graphContent}\s*<\/graph>");
                     Assert.IsTrue(regex.Match(content).Success);
                 });
         }
