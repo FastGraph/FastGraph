@@ -14,7 +14,7 @@ namespace QuikGraph.Graphviz
         {
             if (string.IsNullOrEmpty(dot))
                 throw new ArgumentException("Dot content must not be null or empty.", nameof(dot));
-            if (string.IsNullOrEmpty(dot))
+            if (string.IsNullOrEmpty(outputFilePath))
                 throw new ArgumentException("Output file path content must not be null or empty.", nameof(outputFilePath));
 
             string output = outputFilePath;

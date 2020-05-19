@@ -16,7 +16,6 @@ namespace QuikGraph.Graphviz
         /// <param name="dot">Graph serialized using Dot language.</param>
         /// <param name="outputFilePath">Target file path.</param>
         /// <returns>Path to the saved result.</returns>
-        [Pure]
         [NotNull]
         string Run(
             GraphvizImageType imageType,
