@@ -2,6 +2,7 @@ namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Enumeration of possible arrow shapes.
+    /// <see href="https://www.graphviz.org/doc/info/arrows.html">See more</see>
     /// </summary>
     public enum GraphvizArrowShape
     {
@@ -48,6 +49,17 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Vee.
         /// </summary>
-        Vee
+        Vee,
+
+        /// <summary>
+        /// Curve.
+        /// </summary>
+        Curve,
+
+        /// <summary>
+        /// ICurve.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        ICurve
     }
 }

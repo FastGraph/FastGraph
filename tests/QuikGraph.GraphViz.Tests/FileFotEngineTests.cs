@@ -45,7 +45,7 @@ namespace QuikGraph.Graphviz.Tests
         public void Run_Throws()
         {
             const string dot = "digraph G {}";
-            const string filePath = "notSaved.dot";
+            const string filePath = "NotSaved.dot";
 
             var dotEngine = new FileDotEngine();
             // ReSharper disable AssignNullToNotNullAttribute

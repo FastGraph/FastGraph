@@ -5,6 +5,7 @@ namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// GraphViz arrow.
+    /// <see href="https://www.graphviz.org/doc/info/arrows.html">See more</see>
     /// </summary>
     public class GraphvizArrow
     {
@@ -57,18 +58,19 @@ namespace QuikGraph.Graphviz.Dot
         {
             using (var writer = new StringWriter())
             {
-                if (Filling == GraphvizArrowFilling.Open)
+                if (Filling == GraphvizArrowFilling.Open
+                    && SupportOpen())
                 {
                     writer.Write('o');
                 }
 
                 switch (Clipping)
                 {
-                    case GraphvizArrowClipping.Left:
+                    case GraphvizArrowClipping.Left when SupportClipping():
                         writer.Write('l');
                         break;
 
-                    case GraphvizArrowClipping.Right:
+                    case GraphvizArrowClipping.Right when SupportClipping():
                         writer.Write('r');
                         break;
                 }
@@ -77,6 +79,32 @@ namespace QuikGraph.Graphviz.Dot
 
                 return writer.ToString();
             }
+
+            #region Local functions
+
+            bool SupportOpen()
+            {
+                return Shape == GraphvizArrowShape.Box
+                       || Shape == GraphvizArrowShape.Diamond
+                       || Shape == GraphvizArrowShape.Dot
+                       || Shape == GraphvizArrowShape.Inv
+                       || Shape == GraphvizArrowShape.Normal;
+            }
+
+            bool SupportClipping()
+            {
+                return Shape == GraphvizArrowShape.Box
+                       || Shape == GraphvizArrowShape.Crow
+                       || Shape == GraphvizArrowShape.Diamond
+                       || Shape == GraphvizArrowShape.Inv
+                       || Shape == GraphvizArrowShape.Normal
+                       || Shape == GraphvizArrowShape.Tee
+                       || Shape == GraphvizArrowShape.Vee
+                       || Shape == GraphvizArrowShape.Curve
+                       || Shape == GraphvizArrowShape.ICurve;
+            }
+
+            #endregion
         }
 
         /// <inheritdoc />

@@ -11,7 +11,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="GraphvizAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphVizAlgorithmTests
+    internal class GraphvizAlgorithmTests
     {
         #region Test classes
 
@@ -252,7 +252,7 @@ namespace QuikGraph.Graphviz.Tests
 
                 var dotEngine = new TestDotEngine { ExpectedDot = generatedDot };
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                algorithm.Generate(dotEngine, "TestPath.dot");
+                algorithm.Generate(dotEngine, "NotSaved.dot");
             }
 
             #endregion

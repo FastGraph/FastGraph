@@ -2,16 +2,17 @@ namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Enumeration of possible arrow fillings.
+    /// <see href="https://www.graphviz.org/doc/info/arrows.html">See more</see>
     /// </summary>
     public enum GraphvizArrowFilling
     {
         /// <summary>
-        /// Close.
+        /// Use a closed (filled) version of the shape.
         /// </summary>
         Close,
 
         /// <summary>
-        /// Open.
+        /// Use an open (non-filled) version of the shape.
         /// </summary>
         Open
     }
