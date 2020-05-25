@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz record.
+    /// Graphviz record.
     /// </summary>
     public class GraphvizRecord
     {

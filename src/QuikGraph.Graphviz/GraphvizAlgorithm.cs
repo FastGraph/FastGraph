@@ -9,7 +9,7 @@ using QuikGraph.Graphviz.Dot;
 namespace QuikGraph.Graphviz
 {
     /// <summary>
-    /// An algorithm that renders a graph to the GraphViz DOT format.
+    /// An algorithm that renders a graph to the Graphviz DOT format.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>

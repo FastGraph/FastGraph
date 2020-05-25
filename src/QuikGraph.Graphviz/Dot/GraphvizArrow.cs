@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz arrow.
+    /// Graphviz arrow.
     /// <see href="https://www.graphviz.org/doc/info/arrows.html">See more</see>
     /// </summary>
     public class GraphvizArrow

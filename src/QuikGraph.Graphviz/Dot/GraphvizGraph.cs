@@ -5,7 +5,7 @@ using static QuikGraph.Utils.MathUtils;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz graph.
+    /// Graphviz graph.
     /// </summary>
     public class GraphvizGraph
     {

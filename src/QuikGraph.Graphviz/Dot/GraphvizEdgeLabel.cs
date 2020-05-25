@@ -6,7 +6,7 @@ using static QuikGraph.Utils.MathUtils;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz edge label.
+    /// Graphviz edge label.
     /// </summary>
     public class GraphvizEdgeLabel
     {

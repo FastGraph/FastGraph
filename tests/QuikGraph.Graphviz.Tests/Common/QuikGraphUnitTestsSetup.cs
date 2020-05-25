@@ -4,10 +4,10 @@ using QuikGraph.Tests;
 namespace QuikGraph.Graphviz.Tests
 {
     /// <summary>
-    /// QuikGraph.GraphViz unit tests setup.
+    /// QuikGraph.Graphviz unit tests setup.
     /// </summary>
     [SetUpFixture]
-    internal sealed class QuikGraphGraphVizUnitTestsSetup : QuikGraphUnitTestsSetupBase
+    internal sealed class QuikGraphGraphvizUnitTestsSetup : QuikGraphUnitTestsSetupBase
     {
     }
 }

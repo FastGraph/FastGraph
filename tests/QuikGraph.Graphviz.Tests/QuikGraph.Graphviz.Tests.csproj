@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.0</TargetFrameworks>
 
-    <Title>QuikGraph.GraphViz.Tests</Title>
+    <Title>QuikGraph.Graphviz.Tests</Title>
 
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
     <Copyright>Copyright © 2020</Copyright>
-    <Description>Tests for QuikGraph.GraphViz library.</Description>
+    <Description>Tests for QuikGraph.Graphviz library.</Description>
   </PropertyGroup>
 
   <!-- Targets defines -->
@@ -63,6 +63,6 @@
   <!-- Projects -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />
-    <ProjectReference Include="..\..\src\QuikGraph.GraphViz\QuikGraph.GraphViz.csproj" />
+    <ProjectReference Include="..\..\src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
   </ItemGroup>
 </Project>

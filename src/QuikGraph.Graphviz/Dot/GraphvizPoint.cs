@@ -1,7 +1,7 @@
 ﻿namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz point.
+    /// Graphviz point.
     /// </summary>
     public sealed class GraphvizPoint
     {

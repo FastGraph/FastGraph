@@ -6,7 +6,7 @@ using static QuikGraph.Utils.MathUtils;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz size (float).
+    /// Graphviz size (float).
     /// </summary>
     [DebuggerDisplay("{" + nameof(Width) + "}x{" + nameof(Height) + "}")]
     public struct GraphvizSizeF
@@ -50,7 +50,7 @@ namespace QuikGraph.Graphviz.Dot
     }
 
     /// <summary>
-    /// GraphViz size.
+    /// Graphviz size.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Width) + "}x{" + nameof(Height) + "}")]
     public struct GraphvizSize

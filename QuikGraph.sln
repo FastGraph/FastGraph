@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph", "src\QuikGraph\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Serialization", "src\QuikGraph.Serialization\QuikGraph.Serialization.csproj", "{C8B5E125-4624-44D9-1234-5CAF4C25876E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.GraphViz", "src\QuikGraph.GraphViz\QuikGraph.GraphViz.csproj", "{20713F1D-74E0-44E0-A533-0D3DC30D3898}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Graphviz", "src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj", "{20713F1D-74E0-44E0-A533-0D3DC30D3898}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "QuikGraph.Tests.CommonInternals", "tests\QuikGraph.Tests.CommonInternals\QuikGraph.Tests.CommonInternals.shproj", "{52F3FFCF-1638-48D8-B124-0347C723F2FC}"
 EndProject
@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Tests", "tests\Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Serialization.Tests", "tests\QuikGraph.Serialization.Tests\QuikGraph.Serialization.Tests.csproj", "{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.GraphViz.Tests", "tests\QuikGraph.GraphViz.Tests\QuikGraph.GraphViz.Tests.csproj", "{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Graphviz.Tests", "tests\QuikGraph.Graphviz.Tests\QuikGraph.Graphviz.Tests.csproj", "{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

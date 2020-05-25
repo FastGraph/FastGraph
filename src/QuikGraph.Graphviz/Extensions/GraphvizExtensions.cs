@@ -13,7 +13,7 @@ namespace QuikGraph.Graphviz
     public static class GraphvizExtensions
     {
         /// <summary>
-        /// Renders a graph to the GraphViz DOT format.
+        /// Renders a graph to the Graphviz DOT format.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -29,7 +29,7 @@ namespace QuikGraph.Graphviz
         }
 
         /// <summary>
-        /// Renders a graph to the GraphViz DOT format.
+        /// Renders a graph to the Graphviz DOT format.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>

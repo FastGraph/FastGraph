@@ -6,7 +6,7 @@ using static QuikGraph.Utils.MathUtils;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz vertex.
+    /// Graphviz vertex.
     /// </summary>
     public class GraphvizVertex
     {

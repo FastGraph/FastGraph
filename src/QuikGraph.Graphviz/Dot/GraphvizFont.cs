@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz font.
+    /// Graphviz font.
     /// </summary>
     public sealed class GraphvizFont
     {

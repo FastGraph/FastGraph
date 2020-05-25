@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz layer collection.
+    /// Graphviz layer collection.
     /// </summary>
     public class GraphvizLayerCollection : Collection<GraphvizLayer>
     {

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 
-namespace QuikGraph.GraphViz.Tests
+namespace QuikGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests related to <see cref="GraphvizArrow"/>.

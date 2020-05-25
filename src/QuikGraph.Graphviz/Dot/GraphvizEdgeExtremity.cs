@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
-    /// GraphViz edge extremity.
+    /// Graphviz edge extremity.
     /// </summary>
     public class GraphvizEdgeExtremity
     {
