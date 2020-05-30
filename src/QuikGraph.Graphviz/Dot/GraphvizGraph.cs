@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using JetBrains.Annotations;
+using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -235,6 +235,14 @@ namespace QuikGraph.Graphviz.Dot
                     case string strValue:
                         dotParts.Add($"{pair.Key}=\"{strValue}\"");
                         continue;
+                    
+                    case float floatValue:
+                        dotParts.Add($"{pair.Key}={floatValue.ToInvariantString()}");
+                        continue;
+
+                    case double doubleValue:
+                        dotParts.Add($"{pair.Key}={doubleValue.ToInvariantString()}");
+                        continue;
 
                     case GraphvizColor color:
                         dotParts.Add(
@@ -363,7 +371,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (!PageSize.IsEmpty)
             {
-                properties["page"] = $"{PageSize.Width},{PageSize.Height}";
+                properties["page"] = $"{PageSize.Width.ToInvariantString()},{PageSize.Height.ToInvariantString()}";
             }
             if (PageDirection != GraphvizPageDirection.BL)
             {
@@ -403,7 +411,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (!Size.IsEmpty)
             {
-                properties["size"] = $"{Size.Width},{Size.Height}";
+                properties["size"] = $"{Size.Width.ToInvariantString()},{Size.Height.ToInvariantString()}";
             }
             if (StyleSheet != null)
             {

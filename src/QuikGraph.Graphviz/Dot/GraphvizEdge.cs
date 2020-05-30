@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
+using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -195,6 +196,14 @@ namespace QuikGraph.Graphviz.Dot
                 {
                     case string strValue:
                         builder.Append($"{pair.Key}=\"{strValue}\"");
+                        continue;
+
+                    case float floatValue:
+                        builder.Append($"{pair.Key}={floatValue.ToInvariantString()}");
+                        continue;
+
+                    case double doubleValue:
+                        builder.Append($"{pair.Key}={doubleValue.ToInvariantString()}");
                         continue;
 
                     case GraphvizEdgeDirection direction:
