@@ -1,4 +1,4 @@
-using System.IO;
+using System.Text;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Graphviz.Dot
@@ -56,29 +56,28 @@ namespace QuikGraph.Graphviz.Dot
         [NotNull]
         public string ToDot()
         {
-            using (var writer = new StringWriter())
+            var builder = new StringBuilder();
+
+            if (Filling == GraphvizArrowFilling.Open
+                && SupportOpen())
             {
-                if (Filling == GraphvizArrowFilling.Open
-                    && SupportOpen())
-                {
-                    writer.Write('o');
-                }
-
-                switch (Clipping)
-                {
-                    case GraphvizArrowClipping.Left when SupportClipping():
-                        writer.Write('l');
-                        break;
-
-                    case GraphvizArrowClipping.Right when SupportClipping():
-                        writer.Write('r');
-                        break;
-                }
-
-                writer.Write(Shape.ToString().ToLower());
-
-                return writer.ToString();
+                builder.Append('o');
             }
+
+            switch (Clipping)
+            {
+                case GraphvizArrowClipping.Left when SupportClipping():
+                    builder.Append('l');
+                    break;
+
+                case GraphvizArrowClipping.Right when SupportClipping():
+                    builder.Append('r');
+                    break;
+            }
+
+            builder.Append(Shape.ToString().ToLower());
+
+            return builder.ToString();
 
             #region Local functions
 

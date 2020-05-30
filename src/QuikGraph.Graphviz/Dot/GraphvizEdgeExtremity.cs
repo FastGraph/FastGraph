@@ -16,49 +16,53 @@ namespace QuikGraph.Graphviz.Dot
         public GraphvizEdgeExtremity(bool isHead)
         {
             IsHead = isHead;
-            Url = null;
             IsClipped = true;
-            Label = null;
-            ToolTip = null;
-            Logical = null;
-            Same = null;
         }
 
         /// <summary>
-        /// Indicates if this extremity is edge head.
+        /// Indicates if this extremity is edge head or tail.
         /// </summary>
         public bool IsHead { get; }
 
         /// <summary>
-        /// Is clipped edge?
+        /// Is edge extremity clipped to the boundaries of the target node?
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headclip">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailclip">See more</see>
         /// </summary>
         public bool IsClipped { get; set; }
 
         /// <summary>
         /// Label.
-        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headlabel">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:taillabel">See more</see>
         /// </summary>
         public string Label { get; set; }
 
         /// <summary>
         /// Tooltip.
-        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tooltip">See more</see>
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headtooltip">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailtooltip">See more</see>
         /// </summary>
         public string ToolTip { get; set; }
 
         /// <summary>
         /// URL.
-        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headURL">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailURL">See more</see>
         /// </summary>
         public string Url { get; set; }
 
         /// <summary>
-        /// Logical.
+        /// Logical extremity of an edge.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:lhead">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:ltail">See more</see>
         /// </summary>
         public string Logical { get; set; }
 
         /// <summary>
-        /// Same.
+        /// Identifier to group edge extremities with same identifier.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:samehead">See more</see> or
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:sametail">See more</see>
         /// </summary>
         public string Same { get; set; }
 
@@ -71,30 +75,30 @@ namespace QuikGraph.Graphviz.Dot
             if (parameters is null)
                 throw new ArgumentNullException(nameof(parameters));
 
-            string text = IsHead ? "head" : "tail";
+            string extremity = IsHead ? "head" : "tail";
             if (Url != null)
             {
-                parameters.Add(text + "URL", Url);
+                parameters.Add(extremity + "URL", Url);
             }
             if (!IsClipped)
             {
-                parameters.Add(text + "clip", IsClipped);
+                parameters.Add(extremity + "clip", IsClipped);
             }
             if (Label != null)
             {
-                parameters.Add(text + "label", Label);
+                parameters.Add(extremity + "label", Label);
             }
             if (ToolTip != null)
             {
-                parameters.Add(text + "tooltip", ToolTip);
+                parameters.Add(extremity + "tooltip", ToolTip);
             }
             if (Logical != null)
             {
-                parameters.Add("l" + text, Logical);
+                parameters.Add("l" + extremity, Logical);
             }
             if (Same != null)
             {
-                parameters.Add("same" + text, Same);
+                parameters.Add("same" + extremity, Same);
             }
         }
     }

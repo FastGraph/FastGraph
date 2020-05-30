@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -8,11 +9,18 @@ namespace QuikGraph.Graphviz.Dot
     /// </summary>
     public class GraphvizRecord
     {
+        [NotNull, ItemNotNull]
+        private GraphvizRecordCellCollection _cells = new GraphvizRecordCellCollection();
+
         /// <summary>
         /// Record cells.
         /// </summary>
         [NotNull, ItemNotNull]
-        public GraphvizRecordCellCollection Cells { get; } = new GraphvizRecordCellCollection();
+        public GraphvizRecordCellCollection Cells
+        {
+            get => _cells;
+            set => _cells = value ?? throw new ArgumentNullException(nameof(value));
+        }
 
         /// <summary>
         /// Converts this record to DOT.
@@ -26,6 +34,7 @@ namespace QuikGraph.Graphviz.Dot
                 return string.Empty;
 
             var builder = new StringBuilder();
+
             bool flag = false;
             foreach (GraphvizRecordCell cell in Cells)
             {
@@ -37,6 +46,7 @@ namespace QuikGraph.Graphviz.Dot
                 builder.Append(cell.ToDot());
                 flag = true;
             }
+
             return builder.ToString();
         }
 

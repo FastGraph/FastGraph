@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
 
@@ -16,10 +17,18 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public string Comment { get; set; }
 
+        [NotNull]
+        private GraphvizEdgeLabel _label = new GraphvizEdgeLabel();
+
         /// <summary>
         /// Label.
         /// </summary>
-        public GraphvizEdgeLabel Label { get; set; } = new GraphvizEdgeLabel();
+        [NotNull]
+        public GraphvizEdgeLabel Label
+        {
+            get => _label;
+            set => _label = value ?? throw new ArgumentNullException(nameof(value));
+        }
 
         /// <summary>
         /// Tooltip.
@@ -52,10 +61,25 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
+        [NotNull]
+        private GraphvizEdgeExtremity _head = new GraphvizEdgeExtremity(true);
+
         /// <summary>
         /// Edge head.
         /// </summary>
-        public GraphvizEdgeExtremity Head { get; set; } = new GraphvizEdgeExtremity(true);
+        [NotNull]
+        public GraphvizEdgeExtremity Head
+        {
+            get => _head;
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(value));
+                if (!value.IsHead)
+                    throw new ArgumentException("Edge extremity must be a head extremity.");
+                _head = value;
+            }
+        }
 
         /// <summary>
         /// Edge arrow.
@@ -69,10 +93,25 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public string HeadPort { get; set; }
 
+        [NotNull]
+        private GraphvizEdgeExtremity _tail = new GraphvizEdgeExtremity(false);
+
         /// <summary>
         /// Tail.
         /// </summary>
-        public GraphvizEdgeExtremity Tail { get; set; } = new GraphvizEdgeExtremity(false);
+        [NotNull]
+        public GraphvizEdgeExtremity Tail
+        {
+            get => _tail;
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(value));
+                if (value.IsHead)
+                    throw new ArgumentException("Edge extremity must be a tail extremity.");
+                _tail = value;
+            }
+        }
 
         /// <summary>
         /// Tail arrow.
@@ -138,52 +177,51 @@ namespace QuikGraph.Graphviz.Dot
         [NotNull]
         internal string GenerateDot([NotNull] Dictionary<string, object> properties)
         {
-            using (var writer = new StringWriter())
+            var builder = new StringBuilder();
+
+            bool flag = false;
+            foreach (KeyValuePair<string, object> pair in properties)
             {
-                bool flag = false;
-                foreach (KeyValuePair<string, object> pair in properties)
+                if (flag)
                 {
-                    if (flag)
-                    {
-                        writer.Write(", ");
-                    }
-                    else
-                    {
-                        flag = true;
-                    }
-
-                    switch (pair.Value)
-                    {
-                        case string strValue:
-                            writer.Write($"{pair.Key}=\"{strValue}\"");
-                            continue;
-
-                        case GraphvizEdgeDirection direction:
-                            writer.Write($"{pair.Key}={direction.ToString().ToLower()}");
-                            continue;
-
-                        case GraphvizEdgeStyle edgeStyle:
-                            writer.Write($"{pair.Key}={edgeStyle.ToString().ToLower()}");
-                            continue;
-
-                        case GraphvizColor color:
-                            writer.Write(
-                                "{0}=\"#{1}{2}{3}{4}\"",
-                                pair.Key,
-                                color.R.ToString("x2").ToUpper(),
-                                color.G.ToString("x2").ToUpper(),
-                                color.B.ToString("x2").ToUpper(),
-                                color.A.ToString("x2").ToUpper());
-                            continue;
-
-                        default:
-                            writer.Write($" {pair.Key}={pair.Value.ToString().ToLower()}");
-                            break;
-                    }
+                    builder.Append(", ");
+                }
+                else
+                {
+                    flag = true;
                 }
 
-                return writer.ToString();
+                switch (pair.Value)
+                {
+                    case string strValue:
+                        builder.Append($"{pair.Key}=\"{strValue}\"");
+                        continue;
+
+                    case GraphvizEdgeDirection direction:
+                        builder.Append($"{pair.Key}={direction.ToString().ToLower()}");
+                        continue;
+
+                    case GraphvizEdgeStyle edgeStyle:
+                        builder.Append($"{pair.Key}={edgeStyle.ToString().ToLower()}");
+                        continue;
+
+                    case GraphvizColor color:
+                        builder.AppendFormat(
+                            "{0}=\"#{1}{2}{3}{4}\"",
+                            pair.Key,
+                            color.R.ToString("x2").ToUpper(),
+                            color.G.ToString("x2").ToUpper(),
+                            color.B.ToString("x2").ToUpper(),
+                            color.A.ToString("x2").ToUpper());
+                        continue;
+
+                    default:
+                        builder.Append($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        break;
+                }
             }
+
+            return builder.ToString();
         }
 
         /// <summary>
@@ -195,13 +233,9 @@ namespace QuikGraph.Graphviz.Dot
         public string ToDot()
         {
             var properties = new Dictionary<string, object>();
-            if (Comment != null)
-            {
-                properties["comment"] = Comment;
-            }
             if (Direction != GraphvizEdgeDirection.Forward)
             {
-                properties["dir"] = Direction.ToString().ToLower();
+                properties["dir"] = Direction;
             }
             if (Font != null)
             {
@@ -216,6 +250,10 @@ namespace QuikGraph.Graphviz.Dot
             if (HeadArrow != null)
             {
                 properties["arrowhead"] = HeadArrow.ToDot();
+            }
+            if (HeadPort != null)
+            {
+                properties["headport"] = HeadPort;
             }
             if (!IsConstrained)
             {
@@ -234,22 +272,34 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["minlen"] = MinLength;
             }
+            if (Length != 1)
+            {
+                properties["len"] = Length;
+            }
             if (StrokeColor != GraphvizColor.Black)
             {
                 properties["color"] = StrokeColor;
             }
             if (Style != GraphvizEdgeStyle.Unspecified)
             {
-                properties["style"] = Style.ToString().ToLower();
+                properties["style"] = Style;
             }
             Tail.AddParameters(properties);
             if (TailArrow != null)
             {
                 properties["arrowtail"] = TailArrow.ToDot();
             }
+            if (TailPort != null)
+            {
+                properties["tailport"] = TailPort;
+            }
             if (ToolTip != null)
             {
                 properties["tooltip"] = ToolTip;
+            }
+            if (Comment != null)
+            {
+                properties["comment"] = Comment;
             }
             if (Url != null)
             {
@@ -258,18 +308,6 @@ namespace QuikGraph.Graphviz.Dot
             if (!NearEqual(Weight, 1.0))
             {
                 properties["weight"] = Weight;
-            }
-            if (HeadPort != null)
-            {
-                properties["headport"] = HeadPort;
-            }
-            if (TailPort != null)
-            {
-                properties["tailport"] = TailPort;
-            }
-            if (Length != 1)
-            {
-                properties["len"] = Length;
             }
             return GenerateDot(properties);
         }

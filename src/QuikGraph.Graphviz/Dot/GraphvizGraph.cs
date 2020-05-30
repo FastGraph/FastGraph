@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
 
@@ -9,10 +11,17 @@ namespace QuikGraph.Graphviz.Dot
     /// </summary>
     public class GraphvizGraph
     {
+        [NotNull]
+        private string _name = "G";
+
         /// <summary>
         /// Graph name.
         /// </summary>
-        public string Name { get; set; } = "G";
+        public string Name
+        {
+            get => _name;
+            set => _name = value ?? throw new ArgumentNullException(nameof(value));
+        }
 
         /// <summary>
         /// Comment.
@@ -116,13 +125,25 @@ namespace QuikGraph.Graphviz.Dot
         /// Crossing minimization improvement tries limit.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:mclimit">See more</see>
         /// </summary>
-        public double McLimit { get; set; } = 1;
+        public double McLimit { get; set; } = 1.0;
 
         /// <summary>
         /// Node separation.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:nodesep">See more</see>
         /// </summary>
         public double NodeSeparation { get; set; } = 0.25;
+
+        /// <summary>
+        /// Rank direction.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:rankdir">See more</see>
+        /// </summary>
+        public GraphvizRankDirection RankDirection { get; set; } = GraphvizRankDirection.TB;
+
+        /// <summary>
+        /// Rank separation.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:ranksep">See more</see>
+        /// </summary>
+        public double RankSeparation { get; set; } = 0.5;
 
         /// <summary>
         /// Iterations limit for simplex applications.
@@ -152,25 +173,13 @@ namespace QuikGraph.Graphviz.Dot
         /// Page size.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:page">See more</see>
         /// </summary>
-        public GraphvizSizeF PageSize { get; set; } = new GraphvizSizeF(0, 0);
+        public GraphvizSizeF PageSize { get; set; } = new GraphvizSizeF(0.0f, 0.0f);
 
         /// <summary>
         /// Quantum.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:quantum">See more</see>
         /// </summary>
         public double Quantum { get; set; }
-
-        /// <summary>
-        /// Rank direction.
-        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:rankdir">See more</see>
-        /// </summary>
-        public GraphvizRankDirection RankDirection { get; set; } = GraphvizRankDirection.TB;
-
-        /// <summary>
-        /// Rank separation.
-        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:ranksep">See more</see>
-        /// </summary>
-        public double RankSeparation { get; set; } = 0.5;
 
         /// <summary>
         /// Aspect ratio.
@@ -206,7 +215,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Size.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:size">See more</see>
         /// </summary>
-        public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0, 0);
+        public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0.0f, 0.0f);
 
         /// <summary>
         /// Stylesheet.
@@ -218,39 +227,44 @@ namespace QuikGraph.Graphviz.Dot
         [NotNull]
         internal string GenerateDot([NotNull] Dictionary<string, object> properties)
         {
-            var entries = new List<string>(properties.Count);
+            var dotParts = new List<string>(properties.Count);
             foreach (KeyValuePair<string, object> pair in properties)
             {
                 switch (pair.Value)
                 {
                     case string strValue:
-                        entries.Add($"{pair.Key}=\"{strValue}\"");
+                        dotParts.Add($"{pair.Key}=\"{strValue}\"");
                         continue;
-                    
+
                     case GraphvizColor color:
-                        entries.Add(
+                        dotParts.Add(
                             $"{pair.Key}=\"#{color.R.ToString("x2").ToUpper()}{color.G.ToString("x2").ToUpper()}{color.B.ToString("x2").ToUpper()}{color.A.ToString("x2").ToUpper()}\"");
                         continue;
-                    
+
                     case GraphvizRankDirection _:
                     case GraphvizPageDirection _:
-                        entries.Add($"{pair.Key}={pair.Value}");
+                        dotParts.Add($"{pair.Key}={pair.Value}");
                         continue;
+
+                    case GraphvizLayerCollection layers:
+                        dotParts.Add(layers.ToDot());
+                        continue;
+
                     default:
-                        entries.Add($" {pair.Key}={pair.Value.ToString().ToLower()}");
+                        dotParts.Add($"{pair.Key}={pair.Value.ToString().ToLower()}");
                         break;
                 }
             }
 
-            string result = string.Join(";", entries
+            string dot = string.Join("; ", dotParts
 #if !SUPPORTS_STRING_FULL_FEATURES
                 .ToArray()
 #endif
             );
 
-            result = entries.Count > 1 ? result + ";" : result;
+            dot = dotParts.Count > 1 ? dot + ";" : dot;
 
-            return result;
+            return dot;
         }
 
         /// <summary>
@@ -313,7 +327,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Layers.Count != 0)
             {
-                properties["layers"] = Layers.ToDot();
+                properties["layers"] = Layers;
             }
             if (!NearEqual(McLimit, 1.0))
             {
@@ -322,6 +336,14 @@ namespace QuikGraph.Graphviz.Dot
             if (!NearEqual(NodeSeparation, 0.25))
             {
                 properties["nodesep"] = NodeSeparation;
+            }
+            if (RankDirection != GraphvizRankDirection.TB)
+            {
+                properties["rankdir"] = RankDirection;
+            }
+            if (!NearEqual(RankSeparation, 0.5))
+            {
+                properties["ranksep"] = RankSeparation;
             }
             if (IsNormalized)
             {
@@ -345,15 +367,11 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (PageDirection != GraphvizPageDirection.BL)
             {
-                properties["pagedir"] = PageDirection.ToString().ToLower();
+                properties["pagedir"] = PageDirection;
             }
             if (Quantum > 0)
             {
                 properties["quantum"] = Quantum;
-            }
-            if (!NearEqual(RankSeparation, 0.5))
-            {
-                properties["ranksep"] = RankSeparation;
             }
             if (Ratio != GraphvizRatioMode.Auto)
             {
@@ -390,10 +408,6 @@ namespace QuikGraph.Graphviz.Dot
             if (StyleSheet != null)
             {
                 properties["stylesheet"] = StyleSheet;
-            }
-            if (RankDirection != GraphvizRankDirection.TB)
-            {
-                properties["rankdir"] = RankDirection;
             }
 
             return GenerateDot(properties);

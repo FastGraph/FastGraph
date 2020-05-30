@@ -16,13 +16,27 @@ namespace QuikGraph.Graphviz.Dot
 
         [NotNull]
         private static readonly Regex EscapeRegex = new Regex(
-            $"(?<{EolGroupName}>\\n)|(?<{CommonGroupName}>\\[|\\]|\\||<|>|\"| )",
+            $"(?<{EolGroupName}>\\n|\\r|\\r\\n)|(?<{CommonGroupName}>\\||<|>|\"| |\\\\)",
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Escapes the given <paramref name="value"/> as being a record port value.
+        /// </summary>
+        /// <param name="value">String value to escape.</param>
+        /// <returns>Escaped string.</returns>
+        [Pure]
+        [NotNull]
+        public string EscapePort([NotNull] string value)
+        {
+            return EscapeRegex.Replace(
+                value,
+                match => "_");
+        }
 
         /// <summary>
         /// Escapes the given <paramref name="value"/>.
         /// </summary>
-        /// <param name="value">String value top escape.</param>
+        /// <param name="value">String value to escape.</param>
         /// <returns>Escaped string.</returns>
         [Pure]
         [NotNull]
@@ -30,14 +44,9 @@ namespace QuikGraph.Graphviz.Dot
         {
             return EscapeRegex.Replace(
                 value,
-                match =>
-                {
-                    if (match.Groups[CommonGroupName] != null)
-                    {
-                        return $@"\{match.Value}";
-                    }
-                    return @"\n";
-                });
+                match => match.Groups[CommonGroupName].Success
+                    ? $@"\{match.Value}"
+                    : @"\n");
         }
     }
 }

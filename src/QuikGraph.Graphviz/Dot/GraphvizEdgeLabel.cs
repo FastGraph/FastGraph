@@ -14,13 +14,13 @@ namespace QuikGraph.Graphviz.Dot
         /// Label angle.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:labelangle">See more</see>
         /// </summary>
-        public double Angle { get; set; } = -25;
+        public double Angle { get; set; } = -25.0;
 
         /// <summary>
         /// Scaling factor from node.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:labeldistance">See more</see>
         /// </summary>
-        public double Distance { get; set; } = 1;
+        public double Distance { get; set; } = 1.0;
 
         /// <summary>
         /// Floating label.
@@ -78,7 +78,7 @@ namespace QuikGraph.Graphviz.Dot
                 }
                 if (FontColor != GraphvizColor.Black)
                 {
-                    parameters["fontcolor"] = FontColor;
+                    parameters["labelfontcolor"] = FontColor;
                 }
             }
         }

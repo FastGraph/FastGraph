@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
 using JetBrains.Annotations;
 using static QuikGraph.Utils.MathUtils;
 
@@ -27,16 +27,6 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
         /// </summary>
         public string Label { get; set; }
-
-        /// <summary>
-        /// Top label.
-        /// </summary>
-        public string TopLabel { get; set; }
-
-        /// <summary>
-        /// Bottom label.
-        /// </summary>
-        public string BottomLabel { get; set; }
 
         /// <summary>
         /// Tooltip.
@@ -82,7 +72,7 @@ namespace QuikGraph.Graphviz.Dot
         public string Group { get; set; }
 
         /// <summary>
-        /// Layer.
+        /// Vertex layer.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layer">See more</see>
         /// </summary>
         public GraphvizLayer Layer { get; set; }
@@ -100,7 +90,7 @@ namespace QuikGraph.Graphviz.Dot
         public int Peripheries { get; set; } = -1;
 
         /// <summary>
-        /// Indicates if is regular vertex.
+        /// Indicates if it is a regular vertex.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:regular">See more</see>
         /// </summary>
         public bool Regular { get; set; }
@@ -128,7 +118,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:width">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:height">See more</see>
         /// </summary>
-        public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0f, 0f);
+        public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0.0f, 0.0f);
 
         /// <summary>
         /// Fixed size.
@@ -164,37 +154,37 @@ namespace QuikGraph.Graphviz.Dot
         [NotNull]
         internal string GenerateDot([NotNull] Dictionary<string, object> properties)
         {
-            using (var writer = new StringWriter())
+            var builder = new StringBuilder();
+
+            bool flag = false;
+            foreach (KeyValuePair<string, object> pair in properties)
             {
-                bool flag = false;
-                foreach (KeyValuePair<string, object> pair in properties)
+                if (flag)
                 {
-                    if (flag)
-                    {
-                        writer.Write(", ");
-                    }
-                    else
-                    {
-                        flag = true;
-                    }
+                    builder.Append(", ");
+                }
+                else
+                {
+                    flag = true;
+                }
 
-                    switch (pair.Value)
-                    {
-                        case string strValue:
-                            writer.Write($"{pair.Key}=\"{strValue}\"");
-                            continue;
+                switch (pair.Value)
+                {
+                    case string strValue:
+                        builder.Append($"{pair.Key}=\"{strValue}\"");
+                        continue;
 
-                        case GraphvizVertexShape shape:
-                            writer.Write($"{pair.Key}={shape.ToString().ToLower()}");
-                            continue;
+                    case GraphvizVertexShape shape:
+                        builder.Append($"{pair.Key}={shape.ToString().ToLower()}");
+                        continue;
 
-                        case GraphvizVertexStyle style:
-                            writer.Write($"{pair.Key}={style.ToString().ToLower()}");
-                            continue;
+                    case GraphvizVertexStyle style:
+                        builder.Append($"{pair.Key}={style.ToString().ToLower()}");
+                        continue;
 
-                        case GraphvizColor color:
+                    case GraphvizColor color:
                         {
-                            writer.Write(
+                            builder.AppendFormat(
                                 "{0}=\"#{1}{2}{3}{4}\"",
                                 pair.Key,
                                 color.R.ToString("x2").ToUpper(),
@@ -204,18 +194,17 @@ namespace QuikGraph.Graphviz.Dot
                             continue;
                         }
 
-                        case GraphvizRecord record:
-                            writer.WriteLine($"{pair.Key}=\"{record.ToDot()}\"");
-                            continue;
+                    case GraphvizRecord record:
+                        builder.Append($"{pair.Key}=\"{record.ToDot()}\"");
+                        continue;
 
-                        default:
-                            writer.Write($" {pair.Key}={pair.Value.ToString().ToLower()}");
-                            break;
-                    }
+                    default:
+                        builder.Append($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        break;
                 }
-
-                return writer.ToString();
             }
+
+            return builder.ToString();
         }
 
         /// <summary>
@@ -312,20 +301,6 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["pos"] = $"{Position.X},{Position.Y}!";
             }
-            if (Style == GraphvizVertexStyle.Diagonals
-                || Shape == GraphvizVertexShape.MCircle
-                || Shape == GraphvizVertexShape.MDiamond
-                || Shape == GraphvizVertexShape.MSquare)
-            {
-                if (TopLabel != null)
-                {
-                    properties["toplabel"] = TopLabel;
-                }
-                if (BottomLabel != null)
-                {
-                    properties["bottomlabel"] = BottomLabel;
-                }
-            }
             if (Shape == GraphvizVertexShape.Polygon)
             {
                 if (Sides != 0)
@@ -338,7 +313,7 @@ namespace QuikGraph.Graphviz.Dot
                 }
                 if (!IsZero(Distortion))
                 {
-                    properties["distorsion"] = Distortion;
+                    properties["distortion"] = Distortion;
                 }
             }
 
