@@ -26,7 +26,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Record escaper.
         /// </summary>
         [NotNull]
-        protected GraphvizRecordEscaper Escaper { get; } = new GraphvizRecordEscaper();
+        protected DotEscapers Escaper { get; } = new DotEscapers();
 
         /// <summary>
         /// Indicates if record has port.

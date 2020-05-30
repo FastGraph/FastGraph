@@ -1,12 +1,12 @@
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz.Dot
+namespace QuikGraph.Graphviz
 {
     /// <summary>
-    /// Record escape helpers.
+    /// Dot escape helpers.
     /// </summary>
-    public sealed class GraphvizRecordEscaper
+    public sealed class DotEscapers
     {
         [NotNull]
         private const string EolGroupName = "Eol";
