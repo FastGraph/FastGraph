@@ -13,22 +13,6 @@ namespace QuikGraph.Graphviz.Tests
     [TestFixture]
     internal class GraphvizAlgorithmTests
     {
-        #region Test classes
-
-        private class TestDotEngine : IDotEngine
-        {
-            public string ExpectedDot { get; set; }
-
-            /// <inheritdoc />
-            public string Run(GraphvizImageType imageType, string dot, string outputFilePath)
-            {
-                Assert.AreEqual(ExpectedDot, dot);
-                return outputFilePath;
-            }
-        }
-
-        #endregion
-
         [Test]
         public void Constructor()
         {

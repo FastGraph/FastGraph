@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Text;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Condensation;
 
@@ -30,7 +30,7 @@ namespace QuikGraph.Graphviz
             Graphviz.FormatVertex += OnFormatVertex;
             Graphviz.FormatEdge += OnFormatEdge;
         }
-        
+
         /// <inheritdoc />
         protected override void Clean()
         {
@@ -40,22 +40,22 @@ namespace QuikGraph.Graphviz
             base.Clean();
         }
 
-        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TVertex> args)
+        private void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TVertex> args)
         {
-            args.VertexFormat.Label = args.Vertex.ToString();
+            args.VertexFormat.Label = Graphviz.Escape(args.Vertex.ToString());
         }
 
         private void OnFormatEdge([NotNull] object sender, [NotNull] FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> args)
         {
-            using (var writer = new StringWriter())
+            var builder = new StringBuilder();
+            builder.AppendLine(args.Edge.Edges.Count.ToString());
+            
+            foreach (TEdge edge in args.Edge.Edges)
             {
-                writer.WriteLine(args.Edge.Edges.Count);
-                foreach (TEdge edge in args.Edge.Edges)
-                {
-                    writer.WriteLine($"  {edge}");
-                }
-                args.EdgeFormat.Label.Value = Graphviz.Escape(writer.ToString());
+                builder.AppendLine($"  {edge}");
             }
+
+            args.EdgeFormat.Label.Value = Graphviz.Escape(builder.ToString());
         }
     }
 }

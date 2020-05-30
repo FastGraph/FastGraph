@@ -325,6 +325,6 @@ namespace QuikGraph.Graphviz
     internal static class GraphvizAlgorithmHelpers
     {
         [NotNull]
-        public static readonly Regex WriteLineReplace = new Regex("\n", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static readonly Regex WriteLineReplace = new Regex("\\r\\n|\\n|\\r", RegexOptions.Compiled | RegexOptions.Multiline);
     }
 }

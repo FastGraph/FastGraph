@@ -27,10 +27,10 @@ namespace QuikGraph.Graphviz
         {
             Graphviz.CommonVertexFormat.Style = GraphvizVertexStyle.Filled;
             Graphviz.CommonVertexFormat.FillColor = GraphvizColor.LightYellow;
-            Graphviz.CommonVertexFormat.Font = new GraphvizFont("Tahoma", 8.25F);
+            Graphviz.CommonVertexFormat.Font = new GraphvizFont("Tahoma", 8.25f);
             Graphviz.CommonVertexFormat.Shape = GraphvizVertexShape.Box;
 
-            Graphviz.CommonEdgeFormat.Font = new GraphvizFont("Tahoma", 8.25F);
+            Graphviz.CommonEdgeFormat.Font = new GraphvizFont("Tahoma", 8.25f);
         }
 
         /// <summary>

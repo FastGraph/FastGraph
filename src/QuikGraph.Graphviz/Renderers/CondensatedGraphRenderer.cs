@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Text;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Condensation;
 
@@ -12,7 +12,7 @@ namespace QuikGraph.Graphviz
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public class CondensatedGraphRenderer<TVertex, TEdge, TGraph> : GraphRendererBase<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>
         where TEdge : IEdge<TVertex>
-        where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
+        where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CondensatedGraphRenderer{TVertex,TEdge,TGraph}"/> class.
@@ -44,34 +44,34 @@ namespace QuikGraph.Graphviz
 
         private void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TGraph> args)
         {
-            using (var writer = new StringWriter())
+            var builder = new StringBuilder();
+            builder.AppendLine($"{args.Vertex.VertexCount}-{args.Vertex.EdgeCount}");
+
+            foreach (TVertex vertex in args.Vertex.Vertices)
             {
-                writer.WriteLine($"{args.Vertex.VertexCount}-{args.Vertex.EdgeCount}");
-                foreach (TVertex vertex in args.Vertex.Vertices)
-                {
-                    writer.WriteLine($"  {vertex}");
-                }
-                foreach (TEdge edge in args.Vertex.Edges)
-                {
-                    writer.WriteLine($"  {edge}");
-                }
-                args.VertexFormat.Label = Graphviz.Escape(writer.ToString());
+                builder.AppendLine($"  {vertex}");
             }
+            foreach (TEdge edge in args.Vertex.Edges)
+            {
+                builder.AppendLine($"  {edge}");
+            }
+
+            args.VertexFormat.Label = Graphviz.Escape(builder.ToString());
         }
 
         private void OnFormatEdge(
             [NotNull] object sender,
             [NotNull] FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
         {
-            using (var writer = new StringWriter())
+            var builder = new StringBuilder();
+            builder.AppendLine(args.Edge.Edges.Count.ToString());
+
+            foreach (TEdge edge in args.Edge.Edges)
             {
-                writer.WriteLine(args.Edge.Edges.Count);
-                foreach (TEdge edge in args.Edge.Edges)
-                {
-                    writer.WriteLine($"  {edge}");
-                }
-                args.EdgeFormat.Label.Value = Graphviz.Escape(writer.ToString());
+                builder.AppendLine($"  {edge}");
             }
+
+            args.EdgeFormat.Label.Value = Graphviz.Escape(builder.ToString());
         }
     }
 }

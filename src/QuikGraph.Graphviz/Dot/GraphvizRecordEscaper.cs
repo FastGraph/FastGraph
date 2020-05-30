@@ -16,7 +16,7 @@ namespace QuikGraph.Graphviz.Dot
 
         [NotNull]
         private static readonly Regex EscapeRegex = new Regex(
-            $"(?<{EolGroupName}>\\n|\\r|\\r\\n)|(?<{CommonGroupName}>\\||<|>|\"| |\\\\)",
+            $"(?<{EolGroupName}>\\r\\n|\\n|\\r)|(?<{CommonGroupName}>\\||<|>|\"| |\\\\)",
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
         /// <summary>
