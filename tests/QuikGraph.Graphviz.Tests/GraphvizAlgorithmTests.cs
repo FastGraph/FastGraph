@@ -463,7 +463,7 @@ namespace QuikGraph.Graphviz.Tests
             string expectedDot = "digraph MyGraph {" + Environment.NewLine
             + "fontcolor=\"#FF0000FF\"; nodesep=2;" + Environment.NewLine
             + "node [style=filled, fillcolor=\"#FFFFE0FF\", URL=\"https://myurl.com\"];" + Environment.NewLine
-            + "edge [dir=\"back\", tooltip=\"Edge\"];" + Environment.NewLine
+            + "edge [dir=back, tooltip=\"Edge\"];" + Environment.NewLine
             + "subgraph cluster1 {" + Environment.NewLine
             + "label=\"Only Vertices cluster\"" + Environment.NewLine
             + "7 [label=\"8\"];" + Environment.NewLine

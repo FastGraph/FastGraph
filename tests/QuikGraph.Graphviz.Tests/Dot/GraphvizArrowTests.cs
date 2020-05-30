@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz.Tests
@@ -53,180 +56,193 @@ namespace QuikGraph.Graphviz.Tests
             #endregion
         }
 
-        [Test]
-        public void ToDot()
+        [NotNull, ItemNotNull]
+        private static IEnumerable<TestCaseData> ToDotTestCases
+        {
+            get
+            {
+                Func<GraphvizArrow, string> toDot = arrow => arrow.ToDot();
+                yield return new TestCaseData(toDot);
+
+                Func<GraphvizArrow, string> toString = arrow => arrow.ToString();
+                yield return new TestCaseData(toString);
+            }
+        }
+
+        [TestCaseSource(nameof(ToDotTestCases))]
+        public void ToDot([NotNull, InstantHandle] Func<GraphvizArrow, string> convert)
         {
             // Box variants
             var arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("box", arrow.ToString());
+            Assert.AreEqual("box", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("lbox", arrow.ToString());
+            Assert.AreEqual("lbox", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rbox", arrow.ToString());
+            Assert.AreEqual("rbox", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("obox", arrow.ToString());
+            Assert.AreEqual("obox", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("olbox", arrow.ToString());
+            Assert.AreEqual("olbox", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("orbox", arrow.ToString());
+            Assert.AreEqual("orbox", convert(arrow));
 
             // Crow variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("crow", arrow.ToString());
+            Assert.AreEqual("crow", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("lcrow", arrow.ToString());
+            Assert.AreEqual("lcrow", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rcrow", arrow.ToString());
+            Assert.AreEqual("rcrow", convert(arrow));
 
             // Diamond variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Diamond, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("diamond", arrow.ToString());
+            Assert.AreEqual("diamond", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Diamond, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("ldiamond", arrow.ToString());
+            Assert.AreEqual("ldiamond", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Diamond, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rdiamond", arrow.ToString());
+            Assert.AreEqual("rdiamond", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Diamond, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("odiamond", arrow.ToString());
+            Assert.AreEqual("odiamond", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Diamond, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("oldiamond", arrow.ToString());
+            Assert.AreEqual("oldiamond", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Diamond, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("ordiamond", arrow.ToString());
+            Assert.AreEqual("ordiamond", convert(arrow));
 
             // Dot variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Dot, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("dot", arrow.ToString());
+            Assert.AreEqual("dot", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Dot, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("odot", arrow.ToString());
+            Assert.AreEqual("odot", convert(arrow));
 
             // Inv variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Inv, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("inv", arrow.ToString());
+            Assert.AreEqual("inv", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Inv, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("linv", arrow.ToString());
+            Assert.AreEqual("linv", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Inv, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rinv", arrow.ToString());
+            Assert.AreEqual("rinv", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Inv, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("oinv", arrow.ToString());
+            Assert.AreEqual("oinv", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Inv, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("olinv", arrow.ToString());
+            Assert.AreEqual("olinv", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Inv, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("orinv", arrow.ToString());
+            Assert.AreEqual("orinv", convert(arrow));
 
             // None
             arrow = new GraphvizArrow(GraphvizArrowShape.None, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("none", arrow.ToString());
+            Assert.AreEqual("none", convert(arrow));
 
             // Normal variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Normal, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("normal", arrow.ToString());
+            Assert.AreEqual("normal", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Normal, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("lnormal", arrow.ToString());
+            Assert.AreEqual("lnormal", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Normal, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rnormal", arrow.ToString());
+            Assert.AreEqual("rnormal", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Normal, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("onormal", arrow.ToString());
+            Assert.AreEqual("onormal", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Normal, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("olnormal", arrow.ToString());
+            Assert.AreEqual("olnormal", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Normal, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("ornormal", arrow.ToString());
+            Assert.AreEqual("ornormal", convert(arrow));
 
             // Tee variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Tee, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("tee", arrow.ToString());
+            Assert.AreEqual("tee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Tee, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("ltee", arrow.ToString());
+            Assert.AreEqual("ltee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Tee, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rtee", arrow.ToString());
+            Assert.AreEqual("rtee", convert(arrow));
 
             // Vee variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Vee, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("vee", arrow.ToString());
+            Assert.AreEqual("vee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Vee, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("lvee", arrow.ToString());
+            Assert.AreEqual("lvee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Vee, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rvee", arrow.ToString());
+            Assert.AreEqual("rvee", convert(arrow));
 
             // Curve variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Curve, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("curve", arrow.ToString());
+            Assert.AreEqual("curve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Curve, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("lcurve", arrow.ToString());
+            Assert.AreEqual("lcurve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Curve, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("rcurve", arrow.ToString());
+            Assert.AreEqual("rcurve", convert(arrow));
 
             // ICurve variants
             arrow = new GraphvizArrow(GraphvizArrowShape.ICurve, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
-            Assert.AreEqual("icurve", arrow.ToString());
+            Assert.AreEqual("icurve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.ICurve, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("licurve", arrow.ToString());
+            Assert.AreEqual("licurve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.ICurve, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("ricurve", arrow.ToString());
+            Assert.AreEqual("ricurve", convert(arrow));
         }
 
-        [Test]
-        public void ToDot_SkippedModifiers()
+        [TestCaseSource(nameof(ToDotTestCases))]
+        public void ToDot_SkippedModifiers([NotNull, InstantHandle] Func<GraphvizArrow, string> convert)
         {
             // Skipped Crow variants
             var arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("crow", arrow.ToString());
+            Assert.AreEqual("crow", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("lcrow", arrow.ToString());
+            Assert.AreEqual("lcrow", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("rcrow", arrow.ToString());
+            Assert.AreEqual("rcrow", convert(arrow));
 
             // Skipped Dot variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Dot, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("dot", arrow.ToString());
+            Assert.AreEqual("dot", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Dot, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("dot", arrow.ToString());
+            Assert.AreEqual("dot", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Dot, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("odot", arrow.ToString());
+            Assert.AreEqual("odot", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Dot, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("odot", arrow.ToString());
+            Assert.AreEqual("odot", convert(arrow));
 
             // Skipped None variants
             arrow = new GraphvizArrow(GraphvizArrowShape.None, GraphvizArrowClipping.Left, GraphvizArrowFilling.Close);
-            Assert.AreEqual("none", arrow.ToString());
+            Assert.AreEqual("none", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.None, GraphvizArrowClipping.Right, GraphvizArrowFilling.Close);
-            Assert.AreEqual("none", arrow.ToString());
+            Assert.AreEqual("none", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.None, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("none", arrow.ToString());
+            Assert.AreEqual("none", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.None, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("none", arrow.ToString());
+            Assert.AreEqual("none", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.None, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("none", arrow.ToString());
+            Assert.AreEqual("none", convert(arrow));
 
             // Skipped Tee variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Tee, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("tee", arrow.ToString());
+            Assert.AreEqual("tee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Tee, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("ltee", arrow.ToString());
+            Assert.AreEqual("ltee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Tee, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("rtee", arrow.ToString());
+            Assert.AreEqual("rtee", convert(arrow));
 
             // Skipped Vee variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Vee, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("vee", arrow.ToString());
+            Assert.AreEqual("vee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Vee, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("lvee", arrow.ToString());
+            Assert.AreEqual("lvee", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Vee, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("rvee", arrow.ToString());
+            Assert.AreEqual("rvee", convert(arrow));
 
             // Skipped Curve variants
             arrow = new GraphvizArrow(GraphvizArrowShape.Curve, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("curve", arrow.ToString());
+            Assert.AreEqual("curve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Curve, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("lcurve", arrow.ToString());
+            Assert.AreEqual("lcurve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.Curve, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("rcurve", arrow.ToString());
+            Assert.AreEqual("rcurve", convert(arrow));
 
             // Skipped ICurve variants
             arrow = new GraphvizArrow(GraphvizArrowShape.ICurve, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);
-            Assert.AreEqual("icurve", arrow.ToString());
+            Assert.AreEqual("icurve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.ICurve, GraphvizArrowClipping.Left, GraphvizArrowFilling.Open);
-            Assert.AreEqual("licurve", arrow.ToString());
+            Assert.AreEqual("licurve", convert(arrow));
             arrow = new GraphvizArrow(GraphvizArrowShape.ICurve, GraphvizArrowClipping.Right, GraphvizArrowFilling.Open);
-            Assert.AreEqual("ricurve", arrow.ToString());
+            Assert.AreEqual("ricurve", convert(arrow));
         }
     }
 }
