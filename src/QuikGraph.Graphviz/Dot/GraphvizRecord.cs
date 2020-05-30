@@ -40,7 +40,7 @@ namespace QuikGraph.Graphviz.Dot
             {
                 if (flag)
                 {
-                    builder.AppendFormat(" | {0}", cell.ToDot());
+                    builder.Append($" | {cell.ToDot()}");
                     continue;
                 }
                 builder.Append(cell.ToDot());

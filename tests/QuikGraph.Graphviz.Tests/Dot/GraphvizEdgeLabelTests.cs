@@ -76,6 +76,17 @@ namespace QuikGraph.Graphviz.Tests
                         ["labelfontsize"] = 16.0f,
                         ["labelfontcolor"] = GraphvizColor.BlueViolet
                     });
+
+                label = new GraphvizEdgeLabel
+                {
+                    Value = "\"The Label\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                };
+                yield return new TestCaseData(
+                    label,
+                    new Dictionary<string, object>
+                    {
+                        ["label"] = @"\""The Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    });
             }
         }
 

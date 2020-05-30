@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Dot;
 
@@ -231,17 +230,6 @@ namespace QuikGraph.Graphviz
             return dot.Run(ImageType, Generate(), outputFilePath);
         }
 
-        /// <summary>
-        /// Escapes line breaks in the given <paramref name="value"/>.
-        /// </summary>
-        /// <param name="value">String to escape.</param>
-        /// <returns>Escaped string.</returns>
-        [NotNull]
-        public string Escape([NotNull] string value)
-        {
-            return GraphvizAlgorithmHelpers.WriteLineReplace.Replace(value, "\\n");
-        }
-
         private void WriteClusters(
             [NotNull] IDictionary<TVertex, GraphColor> verticesColors, 
             [NotNull] IDictionary<TEdge, GraphColor> edgeColors, 
@@ -320,11 +308,5 @@ namespace QuikGraph.Graphviz
                 edgesColors[edge] = GraphColor.Black;
             }
         }
-    }
-
-    internal static class GraphvizAlgorithmHelpers
-    {
-        [NotNull]
-        public static readonly Regex WriteLineReplace = new Regex("\\r\\n|\\n|\\r", RegexOptions.Compiled | RegexOptions.Multiline);
     }
 }

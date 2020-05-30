@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using JetBrains.Annotations;
+using static QuikGraph.Graphviz.DotEscapers;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -21,12 +22,6 @@ namespace QuikGraph.Graphviz.Dot
             get => _cells;
             set => _cells = value ?? throw new ArgumentNullException(nameof(value));
         }
-
-        /// <summary>
-        /// Record escaper.
-        /// </summary>
-        [NotNull]
-        protected DotEscapers Escaper { get; } = new DotEscapers();
 
         /// <summary>
         /// Indicates if record has port.
@@ -60,12 +55,12 @@ namespace QuikGraph.Graphviz.Dot
 
             if (HasPort)
             {
-                builder.AppendFormat("<{0}> ", Escaper.EscapePort(Port));
+                builder.Append($"<{EscapePort(Port)}> ");
             }
 
             if (HasText)
             {
-                builder.Append(Escaper.Escape(Text));
+                builder.Append(EscapeRecord(Text));
             }
 
             if (Cells.Count > 0)
@@ -85,7 +80,7 @@ namespace QuikGraph.Graphviz.Dot
                 {
                     if (flag)
                     {
-                        builder.AppendFormat(" | {0}", cell.ToDot());
+                        builder.Append($" | {cell.ToDot()}");
                         continue;
                     }
                     builder.Append(cell.ToDot());

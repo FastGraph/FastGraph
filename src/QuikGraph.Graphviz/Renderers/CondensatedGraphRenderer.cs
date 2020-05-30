@@ -42,7 +42,7 @@ namespace QuikGraph.Graphviz
             base.Clean();
         }
 
-        private void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TGraph> args)
+        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TGraph> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine($"{args.Vertex.VertexCount}-{args.Vertex.EdgeCount}");
@@ -56,10 +56,10 @@ namespace QuikGraph.Graphviz
                 builder.AppendLine($"  {edge}");
             }
 
-            args.VertexFormat.Label = Graphviz.Escape(builder.ToString());
+            args.VertexFormat.Label = builder.ToString();
         }
 
-        private void OnFormatEdge(
+        private static void OnFormatEdge(
             [NotNull] object sender,
             [NotNull] FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
         {
@@ -71,7 +71,7 @@ namespace QuikGraph.Graphviz
                 builder.AppendLine($"  {edge}");
             }
 
-            args.EdgeFormat.Label.Value = Graphviz.Escape(builder.ToString());
+            args.EdgeFormat.Label.Value = builder.ToString();
         }
     }
 }

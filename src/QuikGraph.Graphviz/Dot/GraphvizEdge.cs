@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
+using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -262,7 +263,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (HeadPort != null)
             {
-                properties["headport"] = HeadPort;
+                properties["headport"] = EscapePort(HeadPort);
             }
             if (!IsConstrained)
             {
@@ -300,15 +301,15 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (TailPort != null)
             {
-                properties["tailport"] = TailPort;
+                properties["tailport"] = EscapePort(TailPort);
             }
             if (ToolTip != null)
             {
-                properties["tooltip"] = ToolTip;
+                properties["tooltip"] = Escape(ToolTip);
             }
             if (Comment != null)
             {
-                properties["comment"] = Comment;
+                properties["comment"] = Escape(Comment);
             }
             if (Url != null)
             {

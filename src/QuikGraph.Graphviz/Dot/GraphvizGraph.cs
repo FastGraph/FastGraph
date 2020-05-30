@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
+using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -302,7 +303,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Comment != null)
             {
-                properties["comment"] = Comment;
+                properties["comment"] = Escape(Comment);
             }
             if (IsCompounded)
             {
@@ -323,7 +324,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Label != null)
             {
-                properties["label"] = Label;
+                properties["label"] = Escape(Label);
             }
             if (LabelJustification != GraphvizLabelJustification.C)
             {

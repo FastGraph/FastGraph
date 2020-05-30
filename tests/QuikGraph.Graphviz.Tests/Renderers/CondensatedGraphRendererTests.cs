@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -152,6 +152,59 @@ namespace QuikGraph.Graphviz.Tests
             };
 
             var algorithm = new CondensatedGraphRenderer<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(graph);
+            algorithm.Generate(dotEngine, "NotSaved.dot");
+        }
+
+        [Test]
+        public void Generate_WithEscape()
+        {
+            const string vertex1 = "Vertex1&/<>@~|";
+            const string vertex2 = "Vertex2æéèêë£¤¶ÀÁÂÃÄÅ";
+            const string vertex3 = "\"Vertex3\"\nΣη← ♠\\[]()";
+            const string vertex4 = "Vertex4∴∞⇐ℜΩ÷嗷娪";
+            var subGraph1 = new AdjacencyGraph<string, Edge<string>>();
+            subGraph1.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<string>(vertex1, vertex2),
+                new Edge<string>(vertex2, vertex2),
+                new Edge<string>(vertex3, vertex1)
+            });
+
+            var subGraph2 = new AdjacencyGraph<string, Edge<string>>();
+            subGraph2.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<string>(vertex1, vertex1),
+                new Edge<string>(vertex1, vertex2),
+                new Edge<string>(vertex2, vertex3),
+                new Edge<string>(vertex2, vertex4),
+                new Edge<string>(vertex3, vertex4)
+            });
+
+            var graph = new AdjacencyGraph<AdjacencyGraph<string, Edge<string>>, CondensedEdge<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>>();
+            var condensedEdge = new CondensedEdge<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(subGraph1, subGraph2);
+            condensedEdge.Edges.Add(new Edge<string>(vertex1, vertex2));
+            condensedEdge.Edges.Add(new Edge<string>(vertex3, vertex1));
+            graph.AddVerticesAndEdgeRange(new[] { condensedEdge });
+
+            const string expectedVertex1 = @"Vertex1&/<>@~|";
+            const string expectedVertex2 = @"Vertex2æéèêë£¤¶ÀÁÂÃÄÅ";
+            const string expectedVertex3 = @"\""Vertex3\""\nΣη← ♠\\[]()";
+            const string expectedVertex4 = @"Vertex4∴∞⇐ℜΩ÷嗷娪";
+            string expectedDot =
+                @"digraph G {" + Environment.NewLine +
+                @"node [fontname=""Tahoma"", fontsize=8.25, shape=box, style=filled, fillcolor=""#FFFFE0FF""];" + Environment.NewLine +
+                @"edge [fontname=""Tahoma"", fontsize=8.25];" + Environment.NewLine +
+                @"0 [label=""3-3\n  " + expectedVertex1 + @"\n  " + expectedVertex2 + @"\n  " + expectedVertex3 + @"\n  " + expectedVertex1 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex2 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex3 + @" -> " + expectedVertex1 + @"\n""];" + Environment.NewLine +
+                @"1 [label=""4-5\n  " + expectedVertex1 + @"\n  " + expectedVertex2 + @"\n  " + expectedVertex3 + @"\n  " + expectedVertex4 + @"\n  " + expectedVertex1 + @" -> " + expectedVertex1 + @"\n  " + expectedVertex1 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex2 + @" -> " + expectedVertex3 + @"\n  " + expectedVertex2 + @" -> " + expectedVertex4 + @"\n  " + expectedVertex3 + @" -> " + expectedVertex4 + @"\n""];" + Environment.NewLine +
+                @"0 -> 1 [label=""2\n  " + expectedVertex1 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex3 + @" -> " + expectedVertex1 + @"\n""];" + Environment.NewLine +
+                @"}";
+
+            var dotEngine = new TestDotEngine
+            {
+                ExpectedDot = expectedDot
+            };
+
+            var algorithm = new CondensatedGraphRenderer<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(graph);
             algorithm.Generate(dotEngine, "NotSaved.dot");
         }
     }

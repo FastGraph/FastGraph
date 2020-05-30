@@ -143,6 +143,20 @@ namespace QuikGraph.Graphviz.Tests
                         ["ltail"] = "Tail logical",
                         ["sametail"] = "SameTail"
                     });
+
+                // With escape
+                extremity = new GraphvizEdgeExtremity(true)
+                {
+                    Label = "\"The Head\"\nLabel &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪",
+                    ToolTip = "\"The Head\"\nTooltip &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                };
+                yield return new TestCaseData(
+                    extremity,
+                    new Dictionary<string, object>
+                    {
+                        ["headlabel"] = @"\""The Head\""\nLabel &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪",
+                        ["headtooltip"] = @"\""The Head\""\nTooltip &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    });
             }
         }
 

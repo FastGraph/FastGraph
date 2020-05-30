@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
+using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -248,7 +249,7 @@ namespace QuikGraph.Graphviz.Dot
             }
             else if (Label != null)
             {
-                properties["label"] = Label;
+                properties["label"] = Escape(Label);
             }
             if (FixedSize)
             {
@@ -280,11 +281,11 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (ToolTip != null)
             {
-                properties["tooltip"] = ToolTip;
+                properties["tooltip"] = Escape(ToolTip);
             }
             if (Comment != null)
             {
-                properties["comment"] = Comment;
+                properties["comment"] = Escape(Comment);
             }
             if (Group != null)
             {

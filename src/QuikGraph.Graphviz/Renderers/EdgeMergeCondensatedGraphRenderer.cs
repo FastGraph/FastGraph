@@ -40,12 +40,12 @@ namespace QuikGraph.Graphviz
             base.Clean();
         }
 
-        private void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TVertex> args)
+        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TVertex> args)
         {
-            args.VertexFormat.Label = Graphviz.Escape(args.Vertex.ToString());
+            args.VertexFormat.Label = args.Vertex.ToString();
         }
 
-        private void OnFormatEdge([NotNull] object sender, [NotNull] FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> args)
+        private static void OnFormatEdge([NotNull] object sender, [NotNull] FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine(args.Edge.Edges.Count.ToString());
@@ -55,7 +55,7 @@ namespace QuikGraph.Graphviz
                 builder.AppendLine($"  {edge}");
             }
 
-            args.EdgeFormat.Label.Value = Graphviz.Escape(builder.ToString());
+            args.EdgeFormat.Label.Value = builder.ToString();
         }
     }
 }

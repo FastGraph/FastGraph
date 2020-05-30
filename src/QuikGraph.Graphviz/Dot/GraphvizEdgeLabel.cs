@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using JetBrains.Annotations;
+using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -58,7 +59,7 @@ namespace QuikGraph.Graphviz.Dot
 
             if (Value != null)
             {
-                parameters["label"] = Value;
+                parameters["label"] = Escape(Value);
                 if (!NearEqual(Angle, -25.0))
                 {
                     parameters["labelangle"] = Angle;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -125,6 +125,71 @@ namespace QuikGraph.Graphviz.Tests
             };
 
             var algorithm = new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(graph);
+            algorithm.Generate(dotEngine, "NotSaved.dot");
+        }
+
+        [Test]
+        public void Generate_WithEscape()
+        {
+            const string vertex1 = "Vertex1&/<>@~|";
+            const string vertex2 = "Vertex2æéèêë£¤¶ÀÁÂÃÄÅ";
+            const string vertex3 = "\"Vertex3\"\nΣη← ♠\\[]()";
+            const string vertex4 = "Vertex4∴∞⇐ℜΩ÷嗷娪";
+
+            var graph = new AdjacencyGraph<string, MergedEdge<string, Edge<string>>>();
+            graph.AddVertexRange(new[] { vertex3, vertex4 });
+
+            var edge12 = new Edge<string>(vertex1, vertex2);
+            var edge24 = new Edge<string>(vertex2, vertex4);
+            var edge31 = new Edge<string>(vertex3, vertex1);
+            var edge32 = new Edge<string>(vertex3, vertex2);
+            var edge33 = new Edge<string>(vertex3, vertex3);
+            var edge41 = new Edge<string>(vertex4, vertex1);
+
+            var mergeEdge1 = new MergedEdge<string, Edge<string>>(vertex4, vertex4);
+            mergeEdge1.Edges.Add(edge41);
+            mergeEdge1.Edges.Add(edge12);
+            mergeEdge1.Edges.Add(edge24);
+
+            var mergeEdge2 = new MergedEdge<string, Edge<string>>(vertex3, vertex3);
+            mergeEdge2.Edges.Add(edge33);
+
+            var mergeEdge3 = new MergedEdge<string, Edge<string>>(vertex3, vertex4);
+            mergeEdge3.Edges.Add(edge32);
+            mergeEdge3.Edges.Add(edge24);
+
+            var mergeEdge4 = new MergedEdge<string, Edge<string>>(vertex3, vertex4);
+            mergeEdge4.Edges.Add(edge31);
+            mergeEdge4.Edges.Add(edge12);
+            mergeEdge4.Edges.Add(edge24);
+
+            graph.AddEdgeRange(new[]
+            {
+                mergeEdge1, mergeEdge2, mergeEdge3, mergeEdge4
+            });
+
+            const string expectedVertex1 = @"Vertex1&/<>@~|";
+            const string expectedVertex2 = @"Vertex2æéèêë£¤¶ÀÁÂÃÄÅ";
+            const string expectedVertex3 = @"\""Vertex3\""\nΣη← ♠\\[]()";
+            const string expectedVertex4 = @"Vertex4∴∞⇐ℜΩ÷嗷娪";
+            string expectedDot =
+                @"digraph G {" + Environment.NewLine +
+                @"node [fontname=""Tahoma"", fontsize=8.25, shape=box, style=filled, fillcolor=""#FFFFE0FF""];" + Environment.NewLine +
+                @"edge [fontname=""Tahoma"", fontsize=8.25];" + Environment.NewLine +
+                @"0 [label=""" + expectedVertex3 + @"""];" + Environment.NewLine +
+                @"1 [label=""" + expectedVertex4 + @"""];" + Environment.NewLine +
+                @"0 -> 0 [label=""1\n  " + expectedVertex3 + @" -> " + expectedVertex3 + @"\n""];" + Environment.NewLine +
+                @"0 -> 1 [label=""2\n  " + expectedVertex3 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex2 + @" -> " + expectedVertex4 + @"\n""];" + Environment.NewLine +
+                @"0 -> 1 [label=""3\n  " + expectedVertex3 + @" -> " + expectedVertex1 + @"\n  " + expectedVertex1 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex2 + @" -> " + expectedVertex4 + @"\n""];" + Environment.NewLine +
+                @"1 -> 1 [label=""3\n  " + expectedVertex4 + @" -> " + expectedVertex1 + @"\n  " + expectedVertex1 + @" -> " + expectedVertex2 + @"\n  " + expectedVertex2 + @" -> " + expectedVertex4 + @"\n""];" + Environment.NewLine +
+                @"}";
+
+            var dotEngine = new TestDotEngine
+            {
+                ExpectedDot = expectedDot
+            };
+
+            var algorithm = new EdgeMergeCondensatedGraphRenderer<string, Edge<string>>(graph);
             algorithm.Generate(dotEngine, "NotSaved.dot");
         }
     }

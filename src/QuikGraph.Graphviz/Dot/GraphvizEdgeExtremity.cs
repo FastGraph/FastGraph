@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using JetBrains.Annotations;
+using static QuikGraph.Graphviz.DotEscapers;
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -86,11 +87,11 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Label != null)
             {
-                parameters.Add(extremity + "label", Label);
+                parameters.Add(extremity + "label", Escape(Label));
             }
             if (ToolTip != null)
             {
-                parameters.Add(extremity + "tooltip", ToolTip);
+                parameters.Add(extremity + "tooltip", Escape(ToolTip));
             }
             if (Logical != null)
             {

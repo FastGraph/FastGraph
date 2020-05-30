@@ -172,6 +172,36 @@ namespace QuikGraph.Graphviz.Tests
                     + @"style=bold, taillabel=""Tail label"", arrowtail=""curve"", tailport=""TestTailPort"", "
                     + @"tooltip=""Test tooltip"", comment=""Test comment"", URL=""https://test.com"", "
                     + @"weight=2");
+
+                // With escape
+                edge = new GraphvizEdge
+                {
+                    Comment = "\"The Comment\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪",
+                    Label = new GraphvizEdgeLabel
+                    {
+                        Value = "\"The Label\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    },
+                    ToolTip = "\"The Tooltip\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪",
+                    Head = new GraphvizEdgeExtremity(true)
+                    {
+                        Label = "\"The Head Label\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    },
+                    HeadPort = "\"The Head Port\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪",
+                    Tail = new GraphvizEdgeExtremity(false)
+                    {
+                        Label = "\"The Tail Label\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    },
+                    TailPort = "\"The Tail Port\"\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                };
+                yield return new TestCaseData(
+                    edge,
+                    @"headlabel=""\""The Head Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"headport=""_The_Head_Port___&/__@~__With_æéèêë£¤¶ÀÁÂÃÄÅ_Escaped_Ση←_♠_[]()_Content_∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"label=""\""The Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"taillabel=""\""The Tail Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"tailport=""_The_Tail_Port___&/__@~__With_æéèêë£¤¶ÀÁÂÃÄÅ_Escaped_Ση←_♠_[]()_Content_∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"tooltip=""\""The Tooltip\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"comment=""\""The Comment\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪""");
             }
         }
 
