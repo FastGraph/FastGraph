@@ -1,6 +1,6 @@
 # Release notes
 
-## What's new in 2.1.0 May 11 2020
+## What's new in 2.1.0 May 11 2020 and June 3 2020
 
 ### QuikGraph
 
@@ -14,6 +14,31 @@
 
 #### Fixes:
 * Fix a security vulnerability regarding XML serialization on target .NET Framework 3.5.
+
+### QuikGraph.GraphViz
+
+Rework the original QuickGraph.Graphviz module into QuikGraph.Graphviz. This make possible to use the QuikGraph to Dot bridge.
+
+#### Fixes:
+* Fix the floating points formatting when converted to Dot (Invariant culture).
+* Fix some implementation issues accross the library.
+* Fix labels, comments, tooltips, records and ports escaping.
+* Fix a lot of graph to Dot conversions issues (wrong properties, invalid formatting, typo, etc).
+
+#### Updates:
+* Add all color representations equivalent to System.Drawing.Color or System.Windows.Media.Color to GraphvizColor.
+
+#### New:
+* Add conversion extensions from System.Drawing.Font to GraphvizFont (and vice versa).
+
+### API Breaks
+* Dot escape method has been replaced by DotEscapers helpers that handle various escaping scenarios and are static.
+* Some public API breaks (but should remain simple to do a migration).
+
+#### Misc:
+* Clean the library code.
+* Fully document library including convenient links to official Graphviz documentation.
+* Use JetBrains annotations all over the library as much as possible.
 
 ---
 

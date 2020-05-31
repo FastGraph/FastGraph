@@ -5,6 +5,7 @@
 | **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=quikgraph) | 
 | **Nugets** | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) QuikGraph |
 | | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) QuikGraph.Serialization |
+| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) QuikGraph.Graphviz |
 | **License** | MS-PL |
 
 # QuikGraph
@@ -19,9 +20,9 @@ QuikGraph comes with algorithms such as depth first search, breath first search,
 
 It was then updated to become YC.QuickGraph.
 
-**This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the Core of the library to provide it as a clean NuGet package using modern C# development (.NET Core).
+**This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the library to provide it as a clean NuGet packages using modern C# development (.NET Core).
 
-The plan would be to fully clean the original library and all its non Core parts and unit test it more.
+The plan is to to fully clean, fix issues of the original library and all its non Core parts, and improve it.
 
 ---
 
@@ -63,6 +64,7 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
 - [QuikGraph](https://www.nuget.org/packages/QuikGraph) (Core)
 - [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
+- [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
 
 ### Where to go next?
 

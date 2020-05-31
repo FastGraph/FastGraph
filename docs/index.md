@@ -19,9 +19,9 @@ QuikGraph comes with algorithms such as depth first search, breath first search,
 
 It was then updated to become YC.QuickGraph.
 
-**This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the Core of the library to provide it as a clean NuGet package using modern C# development (.NET Core).
+**This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the library to provide it as a clean NuGet packages using modern C# development (.NET Core).
 
-The plan would be to fully clean the original library and all its non Core parts and unit test it more.
+The plan is to to fully clean, fix issues of the original library and all its non Core parts, and improve it.
 
 You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph).
 
@@ -44,5 +44,9 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
 
     PM> Install-Package QuikGraph.Serialization
+
+[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
+
+    PM> Install-Package QuikGraph.Graphviz
 
 <img src="images/quikgraph_logo.png" width="128" height="128" style="display: block; margin-left: auto; margin-right: auto" />
