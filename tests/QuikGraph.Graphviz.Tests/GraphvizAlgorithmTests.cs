@@ -252,7 +252,7 @@ namespace QuikGraph.Graphviz.Tests
                 var graph = new AdjacencyGraph<int, Edge<int>>();
                 yield return new TestCaseData(graph)
                 {
-                    ExpectedResult = 
+                    ExpectedResult =
                         "digraph G {" + Environment.NewLine
                         + "}"
                 };
@@ -374,6 +374,231 @@ namespace QuikGraph.Graphviz.Tests
                         + "1;" + Environment.NewLine
                         + "}"
                 };
+
+                // With clusters (not collapsed and collapsed)
+                // Cluster hierarchy
+                // Root
+                // \-> sub1
+                // \-> sub2
+                //     \-> nested2_1
+                //     \-> nested2_2
+                // \-> sub3
+                // \-> sub4
+                //     \-> nested4_1
+                //     \-> nested4_2
+                // ReSharper disable InconsistentNaming
+                wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
+                var rootClusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
+                ClusteredAdjacencyGraph<int, Edge<int>> subClusteredGraph1 = rootClusteredGraph.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> subClusteredGraph2 = rootClusteredGraph.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> nestedSubClusteredGraph2_1 = subClusteredGraph2.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> nestedSubClusteredGraph2_2 = subClusteredGraph2.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> subClusteredGraph3 = rootClusteredGraph.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> subClusteredGraph4 = rootClusteredGraph.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> nestedSubClusteredGraph4_1 = subClusteredGraph4.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> nestedSubClusteredGraph4_2 = subClusteredGraph4.AddCluster();
+                // ReSharper restore InconsistentNaming
+
+                // Fill graphs
+                wrappedGraph.AddVerticesAndEdgeRange(new[]
+                {
+                    new Edge<int>(1, 2),
+                    new Edge<int>(2, 2)
+                });
+                wrappedGraph.AddVertex(3);
+
+                subClusteredGraph1.AddVerticesAndEdge(new Edge<int>(4, 5));
+                subClusteredGraph1.AddVertex(6);
+
+                subClusteredGraph2.AddVerticesAndEdge(new Edge<int>(7, 8));
+                subClusteredGraph2.AddVertex(9);
+
+                nestedSubClusteredGraph2_1.AddVerticesAndEdge(new Edge<int>(10, 11));
+                nestedSubClusteredGraph2_1.AddVertex(12);
+
+                nestedSubClusteredGraph2_2.AddVerticesAndEdge(new Edge<int>(13, 14));
+                nestedSubClusteredGraph2_2.AddVertex(15);
+
+                subClusteredGraph3.AddVerticesAndEdge(new Edge<int>(16, 17));
+                subClusteredGraph3.AddVertex(18);
+
+                subClusteredGraph4.AddVerticesAndEdge(new Edge<int>(19, 20));
+                subClusteredGraph4.AddVertex(21);
+
+                nestedSubClusteredGraph4_1.AddVerticesAndEdge(new Edge<int>(22, 23));
+                nestedSubClusteredGraph4_1.AddVertex(24);
+
+                nestedSubClusteredGraph4_2.AddVerticesAndEdge(new Edge<int>(25, 26));
+                nestedSubClusteredGraph4_2.AddVertex(27);
+
+                yield return new TestCaseData(rootClusteredGraph)
+                {
+                    ExpectedResult =
+                        "digraph G {" + Environment.NewLine
+                        + "subgraph cluster1 {" + Environment.NewLine
+                        + "3;" + Environment.NewLine
+                        + "4;" + Environment.NewLine
+                        + "5;" + Environment.NewLine
+                        + "3 -> 4;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster2 {" + Environment.NewLine
+                        + "subgraph cluster3 {" + Environment.NewLine
+                        + "9;" + Environment.NewLine
+                        + "10;" + Environment.NewLine
+                        + "11;" + Environment.NewLine
+                        + "9 -> 10;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster4 {" + Environment.NewLine
+                        + "12;" + Environment.NewLine
+                        + "13;" + Environment.NewLine
+                        + "14;" + Environment.NewLine
+                        + "12 -> 13;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "6;" + Environment.NewLine
+                        + "7;" + Environment.NewLine
+                        + "8;" + Environment.NewLine
+                        + "6 -> 7;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster5 {" + Environment.NewLine
+                        + "15;" + Environment.NewLine
+                        + "16;" + Environment.NewLine
+                        + "17;" + Environment.NewLine
+                        + "15 -> 16;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster6 {" + Environment.NewLine
+                        + "subgraph cluster7 {" + Environment.NewLine
+                        + "21;" + Environment.NewLine
+                        + "22;" + Environment.NewLine
+                        + "23;" + Environment.NewLine
+                        + "21 -> 22;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster8 {" + Environment.NewLine
+                        + "24;" + Environment.NewLine
+                        + "25;" + Environment.NewLine
+                        + "26;" + Environment.NewLine
+                        + "24 -> 25;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "18;" + Environment.NewLine
+                        + "19;" + Environment.NewLine
+                        + "20;" + Environment.NewLine
+                        + "18 -> 19;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "0;" + Environment.NewLine
+                        + "1;" + Environment.NewLine
+                        + "2;" + Environment.NewLine
+                        + "0 -> 1;" + Environment.NewLine
+                        + "1 -> 1;" + Environment.NewLine
+                        + "}"
+                };
+
+                // Cluster hierarchy
+                // Root
+                // \-> sub1
+                // \-> sub2
+                //     \-> nested2_1
+                //     \-> nested2_2
+                // \-> sub3 (collapsed)
+                // \-> sub4 (collapsed)
+                //     \-> nested4_1
+                //     \-> nested4_2
+                wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
+                rootClusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
+                subClusteredGraph1 = rootClusteredGraph.AddCluster();
+                subClusteredGraph2 = rootClusteredGraph.AddCluster();
+                nestedSubClusteredGraph2_1 = subClusteredGraph2.AddCluster();
+                nestedSubClusteredGraph2_2 = subClusteredGraph2.AddCluster();
+                subClusteredGraph3 = rootClusteredGraph.AddCluster();
+                subClusteredGraph4 = rootClusteredGraph.AddCluster();
+                nestedSubClusteredGraph4_1 = subClusteredGraph4.AddCluster();
+                nestedSubClusteredGraph4_2 = subClusteredGraph4.AddCluster();
+                // ReSharper restore InconsistentNaming
+
+                // Fill graphs
+                wrappedGraph.AddVerticesAndEdgeRange(new[]
+                {
+                    new Edge<int>(1, 2),
+                    new Edge<int>(2, 2)
+                });
+                wrappedGraph.AddVertex(3);
+
+                subClusteredGraph1.AddVerticesAndEdge(new Edge<int>(4, 5));
+                subClusteredGraph1.AddVertex(6);
+
+                subClusteredGraph2.AddVerticesAndEdge(new Edge<int>(7, 8));
+                subClusteredGraph2.AddVertex(9);
+
+                nestedSubClusteredGraph2_1.AddVerticesAndEdge(new Edge<int>(10, 11));
+                nestedSubClusteredGraph2_1.AddVertex(12);
+
+                nestedSubClusteredGraph2_2.AddVerticesAndEdge(new Edge<int>(13, 14));
+                nestedSubClusteredGraph2_2.AddVertex(15);
+
+                subClusteredGraph3.AddVerticesAndEdge(new Edge<int>(16, 17));
+                subClusteredGraph3.AddVertex(18);
+
+                subClusteredGraph4.AddVerticesAndEdge(new Edge<int>(19, 20));
+                subClusteredGraph4.AddVertex(21);
+
+                nestedSubClusteredGraph4_1.AddVerticesAndEdge(new Edge<int>(22, 23));
+                nestedSubClusteredGraph4_1.AddVertex(24);
+
+                nestedSubClusteredGraph4_2.AddVerticesAndEdge(new Edge<int>(25, 26));
+                nestedSubClusteredGraph4_2.AddVertex(27);
+
+                // Collapse graphs
+                subClusteredGraph3.Collapsed = true;
+                subClusteredGraph4.Collapsed = true;
+                yield return new TestCaseData(rootClusteredGraph)
+                {
+                    ExpectedResult =
+                        "digraph G {" + Environment.NewLine
+                        + "subgraph cluster1 {" + Environment.NewLine
+                        + "3;" + Environment.NewLine
+                        + "4;" + Environment.NewLine
+                        + "5;" + Environment.NewLine
+                        + "3 -> 4;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster2 {" + Environment.NewLine
+                        + "subgraph cluster3 {" + Environment.NewLine
+                        + "9;" + Environment.NewLine
+                        + "10;" + Environment.NewLine
+                        + "11;" + Environment.NewLine
+                        + "9 -> 10;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster4 {" + Environment.NewLine
+                        + "12;" + Environment.NewLine
+                        + "13;" + Environment.NewLine
+                        + "14;" + Environment.NewLine
+                        + "12 -> 13;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "6;" + Environment.NewLine
+                        + "7;" + Environment.NewLine
+                        + "8;" + Environment.NewLine
+                        + "6 -> 7;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster5 {" + Environment.NewLine
+                        + "15;" + Environment.NewLine
+                        + "16;" + Environment.NewLine
+                        + "17;" + Environment.NewLine
+                        + "15 -> 16;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster6 {" + Environment.NewLine
+                        + "subgraph cluster7 {" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "subgraph cluster8 {" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "18;" + Environment.NewLine
+                        + "19;" + Environment.NewLine
+                        + "20;" + Environment.NewLine
+                        + "18 -> 19;" + Environment.NewLine
+                        + "}" + Environment.NewLine
+                        + "0;" + Environment.NewLine
+                        + "1;" + Environment.NewLine
+                        + "2;" + Environment.NewLine
+                        + "0 -> 1;" + Environment.NewLine
+                        + "1 -> 1;" + Environment.NewLine
+                        + "}"
+                };
             }
         }
 
@@ -479,6 +704,21 @@ namespace QuikGraph.Graphviz.Tests
             + "5 -> 5 [color=\"#FFD700FF\"];" + Environment.NewLine
             + "}";
             Assert.AreEqual(expectedDot, dot);
+        }
+
+        [Test]
+        public void Generate_Throws()
+        {
+            var dotEngine = new TestDotEngine();
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, "NotSaved.dot"));
+            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, null));
+            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, null));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, string.Empty));
+            // ReSharper restore AssignNullToNotNullAttribute
         }
     }
 }

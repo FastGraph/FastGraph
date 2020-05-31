@@ -218,7 +218,6 @@ namespace QuikGraph.Graphviz
         /// and puts result in <paramref name="outputFilePath"/>.
         /// </summary>
         /// <returns>File path containing DOT serialization of <see cref="VisitedGraph"/>.</returns>
-        [Pure]
         [NotNull]
         public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
         {
