@@ -26,7 +26,7 @@ param(
 [Parameter(Mandatory)]
 [string] $propertyName)
     # Update the package generation props to enable package generation of the right package
-    $genPackagesFilePath = "./src/PackagesGeneration.props";
+    $genPackagesFilePath = "./build/PackagesGeneration.props";
     $genPackagesContent = Get-Content $genPackagesFilePath;
     $newGenPackagesContent = $genPackagesContent -replace "<$propertyName>\w+<\/$propertyName>","<$propertyName>true</$propertyName>";
     $newGenPackagesContent | Set-Content $genPackagesFilePath;
@@ -47,7 +47,7 @@ param(
 function UpdateAllPackagesGeneration()
 {
     # Update the package generation props to enable package generation of the right package
-    $genPackagesFilePath = "./src/PackagesGeneration.props";
+    $genPackagesFilePath = "./build/PackagesGeneration.props";
     $genPackagesContent = Get-Content $genPackagesFilePath;
     $newGenPackagesContent = $genPackagesContent -replace "false","true";
     $newGenPackagesContent | Set-Content $genPackagesFilePath;
