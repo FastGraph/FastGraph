@@ -9,7 +9,6 @@
     <Import_RootNamespace>QuikGraph.Tests.CommonInternals</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Factories\TestGraphFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AssertHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GraphTestHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)QuikGraphAssert.cs" />

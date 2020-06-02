@@ -56,6 +56,9 @@
   </ItemGroup>
 
   <!-- Dependencies -->
+  <!-- Shared Projects -->
+  <Import Project="..\QuikGraph.Serialization.Tests.CommonInternals\QuikGraph.Serialization.Tests.CommonInternals.projitems" Label="Shared" />
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
     <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />

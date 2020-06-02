@@ -62,7 +62,6 @@
 
   <!-- Projects -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />
     <ProjectReference Include="..\..\src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
   </ItemGroup>
 </Project>
