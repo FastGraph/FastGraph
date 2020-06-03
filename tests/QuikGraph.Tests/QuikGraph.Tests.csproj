@@ -59,8 +59,30 @@
   <!-- Shared Projects -->
   <Import Project="..\QuikGraph.Serialization.Tests.CommonInternals\QuikGraph.Serialization.Tests.CommonInternals.projitems" Label="Shared" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
-    <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />
-  </ItemGroup>
+  <!-- QuikGraph reference -->
+  <Choose>
+    <When Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Core)">
+      <ItemGroup>
+        <PackageReference Include="QuikGraph" Version="2.1.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <!-- QuikGraph.Serialization reference -->
+  <Choose>
+    <When Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Serialization)">
+      <ItemGroup>
+        <PackageReference Include="QuikGraph.Serialization" Version="2.1.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>

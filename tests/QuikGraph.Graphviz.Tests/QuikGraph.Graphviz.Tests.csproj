@@ -61,7 +61,17 @@
   <Import Project="..\..\src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
-  </ItemGroup>
+  <!-- QuikGraph.Graphviz reference -->
+  <Choose>
+    <When Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Graphviz)">
+      <ItemGroup>
+        <PackageReference Include="QuikGraph.Graphviz" Version="2.1.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\..\src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>

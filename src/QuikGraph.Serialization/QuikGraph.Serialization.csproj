@@ -70,7 +70,17 @@ Fixes:
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
-  </ItemGroup>
+  <!-- QuikGraph reference -->
+  <Choose>
+    <When Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Core)">
+      <ItemGroup>
+        <PackageReference Include="QuikGraph" Version="2.1.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>
