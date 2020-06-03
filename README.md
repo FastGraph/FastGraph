@@ -51,7 +51,7 @@ To get it working you need to:
 
 The library get rid of PEX that was previously used for unit tests and now uses NUnit3 (not published).
 
-I would be very pleased to receive pull requests to further **test** or **improve** the library.
+I would be very pleased to receive pull requests to further **test**, **improve** or add new features to the library.
 
 ---
 
@@ -73,6 +73,12 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
 ## Maintainer(s)
 
-* [@KeRNeLith](https://github.com/KeRNeLith)
+[![](https://github.com/KeRNeLith.png?size=50)](https://github.com/KeRNeLith)
+
+## Contributor(s)
+
+This project exists thanks to all the people who have contributed to the code base.
+
+[![](https://github.com/jnyrup.png?size=50)](https://github.com/jnyrup)
 
 ---
