@@ -219,6 +219,12 @@ namespace QuikGraph.Graphviz.Dot
         public GraphvizSizeF Size { get; set; } = new GraphvizSizeF(0.0f, 0.0f);
 
         /// <summary>
+        /// Graph splines draw mode.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:splines">See more</see>
+        /// </summary>
+        public GraphvizSplineType Splines { get; set; } = GraphvizSplineType.Spline;
+
+        /// <summary>
         /// Stylesheet.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:stylesheet">See more</see>
         /// </summary>
@@ -413,6 +419,10 @@ namespace QuikGraph.Graphviz.Dot
             if (!Size.IsEmpty)
             {
                 properties["size"] = $"{Size.Width.ToInvariantString()},{Size.Height.ToInvariantString()}";
+            }
+            if (Splines != GraphvizSplineType.Spline)
+            {
+                properties["splines"] = Splines;
             }
             if (StyleSheet != null)
             {

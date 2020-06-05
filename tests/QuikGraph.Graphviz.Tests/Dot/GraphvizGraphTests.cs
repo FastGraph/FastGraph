@@ -51,6 +51,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.IsNotNull(graph.Size);
             Assert.Zero(graph.Size.Width);
             Assert.Zero(graph.Size.Height);
+            Assert.AreEqual(GraphvizSplineType.Spline, graph.Splines);
             Assert.IsNull(graph.StyleSheet);
         }
 
@@ -136,6 +137,7 @@ namespace QuikGraph.Graphviz.Tests
                     SamplePoints = 9,
                     SearchSize = 25,
                     Size = new GraphvizSizeF(25.0f, 45.0f),
+                    Splines = GraphvizSplineType.Curved,
                     StyleSheet = "stylesheet.xml"
                 };
                 graph.Layers.Separators = ":-:";
@@ -148,7 +150,7 @@ namespace QuikGraph.Graphviz.Tests
                     + @"nodesep=1; rankdir=LR; ranksep=2; normalize=true; nslimit=2; nslimit1=3; "
                     + @"outputorder=""nodesfirst""; page=""10,15""; pagedir=RT; quantum=1; ratio=""fill""; "
                     + @"remincross=true; resolution=1; samplepoints=9; searchsize=25; size=""25,45""; "
-                    + @"stylesheet=""stylesheet.xml"";");
+                    + @"splines=curved; stylesheet=""stylesheet.xml"";");
 
                 // Orientation
                 graph = new GraphvizGraph
