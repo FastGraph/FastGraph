@@ -28,25 +28,10 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Graphviz</PackageId>
-    <PackageReleaseNotes>➟ Release 2.1.0
-Rework the original QuickGraph.Graphviz module into QuikGraph.Graphviz. This make possible to use the QuikGraph to Dot bridge.
-
-Fixes:
-- Fix the floating points formatting when converted to Dot (Invariant culture).
-- Fix some implementation issues accross the library.
-- Fix labels, comments, tooltips, records and ports escaping.
-- Fix a lot of graph to Dot conversions issues (wrong properties, invalid formatting, typo, etc).
-
-Updates:
-- Add all color representations equivalent to System.Drawing.Color or System.Windows.Media.Color to GraphvizColor.
-
+    <PackageReleaseNotes>➟ Release 2.1.1
 New:
-- Add conversion extensions from System.Drawing.Font to GraphvizFont (and vice versa).
-
-Misc:
-- Clean the library code.
-- Fully document library including convenient links to official Graphviz documentation.
-- Use JetBrains annotations all over the library as much as possible.</PackageReleaseNotes>
+- Add support of PenWidth property for vertex, edge and graph.
+- Add support of Splines property for graph.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization Graphviz</PackageTags>
   </PropertyGroup>
 

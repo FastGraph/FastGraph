@@ -1,5 +1,15 @@
 # Release notes
 
+## What's new in 2.1.1 June 6 2020
+
+### QuikGraph.GraphViz
+
+#### New:
+* Add support of PenWidth property for vertex, edge and graph.
+* Add support of Splines property for graph.
+
+---
+
 ## What's new in 2.1.0 May 11 2020 and June 3 2020
 
 ### QuikGraph
