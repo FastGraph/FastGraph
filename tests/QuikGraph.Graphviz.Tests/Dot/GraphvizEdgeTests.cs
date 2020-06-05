@@ -24,6 +24,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.AreEqual(GraphvizEdgeDirection.Forward, edge.Direction);
             Assert.IsNull(edge.Font);
             Assert.AreEqual(GraphvizColor.Black, edge.FontColor);
+            Assert.AreEqual(1.0, edge.PenWidth);
             Assert.IsNotNull(edge.Head);
             Assert.IsNull(edge.HeadArrow);
             Assert.IsNull(edge.HeadPort);
@@ -141,6 +142,7 @@ namespace QuikGraph.Graphviz.Tests
                     Direction = GraphvizEdgeDirection.Both,
                     Font = new GraphvizFont("Test font", 12.0f),
                     FontColor = GraphvizColor.Chocolate,
+                    PenWidth = 2.0,
                     Head = new GraphvizEdgeExtremity(true)
                     {
                         Label = "Head label"
@@ -164,7 +166,7 @@ namespace QuikGraph.Graphviz.Tests
                 };
                 yield return new TestCaseData(
                     edge,
-                    @"dir=both, fontname=""Test font"", fontsize=12, fontcolor=""#D2691EFF"", "
+                    @"dir=both, fontname=""Test font"", fontsize=12, fontcolor=""#D2691EFF"", penwidth=2, "
                     + @"headlabel=""Head label"", arrowhead=""diamond"", headport=""TestHeadPort"", "
                     + @"constraint=false, decorate=true, label=""Test Label"", labelangle=15, "
                     + @"labeldistance=5, labelfloat=false, labelfontname=""Label font"", labelfontsize=10, "
@@ -238,11 +240,12 @@ namespace QuikGraph.Graphviz.Tests
                     Font = new GraphvizFont("Label font", 14.5f)
                 },
                 Font = new GraphvizFont("Test font", 12.5f),
+                PenWidth = 2.5,
                 Weight = 1.5
             };
 
             const string expectedDot =
-                @"fontname=""Test font"", fontsize=12.5, label=""Edge label"", labelangle=25.5, "
+                @"fontname=""Test font"", fontsize=12.5, penwidth=2.5, label=""Edge label"", labelangle=25.5, "
                 + @"labeldistance=1.5, labelfontname=""Label font"", labelfontsize=14.5, weight=1.5";
 
             using (CultureScope(EnglishCulture))

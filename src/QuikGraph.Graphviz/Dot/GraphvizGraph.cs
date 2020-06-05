@@ -62,6 +62,12 @@ namespace QuikGraph.Graphviz.Dot
         public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
+        /// Pen width.
+        /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:penwidth">See more</see>
+        /// </summary>
+        public double PenWidth { get; set; } = 1.0;
+
+        /// <summary>
         /// Graph should be centered?
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:center">See more</see>
         /// </summary>
@@ -327,6 +333,10 @@ namespace QuikGraph.Graphviz.Dot
             if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
+            }
+            if (!NearEqual(PenWidth, 1.0))
+            {
+               properties["penwidth"] = PenWidth;
             }
             if (Label != null)
             {

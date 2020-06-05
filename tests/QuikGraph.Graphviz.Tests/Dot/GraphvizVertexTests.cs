@@ -26,6 +26,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.AreEqual(GraphvizColor.White, vertex.FillColor);
             Assert.IsNull(vertex.Font);
             Assert.AreEqual(GraphvizColor.Black, vertex.FontColor);
+            Assert.AreEqual(1.0, vertex.PenWidth);
             Assert.IsNull(vertex.Group);
             Assert.IsNull(vertex.Layer);
             Assert.Zero(vertex.Orientation);
@@ -76,6 +77,7 @@ namespace QuikGraph.Graphviz.Tests
                     FillColor = GraphvizColor.Red,
                     Font = new GraphvizFont("Test font", 12.0f),
                     FontColor = GraphvizColor.Green,
+                    PenWidth = 2.0,
                     Group = "Test group",
                     Layer = new GraphvizLayer("Vertex Layer"),
                     Orientation = 12,
@@ -88,9 +90,9 @@ namespace QuikGraph.Graphviz.Tests
                 };
                 yield return new TestCaseData(
                     vertex,
-                    @"fontname=""Test font"", fontsize=12, fontcolor=""#008000FF"", shape=diamond, style=dashed, "
-                    + @"label=""Test label"", color=""#F0FFFFFF"", fillcolor=""#FF0000FF"", regular=true, "
-                    + @"URL=""https://test.com"", tooltip=""Test tooltip"", comment=""Test comment"", "
+                    @"fontname=""Test font"", fontsize=12, fontcolor=""#008000FF"", penwidth=2, shape=diamond, "
+                    + @"style=dashed, label=""Test label"", color=""#F0FFFFFF"", fillcolor=""#FF0000FF"", "
+                    + @"regular=true, URL=""https://test.com"", tooltip=""Test tooltip"", comment=""Test comment"", "
                     + @"group=""Test group"", layer=""Vertex Layer"", orientation=12, peripheries=1, "
                     + @"z=100, pos=""10,-20!""");
 
@@ -291,6 +293,7 @@ namespace QuikGraph.Graphviz.Tests
                 Shape = GraphvizVertexShape.Polygon,
                 Distortion = 2.5,
                 Font = new GraphvizFont("Test font", 12.5f),
+                PenWidth = 2.5,
                 Orientation = 45.8,
                 FixedSize = true,
                 Size = new GraphvizSizeF(14.5f, 21.6f),
@@ -299,7 +302,7 @@ namespace QuikGraph.Graphviz.Tests
             };
 
             const string expectedDot =
-                @"fontname=""Test font"", fontsize=12.5, shape=polygon, fixedsize=true, height=21.6, "
+                @"fontname=""Test font"", fontsize=12.5, penwidth=2.5, shape=polygon, fixedsize=true, height=21.6, "
                 + @"width=14.5, orientation=45.8, z=12.3, sides=4, skew=2.2, distortion=2.5";
 
             using (CultureScope(EnglishCulture))

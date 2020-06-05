@@ -23,6 +23,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.AreEqual(GraphvizClusterMode.Local, graph.ClusterRank);
             Assert.IsNull(graph.Font);
             Assert.AreEqual(GraphvizColor.Black, graph.FontColor);
+            Assert.AreEqual(1.0, graph.PenWidth);
             Assert.IsFalse(graph.IsCentered);
             Assert.IsFalse(graph.IsCompounded);
             Assert.IsFalse(graph.IsConcentrated);
@@ -113,6 +114,7 @@ namespace QuikGraph.Graphviz.Tests
                     ClusterRank = GraphvizClusterMode.Global,
                     Font = new GraphvizFont("Test font", 12),
                     FontColor = GraphvizColor.DarkOrange,
+                    PenWidth = 2.0,
                     IsCentered = true,
                     IsCompounded = true,
                     IsConcentrated = true,
@@ -145,7 +147,7 @@ namespace QuikGraph.Graphviz.Tests
                     graph,
                     @"URL=""https://test.com""; bgcolor=""#FFE4C4FF""; center=true; clusterrank=""global""; "
                     + @"comment=""Test comment""; compound=true; concentrate=true; fontname=""Test font""; "
-                    + @"fontsize=12; fontcolor=""#FF8C00FF""; label=""Test label""; labeljust=""l""; "
+                    + @"fontsize=12; fontcolor=""#FF8C00FF""; penwidth=2; label=""Test label""; labeljust=""l""; "
                     + @"labelloc=""t""; layers=""Layer1:-:Layer2""; layersep="":-:""; mclimit=2; "
                     + @"nodesep=1; rankdir=LR; ranksep=2; normalize=true; nslimit=2; nslimit1=3; "
                     + @"outputorder=""nodesfirst""; page=""10,15""; pagedir=RT; quantum=1; ratio=""fill""; "
@@ -210,6 +212,7 @@ namespace QuikGraph.Graphviz.Tests
             var graph = new GraphvizGraph
             {
                 Font = new GraphvizFont("Test font", 12.5f),
+                PenWidth = 2.5,
                 McLimit = 1.5,
                 NodeSeparation = 0.5,
                 RankSeparation = 0.75,
@@ -220,7 +223,7 @@ namespace QuikGraph.Graphviz.Tests
             };
 
             const string expectedDot =
-                @"fontname=""Test font""; fontsize=12.5; mclimit=1.5; nodesep=0.5; ranksep=0.75; "
+                @"fontname=""Test font""; fontsize=12.5; penwidth=2.5; mclimit=1.5; nodesep=0.5; ranksep=0.75; "
                 + @"page=""500.5,425.6""; quantum=1.5; resolution=0.95; size=""350.5,260.4"";";
 
             using (CultureScope(EnglishCulture))
