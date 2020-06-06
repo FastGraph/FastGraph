@@ -4,8 +4,8 @@
 | **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/KeRNeLith/QuikGraph/badge.svg?branch=master)](https://coveralls.io/github/KeRNeLith/QuikGraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=quikgraph) | 
 | **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=quikgraph) | 
 | **Nugets** | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) QuikGraph |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) QuikGraph.Serialization |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) QuikGraph.Graphviz |
+| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.serialization.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) QuikGraph.Serialization |
+| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.graphviz.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) QuikGraph.Graphviz |
 | **License** | MS-PL |
 
 # QuikGraph

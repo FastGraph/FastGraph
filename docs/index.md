@@ -41,11 +41,11 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
     PM> Install-Package QuikGraph
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
+[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.serialization.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
 
     PM> Install-Package QuikGraph.Serialization
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
+[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.graphviz.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
 
     PM> Install-Package QuikGraph.Graphviz
 
