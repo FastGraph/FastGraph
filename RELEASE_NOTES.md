@@ -1,5 +1,24 @@
 # Release notes
 
+## What's new in 2.2.0 June 7 2020
+
+### QuikGraph
+
+#### New:
+* Use signing key to strong name library assemby.
+
+### QuikGraph.Serialization
+
+#### New:
+* Use signing key to strong name library assemby.
+
+### QuikGraph.GraphViz
+
+#### New:
+* Use signing key to strong name library assemby.
+
+---
+
 ## What's new in 2.1.1 June 6 2020
 
 ### QuikGraph.GraphViz

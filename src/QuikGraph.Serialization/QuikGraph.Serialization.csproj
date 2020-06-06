@@ -28,9 +28,9 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Serialization</PackageId>
-    <PackageReleaseNotes>➟ Release 2.1.0
-Fixes:
-- Fix a security vulnerability regarding XML serialization on target .NET Framework 3.5.</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.2.0
+New:
+- Use signing key to strong name library assemby.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization</PackageTags>
   </PropertyGroup>
 

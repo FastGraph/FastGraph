@@ -34,12 +34,9 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph</PackageId>
-    <PackageReleaseNotes>➟ Release 2.1.0
-Optims:
-- Use EqualityComparer&lt;T&gt; instead of non-generic object.Equals.
-
-Updates:
-- Cancellation of algorithm internally use exception to abort algorithm run.</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.2.0
+New:
+- Use signing key to strong name library assemby.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET</PackageTags>
   </PropertyGroup>
 
