@@ -1,0 +1,12 @@
+namespace QuikGraph
+{
+    internal static class PublicKey
+    {
+        public const string Key =
+#if DEPLOY_BUILD
+            ", PublicKey=002400000480000094000000060200000024000052534131000400000100010055e90f671030b16b839b5703e96997e89b409967f9523a0a794bcd2085b6c86e95e7795b7acca6270e8fc37b0bc77b678ef3f3e07c25c2c26d472935ef6a4c83733e077f86659bc7a7ddac2655ae58485f4175ef8ab3fa1d5d867d47fffe3822fda07f62dec1985ecb02b96f88d0cfb19b671b8df67982e1977c0053f64a00bb";
+#else
+            "";
+#endif
+    }
+}

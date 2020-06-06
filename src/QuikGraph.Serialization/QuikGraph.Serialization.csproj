@@ -60,6 +60,7 @@ Fixes:
   </PropertyGroup>
   
   <!-- Dependencies -->
+  <!-- Externals -->
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
@@ -70,6 +71,7 @@ Fixes:
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
+  <!-- Projects -->
   <!-- QuikGraph reference -->
   <Choose>
     <When Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Core)">
