@@ -66,8 +66,7 @@
 
   <!-- QuikGraph.Serialization reference -->
   <ItemGroup Condition="$(UseQuikGraphSerializationNuget)">
-    <Compile Include="..\..\src\QuikGraph.CommonInternals\DisposableHelpers.cs" />
-    <PackageReference Include="QuikGraph.Serialization" Version="2.1.0" />
+    <PackageReference Include="QuikGraph.Serialization" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphSerializationNuget)">
     <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />
