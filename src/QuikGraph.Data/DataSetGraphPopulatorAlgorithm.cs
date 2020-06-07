@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
-using QuickGraph.Algorithms;
 using System.Diagnostics.Contracts;
+using QuikGraph.Algorithms;
 
-namespace QuickGraph.Data
+namespace QuikGraph.Data
 {
     public sealed class DataSetGraphPopulatorAlgorithm :
         AlgorithmBase<IMutableVertexAndEdgeListGraph<DataTable, DataRelationEdge>>
@@ -14,8 +11,7 @@ namespace QuickGraph.Data
 
         public DataSetGraphPopulatorAlgorithm(
             IMutableVertexAndEdgeListGraph<DataTable, DataRelationEdge> visitedGraph,
-            DataSet dataSet
-            )
+            DataSet dataSet)
             : base(visitedGraph)
         {
             Contract.Requires(dataSet != null);

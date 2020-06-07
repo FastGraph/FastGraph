@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Diagnostics.Contracts;
 
-namespace QuickGraph.Data
+namespace QuikGraph.Data
 {
-    public sealed class DataRelationEdge 
-        : IEdge<DataTable>
+    public sealed class DataRelationEdge : IEdge<DataTable>
     {
         private readonly DataRelation relation;
         public DataRelationEdge(DataRelation relation)

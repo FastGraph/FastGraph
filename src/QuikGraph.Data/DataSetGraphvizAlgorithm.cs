@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data;
-using QuickGraph.Graphviz;
-using QuickGraph.Graphviz.Dot;
+﻿using System.Data;
 using System.Diagnostics.Contracts;
+using System.Text;
+using QuikGraph.Graphviz;
+using QuikGraph.Graphviz.Dot;
 
-namespace QuickGraph.Data
+namespace QuikGraph.Data
 {
     /// <summary>
     /// An algorithm that renders a DataSet graph to the Graphviz DOT format.
     /// </summary>
-    public class DataSetGraphvizAlgorithm
-        : GraphvizAlgorithm<DataTable, DataRelationEdge>
+    public class DataSetGraphvizAlgorithm : GraphvizAlgorithm<DataTable, DataRelationEdge>
     {
         public DataSetGraphvizAlgorithm(DataSetGraph visitedGraph)
             : base(visitedGraph)
@@ -23,10 +19,9 @@ namespace QuickGraph.Data
 
         public DataSetGraphvizAlgorithm(
             DataSetGraph visitedGraph,
-            string path,
             GraphvizImageType imageType
             )
-            : base(visitedGraph, path, imageType)
+            : base(visitedGraph, imageType)
         {
             this.InitializeFormat();
         }
@@ -47,7 +42,7 @@ namespace QuickGraph.Data
             Contract.Requires(e != null);
 
             var v = e.Vertex;
-            var format = e.VertexFormatter;
+            var format = e.VertexFormat;
             format.Shape = GraphvizVertexShape.Record;
 
             // creating a record with a title and a list of columns.
@@ -79,7 +74,7 @@ namespace QuickGraph.Data
             Contract.Requires(args != null);
 
             var e = args.Edge;
-            var format = args.EdgeFormatter;
+            var format = args.EdgeFormat;
 
             format.Label.Value = e.Relation.RelationName;
         }

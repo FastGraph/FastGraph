@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics.Contracts;
-using QuickGraph.Graphviz;
+using QuikGraph.Graphviz;
 
-namespace QuickGraph.Data
+namespace QuikGraph.Data
 {
     public static class DataSetGraphExtensions
     {
-        public static DataSetGraph ToGraph(
-#if !NET20
-            this
-#endif
-            DataSet ds)
+        public static DataSetGraph ToGraph(this DataSet ds)
         {
             Contract.Requires(ds != null);
 
@@ -24,11 +17,7 @@ namespace QuickGraph.Data
             return g;
         }
 
-        public static string ToGraphviz(
-#if !NET20
-this
-#endif
-            DataSetGraph visitedGraph)
+        public static string ToGraphviz(this DataSetGraph visitedGraph)
         {
             Contract.Requires(visitedGraph != null);
 

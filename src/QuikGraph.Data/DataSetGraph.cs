@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics.Contracts;
 
-namespace QuickGraph.Data
+namespace QuikGraph.Data
 {
-    public class DataSetGraph :
-        BidirectionalGraph<DataTable, DataRelationEdge>
+    public class DataSetGraph : BidirectionalGraph<DataTable, DataRelationEdge>
     {
         readonly DataSet dataSet;
         public DataSet DataSet

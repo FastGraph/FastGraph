@@ -7,11 +7,14 @@
   <PropertyGroup>
     <UseQuikGraphCoreNuget>false</UseQuikGraphCoreNuget>
     <UseQuikGraphCoreNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Core)">true</UseQuikGraphCoreNuget>
-  
+
     <UseQuikGraphSerializationNuget>false</UseQuikGraphSerializationNuget>
     <UseQuikGraphSerializationNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Serialization)">true</UseQuikGraphSerializationNuget>
-  
+
     <UseQuikGraphGraphvizNuget>false</UseQuikGraphGraphvizNuget>
     <UseQuikGraphGraphvizNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Graphviz)">true</UseQuikGraphGraphvizNuget>
+
+    <UseQuikGraphDataNuget>false</UseQuikGraphDataNuget>
+    <UseQuikGraphDataNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Data)">true</UseQuikGraphDataNuget>
   </PropertyGroup>
 </Project>
