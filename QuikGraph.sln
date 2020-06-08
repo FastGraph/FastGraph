@@ -33,13 +33,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Serialization.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Graphviz.Tests", "tests\QuikGraph.Graphviz.Tests\QuikGraph.Graphviz.Tests.csproj", "{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuikGraph.Data.Tests", "tests\QuikGraph.Data.Tests\QuikGraph.Data.Tests.csproj", "{908FE868-7ABE-4FE8-BFA6-C5E6572B780D}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems*{69dfd21c-d3a3-4764-b3f0-2fdf612e1f65}*SharedItemsImports = 5
+		src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems*{908fe868-7abe-4fe8-bfa6-c5e6572b780d}*SharedItemsImports = 5
+		tests\QuikGraph.Serialization.Tests.CommonInternals\QuikGraph.Serialization.Tests.CommonInternals.projitems*{61df76e1-de2b-4df1-ad5f-89939ab06693}*SharedItemsImports = 5
 		tests\QuikGraph.Serialization.Tests.CommonInternals\QuikGraph.Serialization.Tests.CommonInternals.projitems*{8adddae1-fa2c-4637-c67f-8743beb126cd}*SharedItemsImports = 5
 		tests\QuikGraph.Serialization.Tests.CommonInternals\QuikGraph.Serialization.Tests.CommonInternals.projitems*{98e60a67-c326-4b83-8eff-b77e9c651945}*SharedItemsImports = 13
-		tests\QuikGraph.Serialization.Tests.CommonInternals\QuikGraph.Serialization.Tests.CommonInternals.projitems*{61df76e1-de2b-4df1-ad5f-89939ab06693}*SharedItemsImports = 5
-
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{908FE868-7ABE-4FE8-BFA6-C5E6572B780D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{908FE868-7ABE-4FE8-BFA6-C5E6572B780D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{908FE868-7ABE-4FE8-BFA6-C5E6572B780D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{908FE868-7ABE-4FE8-BFA6-C5E6572B780D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
+		{908FE868-7ABE-4FE8-BFA6-C5E6572B780D} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C26EFBC1-5149-4422-AFD3-172667AA018F}
