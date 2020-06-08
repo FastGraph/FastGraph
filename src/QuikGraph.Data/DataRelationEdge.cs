@@ -1,31 +1,32 @@
+using System;
 using System.Data;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Data
 {
+    /// <summary>
+    /// Represents a relation between <see cref="DataTable"/>s.
+    /// </summary>
     public sealed class DataRelationEdge : IEdge<DataTable>
     {
-        private readonly DataRelation relation;
-        public DataRelationEdge(DataRelation relation)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataRelationEdge"/> class.
+        /// </summary>
+        /// <param name="relation">Data relation.</param>
+        public DataRelationEdge([NotNull] DataRelation relation)
         {
-            Contract.Requires(relation != null);
-
-            this.relation = relation;
+            Relation = relation ?? throw new ArgumentNullException(nameof(relation));
         }
 
-        public DataRelation Relation
-        {
-            get { return this.relation; }
-        }
+        /// <summary>
+        /// Data relation hold by this edge.
+        /// </summary>
+        public DataRelation Relation { get; }
 
-        public DataTable Source
-        {
-            get { return this.relation.ParentTable;}
-        }
+        /// <inheritdoc />
+        public DataTable Source => Relation.ParentTable;
 
-        public DataTable Target
-        {
-            get { return this.relation.ChildTable; }
-        }
+        /// <inheritdoc />
+        public DataTable Target => Relation.ChildTable;
     }
 }

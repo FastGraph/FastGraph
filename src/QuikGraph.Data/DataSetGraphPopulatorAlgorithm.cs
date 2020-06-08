@@ -1,36 +1,50 @@
+using System;
 using System.Data;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 
 namespace QuikGraph.Data
 {
-    public sealed class DataSetGraphPopulatorAlgorithm :
-        AlgorithmBase<IMutableVertexAndEdgeListGraph<DataTable, DataRelationEdge>>
+    /// <summary>
+    /// Algorithm that take a <see cref="System.Data.DataSet"/> and convert it as a graph representation.
+    /// </summary>
+    public sealed class DataSetGraphPopulatorAlgorithm : AlgorithmBase<IMutableVertexAndEdgeSet<DataTable, DataRelationEdge>>
     {
-        private readonly DataSet dataSet;
+        /// <summary>
+        /// <see cref="System.Data.DataSet"/> to represent as a graph.
+        /// </summary>
+        [NotNull]
+        public DataSet DataSet { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataSetGraphPopulatorAlgorithm"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to fill from <paramref name="dataSet"/>.</param>
+        /// <param name="dataSet"><see cref="System.Data.DataSet"/> to use to fill <paramref name="visitedGraph"/>.</param>
         public DataSetGraphPopulatorAlgorithm(
-            IMutableVertexAndEdgeListGraph<DataTable, DataRelationEdge> visitedGraph,
-            DataSet dataSet)
+            [NotNull] IMutableVertexAndEdgeSet<DataTable, DataRelationEdge> visitedGraph,
+            [NotNull] DataSet dataSet)
             : base(visitedGraph)
         {
-            Contract.Requires(dataSet != null);
-
-            this.dataSet = dataSet;
+            DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
         }
 
-        public DataSet DataSet
-        {
-            get { return this.dataSet; }
-        }
+        #region AlgorithmBase<TGraph>
 
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            foreach (DataTable table in this.DataSet.Tables)
-                this.VisitedGraph.AddVertex(table);
+            foreach (DataTable table in DataSet.Tables)
+            {
+                VisitedGraph.AddVertex(table);
+            }
 
-            foreach (DataRelation relation in this.DataSet.Relations)
-                this.VisitedGraph.AddEdge(new DataRelationEdge(relation));
+            foreach (DataRelation relation in DataSet.Relations)
+            {
+                VisitedGraph.AddEdge(new DataRelationEdge(relation));
+            }
         }
+
+        #endregion
     }
 }

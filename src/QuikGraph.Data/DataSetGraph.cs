@@ -1,21 +1,26 @@
-﻿using System.Data;
-using System.Diagnostics.Contracts;
+﻿using System;
+using System.Data;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Data
 {
+    /// <summary>
+    /// Represents a set of data as a graph.
+    /// </summary>
     public class DataSetGraph : BidirectionalGraph<DataTable, DataRelationEdge>
     {
-        readonly DataSet dataSet;
-        public DataSet DataSet
-        {
-            get { return this.dataSet; }
-        }
+        /// <summary>
+        /// Wrapped <see cref="System.Data.DataSet"/>.
+        /// </summary>
+        public DataSet DataSet { get; }
 
-        internal DataSetGraph(DataSet dataSet)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataSetGraph"/> class.
+        /// </summary>
+        /// <param name="dataSet">Set of data.</param>
+        internal DataSetGraph([NotNull] DataSet dataSet)
         {
-            Contract.Requires(dataSet != null);
-
-            this.dataSet = dataSet;
+            DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
         }
     }
 }

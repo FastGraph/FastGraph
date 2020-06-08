@@ -1,6 +1,7 @@
 ﻿using System.Data;
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Text;
+using JetBrains.Annotations;
 using QuikGraph.Graphviz;
 using QuikGraph.Graphviz.Dot;
 
@@ -11,72 +12,96 @@ namespace QuikGraph.Data
     /// </summary>
     public class DataSetGraphvizAlgorithm : GraphvizAlgorithm<DataTable, DataRelationEdge>
     {
-        public DataSetGraphvizAlgorithm(DataSetGraph visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataSetGraphvizAlgorithm"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to convert to DOT.</param>
+        public DataSetGraphvizAlgorithm([NotNull] DataSetGraph visitedGraph)
             : base(visitedGraph)
         {
-            this.InitializeFormat();
+            InitializeFormat();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataSetGraphvizAlgorithm"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to convert to DOT.</param>
+        /// <param name="imageType">Target output image type.</param>
         public DataSetGraphvizAlgorithm(
-            DataSetGraph visitedGraph,
-            GraphvizImageType imageType
-            )
+            [NotNull] DataSetGraph visitedGraph,
+            GraphvizImageType imageType)
             : base(visitedGraph, imageType)
         {
-            this.InitializeFormat();
+            InitializeFormat();
         }
 
         private void InitializeFormat()
         {
-            this.FormatVertex += new FormatVertexEventHandler<DataTable>(FormatTable);
-            this.FormatEdge += new FormatEdgeAction<DataTable, DataRelationEdge>(FormatRelationEdge);
+            FormatVertex += FormatTable;
+            FormatEdge += FormatRelation;
 
-            this.CommonVertexFormat.Style = GraphvizVertexStyle.Solid;
-            this.CommonVertexFormat.Shape = GraphvizVertexShape.Record;
+            CommonVertexFormat.Style = GraphvizVertexStyle.Solid;
+            CommonVertexFormat.Shape = GraphvizVertexShape.Record;
         }
 
-
-        protected virtual void FormatTable(object sender, FormatVertexEventArgs<DataTable> e)
+        /// <summary>
+        /// Formats a <see cref="DataTable"/> (a table).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected virtual void FormatTable([NotNull] object sender, [NotNull] FormatVertexEventArgs<DataTable> args)
         {
-            Contract.Requires(sender != null);
-            Contract.Requires(e != null);
+            Debug.Assert(sender != null);
+            Debug.Assert(args != null);
 
-            var v = e.Vertex;
-            var format = e.VertexFormat;
+            DataTable vertex = args.Vertex;
+            GraphvizVertex format = args.VertexFormat;
             format.Shape = GraphvizVertexShape.Record;
 
-            // creating a record with a title and a list of columns.
-            var title = new GraphvizRecordCell() {
-                 Text = v.TableName
+            // Create a record with a title and a list of columns
+            var title = new GraphvizRecordCell
+            {
+                Text = vertex.TableName
             };
-            var sb = new StringBuilder();
-            bool first = true;
-            foreach (DataColumn column in v.Columns)
+
+            var builder = new StringBuilder();
+            bool flag = true;
+            foreach (DataColumn column in vertex.Columns)
             {
-                if (first) first = false;
+                if (flag)
+                {
+                    flag = false;
+                }
                 else
-                    sb.AppendLine();             
-                sb.AppendFormat("+ {0} : {1}", column.ColumnName, column.DataType.Name);
-                if (column.Unique) sb.Append(" unique");
+                {
+                    builder.AppendLine();
+                }
+
+                builder.Append($"+ {column.ColumnName} : {column.DataType.Name}");
+                if (column.Unique)
+                {
+                    builder.Append(" unique");
+                }
             }
-            var columns = new GraphvizRecordCell()
+            var columns = new GraphvizRecordCell
             {
-                Text = sb.ToString().TrimEnd()
+                Text = builder.ToString().TrimEnd()
             };
 
             format.Record.Cells.Add(title);
             format.Record.Cells.Add(columns);
         }
 
-        protected virtual void FormatRelationEdge(object sender, FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
+        /// <summary>
+        /// Formats a <see cref="DataRelationEdge"/> (a relation between tables).
+        /// </summary>
+        protected virtual void FormatRelation([NotNull] object sender, [NotNull] FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
         {
-            Contract.Requires(sender != null); 
-            Contract.Requires(args != null);
+            Debug.Assert(sender != null);
+            Debug.Assert(args != null);
 
-            var e = args.Edge;
-            var format = args.EdgeFormat;
-
-            format.Label.Value = e.Relation.RelationName;
+            GraphvizEdge format = args.EdgeFormat;
+            format.Label.Value = args.Edge.Relation.RelationName;
         }
     }
 }
