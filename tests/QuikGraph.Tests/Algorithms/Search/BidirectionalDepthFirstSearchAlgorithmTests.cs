@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Search;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.Search
 {

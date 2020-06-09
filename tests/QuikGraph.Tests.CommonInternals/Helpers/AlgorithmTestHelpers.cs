@@ -5,13 +5,13 @@ using QuikGraph.Algorithms;
 namespace QuikGraph.Tests.Algorithms
 {
     /// <summary>
-    /// Base class for algorithm tests.
+    /// Test helpers for algorithms.
     /// </summary>
-    internal abstract class AlgorithmTestsBase
+    internal static class AlgorithmTestHelpers
     {
         #region Test helpers
 
-        protected static void AssertAlgorithmState<TGraph>(
+        public static void AssertAlgorithmState<TGraph>(
             [NotNull] AlgorithmBase<TGraph> algorithm,
             [NotNull] TGraph treatedGraph,
             ComputationState state = ComputationState.NotRunning)

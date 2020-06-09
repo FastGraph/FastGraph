@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Cliques;
 using QuikGraph.Algorithms.Services;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.Cliques
 {
@@ -10,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.Cliques
     /// Tests for <see cref="MaximumCliqueAlgorithmBase{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MaximumCliqueAlgorithmTests : AlgorithmTestsBase
+    internal class MaximumCliqueAlgorithmTests
     {
         #region Test classes
 

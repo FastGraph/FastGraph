@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.Assignment
     /// Tests for <see cref="HungarianAlgorithm"/>.
     /// </summary>
     [TestFixture]
-    internal class HungarianAlgorithmTests : AlgorithmTestsBase
+    internal class HungarianAlgorithmTests
     {
         [Test]
         public void Constructor()

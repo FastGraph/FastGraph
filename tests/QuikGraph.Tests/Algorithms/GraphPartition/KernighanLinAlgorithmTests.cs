@@ -5,6 +5,7 @@ using QuikGraph.Algorithms.GraphPartition;
 #if !SUPPORTS_SORTEDSET
 using QuikGraph.Collections;
 #endif
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.TestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.GraphPartitioning
@@ -13,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
     /// Tests for <see cref="KernighanLinAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class KernighanLinAlgorithmTests : AlgorithmTestsBase
+    internal class KernighanLinAlgorithmTests
     {
         [Test]
         public void Constructor()

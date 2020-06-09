@@ -5,6 +5,7 @@ using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.TSP;
 using QuikGraph.Tests.Algorithms.ShortestPath;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.TSP
 {

@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using QuikGraph.Algorithms.VertexCover;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.VertexCover
 {
@@ -8,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.VertexCover
     /// Tests for <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MinimumVertexCoverApproximationAlgorithmTests : AlgorithmTestsBase
+    internal class MinimumVertexCoverApproximationAlgorithmTests
     {
         [Test]
         public void Constructor()

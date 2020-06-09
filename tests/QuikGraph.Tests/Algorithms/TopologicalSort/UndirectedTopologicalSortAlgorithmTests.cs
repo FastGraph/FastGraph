@@ -2,6 +2,7 @@ using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.TopologicalSort;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
 
@@ -11,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="UndirectedTopologicalSortAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class UndirectedTopologicalSortAlgorithmTests : AlgorithmTestsBase
+    internal class UndirectedTopologicalSortAlgorithmTests
     {
         #region Test helpers
 

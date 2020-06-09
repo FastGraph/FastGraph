@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using QuikGraph.Algorithms.MinimumSpanningTree;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
 {

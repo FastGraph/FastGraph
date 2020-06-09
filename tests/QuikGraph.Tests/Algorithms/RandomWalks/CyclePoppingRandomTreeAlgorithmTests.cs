@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.RandomWalks;
 using QuikGraph.Algorithms.Search;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.RandomWalks
 {

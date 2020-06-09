@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
     /// <summary>
     /// Base class for condensation algorithms.
     /// </summary>
-    internal abstract class CondensationGraphAlgorithmTestsBase : AlgorithmTestsBase
+    internal abstract class CondensationGraphAlgorithmTestsBase
     {
         #region Test helpers
 

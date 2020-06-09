@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms
@@ -9,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="TransitiveClosureAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class TransitiveClosureAlgorithmTests : AlgorithmTestsBase
+    internal class TransitiveClosureAlgorithmTests
     {
         [Test]
         public void Constructor()

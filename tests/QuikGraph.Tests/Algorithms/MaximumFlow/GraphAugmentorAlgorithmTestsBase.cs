@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// <summary>
     /// Base class for graph augmentor algorithms.
     /// </summary>
-    internal abstract class GraphAugmentorAlgorithmTestsBase : AlgorithmTestsBase
+    internal abstract class GraphAugmentorAlgorithmTestsBase
     {
         protected static void CreateAndSetSuperSource_Test<TGraph>(
             [NotNull] GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)

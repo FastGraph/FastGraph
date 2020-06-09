@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MaximumFlow;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.MaximumFlow
 {
@@ -11,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdmondsKarpMaximumFlowAlgorithmTests : AlgorithmTestsBase
+    internal class EdmondsKarpMaximumFlowAlgorithmTests
     {
         #region Test helpers
 

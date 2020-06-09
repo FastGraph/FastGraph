@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.ConnectedComponents;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.ConnectedComponents
 {
@@ -10,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
     /// Tests for <see cref="StronglyConnectedComponentsAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class StronglyConnectedComponentsAlgorithmTests : AlgorithmTestsBase
+    internal class StronglyConnectedComponentsAlgorithmTests
     {
         #region Test helpers
 

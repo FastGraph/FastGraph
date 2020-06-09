@@ -6,6 +6,7 @@ using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Condensation;
 using QuikGraph.Algorithms.ConnectedComponents;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.Condensation
 {

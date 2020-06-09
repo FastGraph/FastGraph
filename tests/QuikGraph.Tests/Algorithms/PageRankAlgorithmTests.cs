@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Ranking;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -10,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="PageRankAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class PageRankAlgorithmTests : AlgorithmTestsBase
+    internal class PageRankAlgorithmTests
     {
         [Test]
         public void Constructor()

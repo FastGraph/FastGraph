@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Condensation;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.Condensation
 {
@@ -12,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
     /// Tests for <see cref="EdgeMergeCondensationGraphAlgorithm{TVertex, TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdgeMergeCondensationGraphAlgorithmTests : AlgorithmTestsBase
+    internal class EdgeMergeCondensationGraphAlgorithmTests
     {
         #region Test helpers
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms.VertexColoring;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.GraphColoring
 {
@@ -10,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.GraphColoring
     /// Tests for <see cref="VertexColoringAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class VertexColoringAlgorithmTests : AlgorithmTestsBase
+    internal class VertexColoringAlgorithmTests
     {
         [Test]
         public void Constructor()

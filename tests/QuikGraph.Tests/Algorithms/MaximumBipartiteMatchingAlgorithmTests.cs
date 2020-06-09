@@ -4,6 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
+using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -11,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MaximumBipartiteMatchingAlgorithmTests : AlgorithmTestsBase
+    internal class MaximumBipartiteMatchingAlgorithmTests
     {
         #region Test helpers
 
