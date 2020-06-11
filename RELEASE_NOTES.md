@@ -1,6 +1,6 @@
 # Release notes
 
-## What's new in 2.2.0 June 7 2020
+## What's new in 2.2.0 June 7 2020 and June 11 2020
 
 ### QuikGraph
 
@@ -16,6 +16,13 @@
 
 #### New:
 * Use signing key to strong name library assemby.
+
+### QuikGraph.Data
+
+#### Misc:
+* Clean the library code.
+* Fully document library.
+* Use JetBrains annotations all over the library as much as possible.
 
 ---
 

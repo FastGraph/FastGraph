@@ -49,4 +49,8 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
     PM> Install-Package QuikGraph.Graphviz
 
+[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.data.svg)](https://www.nuget.org/packages/QuikGraph.Data) [QuikGraph.Data](https://www.nuget.org/packages/QuikGraph.Data)
+
+    PM> Install-Package QuikGraph.Data
+
 <img src="images/quikgraph_logo.png" width="128" height="128" style="display: block; margin-left: auto; margin-right: auto" />
