@@ -1,37 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net461;net462;net47;net471;net472;netcoreapp2.0</TargetFrameworks>
 
-    <Title>QuikGraph.Data.Tests</Title>
+    <Title>QuikGraph.MSAGL.Tests</Title>
 
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
     <Copyright>Copyright © 2020</Copyright>
-    <Description>Tests for QuikGraph.Data library.</Description>
+    <Description>Tests for QuikGraph.MSAGL library.</Description>
   </PropertyGroup>
 
   <!-- Targets defines -->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-    <DefineConstants>$(DefineConstants);NET35;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
-    <DefineConstants>$(DefineConstants);NET40;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>$(DefineConstants);NET45;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net451'">
-    <DefineConstants>$(DefineConstants);NET451;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net452'">
-    <DefineConstants>$(DefineConstants);NET452;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net46'">
-    <DefineConstants>$(DefineConstants);NET46;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
     <DefineConstants>$(DefineConstants);NET461;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
@@ -56,11 +38,11 @@
   <Import Project="..\..\src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
-  <!-- QuikGraph.Data reference -->
-  <ItemGroup Condition="$(UseQuikGraphDataNuget)">
-    <PackageReference Include="QuikGraph.Data" Version="2.2.0" />
+  <!-- QuikGraph reference -->
+  <ItemGroup Condition="$(UseQuikGraphMSAGLNuget)">
+    <PackageReference Include="QuikGraph.MSAGL" Version="2.2.0" />
   </ItemGroup>
-  <ItemGroup Condition="!$(UseQuikGraphDataNuget)">
-    <ProjectReference Include="..\..\src\QuikGraph.Data\QuikGraph.Data.csproj" />
+  <ItemGroup Condition="!$(UseQuikGraphMSAGLNuget)">
+    <ProjectReference Include="..\..\src\QuikGraph.MSAGL\QuikGraph.MSAGL.csproj" />
   </ItemGroup>
 </Project>
