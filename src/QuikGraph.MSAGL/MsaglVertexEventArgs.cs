@@ -3,11 +3,11 @@ using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
 {
-    public sealed class GleeVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
+    public sealed class MsaglVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
     {
         private readonly Node node;
 
-        public GleeVertexEventArgs(TVertex vertex, Node node)
+        public MsaglVertexEventArgs(TVertex vertex, Node node)
             : base(vertex)
         {
             Contract.Requires(node != null);
@@ -20,7 +20,7 @@ namespace QuikGraph.MSAGL
         }
     }
 
-    public delegate void GleeVertexNodeEventHandler<Vertex>(
+    public delegate void MsaglVertexNodeEventHandler<Vertex>(
         object sender,
-        GleeVertexEventArgs<Vertex> args);
+        MsaglVertexEventArgs<Vertex> args);
 }

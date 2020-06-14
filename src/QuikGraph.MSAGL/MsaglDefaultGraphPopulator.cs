@@ -4,10 +4,10 @@ using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
 {
-    public class GleeDefaultGraphPopulator<TVertex, TEdge> : GleeGraphPopulator<TVertex, TEdge>
+    public class MsaglDefaultGraphPopulator<TVertex, TEdge> : MsaglGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        public GleeDefaultGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public MsaglDefaultGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }

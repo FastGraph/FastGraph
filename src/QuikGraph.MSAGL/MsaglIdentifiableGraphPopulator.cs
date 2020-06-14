@@ -3,11 +3,11 @@ using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
 {
-    public sealed class GleeIndentifiableGraphPopulator<TVertex, TEdge> : GleeGraphPopulator<TVertex, TEdge>
+    public sealed class MsaglIndentifiableGraphPopulator<TVertex, TEdge> : MsaglGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         private readonly VertexIdentity<TVertex> vertexIdentities;
-        public GleeIndentifiableGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph, VertexIdentity<TVertex> vertexIdentities)
+        public MsaglIndentifiableGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph, VertexIdentity<TVertex> vertexIdentities)
             : base(visitedGraph)
         {
             Contract.Requires(vertexIdentities != null);
@@ -17,12 +17,12 @@ namespace QuikGraph.MSAGL
 
         protected override Node AddNode(TVertex v)
         {
-            return (Node)this.GleeGraph.AddNode(this.vertexIdentities(v));
+            return (Node)this.MsaglGraph.AddNode(this.vertexIdentities(v));
         }
 
         protected override Microsoft.Msagl.Drawing.Edge AddEdge(TEdge e)
         {
-            return (Microsoft.Msagl.Drawing.Edge)this.GleeGraph.AddEdge(
+            return (Microsoft.Msagl.Drawing.Edge)this.MsaglGraph.AddEdge(
                 this.vertexIdentities(e.Source),
                 this.vertexIdentities(e.Target));
         }

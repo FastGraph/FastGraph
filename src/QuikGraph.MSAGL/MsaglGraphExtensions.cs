@@ -3,42 +3,42 @@ using System.Diagnostics.Contracts;
 
 namespace QuikGraph.MSAGL
 {
-    public static class GleeGraphExtensions
+    public static class MsaglGraphExtensions
     {
-        public static GleeGraphPopulator<TVertex, TEdge> CreateGleePopulator<TVertex, TEdge>(
+        public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
             this IEdgeListGraph<TVertex, TEdge> visitedGraph,
             IFormatProvider formatProvider,
             string format)
             where TEdge : IEdge<TVertex>
         {
-            return new GleeToStringGraphPopulator<TVertex, TEdge>(visitedGraph, formatProvider, format);
+            return new MsaglToStringGraphPopulator<TVertex, TEdge>(visitedGraph, formatProvider, format);
         }
 
-        public static GleeGraphPopulator<TVertex, TEdge> CreateGleePopulator<TVertex, TEdge>(
+        public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
             this IEdgeListGraph<TVertex, TEdge> visitedGraph)
             where TEdge : IEdge<TVertex>
         {
-            return new GleeDefaultGraphPopulator<TVertex, TEdge>(visitedGraph);
+            return new MsaglDefaultGraphPopulator<TVertex, TEdge>(visitedGraph);
         }
 
-        public static GleeGraphPopulator<TVertex, TEdge> CreateIdentifiableGleePopulator<TVertex, TEdge>(
+        public static MsaglGraphPopulator<TVertex, TEdge> CreateIdentifiableGleePopulator<TVertex, TEdge>(
             this IEdgeListGraph<TVertex, TEdge> visitedGraph,
             VertexIdentity<TVertex> vertexIdentities)
             where TEdge : IEdge<TVertex>
         {
-            return new GleeIndentifiableGraphPopulator<TVertex, TEdge>(visitedGraph, vertexIdentities);
+            return new MsaglIndentifiableGraphPopulator<TVertex, TEdge>(visitedGraph, vertexIdentities);
         }
 
-        public static Microsoft.Msagl.Drawing.Graph ToGleeGraph<TVertex, TEdge>(
+        public static Microsoft.Msagl.Drawing.Graph ToMsaglGraph<TVertex, TEdge>(
             this IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            GleeVertexNodeEventHandler<TVertex> nodeAdded,
-            GleeEdgeEventHandler<TVertex, TEdge> edgeAdded)
+            MsaglVertexNodeEventHandler<TVertex> nodeAdded,
+            MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded)
             where TEdge : IEdge<TVertex>
         {
             if (visitedGraph == null)
                 throw new ArgumentNullException("visitedGraph");
 
-            var populator = CreateGleePopulator(visitedGraph);
+            var populator = CreateMsaglPopulator(visitedGraph);
             try
             {
                 if (nodeAdded != null)
@@ -47,7 +47,7 @@ namespace QuikGraph.MSAGL
                     populator.EdgeAdded += edgeAdded;
 
                 populator.Compute();
-                return populator.GleeGraph;
+                return populator.MsaglGraph;
             }
             finally
             {
@@ -58,11 +58,11 @@ namespace QuikGraph.MSAGL
             }
         }
 
-        public static Microsoft.Msagl.Drawing.Graph ToIdentifiableGleeGraph<TVertex, TEdge>(
+        public static Microsoft.Msagl.Drawing.Graph ToIdentifiableMsaglGraph<TVertex, TEdge>(
             this IEdgeListGraph<TVertex, TEdge> visitedGraph,
             VertexIdentity<TVertex> vertexIdentities,
-            GleeVertexNodeEventHandler<TVertex> nodeAdded,
-            GleeEdgeEventHandler<TVertex, TEdge> edgeAdded
+            MsaglVertexNodeEventHandler<TVertex> nodeAdded,
+            MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded
             )
             where TEdge : IEdge<TVertex>
         {
@@ -78,7 +78,7 @@ namespace QuikGraph.MSAGL
                     populator.EdgeAdded += edgeAdded;
 
                 populator.Compute();
-                return populator.GleeGraph;
+                return populator.MsaglGraph;
             }
             finally
             {

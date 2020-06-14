@@ -2,13 +2,13 @@ using System;
 
 namespace QuikGraph.MSAGL
 {
-    public sealed class GleeToStringGraphPopulator<TVertex, TEdge> : GleeDefaultGraphPopulator<TVertex, TEdge>
+    public sealed class MsaglToStringGraphPopulator<TVertex, TEdge> : MsaglDefaultGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         private readonly IFormatProvider formatProvider;
         private readonly string format;
 
-        public GleeToStringGraphPopulator(
+        public MsaglToStringGraphPopulator(
             IEdgeListGraph<TVertex, TEdge> visitedGraph,
             IFormatProvider formatProvider,
             string format)
