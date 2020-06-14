@@ -1,6 +1,6 @@
 # Release notes
 
-## What's new in 2.2.0 June 7 2020 and June 11 2020
+## What's new in 2.2.0 June 7 2020, June 11 2020 and June 18 2020
 
 ### QuikGraph
 
@@ -18,6 +18,22 @@
 * Use signing key to strong name library assemby.
 
 ### QuikGraph.Data
+
+#### Misc:
+* Clean the library code.
+* Fully document library.
+* Use JetBrains annotations all over the library as much as possible.
+
+### QuikGraph.MSAGL
+
+Migrate the library from GLEE to [MSAGL](https://www.microsoft.com/en-us/research/project/microsoft-automatic-graph-layout) (MSAGL is the successor of GLEE).
+
+#### Fixes:
+* Fix typo in populator algorithm.
+* Fix a bug when converting undirected graph to MSAGL graph.
+
+### API Breaks
+* Some public API breaks (but should remain simple to do a migration).
 
 #### Misc:
 * Clean the library code.

@@ -28,7 +28,17 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.MSAGL</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.0</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.2.0
+Rework the original QuickGraph.Glee module into QuikGraph.MSAGL (MSAGL is the successor of GLEE). This make possible to use the bridge from QuikGraph to MSAGL.
+
+Fixes:
+- Fix typo in populator algorithm.
+- Fix a bug when converting undirected graph to MSAGL graph.
+
+Misc:
+- Clean the library code.
+- Fully document library.
+- Use JetBrains annotations all over the library as much as possible.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET MSAGL</PackageTags>
   </PropertyGroup>
 
@@ -41,6 +51,7 @@ Supports Source Link</Description>
   <!-- Dependencies -->
   <!-- Externals -->
   <ItemGroup>
+    <PackageReference Condition="$(DeployBuild)" Include="StrongNamer" Version="0.2.5" PrivateAssets="All" />
     <PackageReference Include="AutomaticGraphLayout" Version="1.1.7" />
     <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
   </ItemGroup>
