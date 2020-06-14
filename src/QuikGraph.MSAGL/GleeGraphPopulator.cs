@@ -1,20 +1,18 @@
-using System;
-using System.Collections.Generic;
-using QuickGraph.Algorithms;
-using Microsoft.Glee.Drawing;
+using Microsoft.Msagl.Drawing;
+using QuikGraph.Algorithms;
 
-namespace QuickGraph.Glee
+namespace QuikGraph.MSAGL
 {
-    public abstract class GleeGraphPopulator<TVertex,TEdge> :
-        AlgorithmBase<IEdgeListGraph<TVertex, TEdge>>
+    public abstract class GleeGraphPopulator<TVertex, TEdge> : AlgorithmBase<IEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         protected GleeGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
-        { }
+        {
+        }
 
-        private Microsoft.Glee.Drawing.Graph gleeGraph;
-        public Microsoft.Glee.Drawing.Graph GleeGraph
+        private Microsoft.Msagl.Drawing.Graph gleeGraph;
+        public Microsoft.Msagl.Drawing.Graph GleeGraph
         {
             get { return this.gleeGraph; }
         }
@@ -39,7 +37,7 @@ namespace QuickGraph.Glee
 
         protected override void InternalCompute()
         {
-            this.gleeGraph = new Microsoft.Glee.Drawing.Graph("");
+            this.gleeGraph = new Microsoft.Msagl.Drawing.Graph("");
 
             foreach (var v in this.VisitedGraph.Vertices)
             {
@@ -50,14 +48,14 @@ namespace QuickGraph.Glee
 
             foreach (var e in this.VisitedGraph.Edges)
             {
-                Microsoft.Glee.Drawing.Edge edge = this.AddEdge(e);
+                Microsoft.Msagl.Drawing.Edge edge = this.AddEdge(e);
                 edge.UserData = e;
-                this.OnEdgeAdded(new GleeEdgeEventArgs<TVertex,TEdge>(e, edge));
+                this.OnEdgeAdded(new GleeEdgeEventArgs<TVertex, TEdge>(e, edge));
             }
         }
 
         protected abstract Node AddNode(TVertex v);
 
-        protected abstract Microsoft.Glee.Drawing.Edge AddEdge(TEdge e);
+        protected abstract Microsoft.Msagl.Drawing.Edge AddEdge(TEdge e);
     }
 }

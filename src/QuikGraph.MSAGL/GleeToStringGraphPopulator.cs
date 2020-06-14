@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics.Contracts;
 
-namespace QuickGraph.Glee
+namespace QuikGraph.MSAGL
 {
-    public sealed class GleeToStringGraphPopulator<TVertex,TEdge> : GleeDefaultGraphPopulator<TVertex, TEdge>
+    public sealed class GleeToStringGraphPopulator<TVertex, TEdge> : GleeDefaultGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         private readonly IFormatProvider formatProvider;
@@ -14,9 +11,8 @@ namespace QuickGraph.Glee
         public GleeToStringGraphPopulator(
             IEdgeListGraph<TVertex, TEdge> visitedGraph,
             IFormatProvider formatProvider,
-            string format
-            )
-            :base(visitedGraph)
+            string format)
+            : base(visitedGraph)
         {
             this.formatProvider = formatProvider;
             if (String.IsNullOrEmpty(format))

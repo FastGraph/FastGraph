@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Glee.Drawing;
+using Microsoft.Msagl.Drawing;
 
-namespace QuickGraph.Glee
+namespace QuikGraph.MSAGL
 {
-    public class GleeDefaultGraphPopulator<TVertex, TEdge>
-        : GleeGraphPopulator<TVertex, TEdge>
+    public class GleeDefaultGraphPopulator<TVertex, TEdge> : GleeGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         public GleeDefaultGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
-        { }
+        {
+        }
 
         private Dictionary<TVertex, string> vertexIds;
         protected override void OnStarted(EventArgs e)
@@ -31,7 +31,7 @@ namespace QuickGraph.Glee
             this.vertexIds.Add(v, id);
             Node node = (Node)this.GleeGraph.AddNode(id);
             node.Attr.Shape = Shape.Box;
-            node.Attr.Label = this.GetVertexLabel(id, v);
+            node.LabelText = this.GetVertexLabel(id, v);
             return node;
         }
 
@@ -45,9 +45,9 @@ namespace QuickGraph.Glee
             return String.Format("{0}: {1}", id, v.ToString());
         }
 
-        protected override Microsoft.Glee.Drawing.Edge AddEdge(TEdge e)
+        protected override Edge AddEdge(TEdge e)
         {
-            return (Microsoft.Glee.Drawing.Edge)this.GleeGraph.AddEdge(
+            return (Microsoft.Msagl.Drawing.Edge)this.GleeGraph.AddEdge(
                 this.vertexIds[e.Source],
                 this.vertexIds[e.Target]
                 );

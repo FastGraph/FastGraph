@@ -6,5 +6,6 @@
     <Generate_QuikGraph_Serialization>false</Generate_QuikGraph_Serialization>
     <Generate_QuikGraph_Graphviz>false</Generate_QuikGraph_Graphviz>
     <Generate_QuikGraph_Data>false</Generate_QuikGraph_Data>
+    <Generate_QuikGraph_MSAGL>false</Generate_QuikGraph_MSAGL>
   </PropertyGroup>
 </Project>

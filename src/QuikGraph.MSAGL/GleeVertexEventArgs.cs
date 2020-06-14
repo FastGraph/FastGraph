@@ -1,8 +1,7 @@
-using System;
-using Microsoft.Glee.Drawing;
 using System.Diagnostics.Contracts;
+using Microsoft.Msagl.Drawing;
 
-namespace QuickGraph.Glee
+namespace QuikGraph.MSAGL
 {
     public sealed class GleeVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
     {
@@ -22,6 +21,6 @@ namespace QuickGraph.Glee
     }
 
     public delegate void GleeVertexNodeEventHandler<Vertex>(
-        object sender, 
+        object sender,
         GleeVertexEventArgs<Vertex> args);
 }

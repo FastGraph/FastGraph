@@ -13,6 +13,7 @@ param(
         'serialization' { return "Generate_QuikGraph_Serialization"; }
         'graphviz' { return "Generate_QuikGraph_Graphviz"; }
         'data' { return "Generate_QuikGraph_Data"; }
+        'msagl' { return "Generate_QuikGraph_MSAGL"; }
         default { throw "Invalid tag slug." }
     }
 }

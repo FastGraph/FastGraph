@@ -16,5 +16,8 @@
 
     <UseQuikGraphDataNuget>false</UseQuikGraphDataNuget>
     <UseQuikGraphDataNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Data)">true</UseQuikGraphDataNuget>
+
+    <UseQuikGraphMSAGLNuget>false</UseQuikGraphMSAGLNuget>
+    <UseQuikGraphMSAGLNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_MSAGL)">true</UseQuikGraphMSAGLNuget>
   </PropertyGroup>
 </Project>
