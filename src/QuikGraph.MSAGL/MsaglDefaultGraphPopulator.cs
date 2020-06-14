@@ -1,56 +1,94 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
 {
+    /// <summary>
+    /// Default MSAGL graph populator.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     public class MsaglDefaultGraphPopulator<TVertex, TEdge> : MsaglGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        public MsaglDefaultGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        private Dictionary<TVertex, string> _verticesIds;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MsaglDefaultGraphPopulator{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
+        public MsaglDefaultGraphPopulator([NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
 
-        private Dictionary<TVertex, string> vertexIds;
-        protected override void OnStarted(EventArgs e)
+        /// <inheritdoc />
+        protected override void OnStarted(EventArgs args)
         {
-            base.OnStarted(e);
-            this.vertexIds = new Dictionary<TVertex, string>(this.VisitedGraph.VertexCount);
+            Debug.Assert(args != null);
+
+            base.OnStarted(args);
+
+            _verticesIds = new Dictionary<TVertex, string>(VisitedGraph.VertexCount);
         }
 
-        protected override void OnFinished(EventArgs e)
+        /// <inheritdoc />
+        protected override void OnFinished(EventArgs args)
         {
-            this.vertexIds = null;
-            base.OnFinished(e);
+            Debug.Assert(args != null);
+
+            _verticesIds = null;
+            
+            base.OnFinished(args);
         }
 
-        protected override Node AddNode(TVertex v)
+        /// <inheritdoc />
+        protected override Node AddNode(TVertex vertex)
         {
-            string id = this.GetVertexId(v);
-            this.vertexIds.Add(v, id);
-            Node node = (Node)this.GleeGraph.AddNode(id);
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            string id = GetVertexId(vertex);
+            _verticesIds.Add(vertex, id);
+            Node node = MsaglGraph.AddNode(id);
             node.Attr.Shape = Shape.Box;
-            node.LabelText = this.GetVertexLabel(id, v);
+            node.LabelText = GetVertexLabel(id, vertex);
             return node;
         }
 
-        protected virtual string GetVertexId(TVertex v)
+        /// <summary>
+        /// Gets the vertex identifier.
+        /// </summary>
+        /// <param name="vertex">Vertex to get id.</param>
+        /// <returns>Vertex id.</returns>
+        protected virtual string GetVertexId([NotNull] TVertex vertex)
         {
-            return this.vertexIds.Count.ToString();
+            return _verticesIds.Count.ToString();
         }
 
-        protected virtual string GetVertexLabel(string id, TVertex v)
+        /// <summary>
+        /// Gets the vertex label.
+        /// </summary>
+        /// <param name="id">Vertex id.</param>
+        /// <param name="vertex">Vertex to get label.</param>
+        /// <returns>Vertex label.</returns>
+        protected virtual string GetVertexLabel([NotNull] string id, [NotNull] TVertex vertex)
         {
-            return String.Format("{0}: {1}", id, v.ToString());
+            return $"{id}: {vertex}";
         }
 
-        protected override Edge AddEdge(TEdge e)
+        /// <inheritdoc />
+        protected override Edge AddEdge(TEdge edge)
         {
-            return (Microsoft.Msagl.Drawing.Edge)this.GleeGraph.AddEdge(
-                this.vertexIds[e.Source],
-                this.vertexIds[e.Target]
-                );
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
+            return MsaglGraph.AddEdge(
+                _verticesIds[edge.Source],
+                _verticesIds[edge.Target]);
         }
     }
 }

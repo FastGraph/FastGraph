@@ -2,7 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 
     <GeneratePackageOnBuild>$(Generate_QuikGraph_MSAGL)</GeneratePackageOnBuild>
 
@@ -23,6 +22,7 @@ This package is the MSAGL subset of the original QuickGraph renamed QuikGraph an
 Supported platforms:
 - .NET Standard 2.0+
 - .NET Core 2.0+
+- .NET Framework 4.6.1+
 
 Supports Source Link</Description>
 
@@ -53,25 +53,3 @@ Supports Source Link</Description>
     <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
   </ItemGroup>
 </Project>
-
-  <!-- <ItemGroup> -->
-    <!-- <Reference Include="Microsoft.GLEE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f84f738e1fc245c, processorArchitecture=MSIL"> -->
-      <!-- <SpecificVersion>False</SpecificVersion> -->
-      <!-- <HintPath>..\external\Glee\Microsoft.GLEE.dll</HintPath> -->
-    <!-- </Reference> -->
-    <!-- <Reference Include="Microsoft.GLEE.Drawing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8a3d7c21d5fa1306, processorArchitecture=MSIL"> -->
-      <!-- <SpecificVersion>False</SpecificVersion> -->
-      <!-- <HintPath>..\external\Glee\Microsoft.GLEE.Drawing.dll</HintPath> -->
-    <!-- </Reference> -->
-    <!-- <Reference Include="Microsoft.GLEE.GraphViewerGDI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fffc27ea4058b3a1, processorArchitecture=MSIL"> -->
-      <!-- <SpecificVersion>False</SpecificVersion> -->
-      <!-- <HintPath>..\external\Glee\Microsoft.GLEE.GraphViewerGDI.dll</HintPath> -->
-    <!-- </Reference> -->
-    <!-- <Reference Include="System" /> -->
-    <!-- <Reference Include="System.Core" Condition="'$(Configuration)' != 'Release20'"> -->
-      <!-- <RequiredTargetFramework>3.5</RequiredTargetFramework> -->
-    <!-- </Reference> -->
-    <!-- <Reference Include="System.Data" /> -->
-    <!-- <Reference Include="System.Windows.Forms" /> -->
-    <!-- <Reference Include="System.Xml" /> -->
-  <!-- </ItemGroup> -->

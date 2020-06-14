@@ -17,7 +17,7 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeEventArgs{TVertex, TEdge}"/> class.
         /// </summary>
-        /// <param name="edge">The edge.</param>
+        /// <param name="edge">Concerned edge.</param>
         public EdgeEventArgs([NotNull] TEdge edge)
         {
             if (edge == null)

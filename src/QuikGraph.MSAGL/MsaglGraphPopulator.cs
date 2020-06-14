@@ -1,61 +1,104 @@
+using System.Diagnostics;
+using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 using QuikGraph.Algorithms;
 
 namespace QuikGraph.MSAGL
 {
+    /// <summary>
+    /// Base class for MSAGL graph populator.
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     public abstract class MsaglGraphPopulator<TVertex, TEdge> : AlgorithmBase<IEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        protected MsaglGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MsaglGraphPopulator{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
+        protected MsaglGraphPopulator([NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
 
-        private Microsoft.Msagl.Drawing.Graph _msaglGraph;
-        public Microsoft.Msagl.Drawing.Graph MsaglGraph
-        {
-            get { return this._msaglGraph; }
-        }
+        /// <summary>
+        /// MSAGL graph corresponding to <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
+        /// </summary>
+        public Graph MsaglGraph { get; private set; }
 
         #region Events
+
+        /// <summary>
+        /// Fired when a node is added to the graph.
+        /// </summary>
         public event MsaglVertexNodeEventHandler<TVertex> NodeAdded;
-        protected virtual void OnNodeAdded(MsaglVertexEventArgs<TVertex> e)
+        
+        /// <summary>
+        /// Called when a <see cref="Node"/> is added.
+        /// </summary>
+        /// <param name="args">Event arguments.</param>
+        protected virtual void OnNodeAdded([NotNull] MsaglVertexEventArgs<TVertex> args)
         {
-            MsaglVertexNodeEventHandler<TVertex> eh = this.NodeAdded;
-            if (eh != null)
-                eh(this, e);
+            Debug.Assert(args != null);
+
+            NodeAdded?.Invoke(this, args);
         }
 
+        /// <summary>
+        /// Fired when an edge is added to the graph.
+        /// </summary>
         public event MsaglEdgeEventHandler<TVertex, TEdge> EdgeAdded;
-        protected virtual void OnEdgeAdded(MsaglEdgeEventArgs<TVertex, TEdge> e)
+
+        /// <summary>
+        /// Called when an <see cref="Edge"/> is added.
+        /// </summary>
+        /// <param name="args">Event arguments.</param>
+        protected virtual void OnEdgeAdded([NotNull] MsaglEdgeEventArgs<TVertex, TEdge> args)
         {
-            var eh = this.EdgeAdded;
-            if (eh != null)
-                eh(this, e);
+            Debug.Assert(args != null);
+
+            EdgeAdded?.Invoke(this, args);
         }
+
         #endregion
 
+        #region AlgorithmBase<TGraph>
+
+        /// <inheritdoc />
         protected override void InternalCompute()
         {
-            this._msaglGraph = new Microsoft.Msagl.Drawing.Graph("");
+            MsaglGraph = new Graph(string.Empty);
 
-            foreach (var v in this.VisitedGraph.Vertices)
+            foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                Node node = this.AddNode(v);
-                node.UserData = v;
-                this.OnNodeAdded(new MsaglVertexEventArgs<TVertex>(v, node));
+                Node node = AddNode(vertex);
+                node.UserData = vertex;
+                OnNodeAdded(new MsaglVertexEventArgs<TVertex>(vertex, node));
             }
 
-            foreach (var e in this.VisitedGraph.Edges)
+            foreach (TEdge edge in VisitedGraph.Edges)
             {
-                Microsoft.Msagl.Drawing.Edge edge = this.AddEdge(e);
-                edge.UserData = e;
-                this.OnEdgeAdded(new MsaglEdgeEventArgs<TVertex, TEdge>(e, edge));
+                Edge msaglEdge = AddEdge(edge);
+                msaglEdge.UserData = edge;
+                OnEdgeAdded(new MsaglEdgeEventArgs<TVertex, TEdge>(edge, msaglEdge));
             }
         }
 
-        protected abstract Node AddNode(TVertex v);
+        #endregion
 
-        protected abstract Microsoft.Msagl.Drawing.Edge AddEdge(TEdge e);
+        /// <summary>
+        /// Called when a <paramref name="vertex"/> should be added to the graph.
+        /// </summary>
+        /// <param name="vertex">Vertex to add.</param>
+        /// <returns>Added <see cref="Node"/>.</returns>
+        protected abstract Node AddNode([NotNull] TVertex vertex);
+
+        /// <summary>
+        /// Called when an <paramref name="edge"/> should be added to the graph.
+        /// </summary>
+        /// <param name="edge">Edge to add.</param>
+        /// <returns>Added <see cref="Edge"/>.</returns>
+        protected abstract Edge AddEdge([NotNull] TEdge edge);
     }
 }

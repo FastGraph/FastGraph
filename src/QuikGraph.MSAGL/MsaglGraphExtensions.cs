@@ -1,44 +1,80 @@
 using System;
-using System.Diagnostics.Contracts;
+using JetBrains.Annotations;
 
 namespace QuikGraph.MSAGL
 {
+    /// <summary>
+    /// Extensions related to MSAGL bridge.
+    /// </summary>
     public static class MsaglGraphExtensions
     {
+        /// <summary>
+        /// Creates an <see cref="MsaglGraphPopulator{TVertex,TEdge}"/>..
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert to MSAGL graph.</param>
+        /// <returns>Graph populator.</returns>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            this IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            IFormatProvider formatProvider,
-            string format)
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            return new MsaglToStringGraphPopulator<TVertex, TEdge>(visitedGraph, formatProvider, format);
+            return new MsaglDefaultGraphPopulator<TVertex, TEdge>(graph);
         }
 
+        /// <summary>
+        /// Creates an <see cref="MsaglGraphPopulator{TVertex,TEdge}"/>..
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert to MSAGL graph.</param>
+        /// <param name="formatProvider">Graph format provider.</param>
+        /// <param name="format">Graph format.</param>
+        /// <returns>Graph populator.</returns>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            this IEdgeListGraph<TVertex, TEdge> visitedGraph)
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] IFormatProvider formatProvider,
+            [CanBeNull] string format)
             where TEdge : IEdge<TVertex>
         {
-            return new MsaglDefaultGraphPopulator<TVertex, TEdge>(visitedGraph);
+            return new MsaglToStringGraphPopulator<TVertex, TEdge>(graph, formatProvider, format);
         }
-
-        public static MsaglGraphPopulator<TVertex, TEdge> CreateIdentifiableGleePopulator<TVertex, TEdge>(
-            this IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            VertexIdentity<TVertex> vertexIdentities)
+        
+        /// <summary>
+        /// Creates an <see cref="MsaglGraphPopulator{TVertex,TEdge}"/>..
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert to MSAGL graph.</param>
+        /// <param name="verticesIdentities">Delegate that given a vertex return its identifier.</param>
+        /// <returns>Graph populator.</returns>
+        public static MsaglGraphPopulator<TVertex, TEdge> CreateIdentifiableMsaglPopulator<TVertex, TEdge>(
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] VertexIdentity<TVertex> verticesIdentities)
             where TEdge : IEdge<TVertex>
         {
-            return new MsaglIndentifiableGraphPopulator<TVertex, TEdge>(visitedGraph, vertexIdentities);
+            return new MsaglIndentifiableGraphPopulator<TVertex, TEdge>(graph, verticesIdentities);
         }
 
+        /// <summary>
+        /// Converts <paramref name="graph"/> to an <see cref="Microsoft.Msagl.Drawing.Graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert to MSAGL graph.</param>
+        /// <param name="nodeAdded">Node added delegate.</param>
+        /// <param name="edgeAdded">Edge added delegate.</param>
+        /// <returns>MSAGL Graph.</returns>
         public static Microsoft.Msagl.Drawing.Graph ToMsaglGraph<TVertex, TEdge>(
-            this IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            MsaglVertexNodeEventHandler<TVertex> nodeAdded,
-            MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded)
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
+            [CanBeNull] MsaglVertexNodeEventHandler<TVertex> nodeAdded,
+            [CanBeNull] MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded)
             where TEdge : IEdge<TVertex>
         {
-            if (visitedGraph == null)
-                throw new ArgumentNullException("visitedGraph");
+            if (graph == null)
+                throw new ArgumentNullException(nameof(graph));
 
-            var populator = CreateMsaglPopulator(visitedGraph);
+            var populator = CreateMsaglPopulator(graph);
             try
             {
                 if (nodeAdded != null)
@@ -58,18 +94,24 @@ namespace QuikGraph.MSAGL
             }
         }
 
+        /// <summary>
+        /// Converts <paramref name="graph"/> to an <see cref="Microsoft.Msagl.Drawing.Graph"/>.
+        /// </summary>
+        /// <typeparam name="TVertex">Vertex type.</typeparam>
+        /// <typeparam name="TEdge">Edge type.</typeparam>
+        /// <param name="graph">Graph to convert to MSAGL graph.</param>
+        /// <param name="verticesIdentities">Delegate that given a vertex return its identifier.</param>
+        /// <param name="nodeAdded">Node added delegate.</param>
+        /// <param name="edgeAdded">Edge added delegate.</param>
+        /// <returns>MSAGL Graph.</returns>
         public static Microsoft.Msagl.Drawing.Graph ToIdentifiableMsaglGraph<TVertex, TEdge>(
-            this IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            VertexIdentity<TVertex> vertexIdentities,
-            MsaglVertexNodeEventHandler<TVertex> nodeAdded,
-            MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded
-            )
+            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
+            [NotNull] VertexIdentity<TVertex> verticesIdentities,
+            [CanBeNull] MsaglVertexNodeEventHandler<TVertex> nodeAdded,
+            [CanBeNull] MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded)
             where TEdge : IEdge<TVertex>
         {
-            Contract.Requires(visitedGraph != null);
-            Contract.Requires(vertexIdentities != null);
-
-            var populator = CreateIdentifiableGleePopulator(visitedGraph, vertexIdentities);
+            var populator = CreateIdentifiableMsaglPopulator(graph, verticesIdentities);
             try
             {
                 if (nodeAdded != null)

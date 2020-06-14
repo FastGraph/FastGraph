@@ -1,30 +1,51 @@
-using System.Diagnostics.Contracts;
+using System;
+using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
 {
+    /// <summary>
+    /// MSAGL graph populator (using identifiable vertices).
+    /// </summary>
+    /// <typeparam name="TVertex">Vertex type.</typeparam>
+    /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class MsaglIndentifiableGraphPopulator<TVertex, TEdge> : MsaglGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        private readonly VertexIdentity<TVertex> vertexIdentities;
-        public MsaglIndentifiableGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph, VertexIdentity<TVertex> vertexIdentities)
+        [NotNull]
+        private readonly VertexIdentity<TVertex> _verticesIdentities;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MsaglIndentifiableGraphPopulator{TVertex,TEdge}"/> class.
+        /// </summary>
+        /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
+        /// <param name="verticesIdentities">Delegate that given a vertex return its identifier.</param>
+        public MsaglIndentifiableGraphPopulator(
+            [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
+            [NotNull] VertexIdentity<TVertex> verticesIdentities)
             : base(visitedGraph)
         {
-            Contract.Requires(vertexIdentities != null);
-
-            this.vertexIdentities = vertexIdentities;
+            _verticesIdentities = verticesIdentities ?? throw new ArgumentNullException(nameof(verticesIdentities));
         }
 
-        protected override Node AddNode(TVertex v)
+        /// <inheritdoc />
+        protected override Node AddNode(TVertex vertex)
         {
-            return (Node)this.MsaglGraph.AddNode(this.vertexIdentities(v));
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+
+            return MsaglGraph.AddNode(_verticesIdentities(vertex));
         }
 
-        protected override Microsoft.Msagl.Drawing.Edge AddEdge(TEdge e)
+        /// <inheritdoc />
+        protected override Edge AddEdge(TEdge edge)
         {
-            return (Microsoft.Msagl.Drawing.Edge)this.MsaglGraph.AddEdge(
-                this.vertexIdentities(e.Source),
-                this.vertexIdentities(e.Target));
+            if (edge == null)
+                throw new ArgumentNullException(nameof(edge));
+
+            return MsaglGraph.AddEdge(
+                _verticesIdentities(edge.Source),
+                _verticesIdentities(edge.Target));
         }
     }
 }
