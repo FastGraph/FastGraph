@@ -19,22 +19,22 @@ namespace QuikGraph.MSAGL
         /// <param name="format">Graph format.</param>
         public MsaglToStringGraphPopulator(
             [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IFormatProvider formatProvider,
-            [CanBeNull] string format)
+            [CanBeNull] string format = null,
+            [CanBeNull] IFormatProvider formatProvider = null)
             : base(visitedGraph)
         {
-            FormatProvider = formatProvider ?? throw new ArgumentNullException(nameof(formatProvider));
+            FormatProvider = formatProvider;
             Format = string.IsNullOrEmpty(format) ? "{0}" : format;
         }
 
         /// <summary>
-        /// Graph format provider.
+        /// Vertex format provider.
         /// </summary>
-        [NotNull]
+        [CanBeNull]
         public IFormatProvider FormatProvider { get; }
 
         /// <summary>
-        /// Graph format.
+        /// Vertex id format.
         /// </summary>
         [NotNull]
         public string Format { get; }
@@ -42,7 +42,9 @@ namespace QuikGraph.MSAGL
         /// <inheritdoc />
         protected override string GetVertexId(TVertex vertex)
         {
-            return string.Format(FormatProvider, Format, vertex);
+            return FormatProvider is null
+                ? string.Format(Format, vertex)
+                : string.Format(FormatProvider, Format, vertex);
         }
     }
 }

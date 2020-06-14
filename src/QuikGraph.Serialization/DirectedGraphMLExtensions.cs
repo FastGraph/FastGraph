@@ -149,21 +149,21 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
-        /// <param name="vertexIdentities">Vertex identity method.</param>
-        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="vertexIdentity">Vertex identity method.</param>
+        /// <param name="edgeIdentity">Edge identity method.</param>
         /// <returns>Converted graph.</returns>
         [Pure]
         [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentities,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+            [NotNull] VertexIdentity<TVertex> vertexIdentity,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
             where TEdge : IEdge<TVertex>
         {
             return ToDirectedGraphML(
                 visitedGraph,
-                vertexIdentities,
-                edgeIdentities,
+                vertexIdentity,
+                edgeIdentity,
                 null,
                 null);
         }
@@ -174,8 +174,8 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="visitedGraph">Graph to convert to <see cref="DirectedGraph"/>.</param>
-        /// <param name="vertexIdentities">Vertex identity method.</param>
-        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="vertexIdentity">Vertex identity method.</param>
+        /// <param name="edgeIdentity">Edge identity method.</param>
         /// <param name="formatNode">Formats a vertex into a <see cref="DirectedGraphNode"/>.</param>
         /// <param name="formatEdge">Formats an edge into a <see cref="DirectedGraphLink"/>.</param>
         /// <returns>Converted graph.</returns>
@@ -183,16 +183,16 @@ namespace QuikGraph.Serialization
         [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentities,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities,
+            [NotNull] VertexIdentity<TVertex> vertexIdentity,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity,
             [CanBeNull] Action<TVertex, DirectedGraphNode> formatNode,
             [CanBeNull] Action<TEdge, DirectedGraphLink> formatEdge)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
                 visitedGraph,
-                vertexIdentities,
-                edgeIdentities);
+                vertexIdentity,
+                edgeIdentity);
 
             if (formatNode != null)
                 algorithm.FormatNode += formatNode;

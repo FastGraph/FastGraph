@@ -54,13 +54,13 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph instance to serialize.</param>
         /// <param name="filePath">Path to the file where serializing the graph.</param>
-        /// <param name="vertexIdentities">Vertex identity method.</param>
-        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="vertexIdentity">Vertex identity method.</param>
+        /// <param name="edgeIdentity">Edge identity method.</param>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] string filePath,
-            [NotNull] VertexIdentity<TVertex> vertexIdentities,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+            [NotNull] VertexIdentity<TVertex> vertexIdentity,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -70,7 +70,7 @@ namespace QuikGraph.Serialization
             var settings = new XmlWriterSettings { Indent = true, IndentChars = SerializationIndent };
             using (XmlWriter writer = XmlWriter.Create(filePath, settings))
             {
-                SerializeToGraphML(graph, writer, vertexIdentities, edgeIdentities);
+                SerializeToGraphML(graph, writer, vertexIdentity, edgeIdentity);
                 writer.Flush();
             }
         }
@@ -106,18 +106,18 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph instance to serialize.</param>
         /// <param name="writer">The XML writer.</param>
-        /// <param name="vertexIdentities">Vertex identity method.</param>
-        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="vertexIdentity">Vertex identity method.</param>
+        /// <param name="edgeIdentity">Edge identity method.</param>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] XmlWriter writer,
-            [NotNull] VertexIdentity<TVertex> vertexIdentities,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+            [NotNull] VertexIdentity<TVertex> vertexIdentity,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
             var serializer = new GraphMLSerializer<TVertex, TEdge, TGraph>();
-            serializer.Serialize(writer, graph, vertexIdentities, edgeIdentities);
+            serializer.Serialize(writer, graph, vertexIdentity, edgeIdentity);
         }
 
         #endregion

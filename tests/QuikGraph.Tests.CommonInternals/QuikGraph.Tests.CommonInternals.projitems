@@ -16,5 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)QuikGraphUnitTestsHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)QuikGraphUnitTestsSetupBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestCategories.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Testvertex.cs" />
   </ItemGroup>
 </Project>

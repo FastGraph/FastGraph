@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace QuikGraph.Data.Tests
 {
-    internal class GraphTestHelpers
+    internal static class GraphTestHelpers
     {
         public static void AssertHasRelations(
             [NotNull] IEdgeSet<DataTable, DataRelationEdge> graph,

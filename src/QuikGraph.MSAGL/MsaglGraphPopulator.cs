@@ -68,7 +68,10 @@ namespace QuikGraph.MSAGL
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            MsaglGraph = new Graph(string.Empty);
+            MsaglGraph = new Graph(string.Empty)
+            {
+                Directed = VisitedGraph.IsDirected
+            };
 
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {

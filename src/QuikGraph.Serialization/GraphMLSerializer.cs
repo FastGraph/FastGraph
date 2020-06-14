@@ -182,24 +182,24 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="writer">The XML writer.</param>
         /// <param name="graph">Graph instance to serialize.</param>
-        /// <param name="vertexIdentities">Vertex identity method.</param>
-        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="vertexIdentity">Vertex identity method.</param>
+        /// <param name="edgeIdentity">Edge identity method.</param>
         public void Serialize(
             [NotNull] XmlWriter writer,
             [NotNull] TGraph graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentities,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+            [NotNull] VertexIdentity<TVertex> vertexIdentity,
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
         {
             if (writer is null)
                 throw new ArgumentNullException(nameof(writer));
             if (graph == null)
                 throw new ArgumentNullException(nameof(graph));
-            if (vertexIdentities is null)
-                throw new ArgumentNullException(nameof(vertexIdentities));
-            if (edgeIdentities is null)
-                throw new ArgumentNullException(nameof(edgeIdentities));
+            if (vertexIdentity is null)
+                throw new ArgumentNullException(nameof(vertexIdentity));
+            if (edgeIdentity is null)
+                throw new ArgumentNullException(nameof(edgeIdentity));
 
-            var worker = new WriterWorker(this, writer, graph, vertexIdentities, edgeIdentities);
+            var worker = new WriterWorker(this, writer, graph, vertexIdentity, edgeIdentity);
             worker.Serialize();
         }
 
@@ -211,28 +211,28 @@ namespace QuikGraph.Serialization
 
             [NotNull] private readonly TGraph _graph;
 
-            [NotNull] private readonly VertexIdentity<TVertex> _vertexIdentities;
+            [NotNull] private readonly VertexIdentity<TVertex> _vertexIdentity;
 
-            [NotNull] private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentities;
+            [NotNull] private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
 
             public WriterWorker(
                 [NotNull] GraphMLSerializer<TVertex, TEdge, TGraph> serializer,
                 [NotNull] XmlWriter writer,
                 [NotNull] TGraph graph,
-                [NotNull] VertexIdentity<TVertex> vertexIdentities,
-                [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+                [NotNull] VertexIdentity<TVertex> vertexIdentity,
+                [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
             {
                 Debug.Assert(serializer != null);
                 Debug.Assert(writer != null);
                 Debug.Assert(graph != null);
-                Debug.Assert(vertexIdentities != null);
-                Debug.Assert(edgeIdentities != null);
+                Debug.Assert(vertexIdentity != null);
+                Debug.Assert(edgeIdentity != null);
 
                 _serializer = serializer;
                 _writer = writer;
                 _graph = graph;
-                _vertexIdentities = vertexIdentities;
-                _edgeIdentities = edgeIdentities;
+                _vertexIdentity = vertexIdentity;
+                _edgeIdentity = edgeIdentity;
             }
 
             public void Serialize()
@@ -420,7 +420,7 @@ namespace QuikGraph.Serialization
                 foreach (TVertex vertex in _graph.Vertices)
                 {
                     _writer.WriteStartElement(NodeTag, GraphMLXmlResolver.GraphMLNamespace);
-                    _writer.WriteAttributeString(IdAttribute, _vertexIdentities(vertex));
+                    _writer.WriteAttributeString(IdAttribute, _vertexIdentity(vertex));
                     WriteDelegateCompiler.VertexAttributesWriter(_writer, vertex);
                     _writer.WriteEndElement();
                 }
@@ -431,9 +431,9 @@ namespace QuikGraph.Serialization
                 foreach (TEdge edge in _graph.Edges)
                 {
                     _writer.WriteStartElement(EdgeTag, GraphMLXmlResolver.GraphMLNamespace);
-                    _writer.WriteAttributeString(IdAttribute, _edgeIdentities(edge));
-                    _writer.WriteAttributeString(SourceAttribute, _vertexIdentities(edge.Source));
-                    _writer.WriteAttributeString(TargetAttribute, _vertexIdentities(edge.Target));
+                    _writer.WriteAttributeString(IdAttribute, _edgeIdentity(edge));
+                    _writer.WriteAttributeString(SourceAttribute, _vertexIdentity(edge.Source));
+                    _writer.WriteAttributeString(TargetAttribute, _vertexIdentity(edge.Target));
                     WriteDelegateCompiler.EdgeAttributesWriter(_writer, edge);
                     _writer.WriteEndElement();
                 }

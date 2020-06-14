@@ -17,25 +17,25 @@ namespace QuikGraph.Serialization
         where TEdge : IEdge<TVertex>
     {
         [NotNull]
-        private readonly VertexIdentity<TVertex> _vertexIdentities;
+        private readonly VertexIdentity<TVertex> _vertexIdentity;
 
         [NotNull]
-        private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentities;
+        private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectedGraphMLAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
-        /// <param name="vertexIdentities">Vertex identity method.</param>
+        /// <param name="vertexIdentity">Vertex identity method.</param>
         /// <param name="edgeIdentities">Edge identity method.</param>
         public DirectedGraphMLAlgorithm(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentities,
+            [NotNull] VertexIdentity<TVertex> vertexIdentity,
             [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
             : base(visitedGraph)
         {
-            _vertexIdentities = vertexIdentities ?? throw new ArgumentNullException(nameof(vertexIdentities));
-            _edgeIdentities = edgeIdentities ?? throw new ArgumentNullException(nameof(edgeIdentities));
+            _vertexIdentity = vertexIdentity ?? throw new ArgumentNullException(nameof(vertexIdentity));
+            _edgeIdentity = edgeIdentities ?? throw new ArgumentNullException(nameof(edgeIdentities));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace QuikGraph.Serialization
             {
                 ThrowIfCancellationRequested();
 
-                var node = new DirectedGraphNode { Id = _vertexIdentities(vertex) };
+                var node = new DirectedGraphNode { Id = _vertexIdentity(vertex) };
                 OnFormatNode(vertex, node);
                 nodes.Add(node);
             }
@@ -69,9 +69,9 @@ namespace QuikGraph.Serialization
 
                 var link = new DirectedGraphLink
                 {
-                    Label = _edgeIdentities(edge),
-                    Source = _vertexIdentities(edge.Source),
-                    Target = _vertexIdentities(edge.Target)
+                    Label = _edgeIdentity(edge),
+                    Source = _vertexIdentity(edge.Source),
+                    Target = _vertexIdentity(edge.Target)
                 };
                 OnFormatEdge(edge, link);
                 links.Add(link);

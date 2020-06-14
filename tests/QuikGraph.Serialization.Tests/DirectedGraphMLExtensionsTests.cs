@@ -279,7 +279,7 @@ namespace QuikGraph.Serialization.Tests
         }
 
         [Test]
-        public void ToDirectedGraphML_WithIdentities()
+        public void ToDirectedGraphML_WithIdentity()
         {
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
             {
