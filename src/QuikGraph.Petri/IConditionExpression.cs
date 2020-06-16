@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace  QuickGraph.Petri
+namespace  QuikGraph.Petri
 {
 	public interface IConditionExpression<Token>
 	{

@@ -1,6 +1,6 @@
 using System;
 
-namespace  QuickGraph.Petri
+namespace  QuikGraph.Petri
 {
 	/// <summary>
 	/// A node of a net, taken from the transition kind.

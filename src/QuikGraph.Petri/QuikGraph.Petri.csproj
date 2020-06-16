@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks> <!-- TODO -->
 
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
+    <GeneratePackageOnBuild>$(Generate_QuikGraph_Petri)</GeneratePackageOnBuild>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 
     <Title>QuikGraph.Petri</Title>
-    <RootNamespace>QuickGraph.Petri</RootNamespace>
+    <RootNamespace>QuikGraph.Petri</RootNamespace>
     <AssemblyName>QuikGraph.Petri</AssemblyName>
 
     <!-- Overridden by CI -->
@@ -15,44 +15,28 @@
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- Include PDB files in NuGet for Source Link because symbolsource.org does not support portable PDBs -->
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <Copyright>Copyright © 2020</Copyright>
+    <Description>.NET library that provides a bridge from QuikGraph graphs to MSAGL library.
 
-    <Copyright>Copyright © 2019</Copyright>
-    <Description>Petri for QuikGraph library.</Description>
-    <Owners>Alexandre Rabérin</Owners>
-    <Authors>Alexandre Rabérin</Authors>
-    <Company>Alexandre Rabérin</Company>
+This package is the Petri subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
+
+Supported platforms:
+//- .NET Standard 2.0+
+//- .NET Core 2.0+
+- .NET Framework 4.5+
+
+Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/KeRNeLith/QuickGraph</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuickGraph/master/docs/files/img/logo.png</PackageIconUrl>
-    <RepositoryType>GitHub</RepositoryType>
-    <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
-  </PropertyGroup>
+    <PackageId>QuikGraph.Petri</PackageId>
+    <PackageReleaseNotes>➟ Release 2.2.0
+Rework the original QuickGraph.Petri module into QuikGraph.Petri. //This make possible to use the bridge from QuikGraph to MSAGL.
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
-  </ItemGroup>
-
-  <!-- Optimization configurations -->
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+Misc:
+- Clean the library code.
+- Fully document library.
+- Use JetBrains annotations all over the library as much as possible.</PackageReleaseNotes>
+    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET MSAGL</PackageTags>
   </PropertyGroup>
 
   <!-- Targets defines -->
@@ -61,7 +45,11 @@
   </PropertyGroup>
 
   <!-- Dependencies -->
-  <ItemGroup>
-    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
+  <!-- QuikGraph reference -->
+  <ItemGroup Condition="$(UseQuikGraphCoreNuget)">
+    <PackageReference Include="QuikGraph" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(UseQuikGraphCoreNuget)">
+    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
   </ItemGroup>
 </Project>

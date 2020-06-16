@@ -1,6 +1,6 @@
 using System;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
     [Serializable]
     internal sealed class PetriGraph<Token> :

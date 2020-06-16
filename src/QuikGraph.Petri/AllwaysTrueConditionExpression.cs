@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
     [Serializable]
     public sealed class AllwaysTrueConditionExpression<Token> : IConditionExpression<Token>

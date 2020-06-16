@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
     [Serializable]
     internal sealed class Place<Token> : IPlace<Token>

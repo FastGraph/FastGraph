@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
     [Serializable]
     public sealed class PetriNet<Token> 

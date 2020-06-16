@@ -1,6 +1,6 @@
 using System;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
 	/// <summary>
 	/// A vertex (node) of a Petri Graph.

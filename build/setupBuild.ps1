@@ -14,6 +14,7 @@ param(
         'graphviz' { return "Generate_QuikGraph_Graphviz"; }
         'data' { return "Generate_QuikGraph_Data"; }
         'msagl' { return "Generate_QuikGraph_MSAGL"; }
+        'petri' { return "Generate_QuikGraph_Petri"; }
         default { throw "Invalid tag slug." }
     }
 }

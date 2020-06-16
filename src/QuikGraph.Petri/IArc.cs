@@ -1,6 +1,6 @@
 using System;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
 	/// <summary>
 	/// A directed edge of a net which may connect a <see cref="IPlace&lt;Token&gt;"/>

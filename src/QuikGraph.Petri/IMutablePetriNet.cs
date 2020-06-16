@@ -1,6 +1,6 @@
 using System;
 
-namespace QuickGraph.Petri
+namespace QuikGraph.Petri
 {
 	public interface IMutablePetriNet<Token> : IPetriNet<Token>
 	{
