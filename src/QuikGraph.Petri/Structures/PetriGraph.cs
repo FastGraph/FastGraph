@@ -1,14 +1,20 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 
 namespace QuikGraph.Petri
 {
+#if SUPPORTS_SERIALIZATION
     [Serializable]
-    internal sealed class PetriGraph<Token> :
-        BidirectionalGraph<IPetriVertex, IArc<Token>>,
-        IPetriGraph<Token>
+#endif
+    internal sealed class PetriGraph<TToken> : BidirectionalGraph<IPetriVertex, IArc<TToken>>, IPetriGraph<TToken>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PetriGraph{TToken}"/> class.
+        /// </summary>
         public PetriGraph()
-            :base(true)
-        { }
+            : base(true)
+        {
+        }
     }
 }

@@ -1,7 +1,10 @@
-﻿using System;
-
-namespace QuikGraph.Petri
+﻿namespace QuikGraph.Petri
 {
-    public interface IPetriGraph<Token> : IMutableBidirectionalGraph<IPetriVertex, IArc<Token>>
-    {}
+    /// <summary>
+    /// Represents a Petri Graph (a mutable bidirectional directed graph).
+    /// </summary>
+    /// <typeparam name="TToken">Token type.</typeparam>
+    public interface IPetriGraph<TToken> : IMutableBidirectionalGraph<IPetriVertex, IArc<TToken>>
+    {
+    }
 }

@@ -3,11 +3,16 @@ using System.Collections.Generic;
 
 namespace QuikGraph.Petri
 {
-	public sealed class IdentityExpression<Token>  :IExpression<Token>
-	{
-		public IList<Token> Eval(IList<Token> marking)
-		{
-			return marking;
-		}
-	}
+    /// <summary>
+    /// Identity evaluation expression.
+    /// </summary>
+    /// <typeparam name="TToken">Token type.</typeparam>
+    public sealed class IdentityExpression<TToken> : IExpression<TToken>
+    {
+        /// <inheritdoc />
+        public IList<TToken> Evaluate(IList<TToken> markings)
+        {
+            return markings ?? throw new ArgumentNullException(nameof(markings));
+        }
+    }
 }

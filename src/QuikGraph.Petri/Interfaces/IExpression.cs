@@ -1,10 +1,18 @@
-using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
-namespace  QuikGraph.Petri
+namespace QuikGraph.Petri
 {
-	public interface IExpression<Token>
-	{
-		IList<Token> Eval(IList<Token> marking);
-	}
+    /// <summary>
+    /// Represents an expression evaluating tokens (markings).
+    /// </summary>
+    /// <typeparam name="TToken">Token type.</typeparam>
+    public interface IExpression<TToken>
+    {
+        /// <summary>
+        /// Evaluates <paramref name="markings"/>.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        IList<TToken> Evaluate([NotNull, ItemNotNull] IList<TToken> markings);
+    }
 }

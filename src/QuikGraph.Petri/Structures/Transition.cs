@@ -1,36 +1,39 @@
 using System;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
 {
+#if SUPPORTS_SERIALIZATION
     [Serializable]
-    internal sealed class Transition<Token> : ITransition<Token>
+#endif
+    internal sealed class Transition<TToken> : ITransition<TToken>
     {
-		private string name;
-		private IConditionExpression<Token> condition = new AllwaysTrueConditionExpression<Token>();
-
-		public Transition(string name)
-		{this.name=name;}
-
-		public IConditionExpression<Token> Condition
-		{
-			get
-			{
-				return this.condition;
-			}
-			set
-			{
-				this.condition=value;
-			}
-		}
-
-		public string Name
-		{
-            get{return name;}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Transition{Token}"/> class.
+        /// </summary>
+        /// <param name="name">Transition name.</param>
+        public Transition([NotNull] string name)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
-		public override string ToString()
-		{
-			return String.Format("T({0})",this.name);
-		}
-	}
+        /// <inheritdoc />
+        public string Name { get; }
+
+        [NotNull]
+        private IConditionExpression<TToken> _condition = new AllwaysTrueConditionExpression<TToken>();
+
+        /// <inheritdoc />
+        public IConditionExpression<TToken> Condition
+        {
+            get => _condition;
+            set => _condition = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"T({Name})";
+        }
+    }
 }

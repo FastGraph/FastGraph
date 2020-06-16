@@ -1,109 +1,121 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
 {
+    /// <summary>
+    /// Petri Net simulator.
+    /// </summary>
+    /// <typeparam name="TToken">Token type.</typeparam>
+#if SUPPORTS_SERIALIZATION
     [Serializable]
-    public sealed class PetriNetSimulator<Token>
+#endif
+    public sealed class PetriNetSimulator<TToken>
     {
-		private IPetriNet<Token> net;
-        private Dictionary<ITransition<Token>, TransitionBuffer> transitionBuffers = new Dictionary<ITransition<Token>, TransitionBuffer>();
+        [NotNull]
+        private Dictionary<ITransition<TToken>, TransitionBuffer> _transitionBuffers = new Dictionary<ITransition<TToken>, TransitionBuffer>();
 
-        public PetriNetSimulator(IPetriNet<Token> net)
-		{
-            if (net == null)
-                throw new ArgumentNullException("net");
-            this.net = net;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PetriNetSimulator{TToken}"/> class.
+        /// </summary>
+        /// <param name="net">Petri net to simulate.</param>
+        public PetriNetSimulator([NotNull] IPetriNet<TToken> net)
+        {
+            Net = net ?? throw new ArgumentNullException(nameof(net));
+        }
 
-		public IPetriNet<Token> Net
-		{
-			get
-			{
-				return this.net;
-			}
-		}
+        /// <summary>
+        /// Petri Net.
+        /// </summary>
+        [NotNull]
+        public IPetriNet<TToken> Net { get; }
 
-		public void Initialize()
-		{
-			this.transitionBuffers.Clear();
-			foreach(ITransition<Token> tr in this.Net.Transitions)
-			{
-				this.transitionBuffers.Add(tr, new TransitionBuffer());
-			}
-		}
+        /// <summary>
+        /// Initializes simulator.
+        /// </summary>
+        public void Initialize()
+        {
+            _transitionBuffers.Clear();
+            foreach (ITransition<TToken> transition in Net.Transitions)
+            {
+                _transitionBuffers.Add(transition, new TransitionBuffer());
+            }
+        }
 
-		public void SimulateStep()
-		{
-			// first step, iterate over arc and gather tokens in transitions
-			foreach(IArc<Token> arc in this.Net.Arcs)
-			{
-				if(!arc.IsInputArc)
-					continue;
+        /// <summary>
+        /// Simulates a step.
+        /// </summary>
+        public void SimulateStep()
+        {
+            // First step, iterate over arcs and gather tokens in transitions
+            foreach (IArc<TToken> arc in Net.Arcs)
+            {
+                if (!arc.IsInputArc)
+                    continue;
 
-				IList<Token> tokens = this.transitionBuffers[arc.Transition].Tokens;
-				// get annotated tokens
-                IList<Token> annotatedTokens = arc.Annotation.Eval(arc.Place.Marking);
-                //add annontated tokens
-                foreach(Token annotatedToken in annotatedTokens)
+                IList<TToken> tokens = _transitionBuffers[arc.Transition].Tokens;
+                // Get annotated tokens
+                IList<TToken> annotatedTokens = arc.Annotation.Evaluate(arc.Place.Marking);
+                // Add annotated tokens
+                foreach (TToken annotatedToken in annotatedTokens)
+                {
                     tokens.Add(annotatedToken);
+                }
             }
 
-			// second step, see which transition was enabled
-			foreach(ITransition<Token> tr in this.Net.Transitions)
-			{
-				// get buffered tokens
-                IList<Token> tokens = this.transitionBuffers[tr].Tokens;
-                // check if enabled, store value
-                this.transitionBuffers[tr].Enabled = tr.Condition.IsEnabled(tokens);
+            // Second step, see which transition was enabled
+            foreach (ITransition<TToken> transition in Net.Transitions)
+            {
+                // Get buffered tokens
+                IList<TToken> tokens = _transitionBuffers[transition].Tokens;
+                // Check if enabled, store value
+                _transitionBuffers[transition].Enabled = transition.Condition.IsEnabled(tokens);
             }
 
-			// third step, iterate over the arcs
-			foreach(IArc<Token> arc in this.Net.Arcs)
-			{
-				if (!this.transitionBuffers[arc.Transition].Enabled)
-					continue;
+            // Third step, iterate over the arcs
+            foreach (IArc<TToken> arc in Net.Arcs)
+            {
+                if (!_transitionBuffers[arc.Transition].Enabled)
+                    continue;
 
-				if(arc.IsInputArc)
-				{
-					// get annotated tokens
-                    IList<Token> annotatedTokens = arc.Annotation.Eval(arc.Place.Marking);
-                    // remove annotated comments from source place
-                    foreach(Token annotatedToken in annotatedTokens)
+                if (arc.IsInputArc)
+                {
+                    // Get annotated tokens
+                    IList<TToken> annotatedTokens = arc.Annotation.Evaluate(arc.Place.Marking);
+                    // Remove annotated comments from source place
+                    foreach (TToken annotatedToken in annotatedTokens)
+                    {
                         arc.Place.Marking.Remove(annotatedToken);
+                    }
                 }
-				else
-				{
-                    IList<Token> tokens = this.transitionBuffers[arc.Transition].Tokens;
-                    // get annotated tokens
-                    IList<Token> annotatedTokens = arc.Annotation.Eval(tokens);
+                else
+                {
+                    IList<TToken> tokens = _transitionBuffers[arc.Transition].Tokens;
+                    // Get annotated tokens
+                    IList<TToken> annotatedTokens = arc.Annotation.Evaluate(tokens);
                     // IList<Token> annotated comments to target place
-                    foreach(Token annotatedToken in annotatedTokens)
+                    foreach (TToken annotatedToken in annotatedTokens)
+                    {
                         arc.Place.Marking.Add(annotatedToken);
+                    }
                 }
-			}
-			// step four, clear buffers
-			foreach(ITransition<Token> tr in this.Net.Transitions)
-			{
-				this.transitionBuffers[tr].Tokens.Clear();
-                this.transitionBuffers[tr].Enabled = false;
             }
-		}
+
+            // Step four, clear buffers
+            foreach (ITransition<TToken> transition in Net.Transitions)
+            {
+                _transitionBuffers[transition].Tokens.Clear();
+                _transitionBuffers[transition].Enabled = false;
+            }
+        }
 
         private sealed class TransitionBuffer
         {
-            private IList<Token> tokens = new List<Token>();
-            private bool enabled = true;
+            [NotNull, ItemNotNull]
+            public IList<TToken> Tokens { get; } = new List<TToken>();
 
-            public IList<Token> Tokens
-            {
-                get { return this.tokens;}
-            }
-            public bool Enabled
-            {
-                get { return this.enabled; }
-                set { this.enabled = value; }
-            }
+            public bool Enabled { get; set; } = true;
         }
     }
 }

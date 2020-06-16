@@ -1,49 +1,48 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
 {
+#if SUPPORTS_SERIALIZATION
     [Serializable]
-    internal sealed class Place<Token> : IPlace<Token>
+#endif
+    internal sealed class Place<TToken> : IPlace<TToken>
     {
-		private string name;
-		private IList<Token> marking = new List<Token>();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Place{TToken}"/> class.
+        /// </summary>
+        /// <param name="name">Place name.</param>
+        public Place([NotNull] string name)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+        }
 
-		public Place(string name)
-		{
-			this.name=name;
-		}
+        /// <inheritdoc />
+        public string Name { get; }
 
-		public IList<Token> Marking
-		{
-			get
-			{
-				return this.marking;
-			}
-		}
+        /// <inheritdoc />
+        public IList<TToken> Marking { get; } = new List<TToken>();
 
-		public String Name
-		{
-			get
-			{
-				return this.name;
-			}
-		}
+        /// <inheritdoc />
+        public string ToStringWithMarking()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine(ToString());
 
-		public string ToStringWithMarking()
-		{
-			StringWriter sw = new StringWriter();
-			sw.WriteLine(this.ToString());
-			foreach(object token in this.marking)
-				sw.WriteLine("\t{0}",token.GetType().Name);
+            foreach (TToken token in Marking)
+            {
+                builder.AppendLine($"\t{token.GetType().Name}");
+            }
 
-			return sw.ToString();
+            return builder.ToString();
+        }
 
-		}
-		public override string ToString()
-		{
-			return String.Format("P({0}|{1})",this.name,this.marking.Count);
-		}
-	}
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"P({Name}|{Marking.Count})";
+        }
+    }
 }

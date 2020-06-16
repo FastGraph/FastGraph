@@ -1,127 +1,159 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Diagnostics;
+using System.Text;
+using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
 {
+    /// <summary>
+    /// High Level Petri Graph.
+    /// </summary>
+    /// <typeparam name="TToken">Token type.</typeparam>
+#if SUPPORTS_SERIALIZATION
     [Serializable]
-    public sealed class PetriNet<Token> 
-        : IMutablePetriNet<Token>
+#endif
+    public sealed class PetriNet<TToken> : IMutablePetriNet<TToken>
+#if SUPPORTS_CLONEABLE
         , ICloneable
+#endif
     {
-        private readonly List<IPlace<Token>> places = new List<IPlace<Token>>();
-        private readonly List<ITransition<Token>> transitions = new List<ITransition<Token>>();
-        private readonly List<IArc<Token>> arcs = new List<IArc<Token>>();
-        private readonly PetriGraph<Token> graph = new PetriGraph<Token>();      
-
-		public PetriNet()
-		{}
-
-        private PetriNet(PetriNet<Token> other)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PetriNet{Token}"/> class.
+        /// </summary>
+        public PetriNet()
         {
-            this.places.AddRange(other.places);
-            this.transitions.AddRange(other.transitions);
-            this.arcs.AddRange(other.arcs);
-            this.graph = new PetriGraph<Token>();
-            this.graph.AddVerticesAndEdgeRange(other.graph.Edges);
         }
 
-		public IPetriGraph<Token> Graph
-		{
-			get
-			{
-				return this.graph;
-			}
-		}
-
-		public IPlace<Token> AddPlace(string name)
-		{
-			IPlace<Token> p = new Place<Token>(name);
-			this.places.Add(p);
-			this.graph.AddVertex(p);
-			return p;
-		}
-		public ITransition<Token> AddTransition(string name)
-		{
-			ITransition<Token> tr = new Transition<Token>(name);
-			this.transitions.Add(tr);
-			this.graph.AddVertex(tr);
-			return tr;
-		}
-		public IArc<Token> AddArc(IPlace<Token> place, ITransition<Token> transition)
-		{
-            IArc<Token> arc = new Arc<Token>(place, transition);
-            this.arcs.Add(arc);
-			this.graph.AddEdge(arc);
-			return arc;
-		}
-		public IArc<Token> AddArc(ITransition<Token> transition,IPlace<Token> place)
-		{
-			IArc<Token> arc=new Arc<Token>(transition,place);
-			this.arcs.Add(arc);
-			this.graph.AddEdge(arc);
-			return arc;
-		}
-
-		public IList<IPlace<Token>> Places
-		{
-			get
-			{
-				return this.places;
-			}
-		}
-
-		public IList<ITransition<Token>> Transitions
-		{
-			get
-			{
-				return this.transitions;
-			}
-		}
-
-		public IList<IArc<Token>> Arcs
-		{
-			get
-			{
-				return this.arcs;
-			}
-		}
-
-		public override string ToString()
-		{
-			StringWriter sw = new StringWriter();
-			sw.WriteLine("-----------------------------------------------");
-			sw.WriteLine("Places ({0})",this.places.Count);
-            foreach (IPlace<Token> place in this.places)
-            {
-				sw.WriteLine("\t{0}",place.ToStringWithMarking());
-			}
-
-			sw.WriteLine("Transitions ({0})",this.transitions.Count);
-            foreach (ITransition<Token> transition in this.transitions)
-            {
-				sw.WriteLine("\t{0}",transition);
-			}
-
-			sw.WriteLine("Arcs");
-            foreach (IArc<Token> arc in this.arcs)
-            {
-				sw.WriteLine("\t{0}",arc);
-			}
-			return sw.ToString();
-		}
-
-
-        public PetriNet<Token> Clone()
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        private PetriNet([NotNull] PetriNet<TToken> other)
         {
-            return new PetriNet<Token>(this);
+            Debug.Assert(other != null);
+
+            _places.AddRange(other._places);
+            _transitions.AddRange(other._transitions);
+            _arcs.AddRange(other._arcs);
+            _graph = new PetriGraph<TToken>();
+            _graph.AddVerticesAndEdgeRange(other._graph.Edges);
         }
 
+        #region IPetriNet<TToken>
+
+        [NotNull, ItemNotNull]
+        private readonly List<IPlace<TToken>> _places = new List<IPlace<TToken>>();
+
+        /// <inheritdoc />
+        public IList<IPlace<TToken>> Places { get; } = new List<IPlace<TToken>>();
+
+        [NotNull, ItemNotNull]
+        private readonly List<ITransition<TToken>> _transitions = new List<ITransition<TToken>>();
+
+        /// <inheritdoc />
+        public IList<ITransition<TToken>> Transitions => _transitions;
+
+        [NotNull, ItemNotNull]
+        private readonly List<IArc<TToken>> _arcs = new List<IArc<TToken>>();
+
+        /// <inheritdoc />
+        public IList<IArc<TToken>> Arcs => _arcs;
+
+        [NotNull]
+        private readonly PetriGraph<TToken> _graph = new PetriGraph<TToken>();
+
+        /// <inheritdoc />
+        public IPetriGraph<TToken> Graph => _graph;
+
+        #endregion
+
+        #region IMutablePetriNet<TToken>
+
+        /// <inheritdoc />
+        public IPlace<TToken> AddPlace(string name)
+        {
+            IPlace<TToken> place = new Place<TToken>(name);
+            _places.Add(place);
+            _graph.AddVertex(place);
+            return place;
+        }
+
+        /// <inheritdoc />
+        public ITransition<TToken> AddTransition(string name)
+        {
+            ITransition<TToken> transition = new Transition<TToken>(name);
+            _transitions.Add(transition);
+            _graph.AddVertex(transition);
+            return transition;
+        }
+
+        /// <inheritdoc />
+        public IArc<TToken> AddArc(IPlace<TToken> place, ITransition<TToken> transition)
+        {
+            IArc<TToken> arc = new Arc<TToken>(place, transition);
+            _arcs.Add(arc);
+            _graph.AddEdge(arc);
+            return arc;
+        }
+
+        /// <inheritdoc />
+        public IArc<TToken> AddArc(ITransition<TToken> transition, IPlace<TToken> place)
+        {
+            IArc<TToken> arc = new Arc<TToken>(transition, place);
+            _arcs.Add(arc);
+            _graph.AddEdge(arc);
+            return arc;
+        }
+
+        #endregion
+
+        #region ICloneable
+
+        /// <summary>
+        /// Clones this <see cref="PetriNet{TToken}"/>.
+        /// </summary>
+        [Pure]
+        [NotNull]
+        public PetriNet<TToken> Clone()
+        {
+            return new PetriNet<TToken>(this);
+        }
+
+#if SUPPORTS_CLONEABLE
+        /// <inheritdoc />
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
+#endif
 
-	}
+        #endregion
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("-----------------------------------------------");
+            
+            builder.AppendLine($"Places ({_places.Count})");
+            foreach (IPlace<TToken> place in _places)
+            {
+                builder.AppendLine($"\t{place.ToStringWithMarking()}");
+            }
+
+            builder.AppendLine($"Transitions ({_transitions.Count})");
+            foreach (ITransition<TToken> transition in _transitions)
+            {
+                builder.AppendLine($"\t{transition}");
+            }
+
+            builder.AppendLine("Arcs");
+            foreach (IArc<TToken> arc in _arcs)
+            {
+                builder.AppendLine($"\t{arc}");
+            }
+
+            return builder.ToString();
+        }
+    }
 }

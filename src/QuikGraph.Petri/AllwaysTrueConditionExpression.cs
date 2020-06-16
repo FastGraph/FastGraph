@@ -1,14 +1,23 @@
+#if SUPPORTS_SERIALIZATION
 using System;
+#endif
 using System.Collections.Generic;
 
 namespace QuikGraph.Petri
 {
+    /// <summary>
+    /// Represents an always enabled condition.
+    /// </summary>
+    /// <typeparam name="TToken">Token type.</typeparam>
+#if SUPPORTS_SERIALIZATION
     [Serializable]
-    public sealed class AllwaysTrueConditionExpression<Token> : IConditionExpression<Token>
+#endif
+    public sealed class AllwaysTrueConditionExpression<TToken> : IConditionExpression<TToken>
     {
-		public bool IsEnabled(IList<Token> tokens)
-		{
-			return true;
-		}
-	}
+        /// <inheritdoc />
+        public bool IsEnabled(IList<TToken> tokens)
+        {
+            return true;
+        }
+    }
 }
