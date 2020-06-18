@@ -1,5 +1,7 @@
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Xml;
 using JetBrains.Annotations;
@@ -51,13 +53,40 @@ namespace QuikGraph.Serialization
         /// <inheritdoc />
         public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
         {
-            if (absoluteUri.AbsoluteUri == "http://www.graphdrawing.org/dtds/graphml.dtd")
-                return typeof(GraphMLExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml.dtd");
-            if (absoluteUri.AbsoluteUri == "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd")
-                return typeof(GraphMLExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml.xsd");
-            if (absoluteUri.AbsoluteUri == "http://graphml.graphdrawing.org/xmlns/1.0/graphml-structure.xsd")
-                return typeof(GraphExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml-structure.xsd");
+            if (absoluteUri.AbsoluteUri.EndsWith("graphml.dtd"))
+                return GetResource("graphml.dtd");
+
+            if (absoluteUri.AbsoluteUri.EndsWith("graphml.xsd"))
+                return GetResource("graphml.xsd");
+            
+            if (absoluteUri.AbsoluteUri.EndsWith("graphml-structure.xsd"))
+                return GetResource("graphml-structure.xsd");
+            
+            if (absoluteUri.AbsoluteUri.EndsWith("graphml-attributes.xsd"))
+                return GetResource("graphml-attributes.xsd");
+            
+            if (absoluteUri.AbsoluteUri.EndsWith("graphml-parseinfo.xsd"))
+                return GetResource("graphml-parseinfo.xsd");
+
+            if (absoluteUri.AbsoluteUri.EndsWith("xlink.xsd"))
+                return GetResource("xlink.xsd");
+            
             return _baseResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
+
+            #region Local function
+
+            Stream GetResource(string resourceName)
+            {
+                Stream resourceStream = typeof(GraphMLExtensions).Assembly
+                    .GetManifestResourceStream(
+                        typeof(GraphMLExtensions),
+                        resourceName);
+                
+                Debug.Assert(resourceStream != null);
+                return resourceStream;
+            }
+
+            #endregion
         }
     }
 }

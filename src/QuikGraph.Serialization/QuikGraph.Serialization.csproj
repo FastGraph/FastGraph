@@ -34,10 +34,13 @@ New:
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='netstandard1.3'">
-    <EmbeddedResource Include="graphml-structure.xsd" />
+  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3'">
     <EmbeddedResource Include="graphml.dtd" />
     <EmbeddedResource Include="graphml.xsd" />
+    <EmbeddedResource Include="graphml-structure.xsd" />
+    <EmbeddedResource Include="graphml-attributes.xsd" />
+    <EmbeddedResource Include="graphml-parseinfo.xsd" />
+    <EmbeddedResource Include="xlink.xsd" />
   </ItemGroup>
   
   <!-- Targets defines -->

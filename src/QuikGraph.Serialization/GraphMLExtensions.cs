@@ -237,15 +237,20 @@ namespace QuikGraph.Serialization
 
             var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
 
+            var resolver = new GraphMLXmlResolver();
             var settings = new XmlReaderSettings
             {
                 ValidationType = ValidationType.Schema,
-                XmlResolver = new GraphMLXmlResolver(),
+                XmlResolver = resolver,
                 DtdProcessing = DtdProcessing.Ignore
             };
 
+            settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
+            settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
+            settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+
             // Add GraphML schema
-            AddGraphMLSchema(settings);
+            AddGraphMLSchema(settings, resolver);
 
             try
             {
@@ -261,12 +266,13 @@ namespace QuikGraph.Serialization
             }
         }
 
-        private static void AddGraphMLSchema([NotNull] XmlReaderSettings settings)
+        private static void AddGraphMLSchema([NotNull] XmlReaderSettings settings, [NotNull] XmlResolver resolver)
         {
             using (Stream xsdStream = typeof(GraphMLExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml.xsd"))
             {
                 Debug.Assert(xsdStream != null, "GraphML schema resource not found.");
 
+                settings.Schemas.XmlResolver = resolver;
                 using (XmlReader xsdReader = XmlReader.Create(xsdStream, settings))
                     settings.Schemas.Add(GraphMLXmlResolver.GraphMLNamespace, xsdReader);
             }

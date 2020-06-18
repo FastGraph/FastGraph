@@ -14,20 +14,43 @@
     <xs:documentation 
         source="http://graphml.graphdrawing.org/"
         xml:lang="en">
-     This document defines the GraphML language including GraphML attributes and GraphML parseinfo.
+     This document defines the parseinfo extension of the GraphML language.
+     It redefines the attribut list of &lt;graph> by adding 7 new 
+     attributes:
+     - parse.nodeids (fixed to 'canonical' meaning that the id attribute
+                      of &lt;node> follows the pattern 'n[number]),
+     - parse.edgeids (fixed to 'canonical' meaning that the id attribute
+                      of &lt;edge> follows the pattern 'e[number]),
+     - parse.order (required; one of the values 'nodesfirst', 
+                    'adjacencylist' or 'free'),
+     - parse.nodes (required; number of nodes in this graph), 
+     - parse.edges (required; number of edges in this graph), 
+     - parse.maxindegree (optional; maximal indegree of a node in this graph),
+     - parse.maxoutdegree (optional; maximal outdegree of a node in this graph).
+     and it redefines the attribute list of node by adding 2 new attributes:
+     - parse.indegree (optional; indegree of this node),
+     - parse.outdegree (optional; outdegree of this node).
+
     </xs:documentation>
   </xs:annotation>
 
 
 <xs:redefine schemaLocation="http://graphml.graphdrawing.org/xmlns/1.1/graphml-structure.xsd">
 
-  <!-- redefinition as in graphml-attributes.xsd -->
-  <xs:attributeGroup name="key.extra.attrib">
-    <xs:attributeGroup ref="key.extra.attrib"/>
-    <xs:attributeGroup ref="key.attributes.attrib"/>
-  </xs:attributeGroup>
+  <xs:annotation>
+    <xs:documentation 
+        source="http://graphml.graphdrawing.org/"
+        xml:lang="en">
+     Redefinition of file graphml-structure.xsd.
+     Extends the attribute group graph.extra.attrib (which takes
+     part in the attribute list of &lt;graph>) by adding the
+     attribute group graph.parseinfo.attrib which is defined below.
+     Extends the attribute group node.extra.attrib (which takes
+     part in the attribute list of &lt;node>) by adding the
+     attribute group node.parseinfo.attrib which is defined below.
+    </xs:documentation>
+  </xs:annotation>
 
-  <!-- redefinition as in graphml-parseinfo.xsd -->
   <xs:attributeGroup name="graph.extra.attrib">
     <xs:attributeGroup ref="graph.extra.attrib"/>
     <xs:attributeGroup ref="graph.parseinfo.attrib"/>
@@ -40,72 +63,6 @@
 
 </xs:redefine>
 
-
-<!-- types as in graphml-attributes.xsd -->
-<xs:simpleType name="key.name.type" final="#all">
-
-  <xs:annotation>
-    <xs:documentation 
-        source="http://graphml.graphdrawing.org/(Dokumentation der Attributes Erweiterung; entsprechende Stelle.html)"
-        xml:lang="en">
-      Simple type for the attr.name attribute of &lt;key>.
-      key.name.type is final, that is, it may not be extended
-                          or restricted.
-      key.name.type is a restriction of xs:NMTOKEN
-      Allowed values: (no restriction)
-    </xs:documentation>
-  </xs:annotation>
-
-  <xs:restriction base="xs:NMTOKEN"/>
-
-</xs:simpleType>
-
-
-
-<xs:simpleType name="key.type.type" final="#all">
-
-  <xs:annotation>
-    <xs:documentation 
-        source="http://graphml.graphdrawing.org/(Dokumentation der Attributes Erweiterung; entsprechende Stelle.html)"
-        xml:lang="en">
-      Simple type for the attr.type attribute of &lt;key>.
-      key.type.type is final, that is, it may not be extended
-                          or restricted.
-      key.type.type is a restriction of xs:NMTOKEN
-      Allowed values: boolean, int, long, float, double, string.
-    </xs:documentation>
-  </xs:annotation>
-
-  <xs:restriction base="xs:NMTOKEN">  
-    <xs:enumeration value="boolean"/>
-    <xs:enumeration value="int"/>
-    <xs:enumeration value="long"/>
-    <xs:enumeration value="float"/>
-    <xs:enumeration value="double"/>
-    <xs:enumeration value="string"/>
-  </xs:restriction>
-
-</xs:simpleType>
-
-
-<xs:attributeGroup name="key.attributes.attrib">
-
-  <xs:annotation>
-    <xs:documentation 
-        source="http://graphml.graphdrawing.org/"
-        xml:lang="en">
-     Definition of the attribute group key.attributes.attrib.
-     This group consists of the two optional attributes
-         - attr.name (gives the name for the data function)
-         - attr.type ((declares the range of values for the data function)
-    </xs:documentation>
-  </xs:annotation>
-
-  <xs:attribute name="attr.name" type="key.name.type" use="optional"/>
-  <xs:attribute name="attr.type" type="key.type.type" use="optional"/>
-</xs:attributeGroup>
-
-  <!-- types as in graphml-parseinfo.xsd -->
 
   <xs:annotation>
     <xs:documentation 

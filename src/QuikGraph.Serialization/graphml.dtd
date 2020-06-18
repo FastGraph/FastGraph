@@ -73,7 +73,7 @@
 <!ELEMENT key (#PCDATA)>
 <!ATTLIST key 
           id  ID                                            #REQUIRED
-          for (graph|node|edge|hyperedge|port|endpoint|all) "all"
+          for (graphml|graph|node|edge|hyperedge|port|endpoint|all) "all"
 >   
 
 <!ELEMENT data  (#PCDATA)>

@@ -18,15 +18,15 @@
      The schema corresponding to this document defines the structural
      layer of the Graph Markup Language (GraphML).
      Although a DTD is provided, this schema is, together with its extensions
-     http://graphml.graphdrawing.org/xmlns/1.0/graphml-attributes.xsd
+     http://graphml.graphdrawing.org/xmlns/1.1/graphml-attributes.xsd
      and
-     http://graphml.graphdrawing.org/xmlns/1.0/graphml-parseinfo.xsd,
+     http://graphml.graphdrawing.org/xmlns/1.1/graphml-parseinfo.xsd,
      the only normative reference.
     </xs:documentation>
   </xs:annotation>
 
 <xs:import namespace="http://www.w3.org/1999/xlink" 
-           schemaLocation="http://graphml.graphdrawing.org/xmlns/1.0/xlink.xsd">
+           schemaLocation="http://graphml.graphdrawing.org/xmlns/1.1/xlink.xsd">
   <xs:annotation>
     <xs:documentation 
         source="???"
@@ -152,6 +152,14 @@
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="time" type="xs:long" default="0">
+        <xs:annotation>
+          <xs:documentation 
+              source="http://graphml.graphdrawing.org/"
+              xml:lang="en">
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attribute name="id" type="xs:NMTOKEN" use="optional">
         <xs:annotation>
           <xs:documentation 
@@ -209,12 +217,13 @@
         xml:lang="en">
       Simple type for the for attribute of &lt;key>.
       key.for.type is a restriction of xs:NMTOKEN
-      Allowed values: all, graph, node, edge, hyperedge, port and endpoint.
+      Allowed values: all, graphml, graph, node, edge, hyperedge, port and endpoint.
     </xs:documentation>
   </xs:annotation>
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="all"/>
-    <xs:enumeration value="graph"/>
+    <xs:enumeration value="graphml"/>
+     <xs:enumeration value="graph"/>
     <xs:enumeration value="node"/>
     <xs:enumeration value="edge"/>
     <xs:enumeration value="hyperedge"/>
@@ -241,6 +250,14 @@
           <xs:documentation 
               source="http://graphml.graphdrawing.org/"
               xml:lang="en">identifies this &lt;key>.
+          </xs:documentation>
+        </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="dynamic" type="xs:boolean" default="false">
+        <xs:annotation>
+          <xs:documentation 
+              source="http://graphml.graphdrawing.org/"
+              xml:lang="en">
           </xs:documentation>
         </xs:annotation>
   </xs:attribute>
@@ -741,6 +758,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
 </xs:element>
@@ -804,6 +822,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
   <xs:key name="key_id_key"> 
@@ -873,6 +892,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
   <xs:key name="node_id_key"> 
@@ -1007,6 +1027,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
 </xs:element>
@@ -1035,6 +1056,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
 </xs:element>
@@ -1062,6 +1084,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
 </xs:element>
@@ -1090,6 +1113,7 @@
     </xs:annotation>
     <xs:selector xpath="./g:data"/>
     <xs:field xpath="@key"/>
+    <xs:field xpath="@time"/>
   </xs:unique>
 
 </xs:element>
@@ -1108,7 +1132,3 @@
 </xs:element>
 
 </xs:schema>
-
-<!--======================================================-->
-<!--      end of file: graphml-structure.xsd              -->
-<!--======================================================-->
