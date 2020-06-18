@@ -8,7 +8,8 @@
             "src/QuikGraph.Serialization/**.csproj",
             "src/QuikGraph.Graphviz/**.csproj",
             "src/QuikGraph.Data/**.csproj",
-            "src/QuikGraph.MSAGL/**.csproj"
+            "src/QuikGraph.MSAGL/**.csproj",
+            "src/QuikGraph.Petri/**.csproj"
           ],
           "exclude": [
             "**/obj/**",

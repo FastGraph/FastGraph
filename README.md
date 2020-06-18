@@ -8,6 +8,7 @@
 | | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.graphviz.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) QuikGraph.Graphviz |
 | | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.data.svg)](https://www.nuget.org/packages/QuikGraph.Data) QuikGraph.Data |
 | | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.msagl.svg)](https://www.nuget.org/packages/QuikGraph.MSAGL) QuikGraph.MSAGL |
+| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.petri.svg)](https://www.nuget.org/packages/QuikGraph.Petri) QuikGraph.Petri |
 | **License** | MS-PL |
 
 # QuikGraph
@@ -69,6 +70,7 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 - [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
 - [QuikGraph.Data](https://www.nuget.org/packages/QuikGraph.Data)
 - [QuikGraph.MSAGL](https://www.nuget.org/packages/QuikGraph.MSAGL)
+- [QuikGraph.Petri](https://www.nuget.org/packages/QuikGraph.Petri)
 
 ### Where to go next?
 

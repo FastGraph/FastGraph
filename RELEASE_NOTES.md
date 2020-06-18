@@ -9,7 +9,7 @@
 
 ---
 
-## What's new in 2.2.0 June 7 2020, June 11 2020 and June 18 2020
+## What's new in 2.2.0 June 7 2020, June 11 2020, June 18 2020 and June 25 2020
 
 ### QuikGraph
 
@@ -40,6 +40,22 @@ Migrate the library from GLEE to [MSAGL](https://www.microsoft.com/en-us/researc
 #### Fixes:
 * Fix typo in populator algorithm.
 * Fix a bug when converting undirected graph to MSAGL graph.
+
+### API Breaks
+* Some public API breaks (but should remain simple to do a migration).
+
+#### Misc:
+* Clean the library code.
+* Fully document library.
+* Use JetBrains annotations all over the library as much as possible.
+
+### QuikGraph.Petri
+
+#### Fixes:
+* Fix PetriNetSimulator with possible collection modified while enumerating.
+
+#### Updates:
+* Really make IPetriNet immutable to enforce the difference with IMutablePetriNet.
 
 ### API Breaks
 * Some public API breaks (but should remain simple to do a migration).

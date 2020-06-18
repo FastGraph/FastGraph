@@ -31,6 +31,12 @@ Supports Source Link</Description>
     <PackageReleaseNotes>➟ Release 2.2.0
 Rework the original QuickGraph.Petri module into QuikGraph.Petri. This make possible to use the Petri Net features.
 
+Fixes:
+- Fix PetriNetSimulator with possible collection modified while enumerating.
+
+Updates:
+- Really make IPetriNet immutable to enforce the difference with IMutablePetriNet.
+
 Misc:
 - Clean the library code.
 - Fully document library.
