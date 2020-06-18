@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
+#if REQUIRE_STRING_COMPATIBILITY
+using static QuikGraph.Utils.StringUtils;
+#endif
 
 namespace QuikGraph.Petri
 {
@@ -29,12 +33,21 @@ namespace QuikGraph.Petri
         public string ToStringWithMarking()
         {
             var builder = new StringBuilder();
-            builder.AppendLine(ToString());
+            builder.Append(ToString());
 
-            foreach (TToken token in Marking)
+            if (Marking.Count > 0)
             {
-                builder.AppendLine($"\t{token.GetType().Name}");
+                builder.AppendLine();
+                builder.Append("\t");
             }
+
+            builder.Append(
+#if REQUIRE_STRING_COMPATIBILITY
+                Join(
+#else
+                string.Join(
+#endif
+                    Environment.NewLine + "\t", Marking.Select(token => token.GetType().Name)));
 
             return builder.ToString();
         }

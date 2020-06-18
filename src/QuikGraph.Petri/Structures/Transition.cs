@@ -21,7 +21,7 @@ namespace QuikGraph.Petri
         public string Name { get; }
 
         [NotNull]
-        private IConditionExpression<TToken> _condition = new AllwaysTrueConditionExpression<TToken>();
+        private IConditionExpression<TToken> _condition = new AlwaysTrueConditionExpression<TToken>();
 
         /// <inheritdoc />
         public IConditionExpression<TToken> Condition

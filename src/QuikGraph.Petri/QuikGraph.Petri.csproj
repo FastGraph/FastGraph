@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>$(Generate_QuikGraph_Petri)</GeneratePackageOnBuild>
 
@@ -40,12 +40,19 @@ Misc:
 
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
+    <AssemblyTitle>QuikGraph.Petri .NET 3.5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;REQUIRE_STRING_COMPATIBILITY;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <AssemblyTitle>QuikGraph.Petri .NET 4.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <AssemblyTitle>QuikGraph.Petri .NET Standard 1.3</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NETSTANDARD1_3;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <AssemblyTitle>QuikGraph.Petri .NET Standard 2.0</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 

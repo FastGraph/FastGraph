@@ -4,6 +4,9 @@ using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
+#if REQUIRE_STRING_COMPATIBILITY
+using static QuikGraph.Utils.StringUtils;
+#endif
 
 namespace QuikGraph.Graphviz.Dot
 {
@@ -277,13 +280,15 @@ namespace QuikGraph.Graphviz.Dot
                 }
             }
 
-            string dot = string.Join("; ", dotParts
-#if !SUPPORTS_STRING_FULL_FEATURES
-                .ToArray()
+            string dot =
+#if REQUIRE_STRING_COMPATIBILITY
+                Join(
+#else
+                string.Join(
 #endif
-            );
+                    "; ", dotParts);
 
-            dot = dotParts.Count > 1 ? dot + ";" : dot;
+                dot = dotParts.Count > 1 ? dot + ";" : dot;
 
             return dot;
         }

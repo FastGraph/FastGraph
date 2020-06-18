@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
@@ -49,6 +50,20 @@ namespace QuikGraph.Petri
         public void SimulateStep()
         {
             // First step, iterate over arcs and gather tokens in transitions
+            GatherTransitioningTokens();
+
+            // Second step, see which transition was enabled
+            ComputeEnabledTransitions();
+
+            // Third step, iterate over the arcs
+            TransferTokens();
+
+            // Step four, clear buffers
+            ClearTransitionBuffers();
+        }
+
+        private void GatherTransitioningTokens()
+        {
             foreach (IArc<TToken> arc in Net.Arcs)
             {
                 if (!arc.IsInputArc)
@@ -63,8 +78,10 @@ namespace QuikGraph.Petri
                     tokens.Add(annotatedToken);
                 }
             }
+        }
 
-            // Second step, see which transition was enabled
+        private void ComputeEnabledTransitions()
+        {
             foreach (ITransition<TToken> transition in Net.Transitions)
             {
                 // Get buffered tokens
@@ -72,8 +89,10 @@ namespace QuikGraph.Petri
                 // Check if enabled, store value
                 _transitionBuffers[transition].Enabled = transition.Condition.IsEnabled(tokens);
             }
+        }
 
-            // Third step, iterate over the arcs
+        private void TransferTokens()
+        {
             foreach (IArc<TToken> arc in Net.Arcs)
             {
                 if (!_transitionBuffers[arc.Transition].Enabled)
@@ -82,7 +101,7 @@ namespace QuikGraph.Petri
                 if (arc.IsInputArc)
                 {
                     // Get annotated tokens
-                    IList<TToken> annotatedTokens = arc.Annotation.Evaluate(arc.Place.Marking);
+                    TToken[] annotatedTokens = arc.Annotation.Evaluate(arc.Place.Marking).ToArray();
                     // Remove annotated comments from source place
                     foreach (TToken annotatedToken in annotatedTokens)
                     {
@@ -101,8 +120,10 @@ namespace QuikGraph.Petri
                     }
                 }
             }
+        }
 
-            // Step four, clear buffers
+        private void ClearTransitionBuffers()
+        {
             foreach (ITransition<TToken> transition in Net.Transitions)
             {
                 _transitionBuffers[transition].Tokens.Clear();

@@ -9,6 +9,7 @@
     <Import_RootNamespace>QuikGraph.CommonInternals</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Compatibility\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Externs\JetBrains.Annotations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Signing\PublicKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DisposableHelpers.cs" />

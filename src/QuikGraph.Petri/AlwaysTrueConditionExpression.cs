@@ -12,7 +12,7 @@ namespace QuikGraph.Petri
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class AllwaysTrueConditionExpression<TToken> : IConditionExpression<TToken>
+    public sealed class AlwaysTrueConditionExpression<TToken> : IConditionExpression<TToken>
     {
         /// <inheritdoc />
         public bool IsEnabled(IList<TToken> tokens)

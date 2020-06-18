@@ -13,6 +13,11 @@
     <Description>Tests for QuikGraph.Petri library.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(DeployBuild)">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\QuikGraph.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <DefineConstants>$(DefineConstants);NET35;$(AdditionalConstants)</DefineConstants>

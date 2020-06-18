@@ -1,6 +1,4 @@
 using System;
-using JetBrains.Annotations;
-using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
 using QuikGraph.Tests;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;

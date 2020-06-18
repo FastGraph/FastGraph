@@ -298,6 +298,35 @@ namespace QuikGraph.Tests
             CollectionAssert.AreEquivalent(edgeArray, graph.AdjacentEdges(vertex));
         }
 
+
+
+        public static void AssertEquivalentGraphs<TVertex, TEdge>(
+            [NotNull] IEdgeListGraph<TVertex, TEdge> expected,
+            [NotNull] IEdgeListGraph<TVertex, TEdge> actual)
+            where TEdge : IEdge<TVertex>
+        {
+            Assert.AreEqual(expected.IsDirected, actual.IsDirected);
+            Assert.AreEqual(expected.AllowParallelEdges, actual.AllowParallelEdges);
+
+            if (expected.IsVerticesEmpty)
+            {
+                AssertNoVertex(actual);
+            }
+            else
+            {
+                AssertHasVertices(actual, expected.Vertices);
+            }
+
+            if (expected.IsEdgesEmpty)
+            {
+                AssertNoEdge(actual);
+            }
+            else
+            {
+                AssertHasEdges(actual, expected.Edges);
+            }
+        }
+
         #endregion
     }
 }

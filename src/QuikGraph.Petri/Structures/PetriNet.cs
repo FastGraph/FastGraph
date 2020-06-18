@@ -1,4 +1,6 @@
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,8 @@ namespace QuikGraph.Petri
             _transitions.AddRange(other._transitions);
             _arcs.AddRange(other._arcs);
             _graph = new PetriGraph<TToken>();
-            _graph.AddVerticesAndEdgeRange(other._graph.Edges);
+            _graph.AddVertexRange(other._graph.Vertices);
+            _graph.AddEdgeRange(other._graph.Edges);
         }
 
         #region IPetriNet<TToken>
@@ -140,12 +143,14 @@ namespace QuikGraph.Petri
             foreach (IPlace<TToken> place in _places)
             {
                 builder.AppendLine($"\t{place.ToStringWithMarking()}");
+                builder.AppendLine();
             }
 
             builder.AppendLine($"Transitions ({_transitions.Count})");
             foreach (ITransition<TToken> transition in _transitions)
             {
                 builder.AppendLine($"\t{transition}");
+                builder.AppendLine();
             }
 
             builder.AppendLine("Arcs");
