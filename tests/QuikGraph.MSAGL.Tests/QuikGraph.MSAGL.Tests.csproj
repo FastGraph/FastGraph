@@ -38,11 +38,12 @@
   <Import Project="..\..\src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
-  <!-- QuikGraph reference -->
+  <!-- QuikGraph.MSAGL reference -->
   <ItemGroup Condition="$(UseQuikGraphMSAGLNuget)">
     <PackageReference Include="QuikGraph.MSAGL" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphMSAGLNuget)">
+    <PackageReference Condition="$(DeployBuild)" Include="StrongNamer" Version="0.2.5" PrivateAssets="All" />
     <ProjectReference Include="..\..\src\QuikGraph.MSAGL\QuikGraph.MSAGL.csproj" />
   </ItemGroup>
 </Project>
