@@ -13,7 +13,7 @@ namespace QuikGraph.Petri
     {
         /// <summary>
         /// Gets a value indicating if the <see cref="IArc{TToken}"/>
-        /// instance is a <strong>input arc</strong>.
+        /// instance is an <strong>input arc</strong>.
         /// </summary>
         /// <remarks>
         /// An arc that leads from an input <see cref="IPlace{TToken}"/> to a
