@@ -50,6 +50,6 @@ Supports Source Link</Description>
     <PackageReference Include="QuikGraph" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphCoreNuget)">
-    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
+    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
   </ItemGroup>
 </Project>

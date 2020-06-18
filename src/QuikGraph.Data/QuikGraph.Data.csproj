@@ -54,6 +54,6 @@ Misc:
     <PackageReference Include="QuikGraph.Graphviz" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphGraphvizNuget)">
-    <ProjectReference Include="..\..\src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
+    <ProjectReference Include="..\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
   </ItemGroup>
 </Project>
