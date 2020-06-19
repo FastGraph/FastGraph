@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -45,25 +46,25 @@ namespace QuikGraph.Petri
         private readonly List<IPlace<TToken>> _places = new List<IPlace<TToken>>();
 
         /// <inheritdoc />
-        public IList<IPlace<TToken>> Places { get; } = new List<IPlace<TToken>>();
+        public IEnumerable<IPlace<TToken>> Places => _places.AsEnumerable();
 
         [NotNull, ItemNotNull]
         private readonly List<ITransition<TToken>> _transitions = new List<ITransition<TToken>>();
 
         /// <inheritdoc />
-        public IList<ITransition<TToken>> Transitions => _transitions;
+        public IEnumerable<ITransition<TToken>> Transitions => _transitions.AsEnumerable();
 
         [NotNull, ItemNotNull]
         private readonly List<IArc<TToken>> _arcs = new List<IArc<TToken>>();
 
         /// <inheritdoc />
-        public IList<IArc<TToken>> Arcs => _arcs;
+        public IEnumerable<IArc<TToken>> Arcs => _arcs.AsEnumerable();
 
         [NotNull]
         private readonly PetriGraph<TToken> _graph = new PetriGraph<TToken>();
 
         /// <inheritdoc />
-        public IPetriGraph<TToken> Graph => _graph;
+        public IReadOnlyPetriGraph<TToken> Graph => _graph;
 
         #endregion
 

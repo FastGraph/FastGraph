@@ -20,7 +20,7 @@ namespace QuikGraph.Petri
         /// A collection of <see cref="IPlace{TToken}"/> instances.
         /// </value>
         [NotNull, ItemNotNull]
-        IList<IPlace<TToken>> Places { get; }
+        IEnumerable<IPlace<TToken>> Places { get; }
 
         /// <summary>
         /// Gets a collection of <see cref="ITransition{TToken}"/> instances.
@@ -29,7 +29,7 @@ namespace QuikGraph.Petri
         /// A collection of <see cref="ITransition{TToken}"/> instances.
         /// </value>
         [NotNull, ItemNotNull]
-        IList<ITransition<TToken>> Transitions { get; }
+        IEnumerable<ITransition<TToken>> Transitions { get; }
 
         /// <summary>
         /// Gets a collection of <see cref="IArc{TToken}"/> instances.
@@ -38,12 +38,12 @@ namespace QuikGraph.Petri
         /// A collection of <see cref="IArc{TToken}"/> instances.
         /// </value>
         [NotNull, ItemNotNull]
-        IList<IArc<TToken>> Arcs { get; }
+        IEnumerable<IArc<TToken>> Arcs { get; }
 
         /// <summary>
         /// Gets the Petri Graph.
         /// </summary>
         [NotNull]
-        IPetriGraph<TToken> Graph { get; }
+        IReadOnlyPetriGraph<TToken> Graph { get; }
     }
 }
