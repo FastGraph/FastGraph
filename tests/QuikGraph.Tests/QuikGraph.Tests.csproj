@@ -73,7 +73,7 @@
   </ItemGroup>
   <!-- QuikGraph.Serialization reference -->
   <ItemGroup Condition="$(UseQuikGraphSerializationNuget)">
-    <PackageReference Include="QuikGraph.Serialization" Version="2.2.0" />
+    <PackageReference Include="QuikGraph.Serialization" Version="2.2.1" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphSerializationNuget)">
     <ProjectReference Include="..\..\src\QuikGraph.Serialization\QuikGraph.Serialization.csproj" />
