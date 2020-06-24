@@ -6,7 +6,9 @@
           "files": [
             "src/QuikGraph/**.csproj",
             "src/QuikGraph.Serialization/**.csproj",
-            "src/QuikGraph.Graphviz/**.csproj"
+            "src/QuikGraph.Graphviz/**.csproj",
+            "src/QuikGraph.Data/**.csproj",
+            "src/QuikGraph.MSAGL/**.csproj"
           ],
           "exclude": [
             "**/obj/**",
