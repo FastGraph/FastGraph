@@ -15,7 +15,7 @@
     <FileVersion>1.0.0</FileVersion>
 
     <Copyright>Copyright © 2020</Copyright>
-    <Description>.NET library that provides a bridge from QuikGraph graphs to MSAGL library.
+    <Description>.NET library that provides some Petri Net facilities. It allows to construct Petri Net representation and run a simulation of it.
 
 This package is the Petri subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
 
@@ -28,7 +28,7 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Petri</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.0
+    <PackageReleaseNotes>➟ Release 2.2.1
 Rework the original QuickGraph.Petri module into QuikGraph.Petri. This make possible to use the Petri Net features.
 
 Fixes:
@@ -41,7 +41,7 @@ Misc:
 - Clean the library code.
 - Fully document library.
 - Use JetBrains annotations all over the library as much as possible.</PackageReleaseNotes>
-    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET MSAGL</PackageTags>
+    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Petri</PackageTags>
   </PropertyGroup>
 
   <!-- Targets defines -->

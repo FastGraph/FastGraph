@@ -1,11 +1,15 @@
 # Release notes
 
-## What's new in 2.2.1 June 19 2020
+## What's new in 2.2.1 June 19 2020 and June 25 2020
 
 ### QuikGraph.Serialization
 
 #### Fixes:
 * Rely on embedded GraphML xsd to validate GraphML graphs during serialization (avoid issues when GraphML website is down).
+
+### QuikGraph.Petri
+
+This package is the same as 2.2.0 but with the right tags and description.
 
 ---
 
