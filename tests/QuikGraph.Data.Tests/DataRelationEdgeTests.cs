@@ -90,12 +90,12 @@ namespace QuikGraph.Data.Tests
 
                 var customers = new DataTable("Customers");
                 custIdCol = new DataColumn("CustomerID", typeof(int)) { Unique = true };
-                customers.Columns.Add(customerIdCol);
+                customers.Columns.Add(custIdCol);
                 dataSet.Tables.Add(customers);
 
                 var orders = new DataTable("Orders");
                 ordIdCol = new DataColumn("OrderID", typeof(int)) { Unique = true };
-                orders.Columns.Add(orderIdCol);
+                orders.Columns.Add(ordIdCol);
                 dataSet.Tables.Add(orders);
             }
 
