@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.XPath;
 #endif
@@ -45,9 +46,19 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="stream">Stream from which deserializing the graph.</param>
+        /// <param name="binder">
+        /// <para>
+        /// <see cref="SerializationBinder"/> used during deserialization.
+        /// It can be used to check/filter/replace/upgrade types that are loaded.
+        /// </para>
+        /// <para>It is also useful in security scenarios.</para>
+        /// <para>By default no binder is used.</para>
+        /// </param>
         /// <returns>Deserialized graph.</returns>
         [Pure]
-        public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>([NotNull] this Stream stream)
+        public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
+            [NotNull] this Stream stream,
+            [CanBeNull] SerializationBinder binder = null)
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
@@ -56,7 +67,7 @@ namespace QuikGraph.Serialization
             if (!stream.CanRead)
                 throw new ArgumentException("Must be a readable stream", nameof(stream));
 
-            var formatter = new BinaryFormatter();
+            var formatter = new BinaryFormatter { Binder = binder };
             object result = formatter.Deserialize(stream);
             return (TGraph)result;
         }
