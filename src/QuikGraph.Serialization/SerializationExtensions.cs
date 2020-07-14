@@ -325,7 +325,7 @@ namespace QuikGraph.Serialization
             [NotNull] string vertexElementName,
             [NotNull] string edgeElementName,
             [NotNull] string namespaceUri)
-            where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
+            where TGraph : IEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             SerializeToXml(
@@ -371,7 +371,7 @@ namespace QuikGraph.Serialization
             [CanBeNull, InstantHandle] Action<XmlWriter, TGraph> writeGraphAttributes,
             [CanBeNull, InstantHandle] Action<XmlWriter, TVertex> writeVertexAttributes,
             [CanBeNull, InstantHandle] Action<XmlWriter, TEdge> writeEdgeAttributes)
-            where TGraph : IVertexAndEdgeListGraph<TVertex, TEdge>
+            where TGraph : IEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             if (graph == null)
