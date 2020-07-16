@@ -88,5 +88,6 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 This project exists thanks to all the people who have contributed to the code base.
 
 [![](https://github.com/jnyrup.png?size=50)](https://github.com/jnyrup)
+[![](https://github.com/SimonTC.png?size=50)](https://github.com/SimonTC)
 
 ---
