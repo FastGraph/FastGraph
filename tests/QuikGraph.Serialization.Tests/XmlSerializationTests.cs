@@ -98,14 +98,13 @@ namespace QuikGraph.Serialization.Tests
             {
                 yield return new TestCaseData(new AdjacencyGraph<Person, TaggedEdge<Person, string>>());
                 yield return new TestCaseData(new BidirectionalGraph<Person, TaggedEdge<Person, string>>());
+                yield return new TestCaseData(new UndirectedGraph<Person, TaggedEdge<Person, string>>());
             }
         }
 
         [TestCaseSource(nameof(XmlSerializationGraphTestCases))]
         public void SerializeToXml<TGraph>([NotNull] TGraph graph)
-            where TGraph 
-            : IVertexAndEdgeListGraph<Person, TaggedEdge<Person, string>>
-            , IMutableVertexAndEdgeSet<Person, TaggedEdge<Person, string>>
+            where TGraph: IMutableVertexAndEdgeSet<Person, TaggedEdge<Person, string>>
         {
             var persons = new List<Person>();
             var jacob = new Person("Jacob", "Hochstetler")
