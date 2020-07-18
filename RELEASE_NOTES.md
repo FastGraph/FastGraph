@@ -1,5 +1,15 @@
 # Release notes
 
+## What's new in 2.2.2 July 18 2020
+
+### QuikGraph.Serialization
+
+#### Fixes:
+* Add the possibility to use a custom binder during binary serialization to control deserialized types.
+* Undirected graphs are now serializable to XML.
+
+---
+
 ## What's new in 2.2.1 June 19 2020 and June 25 2020
 
 ### QuikGraph.Serialization

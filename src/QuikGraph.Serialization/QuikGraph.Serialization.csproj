@@ -28,9 +28,10 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Serialization</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.1
+    <PackageReleaseNotes>➟ Release 2.2.2
 Fixes:
-- Rely on embedded GraphML xsd to validate GraphML graphs during serialization (avoid issues when GraphML website is down).</PackageReleaseNotes>
+- Add the possibility to use a custom binder during binary serialization to control deserialized types.
+- Undirected graphs are now serializable to XML.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization</PackageTags>
   </PropertyGroup>
 
