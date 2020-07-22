@@ -358,5 +358,41 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 v => 0.0);
             Assert.Throws<NegativeWeightException>(() => algorithm.Compute(1));
         }
+
+        [Test]
+        public void AStar_HeuristicCalls()
+        {
+            var lineGraph = new AdjacencyGraph<int, Edge<int>>();
+            lineGraph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(2, 3),
+                new Edge<int>(3, 4),
+                new Edge<int>(2, 1),
+                new Edge<int>(1, 0)
+            });
+
+            int root = 2;
+
+            var heuristicCalls = new List<int>();
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(
+                lineGraph,
+                e => 1.0,
+                v => 
+                {
+                    // Goal is 2, h(v) = v
+                    heuristicCalls.Add(v);
+                    return v;
+                });
+
+            algorithm.Compute(root);
+
+            // Heuristic function must be called at least 4 times
+            Assert.GreaterOrEqual(4, heuristicCalls.Count);
+
+            // 0 must be expanded before 4
+            Assert.Contains(0, heuristicCalls);
+            Assert.Contains(4, heuristicCalls);
+            Assert.Less(heuristicCalls.IndexOf(0), heuristicCalls.IndexOf(4));
+        }
     }
 }
