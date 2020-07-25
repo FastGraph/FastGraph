@@ -89,5 +89,6 @@ This project exists thanks to all the people who have contributed to the code ba
 
 [![](https://github.com/jnyrup.png?size=50)](https://github.com/jnyrup)
 [![](https://github.com/SimonTC.png?size=50)](https://github.com/SimonTC)
+[![](https://github.com/tuwuhs.png?size=50)](https://github.com/tuwuhs)
 
 ---
