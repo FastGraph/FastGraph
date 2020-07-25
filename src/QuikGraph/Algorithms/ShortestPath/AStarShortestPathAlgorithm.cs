@@ -131,9 +131,17 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             bool decreased = Relax(edge);
             if (decreased)
+            {
+                TVertex target = edge.Target;
+                double distance = Distances[target];
+
+                _costs[target] = DistanceRelaxer.Combine(distance, CostHeuristic(target));
                 OnTreeEdge(edge);
+            }
             else
+            {
                 OnEdgeNotRelaxed(edge);
+            }
         }
 
         private void OnGrayTarget([NotNull] TEdge edge)

@@ -358,5 +358,101 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 v => 0.0);
             Assert.Throws<NegativeWeightException>(() => algorithm.Compute(1));
         }
+
+        [Test]
+        public void AStar_HeuristicCalls()
+        {
+            var edge01 = new Edge<int>(0, 1);
+            var edge02 = new Edge<int>(0, 2);
+            var edge03 = new Edge<int>(0, 3);
+            var edge14 = new Edge<int>(1, 4);
+            var edge23 = new Edge<int>(2, 3);
+            var edge34 = new Edge<int>(3, 4);
+
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(new[]
+            {
+                edge01,
+                edge02,
+                edge03,
+                edge23,
+                edge14,
+                edge34
+            });
+
+            const int root = 0;
+
+            var colorUpdates = new HashSet<GraphColor>
+            {
+                GraphColor.White, GraphColor.Gray, GraphColor.Black
+            };
+
+            int heuristicCalls = 0;
+            AStarShortestPathAlgorithm<int, Edge<int>> algorithm = null;
+            Func<int, double> heuristic = v =>
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                // ReSharper disable once AccessToModifiedClosure
+                colorUpdates.Remove(algorithm.GetVertexColor(v));
+                ++heuristicCalls;
+                return 10.0 / heuristicCalls;
+            };
+
+            algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(
+                graph,
+                e =>
+                {
+                    if (e == edge01)
+                        return 8.0;
+                    if (e == edge02)
+                        return 6.0;
+                    if (e == edge03)
+                        return 20.0;
+                    if (e == edge34)
+                        return 5.0;
+                    return 1.0;
+                },
+                heuristic);
+
+            algorithm.Compute(root);
+
+            CollectionAssert.IsEmpty(colorUpdates);
+        }
+
+        [Test]
+        public void AStar_HeuristicCallCount()
+        {
+            var lineGraph = new AdjacencyGraph<int, Edge<int>>();
+            lineGraph.AddVerticesAndEdgeRange(new[]
+            {
+                new Edge<int>(2, 3),
+                new Edge<int>(3, 4),
+                new Edge<int>(2, 1),
+                new Edge<int>(1, 0)
+            });
+
+            const int root = 2;
+
+            var heuristicCalls = new List<int>();
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(
+                lineGraph,
+                e => 1.0,
+                v => 
+                {
+                    // Goal is 2, h(v) = v
+                    heuristicCalls.Add(v);
+                    return v;
+                });
+
+            algorithm.Compute(root);
+
+            // Heuristic function must be called at least 4 times
+            Assert.GreaterOrEqual(4, heuristicCalls.Count);
+
+            // 0 must be expanded before 4
+            Assert.Contains(0, heuristicCalls);
+            Assert.Contains(4, heuristicCalls);
+            Assert.Less(heuristicCalls.IndexOf(0), heuristicCalls.IndexOf(4));
+        }
     }
 }
