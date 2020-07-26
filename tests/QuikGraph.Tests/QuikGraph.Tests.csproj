@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.1</TargetFrameworks>
 
     <Title>QuikGraph.Tests</Title>
 
@@ -52,8 +52,8 @@
   <PropertyGroup Condition="'$(TargetFramework)'=='net472'">
     <DefineConstants>$(DefineConstants);NET472;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-    <DefineConstants>$(DefineConstants);NETCOREAPP2_0;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.1'">
+    <DefineConstants>$(DefineConstants);NETCOREAPP2_1;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
