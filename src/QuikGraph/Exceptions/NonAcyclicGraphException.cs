@@ -35,5 +35,3 @@ namespace QuikGraph
 #endif
     }
 }
-
-
