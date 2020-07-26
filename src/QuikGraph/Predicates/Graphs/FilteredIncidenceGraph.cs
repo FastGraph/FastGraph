@@ -12,9 +12,6 @@ namespace QuikGraph.Predicates
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public class FilteredIncidenceGraph<TVertex, TEdge, TGraph>
         : FilteredImplicitGraph<TVertex, TEdge, TGraph>
         , IIncidenceGraph<TVertex, TEdge>

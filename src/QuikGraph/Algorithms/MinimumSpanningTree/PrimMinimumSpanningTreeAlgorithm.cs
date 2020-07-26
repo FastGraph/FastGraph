@@ -13,9 +13,6 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class PrimMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
             , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>

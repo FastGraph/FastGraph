@@ -8,6 +8,9 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz edge extremity.
     /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     public class GraphvizEdgeExtremity
     {
         /// <summary>

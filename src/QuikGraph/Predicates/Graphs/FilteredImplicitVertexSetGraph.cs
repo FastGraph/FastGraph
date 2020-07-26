@@ -10,9 +10,6 @@ namespace QuikGraph.Predicates
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public class FilteredImplicitVertexSet<TVertex, TEdge, TGraph>
         : FilteredGraph<TVertex, TEdge, TGraph>
         , IImplicitVertexSet<TVertex>

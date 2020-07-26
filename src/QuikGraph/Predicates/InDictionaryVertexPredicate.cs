@@ -9,9 +9,6 @@ namespace QuikGraph.Predicates
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TValue">Type of the value associated to vertices.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class InDictionaryVertexPredicate<TVertex, TValue>
     {
         [NotNull]

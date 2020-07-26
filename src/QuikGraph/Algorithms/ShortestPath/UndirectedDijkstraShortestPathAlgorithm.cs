@@ -13,9 +13,6 @@ namespace QuikGraph.Algorithms.ShortestPath
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>
         : UndirectedShortestPathAlgorithmBase<TVertex, TEdge>
         , IUndirectedVertexPredecessorRecorderAlgorithm<TVertex, TEdge>

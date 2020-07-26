@@ -11,9 +11,6 @@ namespace QuikGraph.Algorithms.ShortestPath
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public abstract class UndirectedShortestPathAlgorithmBase<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IUndirectedGraph<TVertex, TEdge>>
         , IVertexColorizerAlgorithm<TVertex>

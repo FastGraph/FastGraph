@@ -1,3 +1,6 @@
+#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
@@ -10,6 +13,9 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz vertex.
     /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     public class GraphvizVertex
     {
         /// <summary>

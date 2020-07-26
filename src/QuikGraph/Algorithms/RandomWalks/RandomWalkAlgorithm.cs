@@ -9,9 +9,6 @@ namespace QuikGraph.Algorithms.RandomWalks
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class RandomWalkAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IImplicitGraph<TVertex, TEdge>>
         , ITreeBuilderAlgorithm<TVertex, TEdge>

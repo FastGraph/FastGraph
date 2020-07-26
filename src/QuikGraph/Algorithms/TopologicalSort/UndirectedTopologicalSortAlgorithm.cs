@@ -1,6 +1,3 @@
-#if SUPPORTS_SERIALIZATION
-using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -13,9 +10,6 @@ namespace QuikGraph.Algorithms.TopologicalSort
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class UndirectedTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {

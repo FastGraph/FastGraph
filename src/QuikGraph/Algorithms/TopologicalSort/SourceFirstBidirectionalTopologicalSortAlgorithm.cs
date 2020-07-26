@@ -1,6 +1,3 @@
-#if SUPPORTS_SERIALIZATION
-using System;
-#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,11 +11,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
-    public sealed class SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge> :
-        AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
+    public sealed class SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
         [NotNull]

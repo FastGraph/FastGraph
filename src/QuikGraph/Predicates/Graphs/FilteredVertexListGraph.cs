@@ -1,6 +1,3 @@
-#if SUPPORTS_SERIALIZATION
-using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -14,9 +11,6 @@ namespace QuikGraph.Predicates
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public class FilteredVertexListGraph<TVertex, TEdge, TGraph>
         : FilteredIncidenceGraph<TVertex, TEdge, TGraph>
         , IVertexListGraph<TVertex, TEdge>

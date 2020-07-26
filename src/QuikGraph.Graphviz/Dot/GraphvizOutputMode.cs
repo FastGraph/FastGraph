@@ -1,8 +1,15 @@
+#if SUPPORTS_SERIALIZATION
+using System;
+#endif
+
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Enumeration of possible output modes.
     /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     public enum GraphvizOutputMode
     {
         /// <summary>

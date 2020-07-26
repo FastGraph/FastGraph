@@ -12,9 +12,6 @@ namespace QuikGraph.Algorithms.Search
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IUndirectedGraph<TVertex, TEdge>>
         , IUndirectedVertexPredecessorRecorderAlgorithm<TVertex, TEdge>

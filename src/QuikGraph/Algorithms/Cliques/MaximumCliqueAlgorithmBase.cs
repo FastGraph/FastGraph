@@ -1,3 +1,6 @@
+#if SUPPORTS_SERIALIZATION
+using System;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -8,6 +11,9 @@ namespace QuikGraph.Algorithms.Cliques
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     public abstract class MaximumCliqueAlgorithmBase<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {

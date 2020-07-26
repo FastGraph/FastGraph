@@ -1,11 +1,20 @@
 ﻿using System;
+#if SUPPORTS_SERIALIZATION
+using System.Runtime.Serialization;
+#endif
 
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Represents a color.
     /// </summary>
+#if SUPPORTS_SERIALIZATION
+    [Serializable]
+#endif
     public partial struct GraphvizColor : IEquatable<GraphvizColor>
+#if SUPPORTS_SERIALIZATION
+        , ISerializable
+#endif
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizColor"/> struct.
@@ -83,5 +92,29 @@ namespace QuikGraph.Graphviz.Dot
         {
             return A << 24 | R << 16 | G << 8 | B;
         }
+
+#if SUPPORTS_SERIALIZATION
+        #region ISerializable
+
+        private GraphvizColor(SerializationInfo info, StreamingContext context)
+            : this(
+                (byte)info.GetValue("a", typeof(byte)),
+                (byte)info.GetValue("r", typeof(byte)),
+                (byte)info.GetValue("g", typeof(byte)),
+                (byte)info.GetValue("b", typeof(byte)))
+        {
+        }
+
+        /// <inheritdoc />
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("a", A);
+            info.AddValue("r", R);
+            info.AddValue("g", G);
+            info.AddValue("b", B);
+        }
+
+        #endregion
+#endif
     }
 }

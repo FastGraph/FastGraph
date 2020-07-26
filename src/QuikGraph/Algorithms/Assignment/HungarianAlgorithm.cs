@@ -9,9 +9,6 @@ namespace QuikGraph.Algorithms.Assignment
     /// finding, in a weighted bipartite graph, a matching in which the sum of weights of the
     /// edges is as large as possible.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
-    [Serializable]
-#endif
     public sealed class HungarianAlgorithm
     {
         /// <summary>
