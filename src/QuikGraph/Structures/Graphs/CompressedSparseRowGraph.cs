@@ -14,7 +14,7 @@ namespace QuikGraph
     [Serializable]
 #endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
-    public sealed class CompressedSparseRowGraph<TVertex> : IEdgeSet<TVertex, SEquatableEdge<TVertex>>, IVertexListGraph<TVertex, SEquatableEdge<TVertex>>
+    public sealed class CompressedSparseRowGraph<TVertex> : IVertexListGraph<TVertex, SEquatableEdge<TVertex>>, IEdgeListGraph<TVertex, SEquatableEdge<TVertex>>
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
