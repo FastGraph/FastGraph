@@ -20,8 +20,8 @@ namespace QuikGraph.Tests
         }
 
         public static void AssertEdgeCountEqual<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> left,
-            [NotNull] IEdgeListGraph<TVertex, TEdge> right)
+            [NotNull] this IEdgeSet<TVertex, TEdge> left,
+            [NotNull] IEdgeSet<TVertex, TEdge> right)
             where TEdge : IEdge<TVertex>
         {
             Assert.IsNotNull(left);
