@@ -11,8 +11,8 @@ namespace QuikGraph
     public static class EquateGraphs
     {
         /// <summary>
-        /// Checks if both graphs <paramref name="g"/> and <paramref name="h"/> are equal.
-        /// Use the provided <paramref name="vertexEquality"/> and <paramref name="edgeEquality"/>
+        /// Checks if both graphs <paramref name="g"/> and <paramref name="h"/> content are equal.
+        /// Uses the provided <paramref name="vertexEquality"/> and <paramref name="edgeEquality"/>
         /// comparer to respectively compare vertices and edges.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
@@ -24,8 +24,8 @@ namespace QuikGraph
         /// <returns>True if both graphs are equal, false otherwise.</returns>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> g,
-            [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> h,
+            [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,
+            [CanBeNull] IEdgeListGraph<TVertex, TEdge> h,
             [NotNull] IEqualityComparer<TVertex> vertexEquality,
             [NotNull] IEqualityComparer<TEdge> edgeEquality)
             where TEdge : IEdge<TVertex>
@@ -44,6 +44,9 @@ namespace QuikGraph
                 return true;
 
             if (g.VertexCount != h.VertexCount)
+                return false;
+
+            if (g.IsDirected != h.IsDirected)
                 return false;
 
             if (g.EdgeCount != h.EdgeCount)
@@ -65,8 +68,8 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Checks if both graphs <paramref name="g"/> and <paramref name="h"/> are equal.
-        /// Use the default comparer for vertices and edges.
+        /// Checks if both graphs <paramref name="g"/> and <paramref name="h"/> content are equal.
+        /// Uses the default comparer for vertices and edges.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -75,8 +78,8 @@ namespace QuikGraph
         /// <returns>True if both graphs are equal, false otherwise.</returns>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> g,
-            [CanBeNull] IVertexAndEdgeListGraph<TVertex, TEdge> h)
+            [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,
+            [CanBeNull] IEdgeListGraph<TVertex, TEdge> h)
             where TEdge : IEdge<TVertex>
         {
             return Equate(g, h, EqualityComparer<TVertex>.Default, EqualityComparer<TEdge>.Default);
