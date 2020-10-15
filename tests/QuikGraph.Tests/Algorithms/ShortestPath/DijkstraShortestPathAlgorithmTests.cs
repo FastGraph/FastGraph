@@ -264,18 +264,6 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         [Test]
-        public void GetVertexColor_Throws()
-        {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertex(0);
-            var algorithm = new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
-            algorithm.Compute(0);
-
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
-        }
-
-        [Test]
         [Category(TestCategories.LongRunning)]
         public void Dijkstra()
         {
@@ -643,6 +631,23 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             }
 
             #endregion
+        }
+
+        [Pure]
+        [NotNull]
+        public static DijkstraShortestPathAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
+            [NotNull] ContractScenario scenario)
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            graph.AddVertexRange(scenario.SingleVerticesInGraph);
+
+            double Weights(Edge<int> e) => 1.0;
+            var algorithm = new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
+
+            if (scenario.DoComputation)
+                algorithm.Compute(scenario.Root);
+            return algorithm;
         }
     }
 }

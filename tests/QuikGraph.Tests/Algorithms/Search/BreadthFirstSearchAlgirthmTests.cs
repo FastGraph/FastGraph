@@ -365,15 +365,6 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         [Test]
-        public void GetVertexColor_Throws()
-        {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(
-                () => new BreadthFirstSearchAlgorithm<int, Edge<int>>(graph).GetVertexColor(1));
-        }
-
-        [Test]
         [Category(TestCategories.LongRunning)]
         public void BreadthFirstSearch()
         {
@@ -382,6 +373,22 @@ namespace QuikGraph.Tests.Algorithms.Search
                 foreach (string vertex in graph.Vertices)
                     RunBFSAndCheck(graph, vertex);
             }
+        }
+
+        [Pure]
+        [NotNull]
+        public static BreadthFirstSearchAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
+            [NotNull] ContractScenario scenario)
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            graph.AddVertexRange(scenario.SingleVerticesInGraph);
+
+            var algorithm = new BreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
+
+            if (scenario.DoComputation)
+                algorithm.Compute(scenario.Root);
+            return algorithm;
         }
     }
 }

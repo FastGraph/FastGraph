@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Search;
@@ -270,15 +271,6 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         [Test]
-        public void GetVertexColor_Throws()
-        {
-            var graph = new BidirectionalGraph<int, Edge<int>>();
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).GetVertexColor(1));
-        }
-
-        [Test]
         [Category(TestCategories.LongRunning)]
         public void DepthFirstSearch()
         {
@@ -326,6 +318,22 @@ namespace QuikGraph.Tests.Algorithms.Search
                     new[] { 6, 7, 8 },
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.White);
             }
+        }
+
+        [Pure]
+        [NotNull]
+        public static BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
+            [NotNull] ContractScenario scenario)
+        {
+            var graph = new BidirectionalGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            graph.AddVertexRange(scenario.SingleVerticesInGraph);
+
+            var algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
+
+            if (scenario.DoComputation)
+                algorithm.Compute(scenario.Root);
+            return algorithm;
         }
     }
 }

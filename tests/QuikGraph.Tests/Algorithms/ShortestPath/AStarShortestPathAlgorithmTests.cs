@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -308,18 +309,6 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         [Test]
-        public void GetVertexColor_Throws()
-        {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertex(0);
-            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0);
-            algorithm.Compute(0);
-
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
-        }
-
-        [Test]
         [Category(TestCategories.LongRunning)]
         public void AStar()
         {
@@ -453,6 +442,24 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             Assert.Contains(0, heuristicCalls);
             Assert.Contains(4, heuristicCalls);
             Assert.Less(heuristicCalls.IndexOf(0), heuristicCalls.IndexOf(4));
+        }
+
+        [Pure]
+        [NotNull]
+        public static AStarShortestPathAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
+            [NotNull] ContractScenario scenario)
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            graph.AddVertexRange(scenario.SingleVerticesInGraph);
+
+            double Heuristic(int v) => 1.0;
+            double Weights(Edge<int> e) => 1.0;
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, Heuristic);
+
+            if (scenario.DoComputation)
+                algorithm.Compute(scenario.Root);
+            return algorithm;
         }
     }
 }

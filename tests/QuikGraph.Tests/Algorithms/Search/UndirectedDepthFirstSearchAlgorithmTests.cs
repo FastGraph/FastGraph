@@ -277,15 +277,6 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         [Test]
-        public void GetVertexColor_Throws()
-        {
-            var graph = new UndirectedGraph<int, Edge<int>>();
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph).GetVertexColor(1));
-        }
-
-        [Test]
         [Category(TestCategories.LongRunning)]
         public void UndirectedDepthFirstSearch()
         {
@@ -333,6 +324,20 @@ namespace QuikGraph.Tests.Algorithms.Search
                     new[] { 6, 7, 8 },
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.White);
             }
+        }
+
+        public static UndirectedDepthFirstSearchAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
+            ContractScenario scenario)
+        {
+            var graph = new UndirectedGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            graph.AddVertexRange(scenario.SingleVerticesInGraph);
+
+            var algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
+
+            if (scenario.DoComputation)
+                algorithm.Compute(scenario.Root);
+            return algorithm;
         }
     }
 }

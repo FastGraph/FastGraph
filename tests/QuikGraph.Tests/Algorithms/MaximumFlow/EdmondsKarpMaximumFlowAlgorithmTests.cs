@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -370,24 +371,6 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         }
 
         [Test]
-        public void GetVertexColor_Throws()
-        {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 0, 1 });
-
-            Func<Edge<int>, double> capacities = edge => 1.0;
-            EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
-            reverseEdgesAlgorithm.AddReversedEdges();
-
-            var algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph, capacities, edgeFactory, reverseEdgesAlgorithm);
-            algorithm.Compute(0, 1);
-
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(2));
-        }
-
-        [Test]
         [Category(TestCategories.LongRunning)]
         public void EdmondsKarpMaxFlow()
         {
@@ -512,6 +495,27 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             var algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, TaggedEdge<int, double>>(graph, edge => edge.Tag, edgeFactory, reverseEdgesAlgorithm);
 
             Assert.Throws<InvalidOperationException>(() => algorithm.Compute(source, sink));
+        }
+
+        [Pure]
+        [NotNull]
+        public static EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
+            [NotNull] ContractScenario scenario)
+        {
+            var graph = new AdjacencyGraph<int, Edge<int>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            graph.AddVertexRange(scenario.SingleVerticesInGraph);
+
+            double Capacities(Edge<int> edge) => 1.0;
+            Edge<int> EdgeFactory(int source, int target) => new Edge<int>(source, target);
+            var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, EdgeFactory);
+            reverseEdgesAlgorithm.AddReversedEdges();
+
+            var algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph, Capacities, EdgeFactory, reverseEdgesAlgorithm);
+
+            if (scenario.DoComputation)
+                algorithm.Compute(scenario.Root, scenario.AccessibleVerticesFromRoot.First());
+            return algorithm;
         }
     }
 }
