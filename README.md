@@ -25,7 +25,9 @@ It was then updated to become YC.QuickGraph.
 
 **This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the library to provide it as a clean NuGet packages using modern C# development (.NET Core).
 
-The plan is to to fully clean, fix issues of the original library and all its non Core parts, and improve it.
+The library has been cleaned and improved. It comes with a lot of fixes for issues of the original library.
+
+**[Getting started with QuikGraph](https://github.com/KeRNeLith/QuikGraph/wiki)**
 
 ---
 
@@ -74,6 +76,7 @@ QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
 ### Where to go next?
 
+* [Wiki](https://github.com/KeRNeLith/QuikGraph/wiki)
 * [Documentation](https://kernelith.github.io/QuikGraph/)
 * [External Information](https://quickgraph.codeplex.com/documentation) (The website was closed)
 

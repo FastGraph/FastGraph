@@ -6,7 +6,7 @@ using QuikGraph.Constants;
 namespace QuikGraph
 {
     /// <summary>
-    /// The default <see cref="IEdge{TVertex}"/> implementation.
+    /// The default <see cref="IEdge{TVertex}"/> implementation (directed edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
 #if SUPPORTS_SERIALIZATION

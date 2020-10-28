@@ -7,7 +7,7 @@ using QuikGraph.Constants;
 namespace QuikGraph
 {
     /// <summary>
-    /// The default implementation of an <see cref="IEdge{TVertex}"/> that supports tagging and is equatable.
+    /// The default implementation of an <see cref="IEdge{TVertex}"/> that supports tagging and is equatable (directed edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TTag">Tag type.</typeparam>
