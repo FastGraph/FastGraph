@@ -51,9 +51,8 @@ Misc:
   <!-- Dependencies -->
   <!-- Externals -->
   <ItemGroup>
-    <PackageReference Condition="$(DeployBuild)" Include="StrongNamer" Version="0.2.5" PrivateAssets="All" />
-    <PackageReference Include="AutomaticGraphLayout" Version="1.1.7" />
-    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
+    <PackageReference Include="AutomaticGraphLayout" Version="1.1.11" />
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
   </ItemGroup>
 
   <!-- QuikGraph reference -->
