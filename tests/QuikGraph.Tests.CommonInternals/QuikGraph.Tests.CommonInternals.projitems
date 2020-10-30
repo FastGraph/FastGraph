@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AlgorithmTestHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AssertHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GraphTestHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SerializationTestHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)QuikGraphAssert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)QuikGraphUnitTestsHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)QuikGraphUnitTestsSetupBase.cs" />

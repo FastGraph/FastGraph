@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
+using static QuikGraph.Tests.SerializationTestHelpers;
 
 namespace QuikGraph.Graphviz.Tests
 {
@@ -99,6 +100,17 @@ namespace QuikGraph.Graphviz.Tests
             Assert.AreEqual(color1.GetHashCode(), color2.GetHashCode());
             Assert.AreNotEqual(color1.GetHashCode(), color3.GetHashCode());
             Assert.AreEqual(color3.GetHashCode(), color4.GetHashCode());
+        }
+
+        [Test]
+        public void Serialization()
+        {
+            var color = new GraphvizColor(255, 25, 60, 234);
+            GraphvizColor deserializedColor = SerializeAndDeserialize(color);
+            Assert.AreEqual(color.A, deserializedColor.A);
+            Assert.AreEqual(color.R, deserializedColor.R);
+            Assert.AreEqual(color.G, deserializedColor.G);
+            Assert.AreEqual(color.B, deserializedColor.B);
         }
     }
 }
