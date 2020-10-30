@@ -2,6 +2,7 @@ using System;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -17,8 +18,9 @@ namespace QuikGraph
         /// Initializes a new instance of <see cref="QuikGraphException"/> with the given message.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        protected QuikGraphException(string message)
-            : base(message)
+        /// <param name="innerException">Inner exception.</param>
+        protected QuikGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

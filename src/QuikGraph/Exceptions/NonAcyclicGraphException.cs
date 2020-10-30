@@ -1,7 +1,8 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public NonAcyclicGraphException()
             : base("The graph contains at least one cycle.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="NonAcyclicGraphException"/> class.
+        /// </summary>
+        public NonAcyclicGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

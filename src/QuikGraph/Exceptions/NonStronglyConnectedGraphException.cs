@@ -1,7 +1,8 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public NonStronglyConnectedGraphException()
             : base("The graph is not strongly connected.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/> class.
+        /// </summary>
+        public NonStronglyConnectedGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

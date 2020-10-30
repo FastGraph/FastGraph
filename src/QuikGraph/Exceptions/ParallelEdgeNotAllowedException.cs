@@ -1,5 +1,6 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+using JetBrains.Annotations;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
 
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public ParallelEdgeNotAllowedException()
             : base("Parallel edges are not allowed in the graph.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> class.
+        /// </summary>
+        public ParallelEdgeNotAllowedException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

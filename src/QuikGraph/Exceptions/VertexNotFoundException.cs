@@ -1,5 +1,5 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
@@ -25,8 +25,8 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="VertexNotFoundException"/> class.
         /// </summary>
-        public VertexNotFoundException([NotNull] string message)
-            : base(message)
+        public VertexNotFoundException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

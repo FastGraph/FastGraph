@@ -1,7 +1,8 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public NegativeCapacityException()
             : base("The graph contains at least one negative capacity.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="NegativeCapacityException"/> class.
+        /// </summary>
+        public NegativeCapacityException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

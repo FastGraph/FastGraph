@@ -1,7 +1,8 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public NoPathFoundException()
             : base("No path found to join vertices in the graph.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="NoPathFoundException"/> class.
+        /// </summary>
+        public NoPathFoundException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 

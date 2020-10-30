@@ -1,7 +1,8 @@
-#if SUPPORTS_SERIALIZATION
 using System;
+#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
+using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -18,6 +19,14 @@ namespace QuikGraph
         /// </summary>
         public NegativeCycleGraphException()
             : base("The graph contains at least one negative cycle.")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="NegativeCycleGraphException"/> class.
+        /// </summary>
+        public NegativeCycleGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+            : base(message, innerException)
         {
         }
 
