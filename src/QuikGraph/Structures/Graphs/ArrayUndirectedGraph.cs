@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -18,6 +22,9 @@ namespace QuikGraph
     public sealed class ArrayUndirectedGraph<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
 #if SUPPORTS_CLONEABLE
         , ICloneable
+#endif
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+        , ISerializable
 #endif
         where TEdge : IEdge<TVertex>
     {
@@ -66,7 +73,7 @@ namespace QuikGraph
         public int VertexCount => _vertexEdges.Count;
 
         [NotNull]
-        private readonly Dictionary<TVertex, TEdge[]> _vertexEdges;
+        private readonly IDictionary<TVertex, TEdge[]> _vertexEdges;
 
         /// <inheritdoc />
         public IEnumerable<TVertex> Vertices => _vertexEdges.Keys.AsEnumerable();
@@ -195,6 +202,35 @@ namespace QuikGraph
         }
 
         #endregion
+
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+        #region ISerializable
+        
+        /// <summary>
+        /// Constructor used during runtime serialization.
+        /// </summary>
+        private ArrayUndirectedGraph(SerializationInfo info, StreamingContext context)
+        {
+            AllowParallelEdges = (bool)info.GetValue("AllowParallelEdges", typeof(bool));
+            _vertexEdges = (IDictionary<TVertex, TEdge[]>)info.GetValue(
+                "VertexEdges",
+                typeof(IDictionary<TVertex, TEdge[]>));
+            _edges = (IList<TEdge>)info.GetValue("Edges", typeof(IList<TEdge>));
+            EdgeEqualityComparer = EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
+            EdgeCount = _edges.Count;
+        }
+
+        /// <inheritdoc />
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("AllowParallelEdges", AllowParallelEdges);
+            info.AddValue("VertexEdges", _vertexEdges);
+            info.AddValue("Edges", _edges);
+        }
+
+        #endregion
+#endif
 
         #region ICloneable
 

@@ -5,6 +5,10 @@ using System.Linq;
 #if !SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;
 #endif
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -20,6 +24,9 @@ namespace QuikGraph
 #endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class UndirectedBidirectionalGraph<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+        , ISerializable
+#endif
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -186,5 +193,26 @@ namespace QuikGraph
         }
 
         #endregion
+
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+        #region ISerializable
+        
+        /// <summary>
+        /// Constructor used during runtime serialization.
+        /// </summary>
+        private UndirectedBidirectionalGraph(SerializationInfo info, StreamingContext context)
+            : this((IBidirectionalGraph<TVertex, TEdge>)info.GetValue("OriginalGraph", typeof(IBidirectionalGraph<TVertex, TEdge>)))
+        {
+        }
+
+        /// <inheritdoc />
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("OriginalGraph", OriginalGraph);
+        }
+
+        #endregion
+#endif
     }
 }

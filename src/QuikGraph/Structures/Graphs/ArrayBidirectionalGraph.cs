@@ -28,7 +28,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
         [Serializable]
 #endif
-        private struct InOutEdges
+        private class InOutEdges
         {
             [NotNull, ItemNotNull]
             public TEdge[] OutEdges { get; }
@@ -84,7 +84,7 @@ namespace QuikGraph
         public int VertexCount => _vertexEdges.Count;
 
         [NotNull]
-        private readonly Dictionary<TVertex, InOutEdges> _vertexEdges;
+        private readonly IDictionary<TVertex, InOutEdges> _vertexEdges;
 
         /// <inheritdoc />
         public IEnumerable<TVertex> Vertices => _vertexEdges.Keys.AsEnumerable();
