@@ -1,6 +1,7 @@
 ﻿using System;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 #endif
 
 namespace QuikGraph.Graphviz.Dot
@@ -106,7 +107,8 @@ namespace QuikGraph.Graphviz.Dot
         }
 
         /// <inheritdoc />
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("a", A);
             info.AddValue("r", R);

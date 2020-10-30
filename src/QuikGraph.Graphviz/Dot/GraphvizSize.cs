@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 #endif
 using static QuikGraph.Utils.MathUtils;
 
@@ -68,7 +69,8 @@ namespace QuikGraph.Graphviz.Dot
         }
 
         /// <inheritdoc />
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("w", Width);
             info.AddValue("h", Height);
@@ -138,7 +140,8 @@ namespace QuikGraph.Graphviz.Dot
         }
 
         /// <inheritdoc />
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("w", Width);
             info.AddValue("h", Height);
