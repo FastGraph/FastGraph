@@ -44,7 +44,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         [Test]
         public void ExceptionThrown_WhenVertexDoesNotExistInGraph()
         {
-            var scenario = new ContractScenario
+            var scenario = new ContractScenario<int>
             {
                 EdgesInGraph = new[] { new Edge<int>(1, 2) },
                 AccessibleVerticesFromRoot = new[] { 2 },
@@ -60,7 +60,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         [Test]
         public void ExceptionThrown_WhenAlgorithmHasNotYetBeenComputed()
         {
-            var scenario = new ContractScenario
+            var scenario = new ContractScenario<int>
             {
                 EdgesInGraph = new[] { new Edge<int>(1, 2) },
                 SingleVerticesInGraph = new int[0],
@@ -97,7 +97,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         [Test]
         public void ColorReturned_WhenVertexIsAccessibleFromRoot()
         {
-            var scenario = new ContractScenario
+            var scenario = new ContractScenario<int>
             {
                 EdgesInGraph = new[] { new Edge<int>(1, 2) },
                 AccessibleVerticesFromRoot = new[] { 2 },
@@ -113,7 +113,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         [Test]
         public void ColorReturned_WhenVertexExistsButIsInaccessibleFromRoot()
         {
-            var scenario = new ContractScenario
+            var scenario = new ContractScenario<int>
             {
                 EdgesInGraph = new[] { new Edge<int>(1, 2) },
                 SingleVerticesInGraph = new[] { 3 },
@@ -129,16 +129,16 @@ namespace QuikGraph.Tests.Algorithms.Contracts
 
         [Pure]
         [NotNull]
-        private IVertexColorizerAlgorithm<int> CreateAlgorithmAndMaybeDoComputation(
-            [NotNull] ContractScenario scenario)
+        private IVertexColorizerAlgorithm<T> CreateAlgorithmAndMaybeDoComputation<T>(
+            [NotNull] ContractScenario<T> scenario)
         {
-            var instantiateAlgorithm = GetAlgorithmFactory();
+            var instantiateAlgorithm = GetAlgorithmFactory<T>();
             return instantiateAlgorithm(scenario);
         }
 
         [Pure]
         [NotNull]
-        private Func<ContractScenario, IVertexColorizerAlgorithm<int>> GetAlgorithmFactory()
+        private Func<ContractScenario<T>, IVertexColorizerAlgorithm<T>> GetAlgorithmFactory<T>()
         {
             return _testedAlgorithm switch
             {

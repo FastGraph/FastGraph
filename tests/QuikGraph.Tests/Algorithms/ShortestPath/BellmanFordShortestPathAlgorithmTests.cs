@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BellmanFordShortestPathAlgorithmTests : ShortestPathAlgorithmTestsBase
+    internal class BellmanFordShortestPathAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 
@@ -47,8 +47,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             }
 
             Assert.IsFalse(algorithm.FoundNegativeCycle);
-            Assert.IsNotNull(algorithm.Distances);
-            Assert.AreEqual(graph.VertexCount, algorithm.Distances.Count);
+            CollectionAssert.IsNotEmpty(algorithm.GetDistances());
+            Assert.AreEqual(graph.VertexCount, algorithm.GetDistances().Count());
 
             Verify(algorithm, predecessors);
         }
@@ -105,7 +105,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     Assert.IsNotNull(algo.Weights);
                 else
                     Assert.AreSame(eWeights, algo.Weights);
-                Assert.IsNull(algo.Distances);
+                CollectionAssert.IsEmpty(algo.GetDistances());
                 if (relaxer is null)
                     Assert.IsNotNull(algo.DistanceRelaxer);
                 else
@@ -225,27 +225,6 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
         #endregion
 
-        #region Shortest path algorithm
-
-        [Test]
-        public void TryGetDistance()
-        {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertex(1);
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
-            TryGetDistance_Test(algorithm);
-        }
-
-        [Test]
-        public void TryGetDistance_Throws()
-        {
-            var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new BellmanFordShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0);
-            TryGetDistance_Throws_Test(algorithm);
-        }
-
-        #endregion
-
         [Test]
         public void GetVertexColor()
         {
@@ -328,15 +307,15 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
         [Pure]
         [NotNull]
-        public static BellmanFordShortestPathAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
-            [NotNull] ContractScenario scenario)
+        public static BellmanFordShortestPathAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
+            [NotNull] ContractScenario<T> scenario)
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            var graph = new AdjacencyGraph<T, Edge<T>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
             graph.AddVertexRange(scenario.SingleVerticesInGraph);
 
-            double Weights(Edge<int> e) => 1.0;
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
+            double Weights(Edge<T> e) => 1.0;
+            var algorithm = new BellmanFordShortestPathAlgorithm<T, Edge<T>>(graph, Weights);
 
             if (scenario.DoComputation)
                 algorithm.Compute(scenario.Root);

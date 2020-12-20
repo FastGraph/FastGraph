@@ -1,11 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.TSP;
-using QuikGraph.Tests.Algorithms.ShortestPath;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
 namespace QuikGraph.Tests.Algorithms.TSP
@@ -14,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.TSP
     /// Tests for <see cref="TSP{TVertex,TEdge,TGraph}"/>.
     /// </summary>
     [TestFixture]
-    internal class TSPTests : ShortestPathAlgorithmTestsBase
+    internal class TSPTests : RootedAlgorithmTestsBase
     {
         #region Test helpers & classes
 
@@ -85,7 +84,7 @@ namespace QuikGraph.Tests.Algorithms.TSP
                     Assert.IsNotNull(algo.Weights);
                 else
                     Assert.AreSame(eWeights, algo.Weights);
-                Assert.IsNull(algo.Distances);
+                CollectionAssert.IsEmpty(algo.GetDistances());
                 Assert.AreSame(DistanceRelaxers.ShortestDistance, algo.DistanceRelaxer);
             }
 
@@ -187,7 +186,11 @@ namespace QuikGraph.Tests.Algorithms.TSP
 
             var graph2 = new BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>();
             var algorithm2 = new TSP<TestVertex, EquatableEdge<TestVertex>, BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>>(graph2, edge => 1.0);
-            TryGetDistance_Throws_Test(algorithm2);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => algorithm2.TryGetDistance(null, out _));
+
+            var vertex = new TestVertex();
+            Assert.Throws<InvalidOperationException>(() => algorithm2.TryGetDistance(vertex, out _));
         }
 
         #endregion
@@ -335,15 +338,15 @@ namespace QuikGraph.Tests.Algorithms.TSP
 
         [Pure]
         [NotNull]
-        public static TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>> CreateAlgorithmAndMaybeDoComputation(
-            [NotNull] ContractScenario scenario)
+        public static TSP<T, EquatableEdge<T>, BidirectionalGraph<T, EquatableEdge<T>>> CreateAlgorithmAndMaybeDoComputation<T>(
+            [NotNull] ContractScenario<T> scenario)
         {
-            var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
-            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new EquatableEdge<int>(e.Source, e.Target)));
+            var graph = new BidirectionalGraph<T, EquatableEdge<T>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new EquatableEdge<T>(e.Source, e.Target)));
             graph.AddVertexRange(scenario.SingleVerticesInGraph);
 
-            double Weights(Edge<int> e) => 1.0;
-            var algorithm = new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, Weights);
+            double Weights(Edge<T> e) => 1.0;
+            var algorithm = new TSP<T, EquatableEdge<T>, BidirectionalGraph<T, EquatableEdge<T>>>(graph, Weights);
 
             if (scenario.DoComputation)
                 algorithm.Compute(scenario.Root);

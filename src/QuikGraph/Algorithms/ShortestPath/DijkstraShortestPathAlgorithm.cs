@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
@@ -73,7 +73,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             TVertex[] vertices = _vertexQueue.ToArray();
             for (int i = 1; i < vertices.Length; ++i)
             {
-                if (Distances[top] > Distances[vertices[i]])
+                if (GetVertexDistance(top)> GetVertexDistance(vertices[i]))
                     Debug.Assert(false);
             }
         }
@@ -169,7 +169,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 VerticesColors.Add(vertex, GraphColor.White);
-                Distances.Add(vertex, initialDistance);
+                SetVertexDistance(vertex, initialDistance);
             }
 
             _vertexQueue = new FibonacciQueue<TVertex, double>(DistancesIndexGetter());
@@ -202,7 +202,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             Debug.Assert(VerticesColors[rootVertex] == GraphColor.White);
 
             VerticesColors[rootVertex] = GraphColor.Gray;
-            Distances[rootVertex] = 0;
+            SetVertexDistance(rootVertex, 0);
             ComputeNoInit(rootVertex);
         }
 

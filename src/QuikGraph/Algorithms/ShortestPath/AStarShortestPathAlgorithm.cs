@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -130,7 +130,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             if (decreased)
             {
                 TVertex target = edge.Target;
-                double distance = Distances[target];
+                double distance = GetVertexDistance(target);
 
                 _costs[target] = DistanceRelaxer.Combine(distance, CostHeuristic(target));
                 OnTreeEdge(edge);
@@ -149,7 +149,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             if (decreased)
             {
                 TVertex target = edge.Target;
-                double distance = Distances[target];
+                double distance = GetVertexDistance(target);
 
                 _costs[target] = DistanceRelaxer.Combine(distance, CostHeuristic(target));
                 _vertexQueue.Update(target);
@@ -169,7 +169,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             if (decreased)
             {
                 TVertex target = edge.Target;
-                double distance = Distances[target];
+                double distance = GetVertexDistance(target);
 
                 OnTreeEdge(edge);
                 _costs[target] = DistanceRelaxer.Combine(distance, CostHeuristic(target));
@@ -199,7 +199,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 VerticesColors.Add(vertex, GraphColor.White);
-                Distances.Add(vertex, initialDistance);
+                SetVertexDistance(vertex, initialDistance);
                 _costs.Add(vertex, initialDistance);
             }
 
@@ -233,7 +233,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             Debug.Assert(VerticesColors[rootVertex] == GraphColor.White);
 
             VerticesColors[rootVertex] = GraphColor.Gray;
-            Distances[rootVertex] = 0;
+            SetVertexDistance(rootVertex, 0);
             ComputeNoInit(rootVertex);
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -11,16 +11,16 @@ namespace QuikGraph.Algorithms.ShortestPath
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Bellman-Ford algorithm solves the single-source shortest paths 
+    /// The Bellman-Ford algorithm solves the single-source shortest paths
     /// problem for a graph with both positive and negative edge weights.
     /// </para>
     /// <para>
-    /// If you only need to solve the shortest paths problem for positive 
-    /// edge weights, Dijkstra's algorithm provides a more efficient 
+    /// If you only need to solve the shortest paths problem for positive
+    /// edge weights, Dijkstra's algorithm provides a more efficient
     /// alternative.
     /// </para>
     /// <para>
-    /// If all the edge weights are all equal to one then breadth-first search 
+    /// If all the edge weights are all equal to one then breadth-first search
     /// provides an even more efficient alternative.
     /// </para>
     /// </remarks>
@@ -160,7 +160,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 VerticesColors[vertex] = GraphColor.White;
-                Distances[vertex] = double.PositiveInfinity;
+                SetVertexDistance(vertex, double.PositiveInfinity);
                 OnInitializeVertex(vertex);
             }
 
@@ -174,7 +174,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                 throw new VertexNotFoundException("Root vertex is not part of the graph.");
             }
 
-            Distances[root] = 0;
+            SetVertexDistance(root, 0);
         }
 
         /// <summary>
@@ -214,8 +214,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             {
                 double edgeWeight = Weights(edge);
                 if (relaxer.Compare(
-                        relaxer.Combine(Distances[edge.Source], edgeWeight),
-                        Distances[edge.Target]) < 0)
+                        relaxer.Combine(GetVertexDistance(edge.Source), edgeWeight),
+                        GetVertexDistance(edge.Target)) < 0)
                 {
                     OnEdgeMinimized(edge);
                     FoundNegativeCycle = true;

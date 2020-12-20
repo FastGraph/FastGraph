@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.RankedShortestPath;
-using QuikGraph.Tests.Algorithms.ShortestPath;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.AssertHelpers;
 
@@ -15,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.RankedShortestPath
     /// Tests for <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class HoffmanPavleyRankedShortestPathAlgorithmTests : ShortestPathAlgorithmTestsBase
+    internal class HoffmanPavleyRankedShortestPathAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

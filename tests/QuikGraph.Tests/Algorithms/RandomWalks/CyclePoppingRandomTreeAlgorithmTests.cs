@@ -403,15 +403,15 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
 
         [Pure]
         [NotNull]
-        public static CyclePoppingRandomTreeAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
-            [NotNull] ContractScenario scenario)
+        public static CyclePoppingRandomTreeAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
+            [NotNull] ContractScenario<T> scenario)
         {
-            var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            var graph = new AdjacencyGraph<T, Edge<T>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
             graph.AddVertexRange(scenario.SingleVerticesInGraph);
-            var chain = new NormalizedMarkovEdgeChain<int, Edge<int>>();
+            var chain = new NormalizedMarkovEdgeChain<T, Edge<T>>();
 
-            var algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, chain);
+            var algorithm = new CyclePoppingRandomTreeAlgorithm<T, Edge<T>>(graph, chain);
 
             if (scenario.DoComputation)
                 algorithm.Compute(scenario.Root);

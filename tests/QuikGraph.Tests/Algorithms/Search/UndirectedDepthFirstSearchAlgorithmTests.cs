@@ -326,14 +326,14 @@ namespace QuikGraph.Tests.Algorithms.Search
             }
         }
 
-        public static UndirectedDepthFirstSearchAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
-            ContractScenario scenario)
+        public static UndirectedDepthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
+            ContractScenario<T> scenario)
         {
-            var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            var graph = new UndirectedGraph<T, Edge<T>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
             graph.AddVertexRange(scenario.SingleVerticesInGraph);
 
-            var algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            var algorithm = new UndirectedDepthFirstSearchAlgorithm<T, Edge<T>>(graph);
 
             if (scenario.DoComputation)
                 algorithm.Compute(scenario.Root);

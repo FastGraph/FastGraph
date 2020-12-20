@@ -53,5 +53,11 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         /// </summary>
         [NotNull, ItemNotNull]
         public static IEnumerable<Type> VertexColorizers => GetImplementationsOf(typeof(IVertexColorizerAlgorithm<>));
+
+        /// <summary>
+        /// Gets all implementations of the <see cref="IDistancesCollection{TVertex}"/> interface.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        public static IEnumerable<Type> DistanceCollectors => GetImplementationsOf(typeof(IDistancesCollection<>));
     }
 }

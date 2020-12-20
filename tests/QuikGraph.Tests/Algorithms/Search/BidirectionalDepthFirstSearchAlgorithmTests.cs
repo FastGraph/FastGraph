@@ -322,14 +322,14 @@ namespace QuikGraph.Tests.Algorithms.Search
 
         [Pure]
         [NotNull]
-        public static BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>> CreateAlgorithmAndMaybeDoComputation(
-            [NotNull] ContractScenario scenario)
+        public static BidirectionalDepthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
+            [NotNull] ContractScenario<T> scenario)
         {
-            var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<int>(e.Source, e.Target)));
+            var graph = new BidirectionalGraph<T, Edge<T>>();
+            graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
             graph.AddVertexRange(scenario.SingleVerticesInGraph);
 
-            var algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
+            var algorithm = new BidirectionalDepthFirstSearchAlgorithm<T, Edge<T>>(graph);
 
             if (scenario.DoComputation)
                 algorithm.Compute(scenario.Root);

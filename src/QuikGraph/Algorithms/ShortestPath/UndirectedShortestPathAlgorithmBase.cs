@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
@@ -15,8 +16,14 @@ namespace QuikGraph.Algorithms.ShortestPath
         : RootedAlgorithmBase<TVertex, IUndirectedGraph<TVertex, TEdge>>
         , IVertexColorizerAlgorithm<TVertex>
         , IUndirectedTreeBuilderAlgorithm<TVertex, TEdge>
+        , IDistancesCollection<TVertex>
         where TEdge : IEdge<TVertex>
     {
+        /// <summary>
+        /// Vertices distances.
+        /// </summary>
+        private IDictionary<TVertex, double> _distances;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UndirectedShortestPathAlgorithmBase{TVertex,TEdge}"/> class.
         /// </summary>
@@ -50,25 +57,56 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         /// <summary>
-        /// Tries to get the distance associated to the given <paramref name="vertex"/>.
+        /// Vertices distances.
         /// </summary>
-        /// <param name="vertex">The vertex.</param>
-        /// <param name="distance">Associated distance.</param>
-        /// <returns>True if the distance was found, false otherwise.</returns>
-        public bool TryGetDistance([NotNull] TVertex vertex, out double distance)
-        {
-            if (vertex == null)
-                throw new ArgumentNullException(nameof(vertex));
-            if (Distances is null)
-                throw new InvalidOperationException("Run the algorithm before.");
+        [Obsolete("Use methods on " + nameof(IDistancesCollection<object>) + " to interact with the distances instead.")]
+        public IDictionary<TVertex, double> Distances => _distances;
 
-            return Distances.TryGetValue(vertex, out distance);
+        /// <summary>
+        /// Gets the distance associated to the given <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex to get the distance for.</param>
+        [Pure]
+        protected double GetVertexDistance([NotNull] TVertex vertex)
+        {
+            return _distances[vertex];
         }
 
         /// <summary>
-        /// Vertices distances.
+        /// Sets the distance associated to the given <paramref name="vertex"/>.
         /// </summary>
-        public IDictionary<TVertex, double> Distances { get; private set; }
+        /// <param name="vertex">The vertex to get the distance for.</param>
+        /// <param name="distance">The distance.</param>
+        protected void SetVertexDistance([NotNull] TVertex vertex, double distance)
+        {
+            _distances[vertex] = distance;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetDistance(TVertex vertex, out double distance)
+        {
+            if (vertex == null)
+                throw new ArgumentNullException(nameof(vertex));
+            if (_distances is null)
+                throw new InvalidOperationException("Run the algorithm before.");
+
+            return _distances.TryGetValue(vertex, out distance);
+        }
+
+        /// <inheritdoc />
+        public double GetDistance(TVertex vertex)
+        {
+            bool vertexFound = TryGetDistance(vertex, out double distance);
+            if (!vertexFound)
+                throw new VertexNotFoundException($"No recorded distance for vertex {vertex}.");
+            return distance;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<KeyValuePair<TVertex, double>> GetDistances()
+        {
+            return _distances?.Select(pair => pair) ?? Enumerable.Empty<KeyValuePair<TVertex, double>>();
+        }
 
         /// <summary>
         /// Gets the function that gives access to distances from a vertex.
@@ -77,7 +115,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         [NotNull]
         protected Func<TVertex, double> DistancesIndexGetter()
         {
-            return AlgorithmExtensions.GetIndexer(Distances);
+            return AlgorithmExtensions.GetIndexer(_distances);
         }
 
         /// <summary>
@@ -100,7 +138,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             base.Initialize();
 
             VerticesColors = new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount);
-            Distances = new Dictionary<TVertex, double>(VisitedGraph.VertexCount);
+            _distances = new Dictionary<TVertex, double>(VisitedGraph.VertexCount);
         }
 
         #endregion
@@ -162,15 +200,15 @@ namespace QuikGraph.Algorithms.ShortestPath
                 (EqualityComparer<TVertex>.Default.Equals(edge.Source, target)
                     && EqualityComparer<TVertex>.Default.Equals(edge.Target, source)));
 
-            double du = Distances[source];
-            double dv = Distances[target];
+            double du = GetVertexDistance(source);
+            double dv = GetVertexDistance(target);
             double we = Weights(edge);
 
             IDistanceRelaxer relaxer = DistanceRelaxer;
             double duwe = relaxer.Combine(du, we);
             if (relaxer.Compare(duwe, dv) < 0)
             {
-                Distances[target] = duwe;
+                SetVertexDistance(target, duwe);
                 return true;
             }
 

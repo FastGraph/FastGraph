@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Base class for tests related to <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class FloydWarshallTestsBase : ShortestPathAlgorithmTestsBase
+    internal class FloydWarshallTestsBase : RootedAlgorithmTestsBase
     {
         #region Test helpers
 
