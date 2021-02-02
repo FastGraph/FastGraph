@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,7 +30,6 @@ namespace QuikGraph
         {
             Parent = null;
             Wrapped = wrappedGraph ?? throw new ArgumentNullException(nameof(wrappedGraph));
-            _clusters = new ArrayList();
             Collapsed = false;
         }
 
@@ -42,7 +41,6 @@ namespace QuikGraph
         {
             Parent = parentGraph ?? throw new ArgumentNullException(nameof(parentGraph));
             Wrapped = new AdjacencyGraph<TVertex, TEdge>(parentGraph.AllowParallelEdges);
-            _clusters = new ArrayList();
         }
 
         /// <summary>
@@ -93,11 +91,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Collapsed { get; set; }
 
-        [NotNull]
-        private readonly ArrayList _clusters;
+        [NotNull, ItemNotNull]
+        private readonly List<IClusteredGraph> _clusters = new List<IClusteredGraph>();
 
         /// <inheritdoc />
-        public IEnumerable Clusters => _clusters.Cast<object>();
+        public IEnumerable Clusters => _clusters.AsEnumerable();
 
         /// <inheritdoc />
         public int ClustersCount => _clusters.Count;
