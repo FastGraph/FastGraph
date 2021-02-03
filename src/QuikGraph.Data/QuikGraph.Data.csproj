@@ -28,13 +28,9 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Data</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.0
-Rework the original QuickGraph.Data module into QuikGraph.Data. This make possible to use the bridge from data related stuff to QuikGraph.
-
-Misc:
-- Clean the library code.
-- Fully document library.
-- Use JetBrains annotations all over the library as much as possible.</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.3.0
+Updates:
+- Update package dependencies.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization Data</PackageTags>
   </PropertyGroup>
 

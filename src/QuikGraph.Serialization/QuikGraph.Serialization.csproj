@@ -28,10 +28,9 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Serialization</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.2
-Fixes:
-- Add the possibility to use a custom binder during binary serialization to control deserialized types.
-- Undirected graphs are now serializable to XML.</PackageReleaseNotes>
+    <PackageReleaseNotes>➟ Release 2.3.0
+Updates:
+- Update package dependencies.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization</PackageTags>
   </PropertyGroup>
 

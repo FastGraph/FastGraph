@@ -1,5 +1,59 @@
 # Release notes
 
+## What's new in 2.3.0 February 4 2021
+
+### QuikGraph
+
+#### Fixes:
+* Fix the serialization implementation of UndirectedGraph, ArrayUndirectedGraph and UndirectedBidirectionalGraph.
+* Fix A\* implementation to also compute cost on tree edge.
+
+#### Updates:
+* Remove some serializable attributes from algorithms and predicates classes (homognization).
+* Remove serializable attributes from delegate graphs implementations.
+* All QuikGraph exceptions can be constructed with a custom message and an eventual inner exception.
+* CompressedSparseRowGraph also implements IEdgeListGraph interface.
+* EquateGraphs.Equate helpers now supports a wider range of graph comparisons.
+
+#### New:
+* Add the IDistancesCollection to interface the distance information retrieval from shortest path algorithms. Legacy accesses to distances are marked as obsolete.
+
+#### Misc:
+* Remove the dependency to System.Collections.NonGeneric for .NET Standard 1.3 target.
+
+### QuikGraph.Serialization
+
+#### Updates:
+* Update package dependencies.
+
+### QuikGraph.Graphviz
+
+#### Updates:
+* Update package dependencies.
+
+#### New:
+* Make all Dot structures serializable.
+
+### QuikGraph.Data
+
+#### Updates:
+* Update package dependencies.
+
+### QuikGraph.MSAGL
+
+#### Fixes:
+* Update reference to AutomaticGraphLayout packages in order to fix assembly strong naming issues.
+
+#### Updates:
+* Update package dependencies.
+
+### QuikGraph.Petri
+
+#### Updates:
+* Update package dependencies.
+
+---
+
 ## What's new in 2.2.2 July 18 2020
 
 ### QuikGraph.Serialization

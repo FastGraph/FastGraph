@@ -28,19 +28,9 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Petri</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.1
-Rework the original QuickGraph.Petri module into QuikGraph.Petri. This make possible to use the Petri Net features.
-
-Fixes:
-- Fix PetriNetSimulator with possible collection modified while enumerating.
-
+    <PackageReleaseNotes>➟ Release 2.3.0
 Updates:
-- Really make IPetriNet immutable to enforce the difference with IMutablePetriNet.
-
-Misc:
-- Clean the library code.
-- Fully document library.
-- Use JetBrains annotations all over the library as much as possible.</PackageReleaseNotes>
+- Update package dependencies.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Petri</PackageTags>
   </PropertyGroup>
 

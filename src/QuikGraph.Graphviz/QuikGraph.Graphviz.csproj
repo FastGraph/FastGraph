@@ -28,9 +28,12 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Graphviz</PackageId>
-    <PackageReleaseNotes>➟ Release 2.2.0
+    <PackageReleaseNotes>➟ Release 2.3.0
+Updates:
+- Update package dependencies.
+
 New:
-- Use signing key to strong name library assemby.</PackageReleaseNotes>
+- Make all Dot structures serializable.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization Graphviz</PackageTags>
   </PropertyGroup>
 
