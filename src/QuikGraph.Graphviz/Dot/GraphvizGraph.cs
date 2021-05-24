@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
@@ -108,6 +108,12 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:remincross">See more</see>
         /// </summary>
         public bool IsReMinCross { get; set; }
+
+        /// <summary>
+        /// Indicates if label should be read as HTML or normal text. By default it is normal text.
+        /// <see href="https://www.graphviz.org/doc/info/shapes.html#html">See more</see>
+        /// </summary>
+        public bool IsHtmlLabel { get; set; }
 
         /// <summary>
         /// Label.
@@ -273,6 +279,10 @@ namespace QuikGraph.Graphviz.Dot
                         dotParts.Add($"{pair.Key}={pair.Value}");
                         continue;
 
+                    case HtmlString html:
+                        dotParts.Add($"{pair.Key}=<{html.String}>");
+                        continue;
+
                     case GraphvizLayerCollection layers:
                         dotParts.Add(layers.ToDot());
                         continue;
@@ -348,7 +358,14 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Label != null)
             {
-                properties["label"] = Escape(Label);
+                if (IsHtmlLabel)
+                {
+                    properties["label"] = new HtmlString(Label);
+                }
+                else
+                {
+                    properties["label"] = Escape(Label);
+                }
             }
             if (LabelJustification != GraphvizLabelJustification.C)
             {

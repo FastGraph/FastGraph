@@ -21,6 +21,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.IsTrue(edgeLabel.Float);
             Assert.IsNull(edgeLabel.Font);
             Assert.AreEqual(GraphvizColor.Black, edgeLabel.FontColor);
+            Assert.IsFalse(edgeLabel.IsHtmlLabel);
             Assert.IsNull(edgeLabel.Value);
         }
 

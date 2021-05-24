@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections;
 using JetBrains.Annotations;
+using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 
 namespace QuikGraph.Graphviz.Dot
@@ -34,6 +35,12 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailclip">See more</see>
         /// </summary>
         public bool IsClipped { get; set; }
+
+        /// <summary>
+        /// Indicates if label should be read as HTML or normal text. By default it is normal text.
+        /// <see href="https://www.graphviz.org/doc/info/shapes.html#html">See more</see>
+        /// </summary>
+        public bool IsHtmlLabel { get; set; }
 
         /// <summary>
         /// Label.
@@ -90,7 +97,15 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Label != null)
             {
-                parameters.Add(extremity + "label", Escape(Label));
+                string labelKey = extremity + "label";
+                if (IsHtmlLabel)
+                {
+                    parameters.Add(labelKey, new HtmlString(Label));
+                }
+                else
+                {
+                    parameters.Add(labelKey, Escape(Label));
+                }
             }
             if (ToolTip != null)
             {

@@ -29,6 +29,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.IsFalse(graph.IsConcentrated);
             Assert.IsFalse(graph.IsLandscape);
             Assert.IsFalse(graph.IsReMinCross);
+            Assert.IsFalse(graph.IsHtmlLabel);
             Assert.IsNull(graph.Label);
             Assert.AreEqual(GraphvizLabelJustification.C, graph.LabelJustification);
             Assert.IsNotNull(graph.Layers);
@@ -183,6 +184,15 @@ namespace QuikGraph.Graphviz.Tests
                     graph,
                     @"comment=""\""The Comment\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪""; "
                     + @"label=""\""The Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"";");
+
+                graph = new GraphvizGraph
+                {
+                    IsHtmlLabel = true,
+                    Label = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                };
+                yield return new TestCaseData(
+                    graph,
+                    @"label=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
             }
         }
 

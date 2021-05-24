@@ -30,6 +30,7 @@ namespace QuikGraph.Graphviz.Tests
                 Assert.AreEqual(head, extremity.IsHead);
                 Assert.IsTrue(extremity.IsClipped);
                 Assert.IsNull(extremity.Url);
+                Assert.IsFalse(extremity.IsHtmlLabel);
                 Assert.IsNull(extremity.Label);
                 Assert.IsNull(extremity.ToolTip);
                 Assert.IsNull(extremity.Logical);

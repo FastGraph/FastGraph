@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections;
 using JetBrains.Annotations;
+using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
 
@@ -46,6 +47,12 @@ namespace QuikGraph.Graphviz.Dot
         public GraphvizColor FontColor { get; set; } = GraphvizColor.Black;
 
         /// <summary>
+        /// Indicates if label should be read as HTML or normal text. By default it is normal text.
+        /// <see href="https://www.graphviz.org/doc/info/shapes.html#html">See more</see>
+        /// </summary>
+        public bool IsHtmlLabel { get; set; }
+
+        /// <summary>
         /// Label text.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
         /// </summary>
@@ -62,7 +69,14 @@ namespace QuikGraph.Graphviz.Dot
 
             if (Value != null)
             {
-                parameters["label"] = Escape(Value);
+                if (IsHtmlLabel)
+                {
+                    parameters["label"] = new HtmlString(Value);
+                }
+                else
+                {
+                    parameters["label"] = Escape(Value);
+                }
                 if (!NearEqual(Angle, -25.0))
                 {
                     parameters["labelangle"] = Angle;

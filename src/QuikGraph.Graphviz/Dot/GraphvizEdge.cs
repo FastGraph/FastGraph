@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
@@ -232,6 +232,10 @@ namespace QuikGraph.Graphviz.Dot
                             color.G.ToString("x2").ToUpper(),
                             color.B.ToString("x2").ToUpper(),
                             color.A.ToString("x2").ToUpper());
+                        continue;
+
+                    case HtmlString html:
+                        builder.Append($"{pair.Key}=<{html.String}>");
                         continue;
 
                     default:

@@ -19,6 +19,7 @@ namespace QuikGraph.Graphviz.Tests
             var vertex = new GraphvizVertex();
             Assert.IsNull(vertex.Position);
             Assert.IsNull(vertex.Comment);
+            Assert.IsFalse(vertex.IsHtmlLabel);
             Assert.IsNull(vertex.Label);
             Assert.IsNull(vertex.ToolTip);
             Assert.IsNull(vertex.Url);
@@ -66,6 +67,19 @@ namespace QuikGraph.Graphviz.Tests
                     FillColor = GraphvizColor.Blue
                 };
                 yield return new TestCaseData(vertex, @"shape=doublecircle, style=filled, fillcolor=""#0000FFFF""");
+
+                vertex = new GraphvizVertex
+                {
+                    Label = "<b>Bold</b> text"
+                };
+                yield return new TestCaseData(vertex, @"label=""<b>Bold</b> text""");
+
+                vertex = new GraphvizVertex
+                {
+                    IsHtmlLabel = true,
+                    Label = "<b>Bold</b> text"
+                };
+                yield return new TestCaseData(vertex, @"label=<<b>Bold</b> text>");
 
                 vertex = new GraphvizVertex
                 {
@@ -262,6 +276,15 @@ namespace QuikGraph.Graphviz.Tests
                     @"label=""\""The Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
                     + @"tooltip=""\""The Tooltip\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
                     + @"comment=""\""The Comment\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪""");
+
+                vertex = new GraphvizVertex
+                {
+                    IsHtmlLabel = true,
+                    Label = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                };
+                yield return new TestCaseData(
+                    vertex,
+                    @"label=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
             }
         }
 

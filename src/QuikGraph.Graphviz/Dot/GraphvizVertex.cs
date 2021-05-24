@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION
+﻿#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using System.Collections.Generic;
@@ -29,6 +29,12 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
         /// </summary>
         public string Comment { get; set; }
+
+        /// <summary>
+        /// Indicates if label should be read as HTML or normal text. By default it is normal text.
+        /// <see href="https://www.graphviz.org/doc/info/shapes.html#html">See more</see>
+        /// </summary>
+        public bool IsHtmlLabel { get; set; }
 
         /// <summary>
         /// Label.
@@ -216,6 +222,10 @@ namespace QuikGraph.Graphviz.Dot
                             continue;
                         }
 
+                    case HtmlString html:
+                        builder.Append($"{pair.Key}=<{html.String}>");
+                        continue;
+
                     case GraphvizRecord record:
                         builder.Append($"{pair.Key}=\"{record.ToDot()}\"");
                         continue;
@@ -265,7 +275,14 @@ namespace QuikGraph.Graphviz.Dot
             }
             else if (Label != null)
             {
-                properties["label"] = Escape(Label);
+                if (IsHtmlLabel)
+                {
+                    properties["label"] = new HtmlString(Label);
+                }
+                else
+                {
+                    properties["label"] = Escape(Label);
+                }
             }
             if (FixedSize)
             {

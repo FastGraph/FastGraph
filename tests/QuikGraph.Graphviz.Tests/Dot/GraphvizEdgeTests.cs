@@ -18,6 +18,7 @@ namespace QuikGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             Assert.IsNull(edge.Comment);
+            Assert.IsFalse(edge.Label.IsHtmlLabel);
             Assert.IsNotNull(edge.Label);
             Assert.IsNull(edge.ToolTip);
             Assert.IsNull(edge.Url);
@@ -127,6 +128,47 @@ namespace QuikGraph.Graphviz.Tests
 
                 edge = new GraphvizEdge
                 {
+                    Label = new GraphvizEdgeLabel
+                    {
+                        Value = "<b>Bold</b> text"
+                    },
+                    Head = new GraphvizEdgeExtremity(true)
+                    {
+                        Label = "<b>Bold</b> text"
+                    },
+                    Tail = new GraphvizEdgeExtremity(false)
+                    {
+                        Label = "<b>Bold</b> text"
+                    }
+                };
+                yield return new TestCaseData(
+                    edge,
+                    @"headlabel=""<b>Bold</b> text"", label=""<b>Bold</b> text"", taillabel=""<b>Bold</b> text""");
+
+                edge = new GraphvizEdge
+                {
+                    Label = new GraphvizEdgeLabel
+                    {
+                        IsHtmlLabel = true,
+                        Value = "<b>Bold</b> text"
+                    },
+                    Head = new GraphvizEdgeExtremity(true)
+                    {
+                        IsHtmlLabel = true,
+                        Label = "<b>Bold</b> text"
+                    },
+                    Tail = new GraphvizEdgeExtremity(false)
+                    {
+                        IsHtmlLabel = true,
+                        Label = "<b>Bold</b> text"
+                    }
+                };
+                yield return new TestCaseData(
+                    edge,
+                    @"headlabel=<<b>Bold</b> text>, label=<<b>Bold</b> text>, taillabel=<<b>Bold</b> text>");
+
+                edge = new GraphvizEdge
+                {
                     Comment = "Test comment",
                     Label = new GraphvizEdgeLabel
                     {
@@ -204,6 +246,30 @@ namespace QuikGraph.Graphviz.Tests
                     + @"tailport=""_The_Tail_Port___&/__@~__With_æéèêë£¤¶ÀÁÂÃÄÅ_Escaped_Ση←_♠_[]()_Content_∴∞⇐ℜΩ÷嗷娪"", "
                     + @"tooltip=""\""The Tooltip\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
                     + @"comment=""\""The Comment\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪""");
+
+                edge = new GraphvizEdge
+                {
+                    Label = new GraphvizEdgeLabel
+                    {
+                        IsHtmlLabel = true,
+                        Value = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    },
+                    Head = new GraphvizEdgeExtremity(true)
+                    {
+                        IsHtmlLabel = true,
+                        Label = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    },
+                    Tail = new GraphvizEdgeExtremity(false)
+                    {
+                        IsHtmlLabel = true,
+                        Label = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    }
+                };
+                yield return new TestCaseData(
+                    edge,
+                    @"headlabel=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>, "
+                    + @"label=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>, "
+                    + @"taillabel=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
             }
         }
 
