@@ -3,5 +3,8 @@
 - name: Coding Guidelines
   href: guidelines/toc.yml
   topicHref: general-coding-guidelines.md
+- name: Tutorials
+  href: tutorials/toc.yml
+  topicHref: tutorials.md
 - name: Release Notes
   href: ~/../RELEASE_NOTES.md

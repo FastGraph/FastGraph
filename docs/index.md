@@ -21,7 +21,7 @@ It was then updated to become YC.QuickGraph.
 
 **This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the library to provide it as a clean NuGet packages using modern C# development (.NET Core).
 
-The plan is to to fully clean, fix issues of the original library and all its non Core parts, and improve it.
+The plan is to to fully clean, fix issues of the original library and all its non Core parts, and improve it. It also has a wide support of .NET targets to make it compatible with the most development environments.
 
 You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph).
 
@@ -30,6 +30,7 @@ You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph)
 - .NET Standard 1.3+
 - .NET Core 1.0+
 - .NET Framework 3.5+
+- Works under [Unity 3D](https://github.com/KeRNeLith/QuikGraph/wiki/Unity3D-Integration)
 
 Supports Source Link
 
