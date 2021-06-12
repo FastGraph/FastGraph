@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using NUnit.Framework;
 using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Tests.Algorithms.ShortestPath
@@ -8,7 +7,6 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// <summary>
     /// Base class for tests related to <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
-    [TestFixture]
     internal class FloydWarshallTestsBase : RootedAlgorithmTestsBase
     {
         #region Test helpers

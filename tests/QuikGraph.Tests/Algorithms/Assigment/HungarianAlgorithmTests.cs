@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Assignment;
@@ -47,9 +47,9 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             int[] tasks = algorithm.Compute();
 
-            Assert.AreEqual(tasks[0], 0);
-            Assert.AreEqual(tasks[1], 1);
-            Assert.AreEqual(tasks[2], 2);
+            Assert.AreEqual(0, tasks[0]);
+            Assert.AreEqual(1, tasks[1]);
+            Assert.AreEqual(2, tasks[2]);
         }
 
         [Test]
@@ -74,10 +74,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
 
             Assert.IsNotNull(algorithm.AgentsTasks);
             int[] tasks = algorithm.AgentsTasks;
-            Assert.AreEqual(tasks[0], 2); // J1 to be done by W3
-            Assert.AreEqual(tasks[1], 1); // J2 to be done by W2
-            Assert.AreEqual(tasks[2], 0); // J3 to be done by W1
-            Assert.AreEqual(tasks[3], 3); // J4 to be done by W4
+            Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
+            Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
+            Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
+            Assert.AreEqual(3, tasks[3]); // J4 to be done by W4
         }
 
         [Test]
@@ -93,11 +93,11 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
             int[] tasks = algorithm.AgentsTasks;
-            Assert.AreEqual(tasks[0], 0);
-            Assert.AreEqual(tasks[1], 1);
-            Assert.AreEqual(tasks[2], 2);
+            Assert.AreEqual(0, tasks[0]);
+            Assert.AreEqual(1, tasks[1]);
+            Assert.AreEqual(2, tasks[2]);
 
-            Assert.AreEqual(iterations.Length, 3);
+            Assert.AreEqual(3, iterations.Length);
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -162,12 +162,12 @@ namespace QuikGraph.Tests.Algorithms.Assignment
 
             Assert.IsNotNull(algorithm.AgentsTasks);
             int[] tasks = algorithm.AgentsTasks;
-            Assert.AreEqual(tasks[0], 2); // J1 to be done by W3
-            Assert.AreEqual(tasks[1], 1); // J2 to be done by W2
-            Assert.AreEqual(tasks[2], 0); // J3 to be done by W1
-            Assert.AreEqual(tasks[3], 3); // J4 to be done by W4
+            Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
+            Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
+            Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
+            Assert.AreEqual(3, tasks[3]); // J4 to be done by W4
 
-            Assert.AreEqual(iterations.Length, 11);
+            Assert.AreEqual(11, iterations.Length);
             CollectionAssert.AreEqual(
                 new[]
                 {

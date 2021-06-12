@@ -62,9 +62,8 @@ namespace QuikGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<string> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            // ReSharper disable AssignNullToNotNullAttribute
+            // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => { double _ = algorithm.GetDistance(null); });
-            // ReSharper restore AssignNullToNotNullAttribute
         }
 
         [Test]
@@ -80,7 +79,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            double _ = algorithm.GetDistance(2);
+            Assert.DoesNotThrow(() => { double _ = algorithm.GetDistance(2); });
         }
 
         [Test]
@@ -97,7 +96,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            double _ = algorithm.GetDistance(3);
+            Assert.DoesNotThrow(() => { double _ = algorithm.GetDistance(3); });
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -11,7 +11,6 @@ namespace QuikGraph.Tests.Structures
     /// <summary>
     /// Base class for tests over delegated graphs.
     /// </summary>
-    [TestFixture]
     internal class DelegateGraphTestsBase : GraphTestsBase
     {
         [Pure]

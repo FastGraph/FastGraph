@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -203,7 +203,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
                     "node",
                     "edge",
                     "",
-                    reader => new UndirectedGraph<string, TaggedEdge<string, double>>(),
+                    _ => new UndirectedGraph<string, TaggedEdge<string, double>>(),
                     reader => reader.GetAttribute("id"),
                     reader => new TaggedEdge<string, double>(
                         reader.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -216,7 +216,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             TaggedEdge<string, double>[] kruskal = undirectedGraph.MinimumSpanningTreeKruskal(e => e.Tag).ToArray();
             double kruskalCost = kruskal.Sum(e => e.Tag);
 
-            Assert.AreEqual(primCost, 63);
+            Assert.AreEqual(63, primCost);
             Assert.AreEqual(primCost, kruskalCost);
         }
     }
