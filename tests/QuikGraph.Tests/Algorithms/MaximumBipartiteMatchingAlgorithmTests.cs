@@ -12,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MaximumBipartiteMatchingAlgorithmTests
+    internal sealed class MaximumBipartiteMatchingAlgorithmTests
     {
         #region Test helpers
 

@@ -9,7 +9,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests for <see cref="BasicStructuresExtensions"/>.
     /// </summary>
     [TestFixture]
-    internal class BasicStructuresExtensionsTests
+    internal sealed class BasicStructuresExtensionsTests
     {
         #region Test helpers
 

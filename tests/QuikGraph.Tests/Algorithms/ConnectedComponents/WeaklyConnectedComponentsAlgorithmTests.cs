@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
     /// Tests for <see cref="WeaklyConnectedComponentsAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class WeaklyConnectedComponentsAlgorithmTests
+    internal sealed class WeaklyConnectedComponentsAlgorithmTests
     {
         #region Test helpers
 

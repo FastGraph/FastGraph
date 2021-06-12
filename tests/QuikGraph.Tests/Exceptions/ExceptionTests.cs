@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Exceptions
     /// Tests for exceptions.
     /// </summary>
     [TestFixture]
-    internal class ExceptionTests
+    internal sealed class ExceptionTests
     {
         private static void ExceptionConstructorTest<TException>(
             [NotNull, InstantHandle] Func<string, Exception, TException> createException)

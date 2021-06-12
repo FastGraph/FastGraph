@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -14,7 +14,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    internal class BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge>
+    internal sealed class BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge>
         : GraphAugmentorAlgorithmBase<TVertex, TEdge, IMutableVertexAndEdgeSet<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {

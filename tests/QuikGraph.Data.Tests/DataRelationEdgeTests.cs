@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using NUnit.Framework;
 
@@ -8,7 +8,7 @@ namespace QuikGraph.Data.Tests
     /// Tests for <see cref="DataRelationEdge"/>.
     ///</summary>
     [TestFixture]
-    internal class DataRelationEdgeTests
+    internal sealed class DataRelationEdgeTests
     {
         [Test]
         public void Construction()

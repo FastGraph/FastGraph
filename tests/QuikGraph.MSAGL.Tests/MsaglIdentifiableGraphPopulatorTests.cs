@@ -7,7 +7,7 @@ namespace QuikGraph.MSAGL.Tests
     /// <summary>
     /// Tests related to <see cref="MsaglIdentifiableGraphPopulator{TVertex,TEdge}"/>.
     /// </summary>
-    internal class MsaglIdentifiableGraphPopulatorTests : MsaglGraphPopulatorTestsBase
+    internal sealed class MsaglIdentifiableGraphPopulatorTests : MsaglGraphPopulatorTestsBase
     {
         [Test]
         public void Constructor()

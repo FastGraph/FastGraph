@@ -12,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="UndirectedTopologicalSortAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class UndirectedTopologicalSortAlgorithmTests
+    internal sealed class UndirectedTopologicalSortAlgorithmTests
     {
         #region Test helpers
 

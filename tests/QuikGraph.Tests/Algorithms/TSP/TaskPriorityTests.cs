@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Algorithms.TSP
     /// Tests for <see cref="TaskPriority"/>.
     /// </summary>
     [TestFixture]
-    internal class TaskPriorityTests
+    internal sealed class TaskPriorityTests
     {
         [Test]
         public void Constructor()

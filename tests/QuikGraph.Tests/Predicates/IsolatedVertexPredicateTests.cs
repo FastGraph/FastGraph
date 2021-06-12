@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Predicates
     /// Tests for <see cref="IsolatedVertexPredicate{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class IsolatedVertexPredicateTests
+    internal sealed class IsolatedVertexPredicateTests
     {
         [Test]
         public void Construction()

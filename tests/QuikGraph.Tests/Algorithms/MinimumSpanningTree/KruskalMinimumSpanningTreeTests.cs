@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
     /// Tests for <see cref="KruskalMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class KruskalMinimumSpanningTreeTests : MinimumSpanningTreeTestsBase
+    internal sealed class KruskalMinimumSpanningTreeTests : MinimumSpanningTreeTestsBase
     {
         [Test]
         public void Constructor()

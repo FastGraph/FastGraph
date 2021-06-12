@@ -7,7 +7,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="IdentityExpression{TToken}"/>.
     /// </summary>
-    internal class IdentityExpressionTests
+    internal sealed class IdentityExpressionTests
     {
         [Test]
         public void Evaluate()

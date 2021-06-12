@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class FloydWarshallAllShortestPathAlgorithmTests : FloydWarshallTestsBase
+    internal sealed class FloydWarshallAllShortestPathAlgorithmTests : FloydWarshallTestsBase
     {
         [Test]
         public void Constructor()

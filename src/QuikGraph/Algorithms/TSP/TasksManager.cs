@@ -1,10 +1,10 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TSP
 {
-    internal class TasksManager<TVertex, TEdge>
+    internal sealed class TasksManager<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>
     {
         [NotNull]
@@ -49,5 +49,4 @@ namespace QuikGraph.Algorithms.TSP
             return _tasksQueue.Count > 0;
         }
     }
-
 }

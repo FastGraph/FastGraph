@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests related to "equals" of graphs.
     /// </summary>
     [TestFixture]
-    internal class EquatableGraphTests
+    internal sealed class EquatableGraphTests
     {
         #region Test helpers
 

@@ -8,7 +8,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="GraphvizFont"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizFontTests
+    internal sealed class GraphvizFontTests
     {
         [Test]
         public void Constructor()

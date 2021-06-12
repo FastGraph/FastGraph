@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="AllVerticesGraphAugmentorAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class AllVerticesGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
+    internal sealed class AllVerticesGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
     {
         #region Test helpers
 

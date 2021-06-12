@@ -10,7 +10,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="FileDotEngine"/>.
     /// </summary>
     [TestFixture]
-    internal class FileFotEngineTests
+    internal sealed class FileFotEngineTests
     {
         [Test]
         public void Run()

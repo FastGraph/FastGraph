@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Predicates
     /// Tests for <see cref="ResidualEdgePredicate{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class ResidualEdgePredicateTests
+    internal sealed class ResidualEdgePredicateTests
     {
         [Test]
         public void Construction()

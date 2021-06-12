@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="DagShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class DagShortestPathAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class DagShortestPathAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
     /// Tests for <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class CyclePoppingRandomTreeAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class CyclePoppingRandomTreeAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="BinaryQueue{TVertex,TDistance}"/>.
     /// </summary>
     [TestFixture]
-    internal class BinaryQueueTests : QueueTestsBase
+    internal sealed class BinaryQueueTests : QueueTestsBase
     {
         [Test]
         public void Constructors()

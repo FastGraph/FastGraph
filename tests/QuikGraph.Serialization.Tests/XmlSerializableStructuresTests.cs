@@ -12,7 +12,7 @@ namespace QuikGraph.Serialization.Tests
     /// Tests relative to XML serialization of some serializable structures.
     /// </summary>
     [TestFixture]
-    internal class XmlSerializableStructuresTests
+    internal sealed class XmlSerializableStructuresTests
     {
         [NotNull]
         private const string XmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";

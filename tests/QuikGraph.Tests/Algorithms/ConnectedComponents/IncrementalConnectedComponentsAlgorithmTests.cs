@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
     /// Tests for <see cref="IncrementalConnectedComponentsAlgorithm{TVertex,TEdge}"/>
     /// </summary>
     [TestFixture]
-    internal class IncrementalConnectedComponentsAlgorithmTests
+    internal sealed class IncrementalConnectedComponentsAlgorithmTests
     {
         [Test]
         public void Constructor()

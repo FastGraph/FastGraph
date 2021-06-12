@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
     /// Tests for <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class RandomWalkAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class RandomWalkAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

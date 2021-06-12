@@ -7,7 +7,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="Arc{TToken}"/>.
     /// </summary>
-    internal class ArcTests
+    internal sealed class ArcTests
     {
         #region Test classes
 

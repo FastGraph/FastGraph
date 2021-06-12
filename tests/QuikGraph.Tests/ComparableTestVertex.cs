@@ -6,7 +6,7 @@ namespace QuikGraph.Tests
     /// <summary>
     /// Vertex type used for tests (comparable).
     /// </summary>
-    internal class ComparableTestVertex : IComparable
+    internal sealed class ComparableTestVertex : IComparable
     {
         public ComparableTestVertex()
             : this("Default")

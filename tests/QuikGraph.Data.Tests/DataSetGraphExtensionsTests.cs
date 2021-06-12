@@ -10,7 +10,7 @@ namespace QuikGraph.Data.Tests
     /// Tests related to <see cref="DataSetGraphExtensions"/>.
     /// </summary>
     [TestFixture]
-    internal class DataSetGraphExtensionsTests
+    internal sealed class DataSetGraphExtensionsTests
     {
         [Test]
         public void ToGraph()

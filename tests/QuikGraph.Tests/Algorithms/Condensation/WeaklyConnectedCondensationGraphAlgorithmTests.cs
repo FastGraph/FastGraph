@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
     /// Tests for <see cref="CondensationGraphAlgorithm{TVertex,TEdge,TGraph}"/> (weakly connected).
     /// </summary>
     [TestFixture]
-    internal class WeaklyConnectedCondensationGraphAlgorithmTests : CondensationGraphAlgorithmTestsBase
+    internal sealed class WeaklyConnectedCondensationGraphAlgorithmTests : CondensationGraphAlgorithmTestsBase
     {
         #region Test helpers
 

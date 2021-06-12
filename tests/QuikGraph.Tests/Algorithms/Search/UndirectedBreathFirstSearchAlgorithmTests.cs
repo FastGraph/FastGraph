@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.Search
     /// Tests for <see cref="UndirectedBreadthFirstSearchAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class UndirectedBreadthFirstAlgorithmSearchTests : RootedAlgorithmTestsBase
+    internal sealed class UndirectedBreadthFirstAlgorithmSearchTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Graphs
     /// Tests relative the to the degree of graphs.
     /// </summary>
     [TestFixture]
-    internal class DegreeTests
+    internal sealed class DegreeTests
     {
         #region Test helpers
 

@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Utils
     /// Tests related to <see cref="CryptoRandom"/>.
     /// </summary>
     [TestFixture]
-    internal class CryptoRandomTests
+    internal sealed class CryptoRandomTests
     {
         [Test]
         public void Constructor()

@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Extensions
     /// <summary>
     /// Tests related to <see cref="EdgeExtensions"/>.
     /// </summary>
-    internal class EdgeExtensionsTests
+    internal sealed class EdgeExtensionsTests
     {
         [Test]
         public void IsSelfEdge()

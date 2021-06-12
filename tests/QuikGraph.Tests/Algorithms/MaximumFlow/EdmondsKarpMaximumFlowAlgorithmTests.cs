@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdmondsKarpMaximumFlowAlgorithmTests
+    internal sealed class EdmondsKarpMaximumFlowAlgorithmTests
     {
         #region Test helpers
 

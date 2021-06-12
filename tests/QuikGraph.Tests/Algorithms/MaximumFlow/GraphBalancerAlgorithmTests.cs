@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="GraphBalancerAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphBalancingAlgorithmTests
+    internal sealed class GraphBalancingAlgorithmTests
     {
         [Test]
         public void Constructor()

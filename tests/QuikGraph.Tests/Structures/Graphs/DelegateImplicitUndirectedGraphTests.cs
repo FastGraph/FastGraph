@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="DelegateImplicitUndirectedGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class DelegateImplicitUndirectedGraphTests : DelegateGraphTestsBase
+    internal sealed class DelegateImplicitUndirectedGraphTests : DelegateGraphTestsBase
     {
         [Test]
         public void Construction()

@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Predicates
     /// Tests for <see cref="SinkVertexPredicate{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class SinkVertexPredicateTests
+    internal sealed class SinkVertexPredicateTests
     {
         [Test]
         public void Construction()

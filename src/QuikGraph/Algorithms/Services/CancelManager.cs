@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 
 namespace QuikGraph.Algorithms.Services
@@ -6,7 +6,7 @@ namespace QuikGraph.Algorithms.Services
     /// <summary>
     /// Default algorithm cancel manager implementation.
     /// </summary>
-    internal class CancelManager : ICancelManager
+    internal sealed class CancelManager : ICancelManager
     {
         /// <inheritdoc />
         public event EventHandler CancelRequested;

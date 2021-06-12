@@ -8,7 +8,7 @@ namespace QuikGraph.MSAGL.Tests
     /// <summary>
     /// Tests related to <see cref="MsaglVertexEventArgs{TVertex}"/>.
     /// </summary>
-    internal class MsaglVertexEventArgsTests
+    internal sealed class MsaglVertexEventArgsTests
     {
         [Test]
         public void Constructor()

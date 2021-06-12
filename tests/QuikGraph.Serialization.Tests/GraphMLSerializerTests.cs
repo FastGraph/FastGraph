@@ -19,7 +19,7 @@ namespace QuikGraph.Serialization.Tests
     /// Tests for <see cref="GraphMLSerializer{TVertex,TEdge,TGraph}"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphMLSerializerTests
+    internal sealed class GraphMLSerializerTests
     {
         #region Test helpers
 

@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="ForestDisjointSet{T}"/>.
     /// </summary>
     [TestFixture]
-    internal class ForestDisjointSetTests
+    internal sealed class ForestDisjointSetTests
     {
         #region Test helpers
 

@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.Exploration
     /// Tests for <see cref="TransitionFactoryImplicitGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class TransitionFactoryImplicitGraphTests : GraphTestsBase
+    internal sealed class TransitionFactoryImplicitGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

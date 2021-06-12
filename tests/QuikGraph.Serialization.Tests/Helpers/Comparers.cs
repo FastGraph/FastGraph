@@ -7,7 +7,7 @@ namespace QuikGraph.Serialization.Tests
     /// <summary>
     /// <see cref="IComparer{Single}"/> for floats with user-specified tolerance.
     /// </summary>
-    internal class FloatComparer : IComparer, IComparer<float>
+    internal sealed class FloatComparer : IComparer, IComparer<float>
     {
         /// <summary>
         /// Default tolerance.
@@ -61,7 +61,7 @@ namespace QuikGraph.Serialization.Tests
     /// <summary>
     /// <see cref="IComparer{Double}"/> for doubles with user-specified tolerance.
     /// </summary>
-    internal class DoubleComparer : IComparer, IComparer<double>
+    internal sealed class DoubleComparer : IComparer, IComparer<double>
     {
         /// <summary>
         /// Default tolerance.

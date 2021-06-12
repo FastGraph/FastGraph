@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using JetBrains.Annotations;
 
@@ -7,7 +7,7 @@ namespace QuikGraph.Algorithms.Services
     /// <summary>
     /// Default algorithm services implementation.
     /// </summary>
-    internal class AlgorithmServices : IAlgorithmServices
+    internal sealed class AlgorithmServices : IAlgorithmServices
     {
         [NotNull]
         private readonly IAlgorithmComponent _host;

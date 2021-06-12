@@ -10,7 +10,7 @@ namespace QuikGraph.MSAGL.Tests
     /// <summary>
     /// Tests related to <see cref="MsaglGraphExtensions"/>.
     /// </summary>
-    internal class MsaglGraphExtensionsTests
+    internal sealed class MsaglGraphExtensionsTests
     {
         #region Test classes
 

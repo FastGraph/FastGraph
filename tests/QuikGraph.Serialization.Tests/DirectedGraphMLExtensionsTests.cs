@@ -18,7 +18,7 @@ namespace QuikGraph.Serialization.Tests
     /// Tests for <see cref="DirectedGraphMLExtensions"/>.
     /// </summary>
     [TestFixture]
-    internal class DirectedGraphMLExtensionsTests
+    internal sealed class DirectedGraphMLExtensionsTests
     {
         #region Test helpers
 

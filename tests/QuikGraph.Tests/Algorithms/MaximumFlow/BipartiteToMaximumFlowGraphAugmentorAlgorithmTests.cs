@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="BipartiteToMaximumFlowGraphAugmentorAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BipartiteToMaximumFlowGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
+    internal sealed class BipartiteToMaximumFlowGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
     {
         [Test]
         public void Constructor()

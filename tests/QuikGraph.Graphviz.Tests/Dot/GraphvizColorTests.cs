@@ -8,7 +8,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests for <see cref="GraphvizColor"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizColorTests
+    internal sealed class GraphvizColorTests
     {
         #region Test classes
 

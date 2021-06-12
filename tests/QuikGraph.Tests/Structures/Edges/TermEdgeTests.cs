@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="TermEdge{TVertex}"/>.
     ///</summary>
     [TestFixture]
-    internal class TermEdgeTests : EdgeTestsBase
+    internal sealed class TermEdgeTests : EdgeTestsBase
     {
         [Test]
         public void Construction()

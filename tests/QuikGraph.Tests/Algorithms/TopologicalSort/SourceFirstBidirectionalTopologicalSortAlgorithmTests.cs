@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="SourceFirstBidirectionalTopologicalSortAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class SourceFirstBidirectionalTopologicalSortAlgorithmTests
+    internal sealed class SourceFirstBidirectionalTopologicalSortAlgorithmTests
     {
         #region Test helpers
 

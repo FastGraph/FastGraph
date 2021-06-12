@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="MultiSourceSinkGraphAugmentorAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MultiSourceSinkGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
+    internal sealed class MultiSourceSinkGraphAugmentorAlgorithmTests : GraphAugmentorAlgorithmTestsBase
     {
         #region Test helpers
 

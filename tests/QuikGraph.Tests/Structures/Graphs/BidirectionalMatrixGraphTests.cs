@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="BidirectionalMatrixGraph{TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BidirectionalMatrixGraphTests : GraphTestsBase
+    internal sealed class BidirectionalMatrixGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

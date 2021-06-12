@@ -9,7 +9,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="PetriNetSimulator{TToken}"/>.
     /// </summary>
-    internal class PetriNetSimulatorTests
+    internal sealed class PetriNetSimulatorTests
     {
         #region Test classes
 

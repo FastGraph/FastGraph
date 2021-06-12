@@ -11,7 +11,7 @@ namespace QuikGraph.Data.Tests
     /// Tests related to <see cref="DataSetGraphvizAlgorithm"/>.
     /// </summary>
     [TestFixture]
-    internal class DataSetGraphvizAlgorithmTests
+    internal sealed class DataSetGraphvizAlgorithmTests
     {
         [Test]
         public void Constructor()

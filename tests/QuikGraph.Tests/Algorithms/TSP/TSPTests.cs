@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.TSP
     /// Tests for <see cref="TSP{TVertex,TEdge,TGraph}"/>.
     /// </summary>
     [TestFixture]
-    internal class TSPTests : RootedAlgorithmTestsBase
+    internal sealed class TSPTests : RootedAlgorithmTestsBase
     {
         #region Test helpers & classes
 

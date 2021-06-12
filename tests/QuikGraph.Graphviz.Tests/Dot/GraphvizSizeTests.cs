@@ -9,7 +9,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests for <see cref="GraphvizSizeF"/> and <see cref="GraphvizSize"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizSizeTests
+    internal sealed class GraphvizSizeTests
     {
         [Test]
         public void Constructor_Size()

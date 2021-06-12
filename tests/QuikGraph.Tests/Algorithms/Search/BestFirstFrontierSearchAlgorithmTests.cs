@@ -15,7 +15,7 @@ namespace QuikGraph.Tests.Algorithms.Search
     /// Tests for <see cref="BestFirstFrontierSearchAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BestFirstFrontierSearchAlgorithmTests : SearchAlgorithmTestsBase
+    internal sealed class BestFirstFrontierSearchAlgorithmTests : SearchAlgorithmTestsBase
     {
         #region Test helpers
 

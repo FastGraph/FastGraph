@@ -6,7 +6,7 @@ namespace QuikGraph.Tests
     /// <summary>
     /// Vertex type used for tests (equatable & cloneable).
     /// </summary>
-    internal class EquatableCloneableTestVertex
+    internal sealed class EquatableCloneableTestVertex
         : CloneableTestVertex
         , IEquatable<EquatableCloneableTestVertex>
     {

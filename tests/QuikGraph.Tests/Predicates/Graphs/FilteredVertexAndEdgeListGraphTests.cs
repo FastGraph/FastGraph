@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Predicates
     /// Tests for <see cref="FilteredVertexAndEdgeListGraph{TVertex,TEdge,TGraph}"/>.
     /// </summary>
     [TestFixture]
-    internal class FilteredVertexAndEdgeListGraphTests : FilteredGraphTestsBase
+    internal sealed class FilteredVertexAndEdgeListGraphTests : FilteredGraphTestsBase
     {
         [Test]
         public void Construction()

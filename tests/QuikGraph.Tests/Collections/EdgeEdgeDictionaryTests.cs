@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="EdgeEdgeDictionary{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdgeEdgeDictionaryTests
+    internal sealed class EdgeEdgeDictionaryTests
     {
         [Test]
         public void Constructors()

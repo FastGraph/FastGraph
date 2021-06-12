@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.TSP
 {
-    internal class TaskPriority : IComparable<TaskPriority>
+    internal sealed class TaskPriority : IComparable<TaskPriority>
     {
         private readonly double _cost;
         private readonly int _pathSize;
@@ -24,7 +24,7 @@ namespace QuikGraph.Algorithms.TSP
             return obj is TaskPriority priority && Equals(priority);
         }
 
-        protected bool Equals([NotNull] TaskPriority other)
+        private bool Equals([NotNull] TaskPriority other)
         {
             return _cost.Equals(other._cost) 
                    && _pathSize == other._pathSize;

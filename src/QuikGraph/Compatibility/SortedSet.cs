@@ -1,4 +1,4 @@
-#if !SUPPORTS_SORTEDSET
+﻿#if !SUPPORTS_SORTEDSET
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1565,7 +1565,7 @@ namespace QuikGraph.Collections
 
         #region Helper Classes
 
-        internal class Node
+        internal sealed class Node
         {
             public bool IsRed;
             public T Item;

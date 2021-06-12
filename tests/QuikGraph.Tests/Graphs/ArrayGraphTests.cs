@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests related to array graphs.
     /// </summary>
     [TestFixture]
-    internal class ArrayGraphTests
+    internal sealed class ArrayGraphTests
     {
         #region Test helpers
 

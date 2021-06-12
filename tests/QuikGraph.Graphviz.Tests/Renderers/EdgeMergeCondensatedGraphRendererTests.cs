@@ -10,7 +10,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="EdgeMergeCondensatedGraphRenderer{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdgeMergeCondensatedGraphRendererTests
+    internal sealed class EdgeMergeCondensatedGraphRendererTests
     {
         [Test]
         public void Constructor()

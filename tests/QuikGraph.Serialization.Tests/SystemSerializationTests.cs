@@ -10,7 +10,7 @@ namespace QuikGraph.Serialization.Tests
     /// Tests relative to serialization via standard API.
     /// </summary>
     [TestFixture]
-    internal class SystemSerializationTests
+    internal sealed class SystemSerializationTests
     {
         #region Helpers
 

@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="SEquatableEdge{TVertex}"/>.
     ///</summary>
     [TestFixture]
-    internal class SEquatableEdgeTests : EdgeTestsBase
+    internal sealed class SEquatableEdgeTests : EdgeTestsBase
     {
         [Test]
         public void Construction()

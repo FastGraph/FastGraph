@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.TSP
 {
-    internal class Task<TVertex, TEdge>
+    internal sealed class Task<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>
     {
         [NotNull]

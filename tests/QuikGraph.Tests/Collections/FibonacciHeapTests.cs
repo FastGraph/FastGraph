@@ -12,7 +12,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="FibonacciHeap{TPriority,TValue}"/>.
     /// </summary>
     [TestFixture]
-    internal class FibonacciHeapTests : HeapTestsBase
+    internal sealed class FibonacciHeapTests : HeapTestsBase
     {
         #region Test helpers
 

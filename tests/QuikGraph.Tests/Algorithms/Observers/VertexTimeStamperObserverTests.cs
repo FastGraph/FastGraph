@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
     /// Tests for <see cref="VertexTimeStamperObserver{TVertex}"/>.
     /// </summary>
     [TestFixture]
-    internal class VertexTimeStamperObserverTests : ObserverTestsBase
+    internal sealed class VertexTimeStamperObserverTests : ObserverTestsBase
     {
         [Test]
         public void Constructor()

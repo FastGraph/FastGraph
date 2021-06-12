@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="FibonacciQueue{TVertex,TDistance}"/>.
     /// </summary>
     [TestFixture]
-    internal class FibonacciQueueTests : QueueTestsBase
+    internal sealed class FibonacciQueueTests : QueueTestsBase
     {
         [Test]
         public void Constructors()

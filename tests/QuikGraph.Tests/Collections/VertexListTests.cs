@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="VertexList{TVertex}"/>.
     /// </summary>
     [TestFixture]
-    internal class VertexListTests
+    internal sealed class VertexListTests
     {
         [Test]
         public void Constructors()

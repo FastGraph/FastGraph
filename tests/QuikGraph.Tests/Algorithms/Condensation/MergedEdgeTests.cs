@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
     /// Tests for <see cref="MergedEdge{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class MergedEdgeTests : EdgeTestsBase
+    internal sealed class MergedEdgeTests : EdgeTestsBase
     {
         [Test]
         public void Construction()

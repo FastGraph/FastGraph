@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Extensions
     /// <summary>
     /// Tests related to <see cref="GraphExtensions"/>.
     /// </summary>
-    internal class GraphExtensionsTests : GraphTestsBase
+    internal sealed class GraphExtensionsTests : GraphTestsBase
     {
         #region Delegate graphs
 

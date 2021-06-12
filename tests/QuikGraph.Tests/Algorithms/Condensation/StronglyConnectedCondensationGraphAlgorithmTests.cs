@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
     /// Tests for <see cref="CondensationGraphAlgorithm{TVertex,TEdge,TGraph}"/> (strongly connected).
     /// </summary>
     [TestFixture]
-    internal class StronglyConnectedCondensationGraphAlgorithmTests : CondensationGraphAlgorithmTestsBase
+    internal sealed class StronglyConnectedCondensationGraphAlgorithmTests : CondensationGraphAlgorithmTestsBase
     {
         #region Test helpers
 
@@ -29,7 +29,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             CheckDAG(condensedGraph);
         }
 
-        protected static void CheckComponentCount<TVertex, TEdge>(
+        private static void CheckComponentCount<TVertex, TEdge>(
             [NotNull] IVertexListGraph<TVertex, TEdge> graph,
             [NotNull] IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
             where TEdge : IEdge<TVertex>

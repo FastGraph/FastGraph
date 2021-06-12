@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests related to algorithm features (state, services).
     /// </summary>
     [TestFixture]
-    internal class AlgorithmFeaturesTests
+    internal sealed class AlgorithmFeaturesTests
     {
         #region Test classes
 

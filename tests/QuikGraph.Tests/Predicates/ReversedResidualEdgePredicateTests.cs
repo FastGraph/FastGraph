@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Predicates
     /// Tests for <see cref="ReversedResidualEdgePredicate{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class ReversedResidualEdgePredicateTests
+    internal sealed class ReversedResidualEdgePredicateTests
     {
         [Test]
         public void Construction()

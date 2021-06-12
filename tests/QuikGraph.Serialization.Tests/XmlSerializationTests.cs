@@ -16,7 +16,7 @@ namespace QuikGraph.Serialization.Tests
     /// Tests relative to XML serialization.
     /// </summary>
     [TestFixture]
-    internal class XmlSerializationTests
+    internal sealed class XmlSerializationTests
     {
         #region Serialization
 

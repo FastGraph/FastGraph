@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using NUnit.Framework;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -11,7 +11,7 @@ namespace QuikGraph.Data.Tests
     /// Tests for <see cref="DataSetGraphPopulatorAlgorithm"/>.
     ///</summary>
     [TestFixture]
-    internal class DataSetGraphPopulatorAlgorithmTests
+    internal sealed class DataSetGraphPopulatorAlgorithmTests
     {
         [Test]
         public void Construction()

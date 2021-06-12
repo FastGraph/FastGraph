@@ -7,7 +7,7 @@ namespace QuikGraph.MSAGL.Tests
     /// <summary>
     /// Tests related to <see cref="MsaglToStringGraphPopulator{TVertex,TEdge}"/>.
     /// </summary>
-    internal class MsaglToStringGraphPopulatorTests : MsaglGraphPopulatorTestsBase
+    internal sealed class MsaglToStringGraphPopulatorTests : MsaglGraphPopulatorTestsBase
     {
         #region Test classes
 

@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Predicates
     /// Tests for <see cref="InDictionaryVertexPredicate{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class InDictionaryVertexPredicateTests
+    internal sealed class InDictionaryVertexPredicateTests
     {
         [Test]
         public void Construction()

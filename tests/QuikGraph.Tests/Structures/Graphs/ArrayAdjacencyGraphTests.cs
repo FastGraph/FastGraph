@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="ArrayAdjacencyGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class ArrayAdjacencyGraphTests : GraphTestsBase
+    internal sealed class ArrayAdjacencyGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

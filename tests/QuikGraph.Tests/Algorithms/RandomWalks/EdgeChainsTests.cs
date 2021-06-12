@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
     /// Tests for <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdgeChainsTests
+    internal sealed class EdgeChainsTests
     {
         #region Test helpers
 

@@ -6,7 +6,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="Place{TToken}"/>.
     /// </summary>
-    internal class PlaceTests
+    internal sealed class PlaceTests
     {
         [Test]
         public void Constructor()

@@ -21,7 +21,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
     /// Contract tests for <see cref="IVertexColorizerAlgorithm{TVertex}"/>.
     /// </summary>
     [TestFixtureSource(typeof(AlgorithmsProvider), nameof(AlgorithmsProvider.VertexColorizers))]
-    internal class VertexColorizerContract
+    internal sealed class VertexColorizerContract
     {
         [NotNull]
         private readonly Type _testedAlgorithm;

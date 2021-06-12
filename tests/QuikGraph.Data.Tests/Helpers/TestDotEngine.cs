@@ -7,7 +7,7 @@ namespace QuikGraph.Data.Tests
     /// <summary>
     /// Test dot engine.
     /// </summary>
-    internal class TestDotEngine : IDotEngine
+    internal sealed class TestDotEngine : IDotEngine
     {
         /// <summary>
         /// Expected dot.

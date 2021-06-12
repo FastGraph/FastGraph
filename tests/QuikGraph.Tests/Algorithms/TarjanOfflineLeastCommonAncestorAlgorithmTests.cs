@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="TarjanOfflineLeastCommonAncestorAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class TarjanOfflineLeastCommonAncestorAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class TarjanOfflineLeastCommonAncestorAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

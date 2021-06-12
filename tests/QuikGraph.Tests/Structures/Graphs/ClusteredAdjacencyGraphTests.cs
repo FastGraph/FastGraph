@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="ClusteredAdjacencyGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class ClusteredAdjacencyGraphTests : GraphTestsBase
+    internal sealed class ClusteredAdjacencyGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

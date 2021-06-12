@@ -6,7 +6,7 @@ namespace QuikGraph.Tests.Events
     /// <summary>
     /// Tests related to <see cref="UndirectedEdgeEventArgs{TVertex,TEdge}"/>.
     /// </summary>
-    internal class UndirectedEdgeEventArgsTests
+    internal sealed class UndirectedEdgeEventArgsTests
     {
         [Test]
         public void Constructor()

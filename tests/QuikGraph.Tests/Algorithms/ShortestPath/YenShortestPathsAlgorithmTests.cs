@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="YenShortestPathsAlgorithm{TVertex}"/>.
     /// </summary>
     [TestFixture]
-    internal class YenShortestPathsAlgorithmTests
+    internal sealed class YenShortestPathsAlgorithmTests
     {
         [Test]
         public void Constructor()

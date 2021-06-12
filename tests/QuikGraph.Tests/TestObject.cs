@@ -3,7 +3,7 @@ namespace QuikGraph.Tests
     /// <summary>
     /// Object used for tests.
     /// </summary>
-    internal class TestObject
+    internal sealed class TestObject
     {
         public TestObject(int value)
         {

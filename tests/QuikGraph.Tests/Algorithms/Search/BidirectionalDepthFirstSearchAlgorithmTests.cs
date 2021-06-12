@@ -12,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms.Search
     /// Tests for <see cref="BidirectionalDepthFirstSearchAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BidirectionalDepthFirstSearchAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class BidirectionalDepthFirstSearchAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

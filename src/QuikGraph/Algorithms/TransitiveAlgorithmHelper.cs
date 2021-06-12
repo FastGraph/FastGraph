@@ -1,4 +1,4 @@
-#if !NET35
+﻿#if !NET35
 using System;
 #endif
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace QuikGraph.Algorithms
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    internal class TransitiveAlgorithmHelper<TVertex, TEdge>
+    internal sealed class TransitiveAlgorithmHelper<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         [NotNull]

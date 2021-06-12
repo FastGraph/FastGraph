@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.Search
     /// Tests for <see cref="ImplicitDepthFirstSearchAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class ImplicitDepthFirstAlgorithmSearchTests : SearchAlgorithmTestsBase
+    internal sealed class ImplicitDepthFirstAlgorithmSearchTests : SearchAlgorithmTestsBase
     {
         #region Test helpers
 

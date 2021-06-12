@@ -7,7 +7,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests for <see cref="GraphvizPoint"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizPointTests
+    internal sealed class GraphvizPointTests
     {
         [Test]
         public void Constructor()

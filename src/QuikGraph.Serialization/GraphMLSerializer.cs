@@ -1,4 +1,4 @@
-#if SUPPORTS_GRAPHS_SERIALIZATION
+﻿#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -54,26 +54,29 @@ namespace QuikGraph.Serialization
 
         private static class WriteDelegateCompiler
         {
-            [NotNull] public static WriteVertexAttributesDelegate VertexAttributesWriter { get; }
+            [NotNull]
+            public static WriteVertexAttributesDelegate VertexAttributesWriter { get; }
 
-            [NotNull] public static WriteEdgeAttributesDelegate EdgeAttributesWriter { get; }
+            [NotNull]
+            public static WriteEdgeAttributesDelegate EdgeAttributesWriter { get; }
 
-            [NotNull] public static WriteGraphAttributesDelegate GraphAttributesWriter { get; }
+            [NotNull]
+            public static WriteGraphAttributesDelegate GraphAttributesWriter { get; }
 
             static WriteDelegateCompiler()
             {
                 VertexAttributesWriter =
-                    (WriteVertexAttributesDelegate) CreateWriteDelegate(
+                    (WriteVertexAttributesDelegate)CreateWriteDelegate(
                         typeof(TVertex),
                         typeof(WriteVertexAttributesDelegate));
 
                 EdgeAttributesWriter =
-                    (WriteEdgeAttributesDelegate) CreateWriteDelegate(
+                    (WriteEdgeAttributesDelegate)CreateWriteDelegate(
                         typeof(TEdge),
                         typeof(WriteEdgeAttributesDelegate));
 
                 GraphAttributesWriter =
-                    (WriteGraphAttributesDelegate) CreateWriteDelegate(
+                    (WriteGraphAttributesDelegate)CreateWriteDelegate(
                         typeof(TGraph),
                         typeof(WriteGraphAttributesDelegate));
             }
@@ -92,7 +95,7 @@ namespace QuikGraph.Serialization
 
             private static void EmitWriteProperty(PropertySerializationInfo info, [NotNull] ILGenerator generator)
             {
-                Label @default = default(Label);
+                var @default = default(Label);
                 PropertyInfo property = info.Property;
 
                 MethodInfo getMethod = property.GetGetMethod();
@@ -120,7 +123,7 @@ namespace QuikGraph.Serialization
                 }
 
                 // For each property of the type,
-                // write it to the WML writer (we need to take care of value types, etc...)
+                // write it to the XML writer (we need to take care of value types, etc...)
                 // writer.WriteStartElement("data")
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, "data");
@@ -150,20 +153,20 @@ namespace QuikGraph.Serialization
             }
 
             [NotNull]
-            private static Delegate CreateWriteDelegate([NotNull] Type nodeType, [NotNull] Type delegateType)
+            private static Delegate CreateWriteDelegate([NotNull] Type elementType, [NotNull] Type delegateType)
             {
-                Debug.Assert(nodeType != null);
+                Debug.Assert(elementType != null);
                 Debug.Assert(delegateType != null);
 
                 var method = new DynamicMethod(
-                    $"{DynamicMethodPrefix}Write{delegateType.Name}_{nodeType.Name}",
+                    $"{DynamicMethodPrefix}Write{delegateType.Name}_{elementType.Name}",
                     typeof(void),
-                    new[] {typeof(XmlWriter), nodeType},
-                    nodeType.Module);
+                    new[] { typeof(XmlWriter), elementType },
+                    elementType.Module);
 
                 ILGenerator generator = method.GetILGenerator();
 
-                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(nodeType))
+                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(elementType))
                 {
                     EmitWriteProperty(info, generator);
                 }
@@ -203,17 +206,22 @@ namespace QuikGraph.Serialization
             worker.Serialize();
         }
 
-        internal class WriterWorker
+        internal sealed class WriterWorker
         {
-            [NotNull] private readonly GraphMLSerializer<TVertex, TEdge, TGraph> _serializer;
+            [NotNull]
+            private readonly GraphMLSerializer<TVertex, TEdge, TGraph> _serializer;
 
-            [NotNull] private readonly XmlWriter _writer;
+            [NotNull]
+            private readonly XmlWriter _writer;
 
-            [NotNull] private readonly TGraph _graph;
+            [NotNull]
+            private readonly TGraph _graph;
 
-            [NotNull] private readonly VertexIdentity<TVertex> _vertexIdentity;
+            [NotNull]
+            private readonly VertexIdentity<TVertex> _vertexIdentity;
 
-            [NotNull] private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
+            [NotNull]
+            private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
 
             public WriterWorker(
                 [NotNull] GraphMLSerializer<TVertex, TEdge, TGraph> serializer,
@@ -333,7 +341,7 @@ namespace QuikGraph.Serialization
                     if (typeIListType != null && typeIListType.Name == iListType.Name)
                     {
                         Type elementType = typeIListType.GetGenericArguments()[0];
-                        var elementCode = ConstructTypeCodeForSimpleType(elementType);
+                        string elementCode = ConstructTypeCodeForSimpleType(elementType);
                         if (elementCode == "object" || elementCode == "invalid")
                             throw new NotSupportedException("Array type not supported by GraphML schema.");
                         code = "string";
@@ -343,12 +351,12 @@ namespace QuikGraph.Serialization
                 return code;
             }
 
-            private void WriteAttributeDefinitions([NotNull] string nodeName, [NotNull] Type nodeType)
+            private void WriteAttributeDefinitions([NotNull] string elementName, [NotNull] Type elementType)
             {
-                Debug.Assert(nodeName != null);
-                Debug.Assert(nodeType != null);
+                Debug.Assert(elementName != null);
+                Debug.Assert(elementType != null);
 
-                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(nodeType))
+                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(elementType))
                 {
                     PropertyInfo property = info.Property;
                     string name = info.Name;
@@ -357,7 +365,7 @@ namespace QuikGraph.Serialization
                     // <key id="d1" for="edge" attr.name="weight" attr.type="double"/>
                     _writer.WriteStartElement("key", GraphMLXmlResolver.GraphMLNamespace);
                     _writer.WriteAttributeString(IdAttribute, name);
-                    _writer.WriteAttributeString("for", nodeName);
+                    _writer.WriteAttributeString("for", elementName);
                     _writer.WriteAttributeString("attr.name", name);
 
                     string typeCodeStr;
@@ -373,7 +381,7 @@ namespace QuikGraph.Serialization
 
                     _writer.WriteAttributeString("attr.type", typeCodeStr);
 
-                        // <default>...</default>
+                    // <default>...</default>
                     if (info.TryGetDefaultValue(out object defaultValue))
                     {
                         _writer.WriteStartElement("default");
@@ -381,22 +389,22 @@ namespace QuikGraph.Serialization
                         switch (Type.GetTypeCode(defaultValueType))
                         {
                             case TypeCode.Boolean:
-                                _writer.WriteString(XmlConvert.ToString((bool) defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((bool)defaultValue));
                                 break;
                             case TypeCode.Int32:
-                                _writer.WriteString(XmlConvert.ToString((int) defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((int)defaultValue));
                                 break;
                             case TypeCode.Int64:
-                                _writer.WriteString(XmlConvert.ToString((long) defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((long)defaultValue));
                                 break;
                             case TypeCode.Single:
-                                _writer.WriteString(XmlConvert.ToString((float) defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((float)defaultValue));
                                 break;
                             case TypeCode.Double:
-                                _writer.WriteString(XmlConvert.ToString((double) defaultValue));
+                                _writer.WriteString(XmlConvert.ToString((double)defaultValue));
                                 break;
                             case TypeCode.String:
-                                _writer.WriteString((string) defaultValue);
+                                _writer.WriteString((string)defaultValue);
                                 break;
                             case TypeCode.Object:
                                 if (defaultValueType.IsArray)
@@ -443,16 +451,18 @@ namespace QuikGraph.Serialization
 
     internal static partial class Metadata
     {
-        [NotNull] public static readonly MethodInfo WriteStartElementMethod =
+        [NotNull]
+        public static readonly MethodInfo WriteStartElementMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteStartElement),
                 BindingFlags.Instance | BindingFlags.Public,
                 null,
-                new[] {typeof(string), typeof(string)},
+                new[] { typeof(string), typeof(string) },
                 null) ?? throw new InvalidOperationException(
                 $"Cannot find {nameof(XmlWriter.WriteStartElement)} method on {nameof(XmlWriter)}.");
 
-        [NotNull] public static readonly MethodInfo WriteEndElementMethod =
+        [NotNull]
+        public static readonly MethodInfo WriteEndElementMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteEndElement),
                 BindingFlags.Instance | BindingFlags.Public,
@@ -461,16 +471,18 @@ namespace QuikGraph.Serialization
                 null) ?? throw new InvalidOperationException(
                 $"Cannot find {nameof(XmlWriter.WriteEndElement)} method on {nameof(XmlWriter)}.");
 
-        [NotNull] public static readonly MethodInfo WriteAttributeStringMethod =
+        [NotNull]
+        public static readonly MethodInfo WriteAttributeStringMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteAttributeString),
                 BindingFlags.Instance | BindingFlags.Public,
                 null,
-                new[] {typeof(string), typeof(string)},
+                new[] { typeof(string), typeof(string) },
                 null) ?? throw new InvalidOperationException(
                 $"Cannot find {nameof(XmlWriter.WriteAttributeString)} method on {nameof(XmlWriter)}.");
 
-        [NotNull] private static readonly Dictionary<Type, MethodInfo> WriteContentMethods = InitializeWriteMethods();
+        [NotNull]
+        private static readonly Dictionary<Type, MethodInfo> WriteContentMethods = InitializeWriteMethods();
 
         [NotNull]
         private static Dictionary<Type, MethodInfo> InitializeWriteMethods()
@@ -480,12 +492,12 @@ namespace QuikGraph.Serialization
 
             return new Dictionary<Type, MethodInfo>
             {
-                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(bool)}),
-                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(int)}),
-                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(long)}),
-                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(float)}),
-                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] {typeof(double)}),
-                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] {typeof(string)}),
+                [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(bool) }),
+                [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(int) }),
+                [typeof(long)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(long) }),
+                [typeof(float)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(float) }),
+                [typeof(double)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(double) }),
+                [typeof(string)] = writerType.GetMethod(nameof(XmlWriter.WriteString), new[] { typeof(string) }),
 
                 // Extensions
                 [typeof(bool[])] = writerExtensionsType.GetMethod(nameof(XmlWriterExtensions.WriteBooleanArray)),

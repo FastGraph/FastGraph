@@ -73,7 +73,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         }
     }
 
-    internal class TheTryGetDistanceMethod : DistancesCollectionContractBase
+    internal sealed class TheTryGetDistanceMethod : DistancesCollectionContractBase
     {
         public TheTryGetDistanceMethod([NotNull] Type algorithmToTest) : base(algorithmToTest)
         {
@@ -167,7 +167,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         }
     }
 
-    internal class TheGetDistanceMethod : DistancesCollectionContractBase
+    internal sealed class TheGetDistanceMethod : DistancesCollectionContractBase
     {
         public TheGetDistanceMethod([NotNull] Type algorithmToTest) : base(algorithmToTest)
         {
@@ -258,7 +258,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         }
     }
 
-    internal class TheGetKnownDistancesMethod : DistancesCollectionContractBase
+    internal sealed class TheGetKnownDistancesMethod : DistancesCollectionContractBase
     {
         public TheGetKnownDistancesMethod([NotNull] Type algorithmToTest) : base(algorithmToTest)
         {

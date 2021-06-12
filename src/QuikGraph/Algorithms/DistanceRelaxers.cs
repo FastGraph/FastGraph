@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms
 {
@@ -83,9 +83,9 @@ namespace QuikGraph.Algorithms
         /// Prim relaxer.
         /// </summary>
         [NotNull]
-        internal static readonly IDistanceRelaxer Prim = new PrimRelaxer();
+        public static readonly IDistanceRelaxer Prim = new PrimRelaxer();
 
-        internal class PrimRelaxer : IDistanceRelaxer
+        private sealed class PrimRelaxer : IDistanceRelaxer
         {
             public double InitialDistance => double.MaxValue;
 

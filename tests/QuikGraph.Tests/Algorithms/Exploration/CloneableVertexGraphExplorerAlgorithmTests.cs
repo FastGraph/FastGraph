@@ -12,7 +12,7 @@ namespace QuikGraph.Tests.Algorithms.Exploration
     /// Tests for <see cref="CloneableVertexGraphExplorerAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class CloneableVertexGraphExplorerAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class CloneableVertexGraphExplorerAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

@@ -8,7 +8,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="GraphvizRecordCellCollection"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizRecordCellCollectionTests
+    internal sealed class GraphvizRecordCellCollectionTests
     {
         [Test]
         public void Constructor()

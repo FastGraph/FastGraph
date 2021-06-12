@@ -6,7 +6,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="AlwaysTrueConditionExpression{TToken}"/>.
     /// </summary>
-    internal class AlwaysTrueConditionExpressionTests
+    internal sealed class AlwaysTrueConditionExpressionTests
     {
         [Test]
         public void IsEnabled()

@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EulerianTrailAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class EulerianTrailAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

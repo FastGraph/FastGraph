@@ -8,7 +8,7 @@
 //    /// Tests for <see cref="CentralityApproximationAlgorithm{TVertex,TEdge}"/>.
 //    /// </summary>
 //    [TestFixture]
-//    internal class CentralityApproximationAlgorithmTests : AlgorithmTestsBase
+//    internal sealed class CentralityApproximationAlgorithmTests : AlgorithmTestsBase
 //    {
 //        [Test]
 //        public void Constructor()

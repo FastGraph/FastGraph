@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// Tests for <see cref="BellmanFordShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BellmanFordShortestPathAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class BellmanFordShortestPathAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

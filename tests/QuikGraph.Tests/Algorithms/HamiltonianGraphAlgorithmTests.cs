@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="IsHamiltonianGraphAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class HamiltonianGraphAlgorithmTests
+    internal sealed class HamiltonianGraphAlgorithmTests
     {
         [Test]
         public void IsHamiltonianEmpty()

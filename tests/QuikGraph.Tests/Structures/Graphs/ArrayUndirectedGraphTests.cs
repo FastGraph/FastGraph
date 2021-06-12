@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="ArrayUndirectedGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class ArrayUndirectedGraphTests : GraphTestsBase
+    internal sealed class ArrayUndirectedGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

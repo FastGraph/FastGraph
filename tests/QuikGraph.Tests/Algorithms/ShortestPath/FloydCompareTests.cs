@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     /// </summary>
     [TestFixture]
     [Category(TestCategories.CISkip)]
-    internal class FloydCompareTests : FloydWarshallTestsBase
+    internal sealed class FloydCompareTests : FloydWarshallTestsBase
     {
         #region Test helpers
 

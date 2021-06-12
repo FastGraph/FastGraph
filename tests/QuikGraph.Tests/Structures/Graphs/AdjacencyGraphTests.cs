@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="AdjacencyGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class AdjacencyGraphTests : GraphTestsBase
+    internal sealed class AdjacencyGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.RankedShortestPath
     /// Tests for <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class HoffmanPavleyRankedShortestPathAlgorithmTests : RootedAlgorithmTestsBase
+    internal sealed class HoffmanPavleyRankedShortestPathAlgorithmTests : RootedAlgorithmTestsBase
     {
         #region Test helpers
 

@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
     /// Tests for <see cref="VertexPredecessorRecorderObserver{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class VertexPredecessorRecorderObserverTests : ObserverTestsBase
+    internal sealed class VertexPredecessorRecorderObserverTests : ObserverTestsBase
     {
         [Test]
         public void Constructor()

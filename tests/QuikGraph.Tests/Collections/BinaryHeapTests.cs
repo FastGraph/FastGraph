@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="BinaryHeap{TPriority,TValue}"/>.
     /// </summary>
     [TestFixture]
-    internal class BinaryHeapTests : HeapTestsBase
+    internal sealed class BinaryHeapTests : HeapTestsBase
     {
         #region Test helpers
 

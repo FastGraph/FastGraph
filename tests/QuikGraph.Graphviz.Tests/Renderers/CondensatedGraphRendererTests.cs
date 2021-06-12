@@ -10,7 +10,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="CondensatedGraphRenderer{TVertex,TEdge,TGraph}"/>.
     /// </summary>
     [TestFixture]
-    internal class CondensatedGraphRendererTests
+    internal sealed class CondensatedGraphRendererTests
     {
         [Test]
         public void Constructor()

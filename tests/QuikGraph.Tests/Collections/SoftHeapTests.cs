@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Collections
     /// Tests for <see cref="SoftHeap{TKey,TValue}"/>.
     /// </summary>
     [TestFixture]
-    internal class SoftHeapTests : HeapTestsBase
+    internal sealed class SoftHeapTests : HeapTestsBase
     {
         private const double ErrorRate = 1 / 3.0;
         private const double ErrorRate2 = 1 / 2.0;

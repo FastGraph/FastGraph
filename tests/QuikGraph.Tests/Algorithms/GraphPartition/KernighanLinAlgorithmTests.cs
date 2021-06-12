@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
     /// Tests for <see cref="KernighanLinAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class KernighanLinAlgorithmTests
+    internal sealed class KernighanLinAlgorithmTests
     {
         [Test]
         public void Constructor()

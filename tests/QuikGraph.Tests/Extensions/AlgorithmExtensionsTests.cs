@@ -16,7 +16,7 @@ namespace QuikGraph.Tests.Extensions
     /// <summary>
     /// Tests related to <see cref="AlgorithmExtensions"/>.
     /// </summary>
-    internal class AlgorithmExtensionsTests : GraphTestsBase
+    internal sealed class AlgorithmExtensionsTests : GraphTestsBase
     {
         [Test]
         public void GetIndexer()

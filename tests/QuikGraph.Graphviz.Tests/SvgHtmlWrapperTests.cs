@@ -13,7 +13,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="SvgHtmlWrapper"/>.
     /// </summary>
     [TestFixture]
-    internal class SvgHtmlWrapperTests
+    internal sealed class SvgHtmlWrapperTests
     {
         #region Test helpers
 

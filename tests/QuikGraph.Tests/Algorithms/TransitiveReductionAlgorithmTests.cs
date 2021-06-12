@@ -10,7 +10,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="TransitiveReductionAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class TransitiveReductionAlgorithmTests
+    internal sealed class TransitiveReductionAlgorithmTests
     {
         [Test]
         public void Constructor()

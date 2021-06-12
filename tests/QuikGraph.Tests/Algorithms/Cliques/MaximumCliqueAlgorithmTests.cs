@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.Cliques
     /// Tests for <see cref="MaximumCliqueAlgorithmBase{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MaximumCliqueAlgorithmTests
+    internal sealed class MaximumCliqueAlgorithmTests
     {
         #region Test classes
 

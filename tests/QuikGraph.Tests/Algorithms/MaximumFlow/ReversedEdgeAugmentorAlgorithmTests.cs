@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
     /// Tests for <see cref="ReversedEdgeAugmentorAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class ReversedEdgeAugmentorAlgorithmTests
+    internal sealed class ReversedEdgeAugmentorAlgorithmTests
     {
         [Test]
         public void Constructor()

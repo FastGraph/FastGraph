@@ -7,7 +7,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="SReversedEdge{TVertex,TEdge}"/>.
     ///</summary>
     [TestFixture]
-    internal class SReversedEdgeTests : EdgeTestsBase
+    internal sealed class SReversedEdgeTests : EdgeTestsBase
     {
         [Test]
         public void Construction()

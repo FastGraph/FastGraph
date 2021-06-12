@@ -12,7 +12,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests for <see cref="GraphvizExtensions"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizExtensionsTests
+    internal sealed class GraphvizExtensionsTests
     {
         [Test]
         public void ToGraphviz()

@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="PageRankAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class PageRankAlgorithmTests
+    internal sealed class PageRankAlgorithmTests
     {
         [Test]
         public void Constructor()

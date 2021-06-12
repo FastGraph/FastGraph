@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="BidirectionalGraph{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class BidirectionalGraphTests : GraphTestsBase
+    internal sealed class BidirectionalGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

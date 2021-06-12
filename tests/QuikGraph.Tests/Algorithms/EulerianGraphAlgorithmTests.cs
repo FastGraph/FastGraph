@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="IsEulerianGraphAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EulerianGraphAlgorithmTests
+    internal sealed class EulerianGraphAlgorithmTests
     {
         #region Test helpers
 

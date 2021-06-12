@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Structures
     /// Tests for <see cref="CompressedSparseRowGraph{TVertex}"/>.
     /// </summary>
     [TestFixture]
-    internal class CompressedSparseRowGraphTests : GraphTestsBase
+    internal sealed class CompressedSparseRowGraphTests : GraphTestsBase
     {
         [Test]
         public void Construction()

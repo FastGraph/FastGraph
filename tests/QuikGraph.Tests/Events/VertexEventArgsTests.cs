@@ -6,7 +6,7 @@ namespace QuikGraph.Tests.Events
     /// <summary>
     /// Tests related to <see cref="VertexEventArgs{TVertex}"/>.
     /// </summary>
-    internal class VertexEventArgsTests
+    internal sealed class VertexEventArgsTests
     {
         [Test]
         public void Constructor()

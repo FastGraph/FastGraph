@@ -11,7 +11,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests related to <see cref="RandomGraphFactory"/>
     /// </summary>
     [TestFixture]
-    internal class RandomGraphFactoryTests : GraphTestsBase
+    internal sealed class RandomGraphFactoryTests : GraphTestsBase
     {
         [Test]
         public void GetVertex()

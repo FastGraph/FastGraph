@@ -11,7 +11,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests related to <see cref="GraphvizAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizAlgorithmTests
+    internal sealed class GraphvizAlgorithmTests
     {
         [Test]
         public void Constructor()

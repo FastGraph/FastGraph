@@ -8,7 +8,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
     /// <summary>
     /// Tests related to <see cref="IDistancesCollection{TVertex}.GetDistance"/>.
     /// </summary>
-    internal class DistancesCollectionGetDistanceContract : DistancesCollectionContractBase
+    internal sealed class DistancesCollectionGetDistanceContract : DistancesCollectionContractBase
     {
         public DistancesCollectionGetDistanceContract([NotNull] Type algorithmToTest)
             : base(algorithmToTest)

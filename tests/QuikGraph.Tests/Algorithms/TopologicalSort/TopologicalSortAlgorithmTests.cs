@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms
     /// Tests for <see cref="TopologicalSortAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class TopologicalSortAlgorithmTests
+    internal sealed class TopologicalSortAlgorithmTests
     {
         #region Test helpers
 

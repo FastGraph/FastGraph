@@ -7,7 +7,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="PetriNet{TToken}"/>.
     /// </summary>
-    internal class PetriNetTests
+    internal sealed class PetriNetTests
     {
         [Test]
         public void Constructor()

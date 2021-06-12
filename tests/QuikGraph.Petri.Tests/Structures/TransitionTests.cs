@@ -7,7 +7,7 @@ namespace QuikGraph.Petri.Tests
     /// <summary>
     /// Tests related to <see cref="Transition{TToken}"/>.
     /// </summary>
-    internal class TransitionTests
+    internal sealed class TransitionTests
     {
         #region Test classes
 

@@ -9,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.VertexCover
     /// Tests for <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class MinimumVertexCoverApproximationAlgorithmTests
+    internal sealed class MinimumVertexCoverApproximationAlgorithmTests
     {
         [Test]
         public void Constructor()

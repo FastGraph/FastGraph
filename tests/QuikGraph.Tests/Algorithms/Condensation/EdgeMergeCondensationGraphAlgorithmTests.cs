@@ -13,7 +13,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
     /// Tests for <see cref="EdgeMergeCondensationGraphAlgorithm{TVertex, TEdge}"/>.
     /// </summary>
     [TestFixture]
-    internal class EdgeMergeCondensationGraphAlgorithmTests
+    internal sealed class EdgeMergeCondensationGraphAlgorithmTests
     {
         #region Test helpers
 

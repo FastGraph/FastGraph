@@ -10,7 +10,7 @@ namespace QuikGraph.Graphviz.Tests
     /// Tests for <see cref="GraphvizEdgeExtremity"/>.
     /// </summary>
     [TestFixture]
-    internal class GraphvizEdgeExtremityTests
+    internal sealed class GraphvizEdgeExtremityTests
     {
         [Test]
         public void Constructor()
