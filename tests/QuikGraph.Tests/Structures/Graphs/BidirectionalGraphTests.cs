@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -409,23 +409,27 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertexRange(verticesArray);
             graph.AddEdgeRange(setupEdges);
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -562,23 +566,27 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertexRange(setupVertices);
             graph.AddEdgeRange(setupEdges);
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -710,7 +718,7 @@ namespace QuikGraph.Tests.Structures
             var graph = new BidirectionalGraph<int, Edge<int>>();
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(null, (source, target) => new Edge<int>(source, target)));
-            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(vertex => true, null));
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(_ => true, null));
             Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -825,12 +833,14 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -880,6 +890,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -957,6 +968,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -1035,6 +1047,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -1109,7 +1122,7 @@ namespace QuikGraph.Tests.Structures
             var graph = new BidirectionalGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
-            var clonedGraph = graph.Clone();
+            BidirectionalGraph<int, Edge<int>> clonedGraph = graph.Clone();
             Assert.IsNotNull(clonedGraph);
             AssertEmptyGraph(clonedGraph);
 

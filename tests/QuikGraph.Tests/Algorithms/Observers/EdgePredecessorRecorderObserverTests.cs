@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -398,7 +398,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
 
                     Dictionary<Edge<int>, GraphColor> colors = graph.Edges.ToDictionary(
                         edge => edge,
-                        edge => GraphColor.White);
+                        _ => GraphColor.White);
 
                     CollectionAssert.AreEqual(
                         new[] { edge12, edge24 },
@@ -438,7 +438,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
 
                     Dictionary<Edge<int>, GraphColor> colors = graph.Edges.ToDictionary(
                         edge => edge,
-                        edge => GraphColor.White);
+                        _ => GraphColor.White);
 
                     CollectionAssert.AreEqual(
                         new[] { edge12, edge24, edge41 },

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -51,23 +51,23 @@ namespace QuikGraph.Tests.Algorithms.Search
                 discoverTimes[vertex] = time++;
             };
 
-            dfs.ExamineEdge += (sender, args) =>
+            dfs.ExamineEdge += (_, args) =>
             {
                 Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[args.Source]);
             };
 
-            dfs.TreeEdge += (sender, args) =>
+            dfs.TreeEdge += (_, args) =>
             {
                 Assert.AreEqual(GraphColor.White, dfs.VerticesColors[args.Target]);
                 parents[args.Target] = args.Source;
             };
 
-            dfs.BackEdge += (sender, args) =>
+            dfs.BackEdge += (_, args) =>
             {
                 Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[args.Target]);
             };
 
-            dfs.ForwardOrCrossEdge += (sender, args) =>
+            dfs.ForwardOrCrossEdge += (_, args) =>
             {
                 Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[args.Target]);
             };

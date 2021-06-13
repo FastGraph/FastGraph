@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -86,7 +86,7 @@ namespace QuikGraph.Serialization.Tests
         {
             unchecked
             {
-                var hashCode = ID.GetHashCode();
+                int hashCode = ID.GetHashCode();
                 hashCode = (hashCode * 397) ^ (StringDefault != null ? StringDefault.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (String != null ? String.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Int;

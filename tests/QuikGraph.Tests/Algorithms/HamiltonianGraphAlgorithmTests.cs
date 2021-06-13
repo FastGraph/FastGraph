@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -89,7 +89,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void IsHamiltonianWithLoops()
         {
-            var graph = CreateUndirectedGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 1),
                 new Vertices(1, 1),
@@ -107,7 +107,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void IsHamiltonianWithParallelEdges()
         {
-            var graph = CreateUndirectedGraph(new[]
+            UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(new[]
             {
                 new Vertices(1, 2),
                 new Vertices(1, 2),

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -402,8 +402,8 @@ namespace QuikGraph.Tests.Algorithms.Exploration
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             // Restore no filter
-            graph.SuccessorVertexPredicate = vertex => true;
-            graph.SuccessorEdgePredicate = edge => true;
+            graph.SuccessorVertexPredicate = _ => true;
+            graph.SuccessorEdgePredicate = _ => true;
 
             Assert.AreSame(edge54, graph.OutEdge(vertex5, 0));
             Assert.AreSame(edge61, graph.OutEdge(vertex6, 0));
@@ -524,8 +524,8 @@ namespace QuikGraph.Tests.Algorithms.Exploration
             AssertNoOutEdge(graph, vertex4);
 
             // Restore no filter
-            graph.SuccessorVertexPredicate = vertex => true;
-            graph.SuccessorEdgePredicate = edge => true;
+            graph.SuccessorVertexPredicate = _ => true;
+            graph.SuccessorEdgePredicate = _ => true;
 
             AssertHasOutEdges(graph, vertex1, new[] { edge12, edge13, edge14 });
             AssertHasOutEdges(graph, vertex2, new[] { edge24 });
@@ -647,8 +647,8 @@ namespace QuikGraph.Tests.Algorithms.Exploration
             CollectionAssert.IsEmpty(gotEdges); // Both edges filtered by the 2 filters combined
 
             // Restore no filter
-            graph.SuccessorVertexPredicate = vertex => true;
-            graph.SuccessorEdgePredicate = edge => true;
+            graph.SuccessorVertexPredicate = _ => true;
+            graph.SuccessorEdgePredicate = _ => true;
 
             Assert.IsTrue(graph.TryGetOutEdges(vertex2, out gotEdges));
             CollectionAssert.AreEqual(new[] { edge4, edge5 }, gotEdges);

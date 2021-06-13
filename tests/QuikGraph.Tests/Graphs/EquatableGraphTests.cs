@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -530,7 +530,7 @@ namespace QuikGraph.Tests.Structures
                 clusterWrappedAdjacencyGraph3.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
                 clusterWrappedAdjacencyGraph3.AddEdgeRange(new[] { edge12, edge34 });
                 var cluster3 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph3);
-                var subGraph31 = cluster3.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> subGraph31 = cluster3.AddCluster();
                 subGraph31.AddVertex(6);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, cluster3, vertexComparer, edgeComparer)
@@ -1189,7 +1189,7 @@ namespace QuikGraph.Tests.Structures
                 clusterWrappedAdjacencyGraph3.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
                 clusterWrappedAdjacencyGraph3.AddEdgeRange(new[] { edge12, edge34 });
                 var cluster3 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph3);
-                var subGraph31 = cluster3.AddCluster();
+                ClusteredAdjacencyGraph<int, Edge<int>> subGraph31 = cluster3.AddCluster();
                 subGraph31.AddVertex(6);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, cluster3)

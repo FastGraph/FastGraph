@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -31,7 +31,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                 (s, t) => new Edge<string>(s, t)))
             {
                 bool added = false;
-                augmentor.EdgeAdded += edge => { added = true; };
+                augmentor.EdgeAdded += _ => { added = true; };
 
                 augmentor.Compute();
                 Assert.IsTrue(added);

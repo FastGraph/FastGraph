@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -308,10 +308,10 @@ namespace QuikGraph.Tests.Extensions
 
             TryFunc<int, IEnumerable<Edge<int>>>[] algorithmResults = 
             {
-                graph.ShortestPathsDijkstra(edge => 1.0, 2),
-                graph.ShortestPathsAStar(edge => 1.0, vertex => 1.0, 2),
-                graph.ShortestPathsBellmanFord(edge => 1.0, 2, out _),
-                graph.ShortestPathsDag(edge => 1.0, 2)
+                graph.ShortestPathsDijkstra(_ => 1.0, 2),
+                graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, 2),
+                graph.ShortestPathsBellmanFord(_ => 1.0, 2, out _),
+                graph.ShortestPathsDag(_ => 1.0, 2)
             };
 
             foreach (TryFunc<int, IEnumerable<Edge<int>>> result in algorithmResults)
@@ -379,14 +379,14 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(edge => 1.0, vertex));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(edge => 1.0, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
                 () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, null));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(edge => 1.0, null));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -402,25 +402,25 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(edge => 1.0, v => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, v => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(edge => 1.0, null, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(edge => 1.0, v => 1.0, null));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, _ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, _ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, null, vertex));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, v => 1.0, vertex));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, _ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(edge => 1.0, null, vertex));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, null, vertex));
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(edge => 1.0, v => 1.0, null));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, _ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, null, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, v => 1.0, null));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(edge => 1.0, null, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, _ => 1.0, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, null, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, null, vertex));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, v => 1.0, null));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, _ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(edge => 1.0, null, null));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, null, null));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, null, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, null, null));
@@ -437,14 +437,14 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(edge => 1.0, vertex, out _));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(_ => 1.0, vertex, out _));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(null, vertex, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(edge => 1.0, null, out _));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(_ => 1.0, null, out _));
             Assert.Throws<ArgumentNullException>(
                 () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(null, vertex, out _));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(null, null, out _));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(edge => 1.0, null, out _));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(_ => 1.0, null, out _));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(null, null, out _));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -460,14 +460,14 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(edge => 1.0, vertex));
+                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(_ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(edge => 1.0, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
                 () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(null, null));
             Assert.Throws<ArgumentNullException>(() => 
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(edge => 1.0, null));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -494,7 +494,7 @@ namespace QuikGraph.Tests.Extensions
             });
             graph.AddVertex(9);
 
-            TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.ShortestPathsDijkstra(edge => 1.0, 2);
+            TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.ShortestPathsDijkstra(_ => 1.0, 2);
             Assert.IsNotNull(pathAccessor);
 
             Assert.IsFalse(pathAccessor(9, out _));
@@ -515,14 +515,14 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(edge => 1.0, vertex));
+                () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(edge => 1.0, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
                 () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, null));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(edge => 1.0, null));
+                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -562,7 +562,7 @@ namespace QuikGraph.Tests.Extensions
                 edge109
             });
 
-            IEnumerable<IEnumerable<Edge<int>>> paths = graph.RankedShortestPathHoffmanPavley(edge => 1.0, 1, 5, 5);
+            IEnumerable<IEnumerable<Edge<int>>> paths = graph.RankedShortestPathHoffmanPavley(_ => 1.0, 1, 5, 5);
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -573,7 +573,7 @@ namespace QuikGraph.Tests.Extensions
                 },
                 paths);
 
-            paths = graph.RankedShortestPathHoffmanPavley(edge => 1.0, 1, 5);
+            paths = graph.RankedShortestPathHoffmanPavley(_ => 1.0, 1, 5);
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -593,25 +593,25 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(edge => 1.0, vertex, vertex, int.MaxValue));
+                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
                 () => graph.RankedShortestPathHoffmanPavley(null, vertex, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(edge => 1.0, null, vertex, int.MaxValue));
+                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, null, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(edge => 1.0, vertex, null, int.MaxValue));
+                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, null, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
                 () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, vertex, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(edge => 1.0, null, vertex, int.MaxValue));
+                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0, null, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(edge => 1.0, vertex, null, int.MaxValue));
+                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, null, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
                 () => graph.RankedShortestPathHoffmanPavley(null, null, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
                 () => graph.RankedShortestPathHoffmanPavley(null, vertex, null, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(edge => 1.0, null, null, int.MaxValue));
+                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, null, null, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
                 () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, null, vertex, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
@@ -623,9 +623,9 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => graph.RankedShortestPathHoffmanPavley(edge => 1.0, vertex, vertex, 0));
+                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, 0));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => graph.RankedShortestPathHoffmanPavley(edge => 1.0, vertex, vertex, -1));
+                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, -1));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -1339,7 +1339,7 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges((IBidirectionalGraph<int, Edge<int>>)null, v => true));
+                () => AlgorithmExtensions.CondensateEdges((IBidirectionalGraph<int, Edge<int>>)null, _ => true));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.CondensateEdges(graph, null));
             Assert.Throws<ArgumentNullException>(
@@ -1638,7 +1638,7 @@ namespace QuikGraph.Tests.Extensions
             Assert.Throws<ArgumentNullException>(
                 () => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreePrim(null));
             Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(edge => 1.0));
+                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(_ => 1.0));
             Assert.Throws<ArgumentNullException>(
                 () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -1653,7 +1653,7 @@ namespace QuikGraph.Tests.Extensions
             Assert.Throws<ArgumentNullException>(
                 () => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreeKruskal(null));
             Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(edge => 1.0));
+                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(_ => 1.0));
             Assert.Throws<ArgumentNullException>(
                 () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -1704,7 +1704,7 @@ namespace QuikGraph.Tests.Extensions
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVertexRange(new[] { 1, 2 });
-            Func<Edge<int>, double> capacities = edge => 1.0;
+            Func<Edge<int>, double> capacities = _ => 1.0;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
 
@@ -1730,7 +1730,7 @@ namespace QuikGraph.Tests.Extensions
         public void Clone([NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> cloned)
         {
             var emptyGraph1 = new AdjacencyGraph<int, EquatableEdge<int>>();
-            emptyGraph1.Clone(v => v, (edge, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
+            emptyGraph1.Clone(v => v, (_, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
             AssertEmptyGraph(cloned);
 
             cloned.Clear();
@@ -1742,7 +1742,7 @@ namespace QuikGraph.Tests.Extensions
                 new EquatableEdge<int>(2, 3),
                 new EquatableEdge<int>(3, 1)
             });
-            notEmptyGraph.Clone(v => v, (edge, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
+            notEmptyGraph.Clone(v => v, (_, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
             AssertHasVertices(cloned, new[] { 1, 2, 3 });
             AssertHasEdges(
                 cloned,
@@ -1757,7 +1757,7 @@ namespace QuikGraph.Tests.Extensions
             // Clone is not empty
             cloned.Clear();
             cloned.AddVerticesAndEdge(new EquatableEdge<int>(1, 4));
-            notEmptyGraph.Clone(v => v, (edge, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
+            notEmptyGraph.Clone(v => v, (_, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
             // Clone has been cleaned and then re-filled
             AssertHasVertices(cloned, new[] { 1, 2, 3 });
             AssertHasEdges(
@@ -1779,29 +1779,29 @@ namespace QuikGraph.Tests.Extensions
 
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(null, v => v, (e, v1, v2) => e, clone));
+                () => AlgorithmExtensions.Clone(null, v => v, (e, _, _) => e, clone));
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, null, (e, v1, v2) => e, clone));
+                () => AlgorithmExtensions.Clone(graph, null, (e, _, _) => e, clone));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.Clone(graph, v => v, null, clone));
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, (e, v1, v2) => e, null));
+                () => AlgorithmExtensions.Clone(graph, v => v, (e, _, _) => e, null));
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(null, null, (e, v1, v2) => e, clone));
+                () => AlgorithmExtensions.Clone(null, null, (e, _, _) => e, clone));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.Clone(null, v => v, null, clone));
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, v => v, (e, v1, v2) => e, null));
+                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, v => v, (e, _, _) => e, null));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.Clone(graph, null, null, clone));
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, null, (e, v1, v2) => e, null));
+                () => AlgorithmExtensions.Clone(graph, null, (e, _, _) => e, null));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.Clone(graph, v => v, null, null));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.Clone(null, null, null, clone));
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, null, (e, v1, v2) => e, null));
+                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, null, (e, _, _) => e, null));
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.Clone(graph, null, null, null));
             Assert.Throws<ArgumentNullException>(

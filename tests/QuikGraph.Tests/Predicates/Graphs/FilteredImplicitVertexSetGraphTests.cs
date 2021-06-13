@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using QuikGraph.Predicates;
 
@@ -13,8 +13,8 @@ namespace QuikGraph.Tests.Predicates
         [Test]
         public void Construction()
         {
-            VertexPredicate<int> vertexPredicate = vertex => true;
-            EdgePredicate<int, Edge<int>> edgePredicate = edge => true;
+            VertexPredicate<int> vertexPredicate = _ => true;
+            EdgePredicate<int, Edge<int>> edgePredicate = _ => true;
 
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
             var filteredGraph1 = new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
@@ -72,20 +72,20 @@ namespace QuikGraph.Tests.Predicates
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
-                    vertex => true,
+                    _ => true,
                     null));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
                     null,
-                    edge => true));
+                    _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     null,
-                    vertex => true,
-                    edge => true));
+                    _ => true,
+                    _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
@@ -96,14 +96,14 @@ namespace QuikGraph.Tests.Predicates
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     null,
-                    vertex => true,
+                    _ => true,
                     null));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     null,
                     null,
-                    edge => true));
+                    _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
@@ -134,8 +134,8 @@ namespace QuikGraph.Tests.Predicates
         {
             var filteredGraph = new FilteredImplicitVertexSet<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                 new AdjacencyGraph<TestVertex, Edge<TestVertex>>(),
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             ContainsVertex_Throws_Test(filteredGraph);
         }
 

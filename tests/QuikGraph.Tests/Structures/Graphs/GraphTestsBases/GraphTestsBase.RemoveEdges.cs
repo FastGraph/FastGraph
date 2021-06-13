@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -15,11 +15,13 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -92,6 +94,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -150,6 +153,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -304,11 +308,13 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -382,6 +388,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -439,6 +446,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -568,11 +576,13 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -598,7 +608,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
 
-            Assert.AreEqual(5, graph.RemoveEdgeIf(edge => true));
+            Assert.AreEqual(5, graph.RemoveEdgeIf(_ => true));
             CheckCounters(5);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
@@ -620,6 +630,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -644,7 +655,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
 
-            Assert.AreEqual(5, graph.RemoveEdgeIf(edge => true));
+            Assert.AreEqual(5, graph.RemoveEdgeIf(_ => true));
             CheckCounter(5);
             AssertEmptyGraph(graph);    // Vertices removed in the same time as edges
 
@@ -678,7 +689,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
 
-            Assert.AreEqual(5, graph.RemoveEdgeIf(edge => true));
+            Assert.AreEqual(5, graph.RemoveEdgeIf(_ => true));
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
         }
@@ -705,11 +716,13 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -717,7 +730,7 @@ namespace QuikGraph.Tests.Structures
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, edge => true));
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, _ => true));
             CheckCounters(0);
             AssertEmptyGraph(graph);
 
@@ -740,7 +753,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, edge => true));
+            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, _ => true));
             CheckCounters(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24 });
@@ -762,6 +775,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -769,7 +783,7 @@ namespace QuikGraph.Tests.Structures
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(6, edge => true));
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(6, _ => true));
             CheckCounter(0);
             AssertNoEdge(graph);
 
@@ -789,7 +803,7 @@ namespace QuikGraph.Tests.Structures
             CheckCounter(0);
             AssertHasEdges(graph, new[] { edge01, edge13, edge20, edge22 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(2, edge => true));
+            Assert.AreEqual(2, graph.RemoveOutEdgeIf(2, _ => true));
             CheckCounter(2);
             AssertHasEdges(graph, new[] { edge01, edge13 });
 
@@ -807,7 +821,7 @@ namespace QuikGraph.Tests.Structures
         protected static void RemoveOutEdgeIf_Clusters_Test(
             [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, edge => true));
+            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, _ => true));
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -827,7 +841,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, edge => true));
+            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, _ => true));
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24 });
         }
@@ -846,7 +860,7 @@ namespace QuikGraph.Tests.Structures
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, _ => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -858,7 +872,7 @@ namespace QuikGraph.Tests.Structures
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, _ => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -870,11 +884,13 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -882,7 +898,7 @@ namespace QuikGraph.Tests.Structures
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(1, edge => true));
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(1, _ => true));
             CheckCounters(0);
             AssertEmptyGraph(graph);
 
@@ -905,7 +921,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, edge => true));
+            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, _ => true));
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge14, edge24, edge31, edge33 });
@@ -927,6 +943,7 @@ namespace QuikGraph.Tests.Structures
         {
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -934,7 +951,7 @@ namespace QuikGraph.Tests.Structures
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(6, edge => true));
+            Assert.AreEqual(0, graph.RemoveInEdgeIf(6, _ => true));
             CheckCounter(0);
             AssertNoEdge(graph);
 
@@ -954,7 +971,7 @@ namespace QuikGraph.Tests.Structures
             CheckCounter(0);
             AssertHasEdges(graph, new[] { edge01, edge03, edge13, edge20, edge22 });
 
-            Assert.AreEqual(1, graph.RemoveInEdgeIf(1, edge => true));
+            Assert.AreEqual(1, graph.RemoveInEdgeIf(1, _ => true));
             CheckCounter(1);
             AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
 
@@ -981,7 +998,7 @@ namespace QuikGraph.Tests.Structures
             [NotNull] IMutableBidirectionalGraph<TestVertex, Edge<TestVertex>> graph)
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, _ => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
@@ -993,11 +1010,13 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -1005,7 +1024,7 @@ namespace QuikGraph.Tests.Structures
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveAdjacentEdgeIf(1, edge => true));
+            Assert.AreEqual(0, graph.RemoveAdjacentEdgeIf(1, _ => true));
             CheckCounters(0);
             AssertEmptyGraph(graph);
 
@@ -1028,7 +1047,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge33 });
 
-            Assert.AreEqual(1, graph.RemoveAdjacentEdgeIf(3, edge => true));
+            Assert.AreEqual(1, graph.RemoveAdjacentEdgeIf(3, _ => true));
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24 });
@@ -1049,7 +1068,7 @@ namespace QuikGraph.Tests.Structures
             [NotNull] IMutableUndirectedGraph<TestVertex, Edge<TestVertex>> graph)
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(null, edge => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(null, _ => true));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(new TestVertex("v1"), null));
             Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(null, null));
             // ReSharper restore AssignNullToNotNullAttribute

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -47,7 +47,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             reversedEdgeAugmentorAlgorithm.AddReversedEdges();
 
             double flow = graph.MaximumFlow(
-                edge => 1,
+                _ => 1,
                 source, sink,
                 out _,
                 edgeFactory,
@@ -64,7 +64,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         public void Constructor()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            Func<Edge<int>, double> capacities = edge => 1.0;
+            Func<Edge<int>, double> capacities = _ => 1.0;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
 
@@ -123,7 +123,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         {
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
             var graph2 = new AdjacencyGraph<int, Edge<int>>();
-            Func<Edge<int>, double> capacities = edge => 1.0;
+            Func<Edge<int>, double> capacities = _ => 1.0;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var reverseEdgesAlgorithm1 = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph1, edgeFactory);
             var reverseEdgesAlgorithm2 = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph2, edgeFactory);
@@ -357,7 +357,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             graph.AddVerticesAndEdge(new Edge<int>(1, 2));
             graph.AddVertex(3);
 
-            Func<Edge<int>, double> capacities = edge => 1.0;
+            Func<Edge<int>, double> capacities = _ => 1.0;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
             reverseEdgesAlgorithm.AddReversedEdges();

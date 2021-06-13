@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -255,23 +255,17 @@ namespace QuikGraph.Tests.Collections
             [UsedImplicitly]
             get
             {
-                var keys1 = new[]
-                {
-                    42
-                };
+                int[] keys1 = { 42 };
 
                 yield return new TestCaseData(keys1, ErrorRate);
                 yield return new TestCaseData(keys1, ErrorRate2);
 
-                var keys2 = new[]
-                {
-                    1, 2, 3, 5, 10, 2, 4, 6, 4, 3, 2, 150, 11, 42, 13
-                };
+                int[] keys2 = { 1, 2, 3, 5, 10, 2, 4, 6, 4, 3, 2, 150, 11, 42, 13 };
 
                 yield return new TestCaseData(keys2, ErrorRate);
                 yield return new TestCaseData(keys2, ErrorRate2);
 
-                var keys3 = new[]
+                int[] keys3 =
                 {
                     1, 2, 4, 3, 2, 15, 0, 11, 3, 5, 10, 2, 4, 6, 42, 13,
                     1, 2, 4, 2, 4, 6, 42, 13, 3, 2, 15, 0, 11, 3, 5, 10
@@ -280,7 +274,7 @@ namespace QuikGraph.Tests.Collections
                 yield return new TestCaseData(keys3, ErrorRate);
                 yield return new TestCaseData(keys3, ErrorRate2);
 
-                var keys4 = new[]
+                int[] keys4 =
                 {
                     1, 2, 4, 3, 2, 15, 0, 11, 3, 5, 10, 2, 4, 6, 42, 13,
                     1, 2, 4, 2, 4, 6, 42, 13, 3, 2, 15, 0, 11, 3, 5, 10,

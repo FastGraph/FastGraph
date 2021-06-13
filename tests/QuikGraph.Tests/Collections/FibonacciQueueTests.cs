@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -16,47 +16,47 @@ namespace QuikGraph.Tests.Collections
         public void Constructors()
         {
             AssertQueueProperties(
-                new FibonacciQueue<int, double>(vertex => 1.0));
+                new FibonacciQueue<int, double>(_ => 1.0));
 
 
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     0,
                     null,
-                    vertex => 1.0));
+                    _ => 1.0));
 
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     12,
                     null,
-                    vertex => 1.0));
+                    _ => 1.0));
 
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     0,
                     new[] { 1, 2 }, // Marked as removed
-                    vertex => 1.0));
+                    _ => 1.0));
 
 
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     0,
                     null,
-                    vertex => 1.0,
+                    _ => 1.0,
                     (dist1, dist2) => dist1.CompareTo(dist2)));
 
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     12,
                     null,
-                    vertex => 1.0,
+                    _ => 1.0,
                     (dist1, dist2) => dist1.CompareTo(dist2)));
 
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     0,
                     new[] { 1, 2, 3 }, // Marked as removed
-                    vertex => 1.0,
+                    _ => 1.0,
                     (dist1, dist2) => dist1.CompareTo(dist2)));
 
 
@@ -100,7 +100,7 @@ namespace QuikGraph.Tests.Collections
 
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), vertex => 1.0));
+                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0));
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null));
             Assert.Throws<ArgumentNullException>(
@@ -110,15 +110,15 @@ namespace QuikGraph.Tests.Collections
 
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), vertex => 1.0, (dist1, dist2) => dist1.CompareTo(dist2)));
+                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), vertex => 1.0, null));
+                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, null));
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null, null));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), vertex => 1.0, null));
+                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), _ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
                 () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), null, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentNullException>(
@@ -145,21 +145,21 @@ namespace QuikGraph.Tests.Collections
         public void Contains()
         {
             Contains_Test(
-                new FibonacciQueue<int, double>(vertex => 1.0),
+                new FibonacciQueue<int, double>(_ => 1.0),
                 1,
                 2);
             Contains_Test(
-                new FibonacciQueue<TestVertex, double>(vertex => 1.0),
+                new FibonacciQueue<TestVertex, double>(_ => 1.0),
                 new TestVertex("1"),
                 new TestVertex("2"));
             Contains_Test(
-                new FibonacciQueue<EquatableTestVertex, double>(vertex => 1.0),
+                new FibonacciQueue<EquatableTestVertex, double>(_ => 1.0),
                 new EquatableTestVertex("1"),
                 new EquatableTestVertex("2"));
 
             // Special case
             Contains_Test(
-                new FibonacciQueue<int, double>(12, new[] { 1, 2 }, vertex => 1.0),
+                new FibonacciQueue<int, double>(12, new[] { 1, 2 }, _ => 1.0),
                 1,
                 2);
         }
@@ -168,15 +168,15 @@ namespace QuikGraph.Tests.Collections
         public void Enqueue()
         {
             Enqueue_Test(
-                new FibonacciQueue<int, double>(vertex => 1.0),
+                new FibonacciQueue<int, double>(_ => 1.0),
                 1,
                 2);
             Enqueue_Test(
-                new FibonacciQueue<TestVertex, double>(vertex => 1.0),
+                new FibonacciQueue<TestVertex, double>(_ => 1.0),
                 new TestVertex("1"),
                 new TestVertex("2"));
             Enqueue_Test(
-                new FibonacciQueue<EquatableTestVertex, double>(vertex => 1.0),
+                new FibonacciQueue<EquatableTestVertex, double>(_ => 1.0),
                 new EquatableTestVertex("1"),
                 new EquatableTestVertex("2"));
         }
@@ -208,7 +208,7 @@ namespace QuikGraph.Tests.Collections
         public void Dequeue_Throws()
         {
             Dequeue_Throws_Test(
-                new FibonacciQueue<int, double>(vertex => 1));
+                new FibonacciQueue<int, double>(_ => 1));
         }
 
         [Test]
@@ -235,7 +235,7 @@ namespace QuikGraph.Tests.Collections
         public void Peek_Throws()
         {
             Peek_Throws_Test(
-                new FibonacciQueue<int, double>(vertex => 1));
+                new FibonacciQueue<int, double>(_ => 1));
         }
 
         [Test]

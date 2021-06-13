@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -367,14 +367,14 @@ namespace QuikGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Document_Empty()
         {
-            XPathDocument document = new XPathDocument(GetGraphFilePath(EmptyGraphFileName));
+            var document = new XPathDocument(GetGraphFilePath(EmptyGraphFileName));
 
             // Directed graph
             AdjacencyGraph<string, Edge<string>> adjacencyGraph = document.DeserializeFromXml(
                 "graph",
                 "node",
                 "edge",
-                nav => new AdjacencyGraph<string, Edge<string>>(),
+                _ => new AdjacencyGraph<string, Edge<string>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new Edge<string>(
                     nav.GetAttribute("source", ""),
@@ -386,7 +386,7 @@ namespace QuikGraph.Serialization.Tests
                 "graph",
                 "node",
                 "edge",
-                nav => new BidirectionalGraph<string, Edge<string>>(),
+                _ => new BidirectionalGraph<string, Edge<string>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new Edge<string>(
                     nav.GetAttribute("source", ""),
@@ -398,7 +398,7 @@ namespace QuikGraph.Serialization.Tests
                 "graph",
                 "node",
                 "edge",
-                nav => new UndirectedGraph<string, TaggedEdge<string, double>>(),
+                _ => new UndirectedGraph<string, TaggedEdge<string, double>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new TaggedEdge<string, double>(
                     nav.GetAttribute("source", ""),
@@ -410,42 +410,42 @@ namespace QuikGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Document()
         {
-            XPathDocument document = new XPathDocument(GetGraphFilePath(TestGraphFileName));
+            var document = new XPathDocument(GetGraphFilePath(TestGraphFileName));
 
             // Directed graph
             AdjacencyGraph<string, EquatableEdge<string>> adjacencyGraph = document.DeserializeFromXml(
                 "graph",
                 "node",
                 "edge",
-                nav => new AdjacencyGraph<string, EquatableEdge<string>>(),
+                _ => new AdjacencyGraph<string, EquatableEdge<string>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new EquatableEdge<string>(
                     nav.GetAttribute("source", ""),
                     nav.GetAttribute("target", "")));
             AssetTestGraphContent(
                 adjacencyGraph,
-                (v1, v2, weight) => new EquatableEdge<string>(v1, v2));
+                (v1, v2, _) => new EquatableEdge<string>(v1, v2));
 
             // Directed bidirectional graph
             BidirectionalGraph<string, EquatableEdge<string>> bidirectionalGraph = document.DeserializeFromXml(
                 "graph",
                 "node",
                 "edge",
-                nav => new BidirectionalGraph<string, EquatableEdge<string>>(),
+                _ => new BidirectionalGraph<string, EquatableEdge<string>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new EquatableEdge<string>(
                     nav.GetAttribute("source", ""),
                     nav.GetAttribute("target", "")));
             AssetTestGraphContent(
                 bidirectionalGraph,
-                (v1, v2, weight) => new EquatableEdge<string>(v1, v2));
+                (v1, v2, _) => new EquatableEdge<string>(v1, v2));
 
             // Undirected graph
             UndirectedGraph<string, EquatableTaggedEdge<string, double>> undirectedGraph = document.DeserializeFromXml(
                 "graph",
                 "node",
                 "edge",
-                nav => new UndirectedGraph<string, EquatableTaggedEdge<string, double>>(),
+                _ => new UndirectedGraph<string, EquatableTaggedEdge<string, double>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new EquatableTaggedEdge<string, double>(
                     nav.GetAttribute("source", ""),
@@ -466,20 +466,20 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     "node",
                     "edge",
-                    nav => new AdjacencyGraph<string, EquatableEdge<string>>(),
+                    _ => new AdjacencyGraph<string, EquatableEdge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new EquatableEdge<string>(
                         nav.GetAttribute("source", ""),
                         nav.GetAttribute("target", ""))));
 
-            XPathDocument document = new XPathDocument(GetGraphFilePath(TestGraphFileName));
+            var document = new XPathDocument(GetGraphFilePath(TestGraphFileName));
 
             Assert.Throws<ArgumentException>(
                 () => document.DeserializeFromXml(
                 null,
                 "node",
                 "edge",
-                nav => new AdjacencyGraph<string, Edge<string>>(),
+                _ => new AdjacencyGraph<string, Edge<string>>(),
                 nav => nav.GetAttribute("id", ""),
                 nav => new Edge<string>(
                     nav.GetAttribute("source", ""),
@@ -490,7 +490,7 @@ namespace QuikGraph.Serialization.Tests
                     "",
                     "node",
                     "edge",
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new Edge<string>(
                         nav.GetAttribute("source", ""),
@@ -501,7 +501,7 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     null,
                     "edge",
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new Edge<string>(
                         nav.GetAttribute("source", ""),
@@ -512,7 +512,7 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     "",
                     "edge",
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new Edge<string>(
                         nav.GetAttribute("source", ""),
@@ -523,7 +523,7 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     "node",
                     null,
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new Edge<string>(
                         nav.GetAttribute("source", ""),
@@ -534,7 +534,7 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     "node",
                     "",
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new Edge<string>(
                         nav.GetAttribute("source", ""),
@@ -556,7 +556,7 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     "node",
                     "edge",
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     null,
                     nav => new Edge<string>(
                         nav.GetAttribute("source", ""),
@@ -567,7 +567,7 @@ namespace QuikGraph.Serialization.Tests
                     "graph",
                     "node",
                     "edge",
-                    nav => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     null));
 
@@ -577,7 +577,7 @@ namespace QuikGraph.Serialization.Tests
                     "g",    // No node named "g" for the graph
                     "node",
                     "edge",
-                    nav => new AdjacencyGraph<string, EquatableEdge<string>>(),
+                    _ => new AdjacencyGraph<string, EquatableEdge<string>>(),
                     nav => nav.GetAttribute("id", ""),
                     nav => new EquatableEdge<string>(
                         nav.GetAttribute("source", ""),
@@ -589,14 +589,14 @@ namespace QuikGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Reader_Empty()
         {
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
             {
                 AdjacencyGraph<string, Edge<string>> adjacencyGraph = reader.DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -604,14 +604,14 @@ namespace QuikGraph.Serialization.Tests
                 AssertEmptyGraph(adjacencyGraph);
             }
 
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
             {
                 BidirectionalGraph<string, Edge<string>> bidirectionalGraph = reader.DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
                     "",
-                    r => new BidirectionalGraph<string, Edge<string>>(),
+                    _ => new BidirectionalGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -619,14 +619,14 @@ namespace QuikGraph.Serialization.Tests
                 AssertEmptyGraph(bidirectionalGraph);
             }
 
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
             {
                 UndirectedGraph<string, TaggedEdge<string, double>> undirectedGraph = reader.DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
                     "",
-                    r => new UndirectedGraph<string, TaggedEdge<string, double>>(),
+                    _ => new UndirectedGraph<string, TaggedEdge<string, double>>(),
                     r => r.GetAttribute("id"),
                     r => new TaggedEdge<string, double>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -640,48 +640,48 @@ namespace QuikGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Reader()
         {
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
             {
                 AdjacencyGraph<string, EquatableEdge<string>> adjacencyGraph = reader.DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, EquatableEdge<string>>(),
+                    _ => new AdjacencyGraph<string, EquatableEdge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new EquatableEdge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
                         r.GetAttribute("target") ?? throw new AssertionException("Must have target attribute")));
                 AssetTestGraphContent(
                     adjacencyGraph,
-                    (v1, v2, weight) => new EquatableEdge<string>(v1, v2));
+                    (v1, v2, _) => new EquatableEdge<string>(v1, v2));
             }
 
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
             {
                 BidirectionalGraph<string, EquatableEdge<string>> bidirectionalGraph = reader.DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
                     "",
-                    r => new BidirectionalGraph<string, EquatableEdge<string>>(),
+                    _ => new BidirectionalGraph<string, EquatableEdge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new EquatableEdge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
                         r.GetAttribute("target") ?? throw new AssertionException("Must have target attribute")));
                 AssetTestGraphContent(
                     bidirectionalGraph,
-                    (v1, v2, weight) => new EquatableEdge<string>(v1, v2));
+                    (v1, v2, _) => new EquatableEdge<string>(v1, v2));
             }
 
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
             {
                 UndirectedGraph<string, EquatableTaggedEdge<string, double>> undirectedGraph = reader.DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
                     "",
-                    r => new UndirectedGraph<string, EquatableTaggedEdge<string, double>>(),
+                    _ => new UndirectedGraph<string, EquatableTaggedEdge<string, double>>(),
                     r => r.GetAttribute("id"),
                     r => new EquatableTaggedEdge<string, double>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -705,13 +705,13 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
                         r.GetAttribute("target") ?? throw new AssertionException("Must have target attribute"))));
 
-            using (XmlReader reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
             {
                 Assert.Throws<ArgumentNullException>(() => reader.DeserializeFromXml<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
                     "graph",
@@ -729,7 +729,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     null,
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -740,7 +740,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     null));
 
@@ -750,7 +750,7 @@ namespace QuikGraph.Serialization.Tests
                         null,
                         r => r.Name == "vertex",
                         r => r.Name == "edge",
-                        r => new AdjacencyGraph<string, Edge<string>>(),
+                        _ => new AdjacencyGraph<string, Edge<string>>(),
                         r => r.GetAttribute("id"),
                         r => new Edge<string>(
                             r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -761,7 +761,7 @@ namespace QuikGraph.Serialization.Tests
                         r => r.Name == "graph",
                         null,
                         r => r.Name == "edge",
-                        r => new AdjacencyGraph<string, Edge<string>>(),
+                        _ => new AdjacencyGraph<string, Edge<string>>(),
                         r => r.GetAttribute("id"),
                         r => new Edge<string>(
                             r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -772,7 +772,7 @@ namespace QuikGraph.Serialization.Tests
                         r => r.Name == "graph",
                         r => r.Name == "vertex",
                         null,
-                        r => new AdjacencyGraph<string, Edge<string>>(),
+                        _ => new AdjacencyGraph<string, Edge<string>>(),
                         r => r.GetAttribute("id"),
                         r => new Edge<string>(
                             r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -784,7 +784,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -795,7 +795,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -806,7 +806,7 @@ namespace QuikGraph.Serialization.Tests
                     null,
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -817,7 +817,7 @@ namespace QuikGraph.Serialization.Tests
                     "",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -828,7 +828,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     null,
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -839,7 +839,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -850,7 +850,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     null,
-                    r => new AdjacencyGraph<string, Edge<string>>(),
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
@@ -863,7 +863,7 @@ namespace QuikGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    r => new AdjacencyGraph<string, Edge<string>>(), 
+                    _ => new AdjacencyGraph<string, Edge<string>>(), 
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),

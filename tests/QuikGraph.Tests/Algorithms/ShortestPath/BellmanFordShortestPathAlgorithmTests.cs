@@ -77,7 +77,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void Constructor()
         {
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
@@ -122,7 +122,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new AdjacencyGraph<int, Edge<int>>();
 
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             Assert.Throws<ArgumentNullException>(
                 () => new BellmanFordShortestPathAlgorithm<int, Edge<int>>(null, Weights));
@@ -170,7 +170,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void TryGetRootVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             TryGetRootVertex_Test(algorithm);
         }
 
@@ -178,7 +178,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void SetRootVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             SetRootVertex_Test(algorithm);
         }
 
@@ -186,7 +186,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void SetRootVertex_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new BellmanFordShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0);
+            var algorithm = new BellmanFordShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0);
             SetRootVertex_Throws_Test(algorithm);
         }
 
@@ -194,7 +194,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void ClearRootVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             ClearRootVertex_Test(algorithm);
         }
 
@@ -203,7 +203,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             ComputeWithoutRoot_Throws_Test(
-                () => new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0));
+                () => new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0));
         }
 
         [Test]
@@ -211,7 +211,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVertex(0);
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             ComputeWithRoot_Test(algorithm);
         }
 
@@ -220,7 +220,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
             ComputeWithRoot_Throws_Test(
-                () => new BellmanFordShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0));
+                () => new BellmanFordShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0));
         }
 
         #endregion
@@ -231,7 +231,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVerticesAndEdge(new Edge<int>(1, 2));
 
-            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.Compute(1);
 
             Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));

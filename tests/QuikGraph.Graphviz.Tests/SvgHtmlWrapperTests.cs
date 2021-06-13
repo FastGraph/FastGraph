@@ -22,7 +22,7 @@ namespace QuikGraph.Graphviz.Tests
         {
             Assert.IsTrue(File.Exists(htmlFilePath));
             var htmlDocument = new HtmlDocument();
-            var htmlContent = File.ReadAllText(htmlFilePath);
+            string htmlContent = File.ReadAllText(htmlFilePath);
             htmlDocument.LoadHtml(htmlContent);
             Assert.IsFalse(htmlDocument.ParseErrors.Any());
             return htmlContent;

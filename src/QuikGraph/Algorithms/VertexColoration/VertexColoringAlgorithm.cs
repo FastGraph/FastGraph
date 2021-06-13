@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -126,7 +126,7 @@ namespace QuikGraph.Algorithms.VertexColoring
                 if (Colors[adjacentEdges.GetOtherVertex(vertex)].HasValue)
                 {
                     // ReSharper disable once PossibleInvalidOperationException, Justification: Was assigned a color just before
-                    var usedColor = Colors[adjacentEdges.GetOtherVertex(vertex)].Value;
+                    int usedColor = Colors[adjacentEdges.GetOtherVertex(vertex)].Value;
                     available[usedColor] = false;
                 }
             }

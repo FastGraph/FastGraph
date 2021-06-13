@@ -30,7 +30,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var algorithm = new AStarShortestPathAlgorithm<TVertex, TEdge>(
                 graph,
                 e => distances[e],
-                v => 0.0);
+                _ => 0.0);
 
             algorithm.InitializeVertex += vertex =>
             {
@@ -81,8 +81,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void Constructor()
         {
-            Func<int, double> Heuristic = v => 1.0;
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<int, double> Heuristic = _ => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, Heuristic);
@@ -131,8 +131,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new AdjacencyGraph<int, Edge<int>>();
 
-            Func<int, double> Heuristic = v => 1.0;
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<int, double> Heuristic = _ => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             Assert.Throws<ArgumentNullException>(
                 () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, Heuristic));
@@ -218,7 +218,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void TryGetRootVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0);
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0, _ => 0.0);
             TryGetRootVertex_Test(algorithm);
         }
 
@@ -226,7 +226,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void SetRootVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0);
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0, _ => 0.0);
             SetRootVertex_Test(algorithm);
         }
 
@@ -234,7 +234,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void SetRootVertex_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new AStarShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0, vertex => 0.0);
+            var algorithm = new AStarShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0, _ => 0.0);
             SetRootVertex_Throws_Test(algorithm);
         }
 
@@ -242,7 +242,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void ClearRootVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0);
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0, _ => 0.0);
             ClearRootVertex_Test(algorithm);
         }
 
@@ -252,7 +252,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var graph = new AdjacencyGraph<int, Edge<int>>();
             ComputeWithoutRoot_NoThrows_Test(
                 graph,
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0, _ => 0.0));
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVertex(0);
-            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0);
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0, _ => 0.0);
             ComputeWithRoot_Test(algorithm);
         }
 
@@ -269,7 +269,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
             ComputeWithRoot_Throws_Test(
-                () => new AStarShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0, vertex => 0.0));
+                () => new AStarShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0, _ => 0.0));
         }
 
         #endregion
@@ -280,7 +280,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVerticesAndEdge(new Edge<int>(1, 2));
 
-            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0, vertex => 0.0);
+            var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0, _ => 0.0);
             algorithm.Compute(1);
 
             Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
@@ -323,7 +323,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                         return 34.0;
                     return 1.0;
                 },
-                v => 0.0);
+                _ => 0.0);
             Assert.Throws<NegativeWeightException>(() => algorithm.Compute(1));
         }
 
@@ -404,7 +404,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var heuristicCalls = new List<int>();
             var algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(
                 lineGraph,
-                e => 1.0,
+                _ => 1.0,
                 v =>
                 {
                     // Goal is 2, h(v) = v

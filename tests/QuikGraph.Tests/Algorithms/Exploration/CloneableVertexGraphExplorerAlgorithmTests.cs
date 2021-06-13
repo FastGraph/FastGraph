@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -125,7 +125,7 @@ namespace QuikGraph.Tests.Algorithms.Exploration
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
 
             int rootVertexChangeCount = 0;
-            algorithm.RootVertexChanged += (sender, args) => ++rootVertexChangeCount;
+            algorithm.RootVertexChanged += (_, _) => ++rootVertexChangeCount;
 
             var vertex1 = new CloneableTestVertex("1");
             algorithm.SetRootVertex(vertex1);
@@ -388,7 +388,7 @@ namespace QuikGraph.Tests.Algorithms.Exploration
 
             algorithm.TreeEdge += Assert.IsNotNull;
             algorithm.BackEdge += Assert.IsNotNull;
-            algorithm.EdgeSkipped += edge => Assert.Fail("Edge must not be skipped.");
+            algorithm.EdgeSkipped += _ => Assert.Fail("Edge must not be skipped.");
 
             algorithm.Compute(verticesArray[0]);
 
@@ -471,7 +471,7 @@ namespace QuikGraph.Tests.Algorithms.Exploration
 
             algorithm.TreeEdge += Assert.IsNotNull;
             algorithm.BackEdge += Assert.IsNotNull;
-            algorithm.EdgeSkipped += edge => Assert.Fail("Edge must not be skipped.");
+            algorithm.EdgeSkipped += _ => Assert.Fail("Edge must not be skipped.");
 
             algorithm.Compute(verticesArray[0]);
 
@@ -513,7 +513,7 @@ namespace QuikGraph.Tests.Algorithms.Exploration
 
             algorithm.TreeEdge += Assert.IsNotNull;
             algorithm.BackEdge += Assert.IsNotNull;
-            algorithm.EdgeSkipped += edge => Assert.Fail("Edge must not be skipped.");
+            algorithm.EdgeSkipped += _ => Assert.Fail("Edge must not be skipped.");
 
             algorithm.Compute(verticesArray[0]);
 

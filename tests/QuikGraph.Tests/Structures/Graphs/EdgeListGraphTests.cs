@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
 
@@ -279,6 +279,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new EdgeListGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);

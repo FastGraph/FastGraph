@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -16,7 +16,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void Constructor()
         {
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
@@ -36,7 +36,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new AdjacencyGraph<int, Edge<int>>();
 
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             Assert.Throws<ArgumentNullException>(
                 () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, Weights));
@@ -89,7 +89,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             graph.AddVerticesAndEdge(new Edge<int>(vertex1, vertex2));
             graph.AddVertex(vertex3);
 
-            var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
 
             Assert.IsFalse(algorithm.TryGetDistance(vertex1, vertex2, out _));
             Assert.IsFalse(algorithm.TryGetDistance(vertex1, vertex3, out _));
@@ -106,7 +106,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void TryGetDistance_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new FloydWarshallAllShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0);
+            var algorithm = new FloydWarshallAllShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0);
 
             var vertex = new TestVertex();
             // ReSharper disable AssignNullToNotNullAttribute
@@ -132,7 +132,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             graph.AddVerticesAndEdge(edge24);
             graph.AddVertex(vertex3);
 
-            var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
 
             Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex1, out _));
             Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex2, out _));
@@ -160,7 +160,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void TryGetPath_Throws()
         {
             var graph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm1 = new FloydWarshallAllShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph1, edge => 1.0);
+            var algorithm1 = new FloydWarshallAllShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph1, _ => 1.0);
 
             var vertex = new TestVertex();
             // ReSharper disable AssignNullToNotNullAttribute

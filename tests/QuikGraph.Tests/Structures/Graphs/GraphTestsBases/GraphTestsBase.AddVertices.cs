@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -15,6 +15,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
 
             AssertNoVertex(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
@@ -126,6 +127,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
 
             AssertNoVertex(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
@@ -218,6 +220,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
 
             AssertNoVertex(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
@@ -285,6 +288,7 @@ namespace QuikGraph.Tests.Structures
             int vertexAdded = 0;
 
             AssertNoVertex(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);

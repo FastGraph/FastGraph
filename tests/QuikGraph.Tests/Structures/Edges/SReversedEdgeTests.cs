@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Structures
@@ -23,8 +23,8 @@ namespace QuikGraph.Tests.Structures
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
             Assert.IsNull(defaultEdge.OriginalEdge);
             // ReSharper disable  HeuristicUnreachableCode
-            Assert.Throws<NullReferenceException>(() => { var _ = defaultEdge.Source; });
-            Assert.Throws<NullReferenceException>(() => { var _ = defaultEdge.Target; });
+            Assert.Throws<NullReferenceException>(() => { int _ = defaultEdge.Source; });
+            Assert.Throws<NullReferenceException>(() => { int _ = defaultEdge.Target; });
             // ReSharper restore HeuristicUnreachableCode
 
             // Reference type
@@ -40,8 +40,8 @@ namespace QuikGraph.Tests.Structures
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
             Assert.IsNull(defaultEdge2.OriginalEdge);
             // ReSharper disable  HeuristicUnreachableCode
-            Assert.Throws<NullReferenceException>(() => { var _ = defaultEdge2.Source; });
-            Assert.Throws<NullReferenceException>(() => { var _ = defaultEdge2.Target; });
+            Assert.Throws<NullReferenceException>(() => { TestVertex _ = defaultEdge2.Source; });
+            Assert.Throws<NullReferenceException>(() => { TestVertex _ = defaultEdge2.Target; });
             // ReSharper restore HeuristicUnreachableCode
         }
 

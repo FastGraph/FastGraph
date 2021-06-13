@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml;
 using JetBrains.Annotations;
 
@@ -86,13 +86,13 @@ namespace QuikGraph.Serialization
                 return;
             }
 
-            var strArray = new string[value.Count];
+            string[] strArray = new string[value.Count];
             for (int i = 0; i < value.Count; ++i)
             {
                 strArray[i] = value[i].ToString();
             }
 
-            var str = string.Join(" ", strArray);
+            string str = string.Join(" ", strArray);
             str += " ";
             xmlWriter.WriteString(str);
         }

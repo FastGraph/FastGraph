@@ -75,7 +75,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void Constructor()
         {
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             var graph = new UndirectedGraph<int, Edge<int>>();
             var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
@@ -119,7 +119,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new UndirectedGraph<int, Edge<int>>();
 
-            Func<Edge<int>, double> Weights = e => 1.0;
+            Func<Edge<int>, double> Weights = _ => 1.0;
 
             Assert.Throws<ArgumentNullException>(
                 () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights));
@@ -167,7 +167,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void TryGetRootVertex()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             TryGetRootVertex_Test(algorithm);
         }
 
@@ -175,7 +175,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void SetRootVertex()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             SetRootVertex_Test(algorithm);
         }
 
@@ -183,7 +183,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void SetRootVertex_Throws()
         {
             var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0);
             SetRootVertex_Throws_Test(algorithm);
         }
 
@@ -191,7 +191,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void ClearRootVertex()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             ClearRootVertex_Test(algorithm);
         }
 
@@ -201,7 +201,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var graph = new UndirectedGraph<int, Edge<int>>();
             ComputeWithoutRoot_NoThrows_Test(
                 graph,
-                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0));
+                () => new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0));
         }
 
         [Test]
@@ -209,7 +209,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
             graph.AddVertex(0);
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             ComputeWithRoot_Test(algorithm);
         }
 
@@ -218,7 +218,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var graph = new UndirectedGraph<TestVertex, Edge<TestVertex>>();
             ComputeWithRoot_Throws_Test(
-                () => new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, edge => 1.0));
+                () => new UndirectedDijkstraShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0));
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var graph = new UndirectedGraph<int, Edge<int>>();
             graph.AddVerticesAndEdge(new Edge<int>(1, 2));
 
-            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, edge => 1.0);
+            var algorithm = new UndirectedDijkstraShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.Compute(1);
 
             Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
@@ -271,7 +271,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             var algorithm = new UndirectedDijkstraShortestPathAlgorithm<object, Edge<object>>(
                 undirectedGraph,
-                edge => 1.0);
+                _ => 1.0);
             var observer = new UndirectedVertexPredecessorRecorderObserver<object, Edge<object>>();
             using (observer.Attach(algorithm))
                 algorithm.Compute(v1);

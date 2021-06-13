@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -44,7 +44,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
 
-            Assert.Throws<InvalidOperationException>(() => { var _ = algorithm.ComponentCount; });
+            Assert.Throws<InvalidOperationException>(() => { int _ = algorithm.ComponentCount; });
             Assert.Throws<InvalidOperationException>(() => algorithm.GetComponents());
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -143,7 +143,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var chain = new WeightedMarkovEdgeChain<int, Edge<int>>(new Dictionary<Edge<int>, double>());
-            EdgePredicate<int, Edge<int>> predicate = edge => true;
+            EdgePredicate<int, Edge<int>> predicate = _ => true;
             var algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmProperties(algorithm, graph);
 

@@ -17,7 +17,7 @@ namespace QuikGraph.Tests.Exceptions
             where TException : Exception
         {
             const string message = "Test exception message.";
-            Exception innerException = new Exception("Inner");
+            var innerException = new Exception("Inner");
 
             Exception exception = createException(message, innerException);
             Assert.AreEqual(message, exception.Message);

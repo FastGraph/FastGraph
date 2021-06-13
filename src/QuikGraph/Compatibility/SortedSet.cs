@@ -425,8 +425,8 @@ namespace QuikGraph.Collections
             }
 
             Debug.Assert(parent != null, "Parent node cannot be null here!");
-            // ready to insert the new node
-            Node node = new Node(item);
+            // Ready to insert the new node
+            var node = new Node(item);
             if (order > 0)
             {
                 parent.Right = node;
@@ -436,7 +436,7 @@ namespace QuikGraph.Collections
                 parent.Left = node;
             }
 
-            // the new node will be red, so we will need to adjust the colors if parent node is also red
+            // The new node will be red, so we will need to adjust the colors if parent node is also red
             if (parent.IsRed)
             {
                 InsertionBalance(node, ref parent, grandParent, greatGrandParent);
@@ -696,7 +696,7 @@ namespace QuikGraph.Collections
             }
             else
             {
-                var objects = array as object[];
+                object[] objects = array as object[];
                 if (objects is null)
                     throw new ArgumentException("Invalid array type.");
 
@@ -847,7 +847,8 @@ namespace QuikGraph.Collections
             [NotNull] Node parentOfSuccessor)
         {
             if (successor == match)
-            {  // this node has no successor, should only happen if right child of matching node is null.
+            {
+                // This node has no successor, should only happen if right child of matching node is null.
                 Debug.Assert(match.Right is null, "Right child must be null!");
                 successor = match.Left;
             }

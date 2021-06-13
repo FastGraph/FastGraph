@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -18,6 +18,7 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(2);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -136,6 +137,7 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(2);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -254,6 +256,7 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(2);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -299,6 +302,7 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(2);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -417,6 +421,7 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(2);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -462,6 +467,7 @@ namespace QuikGraph.Tests.Structures
             graph.AddVertex(2);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -577,6 +583,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -608,6 +615,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -687,6 +695,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -724,6 +733,7 @@ namespace QuikGraph.Tests.Structures
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -799,6 +809,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -854,6 +865,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertNoEdge(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -902,6 +914,7 @@ namespace QuikGraph.Tests.Structures
             int undirectedEdgeAdded = 0;
 
             AssertNoEdge(directedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             directedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -909,6 +922,7 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertNoEdge(undirectedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             undirectedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -982,6 +996,7 @@ namespace QuikGraph.Tests.Structures
             int undirectedEdgeAdded = 0;
 
             AssertNoEdge(directedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             directedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -989,6 +1004,7 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertNoEdge(undirectedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             undirectedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -1062,6 +1078,7 @@ namespace QuikGraph.Tests.Structures
             int undirectedEdgeAdded = 0;
 
             AssertNoEdge(directedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             directedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -1069,6 +1086,7 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertNoEdge(undirectedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             undirectedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -1142,6 +1160,7 @@ namespace QuikGraph.Tests.Structures
             int undirectedEdgeAdded = 0;
 
             AssertNoEdge(directedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             directedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -1149,6 +1168,7 @@ namespace QuikGraph.Tests.Structures
             };
 
             AssertNoEdge(undirectedGraph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             undirectedGraph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);

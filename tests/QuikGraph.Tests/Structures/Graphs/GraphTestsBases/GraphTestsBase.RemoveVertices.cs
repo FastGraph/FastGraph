@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -15,12 +15,14 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -166,12 +168,14 @@ namespace QuikGraph.Tests.Structures
             int verticesRemoved = 0;
             int edgesRemoved = 0;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -195,7 +199,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2 });
             AssertHasEdges(graph, new[] { edge12 });
 
-            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => true));
+            Assert.AreEqual(2, graph.RemoveVertexIf(_ => true));
             CheckCounters(2, 1);
             AssertEmptyGraph(graph);
 
@@ -229,7 +233,7 @@ namespace QuikGraph.Tests.Structures
             AssertHasVertices(graph, new[] { 1, 2 });
             AssertHasEdges(graph, new[] { edge12 });
 
-            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => true));
+            Assert.AreEqual(2, graph.RemoveVertexIf(_ => true));
             AssertEmptyGraph(graph);
         }
 

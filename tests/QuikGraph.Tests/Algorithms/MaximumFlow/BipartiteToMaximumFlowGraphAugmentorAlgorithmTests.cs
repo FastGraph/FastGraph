@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Algorithms.MaximumFlow;
@@ -19,8 +19,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
-            var sourceToVertices = new[] { 1, 2 };
-            var verticesToSink = new[] { 1, 2 };
+            int[] sourceToVertices = { 1, 2 };
+            int[] verticesToSink = { 1, 2 };
 
             var algorithm = new BipartiteToMaximumFlowGraphAugmentorAlgorithm<int, Edge<int>>(
                 graph,
@@ -83,8 +83,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
-            var sourceToVertices = new[] { 1, 2 };
-            var verticesToSink = new[] { 1, 2 };
+            int[] sourceToVertices = { 1, 2 };
+            int[] verticesToSink = { 1, 2 };
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
@@ -223,8 +223,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var sourceToVertices = new[] { 3, 4 };
-            var verticesToSink = new[] { 3, 5 };
+            int[] sourceToVertices = { 3, 4 };
+            int[] verticesToSink = { 3, 5 };
 
             var algorithm = new BipartiteToMaximumFlowGraphAugmentorAlgorithm<int, Edge<int>>(graph, sourceToVertices, verticesToSink, vertexFactory, edgeFactory);
 
@@ -239,8 +239,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var sourceToVertices = new[] { 3, 4 };
-            var verticesToSink = new[] { 3, 5 };
+            int[] sourceToVertices = { 3, 4 };
+            int[] verticesToSink = { 3, 5 };
 
             var algorithm = new BipartiteToMaximumFlowGraphAugmentorAlgorithm<int, Edge<int>>(graph, sourceToVertices, verticesToSink, vertexFactory, edgeFactory);
 
@@ -254,8 +254,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var sourceToVertices = new[] { 3, 4 };
-            var verticesToSink = new[] { 3, 5 };
+            int[] sourceToVertices = { 3, 4 };
+            int[] verticesToSink = { 3, 5 };
 
             var algorithm = new BipartiteToMaximumFlowGraphAugmentorAlgorithm<int, Edge<int>>(graph, sourceToVertices, verticesToSink, vertexFactory, edgeFactory);
             Assert.Throws<VertexNotFoundException>(() => algorithm.Compute());
@@ -281,8 +281,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                 return 0;
             };
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var sourceToVertices = new int[] { };
-            var verticesToSink = new[] { 4 };
+            int[] sourceToVertices = { };
+            int[] verticesToSink = { 4 };
 
             RunAugmentation_Test(
                 graph => new BipartiteToMaximumFlowGraphAugmentorAlgorithm<int, Edge<int>>(graph, sourceToVertices, verticesToSink, vertexFactory, edgeFactory),
@@ -297,8 +297,8 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             int vertexID = 0;
             VertexFactory<int> vertexFactory = () => ++vertexID;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
-            var sourceToVertices = new[] { 3, 4 };
-            var verticesToSink = new int[] { };
+            int[] sourceToVertices = { 3, 4 };
+            int[] verticesToSink = { };
 
             var algorithm = new BipartiteToMaximumFlowGraphAugmentorAlgorithm<int, Edge<int>>(graph, sourceToVertices, verticesToSink, vertexFactory, edgeFactory);
 

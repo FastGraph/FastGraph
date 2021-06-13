@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms.ShortestPath;
@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void Constructor()
         {
-            Func<EquatableTaggedEdge<int, double>, double> Weights = e => 1.0;
+            Func<EquatableTaggedEdge<int, double>, double> Weights = _ => 1.0;
 
             var graph = new AdjacencyGraph<int, EquatableTaggedEdge<int, double>>();
             // ReSharper disable ObjectCreationAsStatement

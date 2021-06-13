@@ -1,6 +1,5 @@
-
+﻿#if SUPPORTS_CRYPTO_RANDOM
 using System;
-#if SUPPORTS_CRYPTO_RANDOM
 using NUnit.Framework;
 using QuikGraph.Utils;
 
@@ -97,7 +96,7 @@ namespace QuikGraph.Tests.Utils
         [Test]
         public void NextBytes()
         {
-            var data = new byte[5];
+            byte[] data = new byte[5];
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.DoesNotThrow(() => rng.NextBytes(data));

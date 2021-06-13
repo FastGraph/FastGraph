@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Structures
@@ -127,7 +127,7 @@ namespace QuikGraph.Tests.Structures
             var edge = new STaggedUndirectedEdge<int, TestObject>(1, 2, null);
 
             int changeCount = 0;
-            edge.TagChanged += (sender, args) => ++changeCount;
+            edge.TagChanged += (_, _) => ++changeCount;
 
             edge.Tag = null;
             Assert.AreEqual(0, changeCount);

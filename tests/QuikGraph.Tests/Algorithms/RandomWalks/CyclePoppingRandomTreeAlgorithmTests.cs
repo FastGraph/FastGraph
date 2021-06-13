@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -77,7 +77,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             IVertexListGraph<TVertex, TEdge> graph = MakeGraph(root, successors);
 
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
-            dfs.BackEdge += edge => Assert.Fail("Random constructed tree contains a cycle.");
+            dfs.BackEdge += _ => Assert.Fail("Random constructed tree contains a cycle.");
             dfs.Compute();
         }
 

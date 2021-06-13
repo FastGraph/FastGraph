@@ -277,7 +277,7 @@ namespace QuikGraph.Tests.Structures
         public void RemoveEdgeIf_Throws()
         {
             var graph = new BidirectionalMatrixGraph<Edge<int>>(1);
-            Assert.Throws<NotSupportedException>(() => graph.RemoveEdgeIf(edge => true));
+            Assert.Throws<NotSupportedException>(() => graph.RemoveEdgeIf(_ => true));
         }
 
         [Test]
@@ -318,6 +318,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -372,6 +373,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -440,6 +442,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -509,6 +512,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);

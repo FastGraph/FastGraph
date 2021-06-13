@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -16,11 +16,13 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertEmptyGraph(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
                 ++vertexAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -145,11 +147,13 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertEmptyGraph(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
                 ++vertexAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -180,6 +184,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertEmptyGraph(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -256,11 +261,13 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertEmptyGraph(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
                 Assert.IsNotNull(v);
                 ++vertexAdded;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);
@@ -285,6 +292,7 @@ namespace QuikGraph.Tests.Structures
             int edgeAdded = 0;
 
             AssertEmptyGraph(graph);
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeAdded += e =>
             {
                 Assert.IsNotNull(e);

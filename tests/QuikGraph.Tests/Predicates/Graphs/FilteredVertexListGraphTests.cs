@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using QuikGraph.Predicates;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -14,8 +14,8 @@ namespace QuikGraph.Tests.Predicates
         [Test]
         public void Construction()
         {
-            VertexPredicate<int> vertexPredicate = vertex => true;
-            EdgePredicate<int, Edge<int>> edgePredicate = edge => true;
+            VertexPredicate<int> vertexPredicate = _ => true;
+            EdgePredicate<int, Edge<int>> edgePredicate = _ => true;
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var filteredGraph = new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
@@ -59,20 +59,20 @@ namespace QuikGraph.Tests.Predicates
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
-                    vertex => true,
+                    _ => true,
                     null));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
                     null,
-                    edge => true));
+                    _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     null,
-                    vertex => true,
-                    edge => true));
+                    _ => true,
+                    _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
@@ -83,14 +83,14 @@ namespace QuikGraph.Tests.Predicates
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     null,
-                    vertex => true,
+                    _ => true,
                     null));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     null,
                     null,
-                    edge => true));
+                    _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
@@ -138,8 +138,8 @@ namespace QuikGraph.Tests.Predicates
         {
             var filteredGraph = new FilteredVertexListGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                 new AdjacencyGraph<TestVertex, Edge<TestVertex>>(),
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             ContainsVertex_Throws_Test(filteredGraph);
         }
 
@@ -165,8 +165,8 @@ namespace QuikGraph.Tests.Predicates
         {
             var filteredGraph = new FilteredVertexListGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                 new AdjacencyGraph<TestVertex, Edge<TestVertex>>(),
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             ContainsEdge_SourceTarget_Throws_Test(filteredGraph);
         }
 
@@ -202,8 +202,8 @@ namespace QuikGraph.Tests.Predicates
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
             var filteredGraph2 = new FilteredVertexListGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                 graph2,
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             OutEdge_NullThrows_Test(filteredGraph2);
         }
 
@@ -231,8 +231,8 @@ namespace QuikGraph.Tests.Predicates
                     AdjacencyGraph<EquatableTestVertex, Edge<EquatableTestVertex>>
                 >(
                 graph1,
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             OutEdges_NullThrows_Test(filteredGraph1);
             OutEdges_Throws_Test(filteredGraph1);
 
@@ -240,7 +240,7 @@ namespace QuikGraph.Tests.Predicates
             var filteredGraph2 = new FilteredVertexListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                 graph2,
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             graph2.AddVertexRange(new[] { 1, 2, 3, 4, 5 });
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
@@ -271,8 +271,8 @@ namespace QuikGraph.Tests.Predicates
         {
             var filteredGraph = new FilteredVertexListGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                 new AdjacencyGraph<TestVertex, Edge<TestVertex>>(),
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             TryGetEdge_Throws_Test(filteredGraph);
         }
 
@@ -294,8 +294,8 @@ namespace QuikGraph.Tests.Predicates
         {
             var filteredGraph = new FilteredVertexListGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                 new AdjacencyGraph<TestVertex, Edge<TestVertex>>(),
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
             TryGetEdges_Throws_Test(filteredGraph);
         }
 
@@ -318,8 +318,8 @@ namespace QuikGraph.Tests.Predicates
             TryGetOutEdges_Throws_Test(
                 new FilteredVertexListGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>(
                     new AdjacencyGraph<TestVertex, Edge<TestVertex>>(),
-                    vertex => true,
-                    edge => true));
+                    _ => true,
+                    _ => true));
         }
 
         #endregion

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 #if SUPPORTS_TASKS
 using System.Collections.Generic;
 using System.Threading;
@@ -131,25 +131,25 @@ namespace QuikGraph.Tests.Algorithms
             expectedStates.Enqueue(ComputationState.Running);
             expectedStates.Enqueue(ComputationState.Finished);
 
-            algorithm.Started += (sender, args) =>
+            algorithm.Started += (_, _) =>
             {
                 if (hasStarted)
                     Assert.Fail($"{nameof(AlgorithmBase<object>.Started)} event called twice.");
                 hasStarted = true;
             };
-            algorithm.Finished += (sender, args) =>
+            algorithm.Finished += (_, _) =>
             {
                 if (hasFinished)
                     Assert.Fail($"{nameof(AlgorithmBase<object>.Finished)} event called twice.");
                 hasFinished = true;
                 finished.Set();
             };
-            algorithm.StateChanged += (sender, args) =>
+            algorithm.StateChanged += (_, _) =>
             {
                 Assert.AreEqual(expectedStates.Peek(), algorithm.State);
                 expectedStates.Dequeue();
             };
-            algorithm.Aborted += (sender, args) =>
+            algorithm.Aborted += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
@@ -194,19 +194,19 @@ namespace QuikGraph.Tests.Algorithms
 
             var algorithm = new ManageableTestAlgorithm(initialize, compute, clean);
 
-            algorithm.Started += (sender, args) =>
+            algorithm.Started += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Started)} event called.");
             };
-            algorithm.Finished += (sender, args) =>
+            algorithm.Finished += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Finished)} event called.");
             };
-            algorithm.StateChanged += (sender, args) =>
+            algorithm.StateChanged += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.StateChanged)} event called.");
             };
-            algorithm.Aborted += (sender, args) =>
+            algorithm.Aborted += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
@@ -244,22 +244,22 @@ namespace QuikGraph.Tests.Algorithms
             expectedStates.Enqueue(ComputationState.PendingAbortion);
             expectedStates.Enqueue(ComputationState.Aborted);
 
-            algorithm.Started += (sender, args) =>
+            algorithm.Started += (_, _) =>
             {
                 if (hasStarted)
                     Assert.Fail($"{nameof(AlgorithmBase<object>.Started)} event called twice.");
                 hasStarted = true;
             };
-            algorithm.Finished += (sender, args) =>
+            algorithm.Finished += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Finished)} event called.");
             };
-            algorithm.StateChanged += (sender, args) =>
+            algorithm.StateChanged += (_, _) =>
             {
                 Assert.AreEqual(expectedStates.Peek(), algorithm.State);
                 expectedStates.Dequeue();
             };
-            algorithm.Aborted += (sender, args) =>
+            algorithm.Aborted += (_, _) =>
             {
                 if (hasAborted)
                     Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called twice.");
@@ -313,25 +313,25 @@ namespace QuikGraph.Tests.Algorithms
             expectedStates.Enqueue(ComputationState.Running);
             expectedStates.Enqueue(ComputationState.Finished);
 
-            algorithm.Started += (sender, args) =>
+            algorithm.Started += (_, _) =>
             {
                 if (hasStarted)
                     Assert.Fail($"{nameof(AlgorithmBase<object>.Started)} event called twice.");
                 hasStarted = true;
             };
-            algorithm.Finished += (sender, args) =>
+            algorithm.Finished += (_, _) =>
             {
                 if (hasFinished)
                     Assert.Fail($"{nameof(AlgorithmBase<object>.Finished)} event called twice.");
                 hasFinished = true;
                 finished.Set();
             };
-            algorithm.StateChanged += (sender, args) =>
+            algorithm.StateChanged += (_, _) =>
             {
                 Assert.AreEqual(expectedStates.Peek(), algorithm.State);
                 expectedStates.Dequeue();
             };
-            algorithm.Aborted += (sender, args) =>
+            algorithm.Aborted += (_, _) =>
             {
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };

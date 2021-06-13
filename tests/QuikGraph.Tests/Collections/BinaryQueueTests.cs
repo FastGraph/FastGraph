@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Collections;
@@ -17,11 +17,11 @@ namespace QuikGraph.Tests.Collections
         public void Constructors()
         {
             AssertQueueProperties(
-                new BinaryQueue<int, double>(vertex => 1.0));
+                new BinaryQueue<int, double>(_ => 1.0));
 
             AssertQueueProperties(
                 new BinaryQueue<int, double>(
-                    vertex => 1.0,
+                    _ => 1.0,
                     (dist1, dist2) => dist1.CompareTo(dist2)));
 
             #region Local function
@@ -44,7 +44,7 @@ namespace QuikGraph.Tests.Collections
                 () => new BinaryQueue<int, double>(null));
 
             Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(vertex => 1.0, null));
+                () => new BinaryQueue<int, double>(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
                 () => new BinaryQueue<int, double>(null, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentNullException>(
@@ -57,15 +57,15 @@ namespace QuikGraph.Tests.Collections
         public void Contains()
         {
             Contains_Test(
-                new BinaryQueue<int, double>(vertex => 1.0),
+                new BinaryQueue<int, double>(_ => 1.0),
                 1,
                 2);
             Contains_Test(
-                new BinaryQueue<TestVertex, double>(vertex => 1.0),
+                new BinaryQueue<TestVertex, double>(_ => 1.0),
                 new TestVertex("1"),
                 new TestVertex("2"));
             Contains_Test(
-                new BinaryQueue<EquatableTestVertex, double>(vertex => 1.0),
+                new BinaryQueue<EquatableTestVertex, double>(_ => 1.0),
                 new EquatableTestVertex("1"),
                 new EquatableTestVertex("2"));
         }
@@ -74,15 +74,15 @@ namespace QuikGraph.Tests.Collections
         public void Enqueue()
         {
             Enqueue_Test(
-                new BinaryQueue<int, double>(vertex => 1.0),
+                new BinaryQueue<int, double>(_ => 1.0),
                 1,
                 2);
             Enqueue_Test(
-                new BinaryQueue<TestVertex, double>(vertex => 1.0),
+                new BinaryQueue<TestVertex, double>(_ => 1.0),
                 new TestVertex("1"),
                 new TestVertex("2"));
             Enqueue_Test(
-                new BinaryQueue<EquatableTestVertex, double>(vertex => 1.0),
+                new BinaryQueue<EquatableTestVertex, double>(_ => 1.0),
                 new EquatableTestVertex("1"),
                 new EquatableTestVertex("2"));
         }
@@ -114,7 +114,7 @@ namespace QuikGraph.Tests.Collections
         public void Dequeue_Throws()
         {
             Dequeue_Throws_Test(
-                new BinaryQueue<int, double>(vertex => 1));
+                new BinaryQueue<int, double>(_ => 1));
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace QuikGraph.Tests.Collections
         public void Peek_Throws()
         {
             Peek_Throws_Test(
-                new BinaryQueue<int, double>(vertex => 1));
+                new BinaryQueue<int, double>(_ => 1));
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace QuikGraph.Tests.Collections
                 TVertex vertex4)
             {
                 var distances = new Stack<double>(new[] { 123.0, 3.0, 2.0, 4.0, 5.0, 1.0 });
-                var queue = new BinaryQueue<TVertex, double>(vertex => distances.Pop());
+                var queue = new BinaryQueue<TVertex, double>(_ => distances.Pop());
 
                 // Empty heap
                 CollectionAssert.IsEmpty(queue.ToPairsArray());
@@ -303,7 +303,7 @@ namespace QuikGraph.Tests.Collections
                 TVertex vertex3,
                 TVertex vertex4)
             {
-                var queue = new BinaryQueue<TVertex, double>(vertex => 1.0);
+                var queue = new BinaryQueue<TVertex, double>(_ => 1.0);
 
                 // Empty heap => consistent
                 StringAssert.StartsWith(Consistent, queue.ToString2());

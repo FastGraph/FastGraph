@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -45,6 +45,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                 discoverTimes[vertex] = time++;
             };
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             dfs.ExamineEdge += edge =>
             {
                 // Depending if the edge was taken from in or out edges
@@ -55,6 +56,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                     dfs.VerticesColors[edge.Target] == GraphColor.Gray);
             };
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             dfs.TreeEdge += edge =>
             {
                 // Depending if the edge was taken from in or out edges
@@ -65,6 +67,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                     dfs.VerticesColors[edge.Target] == GraphColor.White);
             };
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             dfs.BackEdge += edge =>
             {
                 // Depending if the edge was taken from in or out edges
@@ -75,6 +78,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                     dfs.VerticesColors[edge.Target] == GraphColor.Gray);
             };
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             dfs.ForwardOrCrossEdge += edge =>
             {
                 // Depending if the edge was taken from in or out edges

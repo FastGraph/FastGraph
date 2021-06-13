@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -84,7 +84,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
 
             Assert.IsTrue(algorithm.Augmented);
             CollectionAssert.IsNotEmpty(algorithm.AugmentedEdges);
-            var augmentedEdges = algorithm.AugmentedEdges.ToArray();
+            TEdge[] augmentedEdges = algorithm.AugmentedEdges.ToArray();
             Assert.AreEqual(2, augmentedEdges.Length);
             Assert.AreEqual(2, augmentedEdges[0].Source);
             Assert.AreEqual(1, augmentedEdges[0].Target);

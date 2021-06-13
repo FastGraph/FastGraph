@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -31,7 +31,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             where TGraph : IImplicitVertexSet<int>
         {
             int targetVertexChangeCount = 0;
-            algorithm.TargetVertexChanged += (sender, args) => ++targetVertexChangeCount;
+            algorithm.TargetVertexChanged += (_, _) => ++targetVertexChangeCount;
 
             const int vertex1 = 0;
             algorithm.SetTargetVertex(vertex1);
@@ -73,7 +73,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         {
             int targetVertexChangeCount = 0;
             // ReSharper disable once AccessToModifiedClosure
-            algorithm.TargetVertexChanged += (sender, args) => ++targetVertexChangeCount;
+            algorithm.TargetVertexChanged += (_, _) => ++targetVertexChangeCount;
 
             algorithm.ClearTargetVertex();
             Assert.AreEqual(0, targetVertexChangeCount);

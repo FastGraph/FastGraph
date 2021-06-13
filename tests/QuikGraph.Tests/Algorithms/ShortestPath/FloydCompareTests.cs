@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -88,7 +88,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void FloydVsBellmannGraphML()
         {
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-                CompareAlgorithms(graph, e => 1.0, (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
+                CompareAlgorithms(graph, _ => 1.0, (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void FloydVsDijkstraGraphML()
         {
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-                CompareAlgorithms(graph, e => 1, (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
+                CompareAlgorithms(graph, _ => 1, (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
     }
 }

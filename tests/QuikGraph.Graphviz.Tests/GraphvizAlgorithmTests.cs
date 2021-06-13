@@ -151,7 +151,7 @@ namespace QuikGraph.Graphviz.Tests
                 where TEdge : IEdge<TVertex>
             {
                 var verticesList = new List<TVertex>(vertices);
-                algo.FormatVertex += (sender, args) =>
+                algo.FormatVertex += (_, args) =>
                 {
                     Assert.IsTrue(verticesList.Remove(args.Vertex));
                 };
@@ -167,7 +167,7 @@ namespace QuikGraph.Graphviz.Tests
                 where TEdge : IEdge<TVertex>
             {
                 var edgeList = new List<TEdge>(edges);
-                algo.FormatEdge += (sender, args) =>
+                algo.FormatEdge += (_, args) =>
                 {
                     Assert.IsTrue(edgeList.Remove(args.Edge));
                 };
@@ -183,7 +183,7 @@ namespace QuikGraph.Graphviz.Tests
                 where TEdge : IEdge<TVertex>
             {
                 var clusterList = new List<IVertexAndEdgeListGraph<TVertex, TEdge>>(clusters);
-                algo.FormatCluster += (sender, args) =>
+                algo.FormatCluster += (_, args) =>
                 {
                     Assert.IsTrue(clusterList.Remove(args.Cluster));
                 };
@@ -645,14 +645,14 @@ namespace QuikGraph.Graphviz.Tests
             algorithm.CommonEdgeFormat.Direction = GraphvizEdgeDirection.Back;
             algorithm.CommonEdgeFormat.ToolTip = "Edge";
 
-            algorithm.FormatCluster += (sender, args) =>
+            algorithm.FormatCluster += (_, args) =>
             {
                 args.GraphFormat.Label = args.Cluster == subGraph1
                     ? "Only Vertices cluster"
                     : "Triangle cluster";
             };
 
-            algorithm.FormatVertex += (sender, args) =>
+            algorithm.FormatVertex += (_, args) =>
             {
                 if (args.Vertex == 2 || args.Vertex == 11)
                 {
@@ -660,7 +660,7 @@ namespace QuikGraph.Graphviz.Tests
                 }
             };
 
-            algorithm.FormatEdge += (sender, args) =>
+            algorithm.FormatEdge += (_, args) =>
             {
                 if (args.Edge.Source ==  args.Edge.Target)
                 {

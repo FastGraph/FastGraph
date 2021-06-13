@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -56,6 +56,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                 }
             };
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             algorithm.ExamineEdge += edge =>
             {
                 Assert.IsTrue(edge.Source.Equals(currentVertex) || edge.Target.Equals(currentVertex));
@@ -74,7 +75,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                 // ReSharper restore AccessToModifiedClosure
             };
 
-            algorithm.TreeEdge += (sender, args) =>
+            algorithm.TreeEdge += (_, args) =>
             {
                 TVertex u = args.Edge.Source;
                 TVertex v = args.Edge.Target;
@@ -91,7 +92,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                 distances[v] = distances[u] + 1;
             };
 
-            algorithm.NonTreeEdge += (sender, args) =>
+            algorithm.NonTreeEdge += (_, args) =>
             {
                 TVertex u = args.Edge.Source;
                 TVertex v = args.Edge.Target;
@@ -119,12 +120,12 @@ namespace QuikGraph.Tests.Algorithms.Search
                 }
             };
 
-            algorithm.GrayTarget += (sender, args) =>
+            algorithm.GrayTarget += (_, args) =>
             {
                 Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[args.Target]);
             };
 
-            algorithm.BlackTarget += (sender, args) =>
+            algorithm.BlackTarget += (_, args) =>
             {
                 Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[args.Target]);
 
@@ -191,7 +192,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             AssertAlgorithmProperties(algorithm, graph);
 
             var verticesColors = new Dictionary<int, GraphColor>();
-            var queue = new BinaryQueue<int, double>(vertex => 1.0);
+            var queue = new BinaryQueue<int, double>(_ => 1.0);
             algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
@@ -223,7 +224,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new UndirectedGraph<int, Edge<int>>();
             var verticesColors = new Dictionary<int, GraphColor>();
-            var queue = new BinaryQueue<int, double>(vertex => 1.0);
+            var queue = new BinaryQueue<int, double>(_ => 1.0);
 
             Assert.Throws<ArgumentNullException>(
                 () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null));

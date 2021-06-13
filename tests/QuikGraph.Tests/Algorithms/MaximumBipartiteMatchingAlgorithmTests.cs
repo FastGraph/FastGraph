@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -125,8 +125,8 @@ namespace QuikGraph.Tests.Algorithms
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
-            var sourceToVertices = new[] { 1, 2 };
-            var verticesToSink = new[] { 1, 2 };
+            int[] sourceToVertices = { 1, 2 };
+            int[] verticesToSink = { 1, 2 };
 
             var algorithm = new MaximumBipartiteMatchingAlgorithm<int, Edge<int>>(
                 graph,
@@ -171,8 +171,8 @@ namespace QuikGraph.Tests.Algorithms
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
-            var sourceToVertices = new[] { 1, 2 };
-            var verticesToSink = new[] { 1, 2 };
+            int[] sourceToVertices = { 1, 2 };
+            int[] verticesToSink = { 1, 2 };
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute

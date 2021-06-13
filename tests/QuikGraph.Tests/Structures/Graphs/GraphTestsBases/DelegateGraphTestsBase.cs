@@ -18,7 +18,7 @@ namespace QuikGraph.Tests.Structures
         protected static TryFunc<TVertex, IEnumerable<TEdge>> GetEmptyGetter<TVertex, TEdge>()
             where TEdge : IEdge<TVertex>
         {
-            return (TVertex vertex, out IEnumerable<TEdge> edges) =>
+            return (TVertex _, out IEnumerable<TEdge> edges) =>
             {
                 edges = null;
                 return false;
@@ -30,7 +30,7 @@ namespace QuikGraph.Tests.Structures
         {
             public GraphData()
             {
-                TryGetEdges = (TVertex vertex, out IEnumerable<TEdge> edges) =>
+                TryGetEdges = (TVertex _, out IEnumerable<TEdge> edges) =>
                 {
                     ++_nbCalls;
 
@@ -224,7 +224,7 @@ namespace QuikGraph.Tests.Structures
             AssertNoOutEdge(graph, 1);
             data.CheckCalls(3);
 
-            var edges = new[]
+            Edge<int>[] edges =
             {
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3)
@@ -307,7 +307,7 @@ namespace QuikGraph.Tests.Structures
             AssertNoAdjacentEdge(graph, 1);
             data.CheckCalls(3);
 
-            var edges = new[]
+            Edge<int>[] edges =
             {
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3)
@@ -390,7 +390,7 @@ namespace QuikGraph.Tests.Structures
             AssertNoInEdge(graph, 1);
             data.CheckCalls(3);
 
-            var edges = new[]
+            Edge<int>[] edges =
             {
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3)

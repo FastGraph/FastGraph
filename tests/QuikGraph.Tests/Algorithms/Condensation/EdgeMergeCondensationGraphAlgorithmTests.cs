@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -45,7 +45,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         [Test]
         public void Constructor()
         {
-            VertexPredicate<int> vertexPredicate = vertex => true;
+            VertexPredicate<int> vertexPredicate = _ => true;
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var condensedGraph = new BidirectionalGraph<int, MergedEdge<int, Edge<int>>>();
             var algorithm = new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, vertexPredicate);
@@ -71,7 +71,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         [Test]
         public void Constructor_Throws()
         {
-            VertexPredicate<int> vertexPredicate = vertex => true;
+            VertexPredicate<int> vertexPredicate = _ => true;
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var condensedGraph = new BidirectionalGraph<int, MergedEdge<int, Edge<int>>>();
 
@@ -143,7 +143,7 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         public void EdgeCondensationAllVertices([NotNull] IBidirectionalGraph<int, Edge<int>> graph)
         {
             IMutableBidirectionalGraph<int, MergedEdge<int, Edge<int>>> condensedGraph =
-                graph.CondensateEdges(v => true);
+                graph.CondensateEdges(_ => true);
 
             Assert.IsNotNull(condensedGraph);
             Assert.AreEqual(graph.VertexCount, condensedGraph.VertexCount);
@@ -204,8 +204,8 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             var rand = new Random(123456);
             foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
             {
-                RunEdgesCondensationAndCheck(graph, v => true);
-                RunEdgesCondensationAndCheck(graph, v => rand.Next(0, 1) == 1);
+                RunEdgesCondensationAndCheck(graph, _ => true);
+                RunEdgesCondensationAndCheck(graph, _ => rand.Next(0, 1) == 1);
             }
         }
     }

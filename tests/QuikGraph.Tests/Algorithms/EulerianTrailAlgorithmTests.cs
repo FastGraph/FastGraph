@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -452,7 +452,7 @@ namespace QuikGraph.Tests.Algorithms
         [Test]
         public void NotEulerianTrailGraph()
         {
-            var graph = TestGraphFactory.LoadGraph(GetGraphFilePath("g.42.34.graphml"));
+            AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("g.42.34.graphml"));
             // No trails in tests graphs there
             ComputeTrails(
                 graph,
@@ -486,7 +486,7 @@ namespace QuikGraph.Tests.Algorithms
                 out ICollection<Edge<char>>[] trails,
                 out Edge<char>[] circuit);
 
-            var expectedTrail = new[] { edge3, edge1, edge4, edge6, edge5, edge7, edge2 };
+            Edge<char>[] expectedTrail = { edge3, edge1, edge4, edge6, edge5, edge7, edge2 };
             Assert.AreEqual(1, trails.Length);
             Assert.IsTrue(trails[0].IsPath<char, Edge<char>>());
             CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
@@ -519,7 +519,7 @@ namespace QuikGraph.Tests.Algorithms
                 out ICollection<Edge<char>>[] trails,
                 out Edge<char>[] circuit);
 
-            var expectedTrail = new[] { edge3, edge1, edge4, edge6, edge5, edge7, edge2 };
+            Edge<char>[] expectedTrail = { edge3, edge1, edge4, edge6, edge5, edge7, edge2 };
             Assert.AreEqual(1, trails.Length);
             Assert.IsTrue(trails[0].IsPath<char, Edge<char>>());
             CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
@@ -553,7 +553,7 @@ namespace QuikGraph.Tests.Algorithms
                 out ICollection<Edge<int>>[] trails,
                 out Edge<int>[] circuit);
 
-            var expectedTrail = new[] { edge3, edge7, edge9, edge6, edge5, edge8, edge4, edge1, edge2 };
+            Edge<int>[] expectedTrail = { edge3, edge7, edge9, edge6, edge5, edge8, edge4, edge1, edge2 };
             Assert.AreEqual(1, trails.Length);
             Assert.IsTrue(trails[0].IsPath<int, Edge<int>>());
             CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
@@ -586,8 +586,8 @@ namespace QuikGraph.Tests.Algorithms
                 out ICollection<Edge<int>>[] trails,
                 out Edge<int>[] circuit);
 
-            var expectedTrail1 = new[] { edge3, edge6, edge8, edge5 };
-            var expectedTrail2 = new[] { edge7, edge4, edge1, edge2 };
+            Edge<int>[] expectedTrail1 = { edge3, edge6, edge8, edge5 };
+            Edge<int>[] expectedTrail2 = { edge7, edge4, edge1, edge2 };
             Assert.AreEqual(2, trails.Length);
             Assert.IsTrue(trails[0].IsPath<int, Edge<int>>());
             Assert.IsTrue(trails[1].IsPath<int, Edge<int>>());
@@ -650,7 +650,7 @@ namespace QuikGraph.Tests.Algorithms
                 out ICollection<Edge<char>>[] trails,
                 out Edge<char>[] circuit);
 
-            var expectedTrail = new[] { edge4, edge6, edge5, edge7, edge2, edge3, edge1 };
+            Edge<char>[] expectedTrail = { edge4, edge6, edge5, edge7, edge2, edge3, edge1 };
             Assert.AreEqual(1, trails.Length);
             Assert.IsTrue(trails[0].IsPath<char, Edge<char>>());
             CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
@@ -686,7 +686,7 @@ namespace QuikGraph.Tests.Algorithms
                 out ICollection<Edge<int>>[] trails,
                 out Edge<int>[] circuit);
 
-            var expectedTrail = new[] { edge9, edge6, edge5, edge8, edge4, edge1, edge2, edge3, edge7 };
+            Edge<int>[] expectedTrail = { edge9, edge6, edge5, edge8, edge4, edge1, edge2, edge3, edge7 };
             Assert.AreEqual(1, trails.Length);
             Assert.IsTrue(trails[0].IsPath<int, Edge<int>>());
             CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
@@ -721,8 +721,8 @@ namespace QuikGraph.Tests.Algorithms
                 (s, t) => new EquatableEdge<int>(s, t),
                 out ICollection<EquatableEdge<int>>[] trails,
                 out EquatableEdge<int>[] circuit);
-            var trail1 = new[] { edge2, edge3, edge6, edge8, edge5 };
-            var trail2 = new[] { new EquatableEdge<int>(2, 4), edge7, edge4, edge1 };
+            EquatableEdge<int>[] trail1 = { edge2, edge3, edge6, edge8, edge5 };
+            EquatableEdge<int>[] trail2 = { new EquatableEdge<int>(2, 4), edge7, edge4, edge1 };
             CheckTrails(trails, trail1, trail2);
 
             Assert.IsTrue(circuit.IsPath<int, EquatableEdge<int>>());

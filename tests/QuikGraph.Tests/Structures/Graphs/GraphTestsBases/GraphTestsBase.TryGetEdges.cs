@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -209,7 +209,7 @@ namespace QuikGraph.Tests.Structures
             var edge7 = new Edge<int>(5, 2);
 
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
-            var graph = createGraph();
+            IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
 
             Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(graph.TryGetEdge(0, 1, out _));

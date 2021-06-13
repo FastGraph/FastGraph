@@ -93,7 +93,7 @@ namespace QuikGraph.Graphviz.Tests
             {
                 algorithm.CommonVertexFormat.Shape = GraphvizVertexShape.Diamond;
                 algorithm.CommonEdgeFormat.ToolTip = "Test Edge";
-                algorithm.FormatVertex += (sender, args) =>
+                algorithm.FormatVertex += (_, args) =>
                 {
                     args.VertexFormat.Label = $"Test Vertex {args.Vertex}";
                 };

@@ -1,4 +1,4 @@
-//#define FULL_SLOW_TESTS_RUN
+﻿//#define FULL_SLOW_TESTS_RUN
 
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace QuikGraph.Tests
         public static IEnumerable<string> GetGraphMLFilePaths(
             [CanBeNull, InstantHandle] Func<string, int, bool> filter = null)
         {
-            var testPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "GraphML");
+            string testPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "GraphML");
             if (Directory.Exists(testPath))
             {
                 string[] filePaths = Directory.GetFiles(testPath, "g.*.graphml");
@@ -56,7 +56,7 @@ namespace QuikGraph.Tests
                 graph.DeserializeFromGraphML(
                     reader,
                     id => id,
-                    (source, target, id) => new Edge<string>(source, target));
+                    (source, target, _) => new Edge<string>(source, target));
             }
 
             return graph;
@@ -75,7 +75,7 @@ namespace QuikGraph.Tests
                 graph.DeserializeFromGraphML(
                     reader,
                     id => id,
-                    (source, target, id) => new Edge<string>(source, target));
+                    (source, target, _) => new Edge<string>(source, target));
             }
 
             return graph;
@@ -132,7 +132,7 @@ namespace QuikGraph.Tests
             return GetAdjacencyGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
                 // 1 over SlowTestRate
-                (filePath, i) => i % r == 0
+                (_, i) => i % r == 0
 #endif
             );
         }
@@ -175,7 +175,7 @@ namespace QuikGraph.Tests
             return GetBidirectionalGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
                 // 1 over SlowTestRate
-                (filePath, i) => i % r == 0
+                (_, i) => i % r == 0
 #endif
             );
         }
@@ -218,7 +218,7 @@ namespace QuikGraph.Tests
             return GetUndirectedGraphsInternal(
 #if !FULL_SLOW_TESTS_RUN
                 // 1 over SlowTestRate
-                (filePath, i) => i % r == 0
+                (_, i) => i % r == 0
 #endif
             );
         }

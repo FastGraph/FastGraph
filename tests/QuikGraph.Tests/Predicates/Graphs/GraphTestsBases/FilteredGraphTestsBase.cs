@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -20,7 +20,7 @@ namespace QuikGraph.Tests.Predicates
             [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IVertexSet<int>> createFilteredGraph)
             where TGraph : IMutableVertexSet<int>, IMutableGraph<int, Edge<int>>
         {
-            IVertexSet<int> filteredGraph = createFilteredGraph(vertex => true, edge => true);
+            IVertexSet<int> filteredGraph = createFilteredGraph(_ => true, _ => true);
             AssertNoVertex(filteredGraph);
 
             wrappedGraph.AddVertexRange(new[] { 1, 2, 3 });
@@ -28,7 +28,7 @@ namespace QuikGraph.Tests.Predicates
 
 
             wrappedGraph.Clear();
-            filteredGraph = createFilteredGraph(vertex => vertex < 3, edge => true);
+            filteredGraph = createFilteredGraph(vertex => vertex < 3, _ => true);
             AssertNoVertex(filteredGraph);
 
             wrappedGraph.AddVertexRange(new[] { 1, 2, 3 });
@@ -40,7 +40,7 @@ namespace QuikGraph.Tests.Predicates
             [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IEdgeSet<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
-            IEdgeSet<int, Edge<int>> filteredGraph = createFilteredGraph(vertex => true, edge => true);
+            IEdgeSet<int, Edge<int>> filteredGraph = createFilteredGraph(_ => true, _ => true);
             AssertNoEdge(filteredGraph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -54,7 +54,7 @@ namespace QuikGraph.Tests.Predicates
 
 
             wrappedGraph.Clear();
-            filteredGraph = createFilteredGraph(vertex => vertex <= 3, edge => true);
+            filteredGraph = createFilteredGraph(vertex => vertex <= 3, _ => true);
             AssertNoEdge(filteredGraph);
 
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge22, edge31, edge33, edge41 });
@@ -62,7 +62,7 @@ namespace QuikGraph.Tests.Predicates
 
 
             wrappedGraph.Clear();
-            filteredGraph = createFilteredGraph(vertex => true, edge => edge.Source != edge.Target);
+            filteredGraph = createFilteredGraph(_ => true, edge => edge.Source != edge.Target);
             AssertNoEdge(filteredGraph);
 
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge22, edge31, edge33, edge41 });
@@ -87,8 +87,8 @@ namespace QuikGraph.Tests.Predicates
             where TGraph : IMutableVertexSet<int>, IMutableGraph<int, Edge<int>>
         {
             IImplicitVertexSet<int> filteredGraph = createFilteredGraph(
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
 
             Assert.IsFalse(filteredGraph.ContainsVertex(1));
             Assert.IsFalse(filteredGraph.ContainsVertex(2));
@@ -109,7 +109,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
                 vertex => vertex <= 2,
-                edge => true);
+                _ => true);
 
             Assert.IsFalse(filteredGraph.ContainsVertex(1));
             Assert.IsFalse(filteredGraph.ContainsVertex(2));
@@ -148,8 +148,8 @@ namespace QuikGraph.Tests.Predicates
             #region Part 1
 
             IEdgeSet<int, Edge<int>> filteredGraph = createFilteredGraph(
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
 
             ContainsEdge_Test(
                 filteredGraph,
@@ -162,7 +162,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
                 vertex => vertex > 0 && vertex < 3,
-                edge => true);
+                _ => true);
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 1);
@@ -223,7 +223,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
@@ -342,8 +342,8 @@ namespace QuikGraph.Tests.Predicates
             #region Part 1
 
             IEdgeSet<int, EquatableEdge<int>> filteredGraph = createFilteredGraph(
-                vertex => true,
-                edge => true);
+                _ => true,
+                _ => true);
 
             ContainsEdge_EquatableEdge_Test(
                 filteredGraph,
@@ -356,7 +356,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
                 vertex => vertex > 0 && vertex < 3,
-                edge => true);
+                _ => true);
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
             var edge3 = new EquatableEdge<int>(2, 1);
@@ -417,7 +417,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
@@ -537,7 +537,7 @@ namespace QuikGraph.Tests.Predicates
 
             ContainsEdge_SourceTarget_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -546,7 +546,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             IIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex > 0 && vertex < 3,
-                edge => true);
+                _ => true);
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -577,7 +577,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
@@ -639,7 +639,7 @@ namespace QuikGraph.Tests.Predicates
 
             ContainsEdge_SourceTarget_ImmutableGraph_UndirectedGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -648,7 +648,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             IImplicitUndirectedGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex > 0 && vertex < 3,
-                edge => true);
+                _ => true);
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -679,7 +679,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
@@ -745,7 +745,7 @@ namespace QuikGraph.Tests.Predicates
 
             OutEdge_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -763,7 +763,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge34, edge41 });
             IImplicitGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             Assert.AreSame(edge11, filteredGraph.OutEdge(1, 0));
             Assert.AreSame(edge13, filteredGraph.OutEdge(1, 2));
@@ -778,7 +778,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge34, edge41 });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.AreSame(edge12, filteredGraph.OutEdge(1, 0));
@@ -816,7 +816,7 @@ namespace QuikGraph.Tests.Predicates
 
             OutEdge_Throws_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -838,7 +838,7 @@ namespace QuikGraph.Tests.Predicates
             });
             IImplicitGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 3,
-                edge => true);
+                _ => true);
 
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(vertex1, 2));
             Assert.Throws<VertexNotFoundException>(() => filteredGraph.OutEdge(vertex3, 0));
@@ -861,7 +861,7 @@ namespace QuikGraph.Tests.Predicates
                 new Edge<int>(vertex3, vertex1)
             });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != 1);
 
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(vertex1, 0));
@@ -904,7 +904,7 @@ namespace QuikGraph.Tests.Predicates
 
             OutEdges_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -921,7 +921,7 @@ namespace QuikGraph.Tests.Predicates
 
             IImplicitGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             wrappedGraph.AddVertex(1);
             AssertNoOutEdge(filteredGraph, 1);
@@ -938,7 +938,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             wrappedGraph.AddVertex(1);
@@ -984,7 +984,7 @@ namespace QuikGraph.Tests.Predicates
 
             InEdge_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1000,7 +1000,7 @@ namespace QuikGraph.Tests.Predicates
 
             IBidirectionalIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             Assert.AreSame(edge11, filteredGraph.InEdge(1, 0));
             Assert.AreSame(edge21, filteredGraph.InEdge(1, 1));
@@ -1017,7 +1017,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge14, edge21 });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.AreSame(edge21, filteredGraph.InEdge(1, 0));    // Filtered
@@ -1053,7 +1053,7 @@ namespace QuikGraph.Tests.Predicates
 
             InEdge_Throws_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1075,7 +1075,7 @@ namespace QuikGraph.Tests.Predicates
             });
             IBidirectionalIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 3,
-                edge => true);
+                _ => true);
 
             AssertIndexOutOfRange(() => filteredGraph.InEdge(vertex1, 2));
             Assert.Throws<VertexNotFoundException>(() => filteredGraph.InEdge(vertex3, 0));
@@ -1095,7 +1095,7 @@ namespace QuikGraph.Tests.Predicates
                 new Edge<int>(vertex3, vertex2)
             });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -1135,7 +1135,7 @@ namespace QuikGraph.Tests.Predicates
 
             InEdges_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1151,7 +1151,7 @@ namespace QuikGraph.Tests.Predicates
 
             IBidirectionalIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             wrappedGraph.AddVertex(1);
             AssertNoInEdge(filteredGraph, 1);
@@ -1173,7 +1173,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             wrappedGraph.AddVertex(1);
@@ -1229,7 +1229,7 @@ namespace QuikGraph.Tests.Predicates
 
             AdjacentEdge_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1246,7 +1246,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
             IImplicitUndirectedGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             Assert.AreSame(edge11, filteredGraph.AdjacentEdge(1, 0));
             Assert.AreSame(edge13, filteredGraph.AdjacentEdge(1, 2));
@@ -1262,7 +1262,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.AreSame(edge12, filteredGraph.AdjacentEdge(1, 0));
@@ -1301,7 +1301,7 @@ namespace QuikGraph.Tests.Predicates
 
             AdjacentEdge_Throws_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1323,7 +1323,7 @@ namespace QuikGraph.Tests.Predicates
             });
             IImplicitUndirectedGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 3,
-                edge => true);
+                _ => true);
 
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex1, 2));
             Assert.Throws<VertexNotFoundException>(() => filteredGraph.AdjacentEdge(vertex3, 0));
@@ -1347,7 +1347,7 @@ namespace QuikGraph.Tests.Predicates
                 new Edge<int>(vertex3, vertex4)
             });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != 1);
 
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex1, 0));
@@ -1391,7 +1391,7 @@ namespace QuikGraph.Tests.Predicates
 
             AdjacentEdges_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1407,7 +1407,7 @@ namespace QuikGraph.Tests.Predicates
 
             IImplicitUndirectedGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex <= 4,
-                edge => true);
+                _ => true);
 
             wrappedGraph.AddVertex(1);
             AssertNoAdjacentEdge(filteredGraph, 1);
@@ -1427,7 +1427,7 @@ namespace QuikGraph.Tests.Predicates
 
             wrappedGraph.Clear();
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             wrappedGraph.AddVertex(1);
@@ -1477,7 +1477,7 @@ namespace QuikGraph.Tests.Predicates
 
             Degree_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1497,7 +1497,7 @@ namespace QuikGraph.Tests.Predicates
 
             IBidirectionalIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             Assert.AreEqual(2, filteredGraph.Degree(1));    // Filtered
             Assert.AreEqual(2, filteredGraph.Degree(2));    // Filtered
@@ -1516,7 +1516,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVertex(5);
 
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.AreEqual(3, filteredGraph.Degree(1));
@@ -1562,7 +1562,7 @@ namespace QuikGraph.Tests.Predicates
 
             TryGetEdge_ImmutableGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1581,7 +1581,7 @@ namespace QuikGraph.Tests.Predicates
 
             IIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex <= 4,
-                edge => true);
+                _ => true);
 
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
@@ -1608,7 +1608,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
@@ -1665,7 +1665,7 @@ namespace QuikGraph.Tests.Predicates
             #region Part 1
 
             TryGetEdges_Test(
-                createFilteredGraph(vertex => true, edge => true),
+                createFilteredGraph(_ => true, _ => true),
                 edges => wrappedGraph.AddVerticesAndEdgeRange(edges));
 
             #endregion
@@ -1684,7 +1684,7 @@ namespace QuikGraph.Tests.Predicates
 
             IIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex < 4,
-                edge => true);
+                _ => true);
 
             Assert.IsFalse(filteredGraph.TryGetEdges(0, 10, out _));
             Assert.IsFalse(filteredGraph.TryGetEdges(0, 1, out _));
@@ -1708,7 +1708,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.TryGetEdges(0, 10, out _));
@@ -1763,7 +1763,7 @@ namespace QuikGraph.Tests.Predicates
 
             TryGetEdge_ImmutableGraph_UndirectedGraph_Test(
                 wrappedGraph,
-                () => createFilteredGraph(vertex => true, edge => true));
+                () => createFilteredGraph(_ => true, _ => true));
 
             #endregion
 
@@ -1782,7 +1782,7 @@ namespace QuikGraph.Tests.Predicates
 
             IImplicitUndirectedGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex <= 4,
-                edge => true);
+                _ => true);
 
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
@@ -1811,7 +1811,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
@@ -1875,7 +1875,7 @@ namespace QuikGraph.Tests.Predicates
             #region Part 1
 
             TryGetOutEdges_Test(
-                createFilteredGraph(vertex => true, edge => true),
+                createFilteredGraph(_ => true, _ => true),
                 edges => wrappedGraph.AddVerticesAndEdgeRange(edges));
 
             #endregion
@@ -1895,7 +1895,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8 });
             IImplicitGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex <= 4,
-                edge => true);
+                _ => true);
 
             Assert.IsFalse(filteredGraph.TryGetOutEdges(0, out _));
 
@@ -1917,7 +1917,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8 });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.TryGetOutEdges(0, out _));
@@ -1968,7 +1968,7 @@ namespace QuikGraph.Tests.Predicates
             #region Part 1
 
             TryGetInEdges_Test(
-                createFilteredGraph(vertex => true, edge => true),
+                createFilteredGraph(_ => true, _ => true),
                 edges => wrappedGraph.AddVerticesAndEdgeRange(edges));
 
             #endregion
@@ -1987,7 +1987,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IBidirectionalIncidenceGraph<int, Edge<int>> filteredGraph = createFilteredGraph(
                 vertex => vertex <= 4,
-                edge => true);
+                _ => true);
 
             Assert.IsFalse(filteredGraph.TryGetInEdges(0, out _));
 
@@ -2006,7 +2006,7 @@ namespace QuikGraph.Tests.Predicates
             wrappedGraph.Clear();
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             filteredGraph = createFilteredGraph(
-                vertex => true,
+                _ => true,
                 edge => edge.Source != edge.Target);
 
             Assert.IsFalse(filteredGraph.TryGetInEdges(0, out _));

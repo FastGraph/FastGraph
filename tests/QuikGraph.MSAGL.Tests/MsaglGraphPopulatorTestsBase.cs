@@ -91,8 +91,8 @@ namespace QuikGraph.MSAGL.Tests
             // Empty graph
             var graph = new AdjacencyGraph<int, Edge<int>>();
             MsaglGraphPopulator<int, Edge<int>> populator = createPopulator(graph);
-            populator.NodeAdded += (sender, args) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.NodeAdded)} event called.");
-            populator.EdgeAdded += (sender, args) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.EdgeAdded)} event called.");
+            populator.NodeAdded += (_, _) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.NodeAdded)} event called.");
+            populator.EdgeAdded += (_, _) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.EdgeAdded)} event called.");
             populator.Compute();
 
             // Only vertices
@@ -100,12 +100,12 @@ namespace QuikGraph.MSAGL.Tests
             graph.AddVertexRange(new[] { 1, 2, 3 });
             populator = createPopulator(graph);
             var expectedVerticesAdded = new HashSet<int> { 1, 2, 3 };
-            populator.NodeAdded += (sender, args) =>
+            populator.NodeAdded += (_, args) =>
             {
                 Assert.IsTrue(expectedVerticesAdded.Remove(args.Vertex));
                 Assert.AreEqual(args.Vertex, args.Node.UserData);
             };
-            populator.EdgeAdded += (sender, args) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.EdgeAdded)} event called.");
+            populator.EdgeAdded += (_, _) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.EdgeAdded)} event called.");
             populator.Compute();
             CollectionAssert.IsEmpty(expectedVerticesAdded);
 
@@ -119,12 +119,12 @@ namespace QuikGraph.MSAGL.Tests
             populator = createPopulator(graph);
             expectedVerticesAdded = new HashSet<int> { 1, 2, 3, 5, 6 };
             var expectedEdgesAdded = new HashSet<Edge<int>> { edge12, edge13, edge23 };
-            populator.NodeAdded += (sender, args) =>
+            populator.NodeAdded += (_, args) =>
             {
                 Assert.IsTrue(expectedVerticesAdded.Remove(args.Vertex));
                 Assert.AreEqual(args.Vertex, args.Node.UserData);
             };
-            populator.EdgeAdded += (sender, args) =>
+            populator.EdgeAdded += (_, args) =>
             {
                 Assert.IsTrue(expectedEdgesAdded.Remove(args.Edge));
                 Assert.AreSame(args.Edge, args.MsaglEdge.UserData);

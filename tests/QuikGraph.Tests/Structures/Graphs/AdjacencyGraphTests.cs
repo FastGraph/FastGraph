@@ -414,12 +414,14 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
                 Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -459,6 +461,7 @@ namespace QuikGraph.Tests.Structures
             int edgesRemoved = 0;
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
                 Assert.IsNotNull(e);
@@ -553,7 +556,7 @@ namespace QuikGraph.Tests.Structures
             var graph = new AdjacencyGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
-            var clonedGraph = graph.Clone();
+            AdjacencyGraph<int, Edge<int>> clonedGraph = graph.Clone();
             Assert.IsNotNull(clonedGraph);
             AssertEmptyGraph(clonedGraph);
 

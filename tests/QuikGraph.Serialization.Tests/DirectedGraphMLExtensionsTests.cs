@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -286,7 +286,7 @@ namespace QuikGraph.Serialization.Tests
                 int i = 0;
                 DirectedGraph directedGraph = graph.ToDirectedGraphML(
                     vertex => vertex,
-                    edge => (++i).ToString());
+                    _ => (++i).ToString());
                 Assert.IsNotNull(graph);
 
                 AssertGraphContentEquivalent(graph, directedGraph);
@@ -301,7 +301,7 @@ namespace QuikGraph.Serialization.Tests
             {
                 Dictionary<string, GraphColor> vertexColors = graph.Vertices.ToDictionary(
                     vertex => vertex,
-                    vertex => (GraphColor)random.Next(0, 3));
+                    _ => (GraphColor)random.Next(0, 3));
 
                 DirectedGraph directedGraph = graph.ToDirectedGraphML(
                     vertex =>
@@ -349,6 +349,7 @@ namespace QuikGraph.Serialization.Tests
             {
                 int formattedNodes = 0;
                 int formattedEdges = 0;
+                // ReSharper disable ParameterOnlyUsedForPreconditionCheck.Local
                 DirectedGraph directedGraph = graph.ToDirectedGraphML(
                     graph.GetVertexIdentity(),
                     graph.GetEdgeIdentity(),
@@ -364,6 +365,7 @@ namespace QuikGraph.Serialization.Tests
                         Assert.IsNotNull(link);
                         ++formattedEdges;
                     });
+                // ReSharper restore ParameterOnlyUsedForPreconditionCheck.Local
                 Assert.IsNotNull(graph);
 
                 Assert.AreEqual(graph.VertexCount, formattedNodes);
@@ -383,7 +385,7 @@ namespace QuikGraph.Serialization.Tests
 
 
             Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(vertex => GraphColor.Black));
+                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(_ => GraphColor.Black));
             Assert.Throws<ArgumentNullException>(
                 () => graph.ToDirectedGraphML(null));
             Assert.Throws<ArgumentNullException>(

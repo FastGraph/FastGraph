@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -179,7 +179,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             AssertAlgorithmProperties(algorithm, graph);
 
             var verticesColors = new Dictionary<int, GraphColor>();
-            var queue = new BinaryQueue<int, double>(vertex => 1.0);
+            var queue = new BinaryQueue<int, double>(_ => 1.0);
             algorithm = new BreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
@@ -215,7 +215,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var verticesColors = new Dictionary<int, GraphColor>();
-            var queue = new BinaryQueue<int, double>(vertex => 1.0);
+            var queue = new BinaryQueue<int, double>(_ => 1.0);
             IEnumerable<Edge<int>> Filter(IEnumerable<Edge<int>> edges) => edges.Where(e => e != null);
 
             Assert.Throws<ArgumentNullException>(
