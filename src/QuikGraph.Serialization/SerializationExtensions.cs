@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Xml;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System.IO;
@@ -109,7 +109,7 @@ namespace QuikGraph.Serialization
                             TVertex vertex = vertexFactory(graphReader);
                             graph.AddVertex(vertex);
                         }
-                        else if (edgePredicate(reader))
+                        else if (edgePredicate(graphReader))
                         {
                             TEdge edge = edgeFactory(graphReader);
                             graph.AddEdge(edge);
