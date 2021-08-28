@@ -40,6 +40,13 @@ namespace QuikGraph.Graphviz.Dot
         /// Label.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
         /// </summary>
+        /// <remarks>
+        /// If <see cref="Shape"/> is defined to <see cref="GraphvizVertexShape.Record"/>, you can
+        /// use <see cref="Record"/> structure to generate a string label. Note also that if <see cref="Label"/>
+        /// is set, it has the priority over <see cref="Record"/> so rather than using <see cref="Record"/>
+        /// to generate the label you can define it using your own way in the <see cref="Label"/>.
+        /// The only constraint will be to generate a fully valid record string.
+        /// </remarks>
         public string Label { get; set; }
 
         /// <summary>
@@ -271,18 +278,15 @@ namespace QuikGraph.Graphviz.Dot
             }
             if (Shape == GraphvizVertexShape.Record)
             {
-                properties["label"] = Record;
+                properties["label"] = string.IsNullOrEmpty(Label)
+                    ? (object)Record
+                    : Label;
             }
-            else if (Label != null)
+            else if (!string.IsNullOrEmpty(Label))
             {
-                if (IsHtmlLabel)
-                {
-                    properties["label"] = new HtmlString(Label);
-                }
-                else
-                {
-                    properties["label"] = Escape(Label);
-                }
+                properties["label"] = IsHtmlLabel
+                    ? (object)new HtmlString(Label)
+                    : Escape(Label);
             }
             if (FixedSize)
             {

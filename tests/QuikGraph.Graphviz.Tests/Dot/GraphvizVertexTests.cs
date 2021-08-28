@@ -213,7 +213,7 @@ namespace QuikGraph.Graphviz.Tests
                 vertex = new GraphvizVertex
                 {
                     Shape = GraphvizVertexShape.Record,
-                    Label = "Test label",   // => priority to record
+                    Label = "Test label",   // => priority to label to allow custom record generation process
                     Record = new GraphvizRecord
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
@@ -225,7 +225,24 @@ namespace QuikGraph.Graphviz.Tests
                         })
                     }
                 };
-                yield return new TestCaseData(vertex, @"shape=record, label=""Test\ Cell""");
+                yield return new TestCaseData(vertex, @"shape=record, label=""Test label""");
+
+                vertex = new GraphvizVertex
+                {
+                    Shape = GraphvizVertexShape.Record,
+                    Label = "Start\\ Cell | { <Port_A> a | b | c }",    // => priority to label to allow custom record generation process
+                    Record = new GraphvizRecord
+                    {
+                        Cells = new GraphvizRecordCellCollection(new[]
+                        {
+                            new GraphvizRecordCell
+                            {
+                                Text = "Test Cell"
+                            }
+                        })
+                    }
+                };
+                yield return new TestCaseData(vertex, @"shape=record, label=""Start\ Cell | { <Port_A> a | b | c }""");
 
                 vertex = new GraphvizVertex
                 {
