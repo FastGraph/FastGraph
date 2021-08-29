@@ -675,26 +675,26 @@ namespace QuikGraph.Graphviz.Tests
             + "edge [dir=back, tooltip=\"Edge\"];" + Environment.NewLine
             + "subgraph cluster1 {" + Environment.NewLine
             + "label=\"Only Vertices cluster\"" + Environment.NewLine
-            + "7 [label=\"8\"];" + Environment.NewLine
-            + "8 [label=\"9\"];" + Environment.NewLine
-            + "9 [label=\"10\"];" + Environment.NewLine
+            + "7;" + Environment.NewLine
+            + "8;" + Environment.NewLine
+            + "9;" + Environment.NewLine
             + "}" + Environment.NewLine
             + "subgraph cluster2 {" + Environment.NewLine
             + "label=\"Triangle cluster\"" + Environment.NewLine
             + "10 [label=\"Special Node\"];" + Environment.NewLine
-            + "11 [label=\"12\"];" + Environment.NewLine
-            + "12 [label=\"13\"];" + Environment.NewLine
+            + "11;" + Environment.NewLine
+            + "12;" + Environment.NewLine
             + "10 -> 11;" + Environment.NewLine
             + "10 -> 12;" + Environment.NewLine
             + "11 -> 12;" + Environment.NewLine
             + "}" + Environment.NewLine
-            + "0 [label=\"1\"];" + Environment.NewLine
+            + "0;" + Environment.NewLine
             + "1 [label=\"Special Node\"];" + Environment.NewLine
-            + "2 [label=\"3\"];" + Environment.NewLine
-            + "3 [label=\"4\"];" + Environment.NewLine
-            + "4 [label=\"6\"];" + Environment.NewLine
-            + "5 [label=\"5\"];" + Environment.NewLine
-            + "6 [label=\"7\"];" + Environment.NewLine
+            + "2;" + Environment.NewLine
+            + "3;" + Environment.NewLine
+            + "4;" + Environment.NewLine
+            + "5;" + Environment.NewLine
+            + "6;" + Environment.NewLine
             + "0 -> 1;" + Environment.NewLine
             + "0 -> 2;" + Environment.NewLine
             + "2 -> 1;" + Environment.NewLine

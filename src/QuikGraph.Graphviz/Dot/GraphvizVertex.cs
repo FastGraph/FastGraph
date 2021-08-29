@@ -249,10 +249,11 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Converts this vertex to DOT.
         /// </summary>
+        /// <param name="commonFormat">Common vertex format to apply.</param>
         /// <returns>Vertex as DOT.</returns>
         [Pure]
         [NotNull]
-        public string ToDot()
+        internal string InternalToDot([CanBeNull] GraphvizVertex commonFormat = null)
         {
             var properties = new Dictionary<string, object>();
             if (Font != null)
@@ -276,11 +277,20 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["style"] = Style;
             }
-            if (Shape == GraphvizVertexShape.Record)
+            GraphvizVertexShape shape = Shape == GraphvizVertexShape.Unspecified && commonFormat != null
+                ? commonFormat.Shape
+                : Shape;
+            if (shape == GraphvizVertexShape.Record)
             {
-                properties["label"] = string.IsNullOrEmpty(Label)
-                    ? (object)Record
-                    : Label;
+                // Priority to label to allow custom record generation process
+                if (!string.IsNullOrEmpty(Label))
+                {
+                    properties["label"] = Label;
+                }
+                else if (Record != null && Record.Cells.Count > 0)
+                {
+                    properties["label"] = Record;
+                }
             }
             else if (!string.IsNullOrEmpty(Label))
             {
@@ -365,6 +375,17 @@ namespace QuikGraph.Graphviz.Dot
             }
 
             return GenerateDot(properties);
+        }
+
+        /// <summary>
+        /// Converts this vertex to DOT.
+        /// </summary>
+        /// <returns>Vertex as DOT.</returns>
+        [Pure]
+        [NotNull]
+        public string ToDot()
+        {
+            return InternalToDot();
         }
 
         /// <inheritdoc />

@@ -121,13 +121,10 @@ namespace QuikGraph.Graphviz
             FormatVertexEventHandler<TVertex> formatVertex = FormatVertex;
             if (formatVertex != null)
             {
-                var vertexFormat = new GraphvizVertex
-                {
-                    Label = vertex.ToString()
-                };
+                var vertexFormat = new GraphvizVertex();
                 formatVertex(this, new FormatVertexEventArgs<TVertex>(vertex, vertexFormat));
 
-                string dot = vertexFormat.ToDot();
+                string dot = vertexFormat.InternalToDot(CommonVertexFormat);
                 if (dot.Length != 0)
                     Output.Write($" [{dot}]");
             }

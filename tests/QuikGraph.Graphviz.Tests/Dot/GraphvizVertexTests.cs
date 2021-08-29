@@ -213,7 +213,7 @@ namespace QuikGraph.Graphviz.Tests
                 vertex = new GraphvizVertex
                 {
                     Shape = GraphvizVertexShape.Record,
-                    Label = "Test label",   // => priority to label to allow custom record generation process
+                    Label = "Test label",   // => priority to label
                     Record = new GraphvizRecord
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
@@ -230,7 +230,7 @@ namespace QuikGraph.Graphviz.Tests
                 vertex = new GraphvizVertex
                 {
                     Shape = GraphvizVertexShape.Record,
-                    Label = "Start\\ Cell | { <Port_A> a | b | c }",    // => priority to label to allow custom record generation process
+                    Label = "Start\\ Cell | { <Port_A> a | b | c }",    // => priority to label
                     Record = new GraphvizRecord
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
