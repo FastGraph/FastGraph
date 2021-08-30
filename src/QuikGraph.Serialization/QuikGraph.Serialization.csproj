@@ -77,7 +77,7 @@ Updates:
   <!-- Projects -->
   <!-- QuikGraph reference -->
   <ItemGroup Condition="$(UseQuikGraphCoreNuget)">
-    <PackageReference Include="QuikGraph" Version="2.2.0" />
+    <PackageReference Include="QuikGraph" Version="2.3.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphCoreNuget)">
     <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
