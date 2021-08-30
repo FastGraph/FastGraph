@@ -1,5 +1,18 @@
 # Release notes
 
+## What's new in 2.3.1 August 30 2021
+
+### QuikGraph.Graphviz
+
+#### Fixes:
+* Properly treat common vertex format when converting a graph to Graphviz.
+
+#### Updates:
+* Label has priority if set over Record on GraphvizVertex.
+
+#### New:
+* Add support of HTML labels.
+
 ## What's new in 2.3.0 February 4 2021
 
 ### QuikGraph

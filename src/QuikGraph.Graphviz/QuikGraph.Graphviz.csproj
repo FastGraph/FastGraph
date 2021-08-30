@@ -28,12 +28,15 @@ Supports Source Link</Description>
 
     <IsPackable>true</IsPackable>
     <PackageId>QuikGraph.Graphviz</PackageId>
-    <PackageReleaseNotes>➟ Release 2.3.0
+    <PackageReleaseNotes>➟ Release 2.3.1
+Fixes:
+- Properly treat common vertex format when converting a graph to Graphviz.
+
 Updates:
-- Update package dependencies.
+- Label has priority if set over Record on GraphvizVertex.
 
 New:
-- Make all Dot structures serializable.</PackageReleaseNotes>
+- Add support of HTML labels.</PackageReleaseNotes>
     <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET Serialization Graphviz</PackageTags>
   </PropertyGroup>
 
@@ -58,7 +61,7 @@ New:
   <!-- Dependencies -->
   <!-- QuikGraph reference -->
   <ItemGroup Condition="$(UseQuikGraphCoreNuget)">
-    <PackageReference Include="QuikGraph" Version="2.2.0" />
+    <PackageReference Include="QuikGraph" Version="2.3.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(UseQuikGraphCoreNuget)">
     <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
