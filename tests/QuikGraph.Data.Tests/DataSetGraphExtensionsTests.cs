@@ -115,7 +115,7 @@ namespace QuikGraph.Data.Tests
             DataSetGraph graph = new DataSet().ToGraph();
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [shape=record, style=solid, label=""""];" + Environment.NewLine
+                + @"node [shape=record, style=solid];" + Environment.NewLine
                 + @"}";
 
             Assert.AreEqual(expectedDot, graph.ToGraphviz());
@@ -160,7 +160,7 @@ namespace QuikGraph.Data.Tests
 
             expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [shape=record, style=solid, label=""""];" + Environment.NewLine
+                + @"node [shape=record, style=solid];" + Environment.NewLine
                 + @"0 [shape=record, label=""Devices | +\ deviceId\ :\ Int32\ unique\n+\ versionId\ :\ Int32\n+\ name\ :\ String""];" + Environment.NewLine
                 + @"1 [shape=record, label=""Tasks | +\ deviceId\ :\ Int32\n+\ actionId\ :\ Int32\n+\ task\ :\ String""];" + Environment.NewLine
                 + @"2 [shape=record, label=""Actions | +\ actionId\ :\ Int32\ unique\n+\ action\ :\ String""];" + Environment.NewLine

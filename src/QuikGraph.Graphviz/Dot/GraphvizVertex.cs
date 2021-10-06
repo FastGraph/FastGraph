@@ -2,6 +2,9 @@
 using System;
 #endif
 using System.Collections.Generic;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using System.Text;
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
@@ -246,40 +249,59 @@ namespace QuikGraph.Graphviz.Dot
             return builder.ToString();
         }
 
-        /// <summary>
-        /// Converts this vertex to DOT.
-        /// </summary>
-        /// <param name="commonFormat">Common vertex format to apply.</param>
-        /// <returns>Vertex as DOT.</returns>
-        [Pure]
-        [NotNull]
-        internal string InternalToDot([CanBeNull] GraphvizVertex commonFormat = null)
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void TextRelatedPropertiesToDot([NotNull] IDictionary<string, object> properties)
         {
-            var properties = new Dictionary<string, object>();
             if (Font != null)
             {
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
             }
+
             if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
             }
+
             if (!NearEqual(PenWidth, 1.0))
             {
                 properties["penwidth"] = PenWidth;
             }
+
+            if (ToolTip != null)
+            {
+                properties["tooltip"] = Escape(ToolTip);
+            }
+
+            if (Comment != null)
+            {
+                properties["comment"] = Escape(Comment);
+            }
+
+            if (Url != null)
+            {
+                properties["URL"] = Url;
+            }
+        }
+
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void ShapeRelatedPropertiesToDot(
+            [CanBeNull] GraphvizVertex commonFormat,
+            [NotNull] IDictionary<string, object> properties)
+        {
             if (Shape != GraphvizVertexShape.Unspecified)
             {
                 properties["shape"] = Shape;
             }
-            if (Style != GraphvizVertexStyle.Unspecified)
-            {
-                properties["style"] = Style;
-            }
+
             GraphvizVertexShape shape = Shape == GraphvizVertexShape.Unspecified && commonFormat != null
                 ? commonFormat.Shape
                 : Shape;
+
             if (shape == GraphvizVertexShape.Record)
             {
                 // Priority to label to allow custom record generation process
@@ -298,6 +320,31 @@ namespace QuikGraph.Graphviz.Dot
                     ? (object)new HtmlString(Label)
                     : Escape(Label);
             }
+
+            if (shape == GraphvizVertexShape.Polygon)
+            {
+                if (Sides != 0)
+                {
+                    properties["sides"] = Sides;
+                }
+
+                if (!IsZero(Skew))
+                {
+                    properties["skew"] = Skew;
+                }
+
+                if (!IsZero(Distortion))
+                {
+                    properties["distortion"] = Distortion;
+                }
+            }
+        }
+
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void LayoutRelatedPropertiesToDot([NotNull] IDictionary<string, object> properties)
+        {
             if (FixedSize)
             {
                 properties["fixedsize"] = true;
@@ -305,34 +352,66 @@ namespace QuikGraph.Graphviz.Dot
                 {
                     properties["height"] = Size.Height;
                 }
+
                 if (Size.Width > 0f)
                 {
                     properties["width"] = Size.Width;
                 }
             }
+
+            if (Style != GraphvizVertexStyle.Unspecified)
+            {
+                properties["style"] = Style;
+            }
+
             if (StrokeColor != GraphvizColor.Black)
             {
                 properties["color"] = StrokeColor;
             }
+
             if (FillColor != GraphvizColor.White)
             {
                 properties["fillcolor"] = FillColor;
             }
+
+            if (Orientation > 0)
+            {
+                properties["orientation"] = Orientation;
+            }
+        }
+
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void PositionRelatedProperties([NotNull] IDictionary<string, object> properties)
+        {
+            if (Z > 0)
+            {
+                properties["z"] = Z;
+            }
+
+            if (Position != null)
+            {
+                properties["pos"] = $"{Position.X},{Position.Y}!";
+            }
+        }
+
+        /// <summary>
+        /// Converts this vertex to DOT.
+        /// </summary>
+        /// <param name="commonFormat">Common vertex format to apply.</param>
+        /// <returns>Vertex as DOT.</returns>
+        [Pure]
+        [NotNull]
+        internal string InternalToDot([CanBeNull] GraphvizVertex commonFormat = null)
+        {
+            var properties = new Dictionary<string, object>();
+            TextRelatedPropertiesToDot(properties);
+            ShapeRelatedPropertiesToDot(commonFormat, properties);
+            LayoutRelatedPropertiesToDot(properties);
             if (Regular)
             {
                 properties["regular"] = Regular;
-            }
-            if (Url != null)
-            {
-                properties["URL"] = Url;
-            }
-            if (ToolTip != null)
-            {
-                properties["tooltip"] = Escape(ToolTip);
-            }
-            if (Comment != null)
-            {
-                properties["comment"] = Escape(Comment);
             }
             if (Group != null)
             {
@@ -342,37 +421,11 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["layer"] = Layer.Name;
             }
-            if (Orientation > 0)
-            {
-                properties["orientation"] = Orientation;
-            }
             if (Peripheries >= 0)
             {
                 properties["peripheries"] = Peripheries;
             }
-            if (Z > 0)
-            {
-                properties["z"] = Z;
-            }
-            if (Position != null)
-            {
-                properties["pos"] = $"{Position.X},{Position.Y}!";
-            }
-            if (Shape == GraphvizVertexShape.Polygon)
-            {
-                if (Sides != 0)
-                {
-                    properties["sides"] = Sides;
-                }
-                if (!IsZero(Skew))
-                {
-                    properties["skew"] = Skew;
-                }
-                if (!IsZero(Distortion))
-                {
-                    properties["distortion"] = Distortion;
-                }
-            }
+            PositionRelatedProperties(properties);
 
             return GenerateDot(properties);
         }

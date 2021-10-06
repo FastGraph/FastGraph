@@ -104,10 +104,10 @@ namespace QuikGraph.Graphviz.Tests
                 };
                 yield return new TestCaseData(
                     vertex,
-                    @"fontname=""Test font"", fontsize=12, fontcolor=""#008000FF"", penwidth=2, shape=diamond, "
-                    + @"style=dashed, label=""Test label"", color=""#F0FFFFFF"", fillcolor=""#FF0000FF"", "
-                    + @"regular=true, URL=""https://test.com"", tooltip=""Test tooltip"", comment=""Test comment"", "
-                    + @"group=""Test group"", layer=""Vertex Layer"", orientation=12, peripheries=1, "
+                    @"fontname=""Test font"", fontsize=12, fontcolor=""#008000FF"", penwidth=2, tooltip=""Test tooltip"", "
+                    + @"comment=""Test comment"", URL=""https://test.com"", shape=diamond, label=""Test label"", "
+                    + @"style=dashed, color=""#F0FFFFFF"", fillcolor=""#FF0000FF"", orientation=12, regular=true, "
+                    + @"group=""Test group"", layer=""Vertex Layer"", peripheries=1, "
                     + @"z=100, pos=""10,-20!""");
 
                 // Not fixed size
@@ -290,9 +290,9 @@ namespace QuikGraph.Graphviz.Tests
                 };
                 yield return new TestCaseData(
                     vertex,
-                    @"label=""\""The Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
-                    + @"tooltip=""\""The Tooltip\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
-                    + @"comment=""\""The Comment\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪""");
+                    @"tooltip=""\""The Tooltip\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"comment=""\""The Comment\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"", "
+                    + @"label=""\""The Label\""\n &/<>@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪""");
 
                 vertex = new GraphvizVertex
                 {
@@ -342,8 +342,8 @@ namespace QuikGraph.Graphviz.Tests
             };
 
             const string expectedDot =
-                @"fontname=""Test font"", fontsize=12.5, penwidth=2.5, shape=polygon, fixedsize=true, height=21.6, "
-                + @"width=14.5, orientation=45.8, z=12.3, sides=4, skew=2.2, distortion=2.5";
+                @"fontname=""Test font"", fontsize=12.5, penwidth=2.5, shape=polygon, sides=4, skew=2.2, "
+                + @"distortion=2.5, fixedsize=true, height=21.6, width=14.5, orientation=45.8, z=12.3";
 
             using (CultureScope(EnglishCulture))
             {

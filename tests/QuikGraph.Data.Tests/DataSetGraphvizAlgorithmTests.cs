@@ -79,7 +79,7 @@ namespace QuikGraph.Data.Tests
                 {
                     ExpectedResult =
                         @"digraph G {" + Environment.NewLine
-                        + @"node [shape=record, style=solid, label=""""];" + Environment.NewLine
+                        + @"node [shape=record, style=solid];" + Environment.NewLine
                         + @"}"
                 };
 
@@ -103,7 +103,7 @@ namespace QuikGraph.Data.Tests
                 {
                     ExpectedResult =
                         @"digraph G {" + Environment.NewLine
-                        + @"node [shape=record, style=solid, label=""""];" + Environment.NewLine
+                        + @"node [shape=record, style=solid];" + Environment.NewLine
                         + @"0 [shape=record, label=""Addresses | +\ AddressID\ :\ Int32\ unique""];" + Environment.NewLine
                         + @"1 [shape=record, label=""Customers | +\ CustomerID\ :\ Int32""];" + Environment.NewLine
                         + @"2 [shape=record, label=""Orders | ""];" + Environment.NewLine
@@ -178,7 +178,7 @@ namespace QuikGraph.Data.Tests
                 {
                     ExpectedResult =
                         @"digraph G {" + Environment.NewLine
-                        + @"node [shape=record, style=solid, label=""""];" + Environment.NewLine
+                        + @"node [shape=record, style=solid];" + Environment.NewLine
                         + @"0 [shape=record, label=""Tmps | ""];" + Environment.NewLine
                         + @"1 [shape=record, label=""Rewards | +\ reward_id\ :\ Int32\ unique""];" + Environment.NewLine
                         + @"2 [shape=record, label=""Categories | +\ cat_id\ :\ Int32\ unique\n+\ cat_name\ :\ String\n+\ cat_description\ :\ String""];" + Environment.NewLine
