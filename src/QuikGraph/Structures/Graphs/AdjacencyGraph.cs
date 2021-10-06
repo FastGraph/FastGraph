@@ -319,21 +319,11 @@ namespace QuikGraph
 
             // Remove out edges
             IEdgeList<TVertex, TEdge> edges = _vertexEdges[vertex];
-            if (EdgeRemoved != null) // Lazily notify
-            {
-                foreach (TEdge edge in edges)
-                    OnEdgeRemoved(edge);
-            }
-
-            EdgeCount -= edges.Count;
-            edges.Clear();
+            _vertexEdges.Remove(vertex);
 
             // Run over edges and remove each edge touching the vertex
             foreach (KeyValuePair<TVertex, IEdgeList<TVertex, TEdge>> pair in _vertexEdges)
             {
-                if (EqualityComparer<TVertex>.Default.Equals(pair.Key, vertex))
-                    continue; // We've already
-
                 // Collect edges to remove
                 foreach (TEdge edge in pair.Value.Clone())
                 {
@@ -346,9 +336,17 @@ namespace QuikGraph
                 }
             }
 
+            EdgeCount -= edges.Count;
             Debug.Assert(EdgeCount >= 0);
 
-            _vertexEdges.Remove(vertex);
+            if (EdgeRemoved != null) // Lazily notify
+            {
+                foreach (TEdge edge in edges)
+                {
+                    OnEdgeRemoved(edge);
+                }
+            }
+
             OnVertexRemoved(vertex);
 
             return true;
