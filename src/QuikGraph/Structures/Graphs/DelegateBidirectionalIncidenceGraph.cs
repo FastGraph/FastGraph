@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -58,8 +58,8 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge> result))
-                return result;
+            if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge> inEdges))
+                return inEdges;
             throw new VertexNotFoundException();
         }
 

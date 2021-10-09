@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public virtual IEnumerable<TEdge> Edges =>
             _vertices.SelectMany(
-                vertex => OutEdges(vertex).Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)));
+                vertex => OutEdges(vertex).Where(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Source, vertex)));
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
@@ -77,8 +77,8 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (TryGetOutEdges(edge.Source, out IEnumerable<TEdge> edges))
-                return edges.Any(e => EqualityComparer<TEdge>.Default.Equals(e, edge));
+            if (TryGetOutEdges(edge.Source, out IEnumerable<TEdge> outEdges))
+                return outEdges.Any(outEdge => EqualityComparer<TEdge>.Default.Equals(outEdge, edge));
             return false;
         }
 
@@ -143,7 +143,7 @@ namespace QuikGraph
         {
             if (!ContainsVertexInternal(vertex))
                 throw new VertexNotFoundException();
-            return base.OutEdgesInternal(vertex).Where(edge => FilterEdges(edge, vertex));
+            return base.OutEdgesInternal(vertex).Where(outEdge => FilterEdges(outEdge, vertex));
         }
 
         /// <inheritdoc />
@@ -157,11 +157,11 @@ namespace QuikGraph
 
             // Ignore return because "vertex" exists in the graph
             // so it should always return true.
-            base.TryGetOutEdgesInternal(vertex, out IEnumerable<TEdge> unfilteredEdges);
+            base.TryGetOutEdgesInternal(vertex, out IEnumerable<TEdge> unfilteredOutEdges);
 
-            edges = unfilteredEdges is null
+            edges = unfilteredOutEdges is null
                 ? Enumerable.Empty<TEdge>()
-                : unfilteredEdges.Where(edge => FilterEdges(edge, vertex));
+                : unfilteredOutEdges.Where(outEdge => FilterEdges(outEdge, vertex));
 
             return true;
         }

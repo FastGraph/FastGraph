@@ -746,6 +746,9 @@ namespace QuikGraph.Tests.Structures
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
             RemoveVertexIf_Test(graph);
+
+            graph = new BidirectionalGraph<int, Edge<int>>();
+            RemoveVertexIf_Test2(graph);
         }
 
         [Test]

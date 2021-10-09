@@ -1,7 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -200,7 +203,9 @@ namespace QuikGraph
             for (int j = 0; j < VertexCount; ++j)
             {
                 if (_edges[vertex, j] != null)
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -279,7 +284,9 @@ namespace QuikGraph
             for (int i = 0; i < VertexCount; ++i)
             {
                 if (_edges[i, vertex] != null)
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -344,19 +351,20 @@ namespace QuikGraph
         /// <inheritdoc />
         public void Clear()
         {
+            EdgeCount = 0;
             for (int i = 0; i < VertexCount; ++i)
             {
                 for (int j = 0; j < VertexCount; ++j)
                 {
                     TEdge edge = _edges[i, j];
-                    _edges[i, j] = default(TEdge);
+                    _edges[i, j] = null;
 
                     if (edge != null)
+                    {
                         OnEdgeRemoved(edge);
+                    }
                 }
             }
-
-            EdgeCount = 0;
         }
 
         #endregion
@@ -383,7 +391,7 @@ namespace QuikGraph
                 TEdge edge = _edges[i, vertex];
                 if (edge != null && predicate(edge))
                 {
-                    RemoveEdge(edge);
+                    RemoveEdgeInternal(edge);
                     ++count;
                 }
             }
@@ -391,13 +399,18 @@ namespace QuikGraph
             return count;
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private void ClearInEdgesInternal(int vertex)
         {
             for (int i = 0; i < VertexCount; ++i)
             {
                 TEdge edge = _edges[i, vertex];
                 if (edge != null)
-                    RemoveEdge(edge);
+                {
+                    RemoveEdgeInternal(edge);
+                }
             }
         }
 
@@ -450,7 +463,7 @@ namespace QuikGraph
                 TEdge edge = _edges[vertex, j];
                 if (edge != null && predicate(edge))
                 {
-                    RemoveEdge(edge);
+                    RemoveEdgeInternal(edge);
                     ++count;
                 }
             }
@@ -458,13 +471,18 @@ namespace QuikGraph
             return count;
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private void ClearOutEdgesInternal(int vertex)
         {
             for (int j = 0; j < VertexCount; ++j)
             {
                 TEdge edge = _edges[vertex, j];
                 if (edge != null)
-                    RemoveEdge(edge);
+                {
+                    RemoveEdgeInternal(edge);
+                }
             }
         }
 
@@ -491,14 +509,15 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(edge));
             AssertAreInGraph(edge.Source, edge.Target);
 
-            if (_edges[edge.Source, edge.Target] != null)
-                throw new ParallelEdgeNotAllowedException();
+            if (_edges[edge.Source, edge.Target] is null)
+            {
+                _edges[edge.Source, edge.Target] = edge;
+                ++EdgeCount;
+                OnEdgeAdded(edge);
+                return true;
+            }
 
-            _edges[edge.Source, edge.Target] = edge;
-            ++EdgeCount;
-            OnEdgeAdded(edge);
-
-            return true;
+            throw new ParallelEdgeNotAllowedException();
         }
 
         /// <inheritdoc />
@@ -514,7 +533,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -534,6 +555,20 @@ namespace QuikGraph
             EdgeAdded?.Invoke(edge);
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void RemoveEdgeInternal([NotNull] TEdge edge)
+        {
+            Debug.Assert(edge != null);
+            Debug.Assert(_edges[edge.Source, edge.Target] != null);
+
+            _edges[edge.Source, edge.Target] = null;
+            --EdgeCount;
+            Debug.Assert(EdgeCount >= 0);
+            OnEdgeRemoved(edge);
+        }
+
         /// <inheritdoc />
         public bool RemoveEdge(TEdge edge)
         {
@@ -541,18 +576,13 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(edge));
             if (!AreInGraph(edge.Source, edge.Target))
                 return false;
-
             TEdge edgeToRemove = _edges[edge.Source, edge.Target];
-            if (edgeToRemove != null)
-            {
-                _edges[edge.Source, edge.Target] = null;
+            if (edgeToRemove is null)
+                return false;
 
-                --EdgeCount;
-                OnEdgeRemoved(edgeToRemove);
-                return true;
-            }
+            RemoveEdgeInternal(edgeToRemove);
 
-            return false;
+            return true;
         }
 
         /// <inheritdoc />

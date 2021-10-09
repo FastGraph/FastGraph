@@ -216,6 +216,53 @@ namespace QuikGraph.Tests.Structures
             #endregion
         }
 
+        protected static void RemoveVertexIf_Test2(
+            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+        {
+            int verticesRemoved = 0;
+            int edgesRemoved = 0;
+
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+            graph.VertexRemoved += v =>
+            {
+                Assert.IsNotNull(v);
+                // ReSharper disable once AccessToModifiedClosure
+                ++verticesRemoved;
+            };
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+            graph.EdgeRemoved += e =>
+            {
+                Assert.IsNotNull(e);
+                // ReSharper disable once AccessToModifiedClosure
+                ++edgesRemoved;
+            };
+
+            var edge11 = new Edge<int>(1, 1);
+            var edge13 = new Edge<int>(1, 3);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge32 = new Edge<int>(3, 2);
+            var edge34 = new Edge<int>(3, 4);
+            graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge24, edge31, edge32, edge34 });
+
+            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => vertex == 1 || vertex  == 3));
+            CheckCounters(2, 5);
+            AssertHasVertices(graph, new[] { 2, 4 });
+            AssertHasEdges(graph, new[] { edge24 });
+
+            #region Local function
+
+            void CheckCounters(int expectedRemovedVertices, int expectedRemovedEdges)
+            {
+                Assert.AreEqual(expectedRemovedVertices, verticesRemoved);
+                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved = 0;
+                edgesRemoved = 0;
+            }
+
+            #endregion
+        }
+
         protected static void RemoveVertexIf_Clusters_Test(
             [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
@@ -235,6 +282,22 @@ namespace QuikGraph.Tests.Structures
 
             Assert.AreEqual(2, graph.RemoveVertexIf(_ => true));
             AssertEmptyGraph(graph);
+        }
+
+        protected static void RemoveVertexIf_Clusters_Test2(
+            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+        {
+            var edge11 = new Edge<int>(1, 1);
+            var edge13 = new Edge<int>(1, 3);
+            var edge24 = new Edge<int>(2, 4);
+            var edge31 = new Edge<int>(3, 1);
+            var edge32 = new Edge<int>(3, 2);
+            var edge34 = new Edge<int>(3, 4);
+            graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge24, edge31, edge32, edge34 });
+
+            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => vertex == 1 || vertex == 3));
+            AssertHasVertices(graph, new[] { 2, 4 });
+            AssertHasEdges(graph, new[] { edge24 });
         }
 
         protected static void RemoveVertexIf_Throws_Test<TVertex>(

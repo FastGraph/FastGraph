@@ -1,7 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Collections;
 
@@ -174,13 +177,13 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
-                return edges.Count;
+            if (_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+                return outEdges.Count;
             throw new VertexNotFoundException();
         }
 
         [NotNull]
-        private readonly IVertexEdgeDictionary<TVertex, TEdge> _vertexOutEdges;
+        private IVertexEdgeDictionary<TVertex, TEdge> _vertexOutEdges;
 
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
@@ -232,11 +235,11 @@ namespace QuikGraph
             if (_vertexOutEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> outEdges)
                 && outEdges.Count > 0)
             {
-                foreach (TEdge e in outEdges)
+                foreach (TEdge outEdge in outEdges)
                 {
-                    if (EqualityComparer<TVertex>.Default.Equals(e.Target, target))
+                    if (EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target))
                     {
-                        edge = e;
+                        edge = outEdge;
                         return true;
                     }
                 }
@@ -286,7 +289,7 @@ namespace QuikGraph
         }
 
         [NotNull]
-        private readonly IVertexEdgeDictionary<TVertex, TEdge> _vertexInEdges;
+        private IVertexEdgeDictionary<TVertex, TEdge> _vertexInEdges;
 
         /// <inheritdoc />
         public IEnumerable<TEdge> InEdges(TVertex vertex)
@@ -336,17 +339,16 @@ namespace QuikGraph
         /// <inheritdoc />
         public void Clear()
         {
-            if (EdgeRemoved != null) // Lazily notify
-            {
-                foreach (TEdge edge in _vertexOutEdges.SelectMany(edges => edges.Value).Distinct())
-                    OnEdgeRemoved(edge);
-                foreach (TVertex vertex in _vertexOutEdges.Keys)
-                    OnVertexRemoved(vertex);
-            }
-
-            _vertexOutEdges.Clear();
-            _vertexInEdges.Clear();
+            IVertexEdgeDictionary<TVertex, TEdge> vertexOutEdges = _vertexOutEdges;
+            _vertexOutEdges = new VertexEdgeDictionary<TVertex, TEdge>();
+            IVertexEdgeDictionary<TVertex, TEdge> vertexInEdges = _vertexInEdges;
+            _vertexInEdges = new VertexEdgeDictionary<TVertex, TEdge>();
             EdgeCount = 0;
+
+            NotifyEdgesRemoved(vertexOutEdges.SelectMany(edges => edges.Value).Distinct());
+            NotifyVerticesRemoved(vertexOutEdges.Keys);
+            vertexOutEdges.Clear();
+            vertexInEdges.Clear();
         }
 
         #endregion
@@ -388,7 +390,9 @@ namespace QuikGraph
             foreach (TVertex vertex in verticesArray)
             {
                 if (AddVertex(vertex))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -408,37 +412,55 @@ namespace QuikGraph
             VertexAdded?.Invoke(vertex);
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void NotifyVerticesRemoved([NotNull, ItemNotNull] ICollection<TVertex> vertices)
+        {
+            if (VertexRemoved != null) // Lazily notify
+            {
+                foreach (TVertex vertex in vertices)
+                {
+                    OnVertexRemoved(vertex);
+                }
+            }
+        }
+
+        [NotNull, ItemNotNull]
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private IEnumerable<TEdge> RemoveInOutEdges([NotNull] TVertex vertex)
+        {
+            IEdgeList<TVertex, TEdge> outEdges = _vertexOutEdges[vertex];
+            _vertexOutEdges.Remove(vertex);
+            foreach (TEdge outEdge in outEdges)
+            {
+                _vertexInEdges[outEdge.Target].Remove(outEdge);
+            }
+
+            IEdgeList<TVertex, TEdge> inEdges = _vertexInEdges[vertex];
+            _vertexInEdges.Remove(vertex);
+            foreach (TEdge inEdge in inEdges)
+            {
+                _vertexOutEdges[inEdge.Source].Remove(inEdge);
+            }
+
+            EdgeCount -= outEdges.Count + inEdges.Count;
+            Debug.Assert(EdgeCount >= 0);
+
+            return outEdges.Concat(inEdges);
+        }
+
         /// <inheritdoc />
         public virtual bool RemoveVertex(TVertex vertex)
         {
             if (!ContainsVertex(vertex))
                 return false;
 
-            // Collect edges to remove
-            var edgesToRemove = new EdgeList<TVertex, TEdge>();
-            foreach (TEdge outEdge in OutEdges(vertex))
-            {
-                _vertexInEdges[outEdge.Target].Remove(outEdge);
-                edgesToRemove.Add(outEdge);
-            }
+            IEnumerable<TEdge> inOutEdges = RemoveInOutEdges(vertex);
 
-            foreach (TEdge inEdge in InEdges(vertex))
-            {
-                // Might already have been removed
-                if (_vertexOutEdges[inEdge.Source].Remove(inEdge))
-                    edgesToRemove.Add(inEdge);
-            }
-
-            // Notify users
-            if (EdgeRemoved != null)
-            {
-                foreach (TEdge edge in edgesToRemove)
-                    OnEdgeRemoved(edge);
-            }
-
-            _vertexOutEdges.Remove(vertex);
-            _vertexInEdges.Remove(vertex);
-            EdgeCount -= edgesToRemove.Count;
+            NotifyEdgesRemoved(inOutEdges);
             OnVertexRemoved(vertex);
 
             return true;
@@ -467,8 +489,12 @@ namespace QuikGraph
             var verticesToRemove = new VertexList<TVertex>();
             verticesToRemove.AddRange(Vertices.Where(vertex => predicate(vertex)));
 
-            foreach (TVertex vertex in verticesToRemove)
-                RemoveVertex(vertex);
+            IEnumerable<TEdge> edgesRemoved = verticesToRemove.Aggregate(
+                Enumerable.Empty<TEdge>(),
+                (current, vertex) => current.Concat(RemoveInOutEdges(vertex)));
+
+            NotifyEdgesRemoved(edgesRemoved);
+            NotifyVerticesRemoved(verticesToRemove);
 
             return verticesToRemove.Count;
         }
@@ -477,6 +503,9 @@ namespace QuikGraph
 
         #region IMutableEdgeListGraph<TVertex,TEdge>
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private bool AddEdgeInternal([NotNull] TEdge edge)
         {
             Debug.Assert(edge != null);
@@ -517,7 +546,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -537,6 +568,23 @@ namespace QuikGraph
             EdgeAdded?.Invoke(edge);
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void NotifyEdgesRemoved([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        {
+            Debug.Assert(edges != null);
+
+            if (EdgeRemoved != null) // Lazily notify
+            {
+                // Enumeration is only made on safe enumerable
+                foreach (TEdge edge in edges)
+                {
+                    OnEdgeRemoved(edge);
+                }
+            }
+        }
+
         /// <inheritdoc />
         public virtual bool RemoveEdge(TEdge edge)
         {
@@ -548,7 +596,6 @@ namespace QuikGraph
             {
                 _vertexInEdges[edge.Target].Remove(edge);
                 --EdgeCount;
-
                 Debug.Assert(EdgeCount >= 0);
 
                 OnEdgeRemoved(edge);
@@ -572,6 +619,24 @@ namespace QuikGraph
             EdgeRemoved?.Invoke(edge);
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private int RemoveEdgesInternal([NotNull] ICollection<TEdge> edgesToRemove)
+        {
+            foreach (TEdge edge in edgesToRemove)
+            {
+                _vertexOutEdges[edge.Source].Remove(edge);
+                _vertexInEdges[edge.Target].Remove(edge);
+            }
+
+            EdgeCount -= edgesToRemove.Count;
+            Debug.Assert(EdgeCount >= 0);
+            NotifyEdgesRemoved(edgesToRemove);
+
+            return edgesToRemove.Count;
+        }
+
         /// <inheritdoc />
         public int RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
         {
@@ -581,10 +646,7 @@ namespace QuikGraph
             var edgesToRemove = new EdgeList<TVertex, TEdge>();
             edgesToRemove.AddRange(Edges.Where(edge => predicate(edge)));
 
-            foreach (TEdge edge in edgesToRemove)
-                RemoveEdge(edge);
-
-            return edgesToRemove.Count;
+            return RemoveEdgesInternal(edgesToRemove);
         }
 
         #endregion
@@ -615,7 +677,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddVerticesAndEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -630,16 +694,15 @@ namespace QuikGraph
         {
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
-            if (!_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
-                return 0;
 
-            var edgesToRemove = new EdgeList<TVertex, TEdge>();
-            edgesToRemove.AddRange(outEdges.Where(edge => predicate(edge)));
+            if (_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            {
+                var edgesToRemove = new EdgeList<TVertex, TEdge>();
+                edgesToRemove.AddRange(outEdges.Where(edge => predicate(edge)));
+                return RemoveEdgesInternal(edgesToRemove);
+            }
 
-            foreach (TEdge edge in edgesToRemove)
-                RemoveEdge(edge);
-
-            return edgesToRemove.Count;
+            return 0;
         }
 
         /// <inheritdoc />
@@ -648,26 +711,33 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (!_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
-                return;
-
-            foreach (TEdge edge in outEdges)
+            if (_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
             {
-                _vertexInEdges[edge.Target].Remove(edge);
-                OnEdgeRemoved(edge);
-            }
+                _vertexOutEdges[vertex] = new EdgeList<TVertex, TEdge>();
+                foreach (TEdge outEdge in outEdges)
+                {
+                    _vertexInEdges[outEdge.Target].Remove(outEdge);
+                }
 
-            EdgeCount -= outEdges.Count;
-            outEdges.Clear();
+                EdgeCount -= outEdges.Count;
+                Debug.Assert(EdgeCount >= 0);
+                NotifyEdgesRemoved(outEdges);
+                outEdges.Clear();
+            }
         }
 
         /// <inheritdoc />
         public void TrimEdgeExcess()
         {
-            foreach (IEdgeList<TVertex, TEdge> edges in _vertexInEdges.Values)
-                edges.TrimExcess();
-            foreach (IEdgeList<TVertex, TEdge> edges in _vertexOutEdges.Values)
-                edges.TrimExcess();
+            foreach (IEdgeList<TVertex, TEdge> inEdges in _vertexInEdges.Values)
+            {
+                inEdges.TrimExcess();
+            }
+
+            foreach (IEdgeList<TVertex, TEdge> outEdges in _vertexOutEdges.Values)
+            {
+                outEdges.TrimExcess();
+            }
         }
 
         #endregion
@@ -679,16 +749,15 @@ namespace QuikGraph
         {
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
-            if (!_vertexInEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> inEdges))
-                return 0;
 
-            var edgesToRemove = new EdgeList<TVertex, TEdge>();
-            edgesToRemove.AddRange(inEdges.Where(edge => predicate(edge)));
+            if (_vertexInEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> inEdges))
+            {
+                var edgesToRemove = new EdgeList<TVertex, TEdge>();
+                edgesToRemove.AddRange(inEdges.Where(edge => predicate(edge)));
+                return RemoveEdgesInternal(edgesToRemove);
+            }
 
-            foreach (TEdge edge in edgesToRemove)
-                RemoveEdge(edge);
-
-            return edgesToRemove.Count;
+            return 0;
         }
 
         /// <inheritdoc />
@@ -697,17 +766,19 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (!_vertexInEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> inEdges))
-                return;
-
-            foreach (TEdge edge in inEdges)
+            if (_vertexInEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> inEdges))
             {
-                _vertexOutEdges[edge.Source].Remove(edge);
-                OnEdgeRemoved(edge);
-            }
+                _vertexInEdges[vertex] = new EdgeList<TVertex, TEdge>();
+                foreach (TEdge inEdge in inEdges)
+                {
+                    _vertexOutEdges[inEdge.Source].Remove(inEdge);
+                }
 
-            EdgeCount -= inEdges.Count;
-            inEdges.Clear();
+                EdgeCount -= inEdges.Count;
+                Debug.Assert(EdgeCount >= 0);
+                NotifyEdgesRemoved(inEdges);
+                inEdges.Clear();
+            }
         }
 
         /// <inheritdoc />
@@ -778,7 +849,9 @@ namespace QuikGraph
 
             // Applying merge recursively
             foreach (TVertex vertex in mergeVertices)
+            {
                 MergeVertex(vertex, edgeFactory);
+            }
         }
 
         #region ICloneable

@@ -1,7 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Collections;
 
@@ -62,6 +65,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public IEnumerable<TVertex> Vertices => GetVertices().AsEnumerable();
 
+        [Pure]
+        [NotNull, ItemNotNull]
         private HashSet<TVertex> GetVertices()
         {
             var vertices = new HashSet<TVertex>();
@@ -89,8 +94,7 @@ namespace QuikGraph
         #region IEdgeSet<TVertex,TEdge>
 
         [NotNull]
-        private readonly EdgeEdgeDictionary<TVertex, TEdge> _edges
-            = new EdgeEdgeDictionary<TVertex, TEdge>();
+        private EdgeEdgeDictionary<TVertex, TEdge> _edges = new EdgeEdgeDictionary<TVertex, TEdge>();
 
         /// <inheritdoc />
         public bool IsEdgesEmpty => _edges.Count == 0;
@@ -99,7 +103,7 @@ namespace QuikGraph
         public int EdgeCount => _edges.Count;
 
         /// <inheritdoc />
-        public IEnumerable<TEdge> Edges => _edges.Keys;
+        public IEnumerable<TEdge> Edges => _edges.Keys.AsEnumerable();
 
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
@@ -110,6 +114,7 @@ namespace QuikGraph
             return _edges.ContainsKey(edge);
         }
 
+        [Pure]
         private bool ContainsEdge(TVertex source, TVertex target)
         {
             Debug.Assert(source != null);
@@ -152,7 +157,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddVerticesAndEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -191,7 +198,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -211,17 +220,20 @@ namespace QuikGraph
             EdgeAdded?.Invoke(edge);
         }
 
-        private bool RemoveEdgeInternal([NotNull] TEdge edge)
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void NotifyEdgesRemoved([NotNull, ItemNotNull] ICollection<TEdge> edges)
         {
-            Debug.Assert(edge != null);
+            Debug.Assert(edges != null);
 
-            if (_edges.Remove(edge))
+            if (EdgeRemoved != null) // Lazily notify
             {
-                OnEdgeRemoved(edge);
-                return true;
+                foreach (TEdge edge in edges)
+                {
+                    OnEdgeRemoved(edge);
+                }
             }
-
-            return false;
         }
 
         /// <inheritdoc />
@@ -230,7 +242,13 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            return RemoveEdgeInternal(edge);
+            if (_edges.Remove(edge))
+            {
+                OnEdgeRemoved(edge);
+                return true;
+            }
+
+            return false;
         }
 
         /// <inheritdoc />
@@ -253,11 +271,17 @@ namespace QuikGraph
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            TEdge[] edgesToRemove = Edges.Where(edge => predicate(edge)).ToArray();
+            var edgesToRemove = new EdgeList<TVertex, TEdge>();
+            edgesToRemove.AddRange(Edges.Where(edge => predicate(edge)));
 
             foreach (TEdge edge in edgesToRemove)
-                RemoveEdgeInternal(edge);
-            return edgesToRemove.Length;
+            {
+                _edges.Remove(edge);
+            }
+
+            NotifyEdgesRemoved(edgesToRemove);
+
+            return edgesToRemove.Count;
         }
 
         #endregion
@@ -265,11 +289,11 @@ namespace QuikGraph
         /// <inheritdoc />
         public void Clear()
         {
-            EdgeEdgeDictionary<TVertex, TEdge> edges = _edges.Clone();
-            _edges.Clear();
-
-            foreach (TEdge edge in edges.Keys)
-                OnEdgeRemoved(edge);
+            EdgeEdgeDictionary<TVertex, TEdge> edges = _edges;
+            _edges = new EdgeEdgeDictionary<TVertex, TEdge>();
+            
+            NotifyEdgesRemoved(edges.Keys);
+            edges.Clear();
         }
 
         #region ICloneable

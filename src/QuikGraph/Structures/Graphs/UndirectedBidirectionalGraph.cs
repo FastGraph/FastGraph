@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -140,7 +140,7 @@ namespace QuikGraph
                     .Concat(
                         OriginalGraph.InEdges(vertex)
                             // We skip self edges here since
-                            // We already did those in the out-edge run
+                            // We already got them out-edge run
                             .Where(inEdge => !inEdge.IsSelfEdge()));
         }
 

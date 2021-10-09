@@ -379,6 +379,9 @@ namespace QuikGraph.Tests.Structures
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
             RemoveVertexIf_Test(graph);
+
+            graph = new UndirectedGraph<int, Edge<int>>();
+            RemoveVertexIf_Test2(graph);
         }
 
         [Test]
@@ -658,6 +661,15 @@ namespace QuikGraph.Tests.Structures
 
             AssertNoEdge(graph);
             CheckCounter(1);
+
+            var edge11 = new Edge<int>(1, 1);
+            graph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge23, edge31, edge32 });
+
+            // Clear self edge
+            clearEdges(graph, 1);
+
+            AssertHasEdges(graph, new[] { edge23, edge32 });
+            CheckCounter(4);
 
             #region Local function
 

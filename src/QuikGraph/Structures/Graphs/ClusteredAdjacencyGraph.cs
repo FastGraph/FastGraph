@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
+using QuikGraph.Collections;
 
 namespace QuikGraph
 {
@@ -258,7 +262,9 @@ namespace QuikGraph
             foreach (TVertex vertex in verticesArray)
             {
                 if (AddVertex(vertex))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -282,6 +288,18 @@ namespace QuikGraph
             }
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void RemoveVertexInternal([NotNull] TVertex vertex)
+        {
+            Debug.Assert(vertex != null);
+
+            RemoveChildVertex(vertex);
+            Wrapped.RemoveVertex(vertex);
+            Parent?.RemoveVertex(vertex);
+        }
+
         /// <summary>
         /// Removes the given vertex from this graph.
         /// </summary>
@@ -295,9 +313,7 @@ namespace QuikGraph
             if (!Wrapped.ContainsVertex(vertex))
                 return false;
 
-            RemoveChildVertex(vertex);
-            Wrapped.RemoveVertex(vertex);
-            Parent?.RemoveVertex(vertex);
+            RemoveVertexInternal(vertex);
 
             return true;
         }
@@ -312,14 +328,15 @@ namespace QuikGraph
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            TVertex[] verticesToRemove = Vertices
-                .Where(vertex => predicate(vertex))
-                .ToArray();
+            var verticesToRemove = new VertexList<TVertex>();
+            verticesToRemove.AddRange(Vertices.Where(vertex => predicate(vertex)));
 
             foreach (TVertex vertex in verticesToRemove)
-                RemoveVertex(vertex);
+            {
+                RemoveVertexInternal(vertex);
+            }
 
-            return verticesToRemove.Length;
+            return verticesToRemove.Count;
         }
 
         /// <summary>
@@ -354,7 +371,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddVerticesAndEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -371,7 +390,9 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(edge));
 
             if (Parent != null && !Parent.ContainsEdge(edge))
+            {
                 Parent.AddEdge(edge);
+            }
             return Wrapped.AddEdge(edge);
         }
 
@@ -392,7 +413,9 @@ namespace QuikGraph
             foreach (TEdge edge in edgesArray)
             {
                 if (AddEdge(edge))
+                {
                     ++count;
+                }
             }
 
             return count;
@@ -412,6 +435,18 @@ namespace QuikGraph
             }
         }
 
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void RemoveEdgeInternal([NotNull] TEdge edge)
+        {
+            Debug.Assert(edge != null);
+
+            RemoveChildEdge(edge);
+            Wrapped.RemoveEdge(edge);
+            Parent?.RemoveEdge(edge);
+        }
+
         /// <summary>
         /// Removes the <paramref name="edge"/> from this graph.
         /// </summary>
@@ -425,9 +460,7 @@ namespace QuikGraph
             if (!Wrapped.ContainsEdge(edge))
                 return false;
 
-            RemoveChildEdge(edge);
-            Wrapped.RemoveEdge(edge);
-            Parent?.RemoveEdge(edge);
+            RemoveEdgeInternal(edge);
 
             return true;
         }
@@ -442,14 +475,15 @@ namespace QuikGraph
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            var edgesToRemove = Wrapped.Edges
-                .Where(edge => predicate(edge))
-                .ToArray();
+            var edgesToRemove = new EdgeList<TVertex, TEdge>();
+            edgesToRemove.AddRange(Edges.Where(edge => predicate(edge)));
 
             foreach (TEdge edge in edgesToRemove)
-                RemoveEdge(edge);
+            {
+                RemoveEdgeInternal(edge);
+            }
 
-            return edgesToRemove.Length;
+            return edgesToRemove.Count;
         }
 
         /// <summary>

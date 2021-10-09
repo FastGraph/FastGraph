@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -170,8 +170,8 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
-                return edges.Count;
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+                return inEdges.Count;
             throw new VertexNotFoundException();
         }
 
@@ -181,8 +181,8 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edges))
-                return edges.AsEnumerable();
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+                return inEdges.AsEnumerable();
             throw new VertexNotFoundException();
         }
 
@@ -192,9 +192,9 @@ namespace QuikGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> edgeList))
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
             {
-                edges = edgeList.AsEnumerable();
+                edges = inEdges.AsEnumerable();
                 return true;
             }
 

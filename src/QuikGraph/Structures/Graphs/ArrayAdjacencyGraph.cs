@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -97,8 +97,8 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (_vertexOutEdges.TryGetValue(edge.Source, out TEdge[] edges))
-                return edges.Any(e => EqualityComparer<TEdge>.Default.Equals(e, edge));
+            if (_vertexOutEdges.TryGetValue(edge.Source, out TEdge[] outEdges))
+                return outEdges.Any(outEdge => EqualityComparer<TEdge>.Default.Equals(outEdge, edge));
             return false;
         }
 

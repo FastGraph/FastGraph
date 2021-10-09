@@ -1,6 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -108,7 +112,7 @@ namespace QuikGraph
         public int VertexCount => _outEdgeStartRanges.Count;
 
         /// <inheritdoc />
-        public IEnumerable<TVertex> Vertices => _outEdgeStartRanges.Keys;
+        public IEnumerable<TVertex> Vertices => _outEdgeStartRanges.Keys.AsEnumerable();
 
         /// <inheritdoc />
         public bool ContainsVertex(TVertex vertex)
@@ -258,6 +262,9 @@ namespace QuikGraph
 
         [Pure]
         [NotNull]
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator([NotNull] TVertex vertex)
         {
             Debug.Assert(vertex != null);

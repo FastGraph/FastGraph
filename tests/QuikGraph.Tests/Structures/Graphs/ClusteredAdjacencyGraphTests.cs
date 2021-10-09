@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -526,10 +526,19 @@ namespace QuikGraph.Tests.Structures
             var graph1 = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph1);
             RemoveVertexIf_Clusters_Test(graph1);
 
+            wrappedGraph1 = new AdjacencyGraph<int, Edge<int>>();
+            graph1 = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph1);
+            RemoveVertexIf_Clusters_Test2(graph1);
+
             var wrappedGraph2 = new AdjacencyGraph<int, Edge<int>>();
             var graph2 = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph2);
             var subGraph2 = new ClusteredAdjacencyGraph<int, Edge<int>>(graph2);
             RemoveVertexIf_Clusters_Test(subGraph2);
+
+            wrappedGraph2 = new AdjacencyGraph<int, Edge<int>>();
+            graph2 = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph2);
+            subGraph2 = new ClusteredAdjacencyGraph<int, Edge<int>>(graph2);
+            RemoveVertexIf_Clusters_Test2(subGraph2);
         }
 
         [Test]

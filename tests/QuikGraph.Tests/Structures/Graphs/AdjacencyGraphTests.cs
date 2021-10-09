@@ -341,6 +341,9 @@ namespace QuikGraph.Tests.Structures
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             RemoveVertexIf_Test(graph);
+
+            graph = new AdjacencyGraph<int, Edge<int>>();
+            RemoveVertexIf_Test2(graph);
         }
 
         [Test]

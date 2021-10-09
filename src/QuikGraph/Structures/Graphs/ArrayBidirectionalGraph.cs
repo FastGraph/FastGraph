@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
         [Serializable]
 #endif
-        private class InOutEdges
+        private sealed class InOutEdges
         {
             [NotNull, ItemNotNull]
             public TEdge[] OutEdges { get; }
@@ -120,7 +120,7 @@ namespace QuikGraph
 
             if (_vertexEdges.TryGetValue(edge.Source, out InOutEdges inOutEdges))
             {
-                return inOutEdges.OutEdges.Any(e => EqualityComparer<TEdge>.Default.Equals(e, edge));
+                return inOutEdges.OutEdges.Any(outEdge => EqualityComparer<TEdge>.Default.Equals(outEdge, edge));
             }
 
             return false;
@@ -170,7 +170,7 @@ namespace QuikGraph
 
             if (_vertexEdges.TryGetValue(source, out InOutEdges inOutEdges))
             {
-                edges = inOutEdges.OutEdges.Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
+                edges = inOutEdges.OutEdges.Where(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target));
                 return true;
             }
 
