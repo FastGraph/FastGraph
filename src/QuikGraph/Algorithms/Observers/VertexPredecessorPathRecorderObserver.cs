@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -97,11 +97,8 @@ namespace QuikGraph.Algorithms.Observers
         {
             Debug.Assert(vertex != null);
 
-            foreach (TEdge edge in VerticesPredecessors.Values)
-            {
-                if (EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex))
-                    return;
-            }
+            if (VerticesPredecessors.Values.Any(edge => EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)))
+                return;
 
             EndPathVertices.Add(vertex);
         }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -108,13 +108,13 @@ namespace QuikGraph.Algorithms.TopologicalSort
                 OnVertexAdded(vertex);
 
                 // Update the count of its adjacent vertices
-                foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
+                foreach (TVertex target in VisitedGraph.OutEdges(vertex).Select(outEdge => outEdge.Target))
                 {
-                    --InDegrees[edge.Target];
+                    --InDegrees[target];
 
-                    Debug.Assert(InDegrees[edge.Target] >= 0);
+                    Debug.Assert(InDegrees[target] >= 0);
 
-                    _heap.Update(edge.Target);
+                    _heap.Update(target);
                 }
             }
 

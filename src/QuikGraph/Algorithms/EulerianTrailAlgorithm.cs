@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -157,17 +157,18 @@ namespace QuikGraph.Algorithms
         /// Looks for a new path to add to the current vertex.
         /// </summary>
         /// <returns>True a new path was found, false otherwise.</returns>
+        [Pure]
         private bool Visit()
         {
             // Find a vertex that needs to be visited
-            foreach (TEdge edge in _circuit)
+            foreach (TVertex source in _circuit.Select(edge => edge.Source))
             {
-                bool edgeFound = TrySelectSingleOutEdgeNotInCircuit(edge.Source, out TEdge foundEdge);
+                bool edgeFound = TrySelectSingleOutEdgeNotInCircuit(source, out TEdge foundEdge);
                 if (!edgeFound)
                     continue;
 
                 OnVisitEdge(foundEdge);
-                _currentVertex = edge.Source;
+                _currentVertex = source;
                 if (Search(_currentVertex))
                     return true;
             }
@@ -181,6 +182,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Number of Eulerian trails.</returns>
+        [Pure]
         public static int ComputeEulerianPathCount(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
         {
@@ -202,6 +204,7 @@ namespace QuikGraph.Algorithms
         /// Merges the temporary circuit with the current circuit.
         /// </summary>
         /// <returns>True if all the graph edges are in the circuit.</returns>
+        [Pure]
         private bool CircuitAugmentation()
         {
             var newCircuit = new List<TEdge>(_circuit.Count + _temporaryCircuit.Count);
@@ -274,21 +277,18 @@ namespace QuikGraph.Algorithms
 
         #endregion
 
+        [Pure]
         private bool HasEdgeToward([NotNull] TVertex u, [NotNull] TVertex v)
         {
-            bool foundEdge = false;
-            foreach (TEdge edge in VisitedGraph.OutEdges(v))
-            {
-                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, u))
-                {
-                    foundEdge = true;
-                    break;
-                }
-            }
+            Debug.Assert(u != null);
+            Debug.Assert(v != null);
 
-            return foundEdge;
+            return VisitedGraph
+                .OutEdges(v)
+                .Any(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, u));
         }
 
+        [Pure]
         private bool FindAdjacentOddVertex(
             [NotNull] TVertex u,
             [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
@@ -297,9 +297,8 @@ namespace QuikGraph.Algorithms
         {
             bool found = false;
             foundAdjacent = false;
-            foreach (TEdge edge in VisitedGraph.OutEdges(u))
+            foreach (TVertex v in VisitedGraph.OutEdges(u).Select(outEdge => outEdge.Target))
             {
-                TVertex v = edge.Target;
                 if (!EqualityComparer<TVertex>.Default.Equals(v, u) && oddVertices.Contains(v))
                 {
                     foundAdjacent = true;

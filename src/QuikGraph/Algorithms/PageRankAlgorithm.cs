@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -128,11 +128,9 @@ namespace QuikGraph.Algorithms.Ranking
                     double rank = pair.Value;
 
                     // Compute sum of PR(pj)/L(pj)
-                    double r = 0;
-                    foreach (TEdge edge in filterGraph.InEdges(vertex))
-                    {
-                        r += Ranks[edge.Source] / filterGraph.OutDegree(edge.Source);
-                    }
+                    double r = filterGraph.InEdges(vertex)
+                        .Select(edge => edge.Source)
+                        .Sum(source => Ranks[source] / filterGraph.OutDegree(source));
 
                     // Add sourceRank and store it
                     double newRank = (1 - Damping) + Damping * r;

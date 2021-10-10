@@ -146,13 +146,10 @@ namespace QuikGraph
 
             if (_vertexEdges.TryGetValue(source, out InOutEdges inOutEdges))
             {
-                foreach (TEdge outEdge in inOutEdges.OutEdges)
+                foreach (TEdge outEdge in inOutEdges.OutEdges.Where(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target)))
                 {
-                    if (EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target))
-                    {
-                        edge = outEdge;
-                        return true;
-                    }
+                    edge = outEdge;
+                    return true;
                 }
             }
 

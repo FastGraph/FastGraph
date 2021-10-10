@@ -289,19 +289,10 @@ namespace QuikGraph.Graphviz.Dot
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void ShapeRelatedPropertiesToDot(
-            [CanBeNull] GraphvizVertex commonFormat,
-            [NotNull] IDictionary<string, object> properties)
+        private void LabelOrRecordToDot(
+            [NotNull] IDictionary<string, object> properties,
+            GraphvizVertexShape shape)
         {
-            if (Shape != GraphvizVertexShape.Unspecified)
-            {
-                properties["shape"] = Shape;
-            }
-
-            GraphvizVertexShape shape = Shape == GraphvizVertexShape.Unspecified && commonFormat != null
-                ? commonFormat.Shape
-                : Shape;
-
             if (shape == GraphvizVertexShape.Record)
             {
                 // Priority to label to allow custom record generation process
@@ -320,6 +311,25 @@ namespace QuikGraph.Graphviz.Dot
                     ? (object)new HtmlString(Label)
                     : Escape(Label);
             }
+        }
+
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void ShapeRelatedPropertiesToDot(
+            [CanBeNull] GraphvizVertex commonFormat,
+            [NotNull] IDictionary<string, object> properties)
+        {
+            if (Shape != GraphvizVertexShape.Unspecified)
+            {
+                properties["shape"] = Shape;
+            }
+
+            GraphvizVertexShape shape = Shape == GraphvizVertexShape.Unspecified && commonFormat != null
+                ? commonFormat.Shape
+                : Shape;
+
+            LabelOrRecordToDot(properties, shape);
 
             if (shape == GraphvizVertexShape.Polygon)
             {

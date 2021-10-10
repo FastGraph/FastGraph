@@ -153,16 +153,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (AddVerticesAndEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(AddVerticesAndEdge);
         }
 
         /// <inheritdoc />
@@ -194,16 +185,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (AddEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(AddEdge);
         }
 
         /// <inheritdoc />

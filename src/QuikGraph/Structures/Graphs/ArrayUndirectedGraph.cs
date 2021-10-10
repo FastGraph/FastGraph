@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -182,15 +182,9 @@ namespace QuikGraph
                 target = temp;
             }
 
-            if (!_vertexEdges.TryGetValue(source, out TEdge[] adjacentEdges))
+            if (_vertexEdges.TryGetValue(source, out TEdge[] adjacentEdges))
             {
-                edge = default(TEdge);
-                return false;
-            }
-
-            foreach (TEdge adjacentEdge in adjacentEdges)
-            {
-                if (EdgeEqualityComparer(adjacentEdge, source, target))
+                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
                     edge = adjacentEdge;
                     return true;

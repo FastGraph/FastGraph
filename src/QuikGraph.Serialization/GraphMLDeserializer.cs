@@ -1,8 +1,9 @@
-#if SUPPORTS_GRAPHS_SERIALIZATION
+﻿#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
@@ -124,10 +125,11 @@ namespace QuikGraph.Serialization
                 ILGenerator generator = method.GetILGenerator();
 
                 // We need to create the switch for each property
-                foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(elementType))
+                IEnumerable<PropertyInfo> properties = SerializationHelpers
+                    .GetAttributeProperties(elementType)
+                    .Select(info => info.Property);
+                foreach (PropertyInfo property in properties)
                 {
-                    PropertyInfo property = info.Property;
-
                     var defaultValueAttribute = Attribute.GetCustomAttribute(property, typeof(DefaultValueAttribute)) as DefaultValueAttribute;
                     if (defaultValueAttribute is null)
                         continue;
@@ -270,7 +272,7 @@ namespace QuikGraph.Serialization
             worker.Deserialize();
         }
 
-        private class ReaderWorker
+        private sealed class ReaderWorker
         {
             [NotNull]
             private readonly XmlReader _reader;

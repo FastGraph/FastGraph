@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -223,11 +223,12 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         private void OnVertexFinished([NotNull] TVertex vertex)
         {
-            foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
+            foreach (TVertex target in VisitedGraph.OutEdges(vertex).Select(edge => edge.Target))
             {
-                TVertex target = edge.Target;
                 if (Components[target] == int.MaxValue)
+                {
                     Roots[vertex] = MinDiscoverTime(Roots[vertex], Roots[target]);
+                }
             }
 
             if (EqualityComparer<TVertex>.Default.Equals(Roots[vertex], vertex))

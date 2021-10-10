@@ -181,16 +181,8 @@ namespace QuikGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (!_adjacentEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> adjacentEdges))
-                return false;
-
-            foreach (TEdge adjacentEdge in adjacentEdges)
-            {
-                if (EqualityComparer<TEdge>.Default.Equals(adjacentEdge, edge))
-                    return true;
-            }
-
-            return false;
+            return _adjacentEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> adjacentEdges)
+                   && adjacentEdges.Any(adjacentEdge => EqualityComparer<TEdge>.Default.Equals(adjacentEdge, edge));
         }
 
         /// <inheritdoc />
@@ -207,13 +199,7 @@ namespace QuikGraph
 
             TVertex source = edge.Source;
             TVertex target = edge.Target;
-            foreach (TEdge e in edges)
-            {
-                if (EdgeEqualityComparer(e, source, target))
-                    return true;
-            }
-
-            return false;
+            return edges.Any(e => EdgeEqualityComparer(e, source, target));
         }
 
         #endregion
@@ -271,13 +257,10 @@ namespace QuikGraph
 
             if (_adjacentEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> adjacentEdges))
             {
-                foreach (TEdge adjacentEdge in adjacentEdges)
+                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
-                    if (EdgeEqualityComparer(adjacentEdge, source, target))
-                    {
-                        edge = adjacentEdge;
-                        return true;
-                    }
+                    edge = adjacentEdge;
+                    return true;
                 }
             }
 
@@ -359,16 +342,7 @@ namespace QuikGraph
             if (verticesArray.Any(v => v == null))
                 throw new ArgumentNullException(nameof(vertices), "At least one vertex is null.");
 
-            int count = 0;
-            foreach (TVertex vertex in verticesArray)
-            {
-                if (AddVertex(vertex))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return verticesArray.Count(AddVertex);
         }
 
         [Pure]
@@ -550,16 +524,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (AddVerticesAndEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(AddVerticesAndEdge);
         }
 
         /// <inheritdoc />
@@ -598,16 +563,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (AddEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(AddEdge);
         }
 
         /// <inheritdoc />
@@ -728,16 +684,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (RemoveEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(RemoveEdge);
         }
 
         #endregion

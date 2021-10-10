@@ -258,16 +258,7 @@ namespace QuikGraph
             if (verticesArray.Any(v => v == null))
                 throw new ArgumentNullException(nameof(vertices), "At least one vertex is null.");
 
-            int count = 0;
-            foreach (TVertex vertex in verticesArray)
-            {
-                if (AddVertex(vertex))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return verticesArray.Count(AddVertex);
         }
 
         /// <summary>
@@ -367,16 +358,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (AddVerticesAndEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(AddVerticesAndEdge);
         }
 
         /// <summary>
@@ -409,16 +391,7 @@ namespace QuikGraph
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
-            int count = 0;
-            foreach (TEdge edge in edgesArray)
-            {
-                if (AddEdge(edge))
-                {
-                    ++count;
-                }
-            }
-
-            return count;
+            return edgesArray.Count(AddEdge);
         }
 
         private void RemoveChildEdge([NotNull] TEdge edge)

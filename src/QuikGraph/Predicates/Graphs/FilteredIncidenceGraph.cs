@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -50,13 +50,10 @@ namespace QuikGraph.Predicates
                 && VertexPredicate(target)
                 && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
             {
-                foreach (TEdge unfilteredEdge in unfilteredEdges)
+                foreach (TEdge unfilteredEdge in unfilteredEdges.Where(unfilteredEdge => EdgePredicate(unfilteredEdge)))
                 {
-                    if (EdgePredicate(unfilteredEdge))
-                    {
-                        edge = unfilteredEdge;
-                        return true;
-                    }
+                    edge = unfilteredEdge;
+                    return true;
                 }
             }
 

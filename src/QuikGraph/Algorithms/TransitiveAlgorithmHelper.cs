@@ -59,9 +59,8 @@ namespace QuikGraph.Algorithms
                 verticesAncestors[vertexId] = vertexAncestors;
 
                 // Get indirect ancestors
-                foreach (TEdge inEdge in _graph.InEdges(vertexId))
+                foreach (TVertex predecessor in _graph.InEdges(vertexId).Select(inEdge => inEdge.Source))
                 {
-                    TVertex predecessor = inEdge.Source;
                     vertexPredecessors.Add(predecessor);
 
                     // Add all the ancestors of the predecessors

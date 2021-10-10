@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -46,7 +46,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// </summary>
         public Partition<TVertex> Partition { get; private set; }
 
-        private class SwapPair
+        private sealed class SwapPair
         {
             public TVertex Vertex1 { get; }
             public TVertex Vertex2 { get; }

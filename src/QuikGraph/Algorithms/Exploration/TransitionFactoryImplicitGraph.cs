@@ -1,4 +1,4 @@
-#if SUPPORTS_CLONEABLE
+﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -242,16 +242,13 @@ namespace QuikGraph.Algorithms.Exploration
                 if (edges is null)
                     edges = new EdgeList<TVertex, TEdge>();
 
-                foreach (TEdge edge in transitionFactory.Apply(vertex))
+                foreach (TEdge edge in transitionFactory.Apply(vertex).Where(edge => SuccessorVertexPredicate(edge.Target)))
                 {
-                    if (SuccessorVertexPredicate(edge.Target))
-                    {
-                        AddToNotProcessedCacheIfNecessary(edge.Target, transitionFactory);
+                    AddToNotProcessedCacheIfNecessary(edge.Target, transitionFactory);
 
-                        if (SuccessorEdgePredicate(edge))
-                        {
-                            edges.Add(edge);
-                        }
+                    if (SuccessorEdgePredicate(edge))
+                    {
+                        edges.Add(edge);
                     }
                 }
             }

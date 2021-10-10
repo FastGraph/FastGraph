@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -150,17 +150,20 @@ namespace QuikGraph.Algorithms.ShortestPath
             _filter = filter ?? DefaultFilter;
         }
 
+        [Pure]
         [NotNull]
         private static IEnumerable<SortedPath> DefaultFilter([NotNull] IEnumerable<SortedPath> paths)
         {
             return paths;
         }
 
+        [Pure]
         private static double DefaultGetWeights([NotNull] EquatableTaggedEdge<TVertex, double> edge)
         {
             return edge.Tag;
         }
 
+        [Pure]
         private double GetPathDistance([ItemNotNull] SortedPath edges)
         {
             return edges.Sum(edge => _weights(edge));
@@ -211,6 +214,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                 : (SortedPath?)null;
         }
 
+        [Pure]
         [CanBeNull]
         private static SortedPath? ExtractShortestPathCandidate(
             [NotNull] List<SortedPath> shortestPaths,
@@ -222,21 +226,18 @@ namespace QuikGraph.Algorithms.ShortestPath
             {
                 newPath = shortestPathCandidates.Dequeue();
                 isNewPath = true;
-                foreach (SortedPath path in shortestPaths)
+                // Check to see if this candidate path duplicates a previously found path
+                if (shortestPaths.Any(path => newPath.Value.Equals(path)))
                 {
-                    // Check to see if this candidate path duplicates a previously found path
-                    if (newPath.Value.Equals(path))
-                    {
-                        isNewPath = false;
-                        newPath = null;
-                        break;
-                    }
+                    isNewPath = false;
+                    newPath = null;
                 }
             }
 
             return newPath;
         }
 
+        [Pure]
         private bool SearchAndAddKthShortestPath(
             SortedPath previousPath,
             [NotNull] List<SortedPath> shortestPaths,
@@ -254,21 +255,17 @@ namespace QuikGraph.Algorithms.ShortestPath
                 // The sequence of nodes from the source to the spur node of the previous k-shortest path
                 EquatableTaggedEdge<TVertex, double>[] rootPath = previousPath.GetEdges(i);
 
-                foreach (SortedPath path in shortestPaths)
+                foreach (SortedPath path in shortestPaths.Where(path => rootPath.SequenceEqual(path.GetEdges(i))))
                 {
-                    if (rootPath.SequenceEqual(path.GetEdges(i)))
-                    {
-                        // Remove the links that are part of the previous shortest paths which share the same root path
-                        EquatableTaggedEdge<TVertex, double> edgeToRemove = path.GetEdge(i);
-                        _edgesToRestore.Add(edgeToRemove);
-                        _graph.RemoveEdge(edgeToRemove);
-                    }
+                    // Remove the links that are part of the previous shortest paths which share the same root path
+                    EquatableTaggedEdge<TVertex, double> edgeToRemove = path.GetEdge(i);
+                    _edgesToRestore.Add(edgeToRemove);
+                    _graph.RemoveEdge(edgeToRemove);
                 }
 
                 var verticesToRestore = new List<TVertex>();
-                foreach (EquatableTaggedEdge<TVertex, double> rootPathEdge in rootPath)
+                foreach (TVertex source in rootPath.Select(rootPathEdge => rootPathEdge.Source))
                 {
-                    TVertex source = rootPathEdge.Source;
                     if (!EqualityComparer<TVertex>.Default.Equals(spurVertex, source))
                     {
                         verticesToRestore.Add(source);

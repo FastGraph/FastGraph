@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -115,13 +115,10 @@ namespace QuikGraph
 
             if (TryGetAdjacentEdges(source, out IEnumerable<TEdge> adjacentEdges))
             {
-                foreach (TEdge adjacentEdge in adjacentEdges)
+                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
-                    if (EdgeEqualityComparer(adjacentEdge, source, target))
-                    {
-                        edge = adjacentEdge;
-                        return true;
-                    }
+                    edge = adjacentEdge;
+                    return true;
                 }
             }
 

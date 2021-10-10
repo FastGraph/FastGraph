@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -79,23 +79,25 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="edge">Edge to find its corresponding reversed one.</param>
         /// <param name="foundReversedEdge">Found reversed edge.</param>
         /// <returns>True if the reversed edge was found, false otherwise.</returns>
+        [Pure]
         private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
         {
             Debug.Assert(edge != null);
 
-            foreach (TEdge reversedEdge in VisitedGraph.OutEdges(edge.Target))
+            IEnumerable<TEdge> reversedEdges = VisitedGraph
+                .OutEdges(edge.Target)
+                .Where(reversedEdge => EqualityComparer<TVertex>.Default.Equals(reversedEdge.Target, edge.Source));
+            foreach (TEdge reversedEdge in reversedEdges)
             {
-                if (EqualityComparer<TVertex>.Default.Equals(reversedEdge.Target, edge.Source))
-                {
-                    foundReversedEdge = reversedEdge;
-                    return true;
-                }
+                foundReversedEdge = reversedEdge;
+                return true;
             }
 
             foundReversedEdge = default(TEdge);
             return false;
         }
 
+        [Pure]
         [NotNull, ItemNotNull]
         private IEnumerable<TEdge> FindEdgesToReverse()
         {

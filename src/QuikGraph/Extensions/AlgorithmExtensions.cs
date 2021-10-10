@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -842,7 +842,7 @@ namespace QuikGraph.Algorithms
             return new DagTester<TVertex, TEdge>().IsDag(graph);
         }
 
-        private class DagTester<TVertex, TEdge>
+        private sealed class DagTester<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             private bool _isDag = true;

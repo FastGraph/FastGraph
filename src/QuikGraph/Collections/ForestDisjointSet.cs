@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -17,7 +17,7 @@ namespace QuikGraph.Collections
 #if DEBUG
         [DebuggerDisplay("{" + nameof(_id) + "}:{" + nameof(Rank) + "}->{" + nameof(Parent) + "}")]
 #endif
-        private class Element
+        private sealed class Element
         {
 #if DEBUG
             private readonly int _id;

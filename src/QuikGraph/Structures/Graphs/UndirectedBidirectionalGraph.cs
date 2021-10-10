@@ -173,15 +173,9 @@ namespace QuikGraph
 
             _reorder(source, target, out source, out target);
 
-            if (!ContainsVertex(source))
+            if (ContainsVertex(source))
             {
-                edge = default(TEdge);
-                return false;
-            }
-
-            foreach (TEdge adjacentEdge in AdjacentEdges(source))
-            {
-                if (EdgeEqualityComparer(adjacentEdge, source, target))
+                foreach (TEdge adjacentEdge in AdjacentEdges(source).Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
                     edge = adjacentEdge;
                     return true;
