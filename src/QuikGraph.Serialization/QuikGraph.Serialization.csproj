@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
 
     <GeneratePackageOnBuild>$(Generate_QuikGraph_Serialization)</GeneratePackageOnBuild>
 
@@ -42,7 +42,7 @@ Updates:
     <EmbeddedResource Include="graphml-parseinfo.xsd" />
     <EmbeddedResource Include="xlink.xsd" />
   </ItemGroup>
-  
+
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <AssemblyTitle>QuikGraph.Serialization .NET 3.5</AssemblyTitle>
@@ -61,7 +61,11 @@ Updates:
     <AssemblyTitle>QuikGraph.Serialization .NET Standard 2.0</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <AssemblyTitle>QuikGraph.Serialization .NET Standard 2.1</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_1;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+
   <!-- Dependencies -->
   <!-- Externals -->
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
@@ -69,9 +73,9 @@ Updates:
     <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
 
   <!-- Projects -->
