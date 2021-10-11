@@ -1,4 +1,4 @@
-#if !SUPPORTS_TYPE_FULL_FEATURES
+﻿#if !SUPPORTS_TYPE_FULL_FEATURES
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -32,7 +32,7 @@ namespace QuikGraph.Utils
         };
 
         /// <summary>
-        /// Get the <see cref="TypeCode"/> of the given <see cref="Type"/>.
+        /// Gets the <see cref="TypeCode"/> of the given <see cref="Type"/>.
         /// </summary>
         /// <remarks>Kind of equivalent to the System function for compatibility, but not really...</remarks>
         /// <param name="type"><see cref="Type"/> to get the <see cref="TypeCode"/>.</param>
