@@ -765,6 +765,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <param name="edgeFactory">Factory method to create an edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         public void MergeVertex(
             [NotNull] TVertex vertex,
             [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
@@ -804,6 +807,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertexPredicate">Predicate to match vertices.</param>
         /// <param name="edgeFactory">Factory method to create an edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public void MergeVerticesIf(
             [NotNull, InstantHandle] VertexPredicate<TVertex> vertexPredicate,
             [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)

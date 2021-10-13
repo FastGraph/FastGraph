@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -31,6 +31,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="BinaryQueue{TVertex,TDistance}"/> class.
         /// </summary>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
         public FibonacciQueue([NotNull] Func<TVertex, TDistance> distanceFunc)
             : this(0, null, distanceFunc, Comparer<TDistance>.Default.Compare)
         {
@@ -42,6 +43,8 @@ namespace QuikGraph.Collections
         /// <param name="capacity">Initial capacity.</param>
         /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public FibonacciQueue(
             int capacity,
             [CanBeNull, ItemNotNull] IEnumerable<TVertex> values,
@@ -57,6 +60,9 @@ namespace QuikGraph.Collections
         /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <param name="distanceComparison">Comparer of distances.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public FibonacciQueue(
             int capacity,
             [CanBeNull, ItemNotNull] IEnumerable<TVertex> values,
@@ -92,6 +98,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="FibonacciQueue{TVertex,TDistance}"/> class.
         /// </summary>
         /// <param name="values">Dictionary of vertices associates to their distance.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="values"/> is <see langword="null"/>.</exception>
         public FibonacciQueue(
             [NotNull] Dictionary<TVertex, TDistance> values)
             : this(values, Comparer<TDistance>.Default.Compare)
@@ -103,6 +110,8 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="values">Dictionary of vertices associates to their distance.</param>
         /// <param name="distanceComparison">Comparer of distances.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="values"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
         public FibonacciQueue(
             [NotNull] Dictionary<TVertex, TDistance> values,
             [NotNull] Comparison<TDistance> distanceComparison)

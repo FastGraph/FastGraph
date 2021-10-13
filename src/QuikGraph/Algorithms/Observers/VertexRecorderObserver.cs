@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -28,6 +28,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="VertexRecorderObserver{TVertex}"/> class.
         /// </summary>
         /// <param name="vertices">Set of vertices.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
         public VertexRecorderObserver([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
             if (vertices is null)

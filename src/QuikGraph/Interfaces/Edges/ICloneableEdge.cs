@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace QuikGraph
 {
@@ -17,6 +17,8 @@ namespace QuikGraph
         /// <param name="source">The source vertex of the new edge.</param>
         /// <param name="target">The target vertex of the new edge.</param>
         /// <returns>A clone of the edge with new source and target vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         TEdge Clone([NotNull] TVertex source, [NotNull] TVertex target);

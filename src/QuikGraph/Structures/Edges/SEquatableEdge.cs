@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -23,6 +23,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public SEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
             if (source == null)
@@ -50,13 +52,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(SEquatableEdge<TVertex> other)
         {
-            // ReSharper disable ConstantConditionalAccessQualifier
-            // ReSharper disable ConstantNullCoalescingCondition
-            // Justification: Because of struct default constructor
             return EqualityComparer<TVertex>.Default.Equals(Source, other.Source)
                    && EqualityComparer<TVertex>.Default.Equals(Target, other.Target);
-            // ReSharper restore ConstantNullCoalescingCondition
-            // ReSharper restore ConstantConditionalAccessQualifier
         }
 
         /// <inheritdoc />

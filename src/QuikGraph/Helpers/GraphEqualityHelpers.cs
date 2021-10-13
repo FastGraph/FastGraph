@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -22,6 +22,8 @@ namespace QuikGraph
         /// <param name="vertexEquality">Vertex equality comparer.</param>
         /// <param name="edgeEquality">Edge equality comparer.</param>
         /// <returns>True if both graphs are equal, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexEquality"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeEquality"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
             [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,

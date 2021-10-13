@@ -22,6 +22,7 @@ namespace QuikGraph.Graphviz
         /// Initializes a new instance of the <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public GraphvizAlgorithm([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
             : this(graph, GraphvizImageType.Png)
         {
@@ -32,6 +33,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <param name="imageType">Target output image type.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public GraphvizAlgorithm(
             [NotNull] IEdgeListGraph<TVertex, TEdge> graph,
             GraphvizImageType imageType)
@@ -68,6 +70,7 @@ namespace QuikGraph.Graphviz
         /// <summary>
         /// Graph to convert.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public IEdgeListGraph<TVertex, TEdge> VisitedGraph
         {
@@ -105,7 +108,9 @@ namespace QuikGraph.Graphviz
             formatCluster(this, args);
             string dot = args.GraphFormat.ToDot();
             if (dot.Length != 0)
+            {
                 Output.WriteLine(dot);
+            }
         }
 
         /// <summary>
@@ -126,7 +131,9 @@ namespace QuikGraph.Graphviz
 
                 string dot = vertexFormat.InternalToDot(CommonVertexFormat);
                 if (dot.Length != 0)
+                {
                     Output.Write($" [{dot}]");
+                }
             }
             Output.WriteLine(";");
         }
@@ -148,7 +155,9 @@ namespace QuikGraph.Graphviz
 
                 string dot = edgeFormat.ToDot();
                 if (dot.Length != 0)
+                {
                     Output.Write($" [{dot}]");
+                }
             }
             Output.WriteLine(";");
         }
@@ -177,13 +186,19 @@ namespace QuikGraph.Graphviz
 
             string graphFormat = GraphFormat.ToDot();
             if (graphFormat.Length > 0)
+            {
                 Output.WriteLine(graphFormat);
+            }
             string vertexFormat = CommonVertexFormat.ToDot();
             if (vertexFormat.Length > 0)
+            {
                 Output.WriteLine($"node [{vertexFormat}];");
+            }
             string edgeFormat = CommonEdgeFormat.ToDot();
             if (edgeFormat.Length > 0)
+            {
                 Output.WriteLine($"edge [{edgeFormat}];");
+            }
 
             // Initialize vertices map
             var verticesColors = new Dictionary<TVertex, GraphColor>();
@@ -215,6 +230,8 @@ namespace QuikGraph.Graphviz
         /// and puts result in <paramref name="outputFilePath"/>.
         /// </summary>
         /// <returns>File path containing DOT serialization of <see cref="VisitedGraph"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="outputFilePath"/> is <see langword="null"/> or empty.</exception>
         [NotNull]
         public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
         {

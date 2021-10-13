@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -28,6 +28,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         protected RootedSearchAlgorithmBase(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] TGraph visitedGraph)
@@ -41,6 +42,7 @@ namespace QuikGraph.Algorithms
         /// <param name="target">Target vertex if set, otherwise null.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, target:notnull;=> false, target:null")]
         public bool TryGetTargetVertex(out TVertex target)
         {
             if (_hasTargetVertex)
@@ -57,6 +59,7 @@ namespace QuikGraph.Algorithms
         /// Sets the target vertex.
         /// </summary>
         /// <param name="target">Target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public void SetTargetVertex([NotNull] TVertex target)
         {
             if (target == null)
@@ -67,7 +70,9 @@ namespace QuikGraph.Algorithms
             _hasTargetVertex = true;
 
             if (changed)
+            {
                 OnTargetVertexChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -81,7 +86,9 @@ namespace QuikGraph.Algorithms
             _hasTargetVertex = false;
 
             if (hasTarget)
+            {
                 OnTargetVertexChanged(EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -92,7 +99,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Called on each target vertex change.
         /// </summary>
-        /// <param name="args"><see cref="EventArgs.Empty"/>.</param>
+        /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
         protected virtual void OnTargetVertexChanged([NotNull] EventArgs args)
         {
             Debug.Assert(args != null);
@@ -118,6 +125,11 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <param name="target">Target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="target"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
         public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
         {
             if (root == null)

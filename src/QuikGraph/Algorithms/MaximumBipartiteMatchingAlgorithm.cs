@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.MaximumFlow;
@@ -22,6 +22,11 @@ namespace QuikGraph.Algorithms
         /// <param name="verticesToSink">Vertices from which creating augmented edge to super sink.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sourceToVertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesToSink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MaximumBipartiteMatchingAlgorithm(
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull, ItemNotNull] IEnumerable<TVertex> sourceToVertices,

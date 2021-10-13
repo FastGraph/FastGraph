@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
 {
@@ -11,7 +11,7 @@ namespace QuikGraph.Petri
         /// Gets or sets the name of the node.
         /// </summary>
         /// <value>
-        /// A <see cref="string"/> representing the name of the node.
+        /// A <see cref="T:System.String"/> representing the name of the node.
         /// </value>
         [NotNull]
         string Name { get; }

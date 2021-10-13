@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,6 +23,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected RankedShortestPathAlgorithmBase(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] TGraph visitedGraph,
@@ -37,6 +39,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <summary>
         /// Gets or sets the maximum number of shortest path to find.
         /// </summary>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is lower or equal to 1.</exception>
         public int ShortestPathCount
         {
             get => _shortestPathCount;

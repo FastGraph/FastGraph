@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.ConnectedComponents;
@@ -19,6 +19,7 @@ namespace QuikGraph.Algorithms.Condensation
         /// Initializes a new instance of the <see cref="CondensationGraphAlgorithm{TVertex,TEdge,TGraph}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public CondensationGraphAlgorithm([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {

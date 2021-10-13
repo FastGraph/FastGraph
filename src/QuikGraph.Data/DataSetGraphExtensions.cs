@@ -4,15 +4,16 @@ using JetBrains.Annotations;
 namespace QuikGraph.Data
 {
     /// <summary>
-    /// Extensions related to <see cref="DataSet"/> and <see cref="DataSetGraph"/>.
+    /// Extensions related to <see cref="T:System.Data.DataSet"/> and <see cref="DataSetGraph"/>.
     /// </summary>
     public static class DataSetGraphExtensions
     {
         /// <summary>
         /// Converts this <paramref name="dataSet"/> into a graph representation of it.
         /// </summary>
-        /// <param name="dataSet"><see cref="DataSet"/> to convert to graph.</param>
-        /// <returns>Graph representing the <see cref="DataSet"/>.</returns>
+        /// <param name="dataSet"><see cref="T:System.Data.DataSet"/> to convert to graph.</param>
+        /// <returns>Graph representing the <see cref="T:System.Data.DataSet"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="dataSet"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static DataSetGraph ToGraph([NotNull] this DataSet dataSet)
@@ -29,6 +30,7 @@ namespace QuikGraph.Data
         /// </summary>
         /// <param name="graph">Graph to convert.</param>
         /// <returns>Graph serialized in DOT format.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string ToGraphviz([NotNull] this DataSetGraph graph)

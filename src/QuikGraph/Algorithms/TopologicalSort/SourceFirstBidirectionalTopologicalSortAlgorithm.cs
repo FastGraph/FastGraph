@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -27,6 +27,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="capacity">Sorted vertices capacity.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public SourceFirstBidirectionalTopologicalSortAlgorithm(
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
@@ -40,6 +41,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="direction">Sort direction.</param>
         /// <param name="capacity">Sorted vertices capacity.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public SourceFirstBidirectionalTopologicalSortAlgorithm(
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
             TopologicalSortDirection direction,
@@ -58,7 +60,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         public TVertex[] SortedVertices { get; private set; }
 
         /// <summary>
-        /// Vertices in degrees.
+        /// Vertices in-degrees.
         /// </summary>
         [NotNull]
         public IDictionary<TVertex, int> InDegrees { get; } = new Dictionary<TVertex, int>();

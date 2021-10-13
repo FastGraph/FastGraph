@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz
@@ -16,6 +16,8 @@ namespace QuikGraph.Graphviz
         /// <param name="dot">Graph serialized using Dot language.</param>
         /// <param name="outputFilePath">Target file path.</param>
         /// <returns>Path to the saved result.</returns>
+        /// <exception cref="T:System.ArgumentException"><paramref name="dot"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="outputFilePath"/> is <see langword="null"/> or empty.</exception>
         [NotNull]
         string Run(
             GraphvizImageType imageType,

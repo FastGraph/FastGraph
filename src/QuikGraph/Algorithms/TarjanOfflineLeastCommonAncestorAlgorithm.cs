@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -38,6 +38,7 @@ namespace QuikGraph.Algorithms
         /// Initializes a new instance of the <see cref="TarjanOfflineLeastCommonAncestorAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TarjanOfflineLeastCommonAncestorAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
@@ -49,6 +50,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TarjanOfflineLeastCommonAncestorAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
@@ -115,6 +117,7 @@ namespace QuikGraph.Algorithms
         /// <param name="pairs">Vertices pairs if set.</param>
         /// <returns>True if vertex pairs were set, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, pairs:notnull;=> false, pairs:null")]
         public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
             pairs = _pairs;
@@ -125,6 +128,8 @@ namespace QuikGraph.Algorithms
         /// Sets vertices pairs.
         /// </summary>
         /// <param name="pairs">Vertices pairs.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="pairs"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="pairs"/> is empty or any vertex from pairs is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         public void SetVertexPairs([NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
             if (pairs is null)
@@ -145,6 +150,10 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <param name="pairs">Vertices pairs.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="pairs"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="pairs"/> is empty or any vertex from pairs is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         public void Compute([NotNull] TVertex root, [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
             SetVertexPairs(pairs);

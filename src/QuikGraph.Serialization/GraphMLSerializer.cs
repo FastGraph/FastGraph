@@ -21,7 +21,7 @@ namespace QuikGraph.Serialization
     /// <remarks>
     /// <para>
     /// Custom vertex, edge and graph attributes can be specified by 
-    /// using the <see cref="System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
+    /// using the <see cref="T:System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
     /// </para>
     /// <para>
     /// The serializer uses LCG (lightweight code generation) to generate the 
@@ -187,6 +187,12 @@ namespace QuikGraph.Serialization
         /// <param name="graph">Graph instance to serialize.</param>
         /// <param name="vertexIdentity">Vertex identity method.</param>
         /// <param name="edgeIdentity">Edge identity method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public void Serialize(
             [NotNull] XmlWriter writer,
             [NotNull] TGraph graph,
@@ -259,8 +265,10 @@ namespace QuikGraph.Serialization
             private void WriteHeader()
             {
                 if (_serializer.EmitDocumentDeclaration)
+                {
                     _writer.WriteStartDocument();
-                _writer.WriteStartElement("", GraphMLTag, GraphMLXmlResolver.GraphMLNamespace);
+                }
+                _writer.WriteStartElement(string.Empty, GraphMLTag, GraphMLXmlResolver.GraphMLNamespace);
             }
 
             private void WriteFooter()
@@ -408,7 +416,7 @@ namespace QuikGraph.Serialization
                                 break;
                             case TypeCode.Object:
                                 if (defaultValueType.IsArray)
-                                    throw new NotImplementedException("Default values for array types are not implemented.");
+                                    throw new NotSupportedException("Default values for array types are not supported.");
                                 throw new NotSupportedException(
                                     $"Property type {property.DeclaringType}.{property.Name} not supported by the GraphML schema.");
                             default:

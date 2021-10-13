@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -81,6 +81,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)
@@ -94,6 +96,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights,
@@ -109,6 +114,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
@@ -129,6 +137,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="target">Target vertex.</param>
         /// <param name="distance">Associated distance (cost).</param>
         /// <returns>True if the distance was found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double distance)
         {
             if (source == null)
@@ -154,6 +164,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="target">Target vertex.</param>
         /// <param name="path">The found path, otherwise null.</param>
         /// <returns>True if a path linking both vertices was found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failed to find a predecessor vertex while getting path.</exception>
+        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         public bool TryGetPath(
             [NotNull] TVertex source,
             [NotNull] TVertex target,
@@ -173,6 +187,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             return TryGetPathInternal(source, target, out path);
         }
 
+        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         private bool TryGetPathInternal(
             [NotNull] TVertex source,
             [NotNull] TVertex target,
@@ -246,9 +261,13 @@ namespace QuikGraph.Algorithms.ShortestPath
                 SEquatableEdge<TVertex> ij = edge.ToVertexPair();
                 double cost = _weights(edge);
                 if (!_data.TryGetValue(ij, out VertexData data))
+                {
                     _data[ij] = new VertexData(cost, edge);
+                }
                 else if (cost < data.Distance)
+                {
                     _data[ij] = new VertexData(cost, edge);
+                }
             }
         }
 
@@ -261,7 +280,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 
             // Walk each vertices and make sure cost self-cost 0
             foreach (TVertex vertex in vertices)
+            {
                 _data[new SEquatableEdge<TVertex>(vertex, vertex)] = new VertexData(0, default(TEdge));
+            }
 
             ThrowIfCancellationRequested();
 

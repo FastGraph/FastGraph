@@ -26,6 +26,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="verticesToSink">Vertices from which creating augmented edge to super sink.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sourceToVertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesToSink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public BipartiteToMaximumFlowGraphAugmentorAlgorithm(
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph,
             [NotNull, ItemNotNull] IEnumerable<TVertex> sourceToVertices,
@@ -45,6 +50,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="verticesToSink">Vertices from which creating augmented edge to super sink.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sourceToVertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesToSink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public BipartiteToMaximumFlowGraphAugmentorAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph,

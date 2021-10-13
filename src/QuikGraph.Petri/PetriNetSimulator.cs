@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -21,6 +21,7 @@ namespace QuikGraph.Petri
         /// Initializes a new instance of the <see cref="PetriNetSimulator{TToken}"/> class.
         /// </summary>
         /// <param name="net">Petri net to simulate.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="net"/> is <see langword="null"/>.</exception>
         public PetriNetSimulator([NotNull] IPetriNet<TToken> net)
         {
             Net = net ?? throw new ArgumentNullException(nameof(net));

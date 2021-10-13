@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -17,6 +17,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">An edge.</param>
         /// <returns>True if the edge was added, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         bool AddEdge([NotNull] TEdge edge);
 
         /// <summary>
@@ -29,6 +30,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edges">Edges to add.</param>
         /// <returns>The number of edges successfully added to this graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
+        /// </exception>
         int AddEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges);
 
         /// <summary>
@@ -36,6 +40,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">Edge to remove.</param>
         /// <returns>True if the <paramref name="edge"/> was successfully removed, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         bool RemoveEdge([NotNull] TEdge edge);
 
         /// <summary>
@@ -48,6 +53,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="predicate">Predicate to check if an edge should be removed.</param>
         /// <returns>The number of edges removed.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         int RemoveEdgeIf([NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate);
     }
 }

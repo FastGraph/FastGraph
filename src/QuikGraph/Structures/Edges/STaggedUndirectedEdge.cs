@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -25,6 +25,11 @@ namespace QuikGraph
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
         /// <param name="tag">Edge tag.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException">
+        /// <paramref name="target"/> is not lower than <paramref name="source"/> when using <see cref="M:System.Collections.Generic.Comparer{T}.Default"/>.
+        /// </exception>
         public STaggedUndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
         {
             if (source == null)

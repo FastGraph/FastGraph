@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -27,15 +27,18 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexIdentity">Vertex identity method.</param>
-        /// <param name="edgeIdentities">Edge identity method.</param>
+        /// <param name="edgeIdentity">Edge identity method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         public DirectedGraphMLAlgorithm(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentities)
+            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
             : base(visitedGraph)
         {
             _vertexIdentity = vertexIdentity ?? throw new ArgumentNullException(nameof(vertexIdentity));
-            _edgeIdentity = edgeIdentities ?? throw new ArgumentNullException(nameof(edgeIdentities));
+            _edgeIdentity = edgeIdentity ?? throw new ArgumentNullException(nameof(edgeIdentity));
         }
 
         /// <summary>

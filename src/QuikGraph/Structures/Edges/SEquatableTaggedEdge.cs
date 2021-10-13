@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -25,6 +25,8 @@ namespace QuikGraph
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
         /// <param name="tag">Edge tag.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public SEquatableTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
         {
             if (source == null)
@@ -84,13 +86,8 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool Equals(SEquatableTaggedEdge<TVertex, TTag> other)
         {
-            // ReSharper disable ConstantConditionalAccessQualifier
-            // ReSharper disable ConstantNullCoalescingCondition
-            // Justification: Because of struct default constructor
             return EqualityComparer<TVertex>.Default.Equals(Source, other.Source)
                    && EqualityComparer<TVertex>.Default.Equals(Target, other.Target);
-            // ReSharper restore ConstantNullCoalescingCondition
-            // ReSharper restore ConstantConditionalAccessQualifier
         }
 
         /// <inheritdoc />

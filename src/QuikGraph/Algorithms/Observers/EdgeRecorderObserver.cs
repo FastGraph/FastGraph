@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,6 +30,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="EdgeRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="edges">Set of edges.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
         public EdgeRecorderObserver([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
             if (edges is null)

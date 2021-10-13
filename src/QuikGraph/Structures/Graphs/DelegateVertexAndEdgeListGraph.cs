@@ -25,6 +25,8 @@ namespace QuikGraph
         /// Note that get of edges is delegated so you may have bugs related
         /// to parallel edges due to the delegated implementation.
         /// </param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateVertexAndEdgeListGraph(
             [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,

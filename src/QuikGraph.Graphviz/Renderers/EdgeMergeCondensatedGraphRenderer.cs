@@ -16,6 +16,7 @@ namespace QuikGraph.Graphviz
         /// Initializes a new instance of the <see cref="EdgeMergeCondensatedGraphRenderer{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public EdgeMergeCondensatedGraphRenderer(
             [NotNull] IEdgeListGraph<TVertex, MergedEdge<TVertex, TEdge>> graph)
             : base(graph)

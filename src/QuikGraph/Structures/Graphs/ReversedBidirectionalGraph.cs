@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,6 +23,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="ReversedBidirectionalGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="originalGraph">Original graph to reverse.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="originalGraph"/> is <see langword="null"/>.</exception>
         public ReversedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
             OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));

@@ -299,7 +299,7 @@ namespace QuikGraph.Serialization.Tests
             var random = new Random(123456);
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
             {
-                Dictionary<string, GraphColor> vertexColors = graph.Vertices.ToDictionary(
+                Dictionary<string, GraphColor> verticesColors = graph.Vertices.ToDictionary(
                     vertex => vertex,
                     _ => (GraphColor)random.Next(0, 3));
 
@@ -307,7 +307,7 @@ namespace QuikGraph.Serialization.Tests
                     vertex =>
                     {
                         Assert.IsNotNull(vertex);
-                        return vertexColors[vertex];
+                        return verticesColors[vertex];
                     });
                 Assert.IsNotNull(graph);
 
@@ -316,7 +316,7 @@ namespace QuikGraph.Serialization.Tests
                 foreach (DirectedGraphNode node in directedGraph.Nodes)
                 {
                     Assert.AreEqual(
-                        ColorToStringColor(vertexColors[node.Id]),
+                        ColorToStringColor(verticesColors[node.Id]),
                         node.Background);
                 }
             }

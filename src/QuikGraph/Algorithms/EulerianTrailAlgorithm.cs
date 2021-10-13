@@ -32,6 +32,7 @@ namespace QuikGraph.Algorithms
         /// Initializes a new instance of the <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EulerianTrailAlgorithm(
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
@@ -43,6 +44,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EulerianTrailAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
@@ -149,7 +151,7 @@ namespace QuikGraph.Algorithms
                 _temporaryCircuit.Remove(edge);
             }
 
-            // It's a dead end.
+            // It's a dead end
             return false;
         }
 
@@ -182,6 +184,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Number of Eulerian trails.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static int ComputeEulerianPathCount(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
@@ -256,12 +259,13 @@ namespace QuikGraph.Algorithms
                 return;
 
             if (!TryGetRootVertex(out TVertex root))
+            {
                 root = VisitedGraph.Vertices.First();
+            }
 
             _currentVertex = root;
 
             // Start search
-            // ReSharper disable once AssignNullToNotNullAttribute, Justification: Found vertex cannot be null
             Search(_currentVertex);
             if (CircuitAugmentation())
                 return; // Circuit is found
@@ -323,6 +327,11 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <returns>Temporary edges list.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">
+        /// Number of odd vertices is not even, failed to add temporary edge to <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>,
+        /// or failed to compute eulerian trail.
+        /// </exception>
         [NotNull, ItemNotNull]
         public TEdge[] AddTemporaryEdges([NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
@@ -393,7 +402,9 @@ namespace QuikGraph.Algorithms
         {
             // Remove from graph
             foreach (TEdge edge in _temporaryEdges)
+            {
                 VisitedGraph.RemoveEdge(edge);
+            }
             _temporaryEdges.Clear();
         }
 
@@ -421,7 +432,9 @@ namespace QuikGraph.Algorithms
                     trail = new List<TEdge>();
                 }
                 else
+                {
                     trail.Add(edge);
+                }
             }
 
             if (trail.Count != 0)
@@ -455,7 +468,8 @@ namespace QuikGraph.Algorithms
         /// </remarks>
         /// <param name="startingVertex">Starting vertex.</param>
         /// <returns>Eulerian trail set, all starting at <paramref name="startingVertex"/>.</returns>
-        /// <exception cref="InvalidOperationException">Eulerian trail not computed yet.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="startingVertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Eulerian trail not computed yet.</exception>
         [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> Trails([NotNull] TVertex startingVertex)
         {
@@ -465,6 +479,7 @@ namespace QuikGraph.Algorithms
             return TrailsInternal(startingVertex);
         }
 
+        [Pure]
         private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
         {
             int i;
@@ -514,7 +529,9 @@ namespace QuikGraph.Algorithms
                         trail = new List<TEdge>(path);
                     }
                     else
+                    {
                         trail.Add(edge);
+                    }
                 }
 
                 // Starting again on the circuit
@@ -534,7 +551,9 @@ namespace QuikGraph.Algorithms
                         trail = new List<TEdge>(path);
                     }
                     else
+                    {
                         trail.Add(edge);
+                    }
                 }
             }
 

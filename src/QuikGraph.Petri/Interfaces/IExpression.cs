@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
@@ -12,6 +12,7 @@ namespace QuikGraph.Petri
         /// <summary>
         /// Evaluates <paramref name="markings"/>.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="markings"/> is <see langword="null"/>.</exception>
         [NotNull, ItemNotNull]
         IList<TToken> Evaluate([NotNull, ItemNotNull] IList<TToken> markings);
     }

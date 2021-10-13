@@ -26,6 +26,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public UndirectedDijkstraShortestPathAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)
@@ -39,6 +41,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public UndirectedDijkstraShortestPathAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights,
@@ -54,6 +59,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public UndirectedDijkstraShortestPathAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
@@ -175,7 +183,9 @@ namespace QuikGraph.Algorithms.ShortestPath
                 foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
                     if (VerticesColors[vertex] == GraphColor.White)
+                    {
                         ComputeFromRoot(vertex);
+                    }
                 }
             }
         }

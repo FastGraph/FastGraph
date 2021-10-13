@@ -17,6 +17,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             Func<EquatableTaggedEdge<int, double>, double> Weights = _ => 1.0;
 
             var graph = new AdjacencyGraph<int, EquatableTaggedEdge<int, double>>();
+            graph.AddVertexRange(new[] { 1, 2 });
             // ReSharper disable ObjectCreationAsStatement
             Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue));
             Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, 10));
@@ -30,9 +31,25 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            var graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
+
+            var graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
+            Assert.Throws<ArgumentException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
+
+            graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
+            graph.AddVertex(vertex1);
+            Assert.Throws<ArgumentException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
+
+            graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
+            graph.AddVertex(vertex2);
+            Assert.Throws<ArgumentException>(
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
+
+            graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
+            graph.AddVertexRange(new[] { vertex1, vertex2 });
 
             Assert.Throws<ArgumentNullException>(
                 () => new YenShortestPathsAlgorithm<TestVertex>(null, vertex1, vertex2, int.MaxValue));
@@ -58,32 +75,20 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         /// <summary>
-        /// Attempt to use non existing vertices.
-        /// </summary>
-        [Test]
-        public void EmptyGraph()
-        {
-            var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
-
-            var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
-        }
-
-        /// <summary>
-        /// Attempt to use for graph that only have one vertex.
+        /// Attempt to use for simple graph.
         /// Expecting that Dijkstra’s algorithm couldn't find any ways.
         /// </summary>
         [Test]
-        public void OneVertexGraph()
+        public void SimpleNoPathGraph()
         {
             var graph = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
-            graph.AddVertexRange("1");
+            graph.AddVertex('1');
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '1', 10);
             Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
 
+            graph.AddVertex('2');
             algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '2', 10);
             Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed

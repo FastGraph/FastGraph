@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -16,6 +16,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// Initializes a new instance of the <see cref="WeightedMarkovEdgeChainBase{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="edgeWeights">Map that contains edge weights.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public WeightedMarkovEdgeChain([NotNull] IDictionary<TEdge, double> edgeWeights)
             : base(edgeWeights)
         {

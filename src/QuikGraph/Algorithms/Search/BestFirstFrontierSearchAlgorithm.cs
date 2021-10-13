@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -33,6 +33,9 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that for a given edge provide its weight.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BestFirstFrontierSearchAlgorithm(
             [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights,
@@ -48,6 +51,9 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that for a given edge provide its weight.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BestFirstFrontierSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
@@ -143,7 +149,9 @@ namespace QuikGraph.Algorithms.Search
                     // as used in any of the copies
                     operators[edge] = GraphColor.Gray;
                     if (open.MinimumUpdate(nCost, edge.Target))
+                    {
                         OnTreeEdge(edge);
+                    }
                 }
                 else
                 {

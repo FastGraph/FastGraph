@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -20,6 +20,7 @@ namespace QuikGraph.MSAGL
         /// Initializes a new instance of the <see cref="MsaglDefaultGraphPopulator{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public MsaglDefaultGraphPopulator([NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
@@ -41,7 +42,7 @@ namespace QuikGraph.MSAGL
             Debug.Assert(args != null);
 
             _verticesIds = null;
-            
+
             base.OnFinished(args);
         }
 

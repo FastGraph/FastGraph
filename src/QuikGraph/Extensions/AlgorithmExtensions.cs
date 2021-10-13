@@ -34,6 +34,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TValue">Value type.</typeparam>
         /// <param name="dictionary">Dictionary on which getting the key access method.</param>
         /// <returns>A function allowing key indexed access.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static Func<TKey, TValue> GetIndexer<TKey, TValue>([NotNull] IDictionary<TKey, TValue> dictionary)
@@ -61,6 +62,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <param name="graph">The graph.</param>
         /// <returns>A function that computes a vertex identity for the given <paramref name="graph"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>([NotNull] this IVertexSet<TVertex> graph)
@@ -97,7 +99,9 @@ namespace QuikGraph.Algorithms
             return vertex =>
             {
                 if (!ids.TryGetValue(vertex, out string id))
+                {
                     ids[vertex] = id = ids.Count.ToString();
+                }
                 return id;
             };
         }
@@ -109,6 +113,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph.</param>
         /// <returns>A function that computes an edge identity for the given <paramref name="graph"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>([NotNull] this IEdgeSet<TVertex, TEdge> graph)
@@ -122,7 +127,9 @@ namespace QuikGraph.Algorithms
             return edge =>
             {
                 if (!ids.TryGetValue(edge, out string id))
+                {
                     ids[edge] = id = ids.Count.ToString();
+                }
                 return id;
             };
         }
@@ -139,7 +146,9 @@ namespace QuikGraph.Algorithms
 
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
+            {
                 algorithm.Compute(source);
+            }
 
             IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
             return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
@@ -155,6 +164,9 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeBreadthFirstSearch<TVertex, TEdge>(
@@ -178,6 +190,9 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeDepthFirstSearch<TVertex, TEdge>(
@@ -202,6 +217,9 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph to visit.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
@@ -223,6 +241,11 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Starting vertex.</param>
         /// <param name="edgeChain">Markov edge chain.</param>
         /// <returns>A function that allow to get edges connected to a given vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
@@ -250,6 +273,10 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
@@ -275,6 +302,10 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
@@ -286,7 +317,9 @@ namespace QuikGraph.Algorithms
             var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
+            {
                 algorithm.Compute(root);
+            }
 
             IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
             return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
@@ -304,6 +337,11 @@ namespace QuikGraph.Algorithms
         /// <param name="costHeuristic">Function that computes a cost for a given vertex.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="costHeuristic"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsAStar<TVertex, TEdge>(
@@ -331,6 +369,10 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Starting vertex.</param>
         /// <param name="hasNegativeCycle">Indicates if a negative cycle has been found or not.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsBellmanFord<TVertex, TEdge>(
@@ -350,7 +392,9 @@ namespace QuikGraph.Algorithms
             var algorithm = new BellmanFordShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
+            {
                 algorithm.Compute(root);
+            }
 
             hasNegativeCycle = algorithm.FoundNegativeCycle;
 
@@ -369,6 +413,10 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="root">Starting vertex.</param>
         /// <returns>A function that allow to get paths starting from <paramref name="root"/> vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDag<TVertex, TEdge>(
@@ -406,6 +454,12 @@ namespace QuikGraph.Algorithms
         /// <param name="target">Target vertex.</param>
         /// <param name="maxCount">Maximal number of path to search.</param>
         /// <returns>Enumeration of paths to go from <paramref name="root"/> vertex to <paramref name="target"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> or <paramref name="target"/> are not part of <paramref name="graph"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maxCount"/> is lower or equal to 1.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<IEnumerable<TEdge>> RankedShortestPathHoffmanPavley<TVertex, TEdge>(
@@ -434,6 +488,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sink vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Sinks<TVertex, TEdge>(
@@ -452,6 +507,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Root vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
@@ -477,6 +533,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Root vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
@@ -495,6 +552,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Root vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> IsolatedVertices<TVertex, TEdge>(
@@ -515,6 +573,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -537,6 +596,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -559,6 +619,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -581,6 +642,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -604,6 +666,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
@@ -621,6 +684,7 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="direction">Topological sort direction.</param>
         /// <returns>Sorted vertices (topological sort).</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         [NotNull, ItemNotNull]
@@ -649,7 +713,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="components">Found components.</param>
         /// <returns>Number of component found.</returns>
-        [Pure]
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public static int ConnectedComponents<TVertex, TEdge>(
             [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -669,7 +734,9 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <param name="getComponents">A function retrieve components of the <paramref name="graph"/>.</param>
-        /// <returns>A <see cref="IDisposable"/> of the used algorithm.</returns>
+        /// <returns>A <see cref="T:System.IDisposable"/> of the used algorithm.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        [Pure]
         [NotNull]
         public static IDisposable IncrementalConnectedComponents<TVertex, TEdge>(
             [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph,
@@ -690,7 +757,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="components">Found components.</param>
         /// <returns>Number of component found.</returns>
-        [Pure]
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public static int StronglyConnectedComponents<TVertex, TEdge>(
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -709,7 +777,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="components">Found components.</param>
         /// <returns>Number of component found.</returns>
-        [Pure]
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public static int WeaklyConnectedComponents<TVertex, TEdge>(
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -728,6 +797,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>The condensed graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateStronglyConnected<TVertex, TEdge, TGraph>(
@@ -751,6 +821,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>The condensed graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateWeaklyConnected<TVertex, TEdge, TGraph>(
@@ -774,6 +845,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="vertexPredicate">Vertex predicate used to filter the vertices to put in the condensed graph.</param>
         /// <returns>The condensed graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensateEdges<TVertex, TEdge>(
@@ -797,6 +870,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Enumerable of odd vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> OddVertices<TVertex, TEdge>(
@@ -808,7 +882,9 @@ namespace QuikGraph.Algorithms
 
             var counts = new Dictionary<TVertex, int>(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)
+            {
                 counts.Add(vertex, 0);
+            }
 
             foreach (TEdge edge in graph.Edges)
             {
@@ -832,6 +908,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>True if the graph contains a cycle, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(
             [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
@@ -881,6 +958,9 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeCosts">Costs map.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>The predecessors cost.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predecessors"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeCosts"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         public static double ComputePredecessorCost<TVertex, TEdge>(
             [NotNull] IDictionary<TVertex, TEdge> predecessors,
@@ -913,6 +993,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to visit.</param>
         /// <returns>Found disjoint sets.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static IDisjointSet<TVertex> ComputeDisjointSet<TVertex, TEdge>(
@@ -924,9 +1005,14 @@ namespace QuikGraph.Algorithms
 
             var sets = new ForestDisjointSet<TVertex>(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)
+            {
                 sets.MakeSet(vertex);
+            }
+
             foreach (TEdge edge in graph.Edges)
+            {
                 sets.Union(edge.Source, edge.Target);
+            }
 
             return sets;
         }
@@ -940,6 +1026,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <returns>Edges part of the minimum spanning tree.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreePrim<TVertex, TEdge>(
@@ -959,7 +1047,9 @@ namespace QuikGraph.Algorithms
             var dijkstra = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights, distanceRelaxer);
             var edgeRecorder = new UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (edgeRecorder.Attach(dijkstra))
+            {
                 dijkstra.Compute();
+            }
 
             return edgeRecorder.VerticesPredecessors.Values;
         }
@@ -972,6 +1062,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <returns>Edges part of the minimum spanning tree.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreeKruskal<TVertex, TEdge>(
@@ -990,7 +1082,9 @@ namespace QuikGraph.Algorithms
             var kruskal = new KruskalMinimumSpanningTreeAlgorithm<TVertex, TEdge>(graph, edgeWeights);
             var edgeRecorder = new EdgeRecorderObserver<TVertex, TEdge>();
             using (edgeRecorder.Attach(kruskal))
+            {
                 kruskal.Compute();
+            }
 
             return edgeRecorder.Edges;
         }
@@ -1011,6 +1105,10 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Starting vertex.</param>
         /// <param name="pairs">Vertices pairs.</param>
         /// <returns>A function that allow to get least common ancestor for a pair of vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="pairs"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException">At least one of <paramref name="pairs"/> vertices is not part of <paramref name="graph"/>.</exception>
         [Pure]
         [NotNull]
         public static TryFunc<SEquatableEdge<TVertex>, TVertex> OfflineLeastCommonAncestor<TVertex, TEdge>(
@@ -1050,6 +1148,13 @@ namespace QuikGraph.Algorithms
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <param name="reversedEdgeAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
         /// <returns>The maximum flow.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeCapacities"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reversedEdgeAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="source"/> and <paramref name="sink"/> are the same vertex.</exception>
         public static double MaximumFlow<TVertex, TEdge>(
             [NotNull] this IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
             [NotNull] Func<TEdge, double> edgeCapacities,
@@ -1082,6 +1187,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to compute the reduction.</param>
         /// <returns>Transitive graph reduction.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveReduction<TVertex, TEdge>(
@@ -1099,16 +1205,18 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to compute the closure.</param>
-        /// <param name="createEdge">Function that create an edge between the 2 given vertices.</param>
+        /// <param name="edgeFactory">Function that create an edge between the 2 given vertices.</param>
         /// <returns>Transitive graph closure.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveClosure<TVertex, TEdge>(
             [NotNull] this BidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TVertex, TVertex, TEdge> createEdge)
+            [NotNull] Func<TVertex, TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
         {
-            var algorithm = new TransitiveClosureAlgorithm<TVertex, TEdge>(graph, createEdge);
+            var algorithm = new TransitiveClosureAlgorithm<TVertex, TEdge>(graph, edgeFactory);
             algorithm.Compute();
             return algorithm.TransitiveClosure;
         }
@@ -1122,6 +1230,10 @@ namespace QuikGraph.Algorithms
         /// <param name="vertexCloner">Delegate to clone a vertex.</param>
         /// <param name="edgeCloner">Delegate to clone an edge.</param>
         /// <param name="clone">Cloned graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexCloner"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeCloner"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="clone"/> is <see langword="null"/>.</exception>
         public static void Clone<TVertex, TEdge>(
             [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
             [NotNull, InstantHandle] Func<TVertex, TVertex> vertexCloner,

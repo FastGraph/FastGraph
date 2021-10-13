@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
 #endif
 using System.Collections.Generic;
@@ -31,6 +31,7 @@ namespace QuikGraph.Petri
         /// <summary>
         /// Copy constructor.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         private PetriNet([NotNull] PetriNet<TToken> other)
         {
             Debug.Assert(other != null);

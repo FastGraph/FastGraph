@@ -48,19 +48,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of the <see cref="ArrayBidirectionalGraph{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="visitedGraph">Graph to visit.</param>
-        public ArrayBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+        /// <param name="baseGraph">Wrapped graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
+        public ArrayBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> baseGraph)
         {
-            if (visitedGraph is null)
-                throw new ArgumentNullException(nameof(visitedGraph));
+            if (baseGraph is null)
+                throw new ArgumentNullException(nameof(baseGraph));
 
-            AllowParallelEdges = visitedGraph.AllowParallelEdges;
-            _vertexEdges = new Dictionary<TVertex, InOutEdges>(visitedGraph.VertexCount);
-            EdgeCount = visitedGraph.EdgeCount;
-            foreach (TVertex vertex in visitedGraph.Vertices)
+            AllowParallelEdges = baseGraph.AllowParallelEdges;
+            _vertexEdges = new Dictionary<TVertex, InOutEdges>(baseGraph.VertexCount);
+            EdgeCount = baseGraph.EdgeCount;
+            foreach (TVertex vertex in baseGraph.Vertices)
             {
-                TEdge[] outEdges = visitedGraph.OutEdges(vertex).ToArray();
-                TEdge[] inEdges = visitedGraph.InEdges(vertex).ToArray();
+                TEdge[] outEdges = baseGraph.OutEdges(vertex).ToArray();
+                TEdge[] inEdges = baseGraph.InEdges(vertex).ToArray();
                 _vertexEdges.Add(vertex, new InOutEdges(outEdges, inEdges));
             }
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
@@ -32,6 +32,7 @@ namespace QuikGraph.Serialization
         /// Initializes a new instance of the <see cref="XmlSerializableGraph{TVertex,TEdge,TGraph}"/> class.
         /// </summary>
         /// <param name="graph">Graph to serialize.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public XmlSerializableGraph([NotNull] TGraph graph)
         {
             if (graph == null)
@@ -113,6 +114,7 @@ namespace QuikGraph.Serialization
             /// Adds a vertex to this serializable graph.
             /// </summary>
             /// <param name="vertex">Vertex to add.</param>
+            /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
             public void Add([NotNull] TVertex vertex)
             {
                 if (vertex == null)
@@ -161,6 +163,7 @@ namespace QuikGraph.Serialization
             /// Adds an edge to this serializable graph.
             /// </summary>
             /// <param name="edge">Edge to add.</param>
+            /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
             public void Add([NotNull] TEdge edge)
             {
                 if (edge == null)

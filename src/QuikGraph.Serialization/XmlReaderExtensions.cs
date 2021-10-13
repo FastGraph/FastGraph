@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Xml;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Serialization
 {
     /// <summary>
-    /// Extensions for <see cref="XmlReader"/> to help deserializing graph data.
+    /// Extensions for <see cref="T:System.Xml.XmlReader"/> to help deserializing graph data.
     /// </summary>
     public static class XmlReaderExtensions
     {
@@ -16,6 +16,9 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Boolean array.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static bool[] ReadElementContentAsBooleanArray(
@@ -33,6 +36,9 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Int array.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static int[] ReadElementContentAsInt32Array(
@@ -50,6 +56,9 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Long array.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static long[] ReadElementContentAsInt64Array(
@@ -67,6 +76,9 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Float array.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static float[] ReadElementContentAsSingleArray(
@@ -84,6 +96,9 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>Double array.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static double[] ReadElementContentAsDoubleArray(
@@ -101,6 +116,9 @@ namespace QuikGraph.Serialization
         /// <param name="localName">Node name.</param>
         /// <param name="namespaceURI">XML namespace.</param>
         /// <returns>String array.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static string[] ReadElementContentAsStringArray(
@@ -120,6 +138,9 @@ namespace QuikGraph.Serialization
         /// <param name="namespaceURI">XML namespace.</param>
         /// <param name="stringToT">Converts the XML element string as <typeparamref name="T"/>.</param>
         /// <returns>Array of <typeparamref name="T"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
         [CanBeNull]
         public static T[] ReadElementContentAsArray<T>(

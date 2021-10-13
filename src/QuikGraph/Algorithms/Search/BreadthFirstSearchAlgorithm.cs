@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -30,6 +30,7 @@ namespace QuikGraph.Algorithms.Search
         /// Initializes a new instance of the <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
         {
@@ -41,6 +42,9 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexQueue">Queue of vertices to treat.</param>
         /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IQueue<TVertex> vertexQueue,
@@ -56,6 +60,9 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexQueue">Queue of vertices to treat.</param>
         /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
@@ -73,6 +80,10 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="vertexQueue">Queue of vertices to treat.</param>
         /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
         /// <param name="outEdgesFilter">Function that is used filter out-edges of a vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="outEdgesFilter"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
@@ -244,7 +255,9 @@ namespace QuikGraph.Algorithms.Search
             {
                 // Enqueue roots
                 foreach (TVertex root in VisitedGraph.Roots())
+                {
                     EnqueueRoot(root);
+                }
             }
 
             FlushVisitQueue();
@@ -313,9 +326,13 @@ namespace QuikGraph.Algorithms.Search
                     {
                         OnNonTreeEdge(edge);
                         if (vColor == GraphColor.Gray)
+                        {
                             OnGrayTarget(edge);
+                        }
                         else
+                        {
                             OnBlackTarget(edge);
+                        }
                     }
                 }
 

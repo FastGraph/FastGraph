@@ -24,6 +24,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Graph name.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         public string Name
         {
             get => _name;

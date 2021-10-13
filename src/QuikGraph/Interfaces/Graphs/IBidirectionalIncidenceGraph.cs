@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -18,6 +18,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if <paramref name="vertex"/> has no in-edges, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         bool IsInEdgesEmpty([NotNull] TVertex vertex);
 
@@ -26,6 +28,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The number of in-edges pointing towards <paramref name="vertex"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         int InDegree([NotNull] TVertex vertex);
 
@@ -34,6 +38,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The collection of in-edges of <paramref name="vertex"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> InEdges([NotNull] TVertex vertex);
@@ -44,6 +50,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="edges">In-edges.</param>
         /// <returns>True if <paramref name="vertex"/> was found or/and in-edges were found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetInEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
@@ -54,6 +61,9 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">The index.</param>
         /// <returns>The in-edge at position <paramref name="index"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">No vertex at <paramref name="index"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         [NotNull]
         TEdge InEdge([NotNull] TVertex vertex, int index);
@@ -64,6 +74,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>The sum of OutDegree and InDegree of <paramref name="vertex"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         int Degree([NotNull] TVertex vertex);
     }

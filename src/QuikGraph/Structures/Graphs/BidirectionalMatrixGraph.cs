@@ -27,6 +27,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="BidirectionalMatrixGraph{TEdge}"/> class.
         /// </summary>
         /// <param name="vertexCount">Number of vertices.</param>
+        /// <exception cref="T:System.ArgumentException"><paramref name="vertexCount"/> is is negative or equal to 0.</exception>
         public BidirectionalMatrixGraph(int vertexCount)
         {
             if (vertexCount <= 0)
@@ -378,6 +379,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="predicate">Edge predicate.</param>
         /// <returns>Number of edges removed.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
             if (predicate is null)
@@ -450,6 +452,7 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="predicate">Predicate to remove edges.</param>
         /// <returns>The number of removed edges.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         public int RemoveOutEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
             if (predicate is null)
@@ -503,6 +506,7 @@ namespace QuikGraph
         #region IMutableEdgeListGraph<int,TEdge>
 
         /// <inheritdoc />
+        /// <exception cref="ParallelEdgeNotAllowedException"><paramref name="edge"/> is already present in graph.</exception>
         public bool AddEdge(TEdge edge)
         {
             if (edge == null)
@@ -593,7 +597,7 @@ namespace QuikGraph
         /// <summary>
         /// <see cref="RemoveEdgeIf"/> is not implemented for this kind of graph.
         /// </summary>
-        /// <exception cref="NotSupportedException">This method is not supported.</exception>
+        /// <exception cref="T:System.NotSupportedException">This method is not supported.</exception>
         public int RemoveEdgeIf(EdgePredicate<int, TEdge> predicate)
         {
             throw new NotSupportedException();

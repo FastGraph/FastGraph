@@ -43,6 +43,7 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="width"/> and/or <paramref name="height"/> is negative.</exception>
         public GraphvizSizeF(float width, float height)
         {
             if (width < 0.0 || height < 0.0)
@@ -114,9 +115,10 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="width"/> and/or <paramref name="height"/> is negative.</exception>
         public GraphvizSize(int width, int height)
         {
-            if (width < 0.0 || height < 0.0)
+            if (width < 0 || height < 0)
                 throw new ArgumentException("Width and height must be positive or 0.");
 
             Width = width;

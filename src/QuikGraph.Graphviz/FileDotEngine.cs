@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using QuikGraph.Graphviz.Dot;
 
@@ -19,7 +19,9 @@ namespace QuikGraph.Graphviz
 
             string output = outputFilePath;
             if (!output.EndsWith(".dot", StringComparison.OrdinalIgnoreCase))
+            {
                 output += ".dot";
+            }
 
             File.WriteAllText(output, dot);
             return output;

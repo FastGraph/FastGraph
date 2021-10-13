@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using JetBrains.Annotations;
@@ -23,18 +24,20 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizLayerCollection"/> class.
         /// </summary>
-        /// <param name="list">The list that is wrapped by the new collection.</param>
-        public GraphvizLayerCollection([NotNull, ItemNotNull] GraphvizLayer[] list)
-            : base(list)
+        /// <param name="collection">The collection that is wrapped by the new collection.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
+        public GraphvizLayerCollection([NotNull, ItemNotNull] IList<GraphvizLayer> collection)
+            : base(collection)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizLayerCollection"/> class.
         /// </summary>
-        /// <param name="list">The list that is wrapped by the new collection.</param>
-        public GraphvizLayerCollection([NotNull, ItemNotNull] GraphvizLayerCollection list)
-            : base(list)
+        /// <param name="collection">The collection that is wrapped by the new collection.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
+        public GraphvizLayerCollection([NotNull, ItemNotNull] GraphvizLayerCollection collection)
+            : base(collection)
         {
         }
 
@@ -45,6 +48,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Allowed collection item separators.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layersep">See more</see>
         /// </summary>
+        /// <exception cref="T:System.ArgumentException">Set value is <see langword="null"/> or empty.</exception>
         [NotNull]
         public string Separators
         {

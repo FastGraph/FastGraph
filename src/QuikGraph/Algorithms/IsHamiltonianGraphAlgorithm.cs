@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -23,6 +23,7 @@ namespace QuikGraph.Algorithms
         /// Initializes a new instance of the <see cref="IsHamiltonianGraphAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to check.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public IsHamiltonianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
         {
             if (graph is null)
@@ -143,6 +144,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to check.</param>
         /// <returns>True if the <paramref name="graph"/> is Hamiltonian, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsHamiltonian<TVertex, TEdge>(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)

@@ -11,6 +11,7 @@ namespace QuikGraph.Graphviz.Helpers
         /// Initializes a new instance of the <see cref="HtmlString"/> struct.
         /// </summary>
         /// <param name="html">HTML string.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="html"/> is <see langword="null"/>.</exception>
         public HtmlString([NotNull] string html)
         {
             String = html;

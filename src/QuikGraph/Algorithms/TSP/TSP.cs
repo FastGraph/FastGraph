@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.ShortestPath;
@@ -36,6 +36,8 @@ namespace QuikGraph.Algorithms.TSP
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public TSP(
             [NotNull] TGraph visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)

@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
@@ -18,6 +18,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MultiSourceSinkGraphAugmentorAlgorithm(
             [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] VertexFactory<TVertex> vertexFactory,
@@ -33,6 +36,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MultiSourceSinkGraphAugmentorAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
@@ -51,11 +57,15 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
                 // Is source
                 if (VisitedGraph.IsInEdgesEmpty(vertex))
+                {
                     AddAugmentedEdge(SuperSource, vertex);
+                }
 
                 // Is sink
                 if (VisitedGraph.IsOutEdgesEmpty(vertex))
+                {
                     AddAugmentedEdge(vertex, SuperSink);
+                }
             }
         }
     }

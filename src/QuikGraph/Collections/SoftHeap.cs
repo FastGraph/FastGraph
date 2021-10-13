@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -105,6 +105,8 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="maximumErrorRate">Indicates the maximum error rate to respect.</param>
         /// <param name="keyMaxValue">Gives the maximum key value.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="keyMaxValue"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maximumErrorRate"/> is not in range ]0, 0.5].</exception>
         public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue)
             : this(maximumErrorRate, keyMaxValue, Comparer<TKey>.Default.Compare)
         {
@@ -116,6 +118,9 @@ namespace QuikGraph.Collections
         /// <param name="maximumErrorRate">Indicates the maximum error rate to respect.</param>
         /// <param name="keyMaxValue">Gives the maximum key value.</param>
         /// <param name="comparison">Key comparer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="keyMaxValue"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="comparison"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maximumErrorRate"/> is not in range ]0, 0.5].</exception>
         public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue, [NotNull] Comparison<TKey> comparison)
         {
             if (keyMaxValue == null)
@@ -166,6 +171,8 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="key">Key.</param>
         /// <param name="value">Value to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="key"/> is superior to <see cref="KeyMaxValue"/>.</exception>
         public void Add([NotNull] TKey key, [CanBeNull] TValue value)
         {
             if (key == null)
@@ -236,7 +243,9 @@ namespace QuikGraph.Collections
             while (head != _header)
             {
                 if (KeyComparison(tmpMin.Queue.CKey, head.Queue.CKey) > 0)
+                {
                     tmpMin = head;
+                }
 
                 head.SuffixMin = tmpMin;
                 head = head.Prev;
@@ -298,7 +307,9 @@ namespace QuikGraph.Collections
                     node.Next.ILTail.Next = node.IL;
                     node.IL = node.Next.IL;
                     if (node.ILTail == null)
+                    {
                         node.ILTail = node.Next.ILTail;
+                    }
                     node.CKey = node.Next.CKey;
                 }
             } // End second shift
@@ -327,7 +338,7 @@ namespace QuikGraph.Collections
         /// Gets and removes the minimal pair.
         /// </summary>
         /// <returns>The minimal pair.</returns>
-        /// <exception cref="InvalidOperationException">The heap is empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TKey, TValue> RemoveMinimum()
         {
             if (Count == 0)
@@ -376,7 +387,9 @@ namespace QuikGraph.Collections
             TValue value = head.Queue.IL.Value;
             head.Queue.IL = head.Queue.IL.Next;
             if (head.Queue.IL is null)
+            {
                 head.Queue.ILTail = null;
+            }
 
             --Count;
             return new KeyValuePair<TKey, TValue>(min, value);

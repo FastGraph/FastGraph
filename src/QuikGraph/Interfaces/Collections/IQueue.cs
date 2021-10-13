@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace QuikGraph.Collections
 {
@@ -31,12 +31,14 @@ namespace QuikGraph.Collections
         /// Dequeues an element from the queue.
         /// </summary>
         /// <returns>Removed element.</returns>
+        /// <exception cref="T:System.InvalidOperationException">Queue is empty.</exception>
         T Dequeue();
 
         /// <summary>
         /// Returns the element at the beginning of the queue.
         /// </summary>
         /// <returns>The top queue element.</returns>
+        /// <exception cref="T:System.InvalidOperationException">Queue is empty.</exception>
         [Pure]
         T Peek();
 

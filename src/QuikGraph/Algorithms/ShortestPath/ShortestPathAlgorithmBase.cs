@@ -32,6 +32,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         protected ShortestPathAlgorithmBase(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] TGraph visitedGraph,
@@ -47,6 +49,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected ShortestPathAlgorithmBase(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] TGraph visitedGraph,
@@ -85,6 +90,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         /// <inheritdoc />
+        /// <exception cref="T:System.InvalidOperationException">Algorithm has not been run.</exception>
         public bool TryGetDistance(TVertex vertex, out double distance)
         {
             if (vertex == null)
@@ -96,6 +102,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         /// <inheritdoc />
+        /// <exception cref="T:System.InvalidOperationException">Algorithm has not been run.</exception>
         public double GetDistance(TVertex vertex)
         {
             bool vertexFound = TryGetDistance(vertex, out double distance);

@@ -31,24 +31,25 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of the <see cref="ArrayUndirectedGraph{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="visitedGraph">Graph to visit.</param>
-        public ArrayUndirectedGraph([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        /// <param name="baseGraph">Wrapped graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
+        public ArrayUndirectedGraph([NotNull] IUndirectedGraph<TVertex, TEdge> baseGraph)
         {
-            if (visitedGraph is null)
-                throw new ArgumentNullException(nameof(visitedGraph));
+            if (baseGraph is null)
+                throw new ArgumentNullException(nameof(baseGraph));
 
-            AllowParallelEdges = visitedGraph.AllowParallelEdges;
-            EdgeEqualityComparer = visitedGraph.EdgeEqualityComparer;
-            EdgeCount = visitedGraph.EdgeCount;
-            _vertexEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
-            foreach (TVertex vertex in visitedGraph.Vertices)
+            AllowParallelEdges = baseGraph.AllowParallelEdges;
+            EdgeEqualityComparer = baseGraph.EdgeEqualityComparer;
+            EdgeCount = baseGraph.EdgeCount;
+            _vertexEdges = new Dictionary<TVertex, TEdge[]>(baseGraph.VertexCount);
+            foreach (TVertex vertex in baseGraph.Vertices)
             {
                 _vertexEdges.Add(
                     vertex,
-                    visitedGraph.AdjacentEdges(vertex).ToArray());
+                    baseGraph.AdjacentEdges(vertex).ToArray());
             }
 
-            _edges = new List<TEdge>(visitedGraph.Edges);
+            _edges = new List<TEdge>(baseGraph.Edges);
         }
 
         /// <inheritdoc />
@@ -199,10 +200,7 @@ namespace QuikGraph
 
 #if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
         #region ISerializable
-        
-        /// <summary>
-        /// Constructor used during runtime serialization.
-        /// </summary>
+
         private ArrayUndirectedGraph(SerializationInfo info, StreamingContext context)
         {
             AllowParallelEdges = (bool)info.GetValue("AllowParallelEdges", typeof(bool));

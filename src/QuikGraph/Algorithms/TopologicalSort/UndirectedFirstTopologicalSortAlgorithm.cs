@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,6 +26,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="capacity">Sorted vertices capacity.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public UndirectedFirstTopologicalSortAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
@@ -126,7 +127,9 @@ namespace QuikGraph.Algorithms.TopologicalSort
                         throw new InvalidOperationException("Degree is negative, and cannot be.");
 
                     if (_heap.Contains(other))
+                    {
                         _heap.Update(other);
+                    }
                 }
             }
 

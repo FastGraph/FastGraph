@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -35,6 +35,8 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that for a given edge provide its weight.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public HoffmanPavleyRankedShortestPathAlgorithm(
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)
@@ -48,6 +50,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that for a given edge provide its weight.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public HoffmanPavleyRankedShortestPathAlgorithm(
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights,
@@ -63,6 +68,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that for a given edge provide its weight.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public HoffmanPavleyRankedShortestPathAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
@@ -77,6 +85,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// Sets the target vertex.
         /// </summary>
         /// <param name="target">Target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public void SetTargetVertex([NotNull] TVertex target)
         {
             if (target == null)
@@ -92,6 +101,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <param name="target">Target vertex if set, otherwise null.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
         [Pure]
+        [ContractAnnotation("=> true, target:notnull;=> false, target:null")]
         public bool TryGetTargetVertex(out TVertex target)
         {
             if (_hasTargetVertex)
@@ -109,6 +119,11 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <param name="target">Target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="target"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
         public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
         {
             if (root == null)
@@ -238,7 +253,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
 
             successors = new Dictionary<TVertex, TEdge>();
             foreach (KeyValuePair<TVertex, SReversedEdge<TVertex, TEdge>> pair in successorsObserver.VerticesPredecessors)
+            {
                 successors.Add(pair.Key, pair.Value.OriginalEdge);
+            }
 
             distances = distancesObserver.Distances;
 
@@ -289,7 +306,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
 
                 // Detection of loops
                 if (edgeIndex == 0)
+                {
                     pathVertices[edge.Source] = 0;
+                }
 
                 // We should really allow only one key
                 if (pathVertices.ContainsKey(edge.Target))

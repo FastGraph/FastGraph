@@ -33,6 +33,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="UndirectedBidirectionalGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="originalGraph">Bidirectional graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="originalGraph"/> is <see langword="null"/>.</exception>
         public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
             OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
@@ -163,7 +164,7 @@ namespace QuikGraph
         /// <summary>
         /// <see cref="AdjacentEdge"/> is not supported for this kind of graph.
         /// </summary>
-        /// <exception cref="NotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="T:System.NotSupportedException">This operation is not supported.</exception>
         public TEdge AdjacentEdge(TVertex vertex, int index)
         {
             throw new NotSupportedException();
@@ -194,10 +195,7 @@ namespace QuikGraph
 
 #if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
         #region ISerializable
-        
-        /// <summary>
-        /// Constructor used during runtime serialization.
-        /// </summary>
+
         private UndirectedBidirectionalGraph(SerializationInfo info, StreamingContext context)
             : this((IBidirectionalGraph<TVertex, TEdge>)info.GetValue("OriginalGraph", typeof(IBidirectionalGraph<TVertex, TEdge>)))
         {

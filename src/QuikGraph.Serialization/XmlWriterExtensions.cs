@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Serialization
 {
     /// <summary>
-    /// Extensions for <see cref="XmlWriter"/> to help serializing graph data.
+    /// Extensions for <see cref="T:System.Xml.XmlWriter"/> to help serializing graph data.
     /// </summary>
     public static class XmlWriterExtensions
     {

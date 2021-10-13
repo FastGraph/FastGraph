@@ -251,7 +251,7 @@ namespace QuikGraph.Serialization.Tests
         [Test]
         public void SerializeToGraphML_Throws_InvalidData()
         {
-            AssertSerializationFail<TestGraphArrayDefaultValue, NotImplementedException>(new TestGraphArrayDefaultValue());
+            AssertSerializationFail<TestGraphArrayDefaultValue, NotSupportedException>(new TestGraphArrayDefaultValue());
             AssertSerializationFail<TestGraphNoGetter, TypeInitializationException>(new TestGraphNoGetter());
             AssertSerializationFail<TestGraphNullDefaultValue, TypeInitializationException>(new TestGraphNullDefaultValue());
             AssertSerializationFail<TestGraphWrongDefaultValue, TypeInitializationException>(new TestGraphWrongDefaultValue());

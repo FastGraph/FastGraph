@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -20,6 +20,8 @@ namespace QuikGraph.Algorithms.Condensation
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public MergedEdge([NotNull] TVertex source, [NotNull] TVertex target)
             : base(source, target)
         {
@@ -40,6 +42,8 @@ namespace QuikGraph.Algorithms.Condensation
         /// <param name="inEdge">First edge.</param>
         /// <param name="outEdge">Second edge.</param>
         /// <returns>The merged edge.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="inEdge"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="outEdge"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static MergedEdge<TVertex, TEdge> Merge(
@@ -63,7 +67,7 @@ namespace QuikGraph.Algorithms.Condensation
     }
 
     /// <summary>
-    /// Helpers for <see cref="Condensation.MergedEdge{TVertex,TEdge}"/>.
+    /// Helpers for <see cref="MergedEdge{TVertex,TEdge}"/>.
     /// </summary>
     public static class MergedEdge
     {

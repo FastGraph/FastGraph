@@ -393,11 +393,7 @@ namespace QuikGraph
             return AddEdgeInternal(edge);
         }
 
-        /// <summary>
-        /// Adds a range of edges to the graph.
-        /// </summary>
-        /// <param name="edges">Edges to add.</param>
-        /// <returns>The number of edges that were added.</returns>
+        /// <inheritdoc />
         public int AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
             if (edges is null)
@@ -627,6 +623,7 @@ namespace QuikGraph
         /// Clears edges of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         public void ClearEdges([NotNull] TVertex vertex)
         {
             ClearOutEdges(vertex);

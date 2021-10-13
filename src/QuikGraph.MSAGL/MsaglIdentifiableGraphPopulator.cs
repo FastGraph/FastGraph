@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
@@ -20,6 +20,8 @@ namespace QuikGraph.MSAGL
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
         /// <param name="vertexIdentity">Delegate that given a vertex return its identifier.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         public MsaglIdentifiableGraphPopulator(
             [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] VertexIdentity<TVertex> vertexIdentity)

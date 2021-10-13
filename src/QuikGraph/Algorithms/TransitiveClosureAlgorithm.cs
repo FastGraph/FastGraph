@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms
@@ -17,6 +17,8 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeFactory">Function that create an edge between the 2 given vertices.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public TransitiveClosureAlgorithm(
             [NotNull] BidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TVertex, TVertex, TEdge> edgeFactory)
@@ -47,7 +49,9 @@ namespace QuikGraph.Algorithms
             algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
             {
                 if (!found)
+                {
                     graph.AddEdge(_createEdge(u, v));
+                }
             });
         }
 

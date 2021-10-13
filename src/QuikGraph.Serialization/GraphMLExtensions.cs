@@ -1,4 +1,4 @@
-#if SUPPORTS_GRAPHS_SERIALIZATION
+﻿#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 #if SUPPORTS_XML_DTD_PROCESSING
 using System.Diagnostics;
@@ -29,6 +29,10 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph instance to serialize.</param>
         /// <param name="filePath">Path to the file where serializing the graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="filePath"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] string filePath)
@@ -56,6 +60,12 @@ namespace QuikGraph.Serialization
         /// <param name="filePath">Path to the file where serializing the graph.</param>
         /// <param name="vertexIdentity">Vertex identity method.</param>
         /// <param name="edgeIdentity">Edge identity method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="filePath"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] string filePath,
@@ -83,6 +93,10 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TGraph">Graph type.</typeparam>
         /// <param name="graph">Graph instance to serialize.</param>
         /// <param name="writer">The XML writer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] XmlWriter writer)
@@ -108,6 +122,12 @@ namespace QuikGraph.Serialization
         /// <param name="writer">The XML writer.</param>
         /// <param name="vertexIdentity">Vertex identity method.</param>
         /// <param name="edgeIdentity">Edge identity method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] XmlWriter writer,
@@ -134,6 +154,14 @@ namespace QuikGraph.Serialization
         /// <param name="reader">The XML reader.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><see cref="XmlConstants.GraphMLTag"/> or <see cref="XmlConstants.GraphTag"/> not found.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] XmlReader reader,
@@ -156,6 +184,14 @@ namespace QuikGraph.Serialization
         /// <param name="reader">Reader stream.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><see cref="XmlConstants.GraphMLTag"/> or <see cref="XmlConstants.GraphTag"/> not found.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] TextReader reader,
@@ -197,6 +233,14 @@ namespace QuikGraph.Serialization
         /// <param name="filePath">Path to the file to load.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="filePath"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><see cref="XmlConstants.GraphMLTag"/> or <see cref="XmlConstants.GraphTag"/> not found.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] string filePath,
@@ -209,7 +253,9 @@ namespace QuikGraph.Serialization
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             using (var reader = new StreamReader(filePath))
+            {
                 DeserializeFromGraphML(graph, reader, vertexFactory, edgeFactory);
+            }
         }
 
 #if SUPPORTS_XML_DTD_PROCESSING
@@ -224,6 +270,14 @@ namespace QuikGraph.Serialization
         /// <param name="reader">Reader stream.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><see cref="XmlConstants.GraphMLTag"/> or <see cref="XmlConstants.GraphTag"/> not found.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeAndValidateFromGraphML<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] TextReader reader,
@@ -258,7 +312,9 @@ namespace QuikGraph.Serialization
 
                 // Read and validate
                 using (XmlReader xmlReader = XmlReader.Create(reader, settings))
+                {
                     serializer.Deserialize(xmlReader, graph, vertexFactory, edgeFactory);
+                }
             }
             finally
             {
@@ -273,8 +329,11 @@ namespace QuikGraph.Serialization
                 Debug.Assert(xsdStream != null, "GraphML schema resource not found.");
 
                 settings.Schemas.XmlResolver = resolver;
+                // ReSharper disable once AssignNullToNotNullAttribute, Justification: assert above
                 using (XmlReader xsdReader = XmlReader.Create(xsdStream, settings))
+                {
                     settings.Schemas.Add(GraphMLXmlResolver.GraphMLNamespace, xsdReader);
+                }
             }
         }
 

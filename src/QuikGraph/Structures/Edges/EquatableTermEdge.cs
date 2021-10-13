@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -21,6 +21,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target)
             : base(source, target)
         {
@@ -34,6 +36,10 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         /// <param name="sourceTerminal">The source terminal.</param>
         /// <param name="targetTerminal">The target terminal.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="sourceTerminal"/> is negative.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="targetTerminal"/> is negative.</exception>
         public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
             : base(source, target, sourceTerminal, targetTerminal)
         {

@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
 #endif
 using System.Collections.Generic;
@@ -28,12 +28,14 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="EdgeList{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="capacity">List capacity.</param>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public EdgeList(int capacity)
             : base(capacity)
         {
         }
 
         /// <inheritdoc />
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         public EdgeList([NotNull] EdgeList<TVertex, TEdge> other)
             : base(other)
         {

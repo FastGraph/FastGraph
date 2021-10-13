@@ -24,6 +24,9 @@ namespace QuikGraph.Predicates
         /// <param name="baseGraph">Graph in which applying predicates.</param>
         /// <param name="vertexPredicate">Predicate to match vertex that should be taken into account.</param>
         /// <param name="edgePredicate">Predicate to match edge that should be taken into account.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
         public FilteredIncidenceGraph(
             [NotNull] TGraph baseGraph,
             [NotNull] VertexPredicate<TVertex> vertexPredicate,

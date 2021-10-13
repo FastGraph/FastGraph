@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION
+﻿#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using JetBrains.Annotations;
@@ -21,6 +21,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">The edge.</param>
         /// <param name="reversed">Indicates if the edge should be reversed or not.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         public UndirectedEdgeEventArgs([NotNull] TEdge edge, bool reversed)
             : base(edge)
         {

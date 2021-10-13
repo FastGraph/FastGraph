@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 using System;
 #endif
 using System.Collections.Generic;
@@ -33,17 +33,13 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="VertexEdgeDictionary{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="capacity">Dictionary capacity.</param>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public VertexEdgeDictionary(int capacity)
             : base(capacity)
         {
         }
 
 #if SUPPORTS_SERIALIZATION
-        /// <summary>
-        /// Initializes a new instance of <see cref="VertexEdgeDictionary{TVertex,TEdge}"/> with serialized data.
-        /// </summary>
-        /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data.</param>
-        /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
         private VertexEdgeDictionary(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

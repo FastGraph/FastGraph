@@ -17,6 +17,7 @@ namespace QuikGraph.Graphviz
         /// Initializes a new instance of the <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         protected GraphRendererBase([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
         {
             Graphviz = new GraphvizAlgorithm<TVertex, TEdge>(graph);

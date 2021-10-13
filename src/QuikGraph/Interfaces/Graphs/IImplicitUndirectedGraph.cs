@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -23,6 +23,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Enumerable of adjacent edges.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> AdjacentEdges([NotNull] TVertex vertex);
@@ -32,6 +34,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>Vertex adjacent degree.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         int AdjacentDegree([NotNull] TVertex vertex);
 
@@ -40,6 +44,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <returns>True if the vertex has at least one adjacent edge, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         bool IsAdjacentEdgesEmpty([NotNull] TVertex vertex);
 
@@ -49,6 +55,9 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="index">Index of the adjacent edge requested.</param>
         /// <returns>The adjacent edge.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">No vertex at <paramref name="index"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
         [NotNull]
         TEdge AdjacentEdge([NotNull] TVertex vertex, int index);
@@ -61,6 +70,8 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edge">Edge found, otherwise null.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edge:notnull;=> false, edge:null")]
         bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
@@ -72,6 +83,8 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if an edge exists, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -35,6 +35,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// Initializes a new instance of the <see cref="WeaklyConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public WeaklyConnectedComponentsAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
@@ -46,6 +47,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="components">Graph components.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public WeaklyConnectedComponentsAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -59,6 +62,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="components">Graph components.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public WeaklyConnectedComponentsAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
@@ -104,7 +109,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
                 return _graphs;
             }
-
         }
 
         #region AlgorithmBase<TGraph>
@@ -175,7 +179,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 int component = Components[vertex];
                 int equivalent = GetComponentEquivalence(component);
                 if (component != equivalent)
+                {
                     Components[vertex] = equivalent;
+                }
             }
         }
 
@@ -206,7 +212,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             {
                 int component = Components[vertex];
                 if (_componentEquivalences.TryGetValue(component, out int newComponentValue))
+                {
                     Components[vertex] = newComponentValue;
+                }
             }
         }
 
@@ -273,12 +281,11 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             // Path compression
             if (compress)
             {
-                int c = component;
-                temp = _componentEquivalences[c];
+                temp = _componentEquivalences[component];
                 while (temp != equivalent)
                 {
-                    temp = _componentEquivalences[c];
-                    _componentEquivalences[c] = equivalent;
+                    temp = _componentEquivalences[component];
+                    _componentEquivalences[component] = equivalent;
                 }
             }
 

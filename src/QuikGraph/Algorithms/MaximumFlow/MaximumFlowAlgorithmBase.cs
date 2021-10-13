@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -22,6 +22,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="capacities"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         protected MaximumFlowAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
@@ -103,11 +106,16 @@ namespace QuikGraph.Algorithms.MaximumFlow
         #endregion
 
         /// <summary>
-        /// Compute the maximum flow value.
+        /// Computes the maximum flow value.
         /// </summary>
         /// <param name="source">Flow source vertex.</param>
         /// <param name="sink">Flow sink vertex.</param>
         /// <returns>Maximum flow value.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="source"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        /// <exception cref="VertexNotFoundException"><paramref name="sink"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         public double Compute([NotNull] TVertex source, [NotNull] TVertex sink)
         {
             if (source == null)
@@ -123,5 +131,4 @@ namespace QuikGraph.Algorithms.MaximumFlow
             return MaxFlow;
         }
     }
-
 }

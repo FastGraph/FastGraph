@@ -18,6 +18,7 @@ namespace QuikGraph.Graphviz
         /// Initializes a new instance of the <see cref="CondensatedGraphRenderer{TVertex,TEdge,TGraph}"/> class.
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public CondensatedGraphRenderer(
             [NotNull] IEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> graph)
             : base(graph)

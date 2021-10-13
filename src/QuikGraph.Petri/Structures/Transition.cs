@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
@@ -12,6 +12,7 @@ namespace QuikGraph.Petri
         /// Initializes a new instance of the <see cref="Transition{Token}"/> class.
         /// </summary>
         /// <param name="name">Transition name.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
         public Transition([NotNull] string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -24,6 +25,7 @@ namespace QuikGraph.Petri
         private IConditionExpression<TToken> _condition = new AlwaysTrueConditionExpression<TToken>();
 
         /// <inheritdoc />
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         public IConditionExpression<TToken> Condition
         {
             get => _condition;

@@ -1,10 +1,10 @@
-#if SUPPORTS_SERIALIZATION
+﻿#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 
 namespace QuikGraph.Collections
 {
-    /// <inheritdoc cref="System.Collections.Generic.Queue{T}" />
+    /// <inheritdoc cref="IQueue{T}" />
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif

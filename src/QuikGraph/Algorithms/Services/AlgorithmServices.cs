@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Services
@@ -16,6 +15,7 @@ namespace QuikGraph.Algorithms.Services
         /// Initializes a new instance of the <see cref="AlgorithmServices"/> class.
         /// </summary>
         /// <param name="host">Algorithm host.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="host"/> is <see langword="null"/>.</exception>
         public AlgorithmServices([NotNull] IAlgorithmComponent host)
         {
             _host = host ?? throw new ArgumentNullException(nameof(host));

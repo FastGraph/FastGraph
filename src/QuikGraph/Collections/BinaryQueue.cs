@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -26,6 +26,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="BinaryQueue{TVertex,TDistance}"/> class.
         /// </summary>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
         public BinaryQueue([NotNull] Func<TVertex, TDistance> distanceFunc)
             : this(distanceFunc, Comparer<TDistance>.Default.Compare)
         {
@@ -36,6 +37,8 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <param name="distanceComparison">Comparer of distances.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
         public BinaryQueue(
             [NotNull] Func<TVertex, TDistance> distanceFunc, 
             [NotNull] Comparison<TDistance> distanceComparison)

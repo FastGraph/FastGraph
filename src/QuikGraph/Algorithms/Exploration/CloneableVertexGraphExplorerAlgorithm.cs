@@ -1,4 +1,4 @@
-#if SUPPORTS_CLONEABLE
+﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,6 +23,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// Initializes a new instance of the <see cref="CloneableVertexGraphExplorerAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public CloneableVertexGraphExplorerAlgorithm(
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
@@ -34,6 +35,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public CloneableVertexGraphExplorerAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
@@ -54,6 +56,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that a vertex must match to be added in the graph.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public VertexPredicate<TVertex> AddVertexPredicate
         {
@@ -67,6 +70,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that checks if a given vertex should be explored or ignored.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public VertexPredicate<TVertex> ExploreVertexPredicate
         {
@@ -80,6 +84,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that an edge must match to be added in the graph.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public EdgePredicate<TVertex, TEdge> AddEdgePredicate
         {
@@ -94,6 +99,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that checks if the exploration is finished or not.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate
         {
@@ -174,6 +180,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// Adds a new <see cref="ITransitionFactory{TVertex,TEdge}"/> to this algorithm.
         /// </summary>
         /// <param name="transitionFactory">Transition factory to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactory"/> is <see langword="null"/>.</exception>
         public void AddTransitionFactory([NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             if (transitionFactory is null)
@@ -186,6 +193,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// Adds new <see cref="ITransitionFactory{TVertex,TEdge}"/>s to this algorithm.
         /// </summary>
         /// <param name="transitionFactories">Transition factories to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactories"/> is <see langword="null"/>.</exception>
         public void AddTransitionFactories(
             [NotNull, ItemNotNull] IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
         {
@@ -248,7 +256,7 @@ namespace QuikGraph.Algorithms.Exploration
                 }
 
                 TVertex current = _unExploredVertices.Dequeue();
-                TVertex clone = (TVertex)current.Clone();
+                var clone = (TVertex)current.Clone();
 
                 // Let's make sure we want to explore this one
                 if (!ExploreVertexPredicate(clone))
@@ -341,9 +349,13 @@ namespace QuikGraph.Algorithms.Exploration
             /// </summary>
             /// <param name="algorithm">Algorithm explorer to check.</param>
             /// <returns>True if the explorer can continue to explore, false otherwise.</returns>
+            /// <exception cref="T:System.ArgumentNullException"><paramref name="algorithm"/> is <see langword="null"/>.</exception>
             [Pure]
-            public bool Test(CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
+            public bool Test([NotNull] CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
             {
+                if (algorithm is null)
+                    throw new ArgumentNullException(nameof(algorithm));
+
                 if (algorithm.VisitedGraph.VertexCount > MaxVertexCount)
                     return false;
 

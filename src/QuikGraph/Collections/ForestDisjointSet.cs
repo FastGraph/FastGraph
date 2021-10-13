@@ -61,6 +61,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="ForestDisjointSet{T}"/> class.
         /// </summary>
         /// <param name="capacity">Element capacity.</param>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative or <see cref="F:int.MaxValue"/>.</exception>
         public ForestDisjointSet(int capacity)
         {
             if (capacity < 0 || capacity >= int.MaxValue)
@@ -132,7 +133,9 @@ namespace QuikGraph.Collections
             // Find root
             Element current = element;
             while (current.Parent != null)
+            {
                 current = current.Parent;
+            }
 
             Debug.Assert(current != null);
             return current;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -23,6 +23,7 @@ namespace QuikGraph.Algorithms.Search
         /// Initializes a new instance of the <see cref="UndirectedDepthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public UndirectedDepthFirstSearchAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, GraphColor>())
@@ -34,6 +35,8 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public UndirectedDepthFirstSearchAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
@@ -47,6 +50,8 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="verticesColors">Vertices associated to their colors (treatment states).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public UndirectedDepthFirstSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
@@ -65,6 +70,9 @@ namespace QuikGraph.Algorithms.Search
         /// Delegate that takes the enumeration of out-edges and filters/reorders
         /// them. All vertices passed to the method should be enumerated once and only once.
         /// </param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="adjacentEdgesFilter"/> is <see langword="null"/>.</exception>
         public UndirectedDepthFirstSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
@@ -94,11 +102,12 @@ namespace QuikGraph.Algorithms.Search
         /// Gets or sets the maximum exploration depth, from the start vertex.
         /// </summary>
         /// <remarks>
-        /// Defaulted at <see cref="int.MaxValue"/>.
+        /// Defaulted to <see cref="F:int.MaxValue"/>.
         /// </remarks>
         /// <value>
         /// Maximum exploration depth.
         /// </value>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is negative or equal to 0.</exception>
         public int MaxDepth
         {
             get => _maxDepth;
@@ -251,7 +260,9 @@ namespace QuikGraph.Algorithms.Search
                 Visit(root);
 
                 if (ProcessAllComponents)
+                {
                     VisitAllWhiteVertices(); // All remaining vertices (because there are not white marked)
+                }
             }
             else
             {

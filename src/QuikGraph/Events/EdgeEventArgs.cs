@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -18,6 +18,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="EdgeEventArgs{TVertex, TEdge}"/> class.
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         public EdgeEventArgs([NotNull] TEdge edge)
         {
             if (edge == null)

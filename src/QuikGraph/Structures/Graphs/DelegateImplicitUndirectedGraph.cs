@@ -22,6 +22,7 @@ namespace QuikGraph
         /// Note that get of edges is delegated so you may have bugs related
         /// to parallel edges due to the delegated implementation.
         /// </param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetAdjacentEdges"/> is <see langword="null"/>.</exception>
         public DelegateImplicitUndirectedGraph(
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,
             bool allowParallelEdges = true)
@@ -141,7 +142,9 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="edges">Edges found, otherwise null.</param>
         /// <returns>True if <paramref name="vertex"/> was found or/and edges were found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
+        [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         public bool TryGetAdjacentEdges([NotNull] TVertex vertex, out IEnumerable<TEdge> edges)
         {
             return TryGetAdjacentEdgesInternal(vertex, out edges);

@@ -100,6 +100,7 @@ namespace QuikGraph.Collections
         /// with given <paramref name="collection"/>.
         /// </summary>
         /// <param name="collection">Initial elements to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
         public SortedSet([NotNull, ItemCanBeNull] IEnumerable<T> collection)
             : this(collection, Comparer<T>.Default)
         {
@@ -112,6 +113,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="collection">Initial elements to add.</param>
         /// <param name="comparer"><see cref="Comparer{T}"/> to use.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
         public SortedSet([NotNull, ItemCanBeNull] IEnumerable<T> collection, [CanBeNull] IComparer<T> comparer)
             : this(comparer)
         {
@@ -199,12 +201,8 @@ namespace QuikGraph.Collections
         private SerializationInfo _serializationInfo; // A temporary variable which we need during deserialization.
 
         /// <summary>
-        /// Initializes a new instance of <see cref="SortedSet{T}"/> with serialized data.
+        /// Constructor used during runtime serialization.
         /// </summary>
-        /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data
-        /// concerning the thrown exception.</param>
-        /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
-
         protected SortedSet(SerializationInfo info, StreamingContext context)
         {
             _serializationInfo = info;
@@ -649,7 +647,11 @@ namespace QuikGraph.Collections
         /// Copies the content of this <see cref="SortedSet{T}"/> to the given array.
         /// Starts at given <paramref name="index"/> and copies <paramref name="count"/> elements.
         /// </summary>
-        public void CopyTo(T[] array, int index, int count)
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="array"/> is too small.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is negative.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is negative.</exception>
+        public void CopyTo([NotNull] T[] array, int index, int count)
         {
             if (array is null)
                 throw new ArgumentNullException(nameof(array));
@@ -1005,7 +1007,7 @@ namespace QuikGraph.Collections
         /// The caller object is important as <see cref="UnionWith"/> uses the Comparator
         /// associated with THIS to check equality.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">If <paramref name="other"/> is null.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         public void UnionWith([NotNull, ItemCanBeNull] IEnumerable<T> other)
         {
             if (other is null)
@@ -1165,7 +1167,7 @@ namespace QuikGraph.Collections
         /// The caller object is important as <see cref="IntersectWith"/> uses the Comparator
         /// associated with THIS to check equality.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">If <paramref name="other"/> is null.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         public void IntersectWith([NotNull, ItemCanBeNull] IEnumerable<T> other)
         {
             if (other is null)
@@ -1247,7 +1249,7 @@ namespace QuikGraph.Collections
         /// The caller object is important as <see cref="ExceptWith"/> uses the Comparator
         /// associated with THIS to check equality.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">If <paramref name="other"/> is null.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         public void ExceptWith([NotNull, ItemCanBeNull] IEnumerable<T> other)
         {
             if (other is null)
@@ -1288,6 +1290,7 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Checks whether this Tree has all elements in common with <see cref="IEnumerable{T}"/> <paramref name="other"/>.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
         public bool SetEquals([NotNull, ItemCanBeNull] IEnumerable<T> other)
         {
             if (other is null)
@@ -1413,8 +1416,9 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Removes elements matching the given <paramref name="predicate"/>.
         /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
+        /// <param name="predicate">Predicate to match to removed elements.</param>
+        /// <returns>Number of removed elements.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         public int RemoveWhere([NotNull] Predicate<T> predicate)
         {
             if (predicate is null)
@@ -1488,7 +1492,7 @@ namespace QuikGraph.Collections
         [NotNull, ItemCanBeNull]
         public IEnumerable<T> Reverse()
         {
-            Enumerator e = new Enumerator(this, true);
+            var e = new Enumerator(this, true);
             while (e.MoveNext())
             {
                 yield return e.Current;

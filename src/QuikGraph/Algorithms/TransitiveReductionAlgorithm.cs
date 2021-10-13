@@ -1,9 +1,4 @@
-/*
- * Code by Yoad Snapir <yoadsn@gmail.com> with a bit of refactoring.
- * Taken from https://github.com/yoadsn/ArrowDiagramGenerator because PR was not opened.
- **/
-
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms
 {
@@ -20,6 +15,7 @@ namespace QuikGraph.Algorithms
         /// Initializes a new instance of the <see cref="TransitiveReductionAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TransitiveReductionAlgorithm(
             [NotNull] BidirectionalGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
@@ -46,7 +42,9 @@ namespace QuikGraph.Algorithms
             algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
             {
                 if (found)
+                {
                     graph.RemoveEdge(edge);
+                }
             });
         }
 

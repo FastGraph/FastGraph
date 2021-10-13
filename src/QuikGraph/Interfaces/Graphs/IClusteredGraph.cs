@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -35,6 +35,7 @@ namespace QuikGraph
         /// Removes the given graph from this cluster.
         /// </summary>
         /// <param name="graph">The graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         void RemoveCluster([NotNull] IClusteredGraph graph);
     }
 }

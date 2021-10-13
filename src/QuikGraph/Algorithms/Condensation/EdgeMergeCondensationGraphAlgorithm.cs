@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -19,6 +19,9 @@ namespace QuikGraph.Algorithms.Condensation
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="condensedGraph">Graph that will contains the condensation of the <paramref name="visitedGraph"/>.</param>
         /// <param name="vertexPredicate">Vertex predicate used to filter the vertices to put in the condensed graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="condensedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         public EdgeMergeCondensationGraphAlgorithm(
             [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph,
@@ -53,7 +56,9 @@ namespace QuikGraph.Algorithms.Condensation
             {
                 CondensedGraph.AddVertex(vertex);
                 if (!VertexPredicate(vertex))
+                {
                     filteredVertices.Enqueue(vertex);
+                }
             }
 
             // Adding all edges

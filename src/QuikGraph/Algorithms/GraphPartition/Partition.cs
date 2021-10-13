@@ -1,4 +1,4 @@
-#if SUPPORTS_SORTEDSET
+﻿#if SUPPORTS_SORTEDSET
 using System.Collections.Generic;
 #else
 using QuikGraph.Collections;
@@ -36,6 +36,8 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <param name="vertexSetA">First partition vertex set.</param>
         /// <param name="vertexSetB">Second partition vertex set.</param>
         /// <param name="cutCost">Cost of the partition cut.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetA"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetB"/> is <see langword="null"/>.</exception>
         public Partition(
             [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetA,
             [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetB, 
@@ -52,6 +54,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <param name="partition1">First partition.</param>
         /// <param name="partition2">Second partition.</param>
         /// <returns>True if both partitions are at least equivalent, false otherwise.</returns>
+        [Pure]
         public static bool AreEquivalent(Partition<TVertex> partition1, Partition<TVertex> partition2)
         {
             return partition1.VertexSetA.SetEquals(partition2.VertexSetA) 
@@ -74,6 +77,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <param name="partition1">First partition.</param>
         /// <param name="partition2">Second partition.</param>
         /// <returns>True if both partitions are at least equivalent, false otherwise.</returns>
+        [Pure]
         public static bool AreEquivalent<TVertex>(Partition<TVertex> partition1, Partition<TVertex> partition2)
         {
             return Partition<TVertex>.AreEquivalent(partition1, partition2);

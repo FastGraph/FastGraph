@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Graphviz.Dot
@@ -15,6 +15,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Initializes a new instance of the <see cref="GraphvizLayer"/> class.
         /// </summary>
         /// <param name="name">Layer name.</param>
+        /// <exception cref="T:System.ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
         public GraphvizLayer([NotNull] string name)
         {
             SetName(name);
@@ -32,6 +33,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Layer name.
         /// </summary>
+        /// <exception cref="T:System.ArgumentException">Set value is <see langword="null"/> or empty.</exception>
         public string Name
         {
             get => _name;

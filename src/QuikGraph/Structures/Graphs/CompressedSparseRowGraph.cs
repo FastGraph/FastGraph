@@ -55,31 +55,32 @@ namespace QuikGraph
         }
 
         /// <summary>
-        /// Converts the given <paramref name="visitedGraph"/> to a <see cref="CompressedSparseRowGraph{TVertex}"/>.
+        /// Converts the given <paramref name="graph"/> to a <see cref="CompressedSparseRowGraph{TVertex}"/>.
         /// </summary>
-        /// <param name="visitedGraph">Graph to convert.</param>
+        /// <param name="graph">Graph to convert.</param>
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>A corresponding <see cref="CompressedSparseRowGraph{TVertex}"/>.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [NotNull]
         public static CompressedSparseRowGraph<TVertex> FromGraph<TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (visitedGraph is null)
-                throw new ArgumentNullException(nameof(visitedGraph));
+            if (graph is null)
+                throw new ArgumentNullException(nameof(graph));
 
-            var outEdgeStartRanges = new Dictionary<TVertex, Range>(visitedGraph.VertexCount);
-            var outEdges = new TVertex[visitedGraph.EdgeCount];
+            var outEdgeStartRanges = new Dictionary<TVertex, Range>(graph.VertexCount);
+            var outEdges = new TVertex[graph.EdgeCount];
 
             int start = 0;
             int index = 0;
-            foreach (TVertex vertex in visitedGraph.Vertices)
+            foreach (TVertex vertex in graph.Vertices)
             {
-                int end = start + visitedGraph.OutDegree(vertex);
+                int end = start + graph.OutDegree(vertex);
                 var range = new Range(start, end);
                 outEdgeStartRanges.Add(vertex, range);
 
-                foreach (TEdge edge in visitedGraph.OutEdges(vertex))
+                foreach (TEdge edge in graph.OutEdges(vertex))
                 {
                     outEdges[index++] = edge.Target;
                 }

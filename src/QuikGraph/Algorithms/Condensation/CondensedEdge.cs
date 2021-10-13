@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION
+﻿#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using System.Collections.Generic;
@@ -24,6 +24,8 @@ namespace QuikGraph.Algorithms.Condensation
         /// </summary>
         /// <param name="source">The source graph.</param>
         /// <param name="target">The target graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public CondensedEdge([NotNull] TGraph source, [NotNull] TGraph target)
             : base(source, target)
         {

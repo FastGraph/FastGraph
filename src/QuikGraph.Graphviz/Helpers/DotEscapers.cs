@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Graphviz
@@ -38,6 +38,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="value">String value to escape.</param>
         /// <returns>Escaped string.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string EscapePort([NotNull] string value)
@@ -52,6 +53,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="value">String value to escape.</param>
         /// <returns>Escaped string.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string EscapeRecord([NotNull] string value)
@@ -68,6 +70,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="value">String value to escape.</param>
         /// <returns>Escaped string.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string Escape([NotNull] string value)

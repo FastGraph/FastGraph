@@ -135,6 +135,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">The edge to add.</param>
         /// <returns>True if the edge was added, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         public bool AddVerticesAndEdge([NotNull] TEdge edge)
         {
             return AddEdge(edge);
@@ -145,6 +146,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edges">Edges to add.</param>
         /// <returns>The number of edges added.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
+        /// </exception>
         public int AddVerticesAndEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
             if (edges is null)

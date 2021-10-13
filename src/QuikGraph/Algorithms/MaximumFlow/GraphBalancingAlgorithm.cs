@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,6 +26,13 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="sink">Flow sink vertex.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="source"/> vertex.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="sink"/> vertex.</exception>
         public GraphBalancerAlgorithm(
             [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] TVertex source,
@@ -68,6 +75,14 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <param name="capacities">Edges capacities.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="sink"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="capacities"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="source"/> vertex.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="sink"/> vertex.</exception>
         public GraphBalancerAlgorithm(
             [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
             [NotNull] TVertex source,
@@ -95,7 +110,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
             // Setting preflow = l(e) = 1
             foreach (TEdge edge in VisitedGraph.Edges)
+            {
                 _preFlow.Add(edge, 1);
+            }
         }
 
         /// <summary>
@@ -266,12 +283,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            int balancingIndex = 0;
-            foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
-            {
-                int preFlow = _preFlow[edge];
-                balancingIndex += preFlow;
-            }
+            int balancingIndex = VisitedGraph.OutEdges(vertex).Sum(edge => _preFlow[edge]);
 
             foreach (TEdge edge in VisitedGraph.InEdges(vertex))
             {
@@ -285,7 +297,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Runs the graph balancing algorithm.
         /// </summary>
-        /// <exception cref="InvalidOperationException">If the graph is already balanced.</exception>
+        /// <exception cref="T:System.InvalidOperationException">If the graph is already balanced.</exception>
         public void Balance()
         {
             if (Balanced)
@@ -375,7 +387,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Runs the graph unbalancing algorithm.
         /// </summary>
-        /// <exception cref="InvalidOperationException">If the graph is not balanced.</exception>
+        /// <exception cref="T:System.InvalidOperationException">If the graph is not balanced.</exception>
         public void UnBalance()
         {
             if (!Balanced)

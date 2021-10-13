@@ -1,4 +1,4 @@
-#if SUPPORTS_SERIALIZATION
+﻿#if SUPPORTS_SERIALIZATION
 using System;
 #endif
 using System.Collections.Generic;
@@ -66,9 +66,9 @@ namespace QuikGraph.Collections
         public FibonacciHeapCell<TPriority, TValue> Next { get; internal set; }
 
         /// <summary>
-        /// Converts this cell to a <see cref="KeyValuePair{TPriority,TValue}"/>.
+        /// Converts this cell to a <see cref="T:System.Collections.Generic.KeyValuePair{TPriority,TValue}"/>.
         /// </summary>
-        /// <returns>A corresponding <see cref="KeyValuePair{TPriority,TValue}"/>.</returns>
+        /// <returns>A corresponding <see cref="T:System.Collections.Generic.KeyValuePair{TPriority,TValue}"/>.</returns>
         [Pure]
         public KeyValuePair<TPriority, TValue> ToKeyValuePair()
         {

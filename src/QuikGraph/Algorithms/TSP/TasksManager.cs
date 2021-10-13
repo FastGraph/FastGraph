@@ -33,6 +33,7 @@ namespace QuikGraph.Algorithms.TSP
         /// Gets and removes the task with minimal priority.
         /// </summary>
         /// <returns>The <see cref="Task{TVertex,TEdge}"/>.</returns>
+        [Pure]
         [NotNull]
         public Task<TVertex, TEdge> GetTask()
         {

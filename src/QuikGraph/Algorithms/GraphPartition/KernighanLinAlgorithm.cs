@@ -32,6 +32,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="nbIterations">Number of iterations to perform.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public KernighanLinAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int nbIterations)
@@ -134,9 +135,13 @@ namespace QuikGraph.Algorithms.GraphPartition
                     continue;
 
                 if (vertexIsInA != vertexNeighborIsInA) // External
+                {
                     cost += edge.Tag;
+                }
                 else
+                {
                     cost -= edge.Tag;
+                }
             }
 
             return cost;
@@ -156,7 +161,9 @@ namespace QuikGraph.Algorithms.GraphPartition
             }
 
             if (neighbors.Contains(vertex))
+            {
                 neighbors.Remove(vertex);
+            }
 
             return neighbors;
         }
@@ -226,9 +233,13 @@ namespace QuikGraph.Algorithms.GraphPartition
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 if (i < _partitionSize)
+                {
                     _vertexSetA.Add(vertex);
+                }
                 else
+                {
                     _vertexSetB.Add(vertex);
+                }
 
                 ++i;
             }

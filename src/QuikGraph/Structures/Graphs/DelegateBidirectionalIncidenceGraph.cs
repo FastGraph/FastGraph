@@ -23,6 +23,8 @@ namespace QuikGraph
         /// Note that get of edges is delegated so you may have bugs related
         /// to parallel edges due to the delegated implementation.
         /// </param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetInEdges"/> is <see langword="null"/>.</exception>
         public DelegateBidirectionalIncidenceGraph(
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges,

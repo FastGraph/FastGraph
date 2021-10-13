@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
@@ -126,8 +126,21 @@ namespace QuikGraph.Tests.Algorithms
         {
             var graph = new AdjacencyGraph<int , EquatableEdge<int>>();
 
-            // With self edge
+            // With isolated vertices only
             int v = 0;
+            RandomGraphFactory.Create(
+                graph,
+                () => ++v,
+                (source, target) => new EquatableEdge<int>(source, target),
+                new Random(123456),
+                2,
+                0,
+                true);
+            AssertHasVertices(graph, new[] { 1, 2 });
+            AssertNoEdge(graph);
+
+            // With self edge
+            v = 0;
             RandomGraphFactory.Create(
                 graph,
                 () => ++v,
@@ -380,13 +393,6 @@ namespace QuikGraph.Tests.Algorithms
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
                     random,
-                    1, 0, false));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => RandomGraphFactory.Create(
-                    graph,
-                    () => 1,
-                    (source, target) => new Edge<int>(source, target),
-                    random,
                     0, 0, false));
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => RandomGraphFactory.Create(
@@ -402,8 +408,21 @@ namespace QuikGraph.Tests.Algorithms
         {
             var graph = new UndirectedGraph<int, EquatableEdge<int>>();
 
-            // With self edge
+            // With isolated vertices only
             int v = 0;
+            RandomGraphFactory.Create(
+                graph,
+                () => ++v,
+                (source, target) => new EquatableEdge<int>(source, target),
+                new Random(123456),
+                2,
+                0,
+                true);
+            AssertHasVertices(graph, new[] { 1, 2 });
+            AssertNoEdge(graph);
+
+            // With self edge
+            v = 0;
             RandomGraphFactory.Create(
                 graph,
                 () => ++v,
@@ -650,13 +669,6 @@ namespace QuikGraph.Tests.Algorithms
                     (source, target) => new Edge<int>(source, target),
                     random,
                     1, -1, false));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => RandomGraphFactory.Create(
-                    graph,
-                    () => 1,
-                    (source, target) => new Edge<int>(source, target),
-                    random,
-                    1, 0, false));
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => RandomGraphFactory.Create(
                     graph,

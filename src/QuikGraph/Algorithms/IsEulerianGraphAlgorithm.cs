@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -22,6 +22,7 @@ namespace QuikGraph.Algorithms
         /// Initializes a new instance of the <see cref="IsEulerianGraphAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to check.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public IsEulerianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
         {
             if (graph is null)
@@ -139,6 +140,7 @@ namespace QuikGraph.Algorithms
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to check.</param>
         /// <returns>True if the <paramref name="graph"/> is Eulerian, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsEulerian<TVertex, TEdge>(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)

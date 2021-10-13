@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using JetBrains.Annotations;
 using QuikGraph.Collections;
@@ -30,6 +30,7 @@ namespace QuikGraph.Algorithms.VertexCover
         /// </summary>
         /// <remarks>This constructor will use <see cref="CryptoRandom"/> ad random number generator.</remarks>
         /// <param name="graph">Graph to compute the cover.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
             : this(graph, new CryptoRandom())
@@ -40,6 +41,7 @@ namespace QuikGraph.Algorithms.VertexCover
         /// Initializes a new instance of the <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="graph">Graph to compute the cover.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
             : this(graph, new Random())
@@ -52,6 +54,8 @@ namespace QuikGraph.Algorithms.VertexCover
         /// </summary>
         /// <param name="graph">Graph to compute the cover.</param>
         /// <param name="rng">Random number generator.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
             [NotNull] Random rng)

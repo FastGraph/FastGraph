@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
@@ -19,6 +19,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public AllVerticesGraphAugmentorAlgorithm(
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph,
             [NotNull] VertexFactory<TVertex> vertexFactory,
@@ -34,6 +37,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public AllVerticesGraphAugmentorAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph,

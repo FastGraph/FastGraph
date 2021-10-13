@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -19,6 +19,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="UndirectedVertexDistanceRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public UndirectedVertexDistanceRecorderObserver([NotNull] Func<TEdge, double> edgeWeights)
             : this(edgeWeights, DistanceRelaxers.EdgeShortestDistance, new Dictionary<TVertex, double>())
         {
@@ -30,6 +31,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
         /// <param name="distances">Distances per vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distances"/> is <see langword="null"/>.</exception>
         public UndirectedVertexDistanceRecorderObserver(
             [NotNull] Func<TEdge, double> edgeWeights,
             [NotNull] IDistanceRelaxer distanceRelaxer,

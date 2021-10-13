@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +18,7 @@ namespace QuikGraph.Petri
         /// Initializes a new instance of the <see cref="Place{TToken}"/> class.
         /// </summary>
         /// <param name="name">Place name.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
         public Place([NotNull] string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

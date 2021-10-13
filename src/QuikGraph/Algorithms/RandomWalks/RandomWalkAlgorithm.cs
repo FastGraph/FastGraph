@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -18,6 +18,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// Initializes a new instance of the <see cref="RandomWalkAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public RandomWalkAlgorithm([NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
         {
@@ -28,6 +29,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeChain">Edge chain strategy to use.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public RandomWalkAlgorithm(
             [NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
@@ -107,6 +110,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// Generates a random walk with 100 steps.
         /// </summary>
         /// <param name="root">Root vertex.</param>
+        /// <exception cref="VertexNotFoundException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         public void Generate([NotNull] TVertex root)
         {
             Generate(root, 100);
@@ -116,7 +120,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// Generates a random walk with <paramref name="walkCount"/> steps.
         /// </summary>
         /// <param name="root">Root vertex.</param>
-        /// <param name="walkCount">Number of steps for the random walk.</param>
+        /// <param name="walkCount">Number of steps for the random walk.</param>VertexNotFoundException
+        /// <exception cref="VertexNotFoundException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         public void Generate([NotNull] TVertex root, int walkCount)
         {
             AssertRootInGraph(root);

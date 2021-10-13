@@ -30,6 +30,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="ClusteredAdjacencyGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="wrappedGraph">Graph to wrap.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="wrappedGraph"/> is <see langword="null"/>.</exception>
         public ClusteredAdjacencyGraph([NotNull] AdjacencyGraph<TVertex, TEdge> wrappedGraph)
         {
             Parent = null;
@@ -41,6 +42,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="ClusteredAdjacencyGraph{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="parentGraph">Parent graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="parentGraph"/> is <see langword="null"/>.</exception>
         public ClusteredAdjacencyGraph([NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> parentGraph)
         {
             Parent = parentGraph ?? throw new ArgumentNullException(nameof(parentGraph));
@@ -231,6 +233,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">Vertex to add.</param>
         /// <returns>True if the vertex was added, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         public virtual bool AddVertex([NotNull] TVertex vertex)
         {
             if (vertex == null)
@@ -250,6 +253,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertices">Vertices to add.</param>
         /// <returns>The number of vertex added.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="vertices"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
+        /// </exception>
         public virtual int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
             if (vertices is null)
@@ -296,6 +302,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">Vertex to remove.</param>
         /// <returns>True if the vertex was removed, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         public virtual bool RemoveVertex([NotNull] TVertex vertex)
         {
             if (vertex == null)
@@ -314,6 +321,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="predicate">Predicate to check on each vertex.</param>
         /// <returns>The number of vertex removed.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         public int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate)
         {
             if (predicate is null)
@@ -335,6 +343,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">The edge to add.</param>
         /// <returns>True if the edge was added, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         public virtual bool AddVerticesAndEdge([NotNull] TEdge edge)
         {
             if (edge == null)
@@ -350,6 +359,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edges">Edges to add.</param>
         /// <returns>The number of edges added.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
+        /// </exception>
         public int AddVerticesAndEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
             if (edges is null)
@@ -366,6 +378,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">An edge.</param>
         /// <returns>True if the edge was added, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         public virtual bool AddEdge([NotNull] TEdge edge)
         {
             if (edge == null)
@@ -383,6 +396,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edges">Edges to add.</param>
         /// <returns>The number of edges successfully added to this graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
+        /// </exception>
         public int AddEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
             if (edges is null)
@@ -425,6 +441,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">Edge to remove.</param>
         /// <returns>True if the <paramref name="edge"/> was successfully removed, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         public virtual bool RemoveEdge([NotNull] TEdge edge)
         {
             if (edge == null)
@@ -443,6 +460,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="predicate">Predicate to check if an edge should be removed.</param>
         /// <returns>The number of edges removed.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         public int RemoveEdgeIf([NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate)
         {
             if (predicate is null)
@@ -466,6 +484,8 @@ namespace QuikGraph
         /// <param name="vertex">The vertex.</param>
         /// <param name="predicate">Predicate to remove edges.</param>
         /// <returns>The number of removed edges.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
         public int RemoveOutEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate)
         {
             if (vertex == null)
@@ -483,6 +503,7 @@ namespace QuikGraph
         /// Clears the out-edges of the given <paramref name="vertex"/>
         /// </summary>
         /// <param name="vertex">The vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         public void ClearOutEdges([NotNull] TVertex vertex)
         {
             if (vertex == null)

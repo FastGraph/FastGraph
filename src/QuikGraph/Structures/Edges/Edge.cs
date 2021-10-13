@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Constants;
@@ -20,6 +20,8 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         public Edge([NotNull] TVertex source, [NotNull] TVertex target)
         {
             if (source == null)

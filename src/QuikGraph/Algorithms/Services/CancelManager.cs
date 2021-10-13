@@ -16,7 +16,9 @@ namespace QuikGraph.Algorithms.Services
         {
             int value = Interlocked.Increment(ref _cancelling);
             if (value == 0)
+            {
                 CancelRequested?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private int _cancelling;
@@ -32,7 +34,9 @@ namespace QuikGraph.Algorithms.Services
         {
             int value = Interlocked.Exchange(ref _cancelling, 0);
             if (value != 0)
+            {
                 CancelReset?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-#if SUPPORTS_CLONEABLE
+﻿#if SUPPORTS_CLONEABLE
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -23,6 +23,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the vertex is valid, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         bool IsValid([NotNull] TVertex vertex);
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <returns>Edges resulting of the apply.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         [NotNull, ItemNotNull]
         IEnumerable<TEdge> Apply([NotNull] TVertex source);
     }

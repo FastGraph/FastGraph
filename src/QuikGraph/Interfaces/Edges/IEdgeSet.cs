@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -33,6 +33,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">Edge to check.</param>
         /// <returns>True if the specified <paramref name="edge"/> is contained in this set, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
         bool ContainsEdge([NotNull] TEdge edge);
     }

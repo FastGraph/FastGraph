@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using JetBrains.Annotations;
 using static QuikGraph.Graphviz.DotEscapers;
@@ -19,6 +19,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Record cells.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull, ItemNotNull]
         public GraphvizRecordCellCollection Cells
         {

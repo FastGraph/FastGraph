@@ -10,7 +10,7 @@ namespace QuikGraph.Data
     public class DataSetGraph : BidirectionalGraph<DataTable, DataRelationEdge>
     {
         /// <summary>
-        /// Wrapped <see cref="System.Data.DataSet"/>.
+        /// Wrapped <see cref="T:System.Data.DataSet"/>.
         /// </summary>
         public DataSet DataSet { get; }
 
@@ -18,6 +18,7 @@ namespace QuikGraph.Data
         /// Initializes a new instance of the <see cref="DataSetGraph"/> class.
         /// </summary>
         /// <param name="dataSet">Set of data.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="dataSet"/> is <see langword="null"/>.</exception>
         internal DataSetGraph([NotNull] DataSet dataSet)
         {
             DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));

@@ -17,6 +17,7 @@ namespace QuikGraph.Algorithms.VertexColoring
         /// Initializes a new instance of the <see cref="VertexColoringAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public VertexColoringAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {

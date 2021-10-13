@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -16,6 +16,7 @@ namespace QuikGraph
         /// Initializes a new instance of the <see cref="VertexEventArgs{TVertex}"/> class.
         /// </summary>
         /// <param name="vertex">Concerned vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         public VertexEventArgs([NotNull] TVertex vertex)
         {
             if (vertex == null)

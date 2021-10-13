@@ -1,4 +1,4 @@
-#if SUPPORTS_GRAPHS_SERIALIZATION
+﻿#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -29,6 +29,7 @@ namespace QuikGraph.Serialization
         /// Initializes a new instance of the <see cref="GraphMLXmlResolver"/> class.
         /// </summary>
         /// <param name="baseResolver">Base XML resolver.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="baseResolver"/> is <see langword="null"/>.</exception>
         public GraphMLXmlResolver([NotNull] XmlResolver baseResolver)
         {
             _baseResolver = baseResolver ?? throw new ArgumentNullException(nameof(baseResolver));

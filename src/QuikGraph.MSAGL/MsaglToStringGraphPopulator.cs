@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.MSAGL
@@ -17,6 +17,7 @@ namespace QuikGraph.MSAGL
         /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
         /// <param name="formatProvider">Graph format provider.</param>
         /// <param name="format">Graph format.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public MsaglToStringGraphPopulator(
             [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
             [CanBeNull] string format = null,

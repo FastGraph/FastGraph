@@ -1,4 +1,4 @@
-#if SUPPORTS_GRAPHS_SERIALIZATION
+﻿#if SUPPORTS_GRAPHS_SERIALIZATION
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +39,8 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets all properties that are marked with <see cref="XmlAttributeAttribute"/> on given type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Object type.</param>
+        /// <returns>Enumerable of serializable properties information.</returns>
         [Pure]
         [NotNull]
         public static IEnumerable<PropertySerializationInfo> GetAttributeProperties([CanBeNull] Type type)

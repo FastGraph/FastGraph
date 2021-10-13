@@ -16,6 +16,7 @@ namespace QuikGraph.Data
         /// Initializes a new instance of the <see cref="DataSetGraphvizAlgorithm"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to DOT.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public DataSetGraphvizAlgorithm([NotNull] DataSetGraph visitedGraph)
             : base(visitedGraph)
         {
@@ -27,6 +28,7 @@ namespace QuikGraph.Data
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to DOT.</param>
         /// <param name="imageType">Target output image type.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public DataSetGraphvizAlgorithm(
             [NotNull] DataSetGraph visitedGraph,
             GraphvizImageType imageType)
@@ -45,10 +47,10 @@ namespace QuikGraph.Data
         }
 
         /// <summary>
-        /// Formats a <see cref="DataTable"/> (a table).
+        /// Formats a <see cref="T:System.Data.DataTable"/> (a table).
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
+        /// <param name="sender">The <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> performing the formatting.</param>
+        /// <param name="args">Vertex event arguments.</param>
         protected virtual void FormatTable([NotNull] object sender, [NotNull] FormatVertexEventArgs<DataTable> args)
         {
             Debug.Assert(sender != null);
@@ -95,6 +97,8 @@ namespace QuikGraph.Data
         /// <summary>
         /// Formats a <see cref="DataRelationEdge"/> (a relation between tables).
         /// </summary>
+        /// <param name="sender">The <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> performing the formatting.</param>
+        /// <param name="args">Edge event arguments.</param>
         protected virtual void FormatRelation([NotNull] object sender, [NotNull] FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
         {
             Debug.Assert(sender != null);

@@ -22,7 +22,7 @@ namespace QuikGraph.Serialization
     /// <remarks>
     /// <para>
     /// Custom vertex, edge and graph attributes can be specified by 
-    /// using the <see cref="System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
+    /// using the <see cref="T:System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
     /// </para>
     /// <para>
     /// The serializer uses LCG (lightweight code generation) to generate the 
@@ -253,6 +253,14 @@ namespace QuikGraph.Serialization
         /// <param name="graph">Graph instance to fill.</param>
         /// <param name="vertexFactory">Vertex factory method.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><see cref="GraphMLTag"/> or <see cref="GraphTag"/> not found.</exception>
+        /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+        /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public void Deserialize(
             [NotNull] XmlReader reader,
             [NotNull] TGraph graph,
@@ -345,13 +353,12 @@ namespace QuikGraph.Serialization
                 var vertices = new Dictionary<string, TVertex>(StringComparer.Ordinal);
 
                 // Read vertices or edges
-                XmlReader reader = _reader;
-                while (reader.Read())
+                while (_reader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element
-                        && reader.NamespaceURI == _graphMLNamespace)
+                    if (_reader.NodeType == XmlNodeType.Element
+                        && _reader.NamespaceURI == _graphMLNamespace)
                     {
-                        switch (reader.Name)
+                        switch (_reader.Name)
                         {
                             case NodeTag:
                                 ReadVertex(vertices);

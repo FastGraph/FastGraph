@@ -1,4 +1,4 @@
-#if SUPPORTS_CRYPTO_RANDOM
+﻿#if SUPPORTS_CRYPTO_RANDOM
 using System;
 using System.Security.Cryptography;
 using JetBrains.Annotations;
@@ -10,7 +10,7 @@ namespace QuikGraph.Utils
     /// </summary>
     /// <remarks>
     /// Note that because of security issue the seed is unused in this random number generator.
-    /// Note also that it is slower than classic <see cref="Random"/> but on purpose.
+    /// Note also that it is slower than classic <see cref="T:System.Random"/> but on purpose.
     /// </remarks>
     public class CryptoRandom : Random
     {
@@ -30,7 +30,7 @@ namespace QuikGraph.Utils
         /// <summary>
         /// Initializes a new instance of the <see cref="CryptoRandom"/> class.
         /// </summary>
-        /// <param name="ignoredSeed">Seed is ignored, just to keep same API as <see cref="Random"/>.</param>
+        /// <param name="ignoredSeed">Seed is ignored, just to keep same API as <see cref="T:System.Random"/>.</param>
         // ReSharper disable once UnusedParameter.Local
         public CryptoRandom(int ignoredSeed)
         {

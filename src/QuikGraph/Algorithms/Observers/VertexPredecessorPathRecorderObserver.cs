@@ -31,6 +31,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="VertexPredecessorPathRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="verticesPredecessors">Vertices predecessors.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesPredecessors"/> is <see langword="null"/>.</exception>
         public VertexPredecessorPathRecorderObserver(
             [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
         {
@@ -58,12 +59,7 @@ namespace QuikGraph.Algorithms.Observers
         public IEnumerable<IEnumerable<TEdge>> AllPaths()
         {
             return EndPathVertices
-                .Select(vertex =>
-                {
-                    if (VerticesPredecessors.TryGetPath(vertex, out IEnumerable<TEdge> path))
-                        return path;
-                    return null;
-                })
+                .Select(vertex => VerticesPredecessors.TryGetPath(vertex, out IEnumerable<TEdge> path) ? path : null)
                 .Where(path => path != null);
         }
 

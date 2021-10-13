@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -21,6 +21,11 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">The source vertex.</param>
         /// <param name="target">The target vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException">
+        /// <paramref name="target"/> is not lower than <paramref name="source"/> when using <see cref="M:System.Collections.Generic.Comparer{T}.Default"/>.
+        /// </exception>
         public UndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target)
         {
             if (source == null)

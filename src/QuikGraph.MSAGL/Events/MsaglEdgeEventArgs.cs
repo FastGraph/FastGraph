@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
@@ -17,7 +17,9 @@ namespace QuikGraph.MSAGL
         /// Initializes a new instance of the <see cref="MsaglEdgeEventArgs{TVertex, TEdge}"/> class.
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
-        /// <param name="msaglEdge">Concerned <see cref="Edge"/>.</param>
+        /// <param name="msaglEdge">Concerned <see cref="T:Microsoft.Msagl.Drawing.Edge"/>.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="msaglEdge"/> is <see langword="null"/>.</exception>
         public MsaglEdgeEventArgs([NotNull] TEdge edge, [NotNull] Edge msaglEdge)
             : base(edge)
         {
@@ -25,7 +27,7 @@ namespace QuikGraph.MSAGL
         }
 
         /// <summary>
-        /// Edge concerned by the event.
+        /// <see cref="T:Microsoft.Msagl.Drawing.Edge"/> concerned by the event.
         /// </summary>
         [NotNull]
         public Edge MsaglEdge { get; }

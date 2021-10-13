@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Petri
@@ -13,6 +13,8 @@ namespace QuikGraph.Petri
         /// </summary>
         /// <param name="place">Place (Source).</param>
         /// <param name="transition">Transition (Target).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
         public Arc([NotNull] IPlace<TToken> place, [NotNull] ITransition<TToken> transition)
             : base(place, transition)
         {
@@ -26,6 +28,8 @@ namespace QuikGraph.Petri
         /// </summary>
         /// <param name="transition">Transition (Source).</param>
         /// <param name="place">Place (Target).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
         public Arc([NotNull] ITransition<TToken> transition, [NotNull] IPlace<TToken> place)
             : base(place, transition)
         {
@@ -47,6 +51,7 @@ namespace QuikGraph.Petri
         private IExpression<TToken> _annotation = new IdentityExpression<TToken>();
 
         /// <inheritdoc />
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         public IExpression<TToken> Annotation
         {
             get => _annotation;

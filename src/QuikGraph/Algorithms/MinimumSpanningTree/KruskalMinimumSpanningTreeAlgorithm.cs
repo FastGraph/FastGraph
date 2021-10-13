@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
@@ -24,6 +24,8 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public KruskalMinimumSpanningTreeAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)
@@ -37,6 +39,8 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public KruskalMinimumSpanningTreeAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
@@ -79,13 +83,17 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         {
             var sets = new ForestDisjointSet<TVertex>(VisitedGraph.VertexCount);
             foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
                 sets.MakeSet(vertex);
+            }
 
             ThrowIfCancellationRequested();
 
             var queue = new BinaryQueue<TEdge, double>(_edgeWeights);
             foreach (TEdge edge in VisitedGraph.Edges)
+            {
                 queue.Enqueue(edge);
+            }
 
             ThrowIfCancellationRequested();
 

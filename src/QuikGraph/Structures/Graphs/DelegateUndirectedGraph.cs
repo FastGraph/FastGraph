@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +25,8 @@ namespace QuikGraph
         /// Note that get of edges is delegated so you may have bugs related
         /// to parallel edges due to the delegated implementation.
         /// </param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetAdjacentEdges"/> is <see langword="null"/>.</exception>
         public DelegateUndirectedGraph(
             [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
             [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetAdjacentEdges,

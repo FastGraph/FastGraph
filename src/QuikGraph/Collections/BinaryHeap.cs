@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -49,6 +49,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="BinaryHeap{TPriority,TValue}"/> class.
         /// </summary>
         /// <param name="capacity">Heap capacity.</param>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public BinaryHeap(int capacity)
             : this(capacity, Comparer<TPriority>.Default.Compare)
         {
@@ -58,6 +59,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="BinaryHeap{TPriority,TValue}"/> class.
         /// </summary>
         /// <param name="priorityComparison">Priority comparer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
         public BinaryHeap([NotNull] Comparison<TPriority> priorityComparison)
             : this(DefaultCapacity, priorityComparison)
         {
@@ -68,6 +70,8 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="capacity">Heap capacity.</param>
         /// <param name="priorityComparison">Priority comparer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public BinaryHeap(int capacity, [NotNull] Comparison<TPriority> priorityComparison)
         {
             if (capacity < 0)
@@ -173,7 +177,7 @@ namespace QuikGraph.Collections
         /// Gets the minimum pair.
         /// </summary>
         /// <returns>The minimal pair.</returns>
-        /// <exception cref="InvalidOperationException">The heap is empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TPriority, TValue> Minimum()
         {
             if (Count == 0)
@@ -185,7 +189,7 @@ namespace QuikGraph.Collections
         /// Gets and removes the minimal pair.
         /// </summary>
         /// <returns>The minimal pair.</returns>
-        /// <exception cref="InvalidOperationException">The heap is empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TPriority, TValue> RemoveMinimum()
         {
 #if BINARY_HEAP_DEBUG
@@ -220,9 +224,13 @@ namespace QuikGraph.Collections
                 int right = 2 * index + 2;
                 int smallest = index;
                 if (left < Count && Less(left, smallest))
+                {
                     smallest = left;
+                }
                 if (right < Count && Less(right, smallest))
+                {
                     smallest = right;
+                }
 
                 if (smallest == index)
                     break;
@@ -266,14 +274,17 @@ namespace QuikGraph.Collections
             // If it exists, update, else add
             if (index > -1)
             {
-                TPriority newPriority = priority;
                 TPriority oldPriority = _items[index].Key;
-                _items[index] = new KeyValuePair<TPriority, TValue>(newPriority, value);
+                _items[index] = new KeyValuePair<TPriority, TValue>(priority, value);
 
-                if (PriorityComparison(newPriority, oldPriority) > 0)
+                if (PriorityComparison(priority, oldPriority) > 0)
+                {
                     MinHeapifyDown(index);
-                else if (PriorityComparison(newPriority, oldPriority) < 0)
+                }
+                else if (PriorityComparison(priority, oldPriority) < 0)
+                {
                     MinHeapifyUp(index);
+                }
             }
             else
             {
@@ -394,7 +405,9 @@ namespace QuikGraph.Collections
         {
             var array = new TValue[Count];
             for (int i = 0; i < Count; ++i)
+            {
                 array[i] = _items[i].Value;
+            }
             return array;
         }
 
@@ -421,25 +434,31 @@ namespace QuikGraph.Collections
             TPriority k = kvp.Key;
             TValue v = kvp.Value;
 
-            return $"{k.ToString()} {(v == null ? "null" : v.ToString())}";
+            return $"{k} {(v == null ? "null" : v.ToString())}";
         }
 
         /// <summary>
         /// Checks if this heap is consistent (fulfill indexing rule).
         /// </summary>
         /// <returns>True if the heap is consistent, false otherwise.</returns>
+        [Pure]
         internal bool IsConsistent()
         {
             int wrong = -1;
 
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < Count; ++i)
             {
                 int l = 2 * i + 1;
                 int r = 2 * i + 2;
                 if (l < Count && !LessOrEqual(i, l))
+                {
                     wrong = i;
+                }
+
                 if (r < Count && !LessOrEqual(i, r))
+                {
                     wrong = i;
+                }
             }
 
             bool correct = wrong == -1;

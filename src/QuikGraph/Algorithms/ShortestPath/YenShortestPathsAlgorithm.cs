@@ -60,7 +60,9 @@ namespace QuikGraph.Algorithms.ShortestPath
             internal EquatableTaggedEdge<TVertex, double>[] GetEdges(int count)
             {
                 if (count > _edges.Count)
+                {
                     count = _edges.Count;
+                }
 
                 Debug.Assert(count >= 0 && count <= _edges.Count);
 
@@ -117,7 +119,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// Initializes a new instance of the <see cref="YenShortestPathsAlgorithm{TVertex}"/> class.
         /// </summary>
         /// <remarks>
-        /// <see cref="double"/> for tag type (edge) which comes from Dijkstra’s algorithm, which is used to get one shortest path.
+        /// <see cref="T:System.Double"/> for tag type (edge) which comes from Dijkstra’s algorithm, which is used to get one shortest path.
         /// </remarks>
         /// <param name="graph">Graph to visit.</param>
         /// <param name="source">Source vertex.</param>
@@ -125,6 +127,12 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="k">Maximum number of path to search.</param>
         /// <param name="edgeWeights">Optional function that computes the weight for a given edge.</param>
         /// <param name="filter">Optional filter of found paths.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="source"/> is not part of <paramref name="graph"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="target"/> is not part of <paramref name="graph"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="k"/> is lower than 1.</exception>
         public YenShortestPathsAlgorithm(
             [NotNull] AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
             [NotNull] TVertex source,
@@ -139,6 +147,10 @@ namespace QuikGraph.Algorithms.ShortestPath
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
+            if (!graph.ContainsVertex(source))
+                throw new ArgumentException("Source must be in the graph", nameof(source));
+            if (!graph.ContainsVertex(target))
+                throw new ArgumentException("Target must be in the graph", nameof(source));
             if (k < 1)
                 throw new ArgumentOutOfRangeException(nameof(k), "Value must be positive.");
 
@@ -169,18 +181,9 @@ namespace QuikGraph.Algorithms.ShortestPath
             return edges.Sum(edge => _weights(edge));
         }
 
-        private void AssertSourceAndTargetInGraph()
-        {
-            // In case the root or target vertex is not in the graph then there is no path found
-            if (!_graph.ContainsVertex(_sourceVertex) || !_graph.ContainsVertex(_targetVertex))
-                throw new NoPathFoundException();
-        }
-
         [Pure]
         private SortedPath GetInitialShortestPath()
         {
-            AssertSourceAndTargetInGraph();
-
             // Find the first shortest way from source to target
             SortedPath? shortestPath = GetShortestPathInGraph(_graph, _sourceVertex, _targetVertex);
             // In case of Dijkstra’s algorithm couldn't find any ways
@@ -206,7 +209,9 @@ namespace QuikGraph.Algorithms.ShortestPath
             var recorder = new VertexPredecessorRecorderObserver<TVertex, EquatableTaggedEdge<TVertex, double>>();
 
             using (recorder.Attach(algorithm))
+            {
                 algorithm.Compute(source);
+            }
 
             // Get shortest path from start (source) vertex to target
             return recorder.TryGetPath(target, out IEnumerable<EquatableTaggedEdge<TVertex, double>> path)
@@ -284,7 +289,9 @@ namespace QuikGraph.Algorithms.ShortestPath
 
                     // Add the potential k-shortest path to the heap
                     if (!shortestPathCandidates.Contains(totalPath))
+                    {
                         shortestPathCandidates.Enqueue(totalPath);
+                    }
                 }
 
                 // Add back the edges and nodes that were removed from the graph
@@ -313,6 +320,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// Runs the algorithm.
         /// </summary>
         /// <returns>Found paths.</returns>
+        /// <exception cref="NoPathFoundException">No shortest path was found.</exception>
         [Pure]
         [NotNull]
         public IEnumerable<SortedPath> Execute()

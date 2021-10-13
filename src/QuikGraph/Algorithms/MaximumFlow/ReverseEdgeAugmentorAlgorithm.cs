@@ -21,6 +21,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public ReversedEdgeAugmentorAlgorithm(
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
@@ -114,7 +116,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
 
                     // Setup reversed if needed
                     if (!ReversedEdges.ContainsKey(reversedEdge))
+                    {
                         ReversedEdges[reversedEdge] = edge;
+                    }
 
                     continue;
                 }
@@ -154,7 +158,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Adds auxiliary edges to <see cref="VisitedGraph"/> to store residual flows.
         /// </summary>
-        /// <exception cref="InvalidOperationException">If the graph is already augmented.</exception>
+        /// <exception cref="T:System.InvalidOperationException">If the graph is already augmented.</exception>
         public void AddReversedEdges()
         {
             if (Augmented)
@@ -172,14 +176,16 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Removes reversed edges that were added.
         /// </summary>
-        /// <exception cref="InvalidOperationException">If the graph was not augmented yet.</exception>
+        /// <exception cref="T:System.InvalidOperationException">If the graph was not augmented yet.</exception>
         public void RemoveReversedEdges()
         {
             if (!Augmented)
                 throw new InvalidOperationException("Graph is not augmented yet.");
 
             foreach (TEdge edge in _augmentedEdges)
+            {
                 VisitedGraph.RemoveEdge(edge);
+            }
 
             _augmentedEdges.Clear();
             ReversedEdges.Clear();
@@ -193,7 +199,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         void IDisposable.Dispose()
         {
             if (Augmented)
+            {
                 RemoveReversedEdges();
+            }
         }
 
         #endregion

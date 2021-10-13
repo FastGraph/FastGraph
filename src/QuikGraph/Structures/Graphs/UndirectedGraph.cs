@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -64,6 +64,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
         /// <param name="edgeEqualityComparer">Equality comparer to use to compare edges.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeEqualityComparer"/> is <see langword="null"/>.</exception>
         public UndirectedGraph(bool allowParallelEdges, [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer)
         {
             AllowParallelEdges = allowParallelEdges;
@@ -116,6 +117,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">Vertex to get adjacent ones.</param>
         /// <returns>Set of adjacent vertices.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public IEnumerable<TVertex> AdjacentVertices([NotNull] TVertex vertex)
@@ -485,6 +487,7 @@ namespace QuikGraph
         /// Clears edges of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         public void ClearEdges([NotNull] TVertex vertex)
         {
             ClearAdjacentEdges(vertex);
@@ -680,6 +683,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edges">Edges to remove.</param>
         /// <returns>The number of removed edges.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
+        /// </exception>
         public int RemoveEdges([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
         {
             if (edges is null)

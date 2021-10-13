@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -29,6 +29,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="VertexTimeStamperObserver{TVertex}"/> class.
         /// </summary>
         /// <param name="discoverTimes">Vertices discover times.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="discoverTimes"/> is <see langword="null"/>.</exception>
         public VertexTimeStamperObserver([NotNull] IDictionary<TVertex, int> discoverTimes)
         {
             DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
@@ -40,6 +41,8 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <param name="discoverTimes">Vertices discover times.</param>
         /// <param name="finishTimes">Vertices fully treated times.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="discoverTimes"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="finishTimes"/> is <see langword="null"/>.</exception>
         public VertexTimeStamperObserver(
             [NotNull] IDictionary<TVertex, int> discoverTimes,
             [NotNull] IDictionary<TVertex, int> finishTimes)
@@ -70,13 +73,17 @@ namespace QuikGraph.Algorithms.Observers
 
             algorithm.DiscoverVertex += OnVertexDiscovered;
             if (FinishTimes != null)
+            {
                 algorithm.FinishVertex += OnVertexFinished;
+            }
 
             return Finally(() =>
             {
                 algorithm.DiscoverVertex -= OnVertexDiscovered;
                 if (FinishTimes != null)
+                {
                     algorithm.FinishVertex -= OnVertexFinished;
+                }
             });
         }
 

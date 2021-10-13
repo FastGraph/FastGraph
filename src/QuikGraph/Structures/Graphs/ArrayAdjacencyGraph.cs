@@ -28,20 +28,21 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of the <see cref="ArrayAdjacencyGraph{TVertex,TEdge}"/> class.
         /// </summary>
-        /// <param name="visitedGraph">Graph to visit.</param>
-        public ArrayAdjacencyGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        /// <param name="baseGraph">Wrapped graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
+        public ArrayAdjacencyGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
-            if (visitedGraph is null)
-                throw new ArgumentNullException(nameof(visitedGraph));
+            if (baseGraph is null)
+                throw new ArgumentNullException(nameof(baseGraph));
 
-            AllowParallelEdges = visitedGraph.AllowParallelEdges;
-            _vertexOutEdges = new Dictionary<TVertex, TEdge[]>(visitedGraph.VertexCount);
-            EdgeCount = visitedGraph.EdgeCount;
-            foreach (TVertex vertex in visitedGraph.Vertices)
+            AllowParallelEdges = baseGraph.AllowParallelEdges;
+            _vertexOutEdges = new Dictionary<TVertex, TEdge[]>(baseGraph.VertexCount);
+            EdgeCount = baseGraph.EdgeCount;
+            foreach (TVertex vertex in baseGraph.Vertices)
             {
                 _vertexOutEdges.Add(
                     vertex,
-                    visitedGraph.OutEdges(vertex).ToArray());
+                    baseGraph.OutEdges(vertex).ToArray());
             }
         }
 

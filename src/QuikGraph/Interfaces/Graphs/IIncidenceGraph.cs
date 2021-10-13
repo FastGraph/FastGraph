@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace QuikGraph
@@ -19,6 +19,8 @@ namespace QuikGraph
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if an edge exists, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
 
@@ -30,6 +32,8 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edge">Edge found, otherwise null.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edge:notnull;=> false, edge:null")]
         bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
@@ -42,6 +46,8 @@ namespace QuikGraph
         /// <param name="target">Target vertex.</param>
         /// <param name="edges">Edges found, otherwise null.</param>
         /// <returns>True if at least an edge was found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
         bool TryGetEdges([NotNull] TVertex source, [NotNull] TVertex target, [ItemNotNull] out IEnumerable<TEdge> edges);

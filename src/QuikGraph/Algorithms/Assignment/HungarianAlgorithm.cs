@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -72,6 +72,7 @@ namespace QuikGraph.Algorithms.Assignment
         /// Initializes a new instance of the <see cref="HungarianAlgorithm"/> class.
         /// </summary>
         /// <param name="costs">Costs matrix.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="costs"/> is <see langword="null"/>.</exception>
         public HungarianAlgorithm([NotNull] int[,] costs)
         {
             _costs = costs ?? throw new ArgumentNullException(nameof(costs));
@@ -135,27 +136,23 @@ namespace QuikGraph.Algorithms.Assignment
             {
                 case Steps.Step1:
                 {
-                    Steps currentStep = step;
                     _step = RunStep1(_masks, _colsCovered, _width, _height);
-                    return currentStep;
+                    return step;
                 }
                 case Steps.Step2:
                 {
-                    Steps currentStep = step;
                     _step = RunStep2(_costs, _masks, _rowsCovered, _colsCovered, _width, _height, ref _pathStart);
-                    return currentStep;
+                    return step;
                 }
                 case Steps.Step3:
                 {
-                    Steps currentStep = step;
                     _step = RunStep3(_masks, _rowsCovered, _colsCovered, _width, _height, _path, _pathStart);
-                    return currentStep;
+                    return step;
                 }
                 case Steps.Step4:
                 {
-                    Steps currentStep = step;
                     _step = RunStep4(_costs, _rowsCovered, _colsCovered, _width, _height);
-                    return currentStep;
+                    return step;
                 }
             }
 
@@ -209,9 +206,14 @@ namespace QuikGraph.Algorithms.Assignment
             {
                 int min = int.MaxValue;
                 for (int j = 0; j < _width; ++j)
+                {
                     min = Math.Min(min, _costs[i, j]);
+                }
+
                 for (int j = 0; j < _width; ++j)
+                {
                     _costs[i, j] -= min;
+                }
             }
 
             // Set 1 where job assigned
@@ -237,7 +239,9 @@ namespace QuikGraph.Algorithms.Assignment
                 for (int j = 0; j < width; ++j)
                 {
                     if (masks[i, j] == 1)
+                    {
                         colsCovered[j] = true;
+                    }
                 }
             }
 
@@ -245,7 +249,9 @@ namespace QuikGraph.Algorithms.Assignment
             for (int j = 0; j < width; ++j)
             {
                 if (colsCovered[j])
+                {
                     ++colsCoveredCount;
+                }
             }
 
             return colsCoveredCount == height ? Steps.End : Steps.Step2;
@@ -326,9 +332,14 @@ namespace QuikGraph.Algorithms.Assignment
                 for (int j = 0; j < width; ++j)
                 {
                     if (rowsCovered[i])
+                    {
                         costs[i, j] += minValue;
+                    }
+
                     if (!colsCovered[j])
+                    {
                         costs[i, j] -= minValue;
+                    }
                 }
             }
 
@@ -386,7 +397,9 @@ namespace QuikGraph.Algorithms.Assignment
                 for (int j = 0; j < width; ++j)
                 {
                     if (!rowsCovered[i] && !colsCovered[j])
+                    {
                         minValue = Math.Min(minValue, costs[i, j]);
+                    }
                 }
             }
 
@@ -442,9 +455,14 @@ namespace QuikGraph.Algorithms.Assignment
             int height)
         {
             for (int i = 0; i < height; ++i)
+            {
                 rowsCovered[i] = false;
+            }
+
             for (int j = 0; j < width; ++j)
+            {
                 colsCovered[j] = false;
+            }
         }
 
         private static void ClearPrimes(
@@ -457,7 +475,9 @@ namespace QuikGraph.Algorithms.Assignment
                 for (int j = 0; j < width; ++j)
                 {
                     if (masks[i, j] == 2)
+                    {
                         masks[i, j] = 0;
+                    }
                 }
             }
         }

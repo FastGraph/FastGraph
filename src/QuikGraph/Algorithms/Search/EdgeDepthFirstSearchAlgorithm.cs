@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -26,6 +26,7 @@ namespace QuikGraph.Algorithms.Search
         /// Initializes a new instance of the <see cref="EdgeDepthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EdgeDepthFirstSearchAlgorithm(
             [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TEdge, GraphColor>())
@@ -37,6 +38,8 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgesColors">Edges associated to their colors (treatment states).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgesColors"/> is <see langword="null"/>.</exception>
         public EdgeDepthFirstSearchAlgorithm(
             [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IDictionary<TEdge, GraphColor> edgesColors)
@@ -50,6 +53,8 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgesColors">Edges associated to their colors (treatment states).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgesColors"/> is <see langword="null"/>.</exception>
         public EdgeDepthFirstSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> visitedGraph,
@@ -71,11 +76,12 @@ namespace QuikGraph.Algorithms.Search
         /// Gets or sets the maximum exploration depth, from the start vertex.
         /// </summary>
         /// <remarks>
-        /// Defaulted at <see cref="int.MaxValue"/>.
+        /// Defaulted to <see cref="F:int.MaxValue"/>.
         /// </remarks>
         /// <value>
         /// Maximum exploration depth.
         /// </value>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is negative or equal to 0.</exception>
         public int MaxDepth
         {
             get => _maxDepth;
@@ -216,7 +222,9 @@ namespace QuikGraph.Algorithms.Search
 
                 // Process the rest of the graph edges
                 if (ProcessAllComponents)
+                {
                     VisitAllWhiteEdges();
+                }
             }
             else
             {

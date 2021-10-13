@@ -28,6 +28,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Label.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public GraphvizEdgeLabel Label
         {
@@ -78,6 +79,8 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Edge head.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException">Set extremity is not corresponding to a head one.</exception>
         [NotNull]
         public GraphvizEdgeExtremity Head
         {
@@ -110,6 +113,8 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Tail.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException">Set extremity is not corresponding to a tail one.</exception>
         [NotNull]
         public GraphvizEdgeExtremity Tail
         {

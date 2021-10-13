@@ -30,6 +30,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         protected UndirectedShortestPathAlgorithmBase(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
@@ -45,6 +47,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected UndirectedShortestPathAlgorithmBase(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
@@ -83,6 +88,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         /// <inheritdoc />
+        /// <exception cref="T:System.InvalidOperationException">Algorithm has not been run.</exception>
         public bool TryGetDistance(TVertex vertex, out double distance)
         {
             if (vertex == null)
@@ -94,6 +100,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         /// <inheritdoc />
+        /// <exception cref="T:System.InvalidOperationException">Algorithm has not been run.</exception>
         public double GetDistance(TVertex vertex)
         {
             bool vertexFound = TryGetDistance(vertex, out double distance);
@@ -188,7 +195,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
-        protected bool Relax(TEdge edge, TVertex source, TVertex target)
+        protected bool Relax([NotNull] TEdge edge, [NotNull] TVertex source, [NotNull] TVertex target)
         {
             Debug.Assert(edge != null);
             Debug.Assert(source != null);
@@ -204,9 +211,8 @@ namespace QuikGraph.Algorithms.ShortestPath
             double dv = GetVertexDistance(target);
             double we = Weights(edge);
 
-            IDistanceRelaxer relaxer = DistanceRelaxer;
-            double duwe = relaxer.Combine(du, we);
-            if (relaxer.Compare(duwe, dv) < 0)
+            double duwe = DistanceRelaxer.Combine(du, we);
+            if (DistanceRelaxer.Compare(duwe, dv) < 0)
             {
                 SetVertexDistance(target, duwe);
                 return true;

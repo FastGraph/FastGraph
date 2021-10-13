@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Predicates
@@ -18,6 +18,7 @@ namespace QuikGraph.Predicates
         /// Initializes a new instance of the <see cref="IsolatedVertexPredicate{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to consider.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IsolatedVertexPredicate([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
         {
             _visitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
@@ -29,6 +30,7 @@ namespace QuikGraph.Predicates
         /// <remarks>Check if the implemented predicate is matched.</remarks>
         /// <param name="vertex">Vertex to check.</param>
         /// <returns>True if the vertex is isolated, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         public bool Test([NotNull] TVertex vertex)
         {

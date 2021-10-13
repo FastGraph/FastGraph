@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
@@ -32,11 +32,8 @@ namespace QuikGraph
 
 #if SUPPORTS_SERIALIZATION
         /// <summary>
-        /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> with serialized data.
+        /// Constructor used during runtime serialization.
         /// </summary>
-        /// <param name="info"><see cref="SerializationInfo"/> that contains serialized data
-        /// concerning the thrown exception.</param>
-        /// <param name="context"><see cref="StreamingContext"/> that contains contextual information.</param>
         protected ParallelEdgeNotAllowedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

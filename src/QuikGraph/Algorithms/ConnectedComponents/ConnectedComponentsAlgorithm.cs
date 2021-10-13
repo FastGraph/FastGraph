@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
@@ -20,6 +20,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// Initializes a new instance of the <see cref="ConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
         {
@@ -30,6 +31,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="components">Graph components.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm(
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -43,6 +46,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="components">Graph components.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,

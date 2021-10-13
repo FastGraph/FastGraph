@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +25,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// Initializes a new instance of the <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public CyclePoppingRandomTreeAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
         {
@@ -35,6 +36,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeChain">Edge chain strategy to use.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public CyclePoppingRandomTreeAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
@@ -48,6 +51,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeChain">Edge chain strategy to use.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public CyclePoppingRandomTreeAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
@@ -92,6 +97,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Gets or sets the random number generator used in <see cref="RandomTree"/>.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public Random Rand
         {
@@ -276,6 +282,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// Runs a random tree generation starting at <paramref name="root"/> vertex.
         /// </summary>
         /// <param name="root">Tree starting vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         public void RandomTreeWithRoot([NotNull] TVertex root)
         {
             if (!VisitedGraph.ContainsVertex(root))
@@ -301,6 +309,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             } while (!success);
         }
 
+        [Pure]
         private bool Attempt(double epsilon)
         {
             Initialize();
@@ -321,8 +330,11 @@ namespace QuikGraph.Algorithms.RandomWalks
             return true;
         }
 
+        [Pure]
         private bool Explore(double eps, [NotNull] TVertex vertex, ref int numRoots)
         {
+            Debug.Assert(vertex != null);
+
             var visited = new Dictionary<TEdge, int>();
             TVertex current = vertex;
             while (NotInTree(current))
@@ -352,6 +364,8 @@ namespace QuikGraph.Algorithms.RandomWalks
 
         private void Colorize([NotNull] TVertex vertex)
         {
+            Debug.Assert(vertex != null);
+
             TVertex current = vertex;
             while (NotInTree(current))
             {

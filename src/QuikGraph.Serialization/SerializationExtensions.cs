@@ -23,6 +23,9 @@ namespace QuikGraph.Serialization
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">The graph to serialize.</param>
         /// <param name="stream">Stream in which serializing the graph.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not writable.</exception>
         public static void SerializeToBinary<TVertex, TEdge>(
             [NotNull] this IGraph<TVertex, TEdge> graph,
             [NotNull] Stream stream)
@@ -48,13 +51,15 @@ namespace QuikGraph.Serialization
         /// <param name="stream">Stream from which deserializing the graph.</param>
         /// <param name="binder">
         /// <para>
-        /// <see cref="SerializationBinder"/> used during deserialization.
+        /// <see cref="T:System.Runtime.Serialization.SerializationBinder"/> used during deserialization.
         /// It can be used to check/filter/replace/upgrade types that are loaded.
         /// </para>
         /// <para>It is also useful in security scenarios.</para>
         /// <para>By default no binder is used.</para>
         /// </param>
         /// <returns>Deserialized graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not readable.</exception>
         [Pure]
         public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
             [NotNull] this Stream stream,
@@ -154,7 +159,7 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Deserializes a graph instance from a generic XML stream, using an <see cref="XPathDocument"/>.
+        /// Deserializes a graph instance from a generic XML stream, using an <see cref="T:System.Xml.XPath.XPathDocument"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -167,7 +172,14 @@ namespace QuikGraph.Serialization
         /// <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
-        /// <exception cref="InvalidOperationException">
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="document"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graphFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="graphXPath"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="vertexXPath"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="edgeXPath"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">
         /// If the <paramref name="document"/> does not allow to get an XML navigator
         /// or if the <paramref name="graphXPath"/> does not allow to get graph node.
         /// </exception>
@@ -210,7 +222,7 @@ namespace QuikGraph.Serialization
 #endif
 
         /// <summary>
-        /// Deserializes a graph instance from a generic XML stream, using an <see cref="XmlReader"/>.
+        /// Deserializes a graph instance from a generic XML stream, using an <see cref="T:System.Xml.XmlReader"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -223,7 +235,14 @@ namespace QuikGraph.Serialization
         /// <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
-        /// <exception cref="InvalidOperationException">If the graph node cannot be found.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graphPredicate"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graphFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+        /// <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this XmlReader reader,
@@ -255,7 +274,7 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Deserializes a graph from a generic XML stream, using an <see cref="XmlReader"/>.
+        /// Deserializes a graph from a generic XML stream, using an <see cref="T:System.Xml.XmlReader"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -269,7 +288,15 @@ namespace QuikGraph.Serialization
         /// <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
         /// <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
         /// <returns>Deserialized graph.</returns>
-        /// <exception cref="InvalidOperationException">If the graph node cannot be found.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceUri"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graphFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="graphElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
             [NotNull] this XmlReader reader,
@@ -303,7 +330,7 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Serializes a graph instance to a generic XML stream, using an <see cref="XmlWriter"/>.
+        /// Serializes a graph instance to a generic XML stream, using an <see cref="T:System.Xml.XmlWriter"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -316,6 +343,14 @@ namespace QuikGraph.Serialization
         /// <param name="vertexElementName">Name of the vertex element.</param>
         /// <param name="edgeElementName">Name of the edge element.</param>
         /// <param name="namespaceUri">XML namespace.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceUri"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="graphElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] XmlWriter writer,
@@ -343,7 +378,7 @@ namespace QuikGraph.Serialization
         }
 
         /// <summary>
-        /// Serializes a graph instance to a generic XML stream, using an <see cref="XmlWriter"/>.
+        /// Serializes a graph instance to a generic XML stream, using an <see cref="T:System.Xml.XmlWriter"/>.
         /// </summary>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -359,6 +394,14 @@ namespace QuikGraph.Serialization
         /// <param name="writeGraphAttributes">Delegate to write graph attributes (optional).</param>
         /// <param name="writeVertexAttributes">Delegate to write vertex attributes (optional).</param>
         /// <param name="writeEdgeAttributes">Delegate to write edge attributes (optional).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceUri"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="graphElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
             [NotNull] this TGraph graph,
             [NotNull] XmlWriter writer,

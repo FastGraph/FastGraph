@@ -30,6 +30,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="EdgePredecessorRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="edgesPredecessors">Edges predecessors.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgesPredecessors"/> is <see langword="null"/>.</exception>
         public EdgePredecessorRecorderObserver(
             [NotNull] IDictionary<TEdge, TEdge> edgesPredecessors)
         {
@@ -74,6 +75,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <param name="startingEdge">Starting edge.</param>
         /// <returns>Edge path.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="startingEdge"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public ICollection<TEdge> Path([NotNull] TEdge startingEdge)
@@ -111,6 +113,8 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="startingEdge">Starting edge.</param>
         /// <param name="colors">Edges colors mapping.</param>
         /// <returns>Merged path.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="startingEdge"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="colors"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull, ItemNotNull]
         public ICollection<TEdge> MergedPath(
@@ -175,7 +179,9 @@ namespace QuikGraph.Algorithms.Observers
             Debug.Assert(targetEdge != null);
 
             if (!EqualityComparer<TEdge>.Default.Equals(edge, targetEdge))
+            {
                 EdgesPredecessors[targetEdge] = edge;
+            }
         }
 
         private void OnEdgeFinished([NotNull] TEdge finishedEdge)

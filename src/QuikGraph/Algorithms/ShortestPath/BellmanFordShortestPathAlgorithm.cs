@@ -35,6 +35,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public BellmanFordShortestPathAlgorithm(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights)
@@ -48,6 +50,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BellmanFordShortestPathAlgorithm(
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> edgeWeights,
@@ -63,6 +68,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <param name="distanceRelaxer">Distance relaxer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BellmanFordShortestPathAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
@@ -209,12 +217,11 @@ namespace QuikGraph.Algorithms.ShortestPath
                     break;
             }
 
-            IDistanceRelaxer relaxer = DistanceRelaxer;
             foreach (TEdge edge in VisitedGraph.Edges)
             {
                 double edgeWeight = Weights(edge);
-                if (relaxer.Compare(
-                        relaxer.Combine(GetVertexDistance(edge.Source), edgeWeight),
+                if (DistanceRelaxer.Compare(
+                        DistanceRelaxer.Combine(GetVertexDistance(edge.Source), edgeWeight),
                         GetVertexDistance(edge.Target)) < 0)
                 {
                     OnEdgeMinimized(edge);

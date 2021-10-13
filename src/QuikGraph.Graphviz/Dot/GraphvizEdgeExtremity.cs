@@ -81,6 +81,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Adds this edge extremity parameters to the given <paramref name="parameters"/> map.
         /// </summary>
         /// <param name="parameters">Parameter map to fill.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
         public void AddParameters([NotNull] IDictionary parameters)
         {
             if (parameters is null)

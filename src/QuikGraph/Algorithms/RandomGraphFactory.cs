@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -16,6 +16,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static TVertex GetVertex<TVertex>(
@@ -35,6 +37,10 @@ namespace QuikGraph.Algorithms
         /// <param name="count">Number of vertices in the set.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is negative or equal 0.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is higher than <paramref name="vertices"/> count.</exception>
         [Pure]
         [NotNull]
         public static TVertex GetVertex<TVertex>(
@@ -69,6 +75,8 @@ namespace QuikGraph.Algorithms
         /// <param name="graph">The graph.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static TEdge GetEdge<TVertex, TEdge>(
@@ -90,6 +98,10 @@ namespace QuikGraph.Algorithms
         /// <param name="count">Number of edges in the set.</param>
         /// <param name="rng">Random number generator.</param>
         /// <returns>Chosen vertex.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is negative or equal 0.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is higher than <paramref name="edges"/> count.</exception>
         [Pure]
         [NotNull]
         public static TEdge GetEdge<TVertex, TEdge>(
@@ -136,8 +148,8 @@ namespace QuikGraph.Algorithms
             if (rng is null)
                 throw new ArgumentNullException(nameof(rng));
             if (vertexCount <= 0)
-                throw new ArgumentOutOfRangeException(nameof(vertexCount), "Must have at least one vertex.");
-            if (edgeCount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(vertexCount), "Must request at least one vertex.");
+            if (edgeCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(edgeCount), "Must not be negative.");
 
             var vertices = new TVertex[vertexCount];
@@ -160,7 +172,9 @@ namespace QuikGraph.Algorithms
                 while (!selfEdges && EqualityComparer<TVertex>.Default.Equals(a, b));
 
                 if (graph.AddEdge(edgeFactory(a, b)))
+                {
                     ++j;
+                }
             }
         }
 
@@ -177,6 +191,12 @@ namespace QuikGraph.Algorithms
         /// <param name="vertexCount">Number of vertices to create.</param>
         /// <param name="edgeCount">Number of edges to create.</param>
         /// <param name="selfEdges">Indicates if self edge are allowed.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="vertexCount"/> is negative or equal 0.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="edgeCount"/> is negative.</exception>
         public static void Create<TVertex, TEdge>(
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
             [NotNull, InstantHandle] VertexFactory<TVertex> vertexFactory,
@@ -203,6 +223,12 @@ namespace QuikGraph.Algorithms
         /// <param name="vertexCount">Number of vertices to create.</param>
         /// <param name="edgeCount">Number of edges to create.</param>
         /// <param name="selfEdges">Indicates if self edge are allowed.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="vertexCount"/> is negative or equal 0.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="edgeCount"/> is negative.</exception>
         public static void Create<TVertex, TEdge>(
             [NotNull] IMutableUndirectedGraph<TVertex, TEdge> graph,
             [NotNull, InstantHandle] VertexFactory<TVertex> vertexFactory,

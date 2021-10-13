@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -30,6 +30,7 @@ namespace QuikGraph.Algorithms.Observers
         /// Initializes a new instance of the <see cref="UndirectedVertexPredecessorRecorderObserver{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="verticesPredecessors">Vertices predecessors.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesPredecessors"/> is <see langword="null"/>.</exception>
         public UndirectedVertexPredecessorRecorderObserver(
             [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
         {
@@ -70,8 +71,10 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="vertex">Path ending vertex.</param>
         /// <param name="path">Path to the ending vertex.</param>
         /// <returns>True if a path was found, false otherwise.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        public bool TryGetPath(TVertex vertex, out IEnumerable<TEdge> path)
+        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
+        public bool TryGetPath([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> path)
         {
             return VerticesPredecessors.TryGetPath(vertex, out path);
         }

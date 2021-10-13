@@ -18,6 +18,8 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="clusteredGraph">Graph to format.</param>
         /// <param name="graphFormat">Graph format.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="clusteredGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graphFormat"/> is <see langword="null"/>.</exception>
         public FormatClusterEventArgs([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> clusteredGraph, [NotNull] GraphvizGraph graphFormat)
         {
             Cluster = clusteredGraph ?? throw new ArgumentNullException(nameof(clusteredGraph));

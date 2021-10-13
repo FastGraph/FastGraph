@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -24,6 +24,7 @@ namespace QuikGraph.Algorithms.Search
         /// Initializes a new instance of the <see cref="ImplicitEdgeDepthFirstSearchAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ImplicitEdgeDepthFirstSearchAlgorithm(
             [NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
@@ -35,6 +36,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ImplicitEdgeDepthFirstSearchAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
@@ -48,11 +50,12 @@ namespace QuikGraph.Algorithms.Search
         /// Gets or sets the maximum exploration depth, from the start vertex.
         /// </summary>
         /// <remarks>
-        /// Defaulted at <see cref="int.MaxValue"/>.
+        /// Defaulted to <see cref="F:int.MaxValue"/>.
         /// </remarks>
         /// <value>
         /// Maximum exploration depth.
         /// </value>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is negative or equal to 0.</exception>
         public int MaxDepth
         {
             get => _maxDepth;
@@ -226,9 +229,13 @@ namespace QuikGraph.Algorithms.Search
                 else
                 {
                     if (color == GraphColor.Gray)
+                    {
                         OnBackEdge(edge);
+                    }
                     else
+                    {
                         OnForwardOrCrossEdge(edge);
+                    }
                 }
             }
 

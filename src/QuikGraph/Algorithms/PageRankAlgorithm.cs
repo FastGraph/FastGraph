@@ -18,6 +18,7 @@ namespace QuikGraph.Algorithms.Ranking
         /// Initializes a new instance of the <see cref="PageRankAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public PageRankAlgorithm([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
@@ -35,6 +36,7 @@ namespace QuikGraph.Algorithms.Ranking
         /// Gets or sets the damping rate [0-1].
         /// </summary>
         /// <remarks>By default it uses 0.85 which is the value generally used.</remarks>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is negative or higher than 1.</exception>
         public double Damping
         {
             get => _damping;
@@ -51,6 +53,7 @@ namespace QuikGraph.Algorithms.Ranking
         /// <summary>
         /// Gets or sets the error tolerance (used to stop the algorithm).
         /// </summary>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is negative.</exception>
         public double Tolerance
         {
             get => _tolerance;
@@ -67,6 +70,7 @@ namespace QuikGraph.Algorithms.Ranking
         /// <summary>
         /// Gets or sets the maximum number of iterations.
         /// </summary>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">Value is negative or equal 0.</exception>
         public int MaxIterations
         {
             get => _maxIterations;

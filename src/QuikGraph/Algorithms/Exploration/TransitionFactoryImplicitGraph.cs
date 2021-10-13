@@ -55,6 +55,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// Adds a new <see cref="ITransitionFactory{TVertex,TEdge}"/> to this graph.
         /// </summary>
         /// <param name="transitionFactory">Transition factory to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactory"/> is <see langword="null"/>.</exception>
         public void AddTransitionFactory([NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             if (transitionFactory is null)
@@ -68,6 +69,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// Adds new <see cref="ITransitionFactory{TVertex,TEdge}"/>s to this graph.
         /// </summary>
         /// <param name="transitionFactories">Transition factories to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactories"/> is <see langword="null"/>.</exception>
         public void AddTransitionFactories(
             [NotNull, ItemNotNull] IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
         {
@@ -97,10 +99,12 @@ namespace QuikGraph.Algorithms.Exploration
 
             void CleanNotProcessedCache()
             {
-                foreach (var pair in _verticesNotProcessedCache.ToArray())
+                foreach (KeyValuePair<TVertex, HashSet<ITransitionFactory<TVertex, TEdge>>> pair in _verticesNotProcessedCache.ToArray())
                 {
                     if (pair.Value.Count == 0 || pair.Value.Contains(transitionFactory))
+                    {
                         _verticesNotProcessedCache.Remove(pair.Key);
+                    }
                 }
             }
 
@@ -133,6 +137,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that a vertex must match to be the successor (target) of an edge.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public VertexPredicate<TVertex> SuccessorVertexPredicate
         {
@@ -150,6 +155,7 @@ namespace QuikGraph.Algorithms.Exploration
         /// <summary>
         /// Predicate that an edge must match to be the successor of a source vertex.
         /// </summary>
+        /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         [NotNull]
         public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate
         {
@@ -240,7 +246,9 @@ namespace QuikGraph.Algorithms.Exploration
                     continue;
 
                 if (edges is null)
+                {
                     edges = new EdgeList<TVertex, TEdge>();
+                }
 
                 foreach (TEdge edge in transitionFactory.Apply(vertex).Where(edge => SuccessorVertexPredicate(edge.Target)))
                 {
@@ -264,16 +272,16 @@ namespace QuikGraph.Algorithms.Exploration
 
             bool wasNotProcessed = _verticesNotProcessedCache.Remove(vertex);
 
-            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> e))
+            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edgeList))
             {
-                e = ExploreFactoriesForVertex(vertex);
+                edgeList = ExploreFactoriesForVertex(vertex);
 
-                if (e is null)
+                if (edgeList is null)
                 {
                     // Vertex has no out edges
                     if (wasNotProcessed)
                     {
-                        e = new EdgeList<TVertex, TEdge>();
+                        edgeList = new EdgeList<TVertex, TEdge>();
                     }
                     else
                     {
@@ -282,10 +290,10 @@ namespace QuikGraph.Algorithms.Exploration
                     }
                 }
 
-                _verticesEdgesCache[vertex] = e;
+                _verticesEdgesCache[vertex] = edgeList;
             }
 
-            edges = e.AsEnumerable();
+            edges = edgeList.AsEnumerable();
             return true;
         }
 

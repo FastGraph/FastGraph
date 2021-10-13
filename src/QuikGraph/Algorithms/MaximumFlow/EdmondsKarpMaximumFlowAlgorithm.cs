@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -27,6 +27,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <param name="reverseEdgesAugmentorAlgorithm">Algorithm that is in of charge of augmenting the graph (creating missing reversed edges).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="capacities"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reverseEdgesAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="reverseEdgesAugmentorAlgorithm"/> targets a graph different from <paramref name="visitedGraph"/>.</exception>
         public EdmondsKarpMaximumFlowAlgorithm(
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] Func<TEdge, double> capacities,
@@ -44,6 +49,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="capacities">Function that given an edge return the capacity of this edge.</param>
         /// <param name="edgeFactory">Edge factory method.</param>
         /// <param name="reverseEdgesAugmentorAlgorithm">Algorithm that is in of charge augmenting the graph (creating missing reversed edges).</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="capacities"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="reverseEdgesAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="reverseEdgesAugmentorAlgorithm"/> targets a graph different from <paramref name="visitedGraph"/>.</exception>
         public EdmondsKarpMaximumFlowAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
@@ -156,12 +166,16 @@ namespace QuikGraph.Algorithms.MaximumFlow
                     bfs.Compute(Source);
 
                 if (VerticesColors[Sink] != GraphColor.White)
+                {
                     Augment(Source, Sink);
+                }
             }
 
             MaxFlow = 0;
             foreach (TEdge edge in graph.OutEdges(Source))
-                MaxFlow += (Capacities(edge) - ResidualCapacities[edge]);
+            {
+                MaxFlow += Capacities(edge) - ResidualCapacities[edge];
+            }
         }
 
         #endregion

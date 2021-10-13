@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
@@ -25,6 +25,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// Initializes a new instance of the <see cref="IncrementalConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IncrementalConnectedComponentsAlgorithm(
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
@@ -36,6 +37,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// </summary>
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IncrementalConnectedComponentsAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
@@ -52,11 +54,15 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
             // Initialize one set per vertex
             foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
                 _sets.MakeSet(vertex);
+            }
 
             // Join existing edges
             foreach (TEdge edge in VisitedGraph.Edges)
+            {
                 _sets.Union(edge.Source, edge.Target);
+            }
 
             // Hook to graph event
             if (_hooked)
@@ -75,6 +81,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Number of components.
         /// </summary>
+        /// <exception cref="T:System.InvalidOperationException">The algorithm has not been run.</exception>
         public int ComponentCount
         {
             get
@@ -92,6 +99,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// Value contains the vertex -> component index map.
         /// </summary>
         /// <returns>Number of components associated to components vertex mapping.</returns>
+        /// <exception cref="T:System.InvalidOperationException">The algorithm has not been run.</exception>
         public KeyValuePair<int, IDictionary<TVertex, int>> GetComponents()
         {
             if (_sets is null)
@@ -99,13 +107,18 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
             var representatives = new Dictionary<TVertex, int>(_sets.SetCount);
             if (_components is null)
+            {
                 _components = new Dictionary<TVertex, int>(VisitedGraph.VertexCount);
+            }
+
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 TVertex representative = _sets.FindSet(vertex);
                 // ReSharper disable once AssignNullToNotNullAttribute, Justification: All graph vertices are in a set
                 if (!representatives.TryGetValue(representative, out int index))
+                {
                     representatives[representative] = index = representatives.Count;
+                }
                 _components[vertex] = index;
             }
 

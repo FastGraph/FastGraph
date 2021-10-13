@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Assignment
@@ -46,6 +47,11 @@ namespace QuikGraph.Algorithms.Assignment
             [NotNull] bool[] columnsCovered, 
             HungarianAlgorithm.Steps step)
         {
+            Debug.Assert(costs != null);
+            Debug.Assert(mask != null);
+            Debug.Assert(rowsCovered != null);
+            Debug.Assert(columnsCovered != null);
+
             Matrix = costs;
             Mask = mask;
             RowsCovered = rowsCovered;

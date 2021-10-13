@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace QuikGraph.Graphviz
 {
     /// <summary>
-    /// Helper extensions to render graphs to graphviz
+    /// Helper extensions to render graphs to graphviz.
     /// </summary>
     public static class GraphvizExtensions
     {
@@ -19,6 +19,7 @@ namespace QuikGraph.Graphviz
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to convert.</param>
         /// <returns>Graph serialized in DOT format.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string ToGraphviz<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
@@ -36,6 +37,8 @@ namespace QuikGraph.Graphviz
         /// <param name="graph">Graph to convert.</param>
         /// <param name="initAlgorithm">Delegate that initializes the DOT generation algorithm.</param>
         /// <returns>Graph serialized in DOT format.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string ToGraphviz<TVertex, TEdge>(
@@ -67,6 +70,7 @@ namespace QuikGraph.Graphviz
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <param name="graph">Graph to convert.</param>
         /// <returns>The svg graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string ToSvg<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
@@ -85,6 +89,8 @@ namespace QuikGraph.Graphviz
         /// <param name="graph">Graph to convert.</param>
         /// <param name="initAlgorithm">Delegate that initializes the DOT generation algorithm.</param>
         /// <returns>The svg graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string ToSvg<TVertex, TEdge>(
@@ -101,6 +107,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="dot">The dot graph</param>
         /// <returns>The svg graph.</returns>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
         public static string ToSvg([NotNull] string dot)

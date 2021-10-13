@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,6 +50,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="direction">Heap direction.</param>
         /// <param name="priorityComparison">Priority comparer.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
         public FibonacciHeap(HeapDirection direction, [NotNull] Comparison<TPriority> priorityComparison)
         {
             _cells = new FibonacciHeapLinkedList<TPriority, TValue>();
@@ -91,6 +92,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="priority">Value priority.</param>
         /// <param name="value">Value to add.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="priority"/> is <see langword="null"/>.</exception>
         public FibonacciHeapCell<TPriority, TValue> Enqueue([NotNull] TPriority priority, [CanBeNull] TValue value)
         {
             if (priority == null)
@@ -127,6 +129,8 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="cell">Cell to update the priority.</param>
         /// <param name="newPriority">New priority.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="cell"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="newPriority"/> is <see langword="null"/>.</exception>
         public void ChangeKey([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newPriority)
         {
             if (cell is null)
@@ -225,7 +229,9 @@ namespace QuikGraph.Collections
                     if (PriorityComparison(cell.Priority, child.Priority) * _directionMultiplier > 0)
                     {
                         if (toUpdate is null)
+                        {
                             toUpdate = new List<FibonacciHeapCell<TPriority, TValue>>();
+                        }
                         toUpdate.Add(child);
                     }
                 }
@@ -281,6 +287,7 @@ namespace QuikGraph.Collections
         /// Deletes the given <paramref name="cell"/> from this heap.
         /// </summary>
         /// <param name="cell">Cell to delete.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="cell"/> is <see langword="null"/>.</exception>
         public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
         {
             if (cell is null)
@@ -294,6 +301,7 @@ namespace QuikGraph.Collections
         /// Dequeues an element from the heap.
         /// </summary>
         /// <returns>Removed element.</returns>
+        /// <exception cref="T:System.InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TPriority, TValue> Dequeue()
         {
             if (Count == 0)
@@ -355,7 +363,7 @@ namespace QuikGraph.Collections
             FibonacciHeapCell<TPriority, TValue> cell = _cells.First;
             while (cell != null)
             {
-                var nextCell = ReduceCell(ref cell);
+                FibonacciHeapCell<TPriority, TValue> nextCell = ReduceCell(ref cell);
 
                 _degreeToCell[cell.Degree] = cell;
                 cell = nextCell;
@@ -422,7 +430,8 @@ namespace QuikGraph.Collections
         /// Merges the given <paramref name="heap"/> into this heap.
         /// </summary>
         /// <param name="heap">Heap to merge.</param>
-        /// <exception cref="Exception">If the heap is not in the same direction.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="heap"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException"><paramref name="heap"/> is not in the same direction as this heap.</exception>
         public void Merge([NotNull] FibonacciHeap<TPriority, TValue> heap)
         {
             if (heap is null)
@@ -515,9 +524,7 @@ namespace QuikGraph.Collections
         {
             var lines = new List<string>();
             int columnPosition = 0;
-            var list = new List<CellLevel>();
-            foreach (FibonacciHeapCell<TPriority, TValue> cell in _cells)
-                list.Add(new CellLevel(cell, 0));
+            var list = _cells.Select(cell => new CellLevel(cell, 0)).ToList();
             list.Reverse();
 
             var stack = new Stack<CellLevel>(list);
@@ -526,7 +533,9 @@ namespace QuikGraph.Collections
                 CellLevel currentCell = stack.Pop();
                 int lineNum = currentCell.Level;
                 if (lines.Count <= lineNum)
+                {
                     lines.Add(string.Empty);
+                }
 
                 string currentLine = lines[lineNum];
                 currentLine = currentLine.PadRight(columnPosition, ' ');

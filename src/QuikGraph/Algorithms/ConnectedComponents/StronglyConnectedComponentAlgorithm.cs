@@ -31,6 +31,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// Initializes a new instance of the <see cref="StronglyConnectedComponentsAlgorithm{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public StronglyConnectedComponentsAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
@@ -42,6 +43,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="components">Graph components.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public StronglyConnectedComponentsAlgorithm(
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
             [NotNull] IDictionary<TVertex, int> components)
@@ -55,6 +58,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <param name="components">Graph components.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public StronglyConnectedComponentsAlgorithm(
             [CanBeNull] IAlgorithmComponent host,
             [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
