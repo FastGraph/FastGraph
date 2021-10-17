@@ -191,14 +191,14 @@ namespace QuikGraph.Algorithms.RandomWalks
                 ThrowIfCancellationRequested();
 
                 // First pass: exploration
-                ExplorationPass(vertex);
+                Explore(vertex);
 
                 // Second pass: coloration
-                ColorizationPass(vertex);
+                Colorize(vertex);
             }
         }
 
-        private void ExplorationPass([NotNull] TVertex vertex)
+        private void Explore([NotNull] TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -211,123 +211,6 @@ namespace QuikGraph.Algorithms.RandomWalks
                 if (!TryGetNextInTree(current, out current))
                     break;
             }
-        }
-
-        private void ColorizationPass([NotNull] TVertex vertex)
-        {
-            Debug.Assert(vertex != null);
-
-            TVertex current = vertex;
-            while (NotInTree(current))
-            {
-                SetInTree(current);
-                if (!TryGetNextInTree(current, out current))
-                    break;
-            }
-        }
-
-        #endregion
-
-        private bool NotInTree([NotNull] TVertex vertex)
-        {
-            return VerticesColors[vertex] == GraphColor.White;
-        }
-
-        private void SetInTree([NotNull] TVertex vertex)
-        {
-            VerticesColors[vertex] = GraphColor.Black;
-            OnFinishVertex(vertex);
-        }
-
-        private bool TryGetSuccessor([NotNull] IDictionary<TEdge, int> visited, [NotNull] TVertex vertex, out TEdge successor)
-        {
-            IEnumerable<TEdge> outEdges = VisitedGraph.OutEdges(vertex);
-            IEnumerable<TEdge> edges = outEdges.Where(edge => !visited.ContainsKey(edge));
-            return EdgeChain.TryGetSuccessor(edges, vertex, out successor);
-        }
-
-        private void Tree([NotNull] TVertex vertex, [NotNull] TEdge next)
-        {
-            Debug.Assert(vertex != null);
-            Debug.Assert(next != null);
-
-            Successors[vertex] = next;
-            OnTreeEdge(next);
-        }
-
-        private bool TryGetNextInTree([NotNull] TVertex vertex, out TVertex next)
-        {
-            if (Successors.TryGetValue(vertex, out TEdge nextEdge))
-            {
-                next = nextEdge.Target;
-                return true;
-            }
-
-            next = default(TVertex);
-            return false;
-        }
-
-        private bool Chance(double eps)
-        {
-            return Rand.NextDouble() <= eps;
-        }
-
-        private void ClearTree([NotNull] TVertex vertex)
-        {
-            Successors[vertex] = default(TEdge);
-            OnClearTreeVertex(vertex);
-        }
-
-        /// <summary>
-        /// Runs a random tree generation starting at <paramref name="root"/> vertex.
-        /// </summary>
-        /// <param name="root">Tree starting vertex.</param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
-        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void RandomTreeWithRoot([NotNull] TVertex root)
-        {
-            if (!VisitedGraph.ContainsVertex(root))
-                throw new ArgumentException("The vertex must be in the graph.", nameof(root));
-
-            SetRootVertex(root);
-            Compute();
-        }
-
-        /// <summary>
-        /// Runs a random tree generation.
-        /// </summary>
-        public void RandomTree()
-        {
-            double epsilon = 1;
-            bool success;
-            do
-            {
-                ThrowIfCancellationRequested();
-
-                epsilon /= 2;
-                success = Attempt(epsilon);
-            } while (!success);
-        }
-
-        [Pure]
-        private bool Attempt(double epsilon)
-        {
-            Initialize();
-            int numRoots = 0;
-
-            foreach (TVertex vertex in VisitedGraph.Vertices)
-            {
-                ThrowIfCancellationRequested();
-
-                // First pass: exploration
-                if (!Explore(epsilon, vertex, ref numRoots))
-                    return false;
-
-                // Second pass: coloration
-                Colorize(vertex);
-            }
-
-            return true;
         }
 
         [Pure]
@@ -373,6 +256,114 @@ namespace QuikGraph.Algorithms.RandomWalks
                 if (!TryGetNextInTree(current, out current))
                     break;
             }
+        }
+
+        #endregion
+
+        [Pure]
+        private bool NotInTree([NotNull] TVertex vertex)
+        {
+            return VerticesColors[vertex] == GraphColor.White;
+        }
+
+        private void SetInTree([NotNull] TVertex vertex)
+        {
+            VerticesColors[vertex] = GraphColor.Black;
+            OnFinishVertex(vertex);
+        }
+
+        [Pure]
+        private bool TryGetSuccessor([NotNull] IDictionary<TEdge, int> visited, [NotNull] TVertex vertex, out TEdge successor)
+        {
+            IEnumerable<TEdge> outEdges = VisitedGraph.OutEdges(vertex);
+            IEnumerable<TEdge> edges = outEdges.Where(edge => !visited.ContainsKey(edge));
+            return EdgeChain.TryGetSuccessor(edges, vertex, out successor);
+        }
+
+        private void Tree([NotNull] TVertex vertex, [NotNull] TEdge next)
+        {
+            Debug.Assert(vertex != null);
+            Debug.Assert(next != null);
+
+            Successors[vertex] = next;
+            OnTreeEdge(next);
+        }
+
+        [Pure]
+        private bool TryGetNextInTree([NotNull] TVertex vertex, out TVertex next)
+        {
+            if (Successors.TryGetValue(vertex, out TEdge nextEdge))
+            {
+                next = nextEdge.Target;
+                return true;
+            }
+
+            next = default(TVertex);
+            return false;
+        }
+
+        [Pure]
+        private bool Chance(double eps)
+        {
+            return Rand.NextDouble() <= eps;
+        }
+
+        private void ClearTree([NotNull] TVertex vertex)
+        {
+            Successors[vertex] = default(TEdge);
+            OnClearTreeVertex(vertex);
+        }
+
+        [Pure]
+        private bool Attempt(double epsilon)
+        {
+            Initialize();
+            int numRoots = 0;
+
+            foreach (TVertex vertex in VisitedGraph.Vertices)
+            {
+                ThrowIfCancellationRequested();
+
+                // First pass: exploration
+                if (!Explore(epsilon, vertex, ref numRoots))
+                    return false;
+
+                // Second pass: coloration
+                Colorize(vertex);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Runs a random tree generation starting at <paramref name="root"/> vertex.
+        /// </summary>
+        /// <param name="root">Tree starting vertex.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
+        public void RandomTreeWithRoot([NotNull] TVertex root)
+        {
+            if (!VisitedGraph.ContainsVertex(root))
+                throw new ArgumentException("The vertex must be in the graph.", nameof(root));
+
+            SetRootVertex(root);
+            Compute();
+        }
+
+        /// <summary>
+        /// Runs a random tree generation.
+        /// </summary>
+        public void RandomTree()
+        {
+            double epsilon = 1;
+            bool success;
+            do
+            {
+                ThrowIfCancellationRequested();
+
+                epsilon /= 2;
+                success = Attempt(epsilon);
+            } while (!success);
         }
     }
 }
