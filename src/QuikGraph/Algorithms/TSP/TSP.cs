@@ -21,7 +21,7 @@ namespace QuikGraph.Algorithms.TSP
         private readonly TasksManager<TVertex, TEdge> _taskManager = new TasksManager<TVertex, TEdge>();
 
         /// <summary>
-        /// Shortest path found, otherwise null.
+        /// Shortest path found, otherwise <see langword="null"/>.
         /// </summary>
         [CanBeNull]
         public BidirectionalGraph<TVertex, TEdge> ResultPath { get; private set; }

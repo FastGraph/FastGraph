@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace QuikGraph.Algorithms.Services
 {
@@ -17,7 +17,7 @@ namespace QuikGraph.Algorithms.Services
         /// Gets the service with given <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">Service type.</typeparam>
-        /// <returns>Found service, otherwise null.</returns>
+        /// <returns>Found service, otherwise <see langword="null"/>.</returns>
         [Pure]
         [CanBeNull]
         T GetService<T>();

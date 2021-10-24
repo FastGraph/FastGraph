@@ -65,19 +65,19 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Graph reversed edges.
         /// </summary>
-        /// <remarks>Should be not null but may be empty.</remarks>
+        /// <remarks>Should be not <see langword="null"/> but may be empty.</remarks>
         public IDictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
 
         /// <summary>
         /// Flow source vertex.
         /// </summary>
-        /// <remarks>Must not be null to run the algorithm.</remarks>
+        /// <remarks>Must not be <see langword="null"/> to run the algorithm.</remarks>
         public TVertex Source { get; set; }
 
         /// <summary>
         /// Flow sink vertex.
         /// </summary>
-        /// <remarks>Must not be null to run the algorithm.</remarks>
+        /// <remarks>Must not be <see langword="null"/> to run the algorithm.</remarks>
         public TVertex Sink { get; set; }
 
         /// <summary>

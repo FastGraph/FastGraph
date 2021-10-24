@@ -71,7 +71,7 @@ namespace QuikGraph.Serialization
 
         /// <summary>
         /// Writes an array as space separated values. There is a space after every value, even the last one.
-        /// If array is null, it writes "null".
+        /// If array is <see langword="null"/>, it writes "null".
         /// If array is empty, it writes empty string.
         /// If array is a string array with only one element "null", then it writes "null ".
         /// </summary>

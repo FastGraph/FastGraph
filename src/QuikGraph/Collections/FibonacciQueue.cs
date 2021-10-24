@@ -41,7 +41,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="FibonacciQueue{TVertex,TDistance}"/> class.
         /// </summary>
         /// <param name="capacity">Initial capacity.</param>
-        /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
+        /// <param name="values">Set of vertices (<see langword="null"/> if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
@@ -57,7 +57,7 @@ namespace QuikGraph.Collections
         /// Initializes a new instance of the <see cref="FibonacciQueue{TVertex,TDistance}"/> class.
         /// </summary>
         /// <param name="capacity">Initial capacity.</param>
-        /// <param name="values">Set of vertices (null if <paramref name="capacity"/> is 0).</param>
+        /// <param name="values">Set of vertices (<see langword="null"/> if <paramref name="capacity"/> is 0).</param>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <param name="distanceComparison">Comparer of distances.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>

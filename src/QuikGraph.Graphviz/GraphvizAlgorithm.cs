@@ -81,7 +81,7 @@ namespace QuikGraph.Graphviz
         /// <summary>
         /// Dot output stream.
         /// </summary>
-        /// <remarks>Not null after a run of <see cref="Generate()"/> or <see cref="Generate(IDotEngine,string)"/>.</remarks>
+        /// <remarks>Not <see langword="null"/> after a run of <see cref="Generate()"/> or <see cref="Generate(IDotEngine,string)"/>.</remarks>
         public StringWriter Output { get; private set; }
 
         /// <summary>

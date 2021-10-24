@@ -36,7 +36,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        /// <remarks>It is null if the algorithm has not been run yet.</remarks>
+        /// <remarks>It is <see langword="null"/> if the algorithm has not been run yet.</remarks>
         [ItemNotNull]
         public TVertex[] SortedVertices { get; private set; }
 

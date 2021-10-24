@@ -153,25 +153,25 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Balancing flow source vertex.
         /// </summary>
-        /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
+        /// <remarks>Not <see langword="null"/> if the algorithm has been run (and not reverted).</remarks>
         public TVertex BalancingSource { get; private set; }
 
         /// <summary>
         /// Balancing source edge (between <see cref="BalancingSource"/> and <see cref="Source"/>).
         /// </summary>
-        /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
+        /// <remarks>Not <see langword="null"/> if the algorithm has been run (and not reverted).</remarks>
         public TEdge BalancingSourceEdge { get; private set; }
 
         /// <summary>
         /// Balancing flow sink vertex.
         /// </summary>
-        /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
+        /// <remarks>Not <see langword="null"/> if the algorithm has been run (and not reverted).</remarks>
         public TVertex BalancingSink { get; private set; }
 
         /// <summary>
         /// Balancing sink edge (between <see cref="Sink"/> and <see cref="BalancingSink"/>).
         /// </summary>
-        /// <remarks>Not null if the algorithm has been run (and not reverted).</remarks>
+        /// <remarks>Not <see langword="null"/> if the algorithm has been run (and not reverted).</remarks>
         public TEdge BalancingSinkEdge { get; private set; }
 
         [NotNull, ItemNotNull]

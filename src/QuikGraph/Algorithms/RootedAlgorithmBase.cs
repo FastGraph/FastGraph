@@ -42,7 +42,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Tries to get the root vertex if set.
         /// </summary>
-        /// <param name="root">Root vertex if set, otherwise null.</param>
+        /// <param name="root">Root vertex if set, otherwise <see langword="null"/>.</param>
         /// <returns>True if the root vertex was set, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, root:notnull;=> false, root:null")]

@@ -98,7 +98,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <summary>
         /// Tries to get the target vertex if set.
         /// </summary>
-        /// <param name="target">Target vertex if set, otherwise null.</param>
+        /// <param name="target">Target vertex if set, otherwise <see langword="null"/>.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, target:notnull;=> false, target:null")]

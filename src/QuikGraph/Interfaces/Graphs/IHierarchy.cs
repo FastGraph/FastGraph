@@ -21,7 +21,7 @@ namespace QuikGraph
         /// Gets the parent vertex of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        /// <returns>The parent vertex if there is one, otherwise null.</returns>
+        /// <returns>The parent vertex if there is one, otherwise <see langword="null"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]

@@ -140,7 +140,7 @@ namespace QuikGraph
         /// Tries to get adjacent edges of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="edges">Edges found, otherwise null.</param>
+        /// <param name="edges">Edges found, otherwise <see langword="null"/>.</param>
         /// <returns>True if <paramref name="vertex"/> was found or/and edges were found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]

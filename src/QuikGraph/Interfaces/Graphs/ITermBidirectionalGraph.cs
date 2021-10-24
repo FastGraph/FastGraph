@@ -62,7 +62,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
-        /// <param name="edges">Out-edges found, otherwise null.</param>
+        /// <param name="edges">Out-edges found, otherwise <see langword="null"/>.</param>
         /// <returns>True if <paramref name="vertex"/> was found or/and out-edges were found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
@@ -118,7 +118,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <param name="terminal">Out terminal index.</param>
-        /// <param name="edges">In-edges found, otherwise null.</param>
+        /// <param name="edges">In-edges found, otherwise <see langword="null"/>.</param>
         /// <returns>True if <paramref name="vertex"/> was found or/and in-edges were found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]

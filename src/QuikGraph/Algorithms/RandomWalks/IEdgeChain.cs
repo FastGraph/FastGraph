@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="graph">The graph to search in.</param>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="successor">Found successor, otherwise null.</param>
+        /// <param name="successor">Found successor, otherwise <see langword="null"/>.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
@@ -29,7 +29,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="edges">Edge set in which searching.</param>
         /// <param name="vertex">The vertex.</param>
-        /// <param name="successor">Found successor, otherwise null.</param>
+        /// <param name="successor">Found successor, otherwise <see langword="null"/>.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>

@@ -58,7 +58,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="graph">The graph to search in.</param>
         /// <param name="vertex">The vertex.</param>
         /// <param name="position">The position.</param>
-        /// <param name="successor">Found successor, otherwise null.</param>
+        /// <param name="successor">Found successor, otherwise <see langword="null"/>.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
         protected bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, double position, out TEdge successor)
         {
@@ -74,7 +74,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="edges">Edge set in which searching.</param>
         /// <param name="position">The position.</param>
-        /// <param name="successor">Found successor, otherwise null.</param>
+        /// <param name="successor">Found successor, otherwise <see langword="null"/>.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
         protected bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, double position, out TEdge successor)
         {

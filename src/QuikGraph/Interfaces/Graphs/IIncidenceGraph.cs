@@ -30,7 +30,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
-        /// <param name="edge">Edge found, otherwise null.</param>
+        /// <param name="edge">Edge found, otherwise <see langword="null"/>.</param>
         /// <returns>True if an edge was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
@@ -44,7 +44,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
-        /// <param name="edges">Edges found, otherwise null.</param>
+        /// <param name="edges">Edges found, otherwise <see langword="null"/>.</param>
         /// <returns>True if at least an edge was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
