@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
@@ -9,6 +10,7 @@ using NUnit.Framework;
 using QuikGraph.Algorithms;
 using static QuikGraph.Tests.GraphTestHelpers;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using static QuikGraph.Serialization.Tests.SerializationTestCaseSources;
 
 namespace QuikGraph.Serialization.Tests
 {
@@ -43,25 +45,18 @@ namespace QuikGraph.Serialization.Tests
         {
             var settings = new XmlWriterSettings { Indent = true, IndentChars = Indent };
             using (var memory = new MemoryStream())
+            using (var writer = new StreamWriter(memory))
             {
-                var writer = new StreamWriter(memory);
-                try
+                using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
                 {
-                    using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
-                    {
-                        onSerialize(xmlWriter);
-                    }
-
-                    memory.Position = 0;
-
-                    using (var reader = new StreamReader(memory))
-                    {
-                        checkSerializedContent(reader.ReadToEnd());
-                    }
+                    onSerialize(xmlWriter);
                 }
-                finally
+
+                memory.Position = 0;
+
+                using (var reader = new StreamReader(memory))
                 {
-                    writer.Dispose();
+                    checkSerializedContent(reader.ReadToEnd());
                 }
             }
         }
@@ -106,7 +101,6 @@ namespace QuikGraph.Serialization.Tests
         public void SerializeToXml<TGraph>([NotNull] TGraph graph)
             where TGraph: IMutableVertexAndEdgeSet<Person, TaggedEdge<Person, string>>
         {
-            var persons = new List<Person>();
             var jacob = new Person("Jacob", "Hochstetler")
             {
                 BirthDate = new DateTime(1712, 01, 01),
@@ -115,7 +109,6 @@ namespace QuikGraph.Serialization.Tests
                 DeathPlace = "Pennsylvania, USA",
                 Gender = Gender.Male
             };
-            persons.Add(jacob);
 
             var john = new Person("John", "Hochstetler")
             {
@@ -125,7 +118,6 @@ namespace QuikGraph.Serialization.Tests
                 DeathPlace = "Summit Mills, PA",
                 Gender = Gender.Male
             };
-            persons.Add(john);
 
             var jonathon = new Person("Jonathon", "Hochstetler")
             {
@@ -133,7 +125,6 @@ namespace QuikGraph.Serialization.Tests
                 DeathDate = new DateTime(1823, 05, 08),
                 Gender = Gender.Male
             };
-            persons.Add(jonathon);
 
             var emanuel = new Person("Emanuel", "Hochstedler")
             {
@@ -141,19 +132,14 @@ namespace QuikGraph.Serialization.Tests
                 DeathDate = new DateTime(1900, 01, 01),
                 Gender = Gender.Male
             };
-            persons.Add(emanuel);
 
-            var relations = new List<TaggedEdge<Person, string>>
-            {
-                new TaggedEdge<Person, string>(jacob, john, jacob.ChildRelationshipText),
-                new TaggedEdge<Person, string>(john, jonathon, john.ChildRelationshipText),
-                new TaggedEdge<Person, string>(jonathon, emanuel, jonathon.ChildRelationshipText)
-            };
-
-            foreach (TaggedEdge<Person, string> relation in relations)
-            {
-                graph.AddVerticesAndEdge(relation);
-            }
+            graph.AddVerticesAndEdgeRange(
+                new TaggedEdge<Person, string>[]
+                {
+                    new(jacob, john, jacob.ChildRelationshipText),
+                    new(john, jonathon, john.ChildRelationshipText),
+                    new(jonathon, emanuel, jonathon.ChildRelationshipText)
+                });
 
             SerializeAndRead(
                 writer => graph.SerializeToXml(
@@ -164,27 +150,36 @@ namespace QuikGraph.Serialization.Tests
                     VertexNodeName,
                     EdgeNodeName,
                     ""),
-                content =>
+                content => CheckXmlGraphSerialization(graph, content));
+
+            #region Local function
+
+            static void CheckXmlGraphSerialization(
+                [NotNull] IEdgeListGraph<Person, TaggedEdge<Person, string>> graph,
+                [NotNull] string xmlGraph)
+            {
+                var expectedSerializedGraph = new StringBuilder($"{XmlHeader}{Environment.NewLine}");
+                expectedSerializedGraph.AppendLine($"<{GraphNodeName}>");
+
+                foreach (Person person in graph.Vertices)
                 {
-                    var expectedSerializedGraph = new StringBuilder($"{XmlHeader}{Environment.NewLine}");
-                    expectedSerializedGraph.AppendLine($"<{GraphNodeName}>");
+                    expectedSerializedGraph.AppendLine($"{Indent}<{VertexNodeName} id=\"{person.Id}\" />");
+                }
 
-                    foreach (Person person in persons)
-                    {
-                        expectedSerializedGraph.AppendLine($"{Indent}<{VertexNodeName} id=\"{person.Id}\" />");
-                    }
+                TaggedEdge<Person, string>[] relations = graph.Edges.ToArray();
+                for (int i = 0; i < relations.Length; ++i)
+                {
+                    expectedSerializedGraph.AppendLine($"{Indent}<{EdgeNodeName} id=\"{i}\" source=\"{relations[i].Source.Id}\" target=\"{relations[i].Target.Id}\" />");
+                }
 
-                    for (int i = 0 ; i < relations.Count ; ++i)
-                    {
-                        expectedSerializedGraph.AppendLine($"{Indent}<{EdgeNodeName} id=\"{i}\" source=\"{relations[i].Source.Id}\" target=\"{relations[i].Target.Id}\" />");
-                    }
+                expectedSerializedGraph.Append($"</{GraphNodeName}>");
 
-                    expectedSerializedGraph.Append($"</{GraphNodeName}>");
+                StringAssert.AreEqualIgnoringCase(
+                    expectedSerializedGraph.ToString(),
+                    xmlGraph);
+            }
 
-                    StringAssert.AreEqualIgnoringCase(
-                        expectedSerializedGraph.ToString(),
-                        content);
-                });
+            #endregion
         }
 
         [Test]
@@ -871,6 +866,216 @@ namespace QuikGraph.Serialization.Tests
             }
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+        }
+
+        #endregion
+
+        #region Serialization/Deserialization
+
+        #region Test Helpers
+
+        [Pure]
+        private static int DeserializeVertex([NotNull] XmlReader reader)
+        {
+            return int.Parse(reader.GetAttribute("id", "") ?? throw new AssertionException("Unable to deserialize vertex."));
+        }
+
+        [Pure]
+        [NotNull]
+        private static TOutGraph SerializeDeserialize<TInEdge, TOutEdge, TInGraph, TOutGraph>(
+            [NotNull] TInGraph graph,
+            [NotNull, InstantHandle] Func<XmlReader, TOutGraph> deserialize)
+            where TInEdge : IEdge<int>, IEquatable<TInEdge>
+            where TOutEdge : IEdge<int>, IEquatable<TOutEdge>
+            where TInGraph : IEdgeListGraph<int, TInEdge>
+            where TOutGraph : IEdgeListGraph<int, TOutEdge>
+        {
+            Assert.IsNotNull(graph);
+
+            var settings = new XmlWriterSettings { Indent = true, IndentChars = Indent };
+            using (var memory = new MemoryStream())
+            using (var writer = new StreamWriter(memory))
+            {
+                // Serialize
+                using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
+                {
+                    graph.SerializeToXml(
+                        xmlWriter,
+                        vertex => vertex.ToString(),
+                        graph.GetEdgeIdentity(),
+                        "graph",
+                        "node",
+                        "edge",
+                        "");
+                }
+
+                memory.Position = 0;
+
+                // Deserialize
+                using (XmlReader xmlReader = XmlReader.Create(memory))
+                {
+                    TOutGraph deserializedGraph = deserialize(xmlReader);
+                    Assert.IsNotNull(deserializedGraph);
+                    Assert.AreNotSame(graph, deserializedGraph);
+                    return deserializedGraph;
+                }
+            }
+        }
+
+        [Pure]
+        [NotNull]
+        private static TOutGraph SerializeDeserialize<TInGraph, TOutGraph>([NotNull] TInGraph graph)
+            where TInGraph : IEdgeListGraph<int, EquatableEdge<int>>
+            where TOutGraph : class, IMutableVertexAndEdgeSet<int, EquatableEdge<int>>, new()
+        {
+            return SerializeDeserialize<EquatableEdge<int>, EquatableEdge<int>, TInGraph, TOutGraph>(graph, reader =>
+                reader.DeserializeFromXml(
+                    "graph",
+                    "node",
+                    "edge",
+                    "",
+                    _ => new TOutGraph(),
+                    DeserializeVertex,
+                    nav => new EquatableEdge<int>(
+                        int.Parse(nav.GetAttribute("source", "") ?? throw new AssertionException("Unable to deserialize edge source.")),
+                        int.Parse(nav.GetAttribute("target", "") ?? throw new AssertionException("Unable to deserialize edge target.")))));
+        }
+
+        [Pure]
+        [NotNull]
+        private static TOutGraph SerializeDeserialize_SEdge<TInGraph, TOutGraph>([NotNull] TInGraph graph)
+            where TInGraph : IEdgeListGraph<int, SEquatableEdge<int>>
+            where TOutGraph : class, IMutableVertexAndEdgeSet<int, SEquatableEdge<int>>, new()
+        {
+            return SerializeDeserialize<SEquatableEdge<int>, SEquatableEdge<int>, TInGraph, TOutGraph>(graph, reader =>
+                reader.DeserializeFromXml(
+                    "graph",
+                    "node",
+                    "edge",
+                    "",
+                    _ => new TOutGraph(),
+                    DeserializeVertex,
+                    nav => new SEquatableEdge<int>(
+                        int.Parse(nav.GetAttribute("source", "") ?? throw new AssertionException("Unable to deserialize edge source.")),
+                        int.Parse(nav.GetAttribute("target", "") ?? throw new AssertionException("Unable to deserialize edge target.")))));
+        }
+
+        [Pure]
+        [NotNull]
+        private static TOutGraph SerializeDeserialize_Reversed<TInGraph, TOutGraph>([NotNull] TInGraph graph)
+            where TInGraph : IEdgeListGraph<int, SReversedEdge<int, EquatableEdge<int>>>
+            where TOutGraph : class, IMutableVertexAndEdgeSet<int, EquatableEdge<int>>, new()
+        {
+            return SerializeDeserialize<SReversedEdge<int, EquatableEdge<int>>, EquatableEdge<int>, TInGraph, TOutGraph>(graph, reader =>
+                reader.DeserializeFromXml(
+                    "graph",
+                    "node",
+                    "edge",
+                    "",
+                    _ => new TOutGraph(),
+                    DeserializeVertex,
+                    nav => new EquatableEdge<int>(
+                        int.Parse(nav.GetAttribute("source", "") ?? throw new AssertionException("Unable to deserialize edge source.")),
+                        int.Parse(nav.GetAttribute("target", "") ?? throw new AssertionException("Unable to deserialize edge target.")))));
+        }
+
+        #endregion
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationAdjacencyGraphTestCases))]
+        public void XmlSerialization_AdjacencyGraph([NotNull] AdjacencyGraph<int, EquatableEdge<int>> graph)
+        {
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph1 =
+                SerializeDeserialize<AdjacencyGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph1));
+
+            var arrayGraph = new ArrayAdjacencyGraph<int, EquatableEdge<int>>(graph);
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph2 =
+                SerializeDeserialize<ArrayAdjacencyGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(arrayGraph);
+            Assert.IsTrue(EquateGraphs.Equate(arrayGraph, deserializedGraph2));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationAdjacencyGraphTestCases))]
+        public void XmlSerialization_AdapterGraph([NotNull] AdjacencyGraph<int, EquatableEdge<int>> graph)
+        {
+            var bidirectionalAdapterGraph = new BidirectionalAdapterGraph<int, EquatableEdge<int>>(graph);
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
+                SerializeDeserialize<BidirectionalAdapterGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(bidirectionalAdapterGraph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationClusteredAdjacencyGraphTestCases))]
+        public void XmlSerialization_ClusteredGraph([NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph)
+        {
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
+                SerializeDeserialize<ClusteredAdjacencyGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationCompressedGraphTestCases))]
+        public void XmlSerialization_CompressedGraph([NotNull] CompressedSparseRowGraph<int> graph)
+        {
+            AdjacencyGraph<int, SEquatableEdge<int>> deserializedGraph =
+                SerializeDeserialize_SEdge<CompressedSparseRowGraph<int>, AdjacencyGraph<int, SEquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationBidirectionalGraphTestCases))]
+        public void XmlSerialization_BidirectionalGraph([NotNull] BidirectionalGraph<int, EquatableEdge<int>> graph)
+        {
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
+                SerializeDeserialize<BidirectionalGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+
+            var arrayGraph = new ArrayBidirectionalGraph<int, EquatableEdge<int>>(graph);
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph2 =
+                SerializeDeserialize<ArrayBidirectionalGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(arrayGraph);
+            Assert.IsTrue(EquateGraphs.Equate(arrayGraph, deserializedGraph2));
+
+            var reversedGraph = new ReversedBidirectionalGraph<int, EquatableEdge<int>>(graph);
+            BidirectionalGraph<int, EquatableEdge<int>> deserializedGraph3 =
+                SerializeDeserialize_Reversed<ReversedBidirectionalGraph<int, EquatableEdge<int>>, BidirectionalGraph<int, EquatableEdge<int>>>(reversedGraph);
+            Assert.IsTrue(
+                EquateGraphs.Equate(
+                    graph,
+                    deserializedGraph3,
+                    EqualityComparer<int>.Default,
+                    LambdaEqualityComparer<EquatableEdge<int>>.Create(
+                        (edge1, edge2) => Equals(edge1.Source, edge2.Target) && Equals(edge1.Target, edge2.Source),
+                        edge => edge.GetHashCode())));
+
+            var undirectedBidirectionalGraph = new UndirectedBidirectionalGraph<int, EquatableEdge<int>>(graph);
+            UndirectedGraph<int, EquatableEdge<int>> deserializedGraph4 =
+                SerializeDeserialize<UndirectedBidirectionalGraph<int, EquatableEdge<int>>, UndirectedGraph<int, EquatableEdge<int>>>(undirectedBidirectionalGraph);
+            Assert.IsTrue(EquateGraphs.Equate(undirectedBidirectionalGraph, deserializedGraph4));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationBidirectionalMatrixGraphTestCases))]
+        public void XmlSerialization_BidirectionalMatrixGraph([NotNull] BidirectionalMatrixGraph<EquatableEdge<int>> graph)
+        {
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
+                SerializeDeserialize<BidirectionalMatrixGraph<EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationUndirectedGraphTestCases))]
+        public void XmlSerialization_UndirectedGraph([NotNull] UndirectedGraph<int, EquatableEdge<int>> graph)
+        {
+            UndirectedGraph<int, EquatableEdge<int>> deserializedGraph1 =
+                SerializeDeserialize<UndirectedGraph<int, EquatableEdge<int>>, UndirectedGraph<int, EquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph1));
+
+            var arrayGraph = new ArrayUndirectedGraph<int, EquatableEdge<int>>(graph);
+            UndirectedGraph<int, EquatableEdge<int>> deserializedGraph2 =
+                SerializeDeserialize<ArrayUndirectedGraph<int, EquatableEdge<int>>, UndirectedGraph<int, EquatableEdge<int>>>(arrayGraph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph2));
+        }
+
+        [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationEdgeListGraphTestCases))]
+        public void XmlSerialization_EdgeListGraph([NotNull] EdgeListGraph<int, EquatableEdge<int>> graph)
+        {
+            AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
+                SerializeDeserialize<EdgeListGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
+            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
         }
 
         #endregion
