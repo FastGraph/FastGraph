@@ -168,7 +168,7 @@ namespace QuikGraph.Serialization
             [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
             [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
-            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
             var serializer = new GraphMLDeserializer<TVertex, TEdge, TGraph>();
             serializer.Deserialize(reader, graph, vertexFactory, edgeFactory);
@@ -198,7 +198,7 @@ namespace QuikGraph.Serialization
             [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
             [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
-            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
             if (reader is null)
                 throw new ArgumentNullException(nameof(reader));
@@ -247,7 +247,7 @@ namespace QuikGraph.Serialization
             [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
             [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
-            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
@@ -284,7 +284,7 @@ namespace QuikGraph.Serialization
             [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
             [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
-            where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+            where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
             if (reader is null)
                 throw new ArgumentNullException(nameof(reader));
