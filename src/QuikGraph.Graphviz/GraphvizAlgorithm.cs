@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Runtime.CompilerServices;
+#endif
 using JetBrains.Annotations;
 using QuikGraph.Graphviz.Dot;
 
@@ -175,10 +179,13 @@ namespace QuikGraph.Graphviz
             Output = new StringWriter();
             // Build vertex id map
             int i = 0;
+            var vertices = new HashSet<TVertex>(VisitedGraph.Vertices);
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
                 _verticesIds.Add(vertex, i++);
             }
+
+            var edges = new HashSet<TEdge>(VisitedGraph.Edges);
 
             Output.Write(VisitedGraph.IsDirected ? "digraph " : "graph ");
             Output.Write(GraphFormat.Name);
@@ -200,26 +207,13 @@ namespace QuikGraph.Graphviz
                 Output.WriteLine($"edge [{edgeFormat}];");
             }
 
-            // Initialize vertices map
-            var verticesColors = new Dictionary<TVertex, GraphColor>();
-            foreach (TVertex vertex in VisitedGraph.Vertices)
-            {
-                verticesColors[vertex] = GraphColor.White;
-            }
-
-            var edgeColors = new Dictionary<TEdge, GraphColor>();
-            foreach (TEdge edge in VisitedGraph.Edges)
-            {
-                edgeColors[edge] = GraphColor.White;
-            }
-
             if (VisitedGraph is IClusteredGraph clusteredGraph)
             {
-                WriteClusters(verticesColors, edgeColors, clusteredGraph);
+                WriteClusters(vertices, edges, clusteredGraph);
             }
 
-            WriteVertices(verticesColors, VisitedGraph.Vertices);
-            WriteEdges(edgeColors, VisitedGraph.Edges);
+            WriteVertices(vertices);
+            WriteEdges(edges);
 
             Output.Write("}");
             return Output.ToString();
@@ -244,12 +238,12 @@ namespace QuikGraph.Graphviz
         }
 
         private void WriteClusters(
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors, 
-            [NotNull] IDictionary<TEdge, GraphColor> edgeColors, 
+            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices, 
+            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges, 
             [NotNull] IClusteredGraph parent)
         {
-            Debug.Assert(verticesColors != null);
-            Debug.Assert(edgeColors != null);
+            Debug.Assert(remainingVertices != null);
+            Debug.Assert(remainingEdges != null);
             Debug.Assert(parent != null);
 
             ++ClusterCount;
@@ -260,65 +254,100 @@ namespace QuikGraph.Graphviz
                 OnFormatCluster(subGraph);
                 if (subGraph is IClusteredGraph clusteredGraph)
                 {
-                    WriteClusters(verticesColors, edgeColors, clusteredGraph);
+                    WriteClusters(remainingVertices, remainingEdges, clusteredGraph);
                 }
 
                 if (parent.Collapsed)
                 {
                     foreach (TVertex vertex in subGraph.Vertices)
                     {
-                        verticesColors[vertex] = GraphColor.Black;
+                        remainingVertices.Remove(vertex);
                     }
 
                     foreach (TEdge edge in subGraph.Edges)
                     {
-                        edgeColors[edge] = GraphColor.Black;
+                        remainingEdges.Remove(edge);
                     }
                 }
                 else
                 {
-                    WriteVertices(verticesColors, subGraph.Vertices);
-                    WriteEdges(edgeColors, subGraph.Edges);
+                    WriteVertices(remainingVertices, subGraph.Vertices);
+                    WriteEdges(remainingEdges, subGraph.Edges);
                 }
                 Output.WriteLine("}");
             }
         }
 
-        private void WriteVertices(
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void WriteVertex([NotNull] TVertex vertex)
         {
-            Debug.Assert(verticesColors != null);
+            Debug.Assert(vertex != null);
+
+            OnFormatVertex(vertex);
+        }
+
+        private void WriteVertices([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        {
             Debug.Assert(vertices != null);
 
             foreach (TVertex vertex in vertices)
             {
-                if (verticesColors[vertex] != GraphColor.White)
-                    continue;
-
-                OnFormatVertex(vertex);
-                verticesColors[vertex] = GraphColor.Black;
+                WriteVertex(vertex);
             }
         }
 
-        private void WriteEdges(
-            [NotNull] IDictionary<TEdge, GraphColor> edgesColors,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        private void WriteVertices(
+            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices,
+            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
         {
-            Debug.Assert(edgesColors != null);
+            Debug.Assert(remainingVertices != null);
+            Debug.Assert(vertices != null);
+
+            foreach (TVertex vertex in vertices.Where(remainingVertices.Contains))
+            {
+                WriteVertex(vertex);
+                remainingVertices.Remove(vertex);
+            }
+        }
+
+#if SUPPORTS_AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void WriteEdge([NotNull] TEdge edge)
+        {
+            Debug.Assert(edge != null);
+
+            Output.Write(VisitedGraph.IsDirected
+                ? $"{_verticesIds[edge.Source]} -> {_verticesIds[edge.Target]}"
+                : $"{_verticesIds[edge.Source]} -- {_verticesIds[edge.Target]}");
+
+            OnFormatEdge(edge);
+        }
+
+        private void WriteEdges([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        {
             Debug.Assert(edges != null);
 
             foreach (TEdge edge in edges)
             {
-                if (edgesColors[edge] != GraphColor.White)
-                    continue;
+                WriteEdge(edge);
+            }
+        }
 
-                Output.Write(VisitedGraph.IsDirected
-                    ? $"{_verticesIds[edge.Source]} -> {_verticesIds[edge.Target]}"
-                    : $"{_verticesIds[edge.Source]} -- {_verticesIds[edge.Target]}");
 
-                OnFormatEdge(edge);
-                edgesColors[edge] = GraphColor.Black;
+        private void WriteEdges(
+            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges,
+            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        {
+            Debug.Assert(remainingEdges != null);
+            Debug.Assert(edges != null);
+
+            foreach (TEdge edge in edges.Where(remainingEdges.Contains))
+            {
+                WriteEdge(edge);
+                remainingEdges.Remove(edge);
             }
         }
     }

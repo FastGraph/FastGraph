@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -37,6 +38,96 @@ namespace QuikGraph.Graphviz.Tests
                  + "1 -> 2;" + Environment.NewLine
                  + "2 -> 0;" + Environment.NewLine
                  + "}";
+            string dotGraph = graph.ToGraphviz();
+            Assert.AreEqual(expectedDot, dotGraph);
+        }
+
+        [Test]
+        public void ToGraphviz_DelegateGraph()
+        {
+            int[] vertices = { 1, 2, 3, 4, 5 };
+            var graph = new DelegateVertexAndEdgeListGraph<int, Edge<int>>(
+                vertices,
+                (int vertex, out IEnumerable<Edge<int>> outEdges) =>
+                {
+                    if (vertex == 1)
+                    {
+                        outEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 3) };
+                        return true;
+                    }
+
+                    if (vertex == 2)
+                    {
+                        outEdges = new[] { new Edge<int>(2, 4) };
+                        return true;
+                    }
+
+                    if (vertex is 3 or 4 or 5)
+                    {
+                        outEdges = new Edge<int>[] { };
+                        return true;
+                    }
+
+                    outEdges = null;
+                    return false;
+                });
+
+            string expectedDot =
+                @"digraph G {" + Environment.NewLine
+                + @"0;" + Environment.NewLine
+                + @"1;" + Environment.NewLine
+                + @"2;" + Environment.NewLine
+                + @"3;" + Environment.NewLine
+                + @"4;" + Environment.NewLine
+                + @"0 -> 1;" + Environment.NewLine
+                + @"0 -> 2;" + Environment.NewLine
+                + @"1 -> 3;" + Environment.NewLine
+                + @"}";
+            string dotGraph = graph.ToGraphviz();
+            Assert.AreEqual(expectedDot, dotGraph);
+        }
+
+        [Test]
+        public void ToGraphviz_EquatableEdgeDelegateGraph()
+        {
+            int[] vertices = { 1, 2, 3, 4, 5 };
+            var graph = new DelegateVertexAndEdgeListGraph<int, EquatableEdge<int>>(
+                vertices,
+                (int vertex, out IEnumerable<EquatableEdge<int>> outEdges) =>
+                {
+                    if (vertex == 1)
+                    {
+                        outEdges = new[] { new EquatableEdge<int>(1, 2), new EquatableEdge<int>(1, 3) };
+                        return true;
+                    }
+
+                    if (vertex == 2)
+                    {
+                        outEdges = new[] { new EquatableEdge<int>(2, 4) };
+                        return true;
+                    }
+
+                    if (vertex is 3 or 4 or 5)
+                    {
+                        outEdges = new EquatableEdge<int>[] { };
+                        return true;
+                    }
+
+                    outEdges = null;
+                    return false;
+                });
+
+            string expectedDot =
+                @"digraph G {" + Environment.NewLine
+                + @"0;" + Environment.NewLine
+                + @"1;" + Environment.NewLine
+                + @"2;" + Environment.NewLine
+                + @"3;" + Environment.NewLine
+                + @"4;" + Environment.NewLine
+                + @"0 -> 1;" + Environment.NewLine
+                + @"0 -> 2;" + Environment.NewLine
+                + @"1 -> 3;" + Environment.NewLine
+                + @"}";
             string dotGraph = graph.ToGraphviz();
             Assert.AreEqual(expectedDot, dotGraph);
         }
