@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Tests.Structures;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Tests.Structures;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Extensions
+namespace FastGraph.Tests.Extensions
 {
     /// <summary>
     /// Tests related to <see cref="GraphExtensions"/>.

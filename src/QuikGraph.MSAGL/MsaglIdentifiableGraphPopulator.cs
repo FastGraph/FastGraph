@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
-namespace QuikGraph.MSAGL
+namespace FastGraph.MSAGL
 {
     /// <summary>
     /// MSAGL graph populator (using identifiable vertices).

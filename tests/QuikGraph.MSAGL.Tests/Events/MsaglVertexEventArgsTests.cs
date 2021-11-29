@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
-using QuikGraph.Tests;
+using FastGraph.Tests;
 
-namespace QuikGraph.MSAGL.Tests
+namespace FastGraph.MSAGL.Tests
 {
     /// <summary>
     /// Tests related to <see cref="MsaglVertexEventArgs{TVertex}"/>.

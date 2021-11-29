@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace FastGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// A single-source K-shortest loopless paths algorithm for graphs

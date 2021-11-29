@@ -8,9 +8,9 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Threading;
 using JetBrains.Annotations;
-using QuikGraph.Utils;
+using FastGraph.Utils;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// This interface provides methods for implementing sets, which are collections

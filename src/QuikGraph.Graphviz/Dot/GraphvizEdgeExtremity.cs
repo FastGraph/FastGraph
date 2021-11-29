@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Helpers;
-using static QuikGraph.Graphviz.DotEscapers;
+using FastGraph.Graphviz.Helpers;
+using static FastGraph.Graphviz.DotEscapers;
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz edge extremity.

@@ -4,10 +4,10 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms;
-using QuikGraph.Serialization.DirectedGraphML;
+using FastGraph.Algorithms;
+using FastGraph.Serialization.DirectedGraphML;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Directed graph Markup Language extensions.

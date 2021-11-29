@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.TopologicalSort
+namespace FastGraph.Algorithms.TopologicalSort
 {
     /// <summary>
     /// Topological sort algorithm (can be performed on an acyclic bidirectional graph).

@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Tests for <see cref="VertexList{TVertex}"/>.

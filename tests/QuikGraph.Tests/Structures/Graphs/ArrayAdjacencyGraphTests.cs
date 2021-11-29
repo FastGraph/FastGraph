@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     /// <summary>
     /// Tests for <see cref="ArrayAdjacencyGraph{TVertex,TEdge}"/>.

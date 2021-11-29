@@ -4,7 +4,7 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
-namespace QuikGraph.MSAGL
+namespace FastGraph.MSAGL
 {
     /// <summary>
     /// Default MSAGL graph populator.

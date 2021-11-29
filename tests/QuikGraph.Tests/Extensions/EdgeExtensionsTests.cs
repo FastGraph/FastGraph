@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Extensions
+namespace FastGraph.Tests.Extensions
 {
     /// <summary>
     /// Tests related to <see cref="EdgeExtensions"/>.

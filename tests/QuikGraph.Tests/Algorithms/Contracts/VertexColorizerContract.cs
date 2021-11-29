@@ -1,21 +1,21 @@
 ﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.MaximumFlow;
-using QuikGraph.Algorithms.RandomWalks;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.ShortestPath;
-using QuikGraph.Algorithms.TSP;
-using QuikGraph.Tests.Algorithms.MaximumFlow;
-using QuikGraph.Tests.Algorithms.RandomWalks;
-using QuikGraph.Tests.Algorithms.Search;
-using QuikGraph.Tests.Algorithms.ShortestPath;
-using QuikGraph.Tests.Algorithms.TSP;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.MaximumFlow;
+using FastGraph.Algorithms.RandomWalks;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.TSP;
+using FastGraph.Tests.Algorithms.MaximumFlow;
+using FastGraph.Tests.Algorithms.RandomWalks;
+using FastGraph.Tests.Algorithms.Search;
+using FastGraph.Tests.Algorithms.ShortestPath;
+using FastGraph.Tests.Algorithms.TSP;
 
 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
 
-namespace QuikGraph.Tests.Algorithms.Contracts
+namespace FastGraph.Tests.Algorithms.Contracts
 {
     /// <summary>
     /// Contract tests for <see cref="IVertexColorizerAlgorithm{TVertex}"/>.

@@ -1,9 +1,9 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.Condensation;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.Condensation;
 
-namespace QuikGraph.Tests.Algorithms.Condensation
+namespace FastGraph.Tests.Algorithms.Condensation
 {
     /// <summary>
     /// Base class for condensation algorithms.

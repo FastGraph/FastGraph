@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.TSP
+namespace FastGraph.Algorithms.TSP
 {
     internal sealed class TasksManager<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>

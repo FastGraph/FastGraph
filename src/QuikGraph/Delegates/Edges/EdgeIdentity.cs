@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Delegate to compute the identity of the given <paramref name="edge"/>.

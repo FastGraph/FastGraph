@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.Exploration
+namespace FastGraph.Algorithms.Exploration
 {
     /// <summary>
     /// Algorithm that explores a graph starting from a given vertex.

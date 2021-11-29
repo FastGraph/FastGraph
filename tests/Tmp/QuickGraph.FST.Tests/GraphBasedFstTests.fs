@@ -1,14 +1,14 @@
-﻿module QuickGraph.FST.Tests.GraphBasedFst
+﻿module FastGraph.FST.Tests.GraphBasedFst
 
-open QuickGraph.FST.FstTable
+open FastGraph.FST.FstTable
 open NUnit.Framework
 open Microsoft.FSharp.Collections
-open QuickGraph.FST.GraphBasedFst
-open QuickGraph.FST.Tests.GraphBasedFstTestData
+open FastGraph.FST.GraphBasedFst
+open FastGraph.FST.Tests.GraphBasedFstTestData
 open System.Collections.Generic
-open QuickGraph.FSA.GraphBasedFsa
+open FastGraph.FSA.GraphBasedFsa
 
-let basePath = "tests/QuickGraph.FST.Tests/DOTfst/"
+let basePath = "tests/FastGraph.FST.Tests/DOTfst/"
 let fullPath f = System.IO.Path.Combine(basePath, f)
 
 let getAlphabet (fst:FST<_,_>) = 

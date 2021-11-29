@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.Tests.Algorithms.Contracts
+namespace FastGraph.Tests.Algorithms.Contracts
 {
     /// <summary>
     /// Provider of algorithm <see cref="Type"/> implementing contracts.

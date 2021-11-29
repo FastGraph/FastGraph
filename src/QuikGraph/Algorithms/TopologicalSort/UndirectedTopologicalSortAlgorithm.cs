@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Search;
+using FastGraph.Algorithms.Search;
 
-namespace QuikGraph.Algorithms.TopologicalSort
+namespace FastGraph.Algorithms.TopologicalSort
 {
     /// <summary>
     /// Undirected topological sort algorithm.

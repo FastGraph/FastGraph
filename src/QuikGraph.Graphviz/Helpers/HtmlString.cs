@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz.Helpers
+namespace FastGraph.Graphviz.Helpers
 {
     /// <summary>
     /// String representing HTML content.

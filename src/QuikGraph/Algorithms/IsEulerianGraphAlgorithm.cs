@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.ConnectedComponents;
+using FastGraph.Algorithms.ConnectedComponents;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Algorithm that checks if a graph is Eulerian.

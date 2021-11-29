@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Helpers to manipulate <see cref="ILGenerator"/> and dynamic stuff.

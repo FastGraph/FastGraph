@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests related to <see cref="GraphvizLayer"/>.

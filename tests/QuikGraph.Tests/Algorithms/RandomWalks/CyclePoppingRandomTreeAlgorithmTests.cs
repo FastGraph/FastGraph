@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.RandomWalks;
-using QuikGraph.Algorithms.Search;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.RandomWalks;
+using FastGraph.Algorithms.Search;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.RandomWalks
+namespace FastGraph.Tests.Algorithms.RandomWalks
 {
     /// <summary>
     /// Tests for <see cref="CyclePoppingRandomTreeAlgorithm{TVertex,TEdge}"/>.

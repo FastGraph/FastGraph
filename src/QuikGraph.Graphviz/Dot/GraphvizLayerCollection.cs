@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz layer collection.

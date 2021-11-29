@@ -2,7 +2,7 @@
 using System.Xml;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Extensions for <see cref="T:System.Xml.XmlReader"/> to help deserializing graph data.

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// A base class that creates a proxy to a graph that is serializable in XML.

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Petri
+namespace FastGraph.Petri
 {
     /// <summary>
     /// A High Level Petri Graph.

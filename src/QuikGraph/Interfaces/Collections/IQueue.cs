@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Represents a queue (First in, First out).

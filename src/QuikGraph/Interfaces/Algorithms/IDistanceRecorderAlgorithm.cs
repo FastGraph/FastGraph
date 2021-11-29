@@ -1,4 +1,4 @@
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// An algorithm that exposes events to compute a distance map between vertices.

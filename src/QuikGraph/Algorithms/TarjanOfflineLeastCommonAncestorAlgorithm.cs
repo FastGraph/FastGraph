@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.Services;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Offline least common ancestor in a rooted tree.

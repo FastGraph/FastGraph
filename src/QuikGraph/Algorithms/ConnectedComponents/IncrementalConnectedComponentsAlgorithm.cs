@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Services;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.ConnectedComponents
+namespace FastGraph.Algorithms.ConnectedComponents
 {
     /// <summary>
     /// Algorithm that incrementally computes connected components of a growing graph.

@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.MSAGL
+namespace FastGraph.MSAGL
 {
     /// <summary>
     /// Delegate for an handler dealing with a edge.

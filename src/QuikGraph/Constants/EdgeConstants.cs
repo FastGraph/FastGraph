@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.Constants
+namespace FastGraph.Constants
 {
     /// <summary>
     /// Constants related to edges.

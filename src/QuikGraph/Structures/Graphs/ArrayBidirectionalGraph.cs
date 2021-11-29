@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Immutable bidirectional directed graph data structure.

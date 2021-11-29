@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Text;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Data
+namespace FastGraph.Data
 {
     /// <summary>
     /// An algorithm that renders a DataSet graph to the Graphviz DOT format.

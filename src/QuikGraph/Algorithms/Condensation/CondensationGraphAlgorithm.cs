@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.ConnectedComponents;
+using FastGraph.Algorithms.ConnectedComponents;
 
-namespace QuikGraph.Algorithms.Condensation
+namespace FastGraph.Algorithms.Condensation
 {
     /// <summary>
     /// Algorithm that condensate a graph with strongly (or not) components.

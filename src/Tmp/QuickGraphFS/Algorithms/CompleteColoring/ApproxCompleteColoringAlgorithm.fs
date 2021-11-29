@@ -4,10 +4,10 @@
     Implemented by Sergey Bolotov
 *)
 
-namespace QuickGraph.Algorithms
+namespace FastGraph.Algorithms
 
 open System.Collections.Generic
-open QuickGraph
+open FastGraph
 
 type private AchromaticPartition<'Vertex, 'Edge when 'Edge :> IEdge<'Vertex> and 'Vertex: equality>() = 
     let colored = new Event<_>()

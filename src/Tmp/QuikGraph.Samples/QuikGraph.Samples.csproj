@@ -6,25 +6,23 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- TODO -->
 
-    <Title>QuikGraph.Samples</Title>
+    <Title>FastGraph.Samples</Title>
 
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
-    <Copyright>Copyright © 2019</Copyright>
-    <Description>Samples for QuikGraph library.</Description>
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Samples for FastGraph library.</Description>
 
     <Authors>Alexandre Rabérin</Authors>
-    <Owners>Alexandre Rabérin</Owners>
-    <Company>Alexandre Rabérin</Company>
 
     <IsPackable>false</IsPackable>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/KeRNeLith/QuickGraph</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/brucificus/FastGraph</PackageProjectUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <RepositoryUrl>https://github.com/KeRNeLith/QuickGraph</RepositoryUrl>
+    <RepositoryUrl>https://github.com/brucificus/FastGraph</RepositoryUrl>
   </PropertyGroup>
 
   <!-- C# configuration -->
@@ -59,9 +57,9 @@
   </ItemGroup>
   
   <ItemGroup>
-	<ProjectReference Include="..\..\src\QuickGraph.Data\QuickGraph.Data.csproj" />
-    <ProjectReference Include="..\..\src\QuickGraph.Graphviz\QuickGraph.Graphviz.csproj" />
-    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
+	<ProjectReference Include="..\..\src\FastGraph.Data\FastGraph.Data.csproj" />
+    <ProjectReference Include="..\..\src\FastGraph.Graphviz\FastGraph.Graphviz.csproj" />
+    <ProjectReference Include="..\..\src\FastGraph\FastGraph.csproj" />
   </ItemGroup>
 
   <ItemGroup>

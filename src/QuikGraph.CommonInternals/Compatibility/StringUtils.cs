@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Utils
+namespace FastGraph.Utils
 {
     /// <summary>
     /// Helper to replace string standard utilities when not available in target version.

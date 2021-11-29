@@ -1,10 +1,10 @@
-﻿namespace QuickGraph.Algorithms
+﻿namespace FastGraph.Algorithms
 
-open QuickGraph
-open QuickGraph.Algorithms
+open FastGraph
+open FastGraph.Algorithms
 
 (**
-  Where do I have to add unit tests like following? I have added it to QuickGraph.Tests
+  Where do I have to add unit tests like following? I have added it to FastGraph.Tests
 
     let g = new UndirectedGraph<int, IEdge<int>> ()
     g.AddVertexRange [0; 1; 2; 3] |> ignore

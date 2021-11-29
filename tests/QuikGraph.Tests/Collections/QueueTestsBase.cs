@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Collections;
-using static QuikGraph.Tests.AssertHelpers;
+using FastGraph.Collections;
+using static FastGraph.Tests.AssertHelpers;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Base class for queue tests.

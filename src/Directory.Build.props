@@ -5,8 +5,8 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <PackageIcon>quikgraph_logo.png</PackageIcon>
-    <PackageIconUrl>https://raw.githubusercontent.com/KeRNeLith/QuikGraph/master/docs/images/quikgraph_logo.png</PackageIconUrl>
+    <PackageIcon>fastgraph_logo.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/brucificus/FastGraph/master/docs/images/fastgraph_logo.png</PackageIconUrl>
 
     <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
     <IncludeSymbols>true</IncludeSymbols>
@@ -15,17 +15,17 @@
 
   <PropertyGroup Condition="$(DeployBuild)">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\QuikGraph.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\FastGraph.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
-    <None Include="..\..\docs\images\quikgraph_logo.png" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="..\..\docs\images\fastgraph_logo.png" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 
   <!-- Dependencies -->
   <!-- Shared Projects -->
-  <Import Project="QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems" Label="Shared" />
+  <Import Project="FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Source Link -->
   <ItemGroup>

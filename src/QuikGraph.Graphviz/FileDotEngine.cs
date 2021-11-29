@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Default dot engine implementation, writes dot code to disk.

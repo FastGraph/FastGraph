@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using QuikGraph.Graphviz.Dot;
-using static QuikGraph.Tests.SerializationTestHelpers;
+using FastGraph.Graphviz.Dot;
+using static FastGraph.Tests.SerializationTestHelpers;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests for <see cref="GraphvizSizeF"/> and <see cref="GraphvizSize"/>.

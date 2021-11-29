@@ -1,10 +1,10 @@
 using System;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Algorithms;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Tests for <see cref="TransitiveClosureAlgorithm{TVertex,TEdge}"/>.

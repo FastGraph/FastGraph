@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Enumeration of possible ratio modes.

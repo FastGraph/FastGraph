@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Colors used in vertex coloring algorithms.

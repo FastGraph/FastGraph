@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Graphviz.Dot
+﻿namespace FastGraph.Graphviz.Dot
 {
     public partial struct GraphvizColor
     {

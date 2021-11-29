@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// A delegate-based undirected graph data structure.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// A delegate-based undirected implicit graph data structure.

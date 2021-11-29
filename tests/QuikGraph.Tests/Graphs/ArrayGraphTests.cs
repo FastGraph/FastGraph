@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     /// <summary>
     /// Tests related to array graphs.

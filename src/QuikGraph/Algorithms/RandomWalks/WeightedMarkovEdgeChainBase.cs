@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Base class for Markov chain with weight.

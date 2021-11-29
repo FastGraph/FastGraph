@@ -4,7 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Petri.Tests
+namespace FastGraph.Petri.Tests
 {
     /// <summary>
     /// Tests related to <see cref="PetriNetSimulator{TToken}"/>.

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     /// <summary>
     /// Tests for <see cref="UndirectedGraph{TVertex,TEdge}"/>.

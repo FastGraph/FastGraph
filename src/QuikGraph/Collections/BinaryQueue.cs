@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Priority queue to sort vertices by distance priority (use <see cref="BinaryHeap{TPriority,TValue}"/>).

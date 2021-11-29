@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Algorithms.MaximumFlow;
+using FastGraph.Algorithms.MaximumFlow;
 
-namespace QuikGraph.Tests.Algorithms.MaximumFlow
+namespace FastGraph.Tests.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Tests for <see cref="GraphBalancerAlgorithm{TVertex,TEdge}"/>.

@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Delegate for an edge formatting event.

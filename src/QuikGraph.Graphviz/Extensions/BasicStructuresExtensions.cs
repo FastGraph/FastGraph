@@ -1,9 +1,9 @@
 ﻿#if SUPPORTS_BASIC_EXTENSIONS
 using System.Drawing;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Extensions related to basic structures types.

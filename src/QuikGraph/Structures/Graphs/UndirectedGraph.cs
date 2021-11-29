@@ -13,9 +13,9 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 #endif
 using JetBrains.Annotations;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Mutable undirected graph data structure.

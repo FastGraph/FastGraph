@@ -1,4 +1,4 @@
 using System.Runtime.CompilerServices;
-using QuikGraph;
+using FastGraph;
 
-[assembly: InternalsVisibleTo("QuikGraph.Petri.Tests" + PublicKey.Key)]
+[assembly: InternalsVisibleTo("FastGraph.Petri.Tests" + PublicKey.Key)]

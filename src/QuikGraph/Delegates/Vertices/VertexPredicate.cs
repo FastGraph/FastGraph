@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Delegate to perform a check on the given <paramref name="vertex"/>.

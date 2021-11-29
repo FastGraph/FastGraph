@@ -1,12 +1,12 @@
-﻿module QuickGraph.FSA.Tests.GraphBasedFsa
+﻿module FastGraph.FSA.Tests.GraphBasedFsa
 
 open NUnit.Framework
 open Microsoft.FSharp.Collections
 open System.Collections.Generic
-open QuickGraph.FSA.GraphBasedFsa
-open QuickGraph.FSA.Tests.GraphBasedFsaTestData
+open FastGraph.FSA.GraphBasedFsa
+open FastGraph.FSA.Tests.GraphBasedFsaTestData
 
-let basePath = "tests/QuickGraph.FSA.Tests/DOTfsa/"
+let basePath = "tests/FastGraph.FSA.Tests/DOTfsa/"
 let fullPath f = System.IO.Path.Combine(basePath, f)
 
 let checkGraph (fsa:FSA<_>) initV finalV countE countV filePath =

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Represents a list of <see cref="FibonacciHeapCell{TPriority,TValue}"/>.

@@ -1,13 +1,13 @@
 using NUnit.Framework;
-using QuikGraph.Tests;
+using FastGraph.Tests;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
-    /// QuikGraph.Serialization unit tests setup.
+    /// FastGraph.Serialization unit tests setup.
     /// </summary>
     [SetUpFixture]
-    internal sealed class QuikGraphSerializationUnitTestsSetup : QuikGraphUnitTestsSetupBase
+    internal sealed class FastGraphSerializationUnitTestsSetup : FastGraphUnitTestsSetupBase
     {
     }
 }

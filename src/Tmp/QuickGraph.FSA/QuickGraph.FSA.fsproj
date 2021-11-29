@@ -9,10 +9,10 @@
     <ProjectGuid>{bd5d18de-1c9d-4314-a777-21aa683eeace}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FSA</RootNamespace>
-    <AssemblyName>YC.QuickGraph.FSA</AssemblyName>
+    <AssemblyName>FastGraph.FSA</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
-    <Name>QuickGraph.FSA</Name>
+    <Name>FastGraph.FSA</Name>
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <ReferencePath>
@@ -39,7 +39,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>.\bin\Release\YC.QuickGraph.FSA.XML</DocumentationFile>
+    <DocumentationFile>.\bin\Release\FastGraph.FSA.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -72,8 +72,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj">
-      <Name>QuikGraph</Name>
+    <ProjectReference Include="..\FastGraph\FastGraph.csproj">
+      <Name>FastGraph</Name>
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Private>True</Private>
     </ProjectReference>

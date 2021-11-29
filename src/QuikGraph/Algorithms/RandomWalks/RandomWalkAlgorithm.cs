@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Random walk algorithm (using edge chain).

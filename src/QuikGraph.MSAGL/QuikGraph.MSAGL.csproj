@@ -3,43 +3,30 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
 
-    <GeneratePackageOnBuild>$(Generate_QuikGraph_MSAGL)</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>$(Generate_FastGraph_MSAGL)</GeneratePackageOnBuild>
 
-    <Title>QuikGraph.MSAGL</Title>
-    <RootNamespace>QuikGraph.MSAGL</RootNamespace>
-    <AssemblyName>QuikGraph.MSAGL</AssemblyName>
+    <Title>FastGraph.MSAGL</Title>
+    <RootNamespace>FastGraph.MSAGL</RootNamespace>
+    <AssemblyName>FastGraph.MSAGL</AssemblyName>
 
     <!-- Overridden by CI -->
     <Version>0.0.0</Version>
     <AssemblyVersion>0.0.0</AssemblyVersion>
     <FileVersion>0.0.0</FileVersion>
 
-    <Copyright>Copyright © 2020</Copyright>
-    <Description>.NET library that provides a bridge from QuikGraph graphs to MSAGL library.
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Provides a bridge from FastGraph graphs to MSAGL library.
 
-This package is the MSAGL subset of the original QuickGraph renamed QuikGraph and ported to .NET Core.
-
-Supported platforms:
-- .NET Standard 2.0+
-- .NET Core 2.0+
-- .NET Framework 4.6.1+
-
-Supports Source Link</Description>
-
+This package is the MSAGL subset of the original QuickGraph (later forked as YC.QuickGraph and QuikGraph), specifically forked to support .NET 6 and C# 10.
+It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.MSAGL.</Description>
     <IsPackable>true</IsPackable>
-    <PackageId>QuikGraph.MSAGL</PackageId>
-    <PackageReleaseNotes>➟ Release 2.3.0
-Fixes:
-- Update reference to AutomaticGraphLayout packages in order to fix assembly strong naming issues.
-
-Updates:
-- Update package dependencies.</PackageReleaseNotes>
-    <PackageTags>QuickGraph QuikGraph Graph Structure Algorithm C# .NET MSAGL</PackageTags>
+    <PackageId>FastGraph.MSAGL</PackageId>
+    <PackageTags>FastGraph FastGraph Graph Structure Algorithm C# .NET MSAGL</PackageTags>
   </PropertyGroup>
 
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <AssemblyTitle>QuikGraph.MSAGL .NET Standard 2.0</AssemblyTitle>
+    <AssemblyTitle>FastGraph.MSAGL .NET Standard 2.0</AssemblyTitle>
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
@@ -50,11 +37,11 @@ Updates:
     <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
   </ItemGroup>
 
-  <!-- QuikGraph reference -->
-  <ItemGroup Condition="$(UseQuikGraphCoreNuget)">
-    <PackageReference Include="QuikGraph" Version="2.3.0" />
+  <!-- FastGraph reference -->
+  <ItemGroup Condition="$(UseFastGraphCoreNuget)">
+    <PackageReference Include="FastGraph" Version="2.3.0" />
   </ItemGroup>
-  <ItemGroup Condition="!$(UseQuikGraphCoreNuget)">
-    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj" />
+  <ItemGroup Condition="!$(UseFastGraphCoreNuget)">
+    <ProjectReference Include="..\FastGraph\FastGraph.csproj" />
   </ItemGroup>
 </Project>

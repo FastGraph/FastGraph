@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.MaximumFlow
+namespace FastGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/> 

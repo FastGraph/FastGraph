@@ -1,8 +1,8 @@
 ﻿using System;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Arguments of an event related to the formatting of a clustered graph.

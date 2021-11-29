@@ -2,7 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Markov chain with weight vanishing based on a factor.

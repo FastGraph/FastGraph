@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Assignment
+namespace FastGraph.Algorithms.Assignment
 {
     /// <summary>
     /// State of an iteration of the Hungarian algorithm.

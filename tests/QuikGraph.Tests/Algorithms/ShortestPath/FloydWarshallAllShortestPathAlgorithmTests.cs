@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.ShortestPath;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.ShortestPath;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.ShortestPath
+namespace FastGraph.Tests.Algorithms.ShortestPath
 {
     /// <summary>
     /// Tests for <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/>.

@@ -1,4 +1,4 @@
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// A mutable graph with vertices of type <typeparamref name="TVertex"/>

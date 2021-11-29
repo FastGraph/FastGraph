@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using QuikGraph.Algorithms.TSP;
+using FastGraph.Algorithms.TSP;
 
-namespace QuikGraph.Tests.Algorithms.TSP
+namespace FastGraph.Tests.Algorithms.TSP
 {
     /// <summary>
     /// Tests for <see cref="TaskPriority"/>.

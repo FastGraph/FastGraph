@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Services;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace FastGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// Floyd-Warshall all shortest path algorithm.

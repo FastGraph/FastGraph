@@ -1,4 +1,4 @@
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Specifies the order in which a Heap will Dequeue items.

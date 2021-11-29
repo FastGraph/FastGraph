@@ -5,22 +5,22 @@ using System.Linq;
 #if SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;
 #else
-using QuikGraph.Utils;
+using FastGraph.Utils;
 #endif
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Condensation;
-using QuikGraph.Algorithms.ConnectedComponents;
-using QuikGraph.Algorithms.MaximumFlow;
-using QuikGraph.Algorithms.MinimumSpanningTree;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.RandomWalks;
-using QuikGraph.Algorithms.RankedShortestPath;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.ShortestPath;
-using QuikGraph.Algorithms.TopologicalSort;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Condensation;
+using FastGraph.Algorithms.ConnectedComponents;
+using FastGraph.Algorithms.MaximumFlow;
+using FastGraph.Algorithms.MinimumSpanningTree;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.RandomWalks;
+using FastGraph.Algorithms.RankedShortestPath;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.TopologicalSort;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Extensions related to algorithms, to run them.

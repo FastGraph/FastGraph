@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Delegate to for an handler dealing with a vertex.

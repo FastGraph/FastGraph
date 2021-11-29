@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Represents an algorithm that puts colors on vertices and allow to get that color.

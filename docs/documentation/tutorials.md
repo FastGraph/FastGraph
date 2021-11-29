@@ -1,6 +1,6 @@
 # Tutorials
 
-To get started with QuikGraph you can consult several resources which are:
+To get started with FastGraph you can consult several resources which are:
 - Tutorials under this section
-- [QuikGraph wiki](https://github.com/KeRNeLith/QuikGraph/wiki)
+- [FastGraph wiki](https://github.com/brucificus/FastGraph/wiki)
 - [API reference](../api/index.md)

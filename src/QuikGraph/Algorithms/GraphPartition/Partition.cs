@@ -1,11 +1,11 @@
 ﻿#if SUPPORTS_SORTEDSET
 using System.Collections.Generic;
 #else
-using QuikGraph.Collections;
+using FastGraph.Collections;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.GraphPartition
+namespace FastGraph.Algorithms.GraphPartition
 {
     /// <summary>
     /// Represents a graph partition in two sub sets.

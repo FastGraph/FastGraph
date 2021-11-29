@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.Search
+namespace FastGraph.Algorithms.Search
 {
     /// <summary>
     /// A depth first search algorithm for undirected graph.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Predicates
+namespace FastGraph.Predicates
 {
     /// <summary>
     /// Represents an implicit graph that is filtered with a vertex and an edge predicate.

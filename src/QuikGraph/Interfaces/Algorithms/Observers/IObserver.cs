@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Observers
+namespace FastGraph.Algorithms.Observers
 {
     /// <summary>
     /// Represents an algorithm observer.

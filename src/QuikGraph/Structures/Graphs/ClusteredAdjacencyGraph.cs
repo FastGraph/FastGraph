@@ -7,9 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 #endif
 using JetBrains.Annotations;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Mutable clustered adjacency graph data structure.

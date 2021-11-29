@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Exception raised when an algorithm find or computed a negative weight in a graph.
@@ -12,7 +12,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NegativeWeightException : QuikGraphException
+    public class NegativeWeightException : FastGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NegativeWeightException"/> class.

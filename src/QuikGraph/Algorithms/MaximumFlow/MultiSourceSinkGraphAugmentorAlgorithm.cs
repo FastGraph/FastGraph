@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.MaximumFlow
+namespace FastGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Multi source and sink graph augmentor algorithm.

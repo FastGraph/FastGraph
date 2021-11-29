@@ -8,10 +8,10 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
 using JetBrains.Annotations;
-using static QuikGraph.Serialization.ILHelpers;
-using static QuikGraph.Serialization.XmlConstants;
+using static FastGraph.Serialization.ILHelpers;
+using static FastGraph.Serialization.XmlConstants;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// A GraphML (http://graphml.graphdrawing.org/) format deserializer.

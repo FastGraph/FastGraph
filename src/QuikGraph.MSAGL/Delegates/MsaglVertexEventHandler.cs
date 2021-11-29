@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.MSAGL
+namespace FastGraph.MSAGL
 {
     /// <summary>
     /// Delegate to for an handler dealing with a MSAGL vertex.

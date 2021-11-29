@@ -1,6 +1,6 @@
 using System;
 
-namespace QuikGraph.Algorithms.Services
+namespace FastGraph.Algorithms.Services
 {
     /// <summary>
     /// Represents an algorithm cancel manager.

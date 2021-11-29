@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Condensation;
+using FastGraph.Algorithms.Condensation;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests related to <see cref="CondensatedGraphRenderer{TVertex,TEdge,TGraph}"/>.

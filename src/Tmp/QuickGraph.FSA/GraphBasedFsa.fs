@@ -1,11 +1,11 @@
-﻿module QuickGraph.FSA.GraphBasedFsa
+﻿module FastGraph.FSA.GraphBasedFsa
 
-open QuickGraph
+open FastGraph
 open Microsoft.FSharp.Collections
 open System.Collections.Generic
-open QuickGraph.Algorithms.Search
-open QuickGraph.Algorithms
-open QuickGraph.Collections
+open FastGraph.Algorithms.Search
+open FastGraph.Algorithms
+open FastGraph.Collections
 open Microsoft.FSharp.Text
 open HelperTypes
 
@@ -568,7 +568,7 @@ type FSA<'a when 'a : equality>(initial, final, transitions) as this =
 
 
     static let toLeftmostMatchFsa (toLeftmostFsa: _ FSA) smb1 smb2 getChar newSmb charwiseEqual equalSmbl =
-        toLeftmostFsa.PrintToDOT "tests/QuickGraph.FSA.Tests/DOTfsa/fsa_before.dot"
+        toLeftmostFsa.PrintToDOT "tests/FastGraph.FSA.Tests/DOTfsa/fsa_before.dot"
         removeRedundantPathsThrough toLeftmostFsa (newSmb smb1) smb1 smb2 getChar newSmb charwiseEqual equalSmbl
         
 

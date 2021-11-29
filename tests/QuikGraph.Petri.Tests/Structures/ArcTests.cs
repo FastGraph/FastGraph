@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace QuikGraph.Petri.Tests
+namespace FastGraph.Petri.Tests
 {
     /// <summary>
     /// Tests related to <see cref="Arc{TToken}"/>.

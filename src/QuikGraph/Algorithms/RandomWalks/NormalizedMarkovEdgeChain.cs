@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Normalized Markov chain implementation.

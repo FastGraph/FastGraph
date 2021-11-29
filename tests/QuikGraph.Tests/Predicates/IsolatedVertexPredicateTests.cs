@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Predicates;
+using FastGraph.Predicates;
 
-namespace QuikGraph.Tests.Predicates
+namespace FastGraph.Tests.Predicates
 {
     /// <summary>
     /// Tests for <see cref="IsolatedVertexPredicate{TVertex,TEdge}"/>.

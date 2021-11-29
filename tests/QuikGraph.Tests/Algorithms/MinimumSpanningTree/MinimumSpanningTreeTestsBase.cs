@@ -4,14 +4,14 @@ using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.MinimumSpanningTree;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Collections;
-using QuikGraph.Serialization;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.MinimumSpanningTree;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Collections;
+using FastGraph.Serialization;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
+namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
 {
     /// <summary>
     /// Base class for minimum spanning tree tests.

@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Utils
+namespace FastGraph.Utils
 {
     /// <summary>
     /// Math utilities.

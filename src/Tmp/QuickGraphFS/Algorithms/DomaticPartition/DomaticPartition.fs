@@ -5,10 +5,10 @@
         Fomin et al.
 *)
 
-namespace QuickGraph.Algorithms
+namespace FastGraph.Algorithms
 
 open System
-open QuickGraph
+open FastGraph
 
 type public DomaticPartition<'Vertex, 'Edge when 'Edge :> IEdge<'Vertex> and 'Vertex: comparison>(graph: UndirectedGraph<'Vertex, 'Edge>) = 
     let removeLoopsAndMultipleEdges (graph: UndirectedGraph<'Vertex, 'Edge>) = 

@@ -1,4 +1,4 @@
-﻿namespace QuikGraph.Petri
+﻿namespace FastGraph.Petri
 {
     /// <summary>
     /// Represents a Petri Graph (a mutable bidirectional directed graph).

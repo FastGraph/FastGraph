@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Utils
+namespace FastGraph.Utils
 {
     /// <summary>
     /// Helper to replace type standard utilities when not available in target version.

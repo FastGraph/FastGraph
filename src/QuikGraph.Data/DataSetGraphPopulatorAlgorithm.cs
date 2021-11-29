@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.Data
+namespace FastGraph.Data
 {
     /// <summary>
     /// Algorithm that take a <see cref="T:System.Data.DataSet"/> and convert it as a graph representation.

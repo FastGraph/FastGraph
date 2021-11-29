@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Represents a directed edge.

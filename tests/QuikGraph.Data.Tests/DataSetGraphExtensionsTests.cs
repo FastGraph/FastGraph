@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Data;
 using NUnit.Framework;
-using static QuikGraph.Data.Tests.GraphTestHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Data.Tests.GraphTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Data.Tests
+namespace FastGraph.Data.Tests
 {
     /// <summary>
     /// Tests related to <see cref="DataSetGraphExtensions"/>.

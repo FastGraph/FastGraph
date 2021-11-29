@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Algorithms.ShortestPath;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.Services;
+using FastGraph.Algorithms.ShortestPath;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.RankedShortestPath
+namespace FastGraph.Algorithms.RankedShortestPath
 {
     /// <summary>
     /// Hoffman and Pavley K-shortest path algorithm.

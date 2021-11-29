@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Search;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Algorithms.Search;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.Search
+namespace FastGraph.Tests.Algorithms.Search
 {
     /// <summary>
     /// Tests for <see cref="EdgeDepthFirstSearchAlgorithm{TVertex,TEdge}"/>.
@@ -277,14 +277,14 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             if (processAll)
             {
-                QuikGraphAssert.TrueForAll(algorithm.EdgesColors, pair => pair.Value == GraphColor.Black);
+                FastGraphAssert.TrueForAll(algorithm.EdgesColors, pair => pair.Value == GraphColor.Black);
             }
             else
             {
-                QuikGraphAssert.TrueForAll(
+                FastGraphAssert.TrueForAll(
                     new[] { edge12, edge13, edge24, edge25 },
                     edge => algorithm.EdgesColors[edge] == GraphColor.Black);
-                QuikGraphAssert.TrueForAll(
+                FastGraphAssert.TrueForAll(
                     new[] { edge67, edge68, edge86 },
                     edge => algorithm.EdgesColors[edge] == GraphColor.White);
             }

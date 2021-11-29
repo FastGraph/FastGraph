@@ -7,15 +7,13 @@
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <Owners>Alexandre Rabérin</Owners>
     <Authors>Alexandre Rabérin</Authors>
-    <Company>Alexandre Rabérin</Company>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/KeRNeLith/QuikGraph</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/brucificus/FastGraph</PackageProjectUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <RepositoryUrl>https://github.com/KeRNeLith/QuikGraph</RepositoryUrl>
+    <RepositoryUrl>https://github.com/brucificus/FastGraph</RepositoryUrl>
   </PropertyGroup>
 
   <!-- Optimization configurations -->

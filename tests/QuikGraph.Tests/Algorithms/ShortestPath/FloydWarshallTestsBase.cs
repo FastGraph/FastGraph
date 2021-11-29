@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.ShortestPath;
 
-namespace QuikGraph.Tests.Algorithms.ShortestPath
+namespace FastGraph.Tests.Algorithms.ShortestPath
 {
     /// <summary>
     /// Base class for tests related to <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/>.

@@ -8,11 +8,11 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>1ccafd2c-4a61-4f7f-986c-a2f575086344</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QuickGraphFS</RootNamespace>
-    <AssemblyName>YC.QuickGraphFS</AssemblyName>
+    <RootNamespace>FastGraphFS</RootNamespace>
+    <AssemblyName>FastGraphFS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <Name>QuickGraphFS</Name>
+    <Name>FastGraphFS</Name>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -23,7 +23,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\QuickGraphFS.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\FastGraphFS.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\YC.QuickGraphFS.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\FastGraphFS.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,8 +50,8 @@
     <Compile Include="Algorithms\MaxCardinality\MaxCardinality.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuikGraph\QuikGraph.csproj">
-      <Name>QuikGraph</Name>
+    <ProjectReference Include="..\FastGraph\FastGraph.csproj">
+      <Name>FastGraph</Name>
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Private>True</Private>
     </ProjectReference>

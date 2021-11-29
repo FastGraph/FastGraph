@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Delegate to react to an algorithm event.

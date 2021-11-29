@@ -1,11 +1,11 @@
 using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Cliques;
-using QuikGraph.Algorithms.Services;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.Cliques;
+using FastGraph.Algorithms.Services;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.Cliques
+namespace FastGraph.Tests.Algorithms.Cliques
 {
     /// <summary>
     /// Tests for <see cref="MaximumCliqueAlgorithmBase{TVertex,TEdge}"/>.

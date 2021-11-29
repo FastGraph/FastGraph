@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Graphs
+namespace FastGraph.Tests.Graphs
 {
     /// <summary>
     /// Tests relative the to the degree of graphs.

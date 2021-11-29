@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Serialization;
+using FastGraph.Serialization;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Factory to create graphs.

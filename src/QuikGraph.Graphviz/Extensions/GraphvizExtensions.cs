@@ -5,7 +5,7 @@ using System.Net;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Helper extensions to render graphs to graphviz.

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Helpers;
-using static QuikGraph.Graphviz.DotEscapers;
-using static QuikGraph.Utils.MathUtils;
+using FastGraph.Graphviz.Helpers;
+using static FastGraph.Graphviz.DotEscapers;
+using static FastGraph.Utils.MathUtils;
 #if REQUIRE_STRING_COMPATIBILITY
-using static QuikGraph.Utils.StringUtils;
+using static FastGraph.Utils.StringUtils;
 #endif
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz graph.

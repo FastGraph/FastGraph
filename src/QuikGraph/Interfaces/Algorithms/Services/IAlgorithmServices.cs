@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Services
+namespace FastGraph.Algorithms.Services
 {
     /// <summary>
     /// Represents common services available to algorithm instances.

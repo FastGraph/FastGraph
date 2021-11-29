@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Predicates
+namespace FastGraph.Predicates
 {
     /// <summary>
     /// Predicate that tests if an edge is residual.

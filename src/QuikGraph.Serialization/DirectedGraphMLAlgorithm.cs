@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms;
-using QuikGraph.Serialization.DirectedGraphML;
+using FastGraph.Algorithms;
+using FastGraph.Serialization.DirectedGraphML;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Algorithm that creates a <see cref="DirectedGraphML.DirectedGraph"/>

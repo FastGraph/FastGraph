@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Predicates
+namespace FastGraph.Predicates
 {
     /// <summary>
     /// Implicit vertex set graph data structure that is filtered with a vertex and an edge

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using QuikGraph.Graphviz;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Data.Tests
+namespace FastGraph.Data.Tests
 {
     /// <summary>
     /// Test dot engine.

@@ -21,7 +21,7 @@ The coding guidelines serve the following purposes:
 ## Layout Conventions
 
 Code formatted the same way everywhere makes the code easier to read.
-Below are prefered layout settings to be used for QuikGraph.
+Below are prefered layout settings to be used for FastGraph.
 
 1. Setup code editors to use four-character indents and save tab characters as spaces.
 2. Write only one statement per line.

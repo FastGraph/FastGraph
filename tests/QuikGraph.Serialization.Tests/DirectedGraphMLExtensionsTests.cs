@@ -7,12 +7,12 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Serialization.DirectedGraphML;
-using QuikGraph.Tests;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Serialization.DirectedGraphML;
+using FastGraph.Tests;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests for <see cref="DirectedGraphMLExtensions"/>.

@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using static QuikGraph.Tests.AssertHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.AssertHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     /// <summary>
     /// Tests for <see cref="DelegateUndirectedGraph{TVertex,TEdge}"/>.

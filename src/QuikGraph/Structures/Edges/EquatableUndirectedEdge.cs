@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// The default struct based <see cref="IUndirectedEdge{TVertex}"/> implementation.

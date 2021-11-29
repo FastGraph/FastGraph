@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.MaximumFlow
+namespace FastGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Algorithm that computes a the graph balancing by finding vertices

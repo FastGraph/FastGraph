@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Utils
+namespace FastGraph.Utils
 {
     /// <summary>
     /// Helpers to work with <see cref="IDisposable"/>.

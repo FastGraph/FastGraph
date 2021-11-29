@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using QuikGraph.Constants;
+using FastGraph.Constants;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// The default struct based <see cref="IEdge{TVertex}"/> implementation (it is by design an equatable edge) (directed edge).

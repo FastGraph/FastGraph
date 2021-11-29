@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Base class for heap tests.

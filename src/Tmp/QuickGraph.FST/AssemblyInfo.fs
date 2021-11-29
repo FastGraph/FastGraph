@@ -2,16 +2,16 @@
 namespace System
 open System.Reflection
 
-[<assembly: AssemblyTitleAttribute("QuickGraph.FST")>]
-[<assembly: AssemblyProductAttribute("YC.QuickGraph")>]
-[<assembly: AssemblyDescriptionAttribute("Graph datastructures and algorithms for .NET.")>]
+[<assembly: AssemblyTitleAttribute("FastGraph.FST")>]
+[<assembly: AssemblyProductAttribute("FastGraph")>]
+[<assembly: AssemblyDescriptionAttribute("Graph datastructures and algorithms.")>]
 [<assembly: AssemblyVersionAttribute("3.7.5")>]
 [<assembly: AssemblyFileVersionAttribute("3.7.5")>]
 do ()
 
 module internal AssemblyVersionInformation =
-    let [<Literal>] AssemblyTitle = "QuickGraph.FST"
-    let [<Literal>] AssemblyProduct = "YC.QuickGraph"
-    let [<Literal>] AssemblyDescription = "Graph datastructures and algorithms for .NET."
+    let [<Literal>] AssemblyTitle = "FastGraph.FST"
+    let [<Literal>] AssemblyProduct = "FastGraph"
+    let [<Literal>] AssemblyDescription = "Graph datastructures and algorithms."
     let [<Literal>] AssemblyVersion = "3.7.5"
     let [<Literal>] AssemblyFileVersion = "3.7.5"

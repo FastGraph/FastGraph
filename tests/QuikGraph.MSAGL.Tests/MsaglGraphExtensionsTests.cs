@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
-using static QuikGraph.MSAGL.Tests.MsaglGraphTestHelpers;
+using static FastGraph.MSAGL.Tests.MsaglGraphTestHelpers;
 
-namespace QuikGraph.MSAGL.Tests
+namespace FastGraph.MSAGL.Tests
 {
     /// <summary>
     /// Tests related to <see cref="MsaglGraphExtensions"/>.

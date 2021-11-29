@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace FastGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// A single source shortest path algorithm for directed acyclic graphs.

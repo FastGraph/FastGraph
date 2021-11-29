@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.VertexColoring
+namespace FastGraph.Algorithms.VertexColoring
 {
     /// <summary>
     /// Algorithm that walk through a graph and color vertices with the minimum number of colors possible.

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using QuikGraph.Graphviz.Dot;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using FastGraph.Graphviz.Dot;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests related to <see cref="FileDotEngine"/>.

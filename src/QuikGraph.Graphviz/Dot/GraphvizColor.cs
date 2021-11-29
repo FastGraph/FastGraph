@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 #endif
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Represents a color.

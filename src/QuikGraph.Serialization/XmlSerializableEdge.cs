@@ -3,7 +3,7 @@ using System;
 #endif
 using System.Xml.Serialization;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// XML serializable edge class.

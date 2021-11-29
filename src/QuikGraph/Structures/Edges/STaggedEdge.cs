@@ -2,10 +2,10 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Constants;
+using FastGraph.Constants;
 using System.Collections.Generic;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// The default implementation of an <see cref="IEdge{TVertex}"/> that supports tagging (struct) (directed edge).

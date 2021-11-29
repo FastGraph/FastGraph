@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Delegate to perform an action involving the 2 edges.

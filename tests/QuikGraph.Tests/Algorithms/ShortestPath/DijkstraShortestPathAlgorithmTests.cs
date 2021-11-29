@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.ShortestPath;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.ShortestPath;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Tests.Algorithms.ShortestPath
+namespace FastGraph.Tests.Algorithms.ShortestPath
 {
     /// <summary>
     /// Tests for <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/>.

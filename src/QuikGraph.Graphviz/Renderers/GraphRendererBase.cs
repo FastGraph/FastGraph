@@ -1,9 +1,9 @@
 ﻿using System;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Dot;
-using QuikGraph.Utils;
+using FastGraph.Graphviz.Dot;
+using FastGraph.Utils;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Base class for Graph to DOT renderer.

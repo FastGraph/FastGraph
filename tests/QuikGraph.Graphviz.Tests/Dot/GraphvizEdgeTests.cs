@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Graphviz.Dot;
-using static QuikGraph.Graphviz.Tests.CultureHelpers;
+using FastGraph.Graphviz.Dot;
+using static FastGraph.Graphviz.Tests.CultureHelpers;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests related to <see cref="GraphvizEdge"/>.

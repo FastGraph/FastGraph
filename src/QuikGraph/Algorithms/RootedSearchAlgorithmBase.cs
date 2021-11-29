@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Base class for all graph algorithm performing a search in a graph.

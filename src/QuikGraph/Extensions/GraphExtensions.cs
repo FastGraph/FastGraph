@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using static QuikGraph.QuikGraphHelpers;
+using static FastGraph.FastGraphHelpers;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Extensions for populating graph data structures.

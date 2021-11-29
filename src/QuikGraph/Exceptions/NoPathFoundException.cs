@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Exception raised when an algorithm could not find a path in a graph.
@@ -12,7 +12,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NoPathFoundException : QuikGraphException
+    public class NoPathFoundException : FastGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NoPathFoundException"/> class.

@@ -7,12 +7,12 @@ using System.Xml;
 using System.Xml.XPath;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using static QuikGraph.Tests.GraphTestHelpers;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
-using static QuikGraph.Serialization.Tests.SerializationTestCaseSources;
+using FastGraph.Algorithms;
+using static FastGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
+using static FastGraph.Serialization.Tests.SerializationTestCaseSources;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests relative to XML serialization.

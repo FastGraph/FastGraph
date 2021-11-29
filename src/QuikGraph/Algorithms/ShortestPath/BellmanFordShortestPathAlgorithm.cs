@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace FastGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// Bellman Ford shortest path algorithm.

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Represents a graph cluster.

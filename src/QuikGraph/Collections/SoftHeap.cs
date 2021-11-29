@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Soft heap, which aims to has a constant amortized time for

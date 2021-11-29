@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Tests.Algorithms;
+using FastGraph.Tests.Algorithms;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// A collection of utility methods for unit tests.

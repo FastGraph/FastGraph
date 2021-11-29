@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 #if SUPPORTS_CRYPTO_RANDOM
-using QuikGraph.Utils;
+using FastGraph.Utils;
 #endif
 
-namespace QuikGraph.Algorithms.VertexCover
+namespace FastGraph.Algorithms.VertexCover
 {
     /// <summary>
     /// A minimum vertices cover approximation algorithm for undirected graphs.

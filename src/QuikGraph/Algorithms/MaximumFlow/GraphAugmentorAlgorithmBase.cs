@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.MaximumFlow
+namespace FastGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Base class for all graph augmentor algorithms.

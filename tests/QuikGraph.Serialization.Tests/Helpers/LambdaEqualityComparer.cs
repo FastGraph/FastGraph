@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// <see cref="IEqualityComparer{T}"/> that can be constructed from lambdas.

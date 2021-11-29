@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Round Robin chain implementation.

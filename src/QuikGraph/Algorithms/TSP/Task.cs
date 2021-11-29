@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.TSP
+namespace FastGraph.Algorithms.TSP
 {
     internal sealed class Task<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>

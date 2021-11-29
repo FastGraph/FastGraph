@@ -4,12 +4,12 @@
       "src": [
         {
           "files": [
-            "src/QuikGraph/**.csproj",
-            "src/QuikGraph.Serialization/**.csproj",
-            "src/QuikGraph.Graphviz/**.csproj",
-            "src/QuikGraph.Data/**.csproj",
-            "src/QuikGraph.MSAGL/**.csproj",
-            "src/QuikGraph.Petri/**.csproj"
+            "src/FastGraph/**.csproj",
+            "src/FastGraph.Serialization/**.csproj",
+            "src/FastGraph.Graphviz/**.csproj",
+            "src/FastGraph.Data/**.csproj",
+            "src/FastGraph.MSAGL/**.csproj",
+            "src/FastGraph.Petri/**.csproj"
           ],
           "exclude": [
             "**/obj/**",
@@ -72,7 +72,7 @@
     "globalMetadata": {
       "_appFaviconPath": "images/favicon.ico",
       "_appLogoPath": "images/logo.svg",
-      "_appFooter": "QuikGraph"
+      "_appFooter": "FastGraph"
     },
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],

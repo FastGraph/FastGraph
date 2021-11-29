@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Exploration;
+using FastGraph.Algorithms.Exploration;
 
-namespace QuikGraph.Tests.Algorithms.Exploration
+namespace FastGraph.Tests.Algorithms.Exploration
 {
     internal sealed class TestTransitionFactory<TVertex> : ITransitionFactory<TVertex, Edge<TVertex>>
         where TVertex : CloneableTestVertex

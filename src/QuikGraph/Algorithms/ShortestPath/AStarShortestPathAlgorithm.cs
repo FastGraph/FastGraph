@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.Services;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.ShortestPath
+namespace FastGraph.Algorithms.ShortestPath
 {
     /// <summary>
     /// A* single source shortest path algorithm for directed graph with positive distance.

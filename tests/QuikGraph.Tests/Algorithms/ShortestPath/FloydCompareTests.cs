@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.ShortestPath;
 
-namespace QuikGraph.Tests.Algorithms.ShortestPath
+namespace FastGraph.Tests.Algorithms.ShortestPath
 {
     /// <summary>
     /// Tests for comparing <see cref="FloydWarshallAllShortestPathAlgorithm{TVertex,TEdge}"/> and other shortest path finder algorithms.

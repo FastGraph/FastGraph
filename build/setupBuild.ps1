@@ -9,12 +9,12 @@ param(
 [string] $tagSlug)
     switch ($tagSlug)
     {
-        'core' { return "Generate_QuikGraph_Core"; }
-        'serialization' { return "Generate_QuikGraph_Serialization"; }
-        'graphviz' { return "Generate_QuikGraph_Graphviz"; }
-        'data' { return "Generate_QuikGraph_Data"; }
-        'msagl' { return "Generate_QuikGraph_MSAGL"; }
-        'petri' { return "Generate_QuikGraph_Petri"; }
+        'core' { return "Generate_FastGraph_Core"; }
+        'serialization' { return "Generate_FastGraph_Serialization"; }
+        'graphviz' { return "Generate_FastGraph_Graphviz"; }
+        'data' { return "Generate_FastGraph_Data"; }
+        'msagl' { return "Generate_FastGraph_MSAGL"; }
+        'petri' { return "Generate_FastGraph_Petri"; }
         default { throw "Invalid tag slug." }
     }
 }

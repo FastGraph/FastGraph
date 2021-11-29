@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace QuikGraph.Algorithms.Services
+namespace FastGraph.Algorithms.Services
 {
     /// <summary>
     /// Default algorithm cancel manager implementation.

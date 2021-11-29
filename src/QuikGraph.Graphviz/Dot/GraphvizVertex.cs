@@ -7,11 +7,11 @@ using System.Runtime.CompilerServices;
 #endif
 using System.Text;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Helpers;
-using static QuikGraph.Graphviz.DotEscapers;
-using static QuikGraph.Utils.MathUtils;
+using FastGraph.Graphviz.Helpers;
+using static FastGraph.Graphviz.DotEscapers;
+using static FastGraph.Utils.MathUtils;
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz vertex.

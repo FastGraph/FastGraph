@@ -2,11 +2,11 @@
 <Project>
   <PropertyGroup>
     <!-- Packages generation control -->
-    <Generate_QuikGraph_Core>false</Generate_QuikGraph_Core>
-    <Generate_QuikGraph_Serialization>false</Generate_QuikGraph_Serialization>
-    <Generate_QuikGraph_Graphviz>false</Generate_QuikGraph_Graphviz>
-    <Generate_QuikGraph_Data>false</Generate_QuikGraph_Data>
-    <Generate_QuikGraph_MSAGL>false</Generate_QuikGraph_MSAGL>
-    <Generate_QuikGraph_Petri>false</Generate_QuikGraph_Petri>
+    <Generate_FastGraph_Core>false</Generate_FastGraph_Core>
+    <Generate_FastGraph_Serialization>false</Generate_FastGraph_Serialization>
+    <Generate_FastGraph_Graphviz>false</Generate_FastGraph_Graphviz>
+    <Generate_FastGraph_Data>false</Generate_FastGraph_Data>
+    <Generate_FastGraph_MSAGL>false</Generate_FastGraph_MSAGL>
+    <Generate_FastGraph_Petri>false</Generate_FastGraph_Petri>
   </PropertyGroup>
 </Project>

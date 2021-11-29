@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Mutable bidirectional graph data structure based on a matrix.

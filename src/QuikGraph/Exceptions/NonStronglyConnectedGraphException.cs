@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a non-strongly connected graph.
@@ -12,7 +12,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NonStronglyConnectedGraphException : QuikGraphException
+    public class NonStronglyConnectedGraphException : FastGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/> class.

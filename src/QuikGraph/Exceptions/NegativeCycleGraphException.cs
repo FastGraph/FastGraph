@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a negative cycle in a graph.
@@ -12,7 +12,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class NegativeCycleGraphException : QuikGraphException
+    public class NegativeCycleGraphException : FastGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NegativeCycleGraphException"/> class.

@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Events
+namespace FastGraph.Tests.Events
 {
     /// <summary>
     /// Tests related to <see cref="VertexEventArgs{TVertex}"/>.

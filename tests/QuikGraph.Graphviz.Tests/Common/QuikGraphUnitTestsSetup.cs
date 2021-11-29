@@ -1,13 +1,13 @@
 using NUnit.Framework;
-using QuikGraph.Tests;
+using FastGraph.Tests;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
-    /// QuikGraph.Graphviz unit tests setup.
+    /// FastGraph.Graphviz unit tests setup.
     /// </summary>
     [SetUpFixture]
-    internal sealed class QuikGraphGraphvizUnitTestsSetup : QuikGraphUnitTestsSetupBase
+    internal sealed class FastGraphGraphvizUnitTestsSetup : FastGraphUnitTestsSetupBase
     {
     }
 }

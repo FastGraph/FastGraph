@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Tests for <see cref="SoftHeap{TKey,TValue}"/>.
@@ -290,7 +290,7 @@ namespace QuikGraph.Tests.Collections
         [TestCaseSource(nameof(RemoveMinimumTestCases))]
         public void RemoveMinimum([NotNull] int[] keys, double errorRate)
         {
-            QuikGraphAssert.TrueForAll(keys, k => k < int.MaxValue);
+            FastGraphAssert.TrueForAll(keys, k => k < int.MaxValue);
             Assert.IsTrue(keys.Length > 0);
 
             var heap = new SoftHeap<int, string>(errorRate, int.MaxValue);

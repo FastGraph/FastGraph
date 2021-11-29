@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Represents an algorithm to run on a graph.

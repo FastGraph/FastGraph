@@ -1,10 +1,10 @@
-﻿module QuickGraph.FST.Tests.FstTable
+﻿module FastGraph.FST.Tests.FstTable
 
-open QuickGraph.FST.FstTable
+open FastGraph.FST.FstTable
 open NUnit.Framework
 open Microsoft.FSharp.Collections
 
-let basePath = "tests/QuickGraph.FST.Tests/DOTfst/"
+let basePath = "tests/FastGraph.FST.Tests/DOTfst/"
 let fullPath f = System.IO.Path.Combine(basePath, f)
 
 [<TestFixture>]

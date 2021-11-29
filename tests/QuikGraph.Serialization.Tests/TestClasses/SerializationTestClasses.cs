@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     #region Test enumerations
 

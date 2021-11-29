@@ -1,4 +1,4 @@
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Represents a directed edge with terminal indexes.

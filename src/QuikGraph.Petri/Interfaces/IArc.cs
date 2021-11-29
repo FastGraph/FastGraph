@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.Petri
+namespace FastGraph.Petri
 {
     /// <summary>
     /// A directed edge of a net which may connect a <see cref="IPlace{TToken}"/>

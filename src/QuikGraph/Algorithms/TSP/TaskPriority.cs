@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.TSP
+namespace FastGraph.Algorithms.TSP
 {
     internal sealed class TaskPriority : IComparable<TaskPriority>
     {

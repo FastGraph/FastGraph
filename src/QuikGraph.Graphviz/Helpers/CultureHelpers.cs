@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz.Helpers
+namespace FastGraph.Graphviz.Helpers
 {
     /// <summary>
     /// Helpers related to <see cref="CultureInfo"/>.

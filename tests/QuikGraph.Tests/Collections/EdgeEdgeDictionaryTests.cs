@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using QuikGraph.Collections;
-using static QuikGraph.Tests.SerializationTestHelpers;
+using FastGraph.Collections;
+using static FastGraph.Tests.SerializationTestHelpers;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Tests for <see cref="EdgeEdgeDictionary{TVertex,TEdge}"/>.

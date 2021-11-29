@@ -1,6 +1,6 @@
-﻿namespace QuickGraph.Algorithms
+﻿namespace FastGraph.Algorithms
 
-open QuickGraph
+open FastGraph
 open System.Linq
 open System
 

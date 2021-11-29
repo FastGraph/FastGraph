@@ -2,7 +2,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Test helpers related to serialization.

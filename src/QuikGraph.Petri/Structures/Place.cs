@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 #if REQUIRE_STRING_COMPATIBILITY
-using static QuikGraph.Utils.StringUtils;
+using static FastGraph.Utils.StringUtils;
 #endif
 
-namespace QuikGraph.Petri
+namespace FastGraph.Petri
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

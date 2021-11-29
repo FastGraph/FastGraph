@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Assignment
+namespace FastGraph.Algorithms.Assignment
 {
     /// <summary>
     /// A combinatorial optimization algorithm that solves the assignment problem, meaning

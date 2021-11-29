@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using QuikGraph.Algorithms.VertexCover;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.VertexCover;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.VertexCover
+namespace FastGraph.Tests.Algorithms.VertexCover
 {
     /// <summary>
     /// Tests for <see cref="MinimumVertexCoverApproximationAlgorithm{TVertex,TEdge}"/>.

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Predicates;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.Services;
+using FastGraph.Predicates;
 
-namespace QuikGraph.Algorithms.MaximumFlow
+namespace FastGraph.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Edmond and Karp maximum flow algorithm for directed graph with positive capacities and flows.

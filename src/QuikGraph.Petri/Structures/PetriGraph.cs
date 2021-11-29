@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuikGraph.Petri
+namespace FastGraph.Petri
 {
 #if SUPPORTS_SERIALIZATION
     [Serializable]

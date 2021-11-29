@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using QuikGraph.Algorithms.MinimumSpanningTree;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.MinimumSpanningTree;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
+namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
 {
     /// <summary>
     /// Tests for <see cref="KruskalMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/>.

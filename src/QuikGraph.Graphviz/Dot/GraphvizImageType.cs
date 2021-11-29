@@ -5,7 +5,7 @@ using System;
 using System.ComponentModel;
 #endif
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Enumeration of possible image types.

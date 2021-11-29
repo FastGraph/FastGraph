@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Condensation
+namespace FastGraph.Algorithms.Condensation
 {
     /// <summary>
     /// An edge connecting two graphs.

@@ -3,9 +3,9 @@
     Author: Robson J.M.
     Implemented by Matvey Bryksin
 *)
-namespace QuickGraph.Algorithms
+namespace FastGraph.Algorithms
 
-open QuickGraph
+open FastGraph
 
 type MaximumIndependentSetAlgorithm private () = 
     static member private cleanGraph(original_graph: UndirectedGraph<int, Edge<int>>,vertices,vertexlist_list) =

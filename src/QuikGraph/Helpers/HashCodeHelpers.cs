@@ -1,4 +1,4 @@
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Helpers to work with hash codes.

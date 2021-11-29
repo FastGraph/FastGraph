@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Services
+namespace FastGraph.Algorithms.Services
 {
     /// <summary>
     /// Default algorithm services implementation.

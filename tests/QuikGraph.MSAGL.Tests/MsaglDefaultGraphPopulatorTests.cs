@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using QuikGraph.Tests;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Tests;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.MSAGL.Tests
+namespace FastGraph.MSAGL.Tests
 {
     /// <summary>
     /// Tests related to <see cref="MsaglDefaultGraphPopulator{TVertex,TEdge}"/>.

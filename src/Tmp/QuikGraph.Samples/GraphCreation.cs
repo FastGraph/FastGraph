@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuickGraph.Samples
+namespace FastGraph.Samples
 {
     [TestClass]
     public partial class GraphCreation

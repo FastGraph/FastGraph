@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph.Graphviz;
+using FastGraph.Graphviz;
 
-namespace QuickGraph.Samples
+namespace FastGraph.Samples
 {
     [TestClass]
     public class GraphvizSamples

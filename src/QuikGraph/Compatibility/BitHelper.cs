@@ -2,7 +2,7 @@
 using System.Security;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Utils
+namespace FastGraph.Utils
 {
     internal unsafe class BitHelper // Should not be serialized
     {

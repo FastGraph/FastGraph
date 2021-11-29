@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Assignment;
+using FastGraph.Algorithms.Assignment;
 
-namespace QuikGraph.Tests.Algorithms.Assignment
+namespace FastGraph.Tests.Algorithms.Assignment
 {
     /// <summary>
     /// Tests for <see cref="HungarianAlgorithm"/>.

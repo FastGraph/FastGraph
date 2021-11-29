@@ -1,4 +1,4 @@
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     /// <summary>
     /// Base class for graph tests.

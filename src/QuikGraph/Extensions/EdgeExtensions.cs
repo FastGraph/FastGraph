@@ -7,7 +7,7 @@ using System.Reflection;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Extensions related to graph edges.

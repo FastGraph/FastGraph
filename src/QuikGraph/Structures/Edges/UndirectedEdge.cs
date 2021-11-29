@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Constants;
+using FastGraph.Constants;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// The default <see cref="IUndirectedEdge{TVertex}"/> implementation.

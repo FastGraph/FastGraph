@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.Services;
 #if !SUPPORTS_SORTEDSET
-using QuikGraph.Collections;
+using FastGraph.Collections;
 #endif
 
-namespace QuikGraph.Algorithms.ConnectedComponents
+namespace FastGraph.Algorithms.ConnectedComponents
 {
     /// <summary>
     /// Algorithm that computes weakly connected components of a graph.

@@ -2,7 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Predicates
+namespace FastGraph.Predicates
 {
     /// <summary>
     /// Vertex list graph data structure that is filtered with a vertex and an edge

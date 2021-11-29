@@ -3,7 +3,7 @@ using System;
 using System.Security.Cryptography;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Utils
+namespace FastGraph.Utils
 {
     /// <summary>
     /// Secure random number generator.

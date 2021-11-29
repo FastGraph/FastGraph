@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.Tests.Algorithms.Contracts
+namespace FastGraph.Tests.Algorithms.Contracts
 {
     /// <summary>
     /// Tests related to <see cref="IDistancesCollection{TVertex}.GetDistances"/>.

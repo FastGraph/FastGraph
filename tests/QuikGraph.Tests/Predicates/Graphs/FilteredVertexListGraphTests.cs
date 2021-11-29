@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using QuikGraph.Predicates;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Predicates;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Predicates
+namespace FastGraph.Tests.Predicates
 {
     /// <summary>
     /// Tests for <see cref="FilteredVertexListGraph{TVertex,TEdge,TGraph}"/>.

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Exploration
+namespace FastGraph.Algorithms.Exploration
 {
     /// <summary>
     /// Represents a transition factory.

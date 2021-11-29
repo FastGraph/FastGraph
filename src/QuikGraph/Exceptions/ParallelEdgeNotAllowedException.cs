@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using System.Runtime.Serialization;
 #endif
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a parallel edge that is not allowed.
@@ -12,7 +12,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class ParallelEdgeNotAllowedException : QuikGraphException
+    public class ParallelEdgeNotAllowedException : FastGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> class.

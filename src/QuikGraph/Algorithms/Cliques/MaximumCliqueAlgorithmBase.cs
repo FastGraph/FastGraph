@@ -2,9 +2,9 @@
 using System;
 #endif
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.Cliques
+namespace FastGraph.Algorithms.Cliques
 {
     /// <summary>
     /// Base class for all maximum clique graph algorithm.

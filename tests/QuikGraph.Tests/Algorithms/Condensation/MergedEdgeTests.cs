@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Condensation;
-using QuikGraph.Tests.Structures;
+using FastGraph.Algorithms.Condensation;
+using FastGraph.Tests.Structures;
 
-namespace QuikGraph.Tests.Algorithms.Condensation
+namespace FastGraph.Tests.Algorithms.Condensation
 {
     /// <summary>
     /// Tests for <see cref="MergedEdge{TVertex,TEdge}"/>.

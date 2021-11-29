@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Services;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.MinimumSpanningTree
+namespace FastGraph.Algorithms.MinimumSpanningTree
 {
     /// <summary>
     /// Kruskal minimum spanning tree algorithm implementation.

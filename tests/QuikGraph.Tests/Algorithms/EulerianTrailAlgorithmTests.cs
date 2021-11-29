@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using FastGraph.Algorithms;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Tests for <see cref="EulerianTrailAlgorithm{TVertex,TEdge}"/>.
@@ -47,7 +47,7 @@ namespace QuikGraph.Tests.Algorithms
             foreach (ICollection<TEdge> trail in trails)
             {
                 Assert.AreEqual(graph.EdgeCount, edges.Count);
-                QuikGraphAssert.TrueForAll(
+                FastGraphAssert.TrueForAll(
                     trail,
                     edge => edges.Contains(edge));
             }
@@ -91,7 +91,7 @@ namespace QuikGraph.Tests.Algorithms
             foreach (ICollection<TEdge> trail in trails)
             {
                 Assert.AreEqual(graph.EdgeCount, edges.Count);
-                QuikGraphAssert.TrueForAll(
+                FastGraphAssert.TrueForAll(
                     trail,
                     // Edge in graph or part of temporary ones but is a root
                     edge => edges.Contains(edge)

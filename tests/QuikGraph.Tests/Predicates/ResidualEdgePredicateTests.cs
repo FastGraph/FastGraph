@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Predicates;
+using FastGraph.Predicates;
 
-namespace QuikGraph.Tests.Predicates
+namespace FastGraph.Tests.Predicates
 {
     /// <summary>
     /// Tests for <see cref="ResidualEdgePredicate{TVertex,TEdge}"/>.

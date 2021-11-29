@@ -1,4 +1,4 @@
-﻿module QuickGraph.FST.FstTable
+﻿module FastGraph.FST.FstTable
 
 open System.Collections.Generic
 open Microsoft.FSharp.Collections

@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Represents a computation of something with control states.

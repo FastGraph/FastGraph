@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 #if SUPPORTS_CRYPTO_RANDOM
-using QuikGraph.Utils;
+using FastGraph.Utils;
 #endif
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Base class for any implementation of a Markov chain.

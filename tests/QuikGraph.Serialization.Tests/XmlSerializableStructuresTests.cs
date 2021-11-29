@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests relative to XML serialization of some serializable structures.

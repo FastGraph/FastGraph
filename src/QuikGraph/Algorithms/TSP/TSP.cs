@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.ShortestPath;
 
-namespace QuikGraph.Algorithms.TSP
+namespace FastGraph.Algorithms.TSP
 {
     /// <summary>
     /// Algorithm to answer the TSP (Travelling Salesman Problem), meaning finding a path that best link

@@ -1,9 +1,9 @@
-namespace QuickGraph.Algorithms
+namespace FastGraph.Algorithms
 
 open System
 open System.Collections.Generic
 
-open QuickGraph
+open FastGraph
 
 type EdgeColoringAlgorithm<'Vertex, 'Edge when 'Edge :> TaggedEdge<'Vertex, int> and 'Vertex: equality>() =
   let colored = new Event<_>()

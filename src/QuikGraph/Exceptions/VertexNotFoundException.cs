@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Exception raised when trying to use a vertex that is not inside the manipulated graph.
@@ -12,7 +12,7 @@ namespace QuikGraph
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public class VertexNotFoundException : QuikGraphException
+    public class VertexNotFoundException : FastGraphException
     {
         /// <summary>
         /// Initializes a new instance of <see cref="VertexNotFoundException"/> class.

@@ -6,7 +6,7 @@ using System.Net;
 using System.Xml;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// A resolver that loads graphML DTD and XSD schemas from embedded resources.

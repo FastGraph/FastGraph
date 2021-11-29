@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.Exploration
+namespace FastGraph.Algorithms.Exploration
 {
     /// <summary>
     /// Implementation for a graph data structure that support growth

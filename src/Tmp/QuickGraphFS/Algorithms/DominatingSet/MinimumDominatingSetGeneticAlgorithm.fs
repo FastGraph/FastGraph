@@ -4,10 +4,10 @@
     Implemented by Dmitrii Petukhov <dimart.sp@gmail.com>
 *)
 
-namespace QuickGraph.Algorithms
+namespace FastGraph.Algorithms
 
 open System
-open QuickGraph
+open FastGraph
 
 module GeneticConstants =
     let M     = 40   // Population size (number of solutions)

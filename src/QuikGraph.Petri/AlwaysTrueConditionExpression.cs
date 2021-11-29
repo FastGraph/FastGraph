@@ -3,7 +3,7 @@ using System;
 #endif
 using System.Collections.Generic;
 
-namespace QuikGraph.Petri
+namespace FastGraph.Petri
 {
     /// <summary>
     /// Represents an always enabled condition.

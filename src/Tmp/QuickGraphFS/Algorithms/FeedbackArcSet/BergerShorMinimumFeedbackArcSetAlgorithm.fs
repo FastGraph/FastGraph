@@ -1,10 +1,10 @@
-namespace QuickGraph.Algorithms
+namespace FastGraph.Algorithms
 
 open System
 open System.Linq
 open System.Collections.Generic
 
-open QuickGraph
+open FastGraph
 
 type BergerShorMinimumFeedbackArcSetAlgorithm =
     static member private removeIncomingEdges(initial : AdjacencyGraph<string, Edge<string>>,

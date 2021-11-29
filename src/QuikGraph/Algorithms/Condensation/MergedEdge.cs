@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Condensation
+namespace FastGraph.Algorithms.Condensation
 {
     /// <summary>
     /// An edge that merge several other edges.

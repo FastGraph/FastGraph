@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <inheritdoc cref="IQueue{T}" />
 #if SUPPORTS_SERIALIZATION

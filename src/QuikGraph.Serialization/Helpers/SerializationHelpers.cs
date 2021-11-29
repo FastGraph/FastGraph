@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 using System.ComponentModel;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     internal static class SerializationHelpers
     {

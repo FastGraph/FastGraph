@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Dot escape helpers.

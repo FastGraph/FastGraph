@@ -1,9 +1,9 @@
 ﻿#if SUPPORTS_CRYPTO_RANDOM
 using System;
 using NUnit.Framework;
-using QuikGraph.Utils;
+using FastGraph.Utils;
 
-namespace QuikGraph.Tests.Utils
+namespace FastGraph.Tests.Utils
 {
     /// <summary>
     /// Tests related to <see cref="CryptoRandom"/>.

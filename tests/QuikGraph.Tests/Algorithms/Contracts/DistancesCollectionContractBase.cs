@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.ShortestPath;
-using QuikGraph.Algorithms.TSP;
-using QuikGraph.Tests.Algorithms.ShortestPath;
-using QuikGraph.Tests.Algorithms.TSP;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.TSP;
+using FastGraph.Tests.Algorithms.ShortestPath;
+using FastGraph.Tests.Algorithms.TSP;
 
-namespace QuikGraph.Tests.Algorithms.Contracts
+namespace FastGraph.Tests.Algorithms.Contracts
 {
     /// <summary>
     /// Contract tests for <see cref="IDistancesCollection{TVertex}"/>.

@@ -1,7 +1,7 @@
-﻿namespace QuickGraph.Algorithms
+﻿namespace FastGraph.Algorithms
 
-open QuickGraph
-open QuickGraph.Algorithms
+open FastGraph
+open FastGraph.Algorithms
 open System.Collections.Generic
 
 type public MaxCardinality<'Vertex, 'Edge when 'Edge :> IEdge<'Vertex> and 'Vertex: comparison and 'Edge: equality>(firstGraph : BidirectionalGraph<'Vertex, 'Edge>, secondGraph : BidirectionalGraph<'Vertex, 'Edge>, similarityMat : Dictionary<_,_>, threshold : double, createEdge) =

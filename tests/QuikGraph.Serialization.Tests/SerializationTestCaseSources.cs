@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// Test case sources for serialization tests.

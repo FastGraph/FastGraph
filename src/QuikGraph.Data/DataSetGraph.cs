@@ -2,7 +2,7 @@
 using System.Data;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Data
+namespace FastGraph.Data
 {
     /// <summary>
     /// Represents a set of data as a graph.

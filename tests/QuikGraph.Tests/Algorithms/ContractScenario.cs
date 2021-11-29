@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Class containing information needed for building graphs when testing contracts.

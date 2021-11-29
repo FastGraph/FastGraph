@@ -1,9 +1,9 @@
 ﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     internal partial class GraphTestsBase
     {

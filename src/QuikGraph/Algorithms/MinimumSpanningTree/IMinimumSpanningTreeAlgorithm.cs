@@ -1,4 +1,4 @@
-namespace QuikGraph.Algorithms.MinimumSpanningTree
+namespace FastGraph.Algorithms.MinimumSpanningTree
 {
     /// <summary>
     /// Represents a minimum spanning tree algorithm.

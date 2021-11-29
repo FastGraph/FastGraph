@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     /// <summary>
     /// Tests for <see cref="SUndirectedEdge{TVertex}"/>.

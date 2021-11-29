@@ -2,7 +2,7 @@
 using System;
 #endif
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     // ReSharper disable InconsistentNaming
     /// <summary>

@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// A Markov edges chain.

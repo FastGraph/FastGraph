@@ -1,6 +1,14 @@
 # Library history
 
+## Overview
+
 Below is some summarized information about the history of this library in order to have a better idea of where it comes from.
+
+ 
+ - [QuickGraph](#QuickGraph)
+ - [YC.QuickGraph](#YC.QuickGraph)
+ - [QuikGraph](#QuikGraph)
+ - [FastGraph](#FastGraph) (⬅ you are here 😉)
 
 ## QuickGraph
 
@@ -8,10 +16,10 @@ Below is some summarized information about the history of this library in order 
 
 This is the original library supporting .NET Framework 4.0, Silverlight 4.0, Windows Phone 7, Windows 8 Metro Apps, XBox 360.
 
-QuikGraph was originally created by Jonathan "Peli" de Halleux in 2003.
+QuickGraph was originally created by Jonathan "Peli" de Halleux in 2003.
 
-Intially the library was providing generic directed/undirected graph datastructures and algorithms for .NET.
-QuickGraph was coming with algorithms such as depth first seach, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, least common ancestors, etc...
+Initially the library was providing generic directed/undirected graph data structures and algorithms.
+QuickGraph was coming with algorithms such as depth-first search, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, least common ancestors, etc...
 QuickGraph was supporting [MSAGL](https://www.microsoft.com/en-us/research/project/microsoft-automatic-graph-layout), [GLEE](https://en.wikipedia.org/wiki/Microsoft_Automatic_Graph_Layout), and [Graphviz](https://www.graphviz.org) to render the graphs, serialization to [GraphML](http://graphml.graphdrawing.org), etc...
 
 The library was also using [Code Contracts](https://www.microsoft.com/en-us/research/project/code-contracts/?from=http%3A%2F%2Fresearch.microsoft.com%2Fcontracts).
@@ -76,3 +84,15 @@ This version of QuickGraph also get rid of:
 ### Versions
 
 - See QuikGraph [repository tags](https://github.com/KeRNeLith/QuikGraph/releases) or NuGet [package page](https://www.nuget.org/packages/QuikGraph).
+
+## FastGraph
+
+### General information
+
+FastGraph is an alpha-quality fork of QuikGraph / YC.QuickGraph / QuickGraph made with the intent of supporting the cutting edge of .NET 6 and C# 10 features.
+
+It is a work in progress.
+
+### Versions
+
+- ** None yet **

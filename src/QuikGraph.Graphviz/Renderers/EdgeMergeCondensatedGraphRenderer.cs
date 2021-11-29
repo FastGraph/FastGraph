@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Condensation;
+using FastGraph.Algorithms.Condensation;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Edge merge condensation graph to DOT renderer.

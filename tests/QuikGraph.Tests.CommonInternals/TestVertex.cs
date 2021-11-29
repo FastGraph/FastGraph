@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Vertex type used for tests.

@@ -5,9 +5,9 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 #endif
-using static QuikGraph.Utils.MathUtils;
+using static FastGraph.Utils.MathUtils;
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz size (float).

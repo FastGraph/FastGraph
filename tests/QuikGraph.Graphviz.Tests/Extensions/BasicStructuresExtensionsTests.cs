@@ -1,9 +1,9 @@
 ﻿#if SUPPORTS_FONT
 using System.Drawing;
 using NUnit.Framework;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Tests for <see cref="BasicStructuresExtensions"/>.

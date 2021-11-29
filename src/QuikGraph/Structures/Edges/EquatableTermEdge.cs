@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// An <see cref="ITermEdge{TVertex}"/> implementation that supports equality (directed edge).

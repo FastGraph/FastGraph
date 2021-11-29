@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Collections;
-using static QuikGraph.Collections.HeapConstants;
-using static QuikGraph.Tests.AssertHelpers;
+using FastGraph.Collections;
+using static FastGraph.Collections.HeapConstants;
+using static FastGraph.Tests.AssertHelpers;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Tests for <see cref="BinaryHeap{TPriority,TValue}"/>.

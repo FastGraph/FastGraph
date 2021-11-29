@@ -4,12 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Additional assertion helpers.
     /// </summary>
-    internal static class QuikGraphAssert
+    internal static class FastGraphAssert
     {
         /// <summary>
         /// Checks that the <paramref name="onValue"/> predicate is true for all <paramref name="values"/>.

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 #if SUPPORTS_CRYPTO_RANDOM
-using QuikGraph.Utils;
+using FastGraph.Utils;
 #endif
 
-namespace QuikGraph.Algorithms.RandomWalks
+namespace FastGraph.Algorithms.RandomWalks
 {
     /// <summary>
     /// Wilson-Propp Cycle-Popping algorithm for Random Tree Generation.

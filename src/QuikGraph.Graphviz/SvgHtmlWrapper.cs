@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// Helpers to related to SVG and HTML.

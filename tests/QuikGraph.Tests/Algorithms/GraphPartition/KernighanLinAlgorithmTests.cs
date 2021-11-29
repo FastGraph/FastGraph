@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Algorithms.GraphPartition;
+using FastGraph.Algorithms.GraphPartition;
 #if !SUPPORTS_SORTEDSET
-using QuikGraph.Collections;
+using FastGraph.Collections;
 #endif
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static QuikGraph.Tests.TestHelpers;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using static FastGraph.Tests.TestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.GraphPartitioning
+namespace FastGraph.Tests.Algorithms.GraphPartitioning
 {
     /// <summary>
     /// Tests for <see cref="KernighanLinAlgorithm{TVertex,TEdge}"/>.

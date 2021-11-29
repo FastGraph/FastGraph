@@ -2,12 +2,12 @@ using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
-    /// QuikGraph helpers.
+    /// FastGraph helpers.
     /// </summary>
-    internal static class QuikGraphHelpers
+    internal static class FastGraphHelpers
     {
         /// <summary>
         /// Converts a <see cref="Func{T,TResult}"/> into a <see cref="TryFunc{T,TResult}"/>

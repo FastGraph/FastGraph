@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// A mutable indirect graph with vertices of type <typeparamref name="TVertex"/>

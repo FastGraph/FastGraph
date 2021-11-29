@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.Search;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.Search;
 
-namespace QuikGraph.Tests.Algorithms.Observers
+namespace FastGraph.Tests.Algorithms.Observers
 {
     /// <summary>
     /// Tests for <see cref="EdgePredecessorRecorderObserver{TVertex,TEdge}"/>.

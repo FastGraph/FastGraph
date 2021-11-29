@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
-using static QuikGraph.Collections.HeapConstants;
+using static FastGraph.Collections.HeapConstants;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Binary heap.

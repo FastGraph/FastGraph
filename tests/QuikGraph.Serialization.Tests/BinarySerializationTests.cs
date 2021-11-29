@@ -2,9 +2,9 @@
 using System.IO;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Serialization.Tests.SerializationTestCaseSources;
+using static FastGraph.Serialization.Tests.SerializationTestCaseSources;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests relative to serialization via standard API.

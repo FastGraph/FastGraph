@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.ConnectedComponents
+namespace FastGraph.Algorithms.ConnectedComponents
 {
     /// <summary>
     /// Algorithm that computes connected components of a graph.

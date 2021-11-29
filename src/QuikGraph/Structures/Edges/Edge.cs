@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Constants;
+using FastGraph.Constants;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// The default <see cref="IEdge{TVertex}"/> implementation (directed edge).

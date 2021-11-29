@@ -1,11 +1,11 @@
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     internal static class XmlConstants
     {
         [NotNull]
-        public const string DynamicMethodPrefix = "QuikGraph";
+        public const string DynamicMethodPrefix = "FastGraph";
 
         #region Tags
 

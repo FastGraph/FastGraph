@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
 using JetBrains.Annotations;
-using static QuikGraph.Graphviz.DotEscapers;
+using static FastGraph.Graphviz.DotEscapers;
 
-namespace QuikGraph.Graphviz.Dot
+namespace FastGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz record cell.

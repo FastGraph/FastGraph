@@ -1,8 +1,8 @@
-﻿module QuickGraph.FST.Tests.GraphBasedFstTestData
+﻿module FastGraph.FST.Tests.GraphBasedFstTestData
 
 open Microsoft.FSharp.Collections
-open QuickGraph.FST.GraphBasedFst
-open QuickGraph.FSA.GraphBasedFsa
+open FastGraph.FST.GraphBasedFst
+open FastGraph.FSA.GraphBasedFsa
 
 let fst1 =
     let startState = ResizeArray.singleton 0

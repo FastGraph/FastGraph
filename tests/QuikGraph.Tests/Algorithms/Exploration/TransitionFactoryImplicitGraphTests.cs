@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Exploration;
-using QuikGraph.Tests.Structures;
-using static QuikGraph.Tests.AssertHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Algorithms.Exploration;
+using FastGraph.Tests.Structures;
+using static FastGraph.Tests.AssertHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.Exploration
+namespace FastGraph.Tests.Algorithms.Exploration
 {
     /// <summary>
     /// Tests for <see cref="TransitionFactoryImplicitGraph{TVertex,TEdge}"/>.

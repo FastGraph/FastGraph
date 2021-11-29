@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Threading;
 using JetBrains.Annotations;
-using static QuikGraph.Utils.DisposableHelpers;
+using static FastGraph.Utils.DisposableHelpers;
 
-namespace QuikGraph.Graphviz.Tests
+namespace FastGraph.Graphviz.Tests
 {
     /// <summary>
     /// Helpers related to <see cref="CultureInfo"/>.

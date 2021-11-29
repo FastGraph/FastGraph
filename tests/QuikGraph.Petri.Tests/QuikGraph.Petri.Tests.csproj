@@ -3,19 +3,19 @@
   <PropertyGroup>
     <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.1</TargetFrameworks>
 
-    <Title>QuikGraph.Petri.Tests</Title>
+    <Title>FastGraph.Petri.Tests</Title>
 
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
-    <Copyright>Copyright © 2020</Copyright>
-    <Description>Tests for QuikGraph.Petri library.</Description>
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Tests for FastGraph.Petri library.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(DeployBuild)">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\QuikGraph.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\FastGraph.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- Targets defines -->
@@ -58,11 +58,11 @@
 
   <!-- Dependencies -->
   <!-- Projects -->
-  <!-- QuikGraph.Petri reference -->
-  <ItemGroup Condition="$(UseQuikGraphPetriNuget)">
-    <PackageReference Include="QuikGraph.Petri" Version="2.3.0" />
+  <!-- FastGraph.Petri reference -->
+  <ItemGroup Condition="$(UseFastGraphPetriNuget)">
+    <PackageReference Include="FastGraph.Petri" Version="2.3.0" />
   </ItemGroup>
-  <ItemGroup Condition="!$(UseQuikGraphPetriNuget)">
-    <ProjectReference Include="..\..\src\QuikGraph.Petri\QuikGraph.Petri.csproj" />
+  <ItemGroup Condition="!$(UseFastGraphPetriNuget)">
+    <ProjectReference Include="..\..\src\FastGraph.Petri\FastGraph.Petri.csproj" />
   </ItemGroup>
 </Project>

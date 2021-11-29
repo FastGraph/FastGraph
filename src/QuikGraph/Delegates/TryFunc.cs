@@ -1,4 +1,4 @@
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Delegate that has one parameter and returns an out value of the type specified by the <typeparamref name="TResult"/> parameter.

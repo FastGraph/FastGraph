@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms.Condensation
+namespace FastGraph.Algorithms.Condensation
 {
     /// <summary>
     /// Algorithm that condensate edges of a graph.

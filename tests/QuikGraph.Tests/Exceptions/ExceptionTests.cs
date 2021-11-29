@@ -2,9 +2,9 @@
 using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Tests.SerializationTestHelpers;
+using static FastGraph.Tests.SerializationTestHelpers;
 
-namespace QuikGraph.Tests.Exceptions
+namespace FastGraph.Tests.Exceptions
 {
     /// <summary>
     /// Tests for exceptions.

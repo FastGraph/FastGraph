@@ -2,7 +2,7 @@
 using System.Reflection;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     internal struct PropertySerializationInfo
     {

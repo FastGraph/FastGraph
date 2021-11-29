@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Algorithms.MaximumFlow;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.MaximumFlow;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.MaximumFlow
+namespace FastGraph.Tests.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Tests for <see cref="BipartiteToMaximumFlowGraphAugmentorAlgorithm{TVertex,TEdge}"/>.

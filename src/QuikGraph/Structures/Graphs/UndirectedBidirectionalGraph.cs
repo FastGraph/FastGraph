@@ -11,7 +11,7 @@ using System.Security.Permissions;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Mutable bidirectional undirected graph data structure.

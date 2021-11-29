@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.Search;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.Search;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Algorithm that find Eulerian path in a graph.

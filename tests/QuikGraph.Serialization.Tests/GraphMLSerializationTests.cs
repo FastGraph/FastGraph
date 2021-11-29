@@ -10,12 +10,12 @@ using System.Xml;
 using System.Xml.XPath;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Tests;
-using static QuikGraph.Serialization.Tests.SerializationTestCaseSources;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Tests;
+using static FastGraph.Serialization.Tests.SerializationTestCaseSources;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Serialization.Tests
+namespace FastGraph.Serialization.Tests
 {
     /// <summary>
     /// Tests for <see cref="GraphMLSerializer{TVertex,TEdge,TGraph}"/>.

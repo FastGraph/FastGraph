@@ -1,4 +1,4 @@
-namespace QuikGraph
+namespace FastGraph
 {
     internal static class PublicKey
     {

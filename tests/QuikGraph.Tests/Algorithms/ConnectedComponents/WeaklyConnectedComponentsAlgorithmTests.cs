@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.ConnectedComponents;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.ConnectedComponents;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.ConnectedComponents
+namespace FastGraph.Tests.Algorithms.ConnectedComponents
 {
     /// <summary>
     /// Tests for <see cref="WeaklyConnectedComponentsAlgorithm{TVertex,TEdge}"/>.

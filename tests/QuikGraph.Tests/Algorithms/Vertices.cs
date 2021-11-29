@@ -1,4 +1,4 @@
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Represents a pair source and target vertices.

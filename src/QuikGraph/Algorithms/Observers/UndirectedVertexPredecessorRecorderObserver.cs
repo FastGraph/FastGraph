@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using static QuikGraph.Utils.DisposableHelpers;
+using static FastGraph.Utils.DisposableHelpers;
 
-namespace QuikGraph.Algorithms.Observers
+namespace FastGraph.Algorithms.Observers
 {
     /// <summary>
     /// Recorder of vertices predecessors (undirected).

@@ -1,9 +1,9 @@
 using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.MaximumFlow;
+using FastGraph.Algorithms.MaximumFlow;
 
-namespace QuikGraph.Tests.Algorithms.MaximumFlow
+namespace FastGraph.Tests.Algorithms.MaximumFlow
 {
     /// <summary>
     /// Base class for graph augmentor algorithms.

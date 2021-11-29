@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using QuikGraph.Constants;
+using FastGraph.Constants;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// A struct based <see cref="IEdge{TVertex}"/> implementation that supports equality (directed edge).

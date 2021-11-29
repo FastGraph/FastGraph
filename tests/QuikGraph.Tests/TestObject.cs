@@ -1,4 +1,4 @@
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Object used for tests.

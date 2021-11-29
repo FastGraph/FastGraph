@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Search;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.Search;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.Search
+namespace FastGraph.Tests.Algorithms.Search
 {
     /// <summary>
     /// Tests for <see cref="BidirectionalDepthFirstSearchAlgorithm{TVertex,TEdge}"/>.
@@ -311,14 +311,14 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             if (processAll)
             {
-                QuikGraphAssert.TrueForAll(algorithm.VerticesColors, pair => pair.Value == GraphColor.Black);
+                FastGraphAssert.TrueForAll(algorithm.VerticesColors, pair => pair.Value == GraphColor.Black);
             }
             else
             {
-                QuikGraphAssert.TrueForAll(
+                FastGraphAssert.TrueForAll(
                     new[] { 1, 2, 3, 4, 5 },
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.Black);
-                QuikGraphAssert.TrueForAll(
+                FastGraphAssert.TrueForAll(
                     new[] { 6, 7, 8 },
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.White);
             }

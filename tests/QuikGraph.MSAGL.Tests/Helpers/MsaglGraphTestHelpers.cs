@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using Microsoft.Msagl.Drawing;
 
-namespace QuikGraph.MSAGL.Tests
+namespace FastGraph.MSAGL.Tests
 {
     internal static class MsaglGraphTestHelpers
     {

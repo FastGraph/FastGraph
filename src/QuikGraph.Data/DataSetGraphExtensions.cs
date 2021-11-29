@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Data
+namespace FastGraph.Data
 {
     /// <summary>
     /// Extensions related to <see cref="T:System.Data.DataSet"/> and <see cref="DataSetGraph"/>.

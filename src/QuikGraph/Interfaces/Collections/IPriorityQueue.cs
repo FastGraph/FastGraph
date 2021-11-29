@@ -1,4 +1,4 @@
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Represents a queue with priority.

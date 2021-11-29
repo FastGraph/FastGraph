@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms.VertexColoring;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms.VertexColoring;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.GraphColoring
+namespace FastGraph.Tests.Algorithms.GraphColoring
 {
     /// <summary>
     /// Tests for <see cref="VertexColoringAlgorithm{TVertex,TEdge}"/>.

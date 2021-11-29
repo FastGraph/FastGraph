@@ -7,9 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 #endif
 using JetBrains.Annotations;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Graphviz
+namespace FastGraph.Graphviz
 {
     /// <summary>
     /// An algorithm that renders a graph to the Graphviz DOT format.

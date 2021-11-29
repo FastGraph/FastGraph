@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using QuikGraph.Constants;
+using FastGraph.Constants;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// The default implementation of an <see cref="IUndirectedEdge{TVertex}"/> that supports tagging (struct).

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Algorithm that checks if a graph is Hamiltonian

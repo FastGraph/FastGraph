@@ -7,9 +7,9 @@ using System.Xml.Schema;
 using System.IO;
 using System.Xml;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Extensions to help serializing/deserializing graph to/from GraphML.

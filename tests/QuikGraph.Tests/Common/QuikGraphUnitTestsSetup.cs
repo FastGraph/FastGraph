@@ -1,12 +1,12 @@
 using NUnit.Framework;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
-    /// QuikGraph unit tests setup.
+    /// FastGraph unit tests setup.
     /// </summary>
     [SetUpFixture]
-    internal sealed class QuikGraphUnitTestsSetup : QuikGraphUnitTestsSetupBase
+    internal sealed class FastGraphUnitTestsSetup : FastGraphUnitTestsSetupBase
     {
     }
 }

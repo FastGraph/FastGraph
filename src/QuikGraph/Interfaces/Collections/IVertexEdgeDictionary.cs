@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 using System.Runtime.Serialization;
 #endif
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// A cloneable dictionary of vertices associated to their edges.

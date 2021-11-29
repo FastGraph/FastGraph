@@ -1,8 +1,8 @@
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Test helpers for algorithms.

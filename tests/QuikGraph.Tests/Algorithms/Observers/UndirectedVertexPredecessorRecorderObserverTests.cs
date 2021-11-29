@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Algorithms.Observers;
-using QuikGraph.Algorithms.Search;
+using FastGraph.Algorithms.Observers;
+using FastGraph.Algorithms.Search;
 
-namespace QuikGraph.Tests.Algorithms.Observers
+namespace FastGraph.Tests.Algorithms.Observers
 {
     /// <summary>
     /// Tests for <see cref="UndirectedVertexPredecessorRecorderObserver{TVertex,TEdge}"/>.

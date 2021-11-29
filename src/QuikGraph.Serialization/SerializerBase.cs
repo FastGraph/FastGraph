@@ -1,4 +1,4 @@
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Base class for a serializer.

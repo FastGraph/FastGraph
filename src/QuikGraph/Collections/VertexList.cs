@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace QuikGraph.Collections
+namespace FastGraph.Collections
 {
     /// <summary>
     /// Stores a list of vertices.

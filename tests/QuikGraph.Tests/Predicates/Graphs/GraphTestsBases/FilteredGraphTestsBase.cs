@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Tests.Structures;
-using static QuikGraph.Tests.AssertHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Tests.Structures;
+using static FastGraph.Tests.AssertHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Predicates
+namespace FastGraph.Tests.Predicates
 {
     /// <summary>
     /// Base class for filtered graph tests.

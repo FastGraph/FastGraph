@@ -9,9 +9,9 @@
     <ProjectGuid>{6b141fde-f5df-4dfd-b21f-c076bc87ccaf}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FST.Tests</RootNamespace>
-    <AssemblyName>YC.QuickGraph.FST.Test</AssemblyName>
+    <AssemblyName>FastGraph.FST.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>QuickGraph.FST.Tests</Name>
+    <Name>FastGraph.FST.Tests</Name>
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\src\</SolutionDir>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
@@ -65,18 +65,18 @@
     <Content Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\QuickGraph.FSA\QuickGraph.FSA.fsproj">
-      <Name>QuickGraph.FSA</Name>
+    <ProjectReference Include="..\..\src\FastGraph.FSA\FastGraph.FSA.fsproj">
+      <Name>FastGraph.FSA</Name>
       <Project>{bd5d18de-1c9d-4314-a777-21aa683eeace}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\QuickGraph.FST\QuickGraph.FST.fsproj">
-      <Name>QuickGraph.FST</Name>
+    <ProjectReference Include="..\..\src\FastGraph.FST\FastGraph.FST.fsproj">
+      <Name>FastGraph.FST</Name>
       <Project>{4b220e23-a7e0-4222-83f5-c785f7c66b33}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj">
-      <Name>QuikGraph</Name>
+    <ProjectReference Include="..\..\src\FastGraph\FastGraph.csproj">
+      <Name>FastGraph</Name>
       <Project>{a9a5c115-0680-44b3-a87e-5ecf4c93814e}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 #endif
 using NUnit.Framework;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Tests related to algorithm features (state, services).

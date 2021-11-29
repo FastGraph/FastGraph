@@ -2,7 +2,7 @@ using System;
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
 
-namespace QuikGraph.MSAGL.Tests
+namespace FastGraph.MSAGL.Tests
 {
     /// <summary>
     /// Tests related to <see cref="MsaglEdgeEventArgs{TVertex,TEdge}"/>.

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms.ShortestPath;
+using FastGraph.Algorithms.ShortestPath;
 
-namespace QuikGraph.Tests.Algorithms.ShortestPath
+namespace FastGraph.Tests.Algorithms.ShortestPath
 {
     /// <summary>
     /// Tests for <see cref="YenShortestPathsAlgorithm{TVertex}"/>.

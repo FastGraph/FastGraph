@@ -8,7 +8,7 @@ using System.Xml.XPath;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph.Serialization
+namespace FastGraph.Serialization
 {
     /// <summary>
     /// Extensions to serialize/deserialize graphs.

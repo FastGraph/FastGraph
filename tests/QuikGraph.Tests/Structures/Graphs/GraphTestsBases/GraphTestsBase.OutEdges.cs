@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Tests.AssertHelpers;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.AssertHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Structures
+namespace FastGraph.Tests.Structures
 {
     internal partial class GraphTestsBase
     {

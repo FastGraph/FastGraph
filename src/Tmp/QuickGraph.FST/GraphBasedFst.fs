@@ -1,13 +1,13 @@
-﻿module QuickGraph.FST.GraphBasedFst
+﻿module FastGraph.FST.GraphBasedFst
 
-open QuickGraph
+open FastGraph
 open Microsoft.FSharp.Collections
 open System.Collections.Generic
-open QuickGraph.Algorithms.Search
-open QuickGraph.Algorithms
-open QuickGraph.Collections
-open QuickGraph.FST.FstTable
-open QuickGraph.FSA.GraphBasedFsa
+open FastGraph.Algorithms.Search
+open FastGraph.Algorithms
+open FastGraph.Collections
+open FastGraph.FST.FstTable
+open FastGraph.FSA.GraphBasedFsa
 
 let setVertexRemoved (fst:#IVertexListGraph<_,_>) startV =
         let dfs = DepthFirstSearchAlgorithm<_,_>(fst)

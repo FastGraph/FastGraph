@@ -4,10 +4,10 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using System.Linq;
 #if !SUPPORTS_SORTEDSET
-using QuikGraph.Collections;
+using FastGraph.Collections;
 #endif
 
-namespace QuikGraph.Algorithms.GraphPartition
+namespace FastGraph.Algorithms.GraphPartition
 {
     /// <summary>
     /// Algorithm that separate a graph into two disjoint subsets A and B of equal (or nearly equal) in size,

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.MaximumFlow;
-using QuikGraph.Algorithms.RandomWalks;
-using QuikGraph.Algorithms.TopologicalSort;
-using QuikGraph.Collections;
-using QuikGraph.Tests.Structures;
-using static QuikGraph.Tests.GraphTestHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.MaximumFlow;
+using FastGraph.Algorithms.RandomWalks;
+using FastGraph.Algorithms.TopologicalSort;
+using FastGraph.Collections;
+using FastGraph.Tests.Structures;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Tests.Extensions
+namespace FastGraph.Tests.Extensions
 {
     /// <summary>
     /// Tests related to <see cref="AlgorithmExtensions"/>.

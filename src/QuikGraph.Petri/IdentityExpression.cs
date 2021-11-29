@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QuikGraph.Petri
+namespace FastGraph.Petri
 {
     /// <summary>
     /// Identity evaluation expression.

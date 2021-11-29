@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Represents an object that is able to be tagged.

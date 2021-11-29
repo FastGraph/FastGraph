@@ -2,7 +2,7 @@
 using System.Data;
 using NUnit.Framework;
 
-namespace QuikGraph.Data.Tests
+namespace FastGraph.Data.Tests
 {
     /// <summary>
     /// Tests for <see cref="DataRelationEdge"/>.

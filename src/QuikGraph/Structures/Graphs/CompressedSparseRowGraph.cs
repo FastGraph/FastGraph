@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
     /// Directed graph data structure using a compressed sparse row representation.

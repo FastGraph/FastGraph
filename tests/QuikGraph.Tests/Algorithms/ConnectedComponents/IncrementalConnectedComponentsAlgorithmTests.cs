@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.ConnectedComponents;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.ConnectedComponents;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
-namespace QuikGraph.Tests.Algorithms.ConnectedComponents
+namespace FastGraph.Tests.Algorithms.ConnectedComponents
 {
     /// <summary>
     /// Tests for <see cref="IncrementalConnectedComponentsAlgorithm{TVertex,TEdge}"/>

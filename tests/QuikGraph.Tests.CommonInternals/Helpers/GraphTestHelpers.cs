@@ -3,7 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Test helpers for graphs.

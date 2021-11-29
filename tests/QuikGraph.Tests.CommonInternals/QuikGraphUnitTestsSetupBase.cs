@@ -1,13 +1,13 @@
 using System.IO;
 using NUnit.Framework;
-using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
+using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
-    /// QuikGraph unit tests setup.
+    /// FastGraph unit tests setup.
     /// </summary>
-    internal abstract class QuikGraphUnitTestsSetupBase
+    internal abstract class FastGraphUnitTestsSetupBase
     {
         /// <summary>
         /// Fixture setup.

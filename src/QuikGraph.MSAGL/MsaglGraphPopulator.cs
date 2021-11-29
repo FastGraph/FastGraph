@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
-using QuikGraph.Algorithms;
+using FastGraph.Algorithms;
 
-namespace QuikGraph.MSAGL
+namespace FastGraph.MSAGL
 {
     /// <summary>
     /// Base class for MSAGL graph populator.

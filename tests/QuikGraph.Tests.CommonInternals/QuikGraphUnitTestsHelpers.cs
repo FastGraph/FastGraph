@@ -2,14 +2,14 @@ using System;
 using System.IO;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static QuikGraph.Utils.DisposableHelpers;
+using static FastGraph.Utils.DisposableHelpers;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
-    /// Helpers for QuikGraph unit tests.
+    /// Helpers for FastGraph unit tests.
     /// </summary>
-    internal static class QuikGraphUnitTestsHelpers
+    internal static class FastGraphUnitTestsHelpers
     {
         /// <summary>
         /// Returns the path to the current test directory.

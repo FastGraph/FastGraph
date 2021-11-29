@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.1</TargetFrameworks>
 
-    <Title>QuikGraph.Graphviz.Tests</Title>
+    <Title>FastGraph.Graphviz.Tests</Title>
 
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
 
-    <Copyright>Copyright © 2020</Copyright>
-    <Description>Tests for QuikGraph.Graphviz library.</Description>
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Tests for FastGraph.Graphviz library.</Description>
   </PropertyGroup>
 
   <!-- Targets defines -->
@@ -58,14 +58,14 @@
   </ItemGroup>
 
   <!-- Shared Projects -->
-  <Import Project="..\..\src\QuikGraph.CommonInternals\QuikGraph.CommonInternals.projitems" Label="Shared" />
+  <Import Project="..\..\src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
-  <!-- QuikGraph.Graphviz reference -->
-  <ItemGroup Condition="$(UseQuikGraphGraphvizNuget)">
-    <PackageReference Include="QuikGraph.Graphviz" Version="2.3.0" />
+  <!-- FastGraph.Graphviz reference -->
+  <ItemGroup Condition="$(UseFastGraphGraphvizNuget)">
+    <PackageReference Include="FastGraph.Graphviz" Version="2.3.0" />
   </ItemGroup>
-  <ItemGroup Condition="!$(UseQuikGraphGraphvizNuget)">
-    <ProjectReference Include="..\..\src\QuikGraph.Graphviz\QuikGraph.Graphviz.csproj" />
+  <ItemGroup Condition="!$(UseFastGraphGraphvizNuget)">
+    <ProjectReference Include="..\..\src\FastGraph.Graphviz\FastGraph.Graphviz.csproj" />
   </ItemGroup>
 </Project>

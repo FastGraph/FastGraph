@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+using FastGraph.Algorithms.Services;
 
-namespace QuikGraph.Algorithms.RankedShortestPath
+namespace FastGraph.Algorithms.RankedShortestPath
 {
     /// <summary>
     /// Base class for shortest path finder algorithms.

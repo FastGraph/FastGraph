@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.MaximumFlow;
+using FastGraph.Algorithms.MaximumFlow;
 
-namespace QuikGraph.Algorithms
+namespace FastGraph.Algorithms
 {
     /// <summary>
     /// Algorithm that computes a maximum bipartite matching in a graph, meaning

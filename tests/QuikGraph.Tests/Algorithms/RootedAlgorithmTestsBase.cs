@@ -1,10 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using static QuikGraph.Tests.AssertHelpers;
+using FastGraph.Algorithms;
+using static FastGraph.Tests.AssertHelpers;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Base class for rooted algorithm tests.

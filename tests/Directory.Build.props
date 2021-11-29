@@ -23,5 +23,5 @@
   </ItemGroup>
 
   <!-- Shared Projects -->
-  <Import Project="QuikGraph.Tests.CommonInternals\QuikGraph.Tests.CommonInternals.projitems" Label="Shared" />
+  <Import Project="FastGraph.Tests.CommonInternals\FastGraph.Tests.CommonInternals.projitems" Label="Shared" />
 </Project>

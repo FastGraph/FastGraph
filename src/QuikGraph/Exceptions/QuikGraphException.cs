@@ -4,22 +4,22 @@ using System.Runtime.Serialization;
 #endif
 using JetBrains.Annotations;
 
-namespace QuikGraph
+namespace FastGraph
 {
     /// <summary>
-    /// QuikGraph base exception.
+    /// FastGraph base exception.
     /// </summary>
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public abstract class QuikGraphException : Exception
+    public abstract class FastGraphException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="QuikGraphException"/> with the given message.
+        /// Initializes a new instance of <see cref="FastGraphException"/> with the given message.
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
-        protected QuikGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        protected FastGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
             : base(message, innerException)
         {
         }
@@ -28,7 +28,7 @@ namespace QuikGraph
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
-        protected QuikGraphException(SerializationInfo info, StreamingContext context)
+        protected FastGraphException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

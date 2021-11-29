@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using QuikGraph.Algorithms.RankedShortestPath;
-using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static QuikGraph.Tests.AssertHelpers;
+using FastGraph.Algorithms;
+using FastGraph.Algorithms.RankedShortestPath;
+using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
+using static FastGraph.Tests.AssertHelpers;
 
-namespace QuikGraph.Tests.Algorithms.RankedShortestPath
+namespace FastGraph.Tests.Algorithms.RankedShortestPath
 {
     /// <summary>
     /// Tests for <see cref="HoffmanPavleyRankedShortestPathAlgorithm{TVertex,TEdge}"/>.
@@ -26,7 +26,7 @@ namespace QuikGraph.Tests.Algorithms.RankedShortestPath
             int pathCount)
             where TEdge : IEdge<TVertex>
         {
-            QuikGraphAssert.TrueForAll(graph.Edges, edgeWeights.ContainsKey);
+            FastGraphAssert.TrueForAll(graph.Edges, edgeWeights.ContainsKey);
 
             var target = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(graph, e => edgeWeights[e])
             {

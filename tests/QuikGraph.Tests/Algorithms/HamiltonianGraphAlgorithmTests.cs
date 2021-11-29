@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using static QuikGraph.Tests.TestHelpers;
+using FastGraph.Algorithms;
+using static FastGraph.Tests.TestHelpers;
 
-namespace QuikGraph.Tests.Algorithms
+namespace FastGraph.Tests.Algorithms
 {
     /// <summary>
     /// Tests for <see cref="IsHamiltonianGraphAlgorithm{TVertex,TEdge}"/>.

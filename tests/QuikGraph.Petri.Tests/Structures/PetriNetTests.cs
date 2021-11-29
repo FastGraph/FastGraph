@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using static QuikGraph.Tests.GraphTestHelpers;
+using static FastGraph.Tests.GraphTestHelpers;
 
-namespace QuikGraph.Petri.Tests
+namespace FastGraph.Petri.Tests
 {
     /// <summary>
     /// Tests related to <see cref="PetriNet{TToken}"/>.

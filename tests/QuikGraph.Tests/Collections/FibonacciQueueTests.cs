@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using QuikGraph.Collections;
+using FastGraph.Collections;
 
-namespace QuikGraph.Tests.Collections
+namespace FastGraph.Tests.Collections
 {
     /// <summary>
     /// Tests for <see cref="FibonacciQueue{TVertex,TDistance}"/>.

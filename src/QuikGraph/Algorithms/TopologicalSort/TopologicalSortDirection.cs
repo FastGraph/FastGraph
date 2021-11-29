@@ -1,4 +1,4 @@
-namespace QuikGraph.Algorithms.TopologicalSort
+namespace FastGraph.Algorithms.TopologicalSort
 {
     /// <summary>
     /// Enumeration of possible topological sort directions.

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
-using QuikGraph.Collections;
+using FastGraph.Algorithms.Services;
+using FastGraph.Collections;
 
-namespace QuikGraph.Algorithms.MinimumSpanningTree
+namespace FastGraph.Algorithms.MinimumSpanningTree
 {
     /// <summary>
     /// Prim minimum spanning tree algorithm implementation.

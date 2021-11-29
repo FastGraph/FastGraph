@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Graphviz.Dot;
+using FastGraph.Graphviz.Dot;
 
-namespace QuikGraph.Data.Tests
+namespace FastGraph.Data.Tests
 {
     /// <summary>
     /// Tests related to <see cref="DataSetGraphvizAlgorithm"/>.

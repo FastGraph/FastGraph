@@ -1,8 +1,8 @@
 //using System;
 //using NUnit.Framework;
-//using QuikGraph.Algorithms;
+//using FastGraph.Algorithms;
 
-//namespace QuikGraph.Tests.Algorithms.MaximumFlow
+//namespace FastGraph.Tests.Algorithms.MaximumFlow
 //{
 //    /// <summary>
 //    /// Tests for <see cref="CentralityApproximationAlgorithm{TVertex,TEdge}"/>.

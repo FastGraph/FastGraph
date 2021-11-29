@@ -2,7 +2,7 @@ using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Tests
+namespace FastGraph.Tests
 {
     /// <summary>
     /// Assert helpers for tests.

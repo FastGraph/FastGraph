@@ -4,7 +4,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace QuikGraph.Data.Tests
+namespace FastGraph.Data.Tests
 {
     internal static class GraphTestHelpers
     {

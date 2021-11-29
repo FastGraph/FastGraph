@@ -1,10 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using QuikGraph.Algorithms;
-using static QuikGraph.Tests.AssertHelpers;
+using FastGraph.Algorithms;
+using static FastGraph.Tests.AssertHelpers;
 
-namespace QuikGraph.Tests.Algorithms.Search
+namespace FastGraph.Tests.Algorithms.Search
 {
     /// <summary>
     /// Base class for search algorithms.
