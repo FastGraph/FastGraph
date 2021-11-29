@@ -61,7 +61,7 @@ private static bool TryConnect(SocketWrapper socket, string serverName)
 
 1. Express exception messages as grammatically correct sentences.
 
-2. Before throwing Exception, consider whether a custom exception or one of the following .NET exceptions would provide semantic value:
+2. Before throwing Exception, consider whether a custom exception or one of the following exceptions would provide semantic value:
 
     a. [ArgumentException](https://docs.microsoft.com/en-us/dotnet/api/system.argumentexception)
 
@@ -75,7 +75,7 @@ private static bool TryConnect(SocketWrapper socket, string serverName)
 
     f. [NotSupportedException](https://docs.microsoft.com/en-us/dotnet/api/system.notsupportedexception) / [NotImplementedException](https://docs.microsoft.com/en-us/dotnet/api/system.notimplementedexception)
 
-3. Do not reuse .NET exceptions outside of their semantic context.
+3. Do not reuse exceptions outside of their semantic context.
 
 ## Using Static Structures
 

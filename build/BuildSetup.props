@@ -5,22 +5,22 @@
 
   <!-- Build variables -->
   <PropertyGroup>
-    <UseQuikGraphCoreNuget>false</UseQuikGraphCoreNuget>
-    <UseQuikGraphCoreNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Core)">true</UseQuikGraphCoreNuget>
+    <UseFastGraphCoreNuget>false</UseFastGraphCoreNuget>
+    <UseFastGraphCoreNuget Condition="$(DeployBuild) AND !$(Generate_FastGraph_Core)">true</UseFastGraphCoreNuget>
 
-    <UseQuikGraphSerializationNuget>false</UseQuikGraphSerializationNuget>
-    <UseQuikGraphSerializationNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Serialization)">true</UseQuikGraphSerializationNuget>
+    <UseFastGraphSerializationNuget>false</UseFastGraphSerializationNuget>
+    <UseFastGraphSerializationNuget Condition="$(DeployBuild) AND !$(Generate_FastGraph_Serialization)">true</UseFastGraphSerializationNuget>
 
-    <UseQuikGraphGraphvizNuget>false</UseQuikGraphGraphvizNuget>
-    <UseQuikGraphGraphvizNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Graphviz)">true</UseQuikGraphGraphvizNuget>
+    <UseFastGraphGraphvizNuget>false</UseFastGraphGraphvizNuget>
+    <UseFastGraphGraphvizNuget Condition="$(DeployBuild) AND !$(Generate_FastGraph_Graphviz)">true</UseFastGraphGraphvizNuget>
 
-    <UseQuikGraphDataNuget>false</UseQuikGraphDataNuget>
-    <UseQuikGraphDataNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Data)">true</UseQuikGraphDataNuget>
+    <UseFastGraphDataNuget>false</UseFastGraphDataNuget>
+    <UseFastGraphDataNuget Condition="$(DeployBuild) AND !$(Generate_FastGraph_Data)">true</UseFastGraphDataNuget>
 
-    <UseQuikGraphMSAGLNuget>false</UseQuikGraphMSAGLNuget>
-    <UseQuikGraphMSAGLNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_MSAGL)">true</UseQuikGraphMSAGLNuget>
+    <UseFastGraphMSAGLNuget>false</UseFastGraphMSAGLNuget>
+    <UseFastGraphMSAGLNuget Condition="$(DeployBuild) AND !$(Generate_FastGraph_MSAGL)">true</UseFastGraphMSAGLNuget>
 
-    <UseQuikGraphPetriNuget>false</UseQuikGraphPetriNuget>
-    <UseQuikGraphPetriNuget Condition="$(DeployBuild) AND !$(Generate_QuikGraph_Petri)">true</UseQuikGraphPetriNuget>
+    <UseFastGraphPetriNuget>false</UseFastGraphPetriNuget>
+    <UseFastGraphPetriNuget Condition="$(DeployBuild) AND !$(Generate_FastGraph_Petri)">true</UseFastGraphPetriNuget>
   </PropertyGroup>
 </Project>

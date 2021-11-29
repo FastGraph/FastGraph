@@ -220,20 +220,20 @@ $RECYCLE.BIN/
 DotParserProject/DotParserProject/DotGrammar.yrd.orig
 DotParserProject/DotParserProject/DotParser.fs.orig
 DotParserProject/DotParserProject/Program.fs.orig
-DotParserProject/packages/QuickGraph.3.6.61119.7/QuickGraph.3.6.61119.7.nupkg
-DotParserProject/packages/QuickGraph.3.6.61119.7/QuickGraph.3.6.61119.7.nuspec
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/CodeContracts/QuickGraph.Contracts.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/CodeContracts/QuickGraph.Data.Contracts.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/CodeContracts/QuickGraph.Graphviz.Contracts.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/CodeContracts/QuickGraph.Serialization.Contracts.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Data.XML
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Data.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Graphviz.XML
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Graphviz.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Serialization.XML
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.Serialization.dll
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.XML
-DotParserProject/packages/QuickGraph.3.6.61119.7/lib/net4/QuickGraph.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/FastGraph.3.6.61119.7.nupkg
+DotParserProject/packages/FastGraph.3.6.61119.7/FastGraph.3.6.61119.7.nuspec
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Contracts.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Data.Contracts.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Graphviz.Contracts.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Serialization.Contracts.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Data.XML
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Data.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Graphviz.XML
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Graphviz.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Serialization.XML
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Serialization.dll
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.XML
+DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.dll
 
 
 # ===================================================
@@ -265,14 +265,14 @@ docs/content/release-notes.md
 .fake
 TestResults/
 *.bak
-QuickGraph.5.1.TeamCity.user
-QuickGraph.sln.docstates
+FastGraph.5.1.TeamCity.user
+FastGraph.sln.docstates
 
 User_*/Out/*
 *.trx
 
-tests/QuickGraph.FST.Tests/DOTfst/*
-tests/QuickGraph.FSA.Tests/DOTfsa/*
+tests/FastGraph.FST.Tests/DOTfst/*
+tests/FastGraph.FSA.Tests/DOTfsa/*
 *.orig
 
 .paket/

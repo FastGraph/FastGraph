@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+
+    <GeneratePackageOnBuild>$(Generate_FastGraph_MSAGL)</GeneratePackageOnBuild>
+
+    <Title>FastGraph.MSAGL</Title>
+    <RootNamespace>FastGraph.MSAGL</RootNamespace>
+    <AssemblyName>FastGraph.MSAGL</AssemblyName>
+
+    <!-- Overridden by CI -->
+    <Version>0.0.0</Version>
+    <AssemblyVersion>0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0</FileVersion>
+
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Provides a bridge from FastGraph graphs to MSAGL library.
+
+This package is the MSAGL subset of the original QuickGraph (later forked as YC.QuickGraph and QuikGraph), specifically forked to support .NET 6 and C# 10.
+It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.MSAGL.</Description>
+    <IsPackable>true</IsPackable>
+    <PackageId>FastGraph.MSAGL</PackageId>
+    <PackageTags>FastGraph FastGraph Graph Structure Algorithm C# .NET MSAGL</PackageTags>
+  </PropertyGroup>
+
+  <!-- Targets defines -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <AssemblyTitle>FastGraph.MSAGL .NET Standard 2.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Dependencies -->
+  <!-- Externals -->
+  <ItemGroup>
+    <PackageReference Include="AutomaticGraphLayout" Version="1.1.11" />
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
+  </ItemGroup>
+
+  <!-- FastGraph reference -->
+  <ItemGroup Condition="$(UseFastGraphCoreNuget)">
+    <PackageReference Include="FastGraph" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(UseFastGraphCoreNuget)">
+    <ProjectReference Include="..\FastGraph\FastGraph.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net35;netstandard2.0</TargetFrameworks>
+
+    <GeneratePackageOnBuild>$(Generate_FastGraph_Data)</GeneratePackageOnBuild>
+
+    <Title>FastGraph.Data</Title>
+    <RootNamespace>FastGraph.Data</RootNamespace>
+    <AssemblyName>FastGraph.Data</AssemblyName>
+
+    <!-- Overridden by CI -->
+    <Version>0.0.0</Version>
+    <AssemblyVersion>0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0</FileVersion>
+
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Provides convenient graph helpers related to DataTable (and also serialization to Graphviz).
+
+This package is a subset related to DataTable of the original QuickGraph (later forked as YC.QuickGraph and QuikGraph), specifically forked to support .NET 6 and C# 10.
+It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.Data.</Description>
+    <IsPackable>true</IsPackable>
+    <PackageId>FastGraph.Data</PackageId>
+    <PackageTags>FastGraph Graph Structure Algorithm C# DAG QuickGraph QuikGraph Data DataTable</PackageTags>
+  </PropertyGroup>
+
+  <!-- Targets defines -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <AssemblyTitle>FastGraph.Data .NET 3.5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NET35;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <AssemblyTitle>FastGraph.Data .NET Standard 2.0</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Dependencies -->
+  <!-- FastGraph.Graphviz reference -->
+  <ItemGroup Condition="$(UseFastGraphGraphvizNuget)">
+    <PackageReference Include="FastGraph.Graphviz" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(UseFastGraphGraphvizNuget)">
+    <ProjectReference Include="..\FastGraph.Graphviz\FastGraph.Graphviz.csproj" />
+  </ItemGroup>
+</Project>

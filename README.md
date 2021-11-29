@@ -1,33 +1,31 @@
 | | |
 | --- | --- |
-| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/KeRNeLith/QuikGraph?branch=master&svg=true)](https://ci.appveyor.com/project/KeRNeLith/quikgraph) |
-| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/KeRNeLith/QuikGraph/badge.svg?branch=master)](https://coveralls.io/github/KeRNeLith/QuikGraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=quikgraph) | 
-| **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=quikgraph) | 
-| **Nugets** | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) QuikGraph |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.serialization.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) QuikGraph.Serialization |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.graphviz.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) QuikGraph.Graphviz |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.data.svg)](https://www.nuget.org/packages/QuikGraph.Data) QuikGraph.Data |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.msagl.svg)](https://www.nuget.org/packages/QuikGraph.MSAGL) QuikGraph.MSAGL |
-| | [![Nuget Status](https://img.shields.io/nuget/v/quikgraph.petri.svg)](https://www.nuget.org/packages/QuikGraph.Petri) QuikGraph.Petri |
+| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/brucificus/FastGraph?branch=master&svg=true)](https://ci.appveyor.com/project/brucificus/fastgraph) |
+| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/brucificus/FastGraph/badge.svg?branch=master)](https://coveralls.io/github/brucificus/FastGraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=fastgraph) | 
+| **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=fastgraph) | 
+| **Nugets** | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.svg)](https://www.nuget.org/packages/FastGraph) FastGraph |
+| | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.serialization.svg)](https://www.nuget.org/packages/FastGraph.Serialization) FastGraph.Serialization |
+| | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.graphviz.svg)](https://www.nuget.org/packages/FastGraph.Graphviz) FastGraph.Graphviz |
+| | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.data.svg)](https://www.nuget.org/packages/FastGraph.Data) FastGraph.Data |
+| | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.msagl.svg)](https://www.nuget.org/packages/FastGraph.MSAGL) FastGraph.MSAGL |
+| | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.petri.svg)](https://www.nuget.org/packages/FastGraph.Petri) FastGraph.Petri |
 | **License** | MS-PL |
 
-# QuikGraph
+# FastGraph
 
-## What is **QuikGraph**?
+## What is **FastGraph**?
 
-QuikGraph provides generic directed/undirected graph data structures and algorithms for .NET.
+FastGraph provides generic directed/undirected graph data structures and algorithms.
 
-QuikGraph comes with algorithms such as depth first search, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, etc.
+FastGraph comes with algorithms such as depth first search, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, etc.
 
-*QuikGraph was originally created by Jonathan "Peli" de Halleux in 2003 and named QuickGraph.*
+*FastGraph was originally created by Jonathan "Peli" de Halleux in 2003 and named QuickGraph. It was later forked as YC.QuickGraph and QuikGraph.*
 
-It was then updated to become YC.QuickGraph.
+**This version** of QuickGraph, renamed **FastGraph**, is a fork of YC.QuickGraph *and* QuikGraph.
 
-**This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the library to provide it as a clean NuGet packages using modern C# development (.NET Core).
+The plan is to target cutting-edge .NET 6 and C# 10 features, (initially at the expense of API stability).
 
-The library has been cleaned and improved. It comes with a lot of fixes for issues of the original library. It also has a wide support of .NET targets to make it compatible with the most development environments.
-
-**[Getting started with QuikGraph](https://github.com/KeRNeLith/QuikGraph/wiki)**
+**[Getting started with FastGraph](https://github.com/brucificus/FastGraph/wiki)**
 
 ---
 
@@ -36,14 +34,8 @@ The library has been cleaned and improved. It comes with a lot of fixes for issu
 - [![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%201.3-blue.svg)](#)
 - [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%201.0-blue.svg)](#)
 - [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%203.5-blue.svg)](#)
-- Works under [Unity 3D](https://github.com/KeRNeLith/QuikGraph/wiki/Unity3D-Integration)
-
-Supports Source Link (use dedicated symbol package)
-
-To get it working you need to:
-- Uncheck option "Enable Just My Code"
-- Add the NuGet symbol server (*https://symbols.nuget.org/download/symbols*)
-- Check option "Enable Source Link support"
+- Works under [Unity 3D](https://github.com/brucificus/FastGraph/wiki/Unity3D-Integration)
+- TBD
 
 ---
 
@@ -52,7 +44,7 @@ To get it working you need to:
 ### Build
 
 * Clone this repository.
-* Open QuikGraph.sln.
+* Open FastGraph.sln.
 
 ### Notes
 
@@ -66,33 +58,34 @@ I would be very pleased to receive pull requests to further **test**, **improve*
 
 ### Packages
 
-QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
+FastGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
-- [QuikGraph](https://www.nuget.org/packages/QuikGraph) (Core)
-- [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
-- [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
-- [QuikGraph.Data](https://www.nuget.org/packages/QuikGraph.Data)
-- [QuikGraph.MSAGL](https://www.nuget.org/packages/QuikGraph.MSAGL)
-- [QuikGraph.Petri](https://www.nuget.org/packages/QuikGraph.Petri)
+- [FastGraph](https://www.nuget.org/packages/FastGraph) (Core)
+- [FastGraph.Serialization](https://www.nuget.org/packages/FastGraph.Serialization)
+- [FastGraph.Graphviz](https://www.nuget.org/packages/FastGraph.Graphviz)
+- [FastGraph.Data](https://www.nuget.org/packages/FastGraph.Data)
+- [FastGraph.MSAGL](https://www.nuget.org/packages/FastGraph.MSAGL)
+- [FastGraph.Petri](https://www.nuget.org/packages/FastGraph.Petri)
 
 ### Where to go next?
 
-* [Wiki](https://github.com/KeRNeLith/QuikGraph/wiki)
-* [Documentation](https://kernelith.github.io/QuikGraph/)
-* [External Information](https://quickgraph.codeplex.com/documentation) (The website was closed)
+* [Wiki](https://github.com/brucificus/FastGraph/wiki)
 
 ---
 
 ## Maintainer(s)
 
-[![](https://github.com/KeRNeLith.png?size=50)](https://github.com/KeRNeLith)
+[![](https://github.com/brucificus.png?size=50)](https://github.com/brucificus)
 
-## Contributor(s)
+## Notable Network Contributor(s)
 
 This project exists thanks to all the people who have contributed to the code base.
 
+[![](https://github.com/KeRNeLith.png?size=50)](https://github.com/KeRNeLith)
+[![](https://github.com/gsvgit.png?size=50)](https://github.com/gsvgit)
 [![](https://github.com/jnyrup.png?size=50)](https://github.com/jnyrup)
 [![](https://github.com/SimonTC.png?size=50)](https://github.com/SimonTC)
 [![](https://github.com/tuwuhs.png?size=50)](https://github.com/tuwuhs)
+[![](https://github.com/pelikhan.png?size=50)](https://github.com/pelikhan)
 
 ---

@@ -1,65 +1,63 @@
-# QuikGraph documentation
+# FastGraph documentation
 
 ## Badges
 
 | | |
 | --- | --- |
-| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/KeRNeLith/QuikGraph?branch=master&svg=true)](https://ci.appveyor.com/project/KeRNeLith/quikgraph) |
-| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/KeRNeLith/QuikGraph/badge.svg?branch=master)](https://coveralls.io/github/KeRNeLith/quikgraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=quikgraph) | 
-| **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=quikgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=quikgraph) | 
+| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/brucificus/FastGraph?branch=master&svg=true)](https://ci.appveyor.com/project/brucificus/fastgraph) |
+| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/brucificus/FastGraph/badge.svg?branch=master)](https://coveralls.io/github/brucificus/fastgraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=fastgraph) | 
+| **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=fastgraph) | 
 | **License** | MS-PL |
 
 ## Introduction
 
-QuikGraph provides generic directed/undirected graph data structures and algorithms for .NET.
+FastGraph provides generic directed/undirected graph data structures and algorithms.
 
-QuikGraph comes with algorithms such as depth first search, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, etc.
+FastGraph comes with algorithms such as depth first search, breath first search, A* search, shortest path, k-shortest path, maximum flow, minimum spanning tree, etc.
 
-*QuikGraph was originally created by Jonathan "Peli" de Halleux in 2003 and named QuickGraph.*
+*FastGraph was originally created by Jonathan "Peli" de Halleux in 2003 and named QuickGraph. It was later forked as YC.QuickGraph and QuikGraph.*
 
-It was then updated to become YC.QuickGraph.
+**This version** of QuickGraph, renamed **FastGraph**, is a fork of YC.QuickGraph *and* QuikGraph.
 
-**This version** of QuickGraph, renamed **QuikGraph**, is a fork of YC.QuickGraph, and I tried to clean the library to provide it as a clean NuGet packages using modern C# development (.NET Core).
+The plan is to target cutting-edge .NET 6 and C# 10 features, (initially at the expense of API stability).
 
-The plan is to to fully clean, fix issues of the original library and all its non Core parts, and improve it. It also has a wide support of .NET targets to make it compatible with the most development environments.
-
-You can find library sources on [GitHub](https://github.com/KeRNeLith/QuikGraph).
+You can find library sources on [GitHub](https://github.com/brucificus/FastGraph).
 
 ## Targets
 
 - .NET Standard 1.3+
 - .NET Core 1.0+
 - .NET Framework 3.5+
-- Works under [Unity 3D](https://github.com/KeRNeLith/QuikGraph/wiki/Unity3D-Integration)
+- Works under [Unity 3D](https://github.com/brucificus/FastGraph/wiki/Unity3D-Integration)
 
 Supports Source Link
 
 ## Packages
 
-QuikGraph is available on [NuGet](https://www.nuget.org) in several modules.
+FastGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.svg)](https://www.nuget.org/packages/QuikGraph) [QuikGraph](https://www.nuget.org/packages/QuikGraph) (Core)
+[![Nuget Status](https://img.shields.io/nuget/v/fastgraph.svg)](https://www.nuget.org/packages/FastGraph) [FastGraph](https://www.nuget.org/packages/FastGraph) (Core)
 
-    PM> Install-Package QuikGraph
+    PM> Install-Package FastGraph
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.serialization.svg)](https://www.nuget.org/packages/QuikGraph.Serialization) [QuikGraph.Serialization](https://www.nuget.org/packages/QuikGraph.Serialization)
+[![Nuget Status](https://img.shields.io/nuget/v/fastgraph.serialization.svg)](https://www.nuget.org/packages/FastGraph.Serialization) [FastGraph.Serialization](https://www.nuget.org/packages/FastGraph.Serialization)
 
-    PM> Install-Package QuikGraph.Serialization
+    PM> Install-Package FastGraph.Serialization
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.graphviz.svg)](https://www.nuget.org/packages/QuikGraph.Graphviz) [QuikGraph.Graphviz](https://www.nuget.org/packages/QuikGraph.Graphviz)
+[![Nuget Status](https://img.shields.io/nuget/v/fastgraph.graphviz.svg)](https://www.nuget.org/packages/FastGraph.Graphviz) [FastGraph.Graphviz](https://www.nuget.org/packages/FastGraph.Graphviz)
 
-    PM> Install-Package QuikGraph.Graphviz
+    PM> Install-Package FastGraph.Graphviz
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.data.svg)](https://www.nuget.org/packages/QuikGraph.Data) [QuikGraph.Data](https://www.nuget.org/packages/QuikGraph.Data)
+[![Nuget Status](https://img.shields.io/nuget/v/fastgraph.data.svg)](https://www.nuget.org/packages/FastGraph.Data) [FastGraph.Data](https://www.nuget.org/packages/FastGraph.Data)
 
-    PM> Install-Package QuikGraph.Data
+    PM> Install-Package FastGraph.Data
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.msagl.svg)](https://www.nuget.org/packages/QuikGraph.MSAGL) [QuikGraph.MSAGL](https://www.nuget.org/packages/QuikGraph.MSAGL)
+[![Nuget Status](https://img.shields.io/nuget/v/fastgraph.msagl.svg)](https://www.nuget.org/packages/FastGraph.MSAGL) [FastGraph.MSAGL](https://www.nuget.org/packages/FastGraph.MSAGL)
 
-    PM> Install-Package QuikGraph.MSAGL
+    PM> Install-Package FastGraph.MSAGL
 
-[![Nuget Status](https://img.shields.io/nuget/v/quikgraph.petri.svg)](https://www.nuget.org/packages/QuikGraph.Petri) [QuikGraph.Petri](https://www.nuget.org/packages/QuikGraph.Petri)
+[![Nuget Status](https://img.shields.io/nuget/v/fastgraph.petri.svg)](https://www.nuget.org/packages/FastGraph.Petri) [FastGraph.Petri](https://www.nuget.org/packages/FastGraph.Petri)
 
-    PM> Install-Package QuikGraph.Petri
+    PM> Install-Package FastGraph.Petri
 
-<img src="images/quikgraph_logo.png" width="128" height="128" style="display: block; margin-left: auto; margin-right: auto" />
+<img src="images/fastgraph_logo.png" width="128" height="128" style="display: block; margin-left: auto; margin-right: auto" />

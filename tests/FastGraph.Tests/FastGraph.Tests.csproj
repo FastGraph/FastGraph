@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net35;net40;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcoreapp2.1</TargetFrameworks>
+
+    <Title>FastGraph.Tests</Title>
+
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+
+    <Copyright>Copyright © 2021</Copyright>
+    <Description>Tests for FastGraph library.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(DeployBuild)">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\FastGraph.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <!-- Targets defines -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
+    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+    <DefineConstants>$(DefineConstants);NET45;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net451'">
+    <DefineConstants>$(DefineConstants);NET451;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net452'">
+    <DefineConstants>$(DefineConstants);NET452;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net46'">
+    <DefineConstants>$(DefineConstants);NET46;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>$(DefineConstants);NET461;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net462'">
+    <DefineConstants>$(DefineConstants);NET462;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+    <DefineConstants>$(DefineConstants);NET47;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net471'">
+    <DefineConstants>$(DefineConstants);NET471;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net472'">
+    <DefineConstants>$(DefineConstants);NET472;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;SUPPORTS_TASKS;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.1'">
+    <DefineConstants>$(DefineConstants);NETCOREAPP2_1;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_SORTEDSET;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(ProjectDir)GraphML\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Dependencies -->
+  <!-- Shared Projects -->
+  <Import Project="..\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems" Label="Shared" />
+
+  <!-- FastGraph reference -->
+  <ItemGroup Condition="$(UseFastGraphCoreNuget)">
+    <PackageReference Include="FastGraph" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(UseFastGraphCoreNuget)">
+    <ProjectReference Include="..\..\src\FastGraph\FastGraph.csproj" />
+  </ItemGroup>
+  <!-- FastGraph.Serialization reference -->
+  <ItemGroup Condition="$(UseFastGraphSerializationNuget)">
+    <PackageReference Include="FastGraph.Serialization" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(UseFastGraphSerializationNuget)">
+    <ProjectReference Include="..\..\src\FastGraph.Serialization\FastGraph.Serialization.csproj" />
+  </ItemGroup>
+</Project>
