@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using FastGraph.Collections;
-using static FastGraph.Tests.SerializationTestHelpers;
 
 namespace FastGraph.Tests.Collections
 {
@@ -21,19 +20,10 @@ namespace FastGraph.Tests.Collections
         }
 
         [Test]
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public void Serialization()
         {
-            var dictionary = new VertexEdgeDictionary<int, EquatableEdge<int>>();
-
-            VertexEdgeDictionary<int, EquatableEdge<int>> deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
-            CollectionAssert.IsEmpty(deserializedDictionary);
-
-            dictionary.Add(1, new EdgeList<int, EquatableEdge<int>> { new EquatableEdge<int>(1, 2) });
-            dictionary.Add(2, new EdgeList<int, EquatableEdge<int>> { new EquatableEdge<int>(2, 3) });
-            deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
-            CollectionAssert.AreEqual(dictionary, deserializedDictionary);
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
 
         [Test]

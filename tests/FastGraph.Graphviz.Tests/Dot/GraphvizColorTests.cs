@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
-using static FastGraph.Tests.SerializationTestHelpers;
 
 namespace FastGraph.Graphviz.Tests
 {
@@ -17,7 +17,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         #endregion
-        
+
         [Test]
         public void Constructor()
         {
@@ -103,14 +103,10 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [Test]
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public void Serialization()
         {
-            var color = new GraphvizColor(255, 25, 60, 234);
-            GraphvizColor deserializedColor = SerializeAndDeserialize(color);
-            Assert.AreEqual(color.A, deserializedColor.A);
-            Assert.AreEqual(color.R, deserializedColor.R);
-            Assert.AreEqual(color.G, deserializedColor.G);
-            Assert.AreEqual(color.B, deserializedColor.B);
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
     }
 }

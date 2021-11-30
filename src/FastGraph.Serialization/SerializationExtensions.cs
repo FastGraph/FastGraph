@@ -26,20 +26,13 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not writable.</exception>
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public static void SerializeToBinary<TVertex, TEdge>(
             [NotNull] this IGraph<TVertex, TEdge> graph,
             [NotNull] Stream stream)
             where TEdge : IEdge<TVertex>
         {
-            if (graph == null)
-                throw new ArgumentNullException(nameof(graph));
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
-            if (!stream.CanWrite)
-                throw new ArgumentException("Must be a writable stream", nameof(stream));
-
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(stream, graph);
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
 
         /// <summary>
@@ -61,20 +54,14 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not readable.</exception>
         [Pure]
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
             [NotNull] this Stream stream,
             [CanBeNull] SerializationBinder binder = null)
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
-            if (!stream.CanRead)
-                throw new ArgumentException("Must be a readable stream", nameof(stream));
-
-            var formatter = new BinaryFormatter { Binder = binder };
-            object result = formatter.Deserialize(stream);
-            return (TGraph)result;
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
 #endif
 

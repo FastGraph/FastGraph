@@ -2,7 +2,6 @@
 using System;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using static FastGraph.Tests.SerializationTestHelpers;
 
 namespace FastGraph.Tests.Exceptions
 {
@@ -22,7 +21,7 @@ namespace FastGraph.Tests.Exceptions
             Exception exception = createException(message, innerException);
             Assert.AreEqual(message, exception.Message);
             Assert.AreSame(innerException, exception.InnerException);
-            
+
             exception = createException(message, null);
             Assert.AreEqual(message, exception.Message);
             Assert.IsNull(exception.InnerException);
@@ -41,33 +40,11 @@ namespace FastGraph.Tests.Exceptions
             ExceptionConstructorTest((m, e) => new VertexNotFoundException(m, e));
         }
 
-        private static void ExceptionSerializationTest<TException>(
-            [NotNull, InstantHandle] Func<TException> createException)
-            where TException : Exception
-        {
-            Exception exception = createException();
-
-            // Save the full ToString() value, including the exception message and stack trace.
-            string exceptionToString = exception.ToString();
-
-            Exception deserializedException = SerializeAndDeserialize(exception);
-
-            // Double-check that the exception message and stack trace (owned by the base Exception) are preserved
-            Assert.AreNotSame(exception, deserializedException);
-            Assert.AreEqual(exceptionToString, deserializedException.ToString());
-        }
-
         [Test]
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public void ExceptionsSerialization()
         {
-            ExceptionSerializationTest(() => new NegativeCapacityException());
-            ExceptionSerializationTest(() => new NegativeCycleGraphException());
-            ExceptionSerializationTest(() => new NegativeWeightException());
-            ExceptionSerializationTest(() => new NonAcyclicGraphException());
-            ExceptionSerializationTest(() => new NonStronglyConnectedGraphException());
-            ExceptionSerializationTest(() => new NoPathFoundException());
-            ExceptionSerializationTest(() => new ParallelEdgeNotAllowedException());
-            ExceptionSerializationTest(() => new VertexNotFoundException());
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
     }
 }

@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using FastGraph.Collections;
-using static FastGraph.Tests.SerializationTestHelpers;
 
 namespace FastGraph.Tests.Collections
 {
@@ -21,39 +20,17 @@ namespace FastGraph.Tests.Collections
         }
 
         [Test]
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public void Serialization()
         {
-            var dictionary = new EdgeEdgeDictionary<int, EquatableEdge<int>>();
-
-            EdgeEdgeDictionary<int, EquatableEdge<int>> deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
-            CollectionAssert.IsEmpty(deserializedDictionary);
-
-            dictionary.Add(new EquatableEdge<int>(1, 2), new EquatableEdge<int>(2, 3));
-            dictionary.Add(new EquatableEdge<int>(2, 3), new EquatableEdge<int>(3, 4));
-            deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
-            CollectionAssert.AreEqual(dictionary, deserializedDictionary);
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
 
         [Test]
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
         public void Clone()
         {
-            var dictionary = new EdgeEdgeDictionary<int, EquatableEdge<int>>();
-
-            EdgeEdgeDictionary<int, EquatableEdge<int>> clonedDictionary = dictionary.Clone();
-            CollectionAssert.IsEmpty(clonedDictionary);
-
-            clonedDictionary = (EdgeEdgeDictionary<int, EquatableEdge<int>>)((ICloneable)dictionary).Clone();
-            CollectionAssert.IsEmpty(clonedDictionary);
-
-            dictionary.Add(new EquatableEdge<int>(1, 2), new EquatableEdge<int>(2, 3));
-            dictionary.Add(new EquatableEdge<int>(2, 3), new EquatableEdge<int>(3, 4));
-            clonedDictionary = dictionary.Clone();
-            CollectionAssert.AreEqual(dictionary, clonedDictionary);
-
-            clonedDictionary = (EdgeEdgeDictionary<int, EquatableEdge<int>>)((ICloneable)dictionary).Clone();
-            CollectionAssert.AreEqual(dictionary, clonedDictionary);
+            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
         }
     }
 }
