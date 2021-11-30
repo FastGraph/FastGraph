@@ -70,7 +70,6 @@ namespace FastGraph.Graphviz.Dot
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("w", Width);
@@ -142,7 +141,6 @@ namespace FastGraph.Graphviz.Dot
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("w", Width);

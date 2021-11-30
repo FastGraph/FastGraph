@@ -717,7 +717,6 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             GetObjectData(info, context);
@@ -726,7 +725,6 @@ namespace FastGraph
         /// <summary>
         /// Gets the data to serialize.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected virtual void GetObjectData([NotNull] SerializationInfo info, StreamingContext context)
         {
             info.AddValue("AllowParallelEdges", AllowParallelEdges);
