@@ -101,12 +101,5 @@ namespace FastGraph.Graphviz.Tests
             Assert.AreNotEqual(color1.GetHashCode(), color3.GetHashCode());
             Assert.AreEqual(color3.GetHashCode(), color4.GetHashCode());
         }
-
-        [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void Serialization()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
     }
 }

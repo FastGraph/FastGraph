@@ -20,13 +20,6 @@ namespace FastGraph.Tests.Collections
         }
 
         [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void Serialization()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
-
-        [Test]
         public void Clone()
         {
             var dictionary = new VertexEdgeDictionary<int, EquatableEdge<int>>();

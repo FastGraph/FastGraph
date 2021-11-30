@@ -39,13 +39,6 @@ namespace FastGraph.Tests.Exceptions
             ExceptionConstructorTest((m, e) => new ParallelEdgeNotAllowedException(m, e));
             ExceptionConstructorTest((m, e) => new VertexNotFoundException(m, e));
         }
-
-        [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void ExceptionsSerialization()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
     }
 }
 #endif

@@ -18,19 +18,5 @@ namespace FastGraph.Tests.Collections
             Assert.DoesNotThrow(() => new EdgeEdgeDictionary<int, Edge<int>>(12));
             // ReSharper restore ObjectCreationAsStatement
         }
-
-        [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void Serialization()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
-
-        [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void Clone()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
     }
 }

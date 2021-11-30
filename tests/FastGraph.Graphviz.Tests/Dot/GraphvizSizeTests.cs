@@ -109,19 +109,5 @@ namespace FastGraph.Graphviz.Tests
             Assert.AreEqual("0x0", size1.ToString());
             Assert.AreEqual("12.2x25.6", size2.ToString());
         }
-
-        [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void Serialization_Size()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
-
-        [Test]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public void Serialization_SizeF()
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
     }
 }

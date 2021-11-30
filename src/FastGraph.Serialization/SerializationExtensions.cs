@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Xml;
 #if SUPPORTS_GRAPHS_SERIALIZATION
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.XPath;
 #endif
 using JetBrains.Annotations;
@@ -15,56 +12,6 @@ namespace FastGraph.Serialization
     /// </summary>
     public static class SerializationExtensions
     {
-#if SUPPORTS_GRAPHS_SERIALIZATION
-        /// <summary>
-        /// Serializes the <paramref name="graph"/> to the <paramref name="stream"/> using the .NET serialization binary formatter.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <param name="graph">The graph to serialize.</param>
-        /// <param name="stream">Stream in which serializing the graph.</param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
-        /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not writable.</exception>
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public static void SerializeToBinary<TVertex, TEdge>(
-            [NotNull] this IGraph<TVertex, TEdge> graph,
-            [NotNull] Stream stream)
-            where TEdge : IEdge<TVertex>
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
-
-        /// <summary>
-        /// Deserializes a graph instance from a <paramref name="stream"/> that was serialized using the .NET serialization binary formatter.
-        /// </summary>
-        /// <typeparam name="TVertex">Vertex type.</typeparam>
-        /// <typeparam name="TEdge">Edge type.</typeparam>
-        /// <typeparam name="TGraph">Graph type.</typeparam>
-        /// <param name="stream">Stream from which deserializing the graph.</param>
-        /// <param name="binder">
-        /// <para>
-        /// <see cref="T:System.Runtime.Serialization.SerializationBinder"/> used during deserialization.
-        /// It can be used to check/filter/replace/upgrade types that are loaded.
-        /// </para>
-        /// <para>It is also useful in security scenarios.</para>
-        /// <para>By default no binder is used.</para>
-        /// </param>
-        /// <returns>Deserialized graph.</returns>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
-        /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not readable.</exception>
-        [Pure]
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", error: true)]
-        public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
-            [NotNull] this Stream stream,
-            [CanBeNull] SerializationBinder binder = null)
-            where TGraph : IGraph<TVertex, TEdge>
-            where TEdge : IEdge<TVertex>
-        {
-            throw new NotSupportedException("BinaryFormatter serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.");
-        }
-#endif
-
         [Pure]
         private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
             [NotNull] XmlReader reader,
