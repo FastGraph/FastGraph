@@ -29,11 +29,7 @@
   <Import Project="..\..\src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
-  <!-- FastGraph.Data reference -->
-  <ItemGroup Condition="$(UseFastGraphDataNuget)">
-    <PackageReference Include="FastGraph.Data" Version="2.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(UseFastGraphDataNuget)">
+  <ItemGroup>
     <ProjectReference Include="..\..\src\FastGraph.Data\FastGraph.Data.csproj" />
   </ItemGroup>
 </Project>

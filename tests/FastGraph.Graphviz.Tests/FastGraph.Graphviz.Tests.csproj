@@ -34,11 +34,7 @@
   <Import Project="..\..\src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
-  <!-- FastGraph.Graphviz reference -->
-  <ItemGroup Condition="$(UseFastGraphGraphvizNuget)">
-    <PackageReference Include="FastGraph.Graphviz" Version="2.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(UseFastGraphGraphvizNuget)">
+  <ItemGroup>
     <ProjectReference Include="..\..\src\FastGraph.Graphviz\FastGraph.Graphviz.csproj" />
   </ItemGroup>
 </Project>

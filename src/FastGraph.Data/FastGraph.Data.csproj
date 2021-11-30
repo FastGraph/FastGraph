@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
 
-    <GeneratePackageOnBuild>$(Generate_FastGraph_Data)</GeneratePackageOnBuild>
-
     <Title>FastGraph.Data</Title>
     <RootNamespace>FastGraph.Data</RootNamespace>
     <AssemblyName>FastGraph.Data</AssemblyName>
@@ -47,11 +45,8 @@ It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.Data
   </PropertyGroup>
 
   <!-- Dependencies -->
-  <!-- FastGraph.Graphviz reference -->
-  <ItemGroup Condition="$(UseFastGraphGraphvizNuget)">
-    <PackageReference Include="FastGraph.Graphviz" Version="2.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(UseFastGraphGraphvizNuget)">
+  <!-- Projects -->
+  <ItemGroup>
     <ProjectReference Include="..\FastGraph.Graphviz\FastGraph.Graphviz.csproj" />
   </ItemGroup>
 </Project>

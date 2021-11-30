@@ -1,107 +1,24 @@
-<#
-.Synopsis
-    Gets the MSBuild property name from tag slug.
-#>
-function GetPropertyNameFromSlug
-{
-param(
-[Parameter(Mandatory)]
-[string] $tagSlug)
-    switch ($tagSlug)
-    {
-        'core' { return "Generate_FastGraph_Core"; }
-        'serialization' { return "Generate_FastGraph_Serialization"; }
-        'graphviz' { return "Generate_FastGraph_Graphviz"; }
-        'data' { return "Generate_FastGraph_Data"; }
-        'msagl' { return "Generate_FastGraph_MSAGL"; }
-        'petri' { return "Generate_FastGraph_Petri"; }
-        default { throw "Invalid tag slug." }
-    }
-}
-
-<#
-.Synopsis
-    Update the PackagesGeneration.props based on given tag name.
-#>
-function UpdatePackagesGeneration
-{
-param(
-[Parameter(Mandatory)]
-[string] $propertyName)
-    # Update the package generation props to enable package generation of the right package
-    $genPackagesFilePath = "./build/PackagesGeneration.props";
-    $genPackagesContent = Get-Content $genPackagesFilePath;
-    $newGenPackagesContent = $genPackagesContent -replace "<$propertyName>\w+<\/$propertyName>","<$propertyName>true</$propertyName>";
-    $newGenPackagesContent | Set-Content $genPackagesFilePath;
-
-    # Check content changes (at least one property changed
-    $genPackagesContentStr = $genPackagesContent | Out-String;
-    $newGenPackagesContentStr = $newGenPackagesContent | Out-String;
-    if ($genPackagesContentStr -eq $newGenPackagesContentStr)
-    {
-        throw "MSBuild property $propertyName does not exist in $genPackagesFilePath or content not updated.";
-    }
-}
-
-<#
-.Synopsis
-    Update the PackagesGeneration.props to generate all packages.
-#>
-function UpdateAllPackagesGeneration()
-{
-    # Update the package generation props to enable package generation of the right package
-    $genPackagesFilePath = "./build/PackagesGeneration.props";
-    $genPackagesContent = Get-Content $genPackagesFilePath;
-    $newGenPackagesContent = $genPackagesContent -replace "false","true";
-    $newGenPackagesContent | Set-Content $genPackagesFilePath;
-}
-
-<#
-.Synopsis
-    Update the DeployDuild.props to make the build a deploy build.
-#>
-function UpdateDeployBuild()
-{
-    # Update the package generation props to enable package generation of the right package
-    $genPackagesFilePath = "./build/DeployBuild.props";
-    $genPackagesContent = Get-Content $genPackagesFilePath;
-    $newGenPackagesContent = $genPackagesContent -replace "false","true";
-    $newGenPackagesContent | Set-Content $genPackagesFilePath;
-}
-
 # Update .props based on git tag status & setup build version
 if ($env:APPVEYOR_REPO_TAG -eq "true")
 {
-    UpdateDeployBuild;
     $tagParts = $env:APPVEYOR_REPO_TAG_NAME.split("/", 2);
 
     # Full release
     if ($tagParts.Length -eq 1) # X.Y.Z
     {
-        UpdateAllPackagesGeneration;
         $env:Build_Version = $env:APPVEYOR_REPO_TAG_NAME;
         $env:Release_Name = $env:Build_Version;
     }
     # Partial release
     else # Slug/X.Y.Z
     {
-        # Retrieve MSBuild property name for which enabling package generation
-        $tagSlug = $tagParts[0];
-        $propertyName = GetPropertyNameFromSlug $tagSlug;
-        $tagVersion = $tagParts[1];
 
-        UpdatePackagesGeneration $propertyName;
-        $env:Build_Version = $tagVersion;
-        $projectName = $propertyName -replace "Generate_","";
-        $projectName = $projectName -replace "_",".";
-        $env:Release_Name = "$projectName $tagVersion";
     }
 
     $env:IsFullIntegrationBuild = $false;   # Run only tests on deploy builds (not coverage, etc.)
 }
 else
 {
-    UpdateAllPackagesGeneration;
     $env:Build_Version = "$($env:APPVEYOR_BUILD_VERSION)";
     $env:Release_Name = $env:Build_Version;
 

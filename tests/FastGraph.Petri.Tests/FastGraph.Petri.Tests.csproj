@@ -26,11 +26,7 @@
 
   <!-- Dependencies -->
   <!-- Projects -->
-  <!-- FastGraph.Petri reference -->
-  <ItemGroup Condition="$(UseFastGraphPetriNuget)">
-    <PackageReference Include="FastGraph.Petri" Version="2.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(UseFastGraphPetriNuget)">
+  <ItemGroup>
     <ProjectReference Include="..\..\src\FastGraph.Petri\FastGraph.Petri.csproj" />
   </ItemGroup>
 </Project>

@@ -32,15 +32,9 @@
   <!-- Shared Projects -->
   <Import Project="..\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems" Label="Shared" />
 
-  <!-- FastGraph.Serialization reference -->
-  <ItemGroup Condition="$(UseFastGraphSerializationNuget)">
-    <PackageReference Include="FastGraph.Serialization" Version="2.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(UseFastGraphSerializationNuget)">
-    <ProjectReference Include="..\..\src\FastGraph.Serialization\FastGraph.Serialization.csproj" />
-  </ItemGroup>
-
+  <!-- Projects -->
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FastGraph.Serialization\FastGraph.Serialization.csproj" />
     <ProjectReference Include="..\..\tests\FastGraph.Tests\FastGraph.Tests.csproj" />
   </ItemGroup>
 </Project>
