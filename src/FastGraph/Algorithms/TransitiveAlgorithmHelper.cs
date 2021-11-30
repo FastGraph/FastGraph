@@ -1,6 +1,4 @@
-﻿#if !NET35
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,15 +23,6 @@ namespace FastGraph.Algorithms
 
             _graph = initialGraph;
         }
-
-#if NET35
-        internal delegate void Action<in T1, in T2, in T3, in T4, in T5>(
-            T1 param1,
-            T2 param2,
-            T3 param3,
-            T4 param4,
-            T5 param5);
-#endif
 
         /// <summary>
         /// Runs through the graph and calls <paramref name="action"/>
@@ -71,8 +60,8 @@ namespace FastGraph.Algorithms
                 foreach (TVertex indirectAncestor in vertexAncestors)
                 {
                     bool found = _graph.TryGetEdge(
-                        indirectAncestor, 
-                        vertexId, 
+                        indirectAncestor,
+                        vertexId,
                         out TEdge foundIndirectEdge);
 
                     action(_graph, indirectAncestor, vertexId, found, foundIndirectEdge);

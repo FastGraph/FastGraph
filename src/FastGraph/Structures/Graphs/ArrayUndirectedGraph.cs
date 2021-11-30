@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 #endif
@@ -23,7 +23,7 @@ namespace FastGraph
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
         , ISerializable
 #endif
         where TEdge : IEdge<TVertex>
@@ -198,7 +198,7 @@ namespace FastGraph
 
         #endregion
 
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
         #region ISerializable
 
         private ArrayUndirectedGraph(SerializationInfo info, StreamingContext context)

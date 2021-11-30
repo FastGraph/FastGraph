@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
 
     <GeneratePackageOnBuild>$(Generate_FastGraph_Serialization)</GeneratePackageOnBuild>
 
@@ -24,7 +24,7 @@ It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.Data
     <PackageTags>FastGraph Graph Structure Algorithm C# DAG QuickGraph QuikGraph Serialization</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3'">
+  <ItemGroup>
     <EmbeddedResource Include="graphml.dtd" />
     <EmbeddedResource Include="graphml.xsd" />
     <EmbeddedResource Include="graphml-structure.xsd" />
@@ -34,37 +34,30 @@ It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.Data
   </ItemGroup>
 
   <!-- Targets defines -->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-    <AssemblyTitle>FastGraph.Serialization .NET 3.5</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;$(AdditionalConstants)</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net40'">
-    <AssemblyTitle>FastGraph.Serialization .NET 4.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NET40;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-    <AssemblyTitle>FastGraph.Serialization .NET Standard 1.3</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD1_3;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <AssemblyTitle>FastGraph.Serialization .NET Standard 2.0</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_0;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_SVG_CONVERSION;SUPPORTS_DESCRIPTION;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_STREAM_FULL_FEATURES;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_SORTEDSET;SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
     <AssemblyTitle>FastGraph.Serialization .NET Standard 2.1</AssemblyTitle>
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_1;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_XML_DTD_PROCESSING;$(AdditionalConstants)</DefineConstants>
+    <DefineConstants>$(DefineConstants);SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_SVG_CONVERSION;SUPPORTS_DESCRIPTION;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_STREAM_FULL_FEATURES;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_SORTEDSET;SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+    <AssemblyTitle>FastGraph.Serialization .NET Core 3.1</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_SVG_CONVERSION;SUPPORTS_DESCRIPTION;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_STREAM_FULL_FEATURES;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_SORTEDSET;SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net5.0'">
+    <AssemblyTitle>FastGraph.Serialization .NET 5</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_SVG_CONVERSION;SUPPORTS_DESCRIPTION;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_STREAM_FULL_FEATURES;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_SORTEDSET;SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net6.0'">
+    <AssemblyTitle>FastGraph.Serialization .NET 6</AssemblyTitle>
+    <DefineConstants>$(DefineConstants);SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_SVG_CONVERSION;SUPPORTS_DESCRIPTION;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_STREAM_FULL_FEATURES;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_SORTEDSET;SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
 
   <!-- Dependencies -->
   <!-- Externals -->
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3' OR '$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
 

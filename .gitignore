@@ -217,24 +217,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
-DotParserProject/DotParserProject/DotGrammar.yrd.orig
-DotParserProject/DotParserProject/DotParser.fs.orig
-DotParserProject/DotParserProject/Program.fs.orig
-DotParserProject/packages/FastGraph.3.6.61119.7/FastGraph.3.6.61119.7.nupkg
-DotParserProject/packages/FastGraph.3.6.61119.7/FastGraph.3.6.61119.7.nuspec
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Contracts.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Data.Contracts.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Graphviz.Contracts.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/CodeContracts/FastGraph.Serialization.Contracts.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Data.XML
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Data.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Graphviz.XML
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Graphviz.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Serialization.XML
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.Serialization.dll
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.XML
-DotParserProject/packages/FastGraph.3.6.61119.7/lib/net4/FastGraph.dll
-
 
 # ===================================================
 # Exclude F# project specific directories and files

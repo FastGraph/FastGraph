@@ -25,9 +25,9 @@ You can find library sources on [GitHub](https://github.com/brucificus/FastGraph
 
 ## Targets
 
-- .NET Standard 1.3+
-- .NET Core 1.0+
-- .NET Framework 3.5+
+- .NET Standard 2.0+
+- .NET Core 3.1+
+- .NET 5.0+
 - Works under [Unity 3D](https://github.com/brucificus/FastGraph/wiki/Unity3D-Integration)
 
 Supports Source Link
