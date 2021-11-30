@@ -13,11 +13,6 @@
     <Description>Tests for FastGraph library.</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(DeployBuild)">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\FastGraph.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
   <!-- Targets defines -->
   <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
     <DefineConstants>$(DefineConstants);NET35;SUPPORTS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CONVERTER;SUPPORTS_TYPE_FULL_FEATURES;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
