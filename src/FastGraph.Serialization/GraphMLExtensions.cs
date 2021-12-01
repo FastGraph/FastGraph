@@ -43,7 +43,7 @@ namespace FastGraph.Serialization
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             var settings = new XmlWriterSettings { Indent = true, IndentChars = SerializationIndent };
-            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
+            using (var writer = XmlWriter.Create(filePath, settings))
             {
                 SerializeToGraphML<TVertex, TEdge, TGraph>(graph, writer);
                 writer.Flush();
@@ -78,7 +78,7 @@ namespace FastGraph.Serialization
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             var settings = new XmlWriterSettings { Indent = true, IndentChars = SerializationIndent };
-            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
+            using (var writer = XmlWriter.Create(filePath, settings))
             {
                 SerializeToGraphML(graph, writer, vertexIdentity, edgeIdentity);
                 writer.Flush();
@@ -211,7 +211,7 @@ namespace FastGraph.Serialization
                 DtdProcessing = DtdProcessing.Ignore
             };
 
-            using (XmlReader xmlReader = XmlReader.Create(reader, settings))
+            using (var xmlReader = XmlReader.Create(reader, settings))
                 DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
 #else
             var xmlReader = new XmlTextReader(reader)
@@ -311,7 +311,7 @@ namespace FastGraph.Serialization
                 settings.ValidationEventHandler += ValidationEventHandler;
 
                 // Read and validate
-                using (XmlReader xmlReader = XmlReader.Create(reader, settings))
+                using (var xmlReader = XmlReader.Create(reader, settings))
                 {
                     serializer.Deserialize(xmlReader, graph, vertexFactory, edgeFactory);
                 }
@@ -330,7 +330,7 @@ namespace FastGraph.Serialization
 
                 settings.Schemas.XmlResolver = resolver;
                 // ReSharper disable once AssignNullToNotNullAttribute, Justification: assert above
-                using (XmlReader xsdReader = XmlReader.Create(xsdStream, settings))
+                using (var xsdReader = XmlReader.Create(xsdStream, settings))
                 {
                     settings.Schemas.Add(GraphMLXmlResolver.GraphMLNamespace, xsdReader);
                 }

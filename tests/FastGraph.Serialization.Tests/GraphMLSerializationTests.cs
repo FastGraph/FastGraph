@@ -107,7 +107,7 @@ namespace FastGraph.Serialization.Tests
                     using (var writer = new StringWriter())
                     {
                         var settings = new XmlWriterSettings { Indent = true };
-                        using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
+                        using (var xmlWriter = XmlWriter.Create(writer, settings))
                         {
                             var serializer = new GraphMLSerializer<EquatableTestVertex, EquatableTestEdge, EquatableTestGraph>
                             {
@@ -141,7 +141,7 @@ namespace FastGraph.Serialization.Tests
                             DtdProcessing = DtdProcessing.Ignore
                         };
 
-                        using (XmlReader xmlReader = XmlReader.Create(reader, settings))
+                        using (var xmlReader = XmlReader.Create(reader, settings))
                         {
 #else
                         var xmlReader = new XmlTextReader(reader);
@@ -224,7 +224,7 @@ namespace FastGraph.Serialization.Tests
                     vertex => vertex.ID,
                     edge => edge.ID));
 
-            using (XmlWriter writer = XmlWriter.Create(WriteThrowsTestFilePath))
+            using (var writer = XmlWriter.Create(WriteThrowsTestFilePath))
             {
                 Assert.Throws<ArgumentNullException>(
                     () => ((AdjacencyGraph<TestVertex, TestEdge>) null).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(writer));
@@ -332,7 +332,7 @@ namespace FastGraph.Serialization.Tests
                     ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings
                 };
 
-                using (XmlReader reader = XmlReader.Create(graphMLFilePath, settings))
+                using (var reader = XmlReader.Create(graphMLFilePath, settings))
                 {
 #else
                 using (var reader = new XmlTextReader(graphMLFilePath))
@@ -588,7 +588,7 @@ namespace FastGraph.Serialization.Tests
             using (var writer = new StringWriter())
             {
                 var settings = new XmlWriterSettings { Indent = true };
-                using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
+                using (var xmlWriter = XmlWriter.Create(writer, settings))
                 {
                     graph.SerializeToGraphML<TestVertex, TestEdge, TestGraph>(xmlWriter);
                 }
@@ -604,7 +604,7 @@ namespace FastGraph.Serialization.Tests
             using (var writer = new StringWriter())
             {
                 var settings = new XmlWriterSettings { Indent = true };
-                using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
+                using (var xmlWriter = XmlWriter.Create(writer, settings))
                 {
                     graph.SerializeToGraphML<TestVertex, TestEdge, TestGraph>(
                         xmlWriter,
@@ -862,7 +862,7 @@ namespace FastGraph.Serialization.Tests
             using (var stream = new MemoryStream())
             {
                 // Serialize
-                using (XmlWriter writer = XmlWriter.Create(stream))
+                using (var writer = XmlWriter.Create(stream))
                 {
                     graph.SerializeToGraphML(
                         writer,
@@ -874,7 +874,7 @@ namespace FastGraph.Serialization.Tests
                 stream.Position = 0;
 
                 // Deserialize
-                using (XmlReader reader = XmlReader.Create(stream))
+                using (var reader = XmlReader.Create(stream))
                 {
                     TOutGraph deserializedGraph = deserialize(reader);
                     Assert.IsNotNull(deserializedGraph);
