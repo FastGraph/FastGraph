@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 #if SUPPORTS_SVG_CONVERSION
 using System.IO;
 using System.Net;
@@ -73,10 +74,11 @@ namespace FastGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
+        [Obsolete("Conversion via external web service no longer supported.", error: true)]
         public static string ToSvg<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            return ToSvg(ToGraphviz(graph));
+            throw new NotSupportedException("Conversion via external web service no longer supported.");
         }
 
         /// <summary>
@@ -93,12 +95,13 @@ namespace FastGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
+        [Obsolete("Conversion via external web service no longer supported.", error: true)]
         public static string ToSvg<TVertex, TEdge>(
             [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
             [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
             where TEdge : IEdge<TVertex>
         {
-            return ToSvg(ToGraphviz(graph, initAlgorithm));
+            throw new NotSupportedException("Conversion via external web service no longer supported.");
         }
 
         /// <summary>
@@ -110,28 +113,10 @@ namespace FastGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
         [Pure]
         [NotNull]
+        [Obsolete("Conversion via external web service no longer supported.", error: true)]
         public static string ToSvg([NotNull] string dot)
         {
-            if (dot is null)
-                throw new ArgumentNullException(nameof(dot));
-
-            var request = WebRequest.Create(DotToSvgApiEndpoint);
-            request.Method = "POST";
-            // Write dot
-            using (var writer = new StreamWriter(request.GetRequestStream()))
-            {
-                writer.Write(dot);
-            }
-
-            // Read Svg
-            WebResponse response = request.GetResponse();
-            Stream streamResponse = response.GetResponseStream();
-            if (streamResponse is null)
-                return string.Empty;
-            using (var reader = new StreamReader(streamResponse))
-            {
-                return reader.ReadToEnd();  // Svg
-            }
+            throw new NotSupportedException("Conversion via external web service no longer supported.");
         }
 #endif
     }
