@@ -9,14 +9,6 @@
     <Import_RootNamespace>FastGraph.Tests.CommonInternals</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\AlgorithmTestHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\AssertHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\GraphTestHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SerializationTestHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FastGraphAssert.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FastGraphUnitTestsHelpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FastGraphUnitTestsSetupBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestCategories.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Testvertex.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)**/*.cs" />
   </ItemGroup>
 </Project>
