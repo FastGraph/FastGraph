@@ -85,7 +85,7 @@ mkdir $TEMP_REPO_DIR
 
 "Cloning the repository gh-pages branch."
 # -q is to avoid git to output thing to stderr for no reason
-git clone -q https://github.com/brucificus/FastGraph.git --branch gh-pages $TEMP_REPO_DIR
+git clone -q https://github.com/FastGraph/FastGraph.git --branch gh-pages $TEMP_REPO_DIR
 
 "Clear local repository gh-pages directory..."
 cd $TEMP_REPO_DIR
@@ -103,7 +103,7 @@ if (-not [string]::IsNullOrEmpty($(git status --porcelain)))
 
     git commit -m "Update generated documentation."
 
-    git remote set-url origin https://$($env:GITHUB_ACCESS_TOKEN)@github.com/brucificus/FastGraph.git
+    git remote set-url origin https://$($env:GITHUB_ACCESS_TOKEN)@github.com/FastGraph/FastGraph.git
 
     # -q is to avoid git to output thing to stderr for no reason
     git push -q origin gh-pages

@@ -1,7 +1,7 @@
 | | |
 | --- | --- |
-| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/brucificus/FastGraph?branch=master&svg=true)](https://ci.appveyor.com/project/brucificus/fastgraph) |
-| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/brucificus/FastGraph/badge.svg?branch=master)](https://coveralls.io/github/brucificus/FastGraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=fastgraph) | 
+| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/FastGraph/FastGraph?branch=master&svg=true)](https://ci.appveyor.com/project/FastGraph/fastgraph) |
+| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/FastGraph/FastGraph/badge.svg?branch=master)](https://coveralls.io/github/FastGraph/FastGraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=fastgraph) | 
 | **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=fastgraph) | 
 | **Nugets** | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.svg)](https://www.nuget.org/packages/FastGraph) FastGraph |
 | | [![Nuget Status](https://img.shields.io/nuget/v/fastgraph.serialization.svg)](https://www.nuget.org/packages/FastGraph.Serialization) FastGraph.Serialization |
@@ -25,7 +25,7 @@ FastGraph comes with algorithms such as depth first search, breath first search,
 
 The plan is to target cutting-edge .NET 6 and C# 10 features, (initially at the expense of API stability).
 
-**[Getting started with FastGraph](https://github.com/brucificus/FastGraph/wiki)**
+**[Getting started with FastGraph](https://github.com/FastGraph/FastGraph/wiki)**
 
 ---
 
@@ -34,7 +34,7 @@ The plan is to target cutting-edge .NET 6 and C# 10 features, (initially at the 
 - [![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%202.0-blue.svg)](#)
 - [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%203.1-blue.svg)](#)
 - [![.NET 5](https://img.shields.io/badge/.NET-%3E%3D%205.0-blue.svg)](#)
-- Works under [Unity 3D](https://github.com/brucificus/FastGraph/wiki/Unity3D-Integration)
+- Works under [Unity 3D](https://github.com/FastGraph/FastGraph/wiki/Unity3D-Integration)
 
 ---
 
@@ -68,7 +68,7 @@ FastGraph is available on [NuGet](https://www.nuget.org) in several modules.
 
 ### Where to go next?
 
-* [Wiki](https://github.com/brucificus/FastGraph/wiki)
+* [Wiki](https://github.com/FastGraph/FastGraph/wiki)
 
 ---
 

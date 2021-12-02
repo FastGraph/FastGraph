@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <PackageIcon>fastgraph_logo.png</PackageIcon>
-    <PackageIconUrl>https://raw.githubusercontent.com/brucificus/FastGraph/master/docs/images/fastgraph_logo.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/FastGraph/FastGraph/master/docs/images/fastgraph_logo.png</PackageIconUrl>
 
     <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
     <IncludeSymbols>true</IncludeSymbols>

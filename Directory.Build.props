@@ -9,9 +9,9 @@
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/brucificus/FastGraph</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/FastGraph/FastGraph</PackageProjectUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <RepositoryUrl>https://github.com/brucificus/FastGraph</RepositoryUrl>
+    <RepositoryUrl>https://github.com/FastGraph/FastGraph</RepositoryUrl>
   </PropertyGroup>
 
   <!-- Optimization configurations -->
