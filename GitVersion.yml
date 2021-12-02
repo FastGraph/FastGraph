@@ -1,0 +1,13 @@
+mode: ContinuousDeployment
+next-version: 3.0.0
+branches:
+  main:
+    mode: ContinuousDeployment
+    source-branches: [ 'alpha' ]
+  alpha:
+    regex: ^alpha$
+    tag: alpha
+    source-branches: []
+ignore:
+  sha: []
+merge-message-formats: {}
