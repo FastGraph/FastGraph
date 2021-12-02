@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Import Project="./build/BuildSetup.props" />
-
   <PropertyGroup>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 
@@ -36,9 +34,5 @@
   <!-- C# configuration -->
   <PropertyGroup>
     <LangVersion>7</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(DeployBuild)">
-    <DefineConstants>$(DefineConstants);DEPLOY_BUILD;</DefineConstants>
   </PropertyGroup>
 </Project>

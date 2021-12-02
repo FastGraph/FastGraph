@@ -1,10 +1,8 @@
 ﻿using System;
-#if SUPPORTS_TASKS
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-#endif
 using NUnit.Framework;
 using FastGraph.Algorithms;
 
@@ -47,7 +45,6 @@ namespace FastGraph.Tests.Algorithms
             }
         }
 
-#if SUPPORTS_TASKS
         private static readonly TimeSpan TimeoutDelay = TimeSpan.FromSeconds(5);
 
         private class ManageableTestAlgorithm : AlgorithmBase<AdjacencyGraph<int, Edge<int>>>
@@ -98,7 +95,6 @@ namespace FastGraph.Tests.Algorithms
                 CleanedEvent.WaitOne(TimeoutDelay);
             }
         }
-#endif
 
         private class TestService
         {
@@ -114,7 +110,6 @@ namespace FastGraph.Tests.Algorithms
 
         #endregion
 
-#if SUPPORTS_TASKS
         [Test]
         public void AlgorithmNormalStates()
         {
@@ -367,7 +362,6 @@ namespace FastGraph.Tests.Algorithms
             Assert.IsTrue(hasFinished);
             Assert.IsTrue(expectedStates.Count == 0);
         }
-#endif
 
         [Test]
         public void GetService()

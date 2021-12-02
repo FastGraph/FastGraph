@@ -15,7 +15,7 @@ namespace FastGraph.Utils
     public class CryptoRandom : Random
     {
         [NotNull]
-        private readonly RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
+        private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
         [NotNull]
         private readonly byte[] _uint32Buffer = new byte[4];

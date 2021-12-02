@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
+using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.Graphviz.Tests
 {

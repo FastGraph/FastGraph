@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.Tests
 {

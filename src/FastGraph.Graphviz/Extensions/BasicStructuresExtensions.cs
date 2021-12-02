@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_BASIC_EXTENSIONS
+﻿#if SUPPORTS_FONT
 using System.Drawing;
 using JetBrains.Annotations;
 using FastGraph.Graphviz.Dot;

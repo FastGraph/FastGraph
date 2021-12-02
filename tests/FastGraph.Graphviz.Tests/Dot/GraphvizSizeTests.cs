@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
-using static FastGraph.Tests.SerializationTestHelpers;
 
 namespace FastGraph.Graphviz.Tests
 {
@@ -109,26 +108,6 @@ namespace FastGraph.Graphviz.Tests
 
             Assert.AreEqual("0x0", size1.ToString());
             Assert.AreEqual("12.2x25.6", size2.ToString());
-        }
-
-        [Test]
-        public void Serialization_Size()
-        {
-            var size = new GraphvizSize(150, 200);
-            GraphvizSize deserializedSize = SerializeAndDeserialize(size);
-            Assert.AreEqual(size.IsEmpty, deserializedSize.IsEmpty);
-            Assert.AreEqual(size.Width, deserializedSize.Width);
-            Assert.AreEqual(size.Height, deserializedSize.Height);
-        }
-
-        [Test]
-        public void Serialization_SizeF()
-        {
-            var size = new GraphvizSizeF(150.5f, 200.6f);
-            GraphvizSizeF deserializedSize = SerializeAndDeserialize(size);
-            Assert.AreEqual(size.IsEmpty, deserializedSize.IsEmpty);
-            Assert.AreEqual(size.Width, deserializedSize.Width);
-            Assert.AreEqual(size.Height, deserializedSize.Height);
         }
     }
 }

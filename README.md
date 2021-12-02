@@ -31,11 +31,10 @@ The plan is to target cutting-edge .NET 6 and C# 10 features, (initially at the 
 
 ## Targets
 
-- [![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%201.3-blue.svg)](#)
-- [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%201.0-blue.svg)](#)
-- [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%203.5-blue.svg)](#)
+- [![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%202.0-blue.svg)](#)
+- [![.NET Core](https://img.shields.io/badge/.NET%20Core-%3E%3D%203.1-blue.svg)](#)
+- [![.NET 5](https://img.shields.io/badge/.NET-%3E%3D%205.0-blue.svg)](#)
 - Works under [Unity 3D](https://github.com/brucificus/FastGraph/wiki/Unity3D-Integration)
-- TBD
 
 ---
 
