@@ -91,7 +91,7 @@ build_script:
   - ps: >-
       if ($env:IsFullIntegrationBuild -eq $true)
       {
-          & $sonarScanner begin /k:"fastgraph" /s:$analysisFile /o:"brucificus-github" /d:sonar.host.url="https://sonarcloud.io" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.opencover.reportsPaths="coverage.xml" /d:sonar.login="$env:SONARQUBE_TOKEN"
+          & $sonarScanner begin /k:"fastgraph" /s:$analysisFile /o:"fastgraph-github" /d:sonar.host.url="https://sonarcloud.io" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.opencover.reportsPaths="coverage.xml" /d:sonar.login="$env:SONARQUBE_TOKEN"
       }
   - msbuild
 
@@ -166,15 +166,15 @@ before_deploy:
 deploy:
 # MyGet
   - provider: NuGet
-    server: https://www.myget.org/F/brucificus-ci/api/v2/package
-    symbol_server: https://www.myget.org/F/brucificus-ci/symbols/api/v2/package
+    server: https://www.myget.org/F/fastgraph-ci/api/v2/package
+    symbol_server: https://www.myget.org/F/fastgraph-ci/symbols/api/v2/package
     api_key:
       secure: ANF+joC2B+NahxCFbLPOjNvEAo36F2F4QJu6zLwoIf2I9KwkxKyCSuNxDpLmJmtU
     on:
       configuration: Release
 # GitHub packages
   - provider: NuGet
-    server: https://nuget.pkg.github.com/brucificus/index.json
+    server: https://nuget.pkg.github.com/fastgraph/index.json
     username: brucificus
     api_key:
       secure: 6N37NtnuKSzKQXlPOCtPSFJGOvJUdJjPK8LcuWx2PjHs2WVdngenZvYixk6br72b

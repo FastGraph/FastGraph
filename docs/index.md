@@ -4,8 +4,8 @@
 
 | | |
 | --- | --- |
-| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/brucificus/FastGraph?branch=master&svg=true)](https://ci.appveyor.com/project/brucificus/fastgraph) |
-| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/brucificus/FastGraph/badge.svg?branch=master)](https://coveralls.io/github/brucificus/fastgraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=fastgraph) | 
+| **Build** | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/FastGraph/FastGraph?branch=master&svg=true)](https://ci.appveyor.com/project/FastGraph/fastgraph) |
+| **Coverage** | <sup>Coveralls</sup> [![Coverage Status](https://coveralls.io/repos/github/FastGraph/FastGraph/badge.svg?branch=master)](https://coveralls.io/github/FastGraph/fastgraph?branch=master) <sup>SonarQube</sup> [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=fastgraph) | 
 | **Quality** | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fastgraph&metric=alert_status)](https://sonarcloud.io/dashboard?id=fastgraph) | 
 | **License** | MS-PL |
 
@@ -21,14 +21,14 @@ FastGraph comes with algorithms such as depth first search, breath first search,
 
 The plan is to target cutting-edge .NET 6 and C# 10 features, (initially at the expense of API stability).
 
-You can find library sources on [GitHub](https://github.com/brucificus/FastGraph).
+You can find library sources on [GitHub](https://github.com/FastGraph/FastGraph).
 
 ## Targets
 
 - .NET Standard 2.0+
 - .NET Core 3.1+
 - .NET 5.0+
-- Works under [Unity 3D](https://github.com/brucificus/FastGraph/wiki/Unity3D-Integration)
+- Works under [Unity 3D](https://github.com/FastGraph/FastGraph/wiki/Unity3D-Integration)
 
 Supports Source Link
 
