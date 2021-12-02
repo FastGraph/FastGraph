@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    branches: [ main, alpha ]
+
+  # Configures manual invocation from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  release:
+
+    env:
+      BUILD_CONFIGURATION: 'Release'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+    - name: git fetch
+      run: git fetch --prune --unshallow
+
+    - name: Setup .NET Core 3.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Setup .NET 5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Setup .NET 6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: GitVersion Setup
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+          versionSpec: '5.8.x'
+    - name: GitVersion Execute
+      id: gitversion # step id used as reference for output values
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+    - name: GitVersion Outputs Display
+      run: |
+        echo "Major: ${{ steps.gitversion.outputs.major }}"
+        echo "Minor: ${{ steps.gitversion.outputs.minor }}"
+        echo "Patch: ${{ steps.gitversion.outputs.patch }}"
+        echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
+        echo "PreReleaseTagWithDash: ${{ steps.gitversion.outputs.preReleaseTagWithDash }}"
+        echo "PreReleaseLabel: ${{ steps.gitversion.outputs.preReleaseLabel }}"
+        echo "PreReleaseNumber: ${{ steps.gitversion.outputs.preReleaseNumber }}"
+        echo "WeightedPreReleaseNumber: ${{ steps.gitversion.outputs.weightedPreReleaseNumber }}"
+        echo "BuildMetaData: ${{ steps.gitversion.outputs.buildMetaData }}"
+        echo "BuildMetaDataPadded: ${{ steps.gitversion.outputs.buildMetaDataPadded }}"
+        echo "FullBuildMetaData: ${{ steps.gitversion.outputs.fullBuildMetaData }}"
+        echo "MajorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}"
+        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        echo "LegacySemVer: ${{ steps.gitversion.outputs.legacySemVer }}"
+        echo "LegacySemVerPadded: ${{ steps.gitversion.outputs.legacySemVerPadded }}"
+        echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
+        echo "AssemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+        echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}"
+        echo "BranchName: ${{ steps.gitversion.outputs.branchName }}"
+        echo "EscapedBranchName: ${{ steps.gitversion.outputs.escapedBranchName }}"
+        echo "Sha: ${{ steps.gitversion.outputs.sha }}"
+        echo "ShortSha: ${{ steps.gitversion.outputs.shortSha }}"
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+        echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
+        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.nuGetPreReleaseTag }}"
+        echo "VersionSourceSha: ${{ steps.gitversion.outputs.versionSourceSha }}"
+        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
+        echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
+        echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
+        echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+
+    - name: dotnet restore
+      run: dotnet restore
+    - name: dotnet build
+      run: dotnet build --configuration $BUILD_CONFIGURATION --no-restore
+    - name: dotnet test
+      run: dotnet test --configuration $BUILD_CONFIGURATION --no-restore --no-build --verbosity normal
+    - name: dotnet pack
+      run: dotnet pack --configuration $BUILD_CONFIGURATION --no-restore --no-build --include-symbols --output dist -p:FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} -p:InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }} -p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} -p:IncludeSourceRevisionInInformationalVersion=false -p:Version=${{ steps.gitversion.outputs.semVer }}
+
+    - name: GitHub Tag Push
+      uses: rickstaa/action-create-tag@v1
+      with:
+        tag: "v${{ steps.gitversion.outputs.fullSemVer }}"
+        message: ""
+    - name: GitHub Release Draft
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: dist/*
+        tag: "v${{ steps.gitversion.outputs.fullSemVer }}"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: ${{ steps.gitversion.outputs.preReleaseTag != '' }}
+        generateReleaseNotes: true
+        draft: true
+
+    - name: dotnet nuget push
+      run: dotnet nuget push dist/*.*kg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+    - name: GitHub Release Publish
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: dist/*
+        tag: "v${{ steps.gitversion.outputs.fullSemVer }}"
+        generateReleaseNotes: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        omitPrereleaseDuringUpdate: true
+        omitNameDuringUpdate: true
+        draft: false
