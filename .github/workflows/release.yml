@@ -104,7 +104,7 @@ jobs:
         draft: true
 
     - name: dotnet nuget push
-      run: dotnet nuget push dist/*.*kg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push dist/*.*kg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
 
     - name: GitHub Release Publish
       uses: ncipollo/release-action@v1
