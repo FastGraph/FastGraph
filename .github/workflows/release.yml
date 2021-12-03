@@ -93,6 +93,7 @@ jobs:
       with:
         tag: "v${{ steps.gitversion.outputs.fullSemVer }}"
         message: ""
+        force_push_tag: true # TODO: Remove after latter pipeline steps are debugged.
     - name: GitHub Release Draft
       uses: ncipollo/release-action@v1
       with:
@@ -103,8 +104,10 @@ jobs:
         generateReleaseNotes: true
         draft: true
 
-    - name: dotnet nuget push
-      run: dotnet nuget push dist/*.*kg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+    - name: dotnet nuget push dist/*.nupkg
+      run: dotnet nuget push dist/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+    - name: dotnet nuget push dist/*.snupkg
+      run: dotnet nuget push dist/*.snupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
 
     - name: GitHub Release Publish
       uses: ncipollo/release-action@v1
