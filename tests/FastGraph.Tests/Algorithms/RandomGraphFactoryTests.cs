@@ -124,7 +124,7 @@ namespace FastGraph.Tests.Algorithms
         [Test]
         public void Create()
         {
-            var graph = new AdjacencyGraph<int , EquatableEdge<int>>();
+            var graph = new AdjacencyGraph<int, EquatableEdge<int>>();
 
             // With isolated vertices only
             int v = 0;

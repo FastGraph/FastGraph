@@ -42,7 +42,7 @@ namespace FastGraph.Tests.Predicates
 
         [TestCaseSource(nameof(PredicateTestCases))]
         public void Predicate<TGraph>([NotNull] TGraph graph)
-            where TGraph 
+            where TGraph
             : IIncidenceGraph<int, Edge<int>>
             , IMutableVertexSet<int>
             , IMutableEdgeListGraph<int, Edge<int>>

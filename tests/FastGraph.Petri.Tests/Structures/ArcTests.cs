@@ -44,7 +44,7 @@ namespace FastGraph.Petri.Tests
         {
             var place = new TestPlace();
             var transition = new TestTransition();
-            
+
             var arc = new Arc<int>(place, transition);
             Assert.IsTrue(arc.IsInputArc);
             Assert.AreSame(place, arc.Source);

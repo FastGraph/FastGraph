@@ -83,7 +83,7 @@ namespace FastGraph.Serialization.Tests
                         $"{XmlHeader}{Environment.NewLine}<{GraphNodeName} />",
                         content);
                 });
-            }
+        }
 
         [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> XmlSerializationGraphTestCases
@@ -99,7 +99,7 @@ namespace FastGraph.Serialization.Tests
 
         [TestCaseSource(nameof(XmlSerializationGraphTestCases))]
         public void SerializeToXml<TGraph>([NotNull] TGraph graph)
-            where TGraph: IMutableVertexAndEdgeSet<Person, TaggedEdge<Person, string>>
+            where TGraph : IMutableVertexAndEdgeSet<Person, TaggedEdge<Person, string>>
         {
             var jacob = new Person("Jacob", "Hochstetler")
             {
@@ -457,7 +457,7 @@ namespace FastGraph.Serialization.Tests
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((XPathDocument) null).DeserializeFromXml(
+                () => ((XPathDocument)null).DeserializeFromXml(
                     "graph",
                     "node",
                     "edge",
@@ -858,7 +858,7 @@ namespace FastGraph.Serialization.Tests
                     "node",
                     "edge",
                     "",
-                    _ => new AdjacencyGraph<string, Edge<string>>(), 
+                    _ => new AdjacencyGraph<string, Edge<string>>(),
                     r => r.GetAttribute("id"),
                     r => new Edge<string>(
                         r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),

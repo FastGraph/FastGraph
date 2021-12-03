@@ -15,7 +15,7 @@ namespace FastGraph.Algorithms.Search
     /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public sealed class EdgeDepthFirstSearchAlgorithm<TVertex, TEdge> 
+    public sealed class EdgeDepthFirstSearchAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IEdgeListAndIncidenceGraph<TVertex, TEdge>>
         , IEdgeColorizerAlgorithm<TVertex, TEdge>
         , IEdgePredecessorRecorderAlgorithm<TVertex, TEdge>

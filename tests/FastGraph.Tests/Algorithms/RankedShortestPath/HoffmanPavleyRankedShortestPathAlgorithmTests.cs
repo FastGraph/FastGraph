@@ -324,7 +324,7 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             // Create network graph
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var weights = new Dictionary<Edge<int>, double>();
-            int[] data = 
+            int[] data =
             {
                 1, 4, 3,
                 4, 1, 3,

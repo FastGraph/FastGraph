@@ -36,7 +36,7 @@ namespace FastGraph.Graphviz.Dot
         /// <summary>
         /// Indicates if this size is empty.
         /// </summary>
-        public bool IsEmpty =>  IsZero(Width) || IsZero(Height);
+        public bool IsEmpty => IsZero(Width) || IsZero(Height);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizSizeF"/> struct.

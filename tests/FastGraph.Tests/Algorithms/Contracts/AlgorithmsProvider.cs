@@ -47,7 +47,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             return implementations;
         }
-        
+
         /// <summary>
         /// Gets all implementations of the <see cref="IVertexColorizerAlgorithm{TVertex}"/> interface.
         /// </summary>

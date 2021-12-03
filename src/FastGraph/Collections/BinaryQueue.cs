@@ -40,7 +40,7 @@ namespace FastGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
         public BinaryQueue(
-            [NotNull] Func<TVertex, TDistance> distanceFunc, 
+            [NotNull] Func<TVertex, TDistance> distanceFunc,
             [NotNull] Comparison<TDistance> distanceComparison)
         {
             if (distanceComparison is null)

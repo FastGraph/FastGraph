@@ -34,7 +34,7 @@ namespace FastGraph.MSAGL
         /// Fired when a node is added to the graph.
         /// </summary>
         public event MsaglVertexNodeEventHandler<TVertex> NodeAdded;
-        
+
         /// <summary>
         /// Called when a <see cref="T:Microsoft.Msagl.Drawing.Node"/> is added.
         /// </summary>

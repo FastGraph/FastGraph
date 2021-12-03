@@ -183,7 +183,7 @@ namespace FastGraph.Serialization.Tests
     {
         public class DefaultValueObject : DefaultValueAttribute
         {
-            public DefaultValueObject() 
+            public DefaultValueObject()
                 : base(new TestVertex("0"))
             {
             }

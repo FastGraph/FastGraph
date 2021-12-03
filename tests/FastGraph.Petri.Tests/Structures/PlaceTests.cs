@@ -35,7 +35,7 @@ namespace FastGraph.Petri.Tests
             place.Marking.Add(3);
             place.Marking.Add(5);
             place.Marking.Add(2);
-            expectedString = 
+            expectedString =
                 "P(TestName|4)" + Environment.NewLine +
                 "\tInt32" + Environment.NewLine +
                 "\tInt32" + Environment.NewLine +

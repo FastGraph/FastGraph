@@ -657,7 +657,7 @@ namespace FastGraph
 
         #endregion
 
-        #region IMutableIncidenceGraph<TVertex,TEdge> 
+        #region IMutableIncidenceGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public int RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)

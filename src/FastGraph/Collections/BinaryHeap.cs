@@ -14,11 +14,11 @@ namespace FastGraph.Collections
     /// </summary>
     /// <remarks>
     /// Indexing rules:
-    /// 
+    ///
     /// parent index: (index - 1)/2
     /// left child: 2 * index + 1
     /// right child: 2 * index + 2
-    /// 
+    ///
     /// Reference:
     /// http://dotnetslackers.com/Community/files/folders/data-structures-and-algorithms/entry28722.aspx
     /// </remarks>

@@ -81,7 +81,7 @@ namespace FastGraph.Algorithms.ShortestPath
             TVertex[] vertices = _vertexQueue.ToArray();
             for (int i = 1; i < vertices.Length; ++i)
             {
-                if (GetVertexDistance(top)> GetVertexDistance(vertices[i]))
+                if (GetVertexDistance(top) > GetVertexDistance(vertices[i]))
                     Debug.Assert(false);
             }
         }

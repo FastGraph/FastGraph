@@ -40,7 +40,7 @@ namespace FastGraph.Algorithms.GraphPartition
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetB"/> is <see langword="null"/>.</exception>
         public Partition(
             [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetA,
-            [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetB, 
+            [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetB,
             double cutCost = 0)
         {
             VertexSetA = vertexSetA;
@@ -57,10 +57,10 @@ namespace FastGraph.Algorithms.GraphPartition
         [Pure]
         public static bool AreEquivalent(Partition<TVertex> partition1, Partition<TVertex> partition2)
         {
-            return partition1.VertexSetA.SetEquals(partition2.VertexSetA) 
+            return partition1.VertexSetA.SetEquals(partition2.VertexSetA)
                    && partition1.VertexSetB.SetEquals(partition2.VertexSetB)
-                   || 
-                   partition1.VertexSetA.SetEquals(partition2.VertexSetB) 
+                   ||
+                   partition1.VertexSetA.SetEquals(partition2.VertexSetB)
                    && partition1.VertexSetB.SetEquals(partition2.VertexSetA);
         }
     }

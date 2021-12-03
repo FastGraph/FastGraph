@@ -19,7 +19,7 @@ namespace FastGraph.Utils
         // Array of ints
         private readonly int[] _array;
 
-        // Whether to operate on stack alloc'd or heap alloc'd array 
+        // Whether to operate on stack alloc'd or heap alloc'd array
         private readonly bool _useStackAlloc;
 
         /// <summary>

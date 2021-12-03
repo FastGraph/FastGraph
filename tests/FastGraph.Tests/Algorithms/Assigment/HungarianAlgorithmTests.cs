@@ -14,7 +14,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
         [Test]
         public void Constructor()
         {
-            int[,] costs = new int[0,0];
+            int[,] costs = new int[0, 0];
             var algorithm = new HungarianAlgorithm(costs);
             Assert.IsNull(algorithm.AgentsTasks);
 

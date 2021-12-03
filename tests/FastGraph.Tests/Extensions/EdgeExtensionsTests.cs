@@ -347,9 +347,9 @@ namespace FastGraph.Tests.Extensions
         {
             // The method only work well if given a path
             // This test use edges that are not a path nor has cycle
-            var edge14 = new Edge<int>(1, 4); 
-            var edge21 = new Edge<int>(2, 1); 
-            var edge43 = new Edge<int>(4, 3); 
+            var edge14 = new Edge<int>(1, 4);
+            var edge21 = new Edge<int>(2, 1);
+            var edge43 = new Edge<int>(4, 3);
             Assert.IsTrue(new[] { edge14, edge21, edge43 }.HasCycles<int, Edge<int>>());
         }
 

@@ -59,19 +59,19 @@ namespace FastGraph.Serialization
 
             if (absoluteUri.AbsoluteUri.EndsWith("graphml.xsd"))
                 return GetResource("graphml.xsd");
-            
+
             if (absoluteUri.AbsoluteUri.EndsWith("graphml-structure.xsd"))
                 return GetResource("graphml-structure.xsd");
-            
+
             if (absoluteUri.AbsoluteUri.EndsWith("graphml-attributes.xsd"))
                 return GetResource("graphml-attributes.xsd");
-            
+
             if (absoluteUri.AbsoluteUri.EndsWith("graphml-parseinfo.xsd"))
                 return GetResource("graphml-parseinfo.xsd");
 
             if (absoluteUri.AbsoluteUri.EndsWith("xlink.xsd"))
                 return GetResource("xlink.xsd");
-            
+
             return _baseResolver.GetEntity(absoluteUri, role, ofObjectToReturn);
 
             #region Local function
@@ -82,7 +82,7 @@ namespace FastGraph.Serialization
                     .GetManifestResourceStream(
                         typeof(GraphMLExtensions),
                         resourceName);
-                
+
                 Debug.Assert(resourceStream != null);
                 return resourceStream;
             }

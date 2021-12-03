@@ -103,7 +103,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 var recorder = new VertexTimeStamperObserver<int>();
 
                 var graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVertexRange(new[] {1, 2});
+                graph.AddVertexRange(new[] { 1, 2 });
 
                 var dfs = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph);
                 using (recorder.Attach(dfs))

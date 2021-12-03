@@ -15,9 +15,9 @@ namespace FastGraph
 
         private static int Fold(int hash, int value)
         {
-            return Fold(Fold(Fold(Fold(hash, (byte)value), 
-                (byte)((uint)value >> 8)), 
-                (byte)((uint)value >> 16)), 
+            return Fold(Fold(Fold(Fold(hash, (byte)value),
+                (byte)((uint)value >> 8)),
+                (byte)((uint)value >> 16)),
                 (byte)((uint)value >> 24));
         }
 

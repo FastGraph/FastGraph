@@ -28,7 +28,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 DistanceRelaxers.ShortestDistance,
                 distances);
             Assert.AreSame(edgeWeights, recorder.EdgeWeights);
-            Assert.AreSame(DistanceRelaxers.ShortestDistance,recorder.DistanceRelaxer);
+            Assert.AreSame(DistanceRelaxers.ShortestDistance, recorder.DistanceRelaxer);
             Assert.AreSame(distances, recorder.Distances);
         }
 

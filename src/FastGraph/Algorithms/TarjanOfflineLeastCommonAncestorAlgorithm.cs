@@ -13,10 +13,10 @@ namespace FastGraph.Algorithms
     /// </summary>
     /// <remarks>
     /// Reference:
-    /// Gabow, H. N. and Tarjan, R. E. 1983. A linear-time algorithm for a special case 
-    /// of disjoint set union. In Proceedings of the Fifteenth Annual ACM Symposium 
-    /// on theory of Computing STOC '83. ACM, New York, NY, 246-251. 
-    /// DOI= http://doi.acm.org/10.1145/800061.808753 
+    /// Gabow, H. N. and Tarjan, R. E. 1983. A linear-time algorithm for a special case
+    /// of disjoint set union. In Proceedings of the Fifteenth Annual ACM Symposium
+    /// on theory of Computing STOC '83. ACM, New York, NY, 246-251.
+    /// DOI= http://doi.acm.org/10.1145/800061.808753
     /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
@@ -31,7 +31,7 @@ namespace FastGraph.Algorithms
         /// Ancestors of vertices pairs.
         /// </summary>
         [NotNull]
-        public IDictionary<SEquatableEdge<TVertex>, TVertex> Ancestors { get; } = 
+        public IDictionary<SEquatableEdge<TVertex>, TVertex> Ancestors { get; } =
             new Dictionary<SEquatableEdge<TVertex>, TVertex>();
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace FastGraph.Algorithms
             var disjointSet = new ForestDisjointSet<TVertex>();
             var verticesAncestors = new Dictionary<TVertex, TVertex>();
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(
-                this, 
-                VisitedGraph, 
+                this,
+                VisitedGraph,
                 new Dictionary<TVertex, GraphColor>(VisitedGraph.VertexCount));
 
             dfs.InitializeVertex += vertex => disjointSet.MakeSet(vertex);

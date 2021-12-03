@@ -285,7 +285,7 @@ namespace FastGraph.Algorithms.Search
 
         internal void Visit([NotNull] TVertex root)
         {
-            Debug.Assert(root!= null);
+            Debug.Assert(root != null);
 
             EnqueueRoot(root);
             FlushVisitQueue();

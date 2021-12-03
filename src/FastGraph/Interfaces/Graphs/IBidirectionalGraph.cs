@@ -7,8 +7,8 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public interface IBidirectionalGraph<TVertex,TEdge> 
-        : IVertexAndEdgeListGraph<TVertex,TEdge>
+    public interface IBidirectionalGraph<TVertex, TEdge>
+        : IVertexAndEdgeListGraph<TVertex, TEdge>
         , IBidirectionalIncidenceGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {

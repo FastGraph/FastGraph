@@ -257,7 +257,7 @@ namespace FastGraph.Tests.Algorithms.Search
             Assert.Throws<ArgumentNullException>(
                 () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, null));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null)); 
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

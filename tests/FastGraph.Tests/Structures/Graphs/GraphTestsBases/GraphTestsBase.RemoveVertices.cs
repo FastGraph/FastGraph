@@ -245,7 +245,7 @@ namespace FastGraph.Tests.Structures
             var edge34 = new Edge<int>(3, 4);
             graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge24, edge31, edge32, edge34 });
 
-            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => vertex == 1 || vertex  == 3));
+            Assert.AreEqual(2, graph.RemoveVertexIf(vertex => vertex == 1 || vertex == 3));
             CheckCounters(2, 5);
             AssertHasVertices(graph, new[] { 2, 4 });
             AssertHasEdges(graph, new[] { edge24 });

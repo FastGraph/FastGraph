@@ -311,7 +311,7 @@ namespace FastGraph.Tests.Structures
         {
             var data = new GraphData<int, Edge<int>>();
             var graph = new DelegateUndirectedGraph<int, Edge<int>>(
-                new [] { 1, 2, 3 },
+                new[] { 1, 2, 3 },
                 data.TryGetEdges);
             AdjacentEdges_Test(data, graph);
 

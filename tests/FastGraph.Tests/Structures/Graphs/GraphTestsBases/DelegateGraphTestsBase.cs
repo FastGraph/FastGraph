@@ -45,7 +45,7 @@ namespace FastGraph.Tests.Structures
 
             private int _nbCalls;
 
-            [NotNull] 
+            [NotNull]
             public TryFunc<TVertex, IEnumerable<TEdge>> TryGetEdges { get; }
 
             [CanBeNull, ItemNotNull]

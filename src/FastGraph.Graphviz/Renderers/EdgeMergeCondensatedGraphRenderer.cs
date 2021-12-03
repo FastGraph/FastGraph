@@ -50,7 +50,7 @@ namespace FastGraph.Graphviz
         {
             var builder = new StringBuilder();
             builder.AppendLine(args.Edge.Edges.Count.ToString());
-            
+
             foreach (TEdge edge in args.Edge.Edges)
             {
                 builder.AppendLine($"  {edge}");

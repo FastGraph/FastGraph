@@ -372,7 +372,7 @@ namespace FastGraph.Tests.Structures
                 wrappedAdjacencyGraph3.AddVertexRange(new[] { 1, 2 });
                 wrappedAdjacencyGraph3.AddEdge(edge12);
                 var arrayAdjacencyGraph4 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph3);
-                
+
                 yield return new TestCaseData(arrayAdjacencyGraph4, arrayAdjacencyGraph1, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -405,7 +405,7 @@ namespace FastGraph.Tests.Structures
                 var bidirectionalGraph2 = new BidirectionalGraph<int, Edge<int>>();
                 bidirectionalGraph2.AddVertexRange(new[] { 1, 2 });
                 bidirectionalGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, bidirectionalGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -415,10 +415,10 @@ namespace FastGraph.Tests.Structures
                 {
                     ExpectedResult = false
                 };
-                
+
                 // Array bidirectional
                 var arrayBidirectionalGraph1 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph1);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph1, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = true
@@ -430,7 +430,7 @@ namespace FastGraph.Tests.Structures
                 };
 
                 var arrayBidirectionalGraph2 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph2);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -479,7 +479,7 @@ namespace FastGraph.Tests.Structures
                 {
                     ExpectedResult = true
                 };
-                
+
                 var matrixGraph2 = new BidirectionalMatrixGraph<Edge<int>>(5);
                 matrixGraph2.AddEdge(edge12);
 
@@ -561,7 +561,7 @@ namespace FastGraph.Tests.Structures
 
                 var edgeListGraph2 = new EdgeListGraph<int, Edge<int>>();
                 edgeListGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(adjacencyGraph, edgeListGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -631,7 +631,7 @@ namespace FastGraph.Tests.Structures
                 };
 
                 var arrayUndirectedGraph2 = new ArrayUndirectedGraph<int, Edge<int>>(undirectedGraph9);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayUndirectedGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -1031,7 +1031,7 @@ namespace FastGraph.Tests.Structures
                 wrappedAdjacencyGraph3.AddVertexRange(new[] { 1, 2 });
                 wrappedAdjacencyGraph3.AddEdge(edge12);
                 var arrayAdjacencyGraph4 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph3);
-                
+
                 yield return new TestCaseData(arrayAdjacencyGraph4, arrayAdjacencyGraph1)
                 {
                     ExpectedResult = false
@@ -1064,7 +1064,7 @@ namespace FastGraph.Tests.Structures
                 var bidirectionalGraph2 = new BidirectionalGraph<int, Edge<int>>();
                 bidirectionalGraph2.AddVertexRange(new[] { 1, 2 });
                 bidirectionalGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, bidirectionalGraph2)
                 {
                     ExpectedResult = false
@@ -1074,10 +1074,10 @@ namespace FastGraph.Tests.Structures
                 {
                     ExpectedResult = false
                 };
-                
+
                 // Array bidirectional
                 var arrayBidirectionalGraph1 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph1);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph1)
                 {
                     ExpectedResult = true
@@ -1089,7 +1089,7 @@ namespace FastGraph.Tests.Structures
                 };
 
                 var arrayBidirectionalGraph2 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph2);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph2)
                 {
                     ExpectedResult = false
@@ -1138,7 +1138,7 @@ namespace FastGraph.Tests.Structures
                 {
                     ExpectedResult = true
                 };
-                
+
                 var matrixGraph2 = new BidirectionalMatrixGraph<Edge<int>>(5);
                 matrixGraph2.AddEdge(edge12);
 
@@ -1220,7 +1220,7 @@ namespace FastGraph.Tests.Structures
 
                 var edgeListGraph2 = new EdgeListGraph<int, Edge<int>>();
                 edgeListGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(adjacencyGraph, edgeListGraph2)
                 {
                     ExpectedResult = false
@@ -1290,7 +1290,7 @@ namespace FastGraph.Tests.Structures
                 };
 
                 var arrayUndirectedGraph2 = new ArrayUndirectedGraph<int, Edge<int>>(undirectedGraph8);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayUndirectedGraph2)
                 {
                     ExpectedResult = false

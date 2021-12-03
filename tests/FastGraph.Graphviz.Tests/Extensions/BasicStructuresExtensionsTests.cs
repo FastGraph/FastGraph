@@ -11,7 +11,7 @@ namespace FastGraph.Graphviz.Tests
     [TestFixture]
     internal sealed class BasicStructuresExtensionsTests
     {
-        #region Test helpers
+#region Test helpers
 
         private static void AssertEqual(Font font, GraphvizFont qFont)
         {
@@ -26,7 +26,7 @@ namespace FastGraph.Graphviz.Tests
             }
         }
 
-        #endregion
+#endregion
 
         [Test]
         public void ToFont()

@@ -929,7 +929,7 @@ namespace FastGraph.Tests.Collections
                                 out FibonacciHeapCell<int, TValue>[] cells);
 
                             heap.Delete(cells[i]);
-                            AssertHeapCondition(heap, direction, 9, new[] {cells[i]});
+                            AssertHeapCondition(heap, direction, 9, new[] { cells[i] });
                         }
                     }
 
@@ -940,7 +940,7 @@ namespace FastGraph.Tests.Collections
 
                         heap.Delete(cells[2]);
                         heap.Delete(cells[5]);
-                        AssertHeapCondition(heap, direction, 8, new[] {cells[2], cells[5]});
+                        AssertHeapCondition(heap, direction, 8, new[] { cells[2], cells[5] });
                     }
 
                     #region Local function
@@ -980,7 +980,7 @@ namespace FastGraph.Tests.Collections
                                 out FibonacciHeapCell<TestPriority, TValue>[] cells);
 
                             heap.Delete(cells[i]);
-                            AssertHeapConditionClass(heap, direction, 9, new[] {cells[i]});
+                            AssertHeapConditionClass(heap, direction, 9, new[] { cells[i] });
                         }
                     }
 
@@ -991,7 +991,7 @@ namespace FastGraph.Tests.Collections
 
                         heap.Delete(cells[2]);
                         heap.Delete(cells[5]);
-                        AssertHeapConditionClass(heap, direction, 8, new[] {cells[2], cells[5]});
+                        AssertHeapConditionClass(heap, direction, 8, new[] { cells[2], cells[5] });
                     }
 
                     #region Local function
@@ -1029,19 +1029,19 @@ namespace FastGraph.Tests.Collections
                             out FibonacciHeapCell<TestPriority, TValue>[] cells);
 
                         heap.Delete(cells[0]);
-                        AssertHeapConditionClass(heap, direction, 9, new[] {cells[0]});
+                        AssertHeapConditionClass(heap, direction, 9, new[] { cells[0] });
 
 
                         heap = CreateHeap(out cells);
 
                         heap.Delete(cells[4]);
-                        AssertHeapConditionClass(heap, direction, 9, new[] {cells[4]});
+                        AssertHeapConditionClass(heap, direction, 9, new[] { cells[4] });
 
 
                         heap = CreateHeap(out cells);
 
                         heap.Delete(cells[9]);
-                        AssertHeapConditionClass(heap, direction, 9, new[] {cells[9]});
+                        AssertHeapConditionClass(heap, direction, 9, new[] { cells[9] });
                     }
 
                     // Multiple deletes
@@ -1051,7 +1051,7 @@ namespace FastGraph.Tests.Collections
 
                         heap.Delete(cells[2]);
                         heap.Delete(cells[5]);
-                        AssertHeapConditionClass(heap, direction, 8, new[] {cells[2], cells[5]});
+                        AssertHeapConditionClass(heap, direction, 8, new[] { cells[2], cells[5] });
                     }
 
                     #region Local function
@@ -1581,7 +1581,7 @@ namespace FastGraph.Tests.Collections
                         for (int i = 0; i < 11; i++)
                         {
                             heap.Enqueue(new TestPriority(i), i % 2 == 0 ? value1 : value2);
-                            heap2.Enqueue(new TestPriority(i* 11), i % 2 == 0 ? value2 : value1);
+                            heap2.Enqueue(new TestPriority(i * 11), i % 2 == 0 ? value2 : value1);
                             expectedCount += 2;
                         }
 
@@ -1736,7 +1736,7 @@ namespace FastGraph.Tests.Collections
 
             heap.Enqueue(1.0, 1);
             CollectionAssert.AreEquivalent(
-                new[] {new KeyValuePair<double, int>(1.0, 1)},
+                new[] { new KeyValuePair<double, int>(1.0, 1) },
                 heap);
 
             heap.Enqueue(12.0, 1);

@@ -1287,7 +1287,7 @@ namespace FastGraph.Tests.Collections
         [Test]
         public void EnumerateHeap_Throws()
         {
-            var heap = new BinaryHeap<double, int> {{1.0, 1}, {12.0, 1}, {10.0, 2}, {5.0, 4}};
+            var heap = new BinaryHeap<double, int> { { 1.0, 1 }, { 12.0, 1 }, { 10.0, 2 }, { 5.0, 4 } };
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
             {

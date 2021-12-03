@@ -261,7 +261,7 @@ namespace FastGraph.Graphviz.Dot
                     case string strValue:
                         dotParts.Add($"{pair.Key}=\"{strValue}\"");
                         continue;
-                    
+
                     case float floatValue:
                         dotParts.Add($"{pair.Key}={floatValue.ToInvariantString()}");
                         continue;
@@ -302,7 +302,7 @@ namespace FastGraph.Graphviz.Dot
 #endif
                     "; ", dotParts);
 
-                dot = dotParts.Count > 1 ? dot + ";" : dot;
+            dot = dotParts.Count > 1 ? dot + ";" : dot;
 
             return dot;
         }
@@ -355,7 +355,7 @@ namespace FastGraph.Graphviz.Dot
             }
             if (!NearEqual(PenWidth, 1.0))
             {
-               properties["penwidth"] = PenWidth;
+                properties["penwidth"] = PenWidth;
             }
             if (Label != null)
             {

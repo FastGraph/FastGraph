@@ -172,7 +172,7 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
                 algorithm.Components);
             Assert.AreEqual(2, algorithm.Graphs.Length);
             CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 3, 4  },
+                new[] { 1, 2, 3, 4 },
                 algorithm.Graphs[0].Vertices);
             CollectionAssert.AreEquivalent(
                 new[] { 5, 6, 7 },

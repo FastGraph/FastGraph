@@ -26,7 +26,7 @@ namespace FastGraph.Algorithms.TSP
 
         private bool Equals([NotNull] TaskPriority other)
         {
-            return _cost.Equals(other._cost) 
+            return _cost.Equals(other._cost)
                    && _pathSize == other._pathSize;
         }
 

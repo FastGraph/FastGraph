@@ -311,7 +311,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             Assert.AreEqual(sink, algorithm.Sink);
             CollectionAssert.IsEmpty(surplusSet);
             CollectionAssert.IsEmpty(deficitSet);
-            CollectionAssert.AreEquivalent(new[] { 2, 5, 8 },algorithm.SurplusVertices);
+            CollectionAssert.AreEquivalent(new[] { 2, 5, 8 }, algorithm.SurplusVertices);
             CollectionAssert.AreEquivalent(
                 new[]
                 {

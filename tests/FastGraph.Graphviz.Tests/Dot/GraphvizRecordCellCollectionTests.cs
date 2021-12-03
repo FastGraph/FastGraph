@@ -19,12 +19,12 @@ namespace FastGraph.Graphviz.Tests
             var cell1 = new GraphvizRecordCell();
             recordCollection.Add(cell1);
             CollectionAssert.AreEqual(new[] { cell1 }, recordCollection);
-            
+
             var cell2 = new GraphvizRecordCell();
             var cellArray = new[] { cell1, cell2 };
             recordCollection = new GraphvizRecordCellCollection(cellArray);
             CollectionAssert.AreEqual(cellArray, recordCollection);
-            
+
             var otherRecordCollection = new GraphvizRecordCellCollection(recordCollection);
             CollectionAssert.AreEqual(recordCollection, otherRecordCollection);
         }

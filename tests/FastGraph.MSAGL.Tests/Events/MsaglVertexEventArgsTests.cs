@@ -26,7 +26,7 @@ namespace FastGraph.MSAGL.Tests
         {
             var vertex = new TestVertex("1");
             var node = new Node("1");
-            
+
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(

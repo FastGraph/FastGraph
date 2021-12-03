@@ -194,7 +194,7 @@ namespace FastGraph
 
         #endregion
 
-        #region IImplicitGraph<TVertex,TEdge> 
+        #region IImplicitGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool IsOutEdgesEmpty(TVertex vertex)

@@ -16,7 +16,7 @@ namespace FastGraph.Graphviz.Dot
         /// X.
         /// </summary>
         public int X { get; }
-        
+
         /// <summary>
         /// Y.
         /// </summary>

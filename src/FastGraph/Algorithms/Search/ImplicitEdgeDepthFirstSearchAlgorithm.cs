@@ -121,7 +121,7 @@ namespace FastGraph.Algorithms.Search
         }
 
         /// <summary>
-        /// Fired on the back edges in the graph. 
+        /// Fired on the back edges in the graph.
         /// </summary>
         public event EdgeAction<TVertex, TEdge> BackEdge;
 

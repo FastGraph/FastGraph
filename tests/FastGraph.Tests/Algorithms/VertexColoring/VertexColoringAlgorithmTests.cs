@@ -50,11 +50,11 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
         [Test]
         public void VertexColoringNoEdge()
         {
-            /* 
+            /*
                                       (1)
-                                                     
+
             Generate empty graph: (0)     (3) (4)
-                                                     
+
                                       (2)
             */
             UndirectedGraph<char, Edge<char>> graph = CreateTestGraph();
@@ -71,7 +71,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get only 1 color
             Assert.AreEqual(1, result.Max() + 1);
 
-            // Not equal to null 
+            // Not equal to null
             foreach (int? color in result)
             {
                 Assert.AreNotEqual(null, color);
@@ -105,9 +105,9 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
         [Test]
         public void VertexColoringSimpleGraph()
         {
-            /* 
+            /*
                                                   (1)
-                                                 / | \ 
+                                                 / | \
             Generate undirected simple graph: (0)  |  (3)-(4)
                                                  \ | /
                                                   (2)
@@ -126,7 +126,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 3 different colors
             Assert.AreEqual(3, result.Max() + 1);
 
-            // Not equal to null 
+            // Not equal to null
             foreach (int? color in result)
             {
                 Assert.AreNotEqual(null, color);
@@ -167,13 +167,13 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
         [Test]
         public void VertexColoringGraph()
         {
-            /* 
+            /*
                                                   (2)      (7)-(5)
                                                  /   \     /
             Generate undirected some graph:    (1)   (4)-(0)
                                                  \   /
                                              (6)  (3)
-            
+
             (this graph has a minimum number of vertex colors only if to swap (1) and (4) vertices)
             */
             UndirectedGraph<char, Edge<char>> graph = CreateTestGraph();
@@ -190,7 +190,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 3 different colors
             Assert.AreEqual(3, result.Max() + 1);
 
-            // Not equal to null 
+            // Not equal to null
             foreach (int? color in result)
             {
                 Assert.AreNotEqual(null, color);
@@ -238,7 +238,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
         [Test]
         public void VertexColoringCompleteGraph()
         {
-            /* 
+            /*
                                                 _____(2)_____
                                                /    / | \    \
             Generate undirected full graph:  (0)-(1)--+--(4)-(5)  + edges: (0-4), (0-5) and (1-5)
@@ -259,7 +259,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 6 different colors
             Assert.AreEqual(6, result.Max() + 1);
 
-            // Not equal to null 
+            // Not equal to null
             foreach (int? color in result)
             {
                 Assert.AreNotEqual(null, color);
@@ -311,15 +311,15 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
         [Test]
         public void VertexColoringBipartiteGraph()
         {
-            /*                                   
+            /*
                                                  (3)
-                                                / 
+                                                /
                                              (1)-(4)
-                                                X     
+                                                X
             Generate undirected empty graph: (0)-(5)    + edges: (1-6) and (2-4)
-                                                /     
+                                                /
                                              (2)-(6)
-            
+
             */
 
             UndirectedGraph<char, Edge<char>> graph = CreateTestGraph();
@@ -336,7 +336,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 2 different colors
             Assert.AreEqual(2, result.Max() + 1);
 
-            // Not equal to null 
+            // Not equal to null
             foreach (int? color in result)
             {
                 Assert.AreNotEqual(null, color);

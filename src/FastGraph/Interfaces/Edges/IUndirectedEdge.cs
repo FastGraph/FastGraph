@@ -1,7 +1,7 @@
 namespace FastGraph
 {
     /// <summary>
-    /// Represents an undirected edge. 
+    /// Represents an undirected edge.
     /// </summary>
     /// <remarks>
     /// Invariant: source must be less or equal to target (using the default comparer).

@@ -98,7 +98,7 @@ namespace FastGraph
 
         #endregion
 
-        #region IIncidenceGraph<TVertex,TEdge> 
+        #region IIncidenceGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)

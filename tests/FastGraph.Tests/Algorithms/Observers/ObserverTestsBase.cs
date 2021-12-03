@@ -10,7 +10,7 @@ namespace FastGraph.Tests.Algorithms.Observers
     internal abstract class ObserverTestsBase
     {
         protected static void Attach_Throws_Test<TAlgorithm>(
-            [NotNull] FastGraph.Algorithms.Observers.IObserver<TAlgorithm> observer) 
+            [NotNull] FastGraph.Algorithms.Observers.IObserver<TAlgorithm> observer)
             where TAlgorithm : class
         {
             // ReSharper disable once AssignNullToNotNullAttribute

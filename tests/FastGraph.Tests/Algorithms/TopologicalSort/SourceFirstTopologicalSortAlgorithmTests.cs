@@ -159,7 +159,7 @@ namespace FastGraph.Tests.Algorithms
         [Test]
         public void SourceFirstTopologicalSort()
         {
-            foreach(AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
+            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
                 RunSourceFirstTopologicalSortAndCheck(graph);
         }
 

@@ -277,7 +277,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 }
             }
 
-            // Create cross edges 
+            // Create cross edges
             foreach (Edge<int> edge in graph.Edges)
                 graph.AddEdge(new Edge<int>(edge.Target, edge.Source));
 

@@ -454,7 +454,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             const int sink = 4;
 
             var graph = new AdjacencyGraph<int, TaggedEdge<int, double>>();
-            
+
             // TaggedEdge.Tag is the capacity of the edge
             graph.AddVerticesAndEdgeRange(new[]
             {

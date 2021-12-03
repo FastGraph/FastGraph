@@ -15,7 +15,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var layer = new GraphvizLayer("TestLayer");
             Assert.AreEqual("TestLayer", layer.Name);
-            
+
             layer = new GraphvizLayer("OtherLayer");
             Assert.AreEqual("OtherLayer", layer.Name);
         }

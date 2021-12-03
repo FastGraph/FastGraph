@@ -18,7 +18,7 @@ namespace FastGraph
         /// <param name="elements">Enumerable to iterate through.</param>
         /// <param name="action">Acton to perform on each element.</param>
         public static void ForEach<T>(
-            [NotNull, ItemCanBeNull] this IEnumerable<T> elements, 
+            [NotNull, ItemCanBeNull] this IEnumerable<T> elements,
             [NotNull, InstantHandle] Action<T> action)
         {
             Debug.Assert(elements != null);

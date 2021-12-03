@@ -189,7 +189,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
         {
             var graph = new AdjacencyGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
-            
+
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null));
             Assert.IsFalse(algorithm.TryGetRootVertex(out _));

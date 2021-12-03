@@ -175,7 +175,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 if (c is null)
                     Assert.IsNotNull(algo.EdgeChain);
                 else
-                    Assert.AreSame(c , algo.EdgeChain);
+                    Assert.AreSame(c, algo.EdgeChain);
                 Assert.AreEqual(p, algo.EndPredicate);
             }
 
@@ -299,7 +299,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
 
             var encounteredEdges = new List<Edge<int>>();
             algorithm.TreeEdge += edge => encounteredEdges.Add(edge);
-            algorithm.EndVertex += vertex => Assert.AreEqual(3, vertex); 
+            algorithm.EndVertex += vertex => Assert.AreEqual(3, vertex);
 
             algorithm.Generate(1, int.MaxValue);
 
@@ -307,7 +307,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             Assert.AreEqual(3, encounteredEdges.Last().Target);
             Assert.IsTrue(
                 edge2 == encounteredEdges.Last()
-                || 
+                ||
                 edge3 == encounteredEdges.Last());
         }
 

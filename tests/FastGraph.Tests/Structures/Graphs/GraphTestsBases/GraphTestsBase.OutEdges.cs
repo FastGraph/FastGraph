@@ -296,8 +296,8 @@ namespace FastGraph.Tests.Structures
             graph = createGraph();
 
             AssertHasOutEdges(
-                graph, 
-                1, 
+                graph,
+                1,
                 new[]
                 {
                     new SEquatableEdge<int>(1, 2),
@@ -305,12 +305,12 @@ namespace FastGraph.Tests.Structures
                     new SEquatableEdge<int>(1, 4)
                 });
             AssertHasOutEdges(
-                graph, 
-                2, 
+                graph,
+                2,
                 new[] { new SEquatableEdge<int>(2, 4) });
             AssertHasOutEdges(
-                graph, 
-                3, 
+                graph,
+                3,
                 new[]
                 {
                     new SEquatableEdge<int>(3, 1),

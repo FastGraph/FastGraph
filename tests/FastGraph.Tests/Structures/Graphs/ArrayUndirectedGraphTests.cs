@@ -136,7 +136,7 @@ namespace FastGraph.Tests.Structures
         {
             var wrappedGraph = new UndirectedGraph<int, Edge<int>>();
             ContainsEdge_ImmutableGraph_Test(
-                wrappedGraph, 
+                wrappedGraph,
                 () => new ArrayUndirectedGraph<int, Edge<int>>(wrappedGraph));
         }
 
@@ -174,7 +174,7 @@ namespace FastGraph.Tests.Structures
             var wrappedGraph2 = new UndirectedGraph<int, EquatableUndirectedEdge<int>>();
             ContainsEdge_UndirectedEdge_ImmutableGraph_UndirectedGraph_Test(
                 wrappedGraph1,
-                () => new ArrayUndirectedGraph<int, EquatableEdge<int>>(wrappedGraph1), 
+                () => new ArrayUndirectedGraph<int, EquatableEdge<int>>(wrappedGraph1),
                 wrappedGraph2,
                 () => new ArrayUndirectedGraph<int, EquatableUndirectedEdge<int>>(wrappedGraph2));
         }
@@ -197,7 +197,7 @@ namespace FastGraph.Tests.Structures
         {
             var wrappedGraph1 = new UndirectedGraph<int, Edge<int>>();
             AdjacentEdge_Throws_ImmutableGraph_Test(
-                wrappedGraph1, 
+                wrappedGraph1,
                 () => new ArrayUndirectedGraph<int, Edge<int>>(wrappedGraph1));
 
             var wrappedGraph2 = new UndirectedGraph<TestVertex, Edge<TestVertex>>();

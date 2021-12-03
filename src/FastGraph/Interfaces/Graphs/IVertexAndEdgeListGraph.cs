@@ -6,7 +6,7 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public interface IVertexAndEdgeListGraph<TVertex, TEdge> 
+    public interface IVertexAndEdgeListGraph<TVertex, TEdge>
         : IVertexListGraph<TVertex, TEdge>
         , IEdgeListGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>

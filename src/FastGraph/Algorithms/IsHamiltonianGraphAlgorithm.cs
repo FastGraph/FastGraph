@@ -102,7 +102,7 @@ namespace FastGraph.Algorithms
         {
             // Using Dirac's theorem:
             // if |vertices| >= 3 and for any vertex deg(vertex) >= (|vertices| / 2)
-            // then graph is Hamiltonian 
+            // then graph is Hamiltonian
             return _graph.AdjacentDegree(vertex) >= _threshold;
         }
 

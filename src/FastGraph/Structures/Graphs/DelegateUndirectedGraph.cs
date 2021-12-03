@@ -60,7 +60,7 @@ namespace FastGraph
             get
             {
                 if (VertexCount == 0)
-                    return true; // No vertex => must be empty 
+                    return true; // No vertex => must be empty
                 return _vertices.All(vertex => !AdjacentEdges(vertex).Any());
             }
         }
@@ -90,7 +90,7 @@ namespace FastGraph
 
         // Should override parent implementation since the provided delegate
         // may not be accurate to check a vertex is present or not.
-        // In case a vertex is part of an edge returned by user delegate 
+        // In case a vertex is part of an edge returned by user delegate
         // but not part of the graph.
         /// <inheritdoc />
         internal override bool ContainsVertexInternal(TVertex vertex)
@@ -128,7 +128,7 @@ namespace FastGraph
 
         // Should override parent implementation since the provided delegate
         // may not be accurate to check an edge is present or not.
-        // In case source or target is part of an edge returned by user delegate 
+        // In case source or target is part of an edge returned by user delegate
         // but not part of the graph.
         /// <inheritdoc />
         internal override bool ContainsEdgeInternal(TVertex source, TVertex target)

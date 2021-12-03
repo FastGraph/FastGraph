@@ -24,7 +24,7 @@ namespace FastGraph.Algorithms.Services
         private ICancelManager _cancelManager;
 
         /// <inheritdoc />
-        public ICancelManager CancelManager => 
+        public ICancelManager CancelManager =>
             (_cancelManager ?? (_cancelManager = _host.GetService<ICancelManager>())) ?? throw new InvalidOperationException("No cancel manager service registered.");
     }
 }

@@ -54,7 +54,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
-        
+
         #region Vertices & Edges
 
         [Test]
@@ -331,7 +331,7 @@ namespace FastGraph.Tests.Structures
         {
             var data1 = new GraphData<int, Edge<int>>();
             var graph1 = new DelegateVertexAndEdgeListGraph<int, Edge<int>>(
-                new [] { 1 },
+                new[] { 1 },
                 data1.TryGetEdges);
             OutEdges_Throws_Test(data1, graph1);
 

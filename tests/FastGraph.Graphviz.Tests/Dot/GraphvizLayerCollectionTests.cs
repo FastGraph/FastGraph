@@ -20,7 +20,7 @@ namespace FastGraph.Graphviz.Tests
             var layer1 = new GraphvizLayer("L1");
             layerCollection.Add(layer1);
             CollectionAssert.AreEqual(new[] { layer1 }, layerCollection);
-            
+
             var layer2 = new GraphvizLayer("L2");
             var layerArray = new[] { layer1, layer2 };
             layerCollection = new GraphvizLayerCollection(layerArray);
@@ -81,9 +81,9 @@ namespace FastGraph.Graphviz.Tests
 
             layerCollection = new GraphvizLayerCollection(new[]
             {
-                new GraphvizLayer("L1"), 
-                new GraphvizLayer("L2"), 
-                new GraphvizLayer("L3") 
+                new GraphvizLayer("L1"),
+                new GraphvizLayer("L2"),
+                new GraphvizLayer("L3")
             });
             Assert.AreEqual(
                 "layers=\"L1:L2:L3\"; layersep=\":\"",

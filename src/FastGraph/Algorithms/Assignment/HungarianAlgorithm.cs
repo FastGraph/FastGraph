@@ -135,25 +135,25 @@ namespace FastGraph.Algorithms.Assignment
             switch (step)
             {
                 case Steps.Step1:
-                {
-                    _step = RunStep1(_masks, _colsCovered, _width, _height);
-                    return step;
-                }
+                    {
+                        _step = RunStep1(_masks, _colsCovered, _width, _height);
+                        return step;
+                    }
                 case Steps.Step2:
-                {
-                    _step = RunStep2(_costs, _masks, _rowsCovered, _colsCovered, _width, _height, ref _pathStart);
-                    return step;
-                }
+                    {
+                        _step = RunStep2(_costs, _masks, _rowsCovered, _colsCovered, _width, _height, ref _pathStart);
+                        return step;
+                    }
                 case Steps.Step3:
-                {
-                    _step = RunStep3(_masks, _rowsCovered, _colsCovered, _width, _height, _path, _pathStart);
-                    return step;
-                }
+                    {
+                        _step = RunStep3(_masks, _rowsCovered, _colsCovered, _width, _height, _path, _pathStart);
+                        return step;
+                    }
                 case Steps.Step4:
-                {
-                    _step = RunStep4(_costs, _rowsCovered, _colsCovered, _width, _height);
-                    return step;
-                }
+                    {
+                        _step = RunStep4(_costs, _rowsCovered, _colsCovered, _width, _height);
+                        return step;
+                    }
             }
 
             return Steps.End;

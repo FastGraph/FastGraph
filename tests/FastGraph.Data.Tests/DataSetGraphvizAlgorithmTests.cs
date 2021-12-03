@@ -173,7 +173,7 @@ namespace FastGraph.Data.Tests
                 forumDataSet.Relations.Add(new DataRelation("UsersToTopics", userId, topicBy));
                 forumDataSet.Relations.Add(new DataRelation("UsersToReplies", userId, replyBy));
                 forumDataSet.Relations.Add(new DataRelation("TopicsToReplies", topicId, replyTopic));
-                
+
                 yield return new TestCaseData(forumDataSet)
                 {
                     ExpectedResult =

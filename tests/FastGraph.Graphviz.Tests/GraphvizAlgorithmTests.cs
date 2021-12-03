@@ -663,7 +663,7 @@ namespace FastGraph.Graphviz.Tests
 
             algorithm.FormatEdge += (_, args) =>
             {
-                if (args.Edge.Source ==  args.Edge.Target)
+                if (args.Edge.Source == args.Edge.Target)
                 {
                     args.EdgeFormat.StrokeColor = GraphvizColor.Gold;
                 }

@@ -224,9 +224,9 @@ namespace FastGraph.Tests.Algorithms
         {
             /* A puzzle from Facebook Seattle opening party:
             http://www.facebook.com/note.php?note_id=146727365346299
-            You are given a list of relationships between the letters in a single word, all of which are in the form: 
-            "The first occurrence of A comes before N occurrences of B." 
-            You can safely assume that you have all such relationships except for any in which N would be 0. 
+            You are given a list of relationships between the letters in a single word, all of which are in the form:
+            "The first occurrence of A comes before N occurrences of B."
+            You can safely assume that you have all such relationships except for any in which N would be 0.
             Determine the original word, then go to http://www.facebook.com/seattle/[insert-word-here] to find the second part of the puzzle.
 
             The first occurrence of 'e' comes before 1 occurrence of 's'.

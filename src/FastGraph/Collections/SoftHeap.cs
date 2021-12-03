@@ -55,7 +55,7 @@ namespace FastGraph.Collections
             // ReSharper disable once InconsistentNaming
             [CanBeNull]
             public Cell IL { get; internal set; }
-            
+
             // ReSharper disable once InconsistentNaming
             [CanBeNull]
             public Cell ILTail { get; internal set; }
@@ -69,8 +69,8 @@ namespace FastGraph.Collections
             }
 
             public Node(
-                [NotNull] TKey cKey, 
-                int rank, 
+                [NotNull] TKey cKey,
+                int rank,
                 [NotNull] Node next,
                 [NotNull] Node child,
                 [CanBeNull] Cell il,
@@ -218,8 +218,8 @@ namespace FastGraph.Collections
                 toHead = toHead.Next;
             }
 
-            Head head = prevHead == toHead.Prev 
-                ? new Head() 
+            Head head = prevHead == toHead.Prev
+                ? new Head()
                 : prevHead.Next;
 
             head.Queue = node;
@@ -236,8 +236,8 @@ namespace FastGraph.Collections
         {
             Debug.Assert(head != null);
 
-            Head tmpMin = head.Next == _tail 
-                ? head 
+            Head tmpMin = head.Next == _tail
+                ? head
                 : head.Next.SuffixMin;
 
             while (head != _header)

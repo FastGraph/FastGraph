@@ -182,7 +182,7 @@ namespace FastGraph.Serialization.Tests
 
             var graph = new AdjacencyGraph<TestVertex, TestEdge>();
             Assert.Throws<ArgumentException>(
-                () =>  graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>((string)null));
+                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>((string)null));
             Assert.Throws<ArgumentException>(
                 () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(""));
 
@@ -227,10 +227,10 @@ namespace FastGraph.Serialization.Tests
             using (var writer = XmlWriter.Create(WriteThrowsTestFilePath))
             {
                 Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<TestVertex, TestEdge>) null).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(writer));
+                    () => ((AdjacencyGraph<TestVertex, TestEdge>)null).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(writer));
 
                 Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<TestVertex, TestEdge>) null).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                    () => ((AdjacencyGraph<TestVertex, TestEdge>)null).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
                         writer,
                         vertex => vertex.ID,
                         edge => edge.ID));
@@ -365,7 +365,7 @@ namespace FastGraph.Serialization.Tests
             // ReSharper disable AssignNullToNotNullAttribute
             // Filepath
             Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>) null).DeserializeFromGraphML(
+                () => ((AdjacencyGraph<string, Edge<string>>)null).DeserializeFromGraphML(
                     GetGraphFilePath(TestGraphFileName),
                     id => id,
                     (source, target, _) => new Edge<string>(source, target)));
@@ -433,7 +433,7 @@ namespace FastGraph.Serialization.Tests
             using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
             {
                 Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<string, Edge<string>>) null).DeserializeFromGraphML(
+                    () => ((AdjacencyGraph<string, Edge<string>>)null).DeserializeFromGraphML(
                         reader,
                         id => id,
                         (source, target, _) => new Edge<string>(source, target)));

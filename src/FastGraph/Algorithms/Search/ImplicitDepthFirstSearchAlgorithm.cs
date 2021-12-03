@@ -85,7 +85,7 @@ namespace FastGraph.Algorithms.Search
         }
 
         /// <summary>
-        /// Invoked when a vertex is encountered for the first time. 
+        /// Invoked when a vertex is encountered for the first time.
         /// </summary>
         public event VertexAction<TVertex> DiscoverVertex;
 
@@ -97,7 +97,7 @@ namespace FastGraph.Algorithms.Search
         }
 
         /// <summary>
-        /// Invoked on every out-edge of each vertex after it is discovered. 
+        /// Invoked on every out-edge of each vertex after it is discovered.
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
 

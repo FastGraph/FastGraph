@@ -252,7 +252,7 @@ namespace FastGraph.Serialization.Tests
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
-            
+
             CollectionAssert.IsEmpty(edgeList);
 
             var edge12 = new Edge<int>(1, 2);

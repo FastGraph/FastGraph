@@ -122,7 +122,7 @@ namespace FastGraph.Tests.Predicates
             var graph = new AdjacencyGraph<int, Edge<int>>();
             ContainsVertex_Test(
                 graph,
-                (vertexPredicate, edgePredicate) => 
+                (vertexPredicate, edgePredicate) =>
                     new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                         graph,
                         vertexPredicate,

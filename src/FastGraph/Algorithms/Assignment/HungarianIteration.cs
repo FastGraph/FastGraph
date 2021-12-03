@@ -44,7 +44,7 @@ namespace FastGraph.Algorithms.Assignment
             [NotNull] int[,] costs,
             [NotNull] byte[,] mask,
             [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] columnsCovered, 
+            [NotNull] bool[] columnsCovered,
             HungarianAlgorithm.Steps step)
         {
             Debug.Assert(costs != null);

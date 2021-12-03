@@ -95,7 +95,7 @@ namespace FastGraph.Graphviz
             Match match = SizeRegex.Match(svg);
             if (!match.Success)
                 return new GraphvizSize(400, 400);
-            
+
             int size = int.Parse(match.Groups[WidthGroupName].Value);
             int height = int.Parse(match.Groups[HeightGroupName].Value);
             return new GraphvizSize(size, height);

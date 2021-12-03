@@ -78,7 +78,7 @@ namespace FastGraph.Data.Tests
             algorithm = new DataSetGraphPopulatorAlgorithm(graph, dataSet);
             algorithm.Compute();
 
-            AssertHasVertices(graph, new[]{ customers, orders });
+            AssertHasVertices(graph, new[] { customers, orders });
             AssertNoEdge(graph);
 
             // Table with relations
@@ -110,7 +110,7 @@ namespace FastGraph.Data.Tests
             algorithm = new DataSetGraphPopulatorAlgorithm(graph, dataSet);
             algorithm.Compute();
 
-            AssertHasVertices(graph, new[]{ addresses, customers, orders });
+            AssertHasVertices(graph, new[] { addresses, customers, orders });
             AssertHasRelations(
                 graph,
                 new[]

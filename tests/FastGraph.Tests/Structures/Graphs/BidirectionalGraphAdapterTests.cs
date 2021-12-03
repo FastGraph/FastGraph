@@ -191,7 +191,7 @@ namespace FastGraph.Tests.Structures
         public void OutEdge_Throws()
         {
             var wrappedGraph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var graph1= new BidirectionalAdapterGraph<TestVertex, Edge<TestVertex>>(wrappedGraph1);
+            var graph1 = new BidirectionalAdapterGraph<TestVertex, Edge<TestVertex>>(wrappedGraph1);
             OutEdge_NullThrows_Test(graph1);
 
             var wrappedGraph2 = new AdjacencyGraph<int, Edge<int>>();

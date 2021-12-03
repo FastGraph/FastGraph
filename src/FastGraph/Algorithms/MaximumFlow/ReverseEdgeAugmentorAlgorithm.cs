@@ -7,8 +7,8 @@ using JetBrains.Annotations;
 namespace FastGraph.Algorithms.MaximumFlow
 {
     /// <summary>
-    /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/> 
-    /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}.InternalCompute"/>. 
+    /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/>
+    /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}.InternalCompute"/>.
     /// Remember to call <see cref="RemoveReversedEdges()"/> to remove auxiliary edges.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>

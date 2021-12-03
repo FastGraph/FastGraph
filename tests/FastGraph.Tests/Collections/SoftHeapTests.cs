@@ -57,7 +57,7 @@ namespace FastGraph.Tests.Collections
             {
                 AssertHeapSize(heap, 0);
                 Assert.AreEqual(expectedErrorRate, heap.ErrorRate);
-                Assert.AreEqual(2 + 2 * (int) Math.Ceiling(Math.Log(1.0 / expectedErrorRate, 2.0)), heap.MinRank);
+                Assert.AreEqual(2 + 2 * (int)Math.Ceiling(Math.Log(1.0 / expectedErrorRate, 2.0)), heap.MinRank);
                 Assert.AreEqual(expectedComparer, heap.KeyComparison);
                 Assert.AreEqual(expectedMaxPriority, heap.KeyMaxValue);
             }

@@ -144,7 +144,7 @@ namespace FastGraph.Tests.Structures
             var wrappedGraph2 = new BidirectionalGraph<int, EquatableUndirectedEdge<int>>();
             ContainsEdge_UndirectedEdge_ImmutableGraph_UndirectedGraph_Test(
                 wrappedGraph1,
-                () =>  new UndirectedBidirectionalGraph<int, EquatableEdge<int>>(wrappedGraph1),
+                () => new UndirectedBidirectionalGraph<int, EquatableEdge<int>>(wrappedGraph1),
                 wrappedGraph2,
                 () => new UndirectedBidirectionalGraph<int, EquatableUndirectedEdge<int>>(wrappedGraph2));
         }

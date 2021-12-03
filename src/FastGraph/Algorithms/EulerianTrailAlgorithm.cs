@@ -460,7 +460,7 @@ namespace FastGraph.Algorithms
         /// </para>
         /// <para>
         /// If the current edge is temporary, the current trail is finished and
-        /// added to the trail collection. The shortest path between the 
+        /// added to the trail collection. The shortest path between the
         /// start vertex <paramref name="startingVertex"/> and the target vertex of the
         /// temporary edge is then used to start the new trail. This shortest
         /// path is computed using the <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/>.

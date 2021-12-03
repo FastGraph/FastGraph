@@ -1097,7 +1097,7 @@ namespace FastGraph.Algorithms
         /// Reference:
         /// Gabow, H. N. and Tarjan, R. E. 1983. A linear-time algorithm for a special case of disjoint set union.
         /// In Proceedings of the Fifteenth Annual ACM Symposium on theory of Computing STOC '83. ACM, New York, NY, 246-251.
-        /// DOI= http://doi.acm.org/10.1145/800061.808753 
+        /// DOI= http://doi.acm.org/10.1145/800061.808753
         /// </remarks>
         /// <typeparam name="TVertex">Vertex type.</typeparam>
         /// <typeparam name="TEdge">Edge type.</typeparam>

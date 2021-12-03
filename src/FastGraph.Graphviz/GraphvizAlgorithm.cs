@@ -238,8 +238,8 @@ namespace FastGraph.Graphviz
         }
 
         private void WriteClusters(
-            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices, 
-            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges, 
+            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices,
+            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges,
             [NotNull] IClusteredGraph parent)
         {
             Debug.Assert(remainingVertices != null);

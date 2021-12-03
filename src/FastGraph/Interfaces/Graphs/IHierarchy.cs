@@ -49,7 +49,7 @@ namespace FastGraph
         bool IsCrossEdge([NotNull] TEdge edge);
 
         /// <summary>
-        /// Gets a value indicating whether the <paramref name="edge"/> 
+        /// Gets a value indicating whether the <paramref name="edge"/>
         /// exists really or is just an induced edge.
         /// </summary>
         /// <param name="edge">The edge.</param>
@@ -71,7 +71,7 @@ namespace FastGraph
         bool IsPredecessorOf([NotNull] TVertex source, [NotNull] TVertex target);
 
         /// <summary>
-        /// Gets the number of edges between the <paramref name="source"/> and <paramref name="target"/> vertex. 
+        /// Gets the number of edges between the <paramref name="source"/> and <paramref name="target"/> vertex.
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>

@@ -105,7 +105,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                             [2] = edge12,
                             [3] = edge13,
                             [4] = edge24
-                        }, 
+                        },
                         recorder.VerticesPredecessors);
                     CollectionAssert.AreEquivalent(new[] { 3, 4 }, recorder.EndPathVertices);
                 }

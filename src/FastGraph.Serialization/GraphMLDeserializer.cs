@@ -21,12 +21,12 @@ namespace FastGraph.Serialization
     /// <typeparam name="TGraph">Graph type.</typeparam>
     /// <remarks>
     /// <para>
-    /// Custom vertex, edge and graph attributes can be specified by 
+    /// Custom vertex, edge and graph attributes can be specified by
     /// using the <see cref="T:System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
     /// </para>
     /// <para>
-    /// The serializer uses LCG (lightweight code generation) to generate the 
-    /// methods that writes the attributes to avoid paying the price of 
+    /// The serializer uses LCG (lightweight code generation) to generate the
+    /// methods that writes the attributes to avoid paying the price of
     /// Reflection on each vertex/edge. Since nothing is for free, the first
     /// time you will use the serializer *on a particular pair of types*, it
     /// will have to bake that method.
@@ -216,7 +216,7 @@ namespace FastGraph.Serialization
                     generator.Emit(OpCodes.Ldstr, "data");
                     generator.Emit(OpCodes.Ldarg_1); // namespace URI
 
-                    // When writing scalar values we call member methods of XmlReader, while for array values 
+                    // When writing scalar values we call member methods of XmlReader, while for array values
                     // we call our own static methods. These two types of methods seem to need different OpCode.
                     generator.EmitCall(
                         readMethod.DeclaringType == typeof(XmlReaderExtensions)

@@ -139,7 +139,7 @@ namespace FastGraph.Petri
         {
             var builder = new StringBuilder();
             builder.AppendLine("-----------------------------------------------");
-            
+
             builder.AppendLine($"Places ({_places.Count})");
             foreach (IPlace<TToken> place in _places)
             {

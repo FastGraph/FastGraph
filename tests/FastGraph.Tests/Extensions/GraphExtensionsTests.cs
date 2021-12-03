@@ -258,9 +258,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<int, Edge<int>>) null).ToDelegateVertexAndEdgeListGraph(pair => new[] { pair.Value }));
+                () => ((Dictionary<int, Edge<int>>)null).ToDelegateVertexAndEdgeListGraph(pair => new[] { pair.Value }));
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<int, Edge<int>>) null).ToDelegateVertexAndEdgeListGraph((Converter<KeyValuePair<int, Edge<int>>, IEnumerable<Edge<int>>>)null));
+                () => ((Dictionary<int, Edge<int>>)null).ToDelegateVertexAndEdgeListGraph((Converter<KeyValuePair<int, Edge<int>>, IEnumerable<Edge<int>>>)null));
 
             var dictionary = new Dictionary<int, Edge<int>>();
             Assert.Throws<ArgumentNullException>(
@@ -791,7 +791,7 @@ namespace FastGraph.Tests.Extensions
             graph = edges.ToAdjacencyGraph();
             AssertHasVertices(graph, new[] { 1, 2, 3 });
             AssertHasEdges(
-                graph, 
+                graph,
                 new[]
                 {
                     new SEquatableEdge<int>(1, 2),
@@ -808,9 +808,9 @@ namespace FastGraph.Tests.Extensions
             int[][] edges = null;
             Assert.Throws<ArgumentNullException>(() => edges.ToAdjacencyGraph());
 
-            edges = new int[][]{ };
+            edges = new int[][] { };
             Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
-            edges = new[] { new int[]{ } };
+            edges = new[] { new int[] { } };
             Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
             edges = new[] { new int[] { }, new int[] { }, new int[] { } };
             Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
@@ -822,7 +822,7 @@ namespace FastGraph.Tests.Extensions
             edges = new int[][] { null, null };
             Assert.Throws<ArgumentNullException>(() => edges.ToAdjacencyGraph());
 
-            edges = new[] { new int[] { }, new [] { 1 } };
+            edges = new[] { new int[] { }, new[] { 1 } };
             Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
             edges = new[] { new[] { 1 }, new int[] { } };
             Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
@@ -1129,7 +1129,7 @@ namespace FastGraph.Tests.Extensions
             var edge12 = new Edge<int>(1, 2);
             var edge12Bis = new Edge<int>(1, 2);
             var edge21 = new Edge<int>(2, 1);
-            vertices.AddRange(new[]{ 1, 2 });
+            vertices.AddRange(new[] { 1, 2 });
             graph = vertices.ToBidirectionalGraph(
                 vertex =>
                 {
@@ -1344,7 +1344,7 @@ namespace FastGraph.Tests.Extensions
             graph = wrappedGraph.ToCompressedRowGraph();
             AssertHasVertices(graph, new[] { 1, 2, 3 });
             AssertHasEdges(
-                graph, 
+                graph,
                 new[]
                 {
                     new SEquatableEdge<int>(1, 2),

@@ -277,7 +277,7 @@ namespace FastGraph
         {
             EdgeEdgeDictionary<TVertex, TEdge> edges = _edges;
             _edges = new EdgeEdgeDictionary<TVertex, TEdge>();
-            
+
             NotifyEdgesRemoved(edges.Keys);
             edges.Clear();
         }

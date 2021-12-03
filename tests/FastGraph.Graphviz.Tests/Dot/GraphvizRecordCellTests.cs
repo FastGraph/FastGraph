@@ -106,7 +106,7 @@ namespace FastGraph.Graphviz.Tests
 
                 var cellWithPort = new GraphvizRecordCell { Port = "SomePort" };
                 yield return new TestCaseData(cellWithPort, "<SomePort> ");
-                
+
                 var cellWithBoth = new GraphvizRecordCell
                 {
                     Port = "Port",

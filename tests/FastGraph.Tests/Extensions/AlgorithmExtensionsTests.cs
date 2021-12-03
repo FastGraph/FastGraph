@@ -306,7 +306,7 @@ namespace FastGraph.Tests.Extensions
                 edge67, edge810, edge95, edge109
             });
 
-            TryFunc<int, IEnumerable<Edge<int>>>[] algorithmResults = 
+            TryFunc<int, IEnumerable<Edge<int>>>[] algorithmResults =
             {
                 graph.ShortestPathsDijkstra(_ => 1.0, 2),
                 graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, 2),
@@ -343,7 +343,7 @@ namespace FastGraph.Tests.Extensions
             var edge12 = new Edge<int>(1, 2);
             var edge24 = new Edge<int>(2, 4);
             var edge41 = new Edge<int>(4, 1);
-            
+
             var graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[]
             {
@@ -466,7 +466,7 @@ namespace FastGraph.Tests.Extensions
             Assert.Throws<ArgumentNullException>(
                 () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(null, null));
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, null));
@@ -1006,7 +1006,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.TopologicalSort((IVertexListGraph<int, Edge<int>>) null));
+                () => AlgorithmExtensions.TopologicalSort((IVertexListGraph<int, Edge<int>>)null));
 
             Assert.Throws<ArgumentNullException>(
                 () => AlgorithmExtensions.TopologicalSort((IUndirectedGraph<int, Edge<int>>)null));
@@ -1272,7 +1272,7 @@ namespace FastGraph.Tests.Extensions
                 new Edge<int>(5, 6),
                 new Edge<int>(6, 7),
                 new Edge<int>(7, 5),
-                
+
                 new Edge<int>(8, 9)
             });
 
@@ -1668,7 +1668,7 @@ namespace FastGraph.Tests.Extensions
             var graph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
             graph1.AddVertexRange(new[] { vertex1, vertex2 });
             var pairs1 = new[] { new SEquatableEdge<TestVertex>(vertex1, vertex2) };
-            
+
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(

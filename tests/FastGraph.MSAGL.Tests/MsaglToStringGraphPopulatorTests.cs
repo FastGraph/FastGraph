@@ -44,12 +44,12 @@ namespace FastGraph.MSAGL.Tests
 
             populator = new MsaglToStringGraphPopulator<int, Edge<int>>(graph, formatProvider: formatProvider);
             AssertPopulatorProperties(populator, graph, provider: formatProvider);
-            
+
             populator = new MsaglToStringGraphPopulator<int, Edge<int>>(graph, "Format {0}");
             AssertPopulatorProperties(populator, graph, "Format {0}");
 
             populator = new MsaglToStringGraphPopulator<int, Edge<int>>(graph, "Format2 {0}", formatProvider);
-            AssertPopulatorProperties(populator, graph, "Format2 {0}",formatProvider);
+            AssertPopulatorProperties(populator, graph, "Format2 {0}", formatProvider);
 
             var undirectedGraph = new UndirectedGraph<int, Edge<int>>();
             populator = new MsaglToStringGraphPopulator<int, Edge<int>>(undirectedGraph);

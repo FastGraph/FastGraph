@@ -187,7 +187,7 @@ namespace FastGraph.Collections
                 _cells.AddLast(cell);
 
                 // This loop is the cascading cut, we continue to cut
-                // ancestors of the cell reduced until we hit a root 
+                // ancestors of the cell reduced until we hit a root
                 // or we found an unmarked ancestor
                 while (parentCell.Marked && parentCell.Parent != null)
                 {

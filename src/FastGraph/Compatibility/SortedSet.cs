@@ -54,7 +54,7 @@ namespace FastGraph.Collections
 #endif
     public class SortedSet<T> : ISet<T>, ICollection, ISerializable, IDeserializationCallback, IReadOnlyCollection<T>
     {
-        #region Local variables/Constants
+#region Local variables/Constants
 
         private Node _root;
         private int _version;
@@ -73,9 +73,9 @@ namespace FastGraph.Collections
 
         internal const int StackAllocThreshold = 100;
 
-        #endregion
+#endregion
 
-        #region Constructors
+#region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SortedSet{T}"/> class.
@@ -209,9 +209,9 @@ namespace FastGraph.Collections
         }
 #endif
 
-        #endregion
+#endregion
 
-        #region Bulk Operation Helpers
+#region Bulk Operation Helpers
 
         private void AddAllElements([NotNull, ItemCanBeNull] IEnumerable<T> collection)
         {
@@ -236,11 +236,11 @@ namespace FastGraph.Collections
         //
         // Do a in order walk on tree and calls the delegate for each node.
         // If the action delegate returns false, stop the walk.
-        // 
-        // Return true if the entire tree has been walked. 
+        //
+        // Return true if the entire tree has been walked.
         // Otherwise returns false.
         //
-        // Allows for the change in traversal direction. Reverse visits nodes in descending order 
+        // Allows for the change in traversal direction. Reverse visits nodes in descending order
         private bool InOrderTreeWalk([NotNull] TreeWalkPredicate<T> action, bool reverse = false)
         {
             if (_root is null)
@@ -248,7 +248,7 @@ namespace FastGraph.Collections
 
             // The maximum height of a red-black tree is 2*lg(n+1).
             // See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-            // note: this should be logbase2, but since the stack grows itself, we 
+            // note: this should be logbase2, but since the stack grows itself, we
             // don't want the extra cost
             var stack = new Stack<Node>(2 * Log2(Count + 1));
             Node current = _root;
@@ -276,11 +276,11 @@ namespace FastGraph.Collections
         }
 
         //
-        // Do a left to right breadth first walk on tree and 
+        // Do a left to right breadth first walk on tree and
         // calls the delegate for each node.
         // If the action delegate returns false, stop the walk.
-        // 
-        // Return true if the entire tree has been walked. 
+        //
+        // Return true if the entire tree has been walked.
         // Otherwise returns false.
         //
         private bool BreadthFirstTreeWalk([NotNull] TreeWalkPredicate<T> action)
@@ -309,9 +309,9 @@ namespace FastGraph.Collections
             return true;
         }
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         /// <inheritdoc cref="ICollection.Count"/>
         public int Count { get; private set; }
@@ -336,10 +336,10 @@ namespace FastGraph.Collections
                 return _syncRoot;
             }
         }
-        
-        #endregion
 
-        #region Subclass helpers
+#endregion
+
+#region Subclass helpers
 
         //virtual function for subclass that needs to do range checks
         internal virtual bool IsWithinRange(T item)
@@ -348,14 +348,14 @@ namespace FastGraph.Collections
 
         }
 
-        #endregion
+#endregion
 
-        #region ICollection<T>
+#region ICollection<T>
 
         /// <summary>
-        /// Add the value <paramref name="item"/> to the tree, returns true if added, false if duplicate 
+        /// Add the value <paramref name="item"/> to the tree, returns true if added, false if duplicate
         /// </summary>
-        /// <param name="item">Item to be added.</param> 
+        /// <param name="item">Item to be added.</param>
         public bool Add([CanBeNull] T item)
         {
             return AddIfNotPresent(item);
@@ -367,7 +367,7 @@ namespace FastGraph.Collections
         }
 
         /// <summary>
-        /// Adds <paramref name="item"/> to the tree if not already present. Returns true if value was successfully added         
+        /// Adds <paramref name="item"/> to the tree if not already present. Returns true if value was successfully added
         /// or false if it is a duplicate.
         /// </summary>
         internal virtual bool AddIfNotPresent([CanBeNull] T item)
@@ -465,9 +465,9 @@ namespace FastGraph.Collections
             // Then copy the item from the successor to the matching node and delete the successor.
             // If a node doesn't have a successor, we can replace it with its left child (if not empty.)
             // or delete the matching node.
-            // 
+            //
             // In top-down implementation, it is important to make sure the node to be deleted is not a 2-node.
-            // Following code will make sure the node on the path is not a 2 Node. 
+            // Following code will make sure the node on the path is not a 2 Node.
 
             //even if we don't actually remove from the set, we may be altering its structure (by doing rotations
             //and such). so update version to disable any enumerators/subsets working on it
@@ -494,8 +494,8 @@ namespace FastGraph.Collections
                         Node sibling = GetSibling(current, parent);
                         if (sibling.IsRed)
                         {
-                            // If parent is a 3-node, flip the orientation of the red link. 
-                            // We can achieve this by a single rotation        
+                            // If parent is a 3-node, flip the orientation of the red link.
+                            // We can achieve this by a single rotation
                             // This case is converted to one of other cased below.
                             Debug.Assert(!parent.IsRed, "parent must be a black node!");
                             if (parent.Right == sibling)
@@ -511,7 +511,7 @@ namespace FastGraph.Collections
                             sibling.IsRed = false; // Parent's color
                                                    // Sibling becomes child of grandParent or root after rotation. Update link from grandParent or root
                             ReplaceChildOfNodeOrRoot(grandParent, parent, sibling);
-                            // Sibling will become grandParent of current node 
+                            // Sibling will become grandParent of current node
                             grandParent = sibling;
                             if (parent == match)
                             {
@@ -717,9 +717,9 @@ namespace FastGraph.Collections
             }
         }
 
-        #endregion
+#endregion
 
-        #region IEnumerable<T>
+#region IEnumerable<T>
 
         private Enumerator GetEnumerator()
         {
@@ -736,9 +736,9 @@ namespace FastGraph.Collections
             return new Enumerator(this);
         }
 
-        #endregion
+#endregion
 
-        #region Tree Specific Operations
+#region Tree Specific Operations
 
         private static Node GetSibling([CanBeNull] Node node, [NotNull] Node parent)
         {
@@ -748,7 +748,7 @@ namespace FastGraph.Collections
         }
 
         // After calling InsertionBalance, we need to make sure current and parent up-to-date.
-        // It doesn't matter if we keep grandParent and greatGrantParent up-to-date 
+        // It doesn't matter if we keep grandParent and greatGrantParent up-to-date
         // because we won't need to split again in the next node.
         // By the time we need to split again, everything will be correctly set.
         private void InsertionBalance(
@@ -775,7 +775,7 @@ namespace FastGraph.Collections
                 newChildOfGreatGrandParent = currentIsOnRight
                     ? RotateLeftRight(grandParent)
                     : RotateRightLeft(grandParent);
-                // Current node now becomes the child of greatgrandparent 
+                // Current node now becomes the child of greatgrandparent
                 parent = greatGrandParent;
             }
             // grand parent will become a child of either parent of current.
@@ -820,7 +820,7 @@ namespace FastGraph.Collections
             child2.IsRed = true;
         }
 
-        // Replace the child of a parent node. 
+        // Replace the child of a parent node.
         // If the parent node is null, replace the root.
         private void ReplaceChildOfNodeOrRoot([CanBeNull] Node parent, Node child, Node newChild)
         {
@@ -898,7 +898,7 @@ namespace FastGraph.Collections
             return null;
         }
 
-        // used for bithelpers. Note that this implementation is completely different 
+        // used for bithelpers. Note that this implementation is completely different
         // from the Subset's. The two should not be mixed. This indexes as if the tree were an array.
         // http://en.wikipedia.org/wiki/Binary_Tree#Methods_for_storing_binary_trees
         private int InternalIndexOf([CanBeNull] T item)
@@ -995,9 +995,9 @@ namespace FastGraph.Collections
             node.Right.IsRed = false;
         }
 
-        #endregion
+#endregion
 
-        #region ISet
+#region ISet
 
         /// <summary>
         /// Transforms this set into its union with the <see cref="IEnumerable{T}"/> <paramref name="other"/>
@@ -1084,7 +1084,7 @@ namespace FastGraph.Collections
             [CanBeNull] Node redNode)
         {
             // What does this do?
-            // You're given a sorted array... say 1 2 3 4 5 6 
+            // You're given a sorted array... say 1 2 3 4 5 6
             // 2 cases:
             //    If there are odd # of elements, pick the middle element (in this case 4), and compute
             //    its left and right branches
@@ -1094,7 +1094,7 @@ namespace FastGraph.Collections
             //    now add 4 as a red node to the lowest element on the right branch
             //             3                       3
             //         1       5       ->     1        5
-            //           2       6             2     4   6            
+            //           2       6             2     4   6
             //    As we're adding to the leftmost of the right branch, nesting will not hurt the red-black properties
             //    Leaf nodes are red if they have no sibling (if there are 2 nodes or if a node trickles
             //    down to the bottom
@@ -1266,7 +1266,7 @@ namespace FastGraph.Collections
 
             if (other is SortedSet<T> asSorted && AreComparersEqual(this, asSorted))
             {
-                // Outside range, no point doing anything               
+                // Outside range, no point doing anything
                 if (!(Comparer.Compare(asSorted.Max, Min) < 0 || Comparer.Compare(asSorted.Min, Max) > 0))
                 {
                     T min = Min;
@@ -1325,14 +1325,14 @@ namespace FastGraph.Collections
         /// <summary>
         /// This works similar to HashSet's CheckUniqueAndUnfound (description below), except that the bit
         /// array maps differently than in the HashSet. We can only use this for the bulk boolean checks.
-        /// 
+        ///
         /// Determines counts that can be used to determine equality, subset, and superset. This
         /// is only used when other is an IEnumerable and not a HashSet. If other is a HashSet
-        /// these properties can be checked faster without use of marking because we can assume 
+        /// these properties can be checked faster without use of marking because we can assume
         /// other has no duplicates.
-        /// 
+        ///
         /// The following count checks are performed by callers:
-        /// 1. Equals: checks if unfoundCount = 0 and uniqueFoundCount = Count; i.e. everything 
+        /// 1. Equals: checks if unfoundCount = 0 and uniqueFoundCount = Count; i.e. everything
         /// in other is in this and everything in this is in other
         /// 2. Subset: checks if unfoundCount >= 0 and uniqueFoundCount = Count; i.e. other may
         /// have elements not in this and everything in this is in other
@@ -1341,7 +1341,7 @@ namespace FastGraph.Collections
         /// 4. Proper superset: checks if unfound count = 0 and uniqueFoundCount strictly less
         /// than Count; i.e. everything in other was in this and this had at least one element
         /// not contained in other.
-        /// 
+        ///
         /// An earlier implementation used delegates to perform these checks rather than returning
         /// an ElementCount struct; however this was changed due to the perf overhead of delegates.
         /// </summary>
@@ -1353,7 +1353,7 @@ namespace FastGraph.Collections
         {
             ElementCount result;
 
-            // Need special case in case this has no elements. 
+            // Need special case in case this has no elements.
             if (Count == 0)
             {
                 int numElementsInOther = 0;
@@ -1448,9 +1448,9 @@ namespace FastGraph.Collections
             return actuallyRemoved;
         }
 
-        #endregion
+#endregion
 
-        #region ISorted
+#region ISorted
 
         /// <summary>
         /// Minimal value.
@@ -1499,9 +1499,9 @@ namespace FastGraph.Collections
             }
         }
 
-        #endregion
+#endregion
 
-        #region Serialization methods
+#region Serialization methods
 
 #if SUPPORTS_SERIALIZATION
 
@@ -1566,9 +1566,9 @@ namespace FastGraph.Collections
         }
 #endif
 
-        #endregion
+#endregion
 
-        #region Helper Classes
+#region Helper Classes
 
         internal sealed class Node
         {
@@ -1579,14 +1579,14 @@ namespace FastGraph.Collections
 
             public Node(T item)
             {
-                // The default color will be red, we never need to create a black node directly.                
+                // The default color will be red, we never need to create a black node directly.
                 Item = item;
                 IsRed = true;
             }
 
             public Node(T item, bool isRed)
             {
-                // The default color will be red, we never need to create a black node directly.                
+                // The default color will be red, we never need to create a black node directly.
                 Item = item;
                 IsRed = isRed;
             }
@@ -1804,9 +1804,9 @@ namespace FastGraph.Collections
             internal int UnfoundCount;
         }
 
-        #endregion
+#endregion
 
-        #region Misc
+#region Misc
 
         /// <summary>
         /// Searches the set for a given value and returns the equal value it finds, if any.
@@ -1815,7 +1815,7 @@ namespace FastGraph.Collections
         /// <param name="actualValue">The value from the set that the search found, or the default value of <typeparamref name="T"/> when the search yielded no match.</param>
         /// <returns>A value indicating whether the search was successful.</returns>
         /// <remarks>
-        /// This can be useful when you want to reuse a previously stored reference instead of 
+        /// This can be useful when you want to reuse a previously stored reference instead of
         /// a newly constructed one (so that more sharing of references can occur) or to look up
         /// a value that has more complete data than the value you currently have, although their
         /// comparer functions indicate they are equal.
@@ -1844,7 +1844,7 @@ namespace FastGraph.Collections
             return c;
         }
 
-        #endregion
+#endregion
     }
 }
 #endif

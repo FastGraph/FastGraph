@@ -10,7 +10,7 @@ namespace FastGraph.Algorithms.MaximumFlow
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public abstract class MaximumFlowAlgorithm<TVertex, TEdge> 
+    public abstract class MaximumFlowAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
         , IVertexColorizerAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
