@@ -117,6 +117,5 @@ jobs:
         allowUpdates: true
         tag: "v${{ steps.gitversion.outputs.fullSemVer }}"
         token: ${{ secrets.GITHUB_TOKEN }}
-        omitPrereleaseDuringUpdate: true
-        omitNameDuringUpdate: true
+        prerelease: ${{ steps.gitversion.outputs.preReleaseTag != '' }}
         draft: false
