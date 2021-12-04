@@ -114,9 +114,8 @@ jobs:
     - name: GitHub Release Publish
       uses: ncipollo/release-action@v1
       with:
-        artifacts: dist/*
+        allowUpdates: true
         tag: "v${{ steps.gitversion.outputs.fullSemVer }}"
-        generateReleaseNotes: true
         token: ${{ secrets.GITHUB_TOKEN }}
         omitPrereleaseDuringUpdate: true
         omitNameDuringUpdate: true
