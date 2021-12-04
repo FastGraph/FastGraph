@@ -104,10 +104,11 @@ jobs:
         generateReleaseNotes: true
         draft: true
 
+    # TODO: Remove `--skip-duplicate` from these after the pipeline steps are debugged and flowing.
     - name: dotnet nuget push dist/*.nupkg
-      run: dotnet nuget push dist/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push dist/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }}
     - name: dotnet nuget push dist/*.snupkg
-      run: dotnet nuget push dist/*.snupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push dist/*.snupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }}
 
     - name: GitHub Release Publish
       uses: ncipollo/release-action@v1
