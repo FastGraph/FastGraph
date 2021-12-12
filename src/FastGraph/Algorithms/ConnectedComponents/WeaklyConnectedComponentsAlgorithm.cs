@@ -5,9 +5,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Search;
 using FastGraph.Algorithms.Services;
-#if !SUPPORTS_SORTEDSET
-using FastGraph.Collections;
-#endif
 
 namespace FastGraph.Algorithms.ConnectedComponents
 {

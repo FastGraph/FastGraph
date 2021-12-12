@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using FastGraph.Algorithms.GraphPartition;
-#if !SUPPORTS_SORTEDSET
-using FastGraph.Collections;
-#endif
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static FastGraph.Tests.TestHelpers;
 

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using System.Linq;
-#if !SUPPORTS_SORTEDSET
-using FastGraph.Collections;
-#endif
 
 namespace FastGraph.Algorithms.GraphPartition
 {
