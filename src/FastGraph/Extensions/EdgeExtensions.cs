@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-#if !SUPPORTS_TYPE_FULL_FEATURES
-using System.Reflection;
-#endif
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -309,11 +306,7 @@ namespace FastGraph
         [NotNull]
         public static EdgeEqualityComparer<TVertex> GetUndirectedVertexEquality<TVertex, TEdge>()
         {
-#if SUPPORTS_TYPE_FULL_FEATURES
             if (typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge)))
-#else
-            if (typeof(IUndirectedEdge<TVertex>).GetTypeInfo().IsAssignableFrom(typeof(TEdge).GetTypeInfo()))
-#endif
                 return SortedVertexEquality;
             return UndirectedVertexEquality;
         }

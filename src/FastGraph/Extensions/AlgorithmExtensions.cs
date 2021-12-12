@@ -1,12 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-#if SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;
-#else
-using FastGraph.Utils;
-#endif
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Condensation;
 using FastGraph.Algorithms.ConnectedComponents;
@@ -42,14 +38,10 @@ namespace FastGraph.Algorithms
             if (dictionary is null)
                 throw new ArgumentNullException(nameof(dictionary));
 
-#if SUPPORTS_TYPE_FULL_FEATURES
             // ReSharper disable once PossibleNullReferenceException, Justification: Dictionary has the [] operator called "Item".
             MethodInfo method = dictionary.GetType().GetProperty("Item").GetGetMethod();
             // ReSharper disable once AssignNullToNotNullAttribute, Justification: Throws if the method is not found.
             return (Func<TKey, TValue>)Delegate.CreateDelegate(typeof(Func<TKey, TValue>), dictionary, method, true);
-#else
-            return key => dictionary[key];
-#endif
         }
 
         /// <summary>
@@ -71,11 +63,7 @@ namespace FastGraph.Algorithms
                 throw new ArgumentNullException(nameof(graph));
 
             // Simpler identity for primitive types
-#if SUPPORTS_TYPE_FULL_FEATURES
             switch (Type.GetTypeCode(typeof(TVertex)))
-#else
-            switch (TypeUtils.GetTypeCode(typeof(TVertex)))
-#endif
             {
                 case TypeCode.String:
                 case TypeCode.Boolean:

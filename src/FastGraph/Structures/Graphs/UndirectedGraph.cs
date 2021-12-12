@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-#if !SUPPORTS_TYPE_FULL_FEATURES
-using System.Reflection;
-#endif
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -70,11 +67,7 @@ namespace FastGraph
             AllowParallelEdges = allowParallelEdges;
             EdgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
 
-#if SUPPORTS_TYPE_FULL_FEATURES
             _reorder = typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge))
-#else
-            _reorder = typeof(IUndirectedEdge<TVertex>).GetTypeInfo().IsAssignableFrom(typeof(TEdge).GetTypeInfo())
-#endif
                 ? (ReorderVertices)((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
                 {
                     if (Comparer<TVertex>.Default.Compare(source, target) > 0)
