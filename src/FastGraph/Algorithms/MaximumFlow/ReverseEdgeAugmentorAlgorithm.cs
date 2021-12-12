@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.MaximumFlow
@@ -14,6 +13,7 @@ namespace FastGraph.Algorithms.MaximumFlow
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> : IDisposable
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -24,8 +24,8 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public ReversedEdgeAugmentorAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
             EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
@@ -34,28 +34,23 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-        [NotNull]
         public IMutableVertexAndEdgeListGraph<TVertex, TEdge> VisitedGraph { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
-        [NotNull, ItemNotNull]
         private readonly List<TEdge> _augmentedEdges = new List<TEdge>();
 
         /// <summary>
         /// Edges added to the initial graph (augmented ones).
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<TEdge> AugmentedEdges => _augmentedEdges.AsEnumerable();
 
         /// <summary>
         /// Edges associated to their reversed edges.
         /// </summary>
-        [NotNull]
         public IDictionary<TEdge, TEdge> ReversedEdges { get; } = new Dictionary<TEdge, TEdge>();
 
         /// <summary>
@@ -66,12 +61,10 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Fired when a reversed edge is added.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> ReversedEdgeAdded;
+        public event EdgeAction<TVertex, TEdge>? ReversedEdgeAdded;
 
-        private void OnReservedEdgeAdded([NotNull] TEdge edge)
+        private void OnReservedEdgeAdded(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             ReversedEdgeAdded?.Invoke(edge);
         }
 
@@ -82,13 +75,11 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <param name="foundReversedEdge">Found reversed edge.</param>
         /// <returns>True if the reversed edge was found, false otherwise.</returns>
         [Pure]
-        private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
+        private bool FindReversedEdge(TEdge edge, [NotNullWhen(true)] out TEdge? foundReversedEdge)
         {
-            Debug.Assert(edge != null);
-
             IEnumerable<TEdge> reversedEdges = VisitedGraph
                 .OutEdges(edge.Target)
-                .Where(reversedEdge => EqualityComparer<TVertex>.Default.Equals(reversedEdge.Target, edge.Source));
+                .Where(reversedEdge => EqualityComparer<TVertex?>.Default.Equals(reversedEdge.Target, edge.Source));
             foreach (TEdge reversedEdge in reversedEdges)
             {
                 foundReversedEdge = reversedEdge;
@@ -100,7 +91,6 @@ namespace FastGraph.Algorithms.MaximumFlow
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
         private IEnumerable<TEdge> FindEdgesToReverse()
         {
             foreach (TEdge edge in VisitedGraph.Edges)
@@ -109,7 +99,7 @@ namespace FastGraph.Algorithms.MaximumFlow
                 if (ReversedEdges.ContainsKey(edge))
                     continue;
 
-                if (FindReversedEdge(edge, out TEdge reversedEdge))
+                if (FindReversedEdge(edge, out TEdge? reversedEdge))
                 {
                     // Setup edge
                     ReversedEdges[edge] = reversedEdge;
@@ -128,7 +118,7 @@ namespace FastGraph.Algorithms.MaximumFlow
             }
         }
 
-        private void AddReversedEdges([NotNull, ItemNotNull] IEnumerable<TEdge> notReversedEdges)
+        private void AddReversedEdges(IEnumerable<TEdge> notReversedEdges)
         {
             foreach (TEdge edge in notReversedEdges)
             {
@@ -136,7 +126,7 @@ namespace FastGraph.Algorithms.MaximumFlow
                     continue;
 
                 // Already been added
-                if (FindReversedEdge(edge, out TEdge reversedEdge))
+                if (FindReversedEdge(edge, out TEdge? reversedEdge))
                 {
                     ReversedEdges[edge] = reversedEdge;
                     continue;

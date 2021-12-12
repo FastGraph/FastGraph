@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.Observers;
@@ -19,9 +17,10 @@ namespace FastGraph.Tests.Algorithms
         #region Test helpers
 
         public void RunTarjanOfflineLeastCommonAncestorAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root,
-            [NotNull] SEquatableEdge<TVertex>[] pairs)
+            IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root,
+            SEquatableEdge<TVertex>[] pairs)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TryFunc<SEquatableEdge<TVertex>, TVertex> lca = graph.OfflineLeastCommonAncestor(root, pairs);
@@ -32,7 +31,7 @@ namespace FastGraph.Tests.Algorithms
 
             foreach (SEquatableEdge<TVertex> pair in pairs)
             {
-                if (lca(pair, out TVertex _))
+                if (lca(pair, out _))
                 {
                     Assert.IsTrue(predecessors.VerticesPredecessors.IsPredecessor(root, pair.Source));
                     Assert.IsTrue(predecessors.VerticesPredecessors.IsPredecessor(root, pair.Target));
@@ -49,7 +48,7 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmProperties(algorithm, graph);
 
-            algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(null, graph);
+            algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(default, graph);
             AssertAlgorithmProperties(algorithm, graph);
 
             #region Local function
@@ -57,6 +56,7 @@ namespace FastGraph.Tests.Algorithms
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -71,10 +71,12 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(null));
+                () => new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(default));
             Assert.Throws<ArgumentNullException>(
-                () => new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(null, null));
+                () => new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -150,7 +152,7 @@ namespace FastGraph.Tests.Algorithms
 
             graph.AddVertexRange(new[] { 1, 2 });
             algorithm.SetVertexPairs(new[] { new SEquatableEdge<int>(1, 2) });
-            Assert.IsTrue(algorithm.TryGetVertexPairs(out IEnumerable<SEquatableEdge<int>> pairs));
+            Assert.IsTrue(algorithm.TryGetVertexPairs(out IEnumerable<SEquatableEdge<int>>? pairs));
             CollectionAssert.AreEqual(
                 new[] { new SEquatableEdge<int>(1, 2) },
                 pairs);
@@ -170,7 +172,7 @@ namespace FastGraph.Tests.Algorithms
             };
             Assert.IsFalse(algorithm.TryGetVertexPairs(out _));
             algorithm.SetVertexPairs(pairs);
-            Assert.IsTrue(algorithm.TryGetVertexPairs(out IEnumerable<SEquatableEdge<int>> gotPairs));
+            Assert.IsTrue(algorithm.TryGetVertexPairs(out IEnumerable<SEquatableEdge<int>>? gotPairs));
             CollectionAssert.AreEqual(pairs, gotPairs);
         }
 
@@ -181,7 +183,9 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<int, Edge<int>>(graph);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.SetVertexPairs(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.SetVertexPairs(default));
+#pragma warning restore CS8625
             Assert.Throws<ArgumentException>(() => algorithm.SetVertexPairs(Enumerable.Empty<SEquatableEdge<int>>()));
             Assert.Throws<ArgumentException>(() => algorithm.SetVertexPairs(new[] { new SEquatableEdge<int>(1, 2) }));
             graph.AddVertex(1);
@@ -232,10 +236,12 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<TestVertex, Edge<TestVertex>>(graph);
 
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, pairs));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(vertex1, null));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, pairs));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(vertex1, default));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, default));
             Assert.Throws<ArgumentException>(() => algorithm.Compute(vertex3, pairs));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             algorithm = new TarjanOfflineLeastCommonAncestorAlgorithm<TestVertex, Edge<TestVertex>>(graph);

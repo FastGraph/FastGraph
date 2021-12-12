@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms.ShortestPath;
 
@@ -12,8 +13,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         #region Test helpers
 
         [Pure]
-        [NotNull]
-        protected static AdjacencyGraph<char, Edge<char>> CreateGraph([NotNull] Dictionary<Edge<char>, double> distances)
+        protected static AdjacencyGraph<char, Edge<char>> CreateGraph(Dictionary<Edge<char>, double> distances)
         {
             var graph = new AdjacencyGraph<char, Edge<char>>();
 

@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace FastGraph.Tests.Structures
         #region Contains Vertex
 
         protected static void ContainsVertex_Test(
-            [NotNull] IMutableVertexSet<TestVertex> graph)
+            IMutableVertexSet<TestVertex> graph)
         {
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
@@ -32,8 +33,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsVertex_ImmutableGraph_Test(
-            [NotNull] IMutableVertexSet<TestVertex> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitVertexSet<TestVertex>> createGraph)
+            IMutableVertexSet<TestVertex> wrappedGraph,
+            [InstantHandle] Func<IImplicitVertexSet<TestVertex>> createGraph)
         {
             IImplicitVertexSet<TestVertex> graph = createGraph();
 
@@ -61,7 +62,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsVertex_OnlyEdges_Test(
-            [NotNull] EdgeListGraph<TestVertex, Edge<TestVertex>> graph)
+            EdgeListGraph<TestVertex, Edge<TestVertex>> graph)
         {
             var vertex1 = new TestVertex("1");
             var toVertex1 = new TestVertex("target 1");
@@ -87,7 +88,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsVertex_EquatableVertex_Test(
-            [NotNull] IMutableVertexSet<EquatableTestVertex> graph)
+            IMutableVertexSet<EquatableTestVertex> graph)
         {
             var vertex1 = new EquatableTestVertex("1");
             var vertex2 = new EquatableTestVertex("2");
@@ -110,8 +111,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsVertex_EquatableVertex_ImmutableGraph_Test(
-            [NotNull] IMutableVertexSet<EquatableTestVertex> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitVertexSet<EquatableTestVertex>> createGraph)
+            IMutableVertexSet<EquatableTestVertex> wrappedGraph,
+            [InstantHandle] Func<IImplicitVertexSet<EquatableTestVertex>> createGraph)
         {
             IImplicitVertexSet<EquatableTestVertex> graph = createGraph();
 
@@ -139,7 +140,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsVertex_EquatableVertex_OnlyEdges_Test(
-            [NotNull] EdgeListGraph<EquatableTestVertex, Edge<EquatableTestVertex>> graph)
+            EdgeListGraph<EquatableTestVertex, Edge<EquatableTestVertex>> graph)
         {
             var vertex1 = new EquatableTestVertex("1");
             var toVertex1 = new EquatableTestVertex("target 1");
@@ -165,12 +166,14 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsVertex_Throws_Test<TVertex>(
-            [NotNull] IImplicitVertexSet<TVertex> graph)
-            where TVertex : class
+            IImplicitVertexSet<TVertex> graph)
+            where TVertex : notnull
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsVertex(null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsVertex(default));
+#pragma warning restore CS8604
         }
 
         #endregion

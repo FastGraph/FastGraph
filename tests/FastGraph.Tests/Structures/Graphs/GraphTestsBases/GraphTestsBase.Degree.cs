@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace FastGraph.Tests.Structures
         #region Degree
 
         protected static void Degree_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+            IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -29,8 +30,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void Degree_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -51,7 +52,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void Degree_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -70,8 +71,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void Degree_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -92,19 +93,21 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void Degree_Throws_Test<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class, IEquatable<TVertex>, new()
+            IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : IEquatable<TVertex>, new()
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.Degree(null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.Degree(default));
+#pragma warning restore CS8604
             Assert.Throws<VertexNotFoundException>(() => graph.Degree(new TVertex()));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void Degree_Throws_Matrix_Test<TEdge>(
-            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed

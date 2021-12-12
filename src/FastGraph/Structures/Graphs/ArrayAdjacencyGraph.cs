@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -23,6 +23,7 @@ namespace FastGraph
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -30,7 +31,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public ArrayAdjacencyGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
+        public ArrayAdjacencyGraph(IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
             if (baseGraph is null)
                 throw new ArgumentNullException(nameof(baseGraph));
@@ -64,7 +65,6 @@ namespace FastGraph
         /// <inheritdoc />
         public int VertexCount => _vertexOutEdges.Count;
 
-        [NotNull]
         private readonly Dictionary<TVertex, TEdge[]> _vertexOutEdges;
 
         /// <inheritdoc />
@@ -98,7 +98,7 @@ namespace FastGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (_vertexOutEdges.TryGetValue(edge.Source, out TEdge[] outEdges))
+            if (_vertexOutEdges.TryGetValue(edge.Source, out TEdge[]? outEdges))
                 return outEdges.Any(outEdge => EqualityComparer<TEdge>.Default.Equals(outEdge, edge));
             return false;
         }
@@ -125,7 +125,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] edges))
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[]? edges))
                 return edges.Length;
             throw new VertexNotFoundException();
         }
@@ -136,24 +136,24 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] edges))
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[]? edges))
                 return edges.AsEnumerable();
             throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] outEdges))
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[]? outEdges))
             {
                 edges = outEdges.AsEnumerable();
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -163,7 +163,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[] outEdges))
+            if (_vertexOutEdges.TryGetValue(vertex, out TEdge[]? outEdges))
                 return outEdges[index];
             throw new VertexNotFoundException();
         }
@@ -173,14 +173,14 @@ namespace FastGraph
         #region IIncidenceGraph<TVertex,TEdge>
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (_vertexOutEdges.TryGetValue(source, out TEdge[] outEdges))
+            if (_vertexOutEdges.TryGetValue(source, out TEdge[]? outEdges))
             {
                 foreach (TEdge outEdge in outEdges.Where(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target)))
                 {
@@ -194,20 +194,20 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        public bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (_vertexOutEdges.TryGetValue(source, out TEdge[] outEdges))
+            if (_vertexOutEdges.TryGetValue(source, out TEdge[]? outEdges))
             {
                 edges = outEdges.Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -220,7 +220,6 @@ namespace FastGraph
         /// </summary>
         /// <returns>This graph.</returns>
         [Pure]
-        [NotNull]
         public ArrayAdjacencyGraph<TVertex, TEdge> Clone()
         {
             return this;

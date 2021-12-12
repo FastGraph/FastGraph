@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -23,11 +24,10 @@ namespace FastGraph.Tests.Algorithms.Contracts
     [TestFixtureSource(typeof(AlgorithmsProvider), nameof(AlgorithmsProvider.VertexColorizers))]
     internal sealed class VertexColorizerContract
     {
-        [NotNull]
         private readonly Type _testedAlgorithm;
 
         /// <summary/>
-        public VertexColorizerContract([NotNull] Type algorithmToTest)
+        public VertexColorizerContract(Type algorithmToTest)
         {
             _testedAlgorithm = algorithmToTest;
         }
@@ -128,17 +128,17 @@ namespace FastGraph.Tests.Algorithms.Contracts
         }
 
         [Pure]
-        [NotNull]
         private IVertexColorizerAlgorithm<T> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var instantiateAlgorithm = GetAlgorithmFactory<T>();
             return instantiateAlgorithm(scenario);
         }
 
         [Pure]
-        [NotNull]
         private Func<ContractScenario<T>, IVertexColorizerAlgorithm<T>> GetAlgorithmFactory<T>()
+            where T : notnull
         {
             return _testedAlgorithm switch
             {

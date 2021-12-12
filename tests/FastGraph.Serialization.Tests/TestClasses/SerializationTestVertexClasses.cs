@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
-using JetBrains.Annotations;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.Serialization.Tests
 {
@@ -12,21 +10,20 @@ namespace FastGraph.Serialization.Tests
 
     public class TestVertex
     {
-        public TestVertex([NotNull] string id)
+        public TestVertex(string id)
         {
             ID = id;
         }
 
-        [NotNull]
         public string ID { get; }
 
         [XmlAttribute("v_stringDefault")]
         [DefaultValue("defaultDefaultString")]
-        public string StringDefault { get; set; }
+        public string? StringDefault { get; set; }
 
         [XmlAttribute("v_string")]
         [DefaultValue("defaultString")]
-        public string String { get; set; }
+        public string? String { get; set; }
 
         [XmlAttribute("v_int")]
         [DefaultValue(1)]
@@ -46,20 +43,20 @@ namespace FastGraph.Serialization.Tests
         public double Double { get; set; }
 
         [XmlAttribute("v_intArray")]
-        public int[] IntArray { get; set; }
+        public int[]? IntArray { get; set; }
 
         [XmlAttribute("v_intIList")]
-        public IList<int> IntIList { get; set; }
+        public IList<int>? IntIList { get; set; }
     }
 
     public sealed class EquatableTestVertex : TestVertex, IEquatable<EquatableTestVertex>
     {
-        public EquatableTestVertex([NotNull] string id)
+        public EquatableTestVertex(string id)
             : base(id)
         {
         }
 
-        public bool Equals(EquatableTestVertex other)
+        public bool Equals(EquatableTestVertex? other)
         {
             if (other is null)
                 return false;
@@ -77,7 +74,7 @@ namespace FastGraph.Serialization.Tests
                    && Equals(IntIList, other.IntIList);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as EquatableTestVertex);
         }
@@ -88,15 +85,15 @@ namespace FastGraph.Serialization.Tests
             unchecked
             {
                 int hashCode = ID.GetHashCode();
-                hashCode = (hashCode * 397) ^ (StringDefault != null ? StringDefault.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (String != null ? String.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (StringDefault != default ? StringDefault.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (String != default ? String.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Int;
                 hashCode = (hashCode * 397) ^ Long.GetHashCode();
                 hashCode = (hashCode * 397) ^ Bool.GetHashCode();
                 hashCode = (hashCode * 397) ^ Float.GetHashCode();
                 hashCode = (hashCode * 397) ^ Double.GetHashCode();
-                hashCode = (hashCode * 397) ^ (IntArray != null ? IntArray.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (IntIList != null ? IntIList.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (IntArray != default ? IntArray.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (IntIList != default ? IntIList.GetHashCode() : 0);
                 return hashCode;
             }
         }

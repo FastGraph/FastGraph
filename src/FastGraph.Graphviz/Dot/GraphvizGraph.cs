@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Graphviz.Helpers;
 using static FastGraph.Graphviz.DotEscapers;
@@ -15,7 +15,6 @@ namespace FastGraph.Graphviz.Dot
 #endif
     public class GraphvizGraph
     {
-        [NotNull]
         private string _name = "G";
 
         /// <summary>
@@ -32,13 +31,13 @@ namespace FastGraph.Graphviz.Dot
         /// Comment.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
         /// </summary>
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// URL.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Background color.
@@ -57,7 +56,7 @@ namespace FastGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public GraphvizFont Font { get; set; }
+        public GraphvizFont? Font { get; set; }
 
         /// <summary>
         /// Font color.
@@ -117,7 +116,7 @@ namespace FastGraph.Graphviz.Dot
         /// Label.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
         /// </summary>
-        public string Label { get; set; }
+        public string? Label { get; set; }
 
         /// <summary>
         /// Label justification.
@@ -135,7 +134,7 @@ namespace FastGraph.Graphviz.Dot
         /// Layers.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layers">See more</see>
         /// </summary>
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         public GraphvizLayerCollection Layers { get; } = new GraphvizLayerCollection();
 
         /// <summary>
@@ -244,11 +243,10 @@ namespace FastGraph.Graphviz.Dot
         /// Stylesheet.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:stylesheet">See more</see>
         /// </summary>
-        public string StyleSheet { get; set; }
+        public string? StyleSheet { get; set; }
 
         [Pure]
-        [NotNull]
-        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
+        internal string GenerateDot(Dictionary<string, object> properties)
         {
             var dotParts = new List<string>(properties.Count);
             foreach (KeyValuePair<string, object> pair in properties)
@@ -286,7 +284,7 @@ namespace FastGraph.Graphviz.Dot
                         continue;
 
                     default:
-                        dotParts.Add($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        dotParts.Add($"{pair.Key}={pair.Value.ToString()!.ToLower()}");
                         break;
                 }
             }
@@ -305,11 +303,10 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Graph as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             var properties = new Dictionary<string, object>();
-            if (Url != null)
+            if (Url != default)
             {
                 properties["URL"] = Url;
             }
@@ -325,7 +322,7 @@ namespace FastGraph.Graphviz.Dot
             {
                 properties["clusterrank"] = ClusterRank.ToString().ToLower();
             }
-            if (Comment != null)
+            if (Comment != default)
             {
                 properties["comment"] = Escape(Comment);
             }
@@ -337,7 +334,7 @@ namespace FastGraph.Graphviz.Dot
             {
                 properties["concentrate"] = IsConcentrated;
             }
-            if (Font != null)
+            if (Font != default)
             {
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
@@ -350,7 +347,7 @@ namespace FastGraph.Graphviz.Dot
             {
                 properties["penwidth"] = PenWidth;
             }
-            if (Label != null)
+            if (Label != default)
             {
                 if (IsHtmlLabel)
                 {
@@ -453,7 +450,7 @@ namespace FastGraph.Graphviz.Dot
             {
                 properties["splines"] = Splines;
             }
-            if (StyleSheet != null)
+            if (StyleSheet != default)
             {
                 properties["stylesheet"] = StyleSheet;
             }

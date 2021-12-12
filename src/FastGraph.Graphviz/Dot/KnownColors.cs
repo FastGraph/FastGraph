@@ -1,4 +1,6 @@
-﻿namespace FastGraph.Graphviz.Dot
+﻿#nullable enable
+
+namespace FastGraph.Graphviz.Dot
 {
     public partial struct GraphvizColor
     {

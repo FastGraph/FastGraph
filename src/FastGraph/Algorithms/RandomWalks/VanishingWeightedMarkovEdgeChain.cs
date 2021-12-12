@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph.Algorithms.RandomWalks
 {
@@ -10,6 +10,7 @@ namespace FastGraph.Algorithms.RandomWalks
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class VanishingWeightedMarkovEdgeChain<TVertex, TEdge> : WeightedMarkovEdgeChainBase<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -17,7 +18,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="edgeWeights">Map that contains edge weights.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
-        public VanishingWeightedMarkovEdgeChain([NotNull] IDictionary<TEdge, double> edgeWeights)
+        public VanishingWeightedMarkovEdgeChain(IDictionary<TEdge, double> edgeWeights)
             : this(edgeWeights, 0.2)
         {
         }
@@ -28,7 +29,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// <param name="edgeWeights">Map that contains edge weights.</param>
         /// <param name="factor">Vanishing factor.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
-        public VanishingWeightedMarkovEdgeChain([NotNull] IDictionary<TEdge, double> edgeWeights, double factor)
+        public VanishingWeightedMarkovEdgeChain(IDictionary<TEdge, double> edgeWeights, double factor)
             : base(edgeWeights)
         {
             Factor = factor;
@@ -40,7 +41,7 @@ namespace FastGraph.Algorithms.RandomWalks
         public double Factor { get; set; }
 
         /// <inheritdoc />
-        public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
+        public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
         {
             if (!graph.IsOutEdgesEmpty(vertex))
             {
@@ -68,7 +69,7 @@ namespace FastGraph.Algorithms.RandomWalks
         }
 
         /// <inheritdoc />
-        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
+        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
         {
             // Get out weight
             TEdge[] edgeArray = edges.ToArray();

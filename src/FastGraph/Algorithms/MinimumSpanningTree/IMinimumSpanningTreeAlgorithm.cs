@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph.Algorithms.MinimumSpanningTree
 {
     /// <summary>
@@ -8,6 +10,7 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
     public interface IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         : IAlgorithm<IUndirectedGraph<TVertex, TEdge>>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
     }

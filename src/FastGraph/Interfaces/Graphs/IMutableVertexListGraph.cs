@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -9,7 +11,8 @@ namespace FastGraph
     public interface IMutableVertexListGraph<TVertex, TEdge>
         : IMutableIncidenceGraph<TVertex, TEdge>
         , IMutableVertexSet<TVertex>
-         where TEdge : IEdge<TVertex>
+        where TVertex : notnull
+        where TEdge : IEdge<TVertex>
     {
     }
 }

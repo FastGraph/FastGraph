@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.ConnectedComponents;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -15,7 +14,8 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
     {
         #region Test helpers
 
-        public void RunWeaklyConnectedComponentsAndCheck<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+        public void RunWeaklyConnectedComponentsAndCheck<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
@@ -58,7 +58,7 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             algorithm = new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph, components);
             AssertAlgorithmProperties(algorithm, graph);
 
-            algorithm = new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null, graph, components);
+            algorithm = new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, components);
             AssertAlgorithmProperties(algorithm, graph);
 
             #region Local function
@@ -66,6 +66,7 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 WeaklyConnectedComponentsAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -85,22 +86,24 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph, null));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null, components));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, components));
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null, null));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null, graph, null));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null, null, components));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components));
             Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(null, null, null));
+                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

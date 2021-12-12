@@ -1,4 +1,5 @@
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using Microsoft.Msagl.Drawing;
 
@@ -7,8 +8,9 @@ namespace FastGraph.MSAGL.Tests
     internal static class MsaglGraphTestHelpers
     {
         public static void AssertAreEquivalent<TVertex, TEdge>(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Graph msaglGraph)
+            IEdgeListGraph<TVertex, TEdge> graph,
+            Graph msaglGraph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.AreEqual(graph.IsDirected, msaglGraph.Directed);

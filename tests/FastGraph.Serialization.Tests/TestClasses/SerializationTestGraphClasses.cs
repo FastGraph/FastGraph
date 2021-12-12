@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
@@ -13,7 +13,7 @@ namespace FastGraph.Serialization.Tests
     {
         [XmlAttribute("g_string")]
         [DefaultValue("defaultValue")]
-        public string String { get; set; }
+        public string? String { get; set; }
 
         [XmlAttribute("g_int")]
         [DefaultValue(1)]
@@ -36,27 +36,27 @@ namespace FastGraph.Serialization.Tests
         public double Double { get; set; }
 
         [XmlAttribute("g_stringArray")]
-        public string[] StringArray { get; set; }
+        public string[]? StringArray { get; set; }
 
         [XmlAttribute("g_intArray")]
-        public int[] IntArray { get; set; }
+        public int[]? IntArray { get; set; }
 
         [XmlAttribute("g_longArray")]
-        public long[] LongArray { get; set; }
+        public long[]? LongArray { get; set; }
 
         [XmlAttribute("g_boolArray")]
-        public bool[] BoolArray { get; set; }
+        public bool[]? BoolArray { get; set; }
 
         [XmlAttribute("g_floatArray")]
-        public float[] FloatArray { get; set; }
+        public float[]? FloatArray { get; set; }
 
         [XmlAttribute("g_doubleArray")]
-        public double[] DoubleArray { get; set; }
+        public double[]? DoubleArray { get; set; }
 
         [XmlAttribute("g_nullArray")]
-        public int[] NullArray
+        public int[]? NullArray
         {
-            get => null;
+            get => default;
             set
             {
                 Assert.IsNull(value);
@@ -66,22 +66,22 @@ namespace FastGraph.Serialization.Tests
         #region IList properties
 
         [XmlAttribute("g_stringIList")]
-        public IList<string> StringIList { get; set; }
+        public IList<string>? StringIList { get; set; }
 
         [XmlAttribute("g_intIList")]
-        public IList<int> IntIList { get; set; }
+        public IList<int>? IntIList { get; set; }
 
         [XmlAttribute("g_longIList")]
-        public IList<long> LongIList { get; set; }
+        public IList<long>? LongIList { get; set; }
 
         [XmlAttribute("g_boolIList")]
-        public IList<bool> BoolIList { get; set; }
+        public IList<bool>? BoolIList { get; set; }
 
         [XmlAttribute("g_floatIList")]
-        public IList<float> FloatIList { get; set; }
+        public IList<float>? FloatIList { get; set; }
 
         [XmlAttribute("g_doubleIList")]
-        public IList<double> DoubleIList { get; set; }
+        public IList<double>? DoubleIList { get; set; }
 
         #endregion
     }
@@ -90,13 +90,13 @@ namespace FastGraph.Serialization.Tests
     {
         [XmlAttribute("g_string")]
         [DefaultValue("defaultValue")]
-        public string String { get; set; }
+        public string? String { get; set; }
 
         [XmlAttribute("g_int")]
         [DefaultValue(1)]
         public int Int { get; set; }
 
-        public bool Equals(EquatableTestGraph other)
+        public bool Equals(EquatableTestGraph? other)
         {
             if (other is null)
                 return false;
@@ -105,7 +105,7 @@ namespace FastGraph.Serialization.Tests
             return string.Equals(String, other.String) && Int == other.Int;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as EquatableTestGraph);
         }
@@ -115,7 +115,7 @@ namespace FastGraph.Serialization.Tests
         {
             unchecked
             {
-                return ((String != null ? String.GetHashCode() : 0) * 397) ^ Int;
+                return ((String != default ? String.GetHashCode() : 0) * 397) ^ Int;
             }
         }
     }
@@ -124,19 +124,19 @@ namespace FastGraph.Serialization.Tests
     {
         [XmlAttribute("g_stringArray")]
         [DefaultValue(new string[0])]
-        public string[] StringArray { get; set; }
+        public string[]? StringArray { get; set; }
     }
 
     public sealed class TestGraphNoSetter : AdjacencyGraph<TestVertex, TestEdge>
     {
         [XmlAttribute("g_string")]
-        public string String { get; }
+        public string? String { get; }
     }
 
     public sealed class TestGraphNoGetter : AdjacencyGraph<TestVertex, TestEdge>
     {
         [XmlAttribute("g_string")]
-        public string String { private get; set; }
+        public string? String { private get; set; }
     }
 
     public sealed class TestGraphNullDefaultValue : AdjacencyGraph<TestVertex, TestEdge>
@@ -163,7 +163,7 @@ namespace FastGraph.Serialization.Tests
     public sealed class TestGraphNotSupportedType : AdjacencyGraph<TestVertex, TestEdge>
     {
         [XmlAttribute("g_class")]
-        public TestVertex TestObject { get; set; }
+        public TestVertex? TestObject { get; set; }
     }
 
     public sealed class TestGraphNotSupportedType2 : AdjacencyGraph<TestVertex, TestEdge>
@@ -176,7 +176,7 @@ namespace FastGraph.Serialization.Tests
     public sealed class TestGraphNotSupportedType3 : AdjacencyGraph<TestVertex, TestEdge>
     {
         [XmlAttribute("g_chars")]
-        public char[] Chars { get; set; }
+        public char[]? Chars { get; set; }
     }
 
     public sealed class TestGraphObjectDefaultValue : AdjacencyGraph<TestVertex, TestEdge>
@@ -191,7 +191,7 @@ namespace FastGraph.Serialization.Tests
 
         [XmlAttribute("g_object")]
         [DefaultValueObject]
-        public TestVertex Object { get; set; }
+        public TestVertex? Object { get; set; }
     }
 
     #endregion

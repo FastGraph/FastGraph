@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -26,8 +27,10 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new TransitiveReductionAlgorithm<int, Edge<int>>(null));
+                () => new TransitiveReductionAlgorithm<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]

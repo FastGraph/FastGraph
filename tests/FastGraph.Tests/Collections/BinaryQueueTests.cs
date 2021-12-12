@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Collections;
 using static FastGraph.Collections.HeapConstants;
@@ -28,6 +28,8 @@ namespace FastGraph.Tests.Collections
 
             void AssertQueueProperties<TVertex, TDistance>(
                 BinaryQueue<TVertex, TDistance> queue)
+                where TVertex : notnull
+                where TDistance : notnull
             {
                 Assert.AreEqual(0, queue.Count);
             }
@@ -40,15 +42,17 @@ namespace FastGraph.Tests.Collections
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(null));
+                () => new BinaryQueue<int, double>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(_ => 1.0, null));
+                () => new BinaryQueue<int, double>(_ => 1.0, default));
             Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(null, (dist1, dist2) => dist1.CompareTo(dist2)));
+                () => new BinaryQueue<int, double>(default, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(null, null));
+                () => new BinaryQueue<int, double>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -166,14 +170,15 @@ namespace FastGraph.Tests.Collections
                 TVertex vertex1,
                 TVertex vertex2,
                 TVertex vertex3)
+                where TVertex : notnull
             {
-                BinaryQueue<TVertex, double> queue = null;
+                BinaryQueue<TVertex, double>? queue = default;
                 Update_Test(
                     distFunc => queue = new BinaryQueue<TVertex, double>(distFunc),
                     vertex1,
                     vertex2);
 
-                queue.Update(vertex3);  // Added with distance 0.5
+                queue!.Update(vertex3);  // Added with distance 0.5
                 Assert.AreEqual(3, queue.Count);
 
                 AssertEqual(vertex3, queue.Peek());
@@ -227,6 +232,7 @@ namespace FastGraph.Tests.Collections
                 TVertex vertex2,
                 TVertex vertex3,
                 TVertex vertex4)
+                where TVertex : notnull
             {
                 var distances = new Stack<double>(new[] { 123.0, 3.0, 2.0, 4.0, 5.0, 1.0 });
                 var queue = new BinaryQueue<TVertex, double>(_ => distances.Pop());
@@ -302,6 +308,7 @@ namespace FastGraph.Tests.Collections
                 TVertex vertex2,
                 TVertex vertex3,
                 TVertex vertex4)
+                where TVertex : notnull
             {
                 var queue = new BinaryQueue<TVertex, double>(_ => 1.0);
 

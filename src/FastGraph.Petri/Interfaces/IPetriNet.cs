@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Petri
 {
@@ -19,7 +18,6 @@ namespace FastGraph.Petri
         /// <value>
         /// A collection of <see cref="IPlace{TToken}"/> instances.
         /// </value>
-        [NotNull, ItemNotNull]
         IEnumerable<IPlace<TToken>> Places { get; }
 
         /// <summary>
@@ -28,7 +26,6 @@ namespace FastGraph.Petri
         /// <value>
         /// A collection of <see cref="ITransition{TToken}"/> instances.
         /// </value>
-        [NotNull, ItemNotNull]
         IEnumerable<ITransition<TToken>> Transitions { get; }
 
         /// <summary>
@@ -37,13 +34,11 @@ namespace FastGraph.Petri
         /// <value>
         /// A collection of <see cref="IArc{TToken}"/> instances.
         /// </value>
-        [NotNull, ItemNotNull]
         IEnumerable<IArc<TToken>> Arcs { get; }
 
         /// <summary>
         /// Gets the Petri Graph.
         /// </summary>
-        [NotNull]
         IReadOnlyPetriGraph<TToken> Graph { get; }
     }
 }

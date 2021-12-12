@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using JetBrains.Annotations;
 using FastGraph.Graphviz.Helpers;
 using static FastGraph.Graphviz.DotEscapers;
 
@@ -47,48 +47,48 @@ namespace FastGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headlabel">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:taillabel">See more</see>
         /// </summary>
-        public string Label { get; set; }
+        public string? Label { get; set; }
 
         /// <summary>
         /// Tooltip.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headtooltip">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailtooltip">See more</see>
         /// </summary>
-        public string ToolTip { get; set; }
+        public string? ToolTip { get; set; }
 
         /// <summary>
         /// URL.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headURL">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailURL">See more</see>
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Logical extremity of an edge.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:lhead">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:ltail">See more</see>
         /// </summary>
-        public string Logical { get; set; }
+        public string? Logical { get; set; }
 
         /// <summary>
         /// Identifier to group edge extremities with same identifier.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:samehead">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:sametail">See more</see>
         /// </summary>
-        public string Same { get; set; }
+        public string? Same { get; set; }
 
         /// <summary>
         /// Adds this edge extremity parameters to the given <paramref name="parameters"/> map.
         /// </summary>
         /// <param name="parameters">Parameter map to fill.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-        public void AddParameters([NotNull] IDictionary parameters)
+        public void AddParameters(IDictionary parameters)
         {
             if (parameters is null)
                 throw new ArgumentNullException(nameof(parameters));
 
             string extremity = IsHead ? "head" : "tail";
-            if (Url != null)
+            if (Url != default)
             {
                 parameters.Add(extremity + "URL", Url);
             }
@@ -96,7 +96,7 @@ namespace FastGraph.Graphviz.Dot
             {
                 parameters.Add(extremity + "clip", IsClipped);
             }
-            if (Label != null)
+            if (Label != default)
             {
                 string labelKey = extremity + "label";
                 if (IsHtmlLabel)
@@ -108,15 +108,15 @@ namespace FastGraph.Graphviz.Dot
                     parameters.Add(labelKey, Escape(Label));
                 }
             }
-            if (ToolTip != null)
+            if (ToolTip != default)
             {
                 parameters.Add(extremity + "tooltip", Escape(ToolTip));
             }
-            if (Logical != null)
+            if (Logical != default)
             {
                 parameters.Add("l" + extremity, Logical);
             }
-            if (Same != null)
+            if (Same != default)
             {
                 parameters.Add("same" + extremity, Same);
             }

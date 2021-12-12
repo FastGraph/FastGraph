@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Search;
@@ -17,15 +16,13 @@ namespace FastGraph.Algorithms
     public sealed class EulerianTrailAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull, ItemNotNull]
         private readonly List<TEdge> _temporaryCircuit = new List<TEdge>();
 
-        [CanBeNull]
-        private TVertex _currentVertex;
+        private TVertex? _currentVertex;
 
-        [NotNull, ItemNotNull]
         private List<TEdge> _temporaryEdges = new List<TEdge>();
 
         /// <summary>
@@ -34,8 +31,8 @@ namespace FastGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EulerianTrailAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            : this(default, visitedGraph)
         {
         }
 
@@ -46,38 +43,35 @@ namespace FastGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EulerianTrailAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent? host,
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
             _currentVertex = default(TVertex);
         }
 
-        [NotNull, ItemNotNull]
         private List<TEdge> _circuit = new List<TEdge>();
 
         /// <summary>
         /// Circuit.
         /// </summary>
-        [NotNull, ItemNotNull]
         public TEdge[] Circuit => _circuit.ToArray();
 
         [Pure]
-        private bool NotInCircuit([NotNull] TEdge edge)
+        private bool NotInCircuit(TEdge edge)
         {
             return !_circuit.Contains(edge)
                    && !_temporaryCircuit.Contains(edge);
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
-        private IEnumerable<TEdge> SelectOutEdgesNotInCircuit([NotNull] TVertex vertex)
+        private IEnumerable<TEdge> SelectOutEdgesNotInCircuit(TVertex vertex)
         {
             return VisitedGraph.OutEdges(vertex).Where(NotInCircuit);
         }
 
         [Pure]
-        private bool TrySelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex, out TEdge edge)
+        private bool TrySelectSingleOutEdgeNotInCircuit(TVertex vertex, [NotNullWhen(true)] out TEdge? edge)
         {
             IEnumerable<TEdge> edgesNotInCircuit = SelectOutEdgesNotInCircuit(vertex);
             using (IEnumerator<TEdge> enumerator = edgesNotInCircuit.GetEnumerator())
@@ -94,43 +88,35 @@ namespace FastGraph.Algorithms
         }
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when an edge is added to the circuit.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> CircuitEdge;
+        public event EdgeAction<TVertex, TEdge>? CircuitEdge;
 
-        private void OnCircuitEdge([NotNull] TEdge edge)
+        private void OnCircuitEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             CircuitEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when an edge is visited.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> VisitEdge;
+        public event EdgeAction<TVertex, TEdge>? VisitEdge;
 
-        private void OnVisitEdge([NotNull] TEdge edge)
+        private void OnVisitEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             VisitEdge?.Invoke(edge);
         }
 
-        private bool Search([NotNull] TVertex vertex)
+        private bool Search(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             foreach (TEdge edge in SelectOutEdgesNotInCircuit(vertex))
             {
                 OnTreeEdge(edge);
@@ -140,7 +126,7 @@ namespace FastGraph.Algorithms
                 _temporaryCircuit.Add(edge);
 
                 // edge.Target should be equal to CurrentVertex.
-                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, _currentVertex))
+                if (EqualityComparer<TVertex?>.Default.Equals(edge.Target, _currentVertex))
                     return true;
 
                 // Continue search
@@ -165,8 +151,7 @@ namespace FastGraph.Algorithms
             // Find a vertex that needs to be visited
             foreach (TVertex source in _circuit.Select(edge => edge.Source))
             {
-                bool edgeFound = TrySelectSingleOutEdgeNotInCircuit(source, out TEdge foundEdge);
-                if (!edgeFound)
+                if (!TrySelectSingleOutEdgeNotInCircuit(source, out TEdge? foundEdge))
                     continue;
 
                 OnVisitEdge(foundEdge);
@@ -187,7 +172,7 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static int ComputeEulerianPathCount(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            IVertexAndEdgeListGraph<TVertex, TEdge> graph)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -217,7 +202,7 @@ namespace FastGraph.Algorithms
             for (i = 0; i < _circuit.Count; ++i)
             {
                 TEdge edge = _circuit[i];
-                if (EqualityComparer<TVertex>.Default.Equals(edge.Source, _currentVertex))
+                if (EqualityComparer<TVertex?>.Default.Equals(edge.Source, _currentVertex))
                     break;
                 newCircuit.Add(edge);
             }
@@ -228,7 +213,7 @@ namespace FastGraph.Algorithms
                 TEdge edge = _temporaryCircuit[j];
                 newCircuit.Add(edge);
                 OnCircuitEdge(edge);
-                if (EqualityComparer<TVertex>.Default.Equals(edge.Target, _currentVertex))
+                if (EqualityComparer<TVertex?>.Default.Equals(edge.Target, _currentVertex))
                     break;
             }
             _temporaryCircuit.Clear();
@@ -258,7 +243,7 @@ namespace FastGraph.Algorithms
             if (VisitedGraph.VertexCount == 0)
                 return;
 
-            if (!TryGetRootVertex(out TVertex root))
+            if (!TryGetRootVertex(out TVertex? root))
             {
                 root = VisitedGraph.Vertices.First();
             }
@@ -282,11 +267,8 @@ namespace FastGraph.Algorithms
         #endregion
 
         [Pure]
-        private bool HasEdgeToward([NotNull] TVertex u, [NotNull] TVertex v)
+        private bool HasEdgeToward(TVertex u, TVertex v)
         {
-            Debug.Assert(u != null);
-            Debug.Assert(v != null);
-
             return VisitedGraph
                 .OutEdges(v)
                 .Any(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, u));
@@ -294,9 +276,9 @@ namespace FastGraph.Algorithms
 
         [Pure]
         private bool FindAdjacentOddVertex(
-            [NotNull] TVertex u,
-            [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
+            TVertex u,
+            ICollection<TVertex> oddVertices,
+            [InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
             out bool foundAdjacent)
         {
             bool found = false;
@@ -313,7 +295,7 @@ namespace FastGraph.Algorithms
                     // Add temporary edge
                     AddTemporaryEdge(u, v, oddVertices, edgeFactory);
 
-                    // Set u to null
+                    // Set u to default
                     found = true;
                     break;
                 }
@@ -332,8 +314,7 @@ namespace FastGraph.Algorithms
         /// Number of odd vertices is not even, failed to add temporary edge to <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>,
         /// or failed to compute eulerian trail.
         /// </exception>
-        [NotNull, ItemNotNull]
-        public TEdge[] AddTemporaryEdges([NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+        public TEdge[] AddTemporaryEdges([InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             if (edgeFactory is null)
                 throw new ArgumentNullException(nameof(edgeFactory));
@@ -363,7 +344,7 @@ namespace FastGraph.Algorithms
                     // Add to temporary edges
                     AddTemporaryEdge(u, v, oddVertices, edgeFactory);
 
-                    // Set u to null
+                    // Set u to default
                     found = true;
                 }
 
@@ -378,10 +359,10 @@ namespace FastGraph.Algorithms
         }
 
         private void AddTemporaryEdge(
-            [NotNull] TVertex u,
-            [NotNull] TVertex v,
-            [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+            TVertex u,
+            TVertex v,
+            ICollection<TVertex> oddVertices,
+            [InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             TEdge tempEdge = edgeFactory(u, v);
             if (!VisitedGraph.AddEdge(tempEdge))
@@ -416,7 +397,6 @@ namespace FastGraph.Algorithms
         /// of trails spans the entire set of edges.
         /// </remarks>
         /// <returns>Eulerian trail set.</returns>
-        [NotNull, ItemNotNull]
         public IEnumerable<ICollection<TEdge>> Trails()
         {
             var trail = new List<TEdge>();
@@ -470,8 +450,7 @@ namespace FastGraph.Algorithms
         /// <returns>Eulerian trail set, all starting at <paramref name="startingVertex"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="startingVertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Eulerian trail not computed yet.</exception>
-        [NotNull, ItemNotNull]
-        public IEnumerable<ICollection<TEdge>> Trails([NotNull] TVertex startingVertex)
+        public IEnumerable<ICollection<TEdge>> Trails(TVertex startingVertex)
         {
             if (startingVertex == null)
                 throw new ArgumentNullException(nameof(startingVertex));
@@ -480,7 +459,7 @@ namespace FastGraph.Algorithms
         }
 
         [Pure]
-        private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
+        private int FindFirstEdgeInCircuit(TVertex startingVertex)
         {
             int i;
             for (i = 0; i < _circuit.Count; ++i)
@@ -498,8 +477,7 @@ namespace FastGraph.Algorithms
             return i;
         }
 
-        [NotNull, ItemNotNull]
-        private IEnumerable<ICollection<TEdge>> TrailsInternal([NotNull] TVertex startingVertex)
+        private IEnumerable<ICollection<TEdge>> TrailsInternal(TVertex startingVertex)
         {
             int index = FindFirstEdgeInCircuit(startingVertex);
 
@@ -524,7 +502,7 @@ namespace FastGraph.Algorithms
 
                         // Start new trail
                         // Take the shortest path from the start vertex to the target vertex
-                        if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge> path))
+                        if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge>? path))
                             throw new InvalidOperationException();
                         trail = new List<TEdge>(path);
                     }
@@ -546,7 +524,7 @@ namespace FastGraph.Algorithms
 
                         // Start new trail
                         // Take the shortest path from the start vertex to the target vertex
-                        if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge> path))
+                        if (!vis.TryGetPath(edge.Target, out IEnumerable<TEdge>? path))
                             throw new InvalidOperationException();
                         trail = new List<TEdge>(path);
                     }

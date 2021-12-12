@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -5,6 +7,7 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface ITermEdge<out TVertex> : IEdge<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Index of terminal on source vertex to which this edge is attached.

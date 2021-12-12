@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -10,7 +10,7 @@ namespace FastGraph.Tests.Structures
         #region Remove Vertices
 
         protected static void RemoveVertex_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -74,7 +74,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveVertex_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -146,24 +146,28 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveVertex_Throws_Test<TVertex>(
-            [NotNull] IMutableVertexSet<TVertex> graph)
-            where TVertex : class
+            IMutableVertexSet<TVertex> graph)
+            where TVertex : notnull
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertex(null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertex(default));
+#pragma warning restore CS8604
         }
 
         protected static void RemoveVertex_Throws_Clusters_Test<TVertex, TEdge>(
-            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertex(null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertex(default));
+#pragma warning restore CS8604
         }
 
         protected static void RemoveVertexIf_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -217,7 +221,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveVertexIf_Test2(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -264,7 +268,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveVertexIf_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -285,7 +289,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveVertexIf_Clusters_Test2(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge13 = new Edge<int>(1, 3);
@@ -301,20 +305,24 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveVertexIf_Throws_Test<TVertex>(
-            [NotNull] IMutableVertexSet<TVertex> graph)
-            where TVertex : class
+            IMutableVertexSet<TVertex> graph)
+            where TVertex : notnull
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertexIf(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertexIf(default));
+#pragma warning restore CS8625
         }
 
         protected static void RemoveVertexIf_Throws_Clusters_Test<TVertex, TEdge>(
-            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertexIf(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveVertexIf(default));
+#pragma warning restore CS8625
         }
 
         #endregion

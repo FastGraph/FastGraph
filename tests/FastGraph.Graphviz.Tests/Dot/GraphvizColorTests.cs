@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -85,7 +86,7 @@ namespace FastGraph.Graphviz.Tests
             Assert.IsTrue(color1 != color6);
             Assert.AreNotEqual(color1, color6);
 
-            Assert.AreNotEqual(color1, null);
+            Assert.AreNotEqual(color1, default);
             Assert.AreNotEqual(color1, new TestClass());
         }
 

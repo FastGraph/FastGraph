@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Predicates;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -52,6 +53,7 @@ namespace FastGraph.Tests.Predicates
                 TGraph expectedGraph,
                 bool isDirected = true,
                 bool parallelEdges = true)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
                 where TGraph : IEdgeListGraph<TVertex, TEdge>
             {
@@ -71,47 +73,49 @@ namespace FastGraph.Tests.Predicates
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
                     _ => true,
-                    null));
+                    default));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
-                    null,
+                    default,
                     _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    null,
+                    default,
                     _ => true,
                     _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                     new AdjacencyGraph<int, Edge<int>>(),
-                    null,
-                    null));
+                    default,
+                    default));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    null,
+                    default,
                     _ => true,
-                    null));
+                    default));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    null,
-                    null,
+                    default,
+                    default,
                     _ => true));
 
             Assert.Throws<ArgumentNullException>(
                 () => new FilteredEdgeListGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    null,
-                    null,
-                    null));
+                    default,
+                    default,
+                    default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -11,6 +10,7 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class TransitiveClosureAlgorithm<TVertex, TEdge> : AlgorithmBase<BidirectionalGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransitiveClosureAlgorithm{TVertex,TEdge}"/> class.
@@ -20,8 +20,8 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public TransitiveClosureAlgorithm(
-            [NotNull] BidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TVertex, TVertex, TEdge> edgeFactory)
+            BidirectionalGraph<TVertex, TEdge> visitedGraph,
+            Func<TVertex, TVertex, TEdge> edgeFactory)
             : base(visitedGraph)
         {
             TransitiveClosure = new BidirectionalGraph<TVertex, TEdge>();
@@ -33,7 +33,6 @@ namespace FastGraph.Algorithms
         /// </summary>
         public BidirectionalGraph<TVertex, TEdge> TransitiveClosure { get; }
 
-        [NotNull]
         private readonly Func<TVertex, TVertex, TEdge> _createEdge;
 
         #region AlgorithmBase<TGraph>

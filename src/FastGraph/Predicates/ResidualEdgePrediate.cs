@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Predicates
@@ -10,6 +10,7 @@ namespace FastGraph.Predicates
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class ResidualEdgePredicate<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -17,7 +18,7 @@ namespace FastGraph.Predicates
         /// </summary>
         /// <param name="residualCapacities">Residual capacities per edge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="residualCapacities"/> is <see langword="null"/>.</exception>
-        public ResidualEdgePredicate([NotNull] IDictionary<TEdge, double> residualCapacities)
+        public ResidualEdgePredicate(IDictionary<TEdge, double> residualCapacities)
         {
             ResidualCapacities = residualCapacities ?? throw new ArgumentNullException(nameof(residualCapacities));
         }
@@ -25,7 +26,6 @@ namespace FastGraph.Predicates
         /// <summary>
         /// Residual capacities map.
         /// </summary>
-        [NotNull]
         public IDictionary<TEdge, double> ResidualCapacities { get; }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace FastGraph.Predicates
         /// <returns>True if the edge is residual, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        public bool Test([NotNull] TEdge edge)
+        public bool Test(TEdge edge)
         {
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));

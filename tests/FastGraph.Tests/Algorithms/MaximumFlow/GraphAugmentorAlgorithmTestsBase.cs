@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.MaximumFlow;
@@ -11,7 +12,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
     internal abstract class GraphAugmentorAlgorithmTestsBase
     {
         protected static void CreateAndSetSuperSource_Test<TGraph>(
-            [NotNull] GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)
+            GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>
         {
             bool added = false;
@@ -28,7 +29,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         protected static void CreateAndSetSuperSink_Test<TGraph>(
-            [NotNull] GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)
+            GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>
         {
             bool added = false;
@@ -45,12 +46,12 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         protected static void RunAugmentation_Test<TGraph>(
-            [NotNull, InstantHandle]
+            [InstantHandle]
             Func<
                 IMutableVertexAndEdgeSet<int, Edge<int>>,
                 GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph>
             > createAlgorithm,
-            [CanBeNull, InstantHandle] Action<IMutableVertexAndEdgeSet<int, Edge<int>>> setupGraph = null)
+            [InstantHandle] Action<IMutableVertexAndEdgeSet<int, Edge<int>>>? setupGraph = default)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
@@ -113,12 +114,12 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         protected static void RunAugmentation_Test<TGraph>(
-            [NotNull, InstantHandle]
+            [InstantHandle]
             Func<
                 IMutableBidirectionalGraph<int, Edge<int>>,
                 GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph>
             > createAlgorithm,
-            [CanBeNull, InstantHandle] Action<IMutableBidirectionalGraph<int, Edge<int>>> setupGraph = null)
+            [InstantHandle] Action<IMutableBidirectionalGraph<int, Edge<int>>>? setupGraph = default)
             where TGraph : IMutableBidirectionalGraph<int, Edge<int>>
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
@@ -181,7 +182,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         protected static void RunAugmentation_Throws_Test<TGraph>(
-            [NotNull, InstantHandle] GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)
+            [InstantHandle] GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>
         {
             // Multiple runs without clean

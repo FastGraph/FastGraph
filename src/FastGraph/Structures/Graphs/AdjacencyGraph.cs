@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -27,6 +27,7 @@ namespace FastGraph
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -79,13 +80,11 @@ namespace FastGraph
         /// <summary>
         /// Gets the type of vertices.
         /// </summary>
-        [NotNull]
         public Type VertexType => typeof(TVertex);
 
         /// <summary>
         /// Gets the type of edges.
         /// </summary>
-        [NotNull]
         public Type EdgeType => typeof(TEdge);
 
         #region IGraph<TVertex,TEdge>
@@ -106,7 +105,6 @@ namespace FastGraph
         /// <inheritdoc />
         public int VertexCount => _vertexEdges.Count;
 
-        [NotNull]
         private IVertexEdgeDictionary<TVertex, TEdge> _vertexEdges;
 
         /// <inheritdoc />
@@ -140,7 +138,7 @@ namespace FastGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            return _vertexEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> edges)
+            return _vertexEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge>? edges)
                    && edges.Contains(edge);
         }
 
@@ -154,20 +152,20 @@ namespace FastGraph
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
+            if (TryGetOutEdges(source, out IEnumerable<TEdge>? outEdges))
                 return outEdges.Any(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
             return false;
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (_vertexEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> outEdges)
+            if (_vertexEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge>? outEdges)
                 && outEdges.Count > 0)
             {
                 foreach (TEdge outEdge in outEdges.Where(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target)))
@@ -182,20 +180,20 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public virtual bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        public virtual bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (_vertexEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge>? outEdges))
             {
                 edges = outEdges.Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -215,7 +213,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? outEdges))
                 return outEdges.Count;
             throw new VertexNotFoundException();
         }
@@ -226,24 +224,24 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? outEdges))
                 return outEdges.AsEnumerable();
             throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
-        public virtual bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public virtual bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? outEdges))
             {
                 edges = outEdges.AsEnumerable();
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -253,7 +251,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? outEdges))
                 return outEdges[index];
             throw new VertexNotFoundException();
         }
@@ -292,25 +290,23 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> VertexAdded;
+        public event VertexAction<TVertex>? VertexAdded;
 
         /// <summary>
         /// Called on each added vertex.
         /// </summary>
         /// <param name="vertex">Added vertex.</param>
-        protected virtual void OnVertexAdded([NotNull] TVertex vertex)
+        protected virtual void OnVertexAdded(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             VertexAdded?.Invoke(vertex);
         }
 
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void NotifyVerticesRemoved([NotNull, ItemNotNull] ICollection<TVertex> vertices)
+        private void NotifyVerticesRemoved(ICollection<TVertex> vertices)
         {
-            if (VertexRemoved != null) // Lazily notify
+            if (VertexRemoved != default) // Lazily notify
             {
                 foreach (TVertex vertex in vertices)
                 {
@@ -341,16 +337,14 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> VertexRemoved;
+        public event VertexAction<TVertex>? VertexRemoved;
 
         /// <summary>
         /// Called for each removed vertex.
         /// </summary>
         /// <param name="vertex">Removed vertex.</param>
-        protected virtual void OnVertexRemoved([NotNull] TVertex vertex)
+        protected virtual void OnVertexRemoved(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             VertexRemoved?.Invoke(vertex);
         }
 
@@ -413,10 +407,8 @@ namespace FastGraph
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private bool AddEdgeInternal([NotNull] TEdge edge)
+        private bool AddEdgeInternal(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             if (!AllowParallelEdges && ContainsEdge(edge.Source, edge.Target))
                 return false;
 
@@ -452,26 +444,22 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> EdgeAdded;
+        public event EdgeAction<TVertex, TEdge>? EdgeAdded;
 
         /// <summary>
         /// Called on each added edge.
         /// </summary>
         /// <param name="edge">Added edge.</param>
-        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        protected virtual void OnEdgeAdded(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeAdded?.Invoke(edge);
         }
 
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void RemoveInEdges([NotNull, InstantHandle] Predicate<TVertex> shouldRemove)
+        private void RemoveInEdges([InstantHandle] Predicate<TVertex> shouldRemove)
         {
-            Debug.Assert(shouldRemove != null);
-
             // Run over edges and remove each edge touching the vertices to remove
             foreach (IEdgeList<TVertex, TEdge> outEdges in _vertexEdges.Select(pair => pair.Value))
             {
@@ -503,11 +491,9 @@ namespace FastGraph
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void NotifyEdgesRemoved([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        private void NotifyEdgesRemoved(IEnumerable<TEdge> edges)
         {
-            Debug.Assert(edges != null);
-
-            if (EdgeRemoved != null) // Lazily notify
+            if (EdgeRemoved != default) // Lazily notify
             {
                 // Enumeration is only made on safe enumerable
                 foreach (TEdge edge in edges)
@@ -523,7 +509,7 @@ namespace FastGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (_vertexEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge> outEdges)
+            if (_vertexEdges.TryGetValue(edge.Source, out IEdgeList<TVertex, TEdge>? outEdges)
                 && outEdges.Remove(edge))
             {
                 --EdgeCount;
@@ -537,23 +523,21 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> EdgeRemoved;
+        public event EdgeAction<TVertex, TEdge>? EdgeRemoved;
 
         /// <summary>
         /// Called on each removed edge.
         /// </summary>
         /// <param name="edge">Removed edge.</param>
-        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
+        protected virtual void OnEdgeRemoved(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeRemoved?.Invoke(edge);
         }
 
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private int RemoveEdgesInternal([NotNull] ICollection<TEdge> edgesToRemove)
+        private int RemoveEdgesInternal(ICollection<TEdge> edgesToRemove)
         {
             foreach (TEdge edge in edgesToRemove)
             {
@@ -589,7 +573,7 @@ namespace FastGraph
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? outEdges))
             {
                 var edgesToRemove = new EdgeList<TVertex, TEdge>();
                 edgesToRemove.AddRange(outEdges.Where(edge => predicate(edge)));
@@ -609,7 +593,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
+            if (_vertexEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? outEdges))
             {
                 _vertexEdges[vertex] = new EdgeList<TVertex, TEdge>();
                 EdgeCount -= outEdges.Count;
@@ -624,7 +608,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        public void ClearEdges([NotNull] TVertex vertex)
+        public void ClearEdges(TVertex vertex)
         {
             ClearOutEdges(vertex);
         }
@@ -659,12 +643,11 @@ namespace FastGraph
         #region ICloneable
 
         private AdjacencyGraph(
-            [NotNull] IVertexEdgeDictionary<TVertex, TEdge> vertexEdges,
+            IVertexEdgeDictionary<TVertex, TEdge> vertexEdges,
             int edgeCount,
             int edgeCapacity,
             bool allowParallelEdges)
         {
-            Debug.Assert(vertexEdges != null);
             Debug.Assert(edgeCount >= 0);
 
             _vertexEdges = vertexEdges;
@@ -678,7 +661,6 @@ namespace FastGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
         public AdjacencyGraph<TVertex, TEdge> Clone()
         {
             return new AdjacencyGraph<TVertex, TEdge>(

@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph.Algorithms.RandomWalks
 {
@@ -10,13 +10,13 @@ namespace FastGraph.Algorithms.RandomWalks
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class RoundRobinEdgeChain<TVertex, TEdge> : IEdgeChain<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Dictionary<TVertex, int> _outEdgeIndices = new Dictionary<TVertex, int>();
 
         /// <inheritdoc />
-        public bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
+        public bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
         {
             int outDegree = graph.OutDegree(vertex);
             if (outDegree > 0)
@@ -39,7 +39,7 @@ namespace FastGraph.Algorithms.RandomWalks
         }
 
         /// <inheritdoc />
-        public bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
+        public bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
         {
             TEdge[] edgeArray = edges.ToArray();
             if (edgeArray.Length > 0)

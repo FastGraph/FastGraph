@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Search;
 using FastGraph.Algorithms.Services;
@@ -22,15 +21,14 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class TarjanOfflineLeastCommonAncestorAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [CanBeNull]
-        private SEquatableEdge<TVertex>[] _pairs;
+        private SEquatableEdge<TVertex>[]? _pairs;
 
         /// <summary>
         /// Ancestors of vertices pairs.
         /// </summary>
-        [NotNull]
         public IDictionary<SEquatableEdge<TVertex>, TVertex> Ancestors { get; } =
             new Dictionary<SEquatableEdge<TVertex>, TVertex>();
 
@@ -40,8 +38,8 @@ namespace FastGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TarjanOfflineLeastCommonAncestorAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
+            IVertexListGraph<TVertex, TEdge> visitedGraph)
+            : this(default, visitedGraph)
         {
         }
 
@@ -52,8 +50,8 @@ namespace FastGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TarjanOfflineLeastCommonAncestorAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent? host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -118,10 +116,10 @@ namespace FastGraph.Algorithms
         /// <returns>True if vertex pairs were set, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, pairs:notnull;=> false, pairs:null")]
-        public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>> pairs)
+        public bool TryGetVertexPairs(out IEnumerable<SEquatableEdge<TVertex>>? pairs)
         {
             pairs = _pairs;
-            return pairs != null;
+            return pairs != default;
         }
 
         /// <summary>
@@ -130,7 +128,7 @@ namespace FastGraph.Algorithms
         /// <param name="pairs">Vertices pairs.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pairs"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="pairs"/> is empty or any vertex from pairs is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void SetVertexPairs([NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
+        public void SetVertexPairs(IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
             if (pairs is null)
                 throw new ArgumentNullException(nameof(pairs));
@@ -154,7 +152,7 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pairs"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="pairs"/> is empty or any vertex from pairs is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void Compute([NotNull] TVertex root, [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
+        public void Compute(TVertex root, IEnumerable<SEquatableEdge<TVertex>> pairs)
         {
             SetVertexPairs(pairs);
             Compute(root);

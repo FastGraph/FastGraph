@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -7,11 +7,11 @@ namespace FastGraph.Algorithms
     /// </summary>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public interface IAlgorithm<out TGraph> : IComputation
+        where TGraph : notnull
     {
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-        [NotNull]
         TGraph VisitedGraph { get; }
     }
 }

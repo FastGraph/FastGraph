@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.Condensation
 {
@@ -11,6 +8,7 @@ namespace FastGraph.Algorithms.Condensation
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class EdgeMergeCondensationGraphAlgorithm<TVertex, TEdge> : AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -23,9 +21,9 @@ namespace FastGraph.Algorithms.Condensation
         /// <exception cref="T:System.ArgumentNullException"><paramref name="condensedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         public EdgeMergeCondensationGraphAlgorithm(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate)
+            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph,
+            VertexPredicate<TVertex> vertexPredicate)
             : base(visitedGraph)
         {
             CondensedGraph = condensedGraph ?? throw new ArgumentNullException(nameof(condensedGraph));
@@ -35,13 +33,11 @@ namespace FastGraph.Algorithms.Condensation
         /// <summary>
         /// Condensed graph.
         /// </summary>
-        [NotNull]
         public IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensedGraph { get; }
 
         /// <summary>
         /// Vertex predicate used to filter the vertices to put in the condensed graph.
         /// </summary>
-        [NotNull]
         public VertexPredicate<TVertex> VertexPredicate { get; }
 
         #region AlgorithmBase<TGraph>
@@ -82,10 +78,8 @@ namespace FastGraph.Algorithms.Condensation
 
         #endregion
 
-        private void MergeVertex([NotNull] TVertex vertex)
+        private void MergeVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             // Get in-edges and out-edges
             var inEdges = new List<MergedEdge<TVertex, TEdge>>(CondensedGraph.InEdges(vertex));
             var outEdges = new List<MergedEdge<TVertex, TEdge>>(CondensedGraph.OutEdges(vertex));

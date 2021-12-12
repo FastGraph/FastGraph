@@ -1,4 +1,5 @@
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.Condensation;
@@ -13,8 +14,9 @@ namespace FastGraph.Tests.Algorithms.Condensation
         #region Test helpers
 
         protected static void CheckVertexCount<TVertex, TEdge>(
-            [NotNull] IVertexSet<TVertex> graph,
-            [NotNull] IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
+            IVertexSet<TVertex> graph,
+            IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             int count = 0;
@@ -24,8 +26,9 @@ namespace FastGraph.Tests.Algorithms.Condensation
         }
 
         protected static void CheckEdgeCount<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, TEdge> graph,
-            [NotNull] IEdgeListGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
+            IEdgeSet<TVertex, TEdge> graph,
+            IEdgeListGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // Check edge count
@@ -38,7 +41,8 @@ namespace FastGraph.Tests.Algorithms.Condensation
         }
 
         protected static void CheckDAG<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
+            IVertexAndEdgeListGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsTrue(condensedGraph.IsDirectedAcyclicGraph());

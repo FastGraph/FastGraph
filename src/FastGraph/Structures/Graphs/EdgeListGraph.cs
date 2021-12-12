@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -24,6 +23,7 @@ namespace FastGraph
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -66,7 +66,6 @@ namespace FastGraph
         public IEnumerable<TVertex> Vertices => GetVertices().AsEnumerable();
 
         [Pure]
-        [NotNull, ItemNotNull]
         private HashSet<TVertex> GetVertices()
         {
             var vertices = new HashSet<TVertex>();
@@ -93,7 +92,6 @@ namespace FastGraph
 
         #region IEdgeSet<TVertex,TEdge>
 
-        [NotNull]
         private EdgeEdgeDictionary<TVertex, TEdge> _edges = new EdgeEdgeDictionary<TVertex, TEdge>();
 
         /// <inheritdoc />
@@ -117,9 +115,6 @@ namespace FastGraph
         [Pure]
         private bool ContainsEdge(TVertex source, TVertex target)
         {
-            Debug.Assert(source != null);
-            Debug.Assert(target != null);
-
             return _edges.Keys
                 .Any(e => IsDirected
                     ? e.SortedVertexEqualityInternal(source, target)
@@ -136,7 +131,7 @@ namespace FastGraph
         /// <param name="edge">The edge to add.</param>
         /// <returns>True if the edge was added, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        public bool AddVerticesAndEdge([NotNull] TEdge edge)
+        public bool AddVerticesAndEdge(TEdge edge)
         {
             return AddEdge(edge);
         }
@@ -149,7 +144,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException">
         /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
         /// </exception>
-        public int AddVerticesAndEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        public int AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
@@ -193,27 +188,23 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> EdgeAdded;
+        public event EdgeAction<TVertex, TEdge>? EdgeAdded;
 
         /// <summary>
         /// Called on each added edge.
         /// </summary>
         /// <param name="edge">Added edge.</param>
-        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        protected virtual void OnEdgeAdded(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeAdded?.Invoke(edge);
         }
 
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void NotifyEdgesRemoved([NotNull, ItemNotNull] ICollection<TEdge> edges)
+        private void NotifyEdgesRemoved(ICollection<TEdge> edges)
         {
-            Debug.Assert(edges != null);
-
-            if (EdgeRemoved != null) // Lazily notify
+            if (EdgeRemoved != default) // Lazily notify
             {
                 foreach (TEdge edge in edges)
                 {
@@ -238,16 +229,14 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> EdgeRemoved;
+        public event EdgeAction<TVertex, TEdge>? EdgeRemoved;
 
         /// <summary>
         /// Called on each removed edge.
         /// </summary>
         /// <param name="edge">Removed edge.</param>
-        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
+        protected virtual void OnEdgeRemoved(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeRemoved?.Invoke(edge);
         }
 
@@ -287,10 +276,8 @@ namespace FastGraph
         private EdgeListGraph(
             bool isDirected,
             bool allowParallelEdges,
-            [NotNull] EdgeEdgeDictionary<TVertex, TEdge> edges)
+            EdgeEdgeDictionary<TVertex, TEdge> edges)
         {
-            Debug.Assert(edges != null);
-
             IsDirected = isDirected;
             AllowParallelEdges = allowParallelEdges;
             _edges = edges;
@@ -301,7 +288,6 @@ namespace FastGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
         public EdgeListGraph<TVertex, TEdge> Clone()
         {
             return new EdgeListGraph<TVertex, TEdge>(

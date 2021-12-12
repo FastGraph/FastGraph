@@ -1,8 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Graphviz.Dot;
 
 namespace FastGraph.Graphviz
@@ -14,20 +13,18 @@ namespace FastGraph.Graphviz
     [Serializable]
 #endif
     public sealed class FormatVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
+        where TVertex : notnull
     {
         /// <summary />
-        internal FormatVertexEventArgs([NotNull] TVertex vertex, [NotNull] GraphvizVertex vertexFormat)
+        internal FormatVertexEventArgs(TVertex vertex, GraphvizVertex vertexFormat)
             : base(vertex)
         {
-            Debug.Assert(vertexFormat != null);
-
             VertexFormat = vertexFormat;
         }
 
         /// <summary>
         /// Vertex format.
         /// </summary>
-        [NotNull]
         public GraphvizVertex VertexFormat { get; }
     }
 }

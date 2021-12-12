@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿#nullable enable
 
 namespace FastGraph.Petri
 {
@@ -13,7 +13,6 @@ namespace FastGraph.Petri
         /// <value>
         /// A <see cref="T:System.String"/> representing the name of the node.
         /// </value>
-        [NotNull]
         string Name { get; }
     }
 }

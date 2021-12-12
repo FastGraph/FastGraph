@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -20,8 +19,9 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         #region Test helpers
 
         private static void RunDijkstraAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+            IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>(graph.EdgeCount);
@@ -34,17 +34,17 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors![vertex]);
             };
 
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors![vertex]);
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors![vertex]);
             };
 
             var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
@@ -58,14 +58,15 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         }
 
         private static void Verify<TVertex, TEdge>(
-            [NotNull] DijkstraShortestPathAlgorithm<TVertex, TEdge> algorithm,
-            [NotNull] VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            DijkstraShortestPathAlgorithm<TVertex, TEdge> algorithm,
+            VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // Verify the result
             foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
             {
-                if (!predecessors.VerticesPredecessors.TryGetValue(vertex, out TEdge predecessor))
+                if (!predecessors.VerticesPredecessors.TryGetValue(vertex, out TEdge? predecessor))
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;
@@ -90,7 +91,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm = new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmProperties(algorithm, graph, Weights, DistanceRelaxers.CriticalDistance);
 
-            algorithm = new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, DistanceRelaxers.CriticalDistance);
+            algorithm = new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmProperties(algorithm, graph, Weights, DistanceRelaxers.CriticalDistance);
 
             #region Local function
@@ -98,8 +99,9 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 DijkstraShortestPathAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g,
-                Func<TEdge, double> eWeights = null,
-                IDistanceRelaxer relaxer = null)
+                Func<TEdge, double>? eWeights = default,
+                IDistanceRelaxer? relaxer = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -127,42 +129,44 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             Func<Edge<int>, double> Weights = _ => 1.0;
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, Weights));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights, DistanceRelaxers.CriticalDistance));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, Weights, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, null, DistanceRelaxers.CriticalDistance));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, DistanceRelaxers.CriticalDistance));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, Weights, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, DistanceRelaxers.CriticalDistance));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, null, DistanceRelaxers.CriticalDistance));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, graph, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, null, DistanceRelaxers.CriticalDistance));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, graph, null, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new DijkstraShortestPathAlgorithm<int, Edge<int>>(default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -419,13 +423,13 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             using (vis.Attach(algorithm))
                 algorithm.Compute(1);
 
-            Assert.IsTrue(vis.TryGetPath(2, out IEnumerable<Edge<int>> path));
-            Edge<int>[] pathArray = path.ToArray();
+            Assert.IsTrue(vis.TryGetPath(2, out IEnumerable<Edge<int>>? path));
+            Edge<int>[] pathArray = path!.ToArray();
             Assert.AreEqual(1, pathArray.Length);
             Assert.AreEqual(e12, pathArray[0]);
 
             Assert.IsTrue(vis.TryGetPath(3, out path));
-            pathArray = path.ToArray();
+            pathArray = path!.ToArray();
             Assert.AreEqual(2, pathArray.Length);
             Assert.AreEqual(e12, pathArray[0]);
             Assert.AreEqual(e23, pathArray[1]);
@@ -468,13 +472,13 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             using (vis.Attach(algorithm))
                 algorithm.Compute(1);
 
-            Assert.IsTrue(vis.TryGetPath(2, out IEnumerable<Edge<int>> path));
-            Edge<int>[] pathArray = path.ToArray();
+            Assert.IsTrue(vis.TryGetPath(2, out IEnumerable<Edge<int>>? path));
+            Edge<int>[] pathArray = path!.ToArray();
             Assert.AreEqual(1, pathArray.Length);
             Assert.AreEqual(e12, pathArray[0]);
 
             Assert.IsTrue(vis.TryGetPath(3, out path));
-            pathArray = path.ToArray();
+            pathArray = path!.ToArray();
             Assert.AreEqual(1, pathArray.Length);
             Assert.AreEqual(e13, pathArray[0]);
         }
@@ -485,10 +489,10 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         {
             Assert.DoesNotThrow(() =>
             {
-                AdjacencyGraph<string, Edge<string>> graph = CreateGraph(out Dictionary<Edge<string>, double> edgeCosts);
+                AdjacencyGraph<string, Edge<string>> graph = CreateGraph(out Dictionary<Edge<string>, double>? edgeCosts);
 
                 // Run Dijkstra on this graph
-                var dijkstra = new DijkstraShortestPathAlgorithm<string, Edge<string>>(graph, e => edgeCosts[e]);
+                var dijkstra = new DijkstraShortestPathAlgorithm<string, Edge<string>>(graph, e => edgeCosts![e]);
 
                 // Attach a Vertex Predecessor Recorder Observer to give us the paths
                 var predecessorObserver = new VertexPredecessorRecorderObserver<string, Edge<string>>();
@@ -507,7 +511,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 {
                     double distance = AlgorithmExtensions.ComputePredecessorCost(
                         predecessorObserver.VerticesPredecessors,
-                        edgeCosts,
+                        edgeCosts!,
                         vertex);
                     Console.WriteLine($"A -> {vertex}: {distance}");
                 }
@@ -515,7 +519,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             #region Local function
 
-            AdjacencyGraph<string, Edge<string>> CreateGraph(out Dictionary<Edge<string>, double> costs)
+            AdjacencyGraph<string, Edge<string>> CreateGraph(out Dictionary<Edge<string>, double>? costs)
             {
                 var g = new AdjacencyGraph<string, Edge<string>>(true);
 
@@ -618,9 +622,9 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         }
 
         [Pure]
-        [NotNull]
         public static DijkstraShortestPathAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -630,7 +634,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             var algorithm = new DijkstraShortestPathAlgorithm<T, Edge<T>>(graph, Weights);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

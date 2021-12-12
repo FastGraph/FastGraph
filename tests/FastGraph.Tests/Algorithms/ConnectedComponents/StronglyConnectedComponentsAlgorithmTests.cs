@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.ConnectedComponents;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -15,7 +14,8 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
     {
         #region Test helpers
 
-        public void RunStronglyConnectedComponentsAndCheck<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+        public void RunStronglyConnectedComponentsAndCheck<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
@@ -62,8 +62,8 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             void AssertStepsProperties()
             {
                 Assert.GreaterOrEqual(algorithm.Steps, 0);
-                Assert.AreEqual(algorithm.Steps, algorithm.VerticesPerStep.Count);
-                Assert.AreEqual(algorithm.Steps, algorithm.ComponentsPerStep.Count);
+                Assert.AreEqual(algorithm.Steps, algorithm.VerticesPerStep!.Count);
+                Assert.AreEqual(algorithm.Steps, algorithm.ComponentsPerStep!.Count);
             }
 
             #endregion
@@ -82,7 +82,7 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             algorithm = new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph, components);
             AssertAlgorithmProperties(algorithm, graph);
 
-            algorithm = new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null, graph, components);
+            algorithm = new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, components);
             AssertAlgorithmProperties(algorithm, graph);
 
             #region Local function
@@ -90,6 +90,7 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 StronglyConnectedComponentsAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -115,22 +116,24 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph, null));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null, components));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, components));
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null, null));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null, graph, null));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null, null, components));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components));
             Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(null, null, null));
+                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

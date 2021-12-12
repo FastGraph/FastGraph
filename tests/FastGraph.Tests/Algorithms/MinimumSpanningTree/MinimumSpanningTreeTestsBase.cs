@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using System.Xml;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -21,7 +20,6 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
         #region Test helpers
 
         [Pure]
-        [NotNull]
         protected static UndirectedGraph<string, TaggedEdge<string, double>> GetUndirectedCompleteGraph(int vertex)
         {
             var random = new Random();
@@ -50,7 +48,8 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             return graph;
         }
 
-        private static double CompareRoot<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        private static double CompareRoot<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -69,11 +68,12 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
         }
 
         private static void AssertSpanningTree<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> tree)
+            IUndirectedGraph<TVertex, TEdge> graph,
+            IEnumerable<TEdge> tree)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            var spanned = new Dictionary<TVertex, TEdge>();
+            var spanned = new Dictionary<TVertex, TEdge?>();
             foreach (TEdge edge in tree)
             {
                 spanned[edge.Source] = spanned[edge.Target] = default;
@@ -90,8 +90,9 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
         }
 
         private static void AssertMinimumSpanningTree<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] IMinimumSpanningTreeAlgorithm<TVertex, TEdge> algorithm)
+            IUndirectedGraph<TVertex, TEdge> graph,
+            IMinimumSpanningTreeAlgorithm<TVertex, TEdge> algorithm)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var edgeRecorder = new EdgeRecorderObserver<TVertex, TEdge>();
@@ -101,7 +102,8 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             AssertSpanningTree(graph, edgeRecorder.Edges);
         }
 
-        protected static void PrimSpanningTree<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph, [NotNull] Func<TEdge, double> edgeWeights)
+        protected static void PrimSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph, Func<TEdge, double> edgeWeights)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -112,7 +114,8 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             AssertMinimumSpanningTree(graph, prim);
         }
 
-        protected static void Prim<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        protected static void Prim<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -124,6 +127,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
         }
 
         protected static void KruskalSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph, Func<TEdge, double> edgeWeights)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -134,7 +138,8 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             AssertMinimumSpanningTree(graph, kruskal);
         }
 
-        protected static void Kruskal<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        protected static void Kruskal<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -165,7 +170,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
         {
             int[] vertices = { 1, 2, 3, 4 };
             var graph = vertices.ToDelegateUndirectedGraph(
-                (int vertex, out IEnumerable<EquatableEdge<int>> adjacentEdges) =>
+                (int vertex, out IEnumerable<EquatableEdge<int>>? adjacentEdges) =>
                 {
                     switch (vertex)
                     {
@@ -182,11 +187,11 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
                             adjacentEdges = new[] { new EquatableEdge<int>(1, 4), new EquatableEdge<int>(3, 4) };
                             break;
                         default:
-                            adjacentEdges = null;
+                            adjacentEdges = default;
                             break;
                     }
 
-                    return adjacentEdges != null;
+                    return adjacentEdges != default;
                 });
 
             double cost = CompareRoot(graph);
@@ -204,17 +209,17 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
                     "edge",
                     "",
                     _ => new UndirectedGraph<string, TaggedEdge<string, double>>(),
-                    reader => reader.GetAttribute("id"),
+                    reader => reader.GetAttribute("id")!,
                     reader => new TaggedEdge<string, double>(
                         reader.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
                         reader.GetAttribute("target") ?? throw new AssertionException("Must have target attribute"),
                         int.Parse(reader.GetAttribute("weight") ?? throw new AssertionException("Must have weight attribute"))));
 
-            TaggedEdge<string, double>[] prim = undirectedGraph.MinimumSpanningTreePrim(e => e.Tag).ToArray();
-            double primCost = prim.Sum(e => e.Tag);
+            TaggedEdge<string, double>[] prim = undirectedGraph.MinimumSpanningTreePrim<string, TaggedEdge<string, double>>(e => e.Tag).ToArray<TaggedEdge<string, double>>();
+            double primCost = prim.Sum<TaggedEdge<string, double>>(e => e.Tag);
 
-            TaggedEdge<string, double>[] kruskal = undirectedGraph.MinimumSpanningTreeKruskal(e => e.Tag).ToArray();
-            double kruskalCost = kruskal.Sum(e => e.Tag);
+            TaggedEdge<string, double>[] kruskal = undirectedGraph.MinimumSpanningTreeKruskal<string, TaggedEdge<string, double>>(e => e.Tag).ToArray<TaggedEdge<string, double>>();
+            double kruskalCost = kruskal.Sum<TaggedEdge<string, double>>(e => e.Tag);
 
             Assert.AreEqual(63, primCost);
             Assert.AreEqual(primCost, kruskalCost);

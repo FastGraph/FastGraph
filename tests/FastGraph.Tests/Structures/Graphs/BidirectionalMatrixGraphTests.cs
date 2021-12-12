@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -68,7 +68,9 @@ namespace FastGraph.Tests.Structures
             var graph = new BidirectionalMatrixGraph<Edge<int>>(2);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             graph.AddEdge(new Edge<int>(0, 1));
             Assert.Throws<ParallelEdgeNotAllowedException>(() => graph.AddEdge(new Edge<int>(0, 1)));

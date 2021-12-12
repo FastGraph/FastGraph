@@ -1,5 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph.Algorithms.RandomWalks
 {
@@ -9,10 +10,11 @@ namespace FastGraph.Algorithms.RandomWalks
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class NormalizedMarkovEdgeChain<TVertex, TEdge> : MarkovEdgeChainBase<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <inheritdoc />
-        public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor)
+        public override bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
         {
             int outDegree = graph.OutDegree(vertex);
             if (outDegree > 0)
@@ -27,7 +29,7 @@ namespace FastGraph.Algorithms.RandomWalks
         }
 
         /// <inheritdoc />
-        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor)
+        public override bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
         {
             TEdge[] edgeArray = edges.ToArray();
             if (edgeArray.Length > 0)

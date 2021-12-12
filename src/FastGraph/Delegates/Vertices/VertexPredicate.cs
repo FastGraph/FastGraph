@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -8,5 +8,6 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <param name="vertex">Vertex to check condition.</param>
     /// <returns>True if the <paramref name="vertex"/> matches the predicate, false otherwise.</returns>
-    public delegate bool VertexPredicate<in TVertex>([NotNull] TVertex vertex);
+    public delegate bool VertexPredicate<in TVertex>(TVertex vertex)
+        where TVertex : notnull;
 }

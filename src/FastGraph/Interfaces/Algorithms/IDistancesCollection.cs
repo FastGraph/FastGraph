@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms
@@ -8,6 +9,7 @@ namespace FastGraph.Algorithms
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IDistancesCollection<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Tries to get the distance associated to the given <paramref name="vertex"/>.
@@ -17,7 +19,7 @@ namespace FastGraph.Algorithms
         /// <returns>True if the distance was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool TryGetDistance([NotNull] TVertex vertex, out double distance);
+        bool TryGetDistance(TVertex vertex, out double distance);
 
         /// <summary>
         /// Gets the distance associated to the given <paramref name="vertex"/>.
@@ -27,14 +29,13 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> has no recorded distance.</exception>
         [Pure]
-        double GetDistance([NotNull] TVertex vertex);
+        double GetDistance(TVertex vertex);
 
         /// <summary>
         /// Gets the distances for all vertices currently known.
         /// </summary>
         /// <returns>The <see cref="T:System.Collections.Generic.KeyValuePair{Vertex,Distance}"/> for the known vertices.</returns>
         [Pure]
-        [NotNull]
         IEnumerable<KeyValuePair<TVertex, double>> GetDistances();
     }
 }

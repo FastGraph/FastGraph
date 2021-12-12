@@ -1,11 +1,10 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 #endif
-using System.Collections.Generic;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
-using JetBrains.Annotations;
 
 namespace FastGraph.Collections
 {
@@ -20,6 +19,7 @@ namespace FastGraph.Collections
     public sealed class VertexEdgeDictionary<TVertex, TEdge>
         : Dictionary<TVertex, IEdgeList<TVertex, TEdge>>
         , IVertexEdgeDictionary<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -52,7 +52,6 @@ namespace FastGraph.Collections
         /// Clones this vertex/edges dictionary.
         /// </summary>
         /// <returns>Cloned dictionary.</returns>
-        [NotNull]
         public VertexEdgeDictionary<TVertex, TEdge> Clone()
         {
             var clone = new VertexEdgeDictionary<TVertex, TEdge>(Count);

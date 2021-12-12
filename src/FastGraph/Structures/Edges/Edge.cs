@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -14,6 +14,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class Edge<TVertex> : IEdge<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Edge{TVertex}"/> class.
@@ -22,7 +23,7 @@ namespace FastGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public Edge([NotNull] TVertex source, [NotNull] TVertex target)
+        public Edge(TVertex source, TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

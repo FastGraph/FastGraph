@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -18,8 +17,9 @@ namespace FastGraph.Tests.Algorithms.Condensation
         #region Test helpers
 
         private static void RunEdgesCondensationAndCheck<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] VertexPredicate<TVertex> predicate)
+            IBidirectionalGraph<TVertex, TEdge> graph,
+            VertexPredicate<TVertex> predicate)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph =
@@ -58,6 +58,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
                 IBidirectionalGraph<TVertex, TEdge> g,
                 IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> cg,
                 VertexPredicate<TVertex> predicate)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -77,25 +78,26 @@ namespace FastGraph.Tests.Algorithms.Condensation
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, null));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, null, vertexPredicate));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, default, vertexPredicate));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, condensedGraph, vertexPredicate));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, condensedGraph, vertexPredicate));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, condensedGraph, null));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, condensedGraph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, null, vertexPredicate));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, default, vertexPredicate));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, null, null));
+                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> EdgeCondensationAllVerticesTestCases
         {
             [UsedImplicitly]
@@ -140,7 +142,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
         }
 
         [TestCaseSource(nameof(EdgeCondensationAllVerticesTestCases))]
-        public void EdgeCondensationAllVertices([NotNull] IBidirectionalGraph<int, Edge<int>> graph)
+        public void EdgeCondensationAllVertices(IBidirectionalGraph<int, Edge<int>> graph)
         {
             IMutableBidirectionalGraph<int, MergedEdge<int, Edge<int>>> condensedGraph =
                 graph.CondensateEdges(_ => true);

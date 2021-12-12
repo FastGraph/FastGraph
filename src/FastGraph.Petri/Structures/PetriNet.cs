@@ -1,9 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 #endif
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -32,10 +30,8 @@ namespace FastGraph.Petri
         /// Copy constructor.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        private PetriNet([NotNull] PetriNet<TToken> other)
+        private PetriNet(PetriNet<TToken> other)
         {
-            Debug.Assert(other != null);
-
             _places.AddRange(other._places);
             _transitions.AddRange(other._transitions);
             _arcs.AddRange(other._arcs);
@@ -46,25 +42,21 @@ namespace FastGraph.Petri
 
         #region IPetriNet<TToken>
 
-        [NotNull, ItemNotNull]
         private readonly List<IPlace<TToken>> _places = new List<IPlace<TToken>>();
 
         /// <inheritdoc />
         public IEnumerable<IPlace<TToken>> Places => _places.AsEnumerable();
 
-        [NotNull, ItemNotNull]
         private readonly List<ITransition<TToken>> _transitions = new List<ITransition<TToken>>();
 
         /// <inheritdoc />
         public IEnumerable<ITransition<TToken>> Transitions => _transitions.AsEnumerable();
 
-        [NotNull, ItemNotNull]
         private readonly List<IArc<TToken>> _arcs = new List<IArc<TToken>>();
 
         /// <inheritdoc />
         public IEnumerable<IArc<TToken>> Arcs => _arcs.AsEnumerable();
 
-        [NotNull]
         private readonly PetriGraph<TToken> _graph = new PetriGraph<TToken>();
 
         /// <inheritdoc />
@@ -118,7 +110,6 @@ namespace FastGraph.Petri
         /// Clones this <see cref="PetriNet{TToken}"/>.
         /// </summary>
         [Pure]
-        [NotNull]
         public PetriNet<TToken> Clone()
         {
             return new PetriNet<TToken>(this);

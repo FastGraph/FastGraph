@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.Search;
@@ -17,8 +16,9 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph,
+            IBidirectionalGraph<TVertex, TEdge> graph,
             int maxDepth = int.MaxValue)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var discoverTimes = new Dictionary<TVertex, int>();
@@ -134,7 +134,7 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
-            algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors);
+            algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
             algorithm.MaxDepth = 12;
@@ -148,9 +148,10 @@ namespace FastGraph.Tests.Algorithms.Search
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge> algo,
                 IBidirectionalGraph<TVertex, TEdge> g,
-                IDictionary<TVertex, GraphColor> vColors = null,
+                IDictionary<TVertex, GraphColor>? vColors = default,
                 int maxDepth = int.MaxValue,
                 bool processAllComponents = false)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -173,22 +174,24 @@ namespace FastGraph.Tests.Algorithms.Search
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var verticesColors = new Dictionary<int, GraphColor>();
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, verticesColors));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
@@ -325,9 +328,9 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         [Pure]
-        [NotNull]
         public static BidirectionalDepthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new BidirectionalGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -336,7 +339,7 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new BidirectionalDepthFirstSearchAlgorithm<T, Edge<T>>(graph);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

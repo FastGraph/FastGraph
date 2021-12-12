@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
 
@@ -15,9 +14,10 @@ namespace FastGraph.Algorithms.ConnectedComponents
     public sealed class IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeSet<TVertex, TEdge>>
         , IDisposable
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        private ForestDisjointSet<TVertex> _sets;
+        private ForestDisjointSet<TVertex>? _sets;
 
         private bool _hooked;
 
@@ -27,8 +27,8 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IncrementalConnectedComponentsAlgorithm(
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
+            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            : this(default, visitedGraph)
         {
         }
 
@@ -39,8 +39,8 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IncrementalConnectedComponentsAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent? host,
+            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -92,7 +92,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
             }
         }
 
-        private Dictionary<TVertex, int> _components;
+        private Dictionary<TVertex, int>? _components;
 
         /// <summary>
         /// Gets a copy of the connected components. Key is the number of components,
@@ -127,22 +127,22 @@ namespace FastGraph.Algorithms.ConnectedComponents
             return new KeyValuePair<int, IDictionary<TVertex, int>>(_sets.SetCount, _components);
         }
 
-        private void OnVertexAdded([NotNull] TVertex vertex)
+        private void OnVertexAdded(TVertex vertex)
         {
-            _sets.MakeSet(vertex);
+            _sets!.MakeSet(vertex);
         }
 
-        private void OnEdgeAdded([NotNull] TEdge edge)
+        private void OnEdgeAdded(TEdge edge)
         {
-            _sets.Union(edge.Source, edge.Target);
+            _sets!.Union(edge.Source, edge.Target);
         }
 
-        private static void OnVertexRemoved([NotNull] TVertex vertex)
+        private static void OnVertexRemoved(TVertex vertex)
         {
             throw new InvalidOperationException("Vertex removal is not supported for incremental connected components.");
         }
 
-        private static void OnEdgeRemoved([NotNull] TEdge edge)
+        private static void OnEdgeRemoved(TEdge edge)
         {
             throw new InvalidOperationException("Edge removal is not supported for incremental connected components.");
         }

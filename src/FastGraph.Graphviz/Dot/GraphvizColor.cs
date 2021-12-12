@@ -1,7 +1,7 @@
-﻿using System;
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 #endif
 
 namespace FastGraph.Graphviz.Dot
@@ -81,7 +81,7 @@ namespace FastGraph.Graphviz.Dot
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is GraphvizColor color)
                 return Equals(color);
@@ -99,10 +99,12 @@ namespace FastGraph.Graphviz.Dot
 
         private GraphvizColor(SerializationInfo info, StreamingContext context)
             : this(
+#pragma warning disable CS8605 // Unboxing a possibly null value.
                 (byte)info.GetValue("a", typeof(byte)),
                 (byte)info.GetValue("r", typeof(byte)),
                 (byte)info.GetValue("g", typeof(byte)),
                 (byte)info.GetValue("b", typeof(byte)))
+#pragma warning restore CS8605 // Unboxing a possibly null value.
         {
         }
 

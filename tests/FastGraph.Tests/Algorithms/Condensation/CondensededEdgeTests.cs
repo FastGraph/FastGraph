@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Condensation;
 using FastGraph.Tests.Structures;
@@ -56,9 +57,11 @@ namespace FastGraph.Tests.Algorithms.Condensation
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null, graph));
-            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(graph, null));
-            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default, graph));
+            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(graph, default));
+            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -99,7 +102,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             Assert.AreNotEqual(edge1, edge3);
             Assert.AreNotEqual(edge1, edge4);
 
-            Assert.AreNotEqual(edge1, null);
+            Assert.AreNotEqual(edge1, default);
         }
     }
 }

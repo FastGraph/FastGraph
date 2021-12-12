@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -11,8 +11,9 @@ namespace FastGraph.Tests
     internal static class GraphTestHelpers
     {
         public static void AssertVertexCountEqual<TVertex>(
-            [NotNull] this IVertexSet<TVertex> left,
-            [NotNull] IVertexSet<TVertex> right)
+            this IVertexSet<TVertex> left,
+            IVertexSet<TVertex> right)
+            where TVertex : notnull
         {
             Assert.IsNotNull(left);
             Assert.IsNotNull(right);
@@ -20,8 +21,9 @@ namespace FastGraph.Tests
         }
 
         public static void AssertEdgeCountEqual<TVertex, TEdge>(
-            [NotNull] this IEdgeSet<TVertex, TEdge> left,
-            [NotNull] IEdgeSet<TVertex, TEdge> right)
+            this IEdgeSet<TVertex, TEdge> left,
+            IEdgeSet<TVertex, TEdge> right)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsNotNull(left);
@@ -30,15 +32,17 @@ namespace FastGraph.Tests
         }
 
         public static bool InVertexSet<TVertex>(
-            [NotNull] IVertexSet<TVertex> graph,
-            [NotNull] TVertex vertex)
+            IVertexSet<TVertex> graph,
+            TVertex vertex)
+            where TVertex : notnull
         {
             return graph.ContainsVertex(vertex);
         }
 
         public static bool InVertexSet<TVertex, TEdge>(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] TEdge edge)
+            IEdgeListGraph<TVertex, TEdge> graph,
+            TEdge edge)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return InVertexSet(graph, edge.Source)
@@ -48,6 +52,7 @@ namespace FastGraph.Tests
         public static bool InEdgeSet<TVertex, TEdge>(
             IEdgeListGraph<TVertex, TEdge> graph,
             TEdge edge)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return InVertexSet(graph, edge) && graph.ContainsEdge(edge);
@@ -55,9 +60,10 @@ namespace FastGraph.Tests
 
         [Pure]
         public static bool IsDescendant<TValue>(
-            [NotNull] Dictionary<TValue, TValue> parents,
-            [NotNull] TValue u,
-            [NotNull] TValue v)
+            Dictionary<TValue, TValue> parents,
+            TValue u,
+            TValue v)
+            where TValue : notnull
         {
             TValue t;
             TValue current = u;
@@ -75,7 +81,8 @@ namespace FastGraph.Tests
 
         #region Vertices helpers
 
-        public static void AssertNoVertex<TVertex>([NotNull] IVertexSet<TVertex> graph)
+        public static void AssertNoVertex<TVertex>(IVertexSet<TVertex> graph)
+            where TVertex : notnull
         {
             Assert.IsTrue(graph.IsVerticesEmpty);
             Assert.AreEqual(0, graph.VertexCount);
@@ -83,8 +90,9 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasVertices<TVertex>(
-            [NotNull] IVertexSet<TVertex> graph,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+            IVertexSet<TVertex> graph,
+            IEnumerable<TVertex> vertices)
+            where TVertex : notnull
         {
             TVertex[] vertexArray = vertices.ToArray();
             CollectionAssert.IsNotEmpty(vertexArray);
@@ -95,23 +103,26 @@ namespace FastGraph.Tests
         }
 
         public static void AssertNoVertices<TVertex>(
-            [NotNull] IImplicitVertexSet<TVertex> graph,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+            IImplicitVertexSet<TVertex> graph,
+            IEnumerable<TVertex> vertices)
+            where TVertex : notnull
         {
             AssertImplicitHasVertices(graph, vertices, false);
         }
 
         public static void AssertHasVertices<TVertex>(
-            [NotNull] IImplicitVertexSet<TVertex> graph,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+            IImplicitVertexSet<TVertex> graph,
+            IEnumerable<TVertex> vertices)
+            where TVertex : notnull
         {
             AssertImplicitHasVertices(graph, vertices, true);
         }
 
         private static void AssertImplicitHasVertices<TVertex>(
-            [NotNull] IImplicitVertexSet<TVertex> graph,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
+            IImplicitVertexSet<TVertex> graph,
+            IEnumerable<TVertex> vertices,
             bool expectedContains)
+            where TVertex : notnull
         {
             TVertex[] vertexArray = vertices.ToArray();
             CollectionAssert.IsNotEmpty(vertexArray);
@@ -126,7 +137,8 @@ namespace FastGraph.Tests
 
         #region Edges helpers
 
-        public static void AssertNoEdge<TVertex, TEdge>([NotNull] IEdgeSet<TVertex, TEdge> graph)
+        public static void AssertNoEdge<TVertex, TEdge>(IEdgeSet<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsTrue(graph.IsEdgesEmpty);
@@ -135,8 +147,9 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasEdges<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IEdgeSet<TVertex, TEdge> graph,
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TEdge[] edgeArray = edges.ToArray();
@@ -148,8 +161,9 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasEdges<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, SReversedEdge<TVertex, TEdge>> graph,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IEdgeSet<TVertex, SReversedEdge<TVertex, TEdge>> graph,
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             AssertHasEdges(
@@ -158,7 +172,7 @@ namespace FastGraph.Tests
         }
 
         public static void AssertSameReversedEdge(
-            [NotNull] Edge<int> edge,
+            Edge<int> edge,
             SReversedEdge<int, Edge<int>> reversedEdge)
         {
             Assert.AreEqual(new SReversedEdge<int, Edge<int>>(edge), reversedEdge);
@@ -166,8 +180,8 @@ namespace FastGraph.Tests
         }
 
         public static void AssertSameReversedEdges(
-            [NotNull, ItemNotNull] IEnumerable<Edge<int>> edges,
-            [NotNull] IEnumerable<SReversedEdge<int, Edge<int>>> reversedEdges)
+            IEnumerable<Edge<int>> edges,
+            IEnumerable<SReversedEdge<int, Edge<int>>> reversedEdges)
         {
             var edgesArray = edges.ToArray();
             var reversedEdgesArray = reversedEdges.ToArray();
@@ -181,7 +195,8 @@ namespace FastGraph.Tests
         #region Graph helpers
 
         public static void AssertEmptyGraph<TVertex, TEdge>(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+            IEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             AssertNoVertex(graph);
@@ -189,13 +204,15 @@ namespace FastGraph.Tests
         }
 
         public static void AssertEmptyGraph<TVertex>(
-            [NotNull] CompressedSparseRowGraph<TVertex> graph)
+            CompressedSparseRowGraph<TVertex> graph)
+            where TVertex : notnull
         {
             AssertNoVertex(graph);
             AssertNoEdge(graph);
         }
 
-        public static void AssertNoInEdge<TVertex, TEdge>([NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
+        public static void AssertNoInEdge<TVertex, TEdge>(IBidirectionalIncidenceGraph<TVertex, TEdge> graph, TVertex vertex)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsTrue(graph.IsInEdgesEmpty(vertex));
@@ -204,9 +221,10 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasInEdges<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IBidirectionalIncidenceGraph<TVertex, TEdge> graph,
+            TVertex vertex,
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TEdge[] edgeArray = edges.ToArray();
@@ -218,9 +236,10 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasReversedInEdges<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, SReversedEdge<TVertex, TEdge>> graph,
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IBidirectionalIncidenceGraph<TVertex, SReversedEdge<TVertex, TEdge>> graph,
+            TVertex vertex,
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TEdge[] edgeArray = edges.ToArray();
@@ -233,7 +252,8 @@ namespace FastGraph.Tests
                 graph.InEdges(vertex));
         }
 
-        public static void AssertNoOutEdge<TVertex, TEdge>([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
+        public static void AssertNoOutEdge<TVertex, TEdge>(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsTrue(graph.IsOutEdgesEmpty(vertex));
@@ -242,9 +262,10 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasOutEdges<TVertex, TEdge>(
-            [NotNull] IImplicitGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IImplicitGraph<TVertex, TEdge> graph,
+            TVertex vertex,
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TEdge[] edgeArray = edges.ToArray();
@@ -256,9 +277,10 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasReversedOutEdges<TVertex, TEdge>(
-            [NotNull] IImplicitGraph<TVertex, SReversedEdge<TVertex, TEdge>> graph,
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IImplicitGraph<TVertex, SReversedEdge<TVertex, TEdge>> graph,
+            TVertex vertex,
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TEdge[] edgeArray = edges.ToArray();
@@ -273,7 +295,8 @@ namespace FastGraph.Tests
 
 
 
-        public static void AssertNoAdjacentEdge<TVertex, TEdge>([NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
+        public static void AssertNoAdjacentEdge<TVertex, TEdge>(IImplicitUndirectedGraph<TVertex, TEdge> graph, TVertex vertex)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsTrue(graph.IsAdjacentEdgesEmpty(vertex));
@@ -282,10 +305,11 @@ namespace FastGraph.Tests
         }
 
         public static void AssertHasAdjacentEdges<TVertex, TEdge>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges,
+            IImplicitUndirectedGraph<TVertex, TEdge> graph,
+            TVertex vertex,
+            IEnumerable<TEdge> edges,
             int degree = -1)    // If not set => equals the count of edges
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             TEdge[] edgeArray = edges.ToArray();
@@ -301,8 +325,9 @@ namespace FastGraph.Tests
 
 
         public static void AssertEquivalentGraphs<TVertex, TEdge>(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> expected,
-            [NotNull] IEdgeListGraph<TVertex, TEdge> actual)
+            IEdgeListGraph<TVertex, TEdge> expected,
+            IEdgeListGraph<TVertex, TEdge> actual)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.AreEqual(expected.IsDirected, actual.IsDirected);

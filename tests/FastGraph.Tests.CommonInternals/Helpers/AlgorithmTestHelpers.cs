@@ -1,4 +1,5 @@
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 
@@ -12,9 +13,10 @@ namespace FastGraph.Tests.Algorithms
         #region Test helpers
 
         public static void AssertAlgorithmState<TGraph>(
-            [NotNull] AlgorithmBase<TGraph> algorithm,
-            [NotNull] TGraph treatedGraph,
+            AlgorithmBase<TGraph> algorithm,
+            TGraph treatedGraph,
             ComputationState state = ComputationState.NotRunning)
+            where TGraph : notnull
         {
             Assert.IsNotNull(treatedGraph);
             Assert.AreSame(treatedGraph, algorithm.VisitedGraph);

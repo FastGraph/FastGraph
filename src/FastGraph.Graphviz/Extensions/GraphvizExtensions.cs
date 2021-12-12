@@ -1,8 +1,6 @@
-﻿using System;
-using System.Net.Http;
+#nullable enable
+
 #if SUPPORTS_SVG_CONVERSION
-using System.IO;
-using System.Net;
 #endif
 using JetBrains.Annotations;
 
@@ -22,8 +20,8 @@ namespace FastGraph.Graphviz
         /// <returns>Graph serialized in DOT format.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static string ToGraphviz<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
+        public static string ToGraphviz<TVertex, TEdge>(this IEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(graph);
@@ -41,10 +39,10 @@ namespace FastGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static string ToGraphviz<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (initAlgorithm is null)
@@ -73,9 +71,9 @@ namespace FastGraph.Graphviz
         /// <returns>The svg graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         [Obsolete("Conversion via external web service no longer supported.", error: true)]
-        public static string ToSvg<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
+        public static string ToSvg<TVertex, TEdge>(this IEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             throw new NotSupportedException("Conversion via external web service no longer supported.");
@@ -94,11 +92,11 @@ namespace FastGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         [Obsolete("Conversion via external web service no longer supported.", error: true)]
         public static string ToSvg<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             throw new NotSupportedException("Conversion via external web service no longer supported.");
@@ -112,9 +110,8 @@ namespace FastGraph.Graphviz
         /// <returns>The svg graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         [Obsolete("Conversion via external web service no longer supported.", error: true)]
-        public static string ToSvg([NotNull] string dot)
+        public static string ToSvg(string dot)
         {
             throw new NotSupportedException("Conversion via external web service no longer supported.");
         }

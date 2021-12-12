@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -15,17 +16,17 @@ namespace FastGraph.Tests.Structures
             var tag = new TestObject(1);
 
             // Value type
-            CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(1, 2, null), 1, 2, (TestObject)null);
-            CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(2, 1, null), 2, 1, (TestObject)null);
-            CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(1, 1, null), 1, 1, (TestObject)null);
+            CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(1, 2, default), 1, 2, (TestObject?)default);
+            CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(2, 1, default), 2, 1, (TestObject?)default);
+            CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(1, 1, default), 1, 1, (TestObject?)default);
             CheckTaggedEdge(new EquatableTaggedEdge<int, TestObject>(1, 2, tag), 1, 2, tag);
 
             // Reference type
             var v1 = new TestVertex("v1");
             var v2 = new TestVertex("v2");
-            CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v1, v2, null), v1, v2, (TestObject)null);
-            CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v2, v1, null), v2, v1, (TestObject)null);
-            CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v1, v1, null), v1, v1, (TestObject)null);
+            CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v1, v2, default), v1, v2, (TestObject?)default);
+            CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v2, v1, default), v2, v1, (TestObject?)default);
+            CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v1, v1, default), v1, v1, (TestObject?)default);
             CheckTaggedEdge(new EquatableTaggedEdge<TestVertex, TestObject>(v1, v2, tag), v1, v2, tag);
         }
 
@@ -34,9 +35,11 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(null, new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(new TestVertex("v1"), null, null));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(null, null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(default, new TestVertex("v1"), default));
+            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(new TestVertex("v1"), default, default));
+            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -49,9 +52,9 @@ namespace FastGraph.Tests.Structures
             var edge1 = new EquatableTaggedEdge<int, TestObject>(1, 2, tag1);
             var edge2 = new EquatableTaggedEdge<int, TestObject>(1, 2, tag1);
             var edge3 = new EquatableTaggedEdge<int, TestObject>(1, 2, tag2);
-            var edge4 = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
-            var edge5 = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
-            var edge6 = new EquatableTaggedEdge<int, TestObject>(2, 1, null);
+            var edge4 = new EquatableTaggedEdge<int, TestObject>(1, 2, default);
+            var edge5 = new EquatableTaggedEdge<int, TestObject>(1, 2, default);
+            var edge6 = new EquatableTaggedEdge<int, TestObject>(2, 1, default);
 
             Assert.AreEqual(edge1, edge1);
 
@@ -73,19 +76,19 @@ namespace FastGraph.Tests.Structures
             Assert.IsFalse(edge4.Equals(edge6));
             Assert.IsFalse(edge6.Equals(edge4));
 
-            Assert.AreNotEqual(edge1, null);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.AreNotEqual(edge1, default);
+            Assert.IsFalse(edge1.Equals(default));
         }
 
         [Test]
         public void TagChanged()
         {
-            var edge = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
+            var edge = new EquatableTaggedEdge<int, TestObject>(1, 2, default);
 
             int changeCount = 0;
             edge.TagChanged += (_, _) => ++changeCount;
 
-            edge.Tag = null;
+            edge.Tag = default;
             Assert.AreEqual(0, changeCount);
 
             var tag1 = new TestObject(1);
@@ -108,9 +111,9 @@ namespace FastGraph.Tests.Structures
         {
             var tag = new TestObject(1);
 
-            var edge1 = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
-            var edge2 = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
-            var edge3 = new EquatableTaggedEdge<int, TestObject>(2, 1, null);
+            var edge1 = new EquatableTaggedEdge<int, TestObject>(1, 2, default);
+            var edge2 = new EquatableTaggedEdge<int, TestObject>(1, 2, default);
+            var edge3 = new EquatableTaggedEdge<int, TestObject>(2, 1, default);
             var edge4 = new EquatableTaggedEdge<int, TestObject>(1, 2, tag);
 
             Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
@@ -121,9 +124,9 @@ namespace FastGraph.Tests.Structures
         [Test]
         public void ObjectToString()
         {
-            var edge1 = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
+            var edge1 = new EquatableTaggedEdge<int, TestObject>(1, 2, default);
             var edge2 = new EquatableTaggedEdge<int, TestObject>(1, 2, new TestObject(25));
-            var edge3 = new EquatableTaggedEdge<int, TestObject>(2, 1, null);
+            var edge3 = new EquatableTaggedEdge<int, TestObject>(2, 1, default);
 
             Assert.AreEqual("1 -> 2 (no tag)", edge1.ToString());
             Assert.AreEqual("1 -> 2 (25)", edge2.ToString());

@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -67,6 +68,7 @@ namespace FastGraph.Tests.Structures
             void AssertGraphProperties<TVertex>(
                 // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
                 CompressedSparseRowGraph<TVertex> g)
+                where TVertex : notnull
             {
                 Assert.IsTrue(g.IsDirected);
                 Assert.IsFalse(g.AllowParallelEdges);
@@ -79,8 +81,10 @@ namespace FastGraph.Tests.Structures
         public void Construction_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => CompressedSparseRowGraph<int>.FromGraph<Edge<int>>(null));
+                () => CompressedSparseRowGraph<int>.FromGraph<Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         #region Contains Vertex

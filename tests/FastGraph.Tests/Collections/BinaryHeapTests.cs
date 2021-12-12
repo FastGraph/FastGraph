@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Text;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -21,7 +21,8 @@ namespace FastGraph.Tests.Collections
         /// Checks heap invariant values.
         /// </summary>
         private static void AssertInvariants<TPriority, TValue>(
-            [NotNull] BinaryHeap<TPriority, TValue> heap)
+            BinaryHeap<TPriority, TValue> heap)
+            where TPriority : notnull
         {
             Assert.IsTrue(heap.Capacity >= 0, "Capacity test failed.");
             Assert.IsTrue(heap.Count >= 0, "Count test failed.");
@@ -30,17 +31,20 @@ namespace FastGraph.Tests.Collections
         }
 
         private static void AssertHeapSize<TPriority, TValue>(
-            [NotNull] BinaryHeap<TPriority, TValue> heap,
+            BinaryHeap<TPriority, TValue> heap,
             int expectedCount)
+            where TPriority : notnull
         {
             AssertInvariants(heap);
             Assert.AreEqual(expectedCount, heap.Count);
         }
 
         private static void AssertHeapSizes<TPriority, TValue>(
-            [NotNull] BinaryHeap<TPriority, TValue> heap,
+            BinaryHeap<TPriority, TValue> heap,
             int expectedCapacity,
             int expectedCount)
+            where TPriority : notnull
+            where TValue : notnull
         {
             AssertHeapSize(heap, expectedCount);
             Assert.AreEqual(expectedCapacity, heap.Capacity);
@@ -48,7 +52,6 @@ namespace FastGraph.Tests.Collections
 
         // ReSharper disable once InconsistentNaming
         [Pure]
-        [NotNull]
         private static BinaryHeap<int, int> GetHeapFromTopologicalSortOfDCT8()
         {
             var heap = new BinaryHeap<int, int>(20)
@@ -172,6 +175,8 @@ namespace FastGraph.Tests.Collections
                 BinaryHeap<TPriority, TValue> heap,
                 int expectedCapacity,
                 Comparison<TPriority> expectedComparer)
+                where TPriority : notnull
+                where TValue : notnull
             {
                 Assert.AreEqual(0, heap.Count);
                 Assert.AreEqual(expectedCapacity, heap.Capacity);
@@ -181,6 +186,8 @@ namespace FastGraph.Tests.Collections
             void AssertHeapBaseProperties<TPriority, TValue>(
                 BinaryHeap<TPriority, TValue> heap,
                 int expectedCapacity = 16)
+                where TPriority : notnull
+                where TValue : notnull
             {
                 AssertHeapProperties(heap, expectedCapacity, Comparer<TPriority>.Default.Compare);
             }
@@ -193,11 +200,13 @@ namespace FastGraph.Tests.Collections
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(() => new BinaryHeap<int, Edge<int>>(null));
-            Assert.Throws<ArgumentNullException>(() => new BinaryHeap<int, Edge<int>>(12, null));
+            Assert.Throws<ArgumentNullException>(() => new BinaryHeap<int, Edge<int>>(12, default));
             Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, default));
             Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, (x, y) => x.CompareTo(y)));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -279,6 +288,7 @@ namespace FastGraph.Tests.Collections
             #region Local function
 
             void IndexOfTest<TValue>(TValue value1, TValue value2)
+                where TValue : notnull
             {
                 IndexOfInternalTest();
                 IndexOfInternalTest2();
@@ -304,7 +314,7 @@ namespace FastGraph.Tests.Collections
                     Assert.AreEqual(0, heap.IndexOf(value2));
                     Assert.AreEqual(-1, heap.IndexOf(default));
 
-                    heap.Add(5, default);
+                    heap.Add(5, default!);
                     Assert.AreEqual(1, heap.IndexOf(value1));
                     Assert.AreEqual(0, heap.IndexOf(value2));
                     Assert.AreEqual(2, heap.IndexOf(default));
@@ -354,7 +364,7 @@ namespace FastGraph.Tests.Collections
                     Assert.AreEqual(0, heap.IndexOf(value2));
                     Assert.AreEqual(-1, heap.IndexOf(default));
 
-                    heap.Add(5, default);
+                    heap.Add(5, default!);
                     Assert.AreEqual(1, heap.IndexOf(value1));
                     Assert.AreEqual(0, heap.IndexOf(value2));
                     Assert.AreEqual(2, heap.IndexOf(default));
@@ -404,7 +414,7 @@ namespace FastGraph.Tests.Collections
                     Assert.AreEqual(1, heap.IndexOf(value2));
                     Assert.AreEqual(-1, heap.IndexOf(default));
 
-                    heap.Add(1, default);
+                    heap.Add(1, default!);
                     Assert.AreEqual(0, heap.IndexOf(value1));
                     Assert.AreEqual(1, heap.IndexOf(value2));
                     Assert.AreEqual(2, heap.IndexOf(default));
@@ -461,6 +471,7 @@ namespace FastGraph.Tests.Collections
                 TValue value1,
                 TValue value2,
                 TValue value3)
+                where TValue : notnull
             {
                 AddInternalTest();
                 AddInternalTest2();
@@ -551,7 +562,9 @@ namespace FastGraph.Tests.Collections
         {
             var heap = new BinaryHeap<TestPriority, int>();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => heap.Add(null, 1));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => heap.Add(default, 1));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -573,6 +586,7 @@ namespace FastGraph.Tests.Collections
                 TValue value1,
                 TValue value2,
                 TValue value3)
+                where TValue : notnull
             {
                 MinimumInternalTest();
                 MinimumInternalTest2();
@@ -582,7 +596,7 @@ namespace FastGraph.Tests.Collections
 
                 void MinimumInternalTest()
                 {
-                    var heap = new BinaryHeap<double, TValue>();
+                    var heap = new BinaryHeap<double, TValue?>();
                     AssertHeapSize(heap, 0);
 
                     heap.Add(10.0, value3);
@@ -593,7 +607,7 @@ namespace FastGraph.Tests.Collections
                     heap.Add(4.0, default);
                     AssertHeapSize(heap, 6);
 
-                    KeyValuePair<double, TValue> pair = heap.Minimum();
+                    KeyValuePair<double, TValue?> pair = heap.Minimum();
                     Assert.AreEqual(1.0, pair.Key);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 6);
@@ -620,7 +634,7 @@ namespace FastGraph.Tests.Collections
 
                 void MinimumInternalTest2()
                 {
-                    var heap = new BinaryHeap<TestPriority, TValue>();
+                    var heap = new BinaryHeap<TestPriority, TValue?>();
                     AssertHeapSize(heap, 0);
 
                     var priority1 = new TestPriority(1);
@@ -634,7 +648,7 @@ namespace FastGraph.Tests.Collections
                     heap.Add(new TestPriority(4), default);
                     AssertHeapSize(heap, 6);
 
-                    KeyValuePair<TestPriority, TValue> pair = heap.Minimum();
+                    KeyValuePair<TestPriority, TValue?> pair = heap.Minimum();
                     Assert.AreSame(priority1, pair.Key);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 6);
@@ -731,6 +745,7 @@ namespace FastGraph.Tests.Collections
                 TValue value2,
                 TValue value3,
                 TValue value4)
+                where TValue : notnull
             {
                 RemoveMinimumInternalTest();
                 RemoveMinimumInternalTest2();
@@ -740,7 +755,7 @@ namespace FastGraph.Tests.Collections
 
                 void RemoveMinimumInternalTest()
                 {
-                    var heap = new BinaryHeap<double, TValue>();
+                    var heap = new BinaryHeap<double, TValue?>();
                     AssertHeapSize(heap, 0);
 
                     heap.Add(10.0, value1);
@@ -751,7 +766,7 @@ namespace FastGraph.Tests.Collections
                     heap.Add(6.0, default);
                     AssertHeapSize(heap, 6);
 
-                    KeyValuePair<double, TValue> pair = heap.RemoveMinimum();
+                    KeyValuePair<double, TValue?> pair = heap.RemoveMinimum();
                     Assert.AreEqual(1.0, pair.Key);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
@@ -784,7 +799,7 @@ namespace FastGraph.Tests.Collections
 
                 void RemoveMinimumInternalTest2()
                 {
-                    var heap = new BinaryHeap<TestPriority, TValue>();
+                    var heap = new BinaryHeap<TestPriority, TValue?>();
                     AssertHeapSize(heap, 0);
 
                     var priority1 = new TestPriority(1);
@@ -801,7 +816,7 @@ namespace FastGraph.Tests.Collections
                     heap.Add(priority6, default);
                     AssertHeapSize(heap, 6);
 
-                    KeyValuePair<TestPriority, TValue> pair = heap.RemoveMinimum();
+                    KeyValuePair<TestPriority, TValue?> pair = heap.RemoveMinimum();
                     Assert.AreSame(priority1, pair.Key);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
@@ -911,6 +926,7 @@ namespace FastGraph.Tests.Collections
                 TValue value1,
                 TValue value2,
                 TValue value3)
+                where TValue : notnull
             {
                 UpdateInternalTest();
                 UpdateInternalTest2();
@@ -1089,6 +1105,7 @@ namespace FastGraph.Tests.Collections
                 TValue value1,
                 TValue value2,
                 TValue value3)
+                where TValue : notnull
             {
                 MinimalUpdateInternalTest();
                 MinimalUpdateInternalTest2();
@@ -1374,11 +1391,12 @@ namespace FastGraph.Tests.Collections
         #region Test helpers
 
         private static void ToStringCommon<TValue>(
-            [NotNull] TValue value1,
-            [NotNull] TValue value2,
-            [NotNull] TValue value3,
-            [NotNull] TValue value4,
-            [NotNull, InstantHandle] Func<BinaryHeap<int, TValue>, string> toString)
+            TValue value1,
+            TValue value2,
+            TValue value3,
+            TValue value4,
+            [InstantHandle] Func<BinaryHeap<int, TValue>, string> toString)
+            where TValue : notnull
         {
             var heap = new BinaryHeap<int, TValue>();
 
@@ -1409,7 +1427,7 @@ namespace FastGraph.Tests.Collections
         }
 
         private static void ToStringClassCommon<TValue>(
-            [NotNull, InstantHandle] Func<BinaryHeap<int, TValue>, string> toString)
+            [InstantHandle] Func<BinaryHeap<int, TValue>, string> toString)
             where TValue : class
         {
             var heap = new BinaryHeap<int, TValue>();
@@ -1417,7 +1435,7 @@ namespace FastGraph.Tests.Collections
             // Empty heap => consistent
             StringAssert.StartsWith(Consistent, toString(heap));
 
-            heap.Add(1, null);
+            heap.Add(1, default!);
 
             StringAssert.StartsWith(Consistent, toString(heap));
 
@@ -1427,19 +1445,21 @@ namespace FastGraph.Tests.Collections
         }
 
         private static void ToString2Common<TValue>(
-            [NotNull] TValue value1,
-            [NotNull] TValue value2,
-            [NotNull] TValue value3,
-            [NotNull] TValue value4)
+            TValue value1,
+            TValue value2,
+            TValue value3,
+            TValue value4)
+            where TValue : notnull
         {
             ToStringCommon(value1, value2, value3, value4, heap => heap.ToString2());
         }
 
         private static void ToStringTreeCommon<TValue>(
-            [NotNull] TValue value1,
-            [NotNull] TValue value2,
-            [NotNull] TValue value3,
-            [NotNull] TValue value4)
+            TValue value1,
+            TValue value2,
+            TValue value3,
+            TValue value4)
+            where TValue : notnull
         {
             ToStringCommon(value1, value2, value3, value4, heap => heap.ToStringTree());
         }
@@ -1487,7 +1507,7 @@ namespace FastGraph.Tests.Collections
             };
 
             string toString =
-                $"{Consistent}: 1 0, 2 1, 1 2, 2 3, 2 4, 1 5, 1 6, 2 7, 2 8, 2 9, 2 10, 1 11, 1 12, 1 13, 1 14, null, null, null, null, null";
+                $"{Consistent}: 1 0, 2 1, 1 2, 2 3, 2 4, 1 5, 1 6, 2 7, 2 8, 2 9, 2 10, 1 11, 1 12, 1 13, 1 14, default, default, default, default, default";
             StringAssert.AreEqualIgnoringCase(toString, heap.ToString2());
             AssertHeapSizes(heap, 20, 15);
         }
@@ -1540,14 +1560,14 @@ namespace FastGraph.Tests.Collections
             toString.AppendLine("index4 2 4 -> 2 9 and 2 10");
             toString.AppendLine("index5 1 5 -> 1 11 and 1 12");
             toString.AppendLine("index6 1 6 -> 1 13 and 1 14");
-            toString.AppendLine("index7 2 7 -> null and null");
-            toString.AppendLine("index8 2 8 -> null and null");
-            toString.AppendLine("index9 2 9 -> null and null");
-            toString.AppendLine("index10 2 10 -> null and null");
-            toString.AppendLine("index11 1 11 -> null and null");
-            toString.AppendLine("index12 1 12 -> null and null");
-            toString.AppendLine("index13 1 13 -> null and null");
-            toString.Append("index14 1 14 -> null and null");
+            toString.AppendLine("index7 2 7 -> default and default");
+            toString.AppendLine("index8 2 8 -> default and default");
+            toString.AppendLine("index9 2 9 -> default and default");
+            toString.AppendLine("index10 2 10 -> default and default");
+            toString.AppendLine("index11 1 11 -> default and default");
+            toString.AppendLine("index12 1 12 -> default and default");
+            toString.AppendLine("index13 1 13 -> default and default");
+            toString.Append("index14 1 14 -> default and default");
             StringAssert.AreEqualIgnoringCase(
                 toString.ToString(),
                 heap.ToStringTree());
@@ -1587,7 +1607,7 @@ namespace FastGraph.Tests.Collections
                 heap.Add(4.0, value2);
                 heap.Add(2.0, value3);
                 heap.Add(3.0, value1);
-                heap.Add(6.0, default);
+                heap.Add(6.0, default!);
 
                 // Array not sorted
                 CollectionAssert.AreEquivalent(
@@ -1651,7 +1671,7 @@ namespace FastGraph.Tests.Collections
                 heap.Add(4.0, value2);
                 heap.Add(2.0, value3);
                 heap.Add(3.0, value1);
-                heap.Add(6.0, default);
+                heap.Add(6.0, default!);
 
                 // Array not sorted
                 CollectionAssert.AreEquivalent(
@@ -1662,7 +1682,7 @@ namespace FastGraph.Tests.Collections
                         new KeyValuePair<double, TValue>(4.0, value2),
                         new KeyValuePair<double, TValue>(2.0, value3),
                         new KeyValuePair<double, TValue>(3.0, value1),
-                        new KeyValuePair<double, TValue>(6.0, default)
+                        new KeyValuePair<double, TValue>(6.0, default!)
                     },
                     heap.ToPairsArray());
 
@@ -1676,7 +1696,7 @@ namespace FastGraph.Tests.Collections
                         new KeyValuePair<double, TValue>(3.0, value1),
                         new KeyValuePair<double, TValue>(5.0, value2),
                         new KeyValuePair<double, TValue>(4.0, value2),
-                        new KeyValuePair<double, TValue>(6.0, default)
+                        new KeyValuePair<double, TValue>(6.0, default!)
                     },
                     heap.ToPairsArray());
 

@@ -1,10 +1,9 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_GRAPHS_SERIALIZATION
 #if SUPPORTS_XML_DTD_PROCESSING
-using System.Diagnostics;
 using System.Xml.Schema;
 #endif
-using System.IO;
 using System.Xml;
 using JetBrains.Annotations;
 using FastGraph.Algorithms;
@@ -34,8 +33,9 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] string filePath)
+            this TGraph graph,
+            string filePath)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -67,10 +67,11 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] string filePath,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            this TGraph graph,
+            string filePath,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -98,8 +99,9 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer)
+            this TGraph graph,
+            XmlWriter writer)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -129,10 +131,11 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            this TGraph graph,
+            XmlWriter writer,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -163,10 +166,11 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            XmlReader reader,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -193,10 +197,11 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] TextReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            TextReader reader,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -216,7 +221,7 @@ namespace FastGraph.Serialization
 #else
             var xmlReader = new XmlTextReader(reader)
             {
-                XmlResolver = null
+                XmlResolver = default
             };
 
             DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
@@ -242,10 +247,11 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] string filePath,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            string filePath,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -279,10 +285,11 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeAndValidateFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] TextReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            TextReader reader,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -322,11 +329,11 @@ namespace FastGraph.Serialization
             }
         }
 
-        private static void AddGraphMLSchema([NotNull] XmlReaderSettings settings, [NotNull] XmlResolver resolver)
+        private static void AddGraphMLSchema(XmlReaderSettings settings, XmlResolver resolver)
         {
-            using (Stream xsdStream = typeof(GraphMLExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml.xsd"))
+            using (Stream? xsdStream = typeof(GraphMLExtensions).Assembly.GetManifestResourceStream(typeof(GraphMLExtensions), "graphml.xsd"))
             {
-                Debug.Assert(xsdStream != null, "GraphML schema resource not found.");
+                if (xsdStream == default) throw new InvalidOperationException("GraphML schema resource not found.");
 
                 settings.Schemas.XmlResolver = resolver;
                 // ReSharper disable once AssignNullToNotNullAttribute, Justification: assert above
@@ -337,7 +344,7 @@ namespace FastGraph.Serialization
             }
         }
 
-        private static void ValidationEventHandler(object sender, ValidationEventArgs args)
+        private static void ValidationEventHandler(object? sender, ValidationEventArgs args)
         {
             if (args.Severity == XmlSeverityType.Error)
                 throw new InvalidOperationException(args.Message);

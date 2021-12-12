@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.VertexColoring
 {
@@ -11,6 +8,7 @@ namespace FastGraph.Algorithms.VertexColoring
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class VertexColoringAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -18,7 +16,7 @@ namespace FastGraph.Algorithms.VertexColoring
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public VertexColoringAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        public VertexColoringAlgorithm(IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -26,18 +24,15 @@ namespace FastGraph.Algorithms.VertexColoring
         /// <summary>
         /// Vertices colors.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, int?> Colors { get; } = new Dictionary<TVertex, int?>();
 
         /// <summary>
         /// Fired when a vertex is colored.
         /// </summary>
-        public event VertexAction<TVertex> VertexColored;
+        public event VertexAction<TVertex>? VertexColored;
 
-        private void OnVertexColored([NotNull] TVertex vertex)
+        private void OnVertexColored(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             VertexColored?.Invoke(vertex);
         }
 
@@ -53,7 +48,7 @@ namespace FastGraph.Algorithms.VertexColoring
             // Initialize vertices as unassigned
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                Colors[vertex] = null; // No color is assigned to vertex
+                Colors[vertex] = default; // No color is assigned to vertex
             }
         }
 
@@ -96,19 +91,19 @@ namespace FastGraph.Algorithms.VertexColoring
             }
         }
 
-        private void MarkAdjacentAsUnavailable([NotNull] TVertex vertex, [NotNull] bool[] available)
+        private void MarkAdjacentAsUnavailable(TVertex vertex, bool[] available)
         {
             foreach (TEdge adjacentEdges in VisitedGraph.AdjacentEdges(vertex))
             {
                 TVertex adjacentVertex = adjacentEdges.GetOtherVertex(vertex);
                 if (Colors[adjacentVertex].HasValue)
                 {
-                    available[Colors[adjacentVertex].Value] = true;
+                    available[Colors[adjacentVertex]!.Value] = true;
                 }
             }
         }
 
-        private static int FindAvailableColor([NotNull] bool[] available)
+        private static int FindAvailableColor(bool[] available)
         {
             int usingColor;
             for (usingColor = 0; usingColor < available.Length; ++usingColor)
@@ -120,14 +115,14 @@ namespace FastGraph.Algorithms.VertexColoring
             return usingColor;
         }
 
-        private void ResetAdjacentAsAvailable([NotNull] TVertex vertex, [NotNull] bool[] available)
+        private void ResetAdjacentAsAvailable(TVertex vertex, bool[] available)
         {
             foreach (TEdge adjacentEdges in VisitedGraph.AdjacentEdges(vertex))
             {
                 if (Colors[adjacentEdges.GetOtherVertex(vertex)].HasValue)
                 {
                     // ReSharper disable once PossibleInvalidOperationException, Justification: Was assigned a color just before
-                    int usedColor = Colors[adjacentEdges.GetOtherVertex(vertex)].Value;
+                    int usedColor = Colors[adjacentEdges.GetOtherVertex(vertex)]!.Value;
                     available[usedColor] = false;
                 }
             }

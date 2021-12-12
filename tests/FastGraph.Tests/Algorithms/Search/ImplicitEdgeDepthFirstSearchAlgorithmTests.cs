@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Search;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -18,9 +16,10 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunImplicitEdgeDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex sourceVertex,
+            IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
+            TVertex sourceVertex,
             int maxDepth = int.MaxValue)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TEdge, TEdge>();
@@ -103,7 +102,7 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmProperties(algorithm, graph);
 
-            algorithm = new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph);
+            algorithm = new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph);
             AssertAlgorithmProperties(algorithm, graph);
 
             algorithm.MaxDepth = 12;
@@ -115,6 +114,7 @@ namespace FastGraph.Tests.Algorithms.Search
                 ImplicitEdgeDepthFirstSearchAlgorithm<TVertex, TEdge> algo,
                 IIncidenceGraph<TVertex, TEdge> g,
                 int maxDepth = int.MaxValue)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -132,11 +132,13 @@ namespace FastGraph.Tests.Algorithms.Search
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new AdjacencyGraph<int, Edge<int>>();
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null));
+                () => new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
+                () => new ImplicitEdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 

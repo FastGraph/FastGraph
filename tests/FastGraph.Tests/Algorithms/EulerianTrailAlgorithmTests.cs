@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -18,10 +17,11 @@ namespace FastGraph.Tests.Algorithms
         #region Test helpers
 
         private static void ComputeTrails<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TVertex, TVertex, TEdge> edgeFactory,
-            [NotNull, ItemNotNull] out ICollection<TEdge>[] trails,
-            [NotNull, ItemNotNull] out TEdge[] circuit)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TVertex, TVertex, TEdge> edgeFactory,
+            out ICollection<TEdge>[] trails,
+            out TEdge[] circuit)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             trails = new ICollection<TEdge>[0];
@@ -54,11 +54,12 @@ namespace FastGraph.Tests.Algorithms
         }
 
         private static void ComputeTrails<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root,
-            [NotNull, InstantHandle] Func<TVertex, TVertex, TEdge> edgeFactory,
-            [NotNull, ItemNotNull] out ICollection<TEdge>[] trails,
-            [NotNull, ItemNotNull] out TEdge[] circuit)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            TVertex root,
+            [InstantHandle] Func<TVertex, TVertex, TEdge> edgeFactory,
+            out ICollection<TEdge>[] trails,
+            out TEdge[] circuit)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             trails = new ICollection<TEdge>[0];
@@ -109,7 +110,7 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new EulerianTrailAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmProperties(algorithm, graph);
 
-            algorithm = new EulerianTrailAlgorithm<int, Edge<int>>(null, graph);
+            algorithm = new EulerianTrailAlgorithm<int, Edge<int>>(default, graph);
             AssertAlgorithmProperties(algorithm, graph);
 
             #region Local function
@@ -117,6 +118,7 @@ namespace FastGraph.Tests.Algorithms
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 EulerianTrailAlgorithm<TVertex, TEdge> algo,
                 IMutableVertexAndEdgeListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -131,10 +133,12 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new EulerianTrailAlgorithm<int, Edge<int>>(null));
+                () => new EulerianTrailAlgorithm<int, Edge<int>>(default));
             Assert.Throws<ArgumentNullException>(
-                () => new EulerianTrailAlgorithm<int, Edge<int>>(null, null));
+                () => new EulerianTrailAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -201,7 +205,6 @@ namespace FastGraph.Tests.Algorithms
 
         #endregion
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ComputeEulerianPathCountTestCases
         {
             [UsedImplicitly]
@@ -266,7 +269,7 @@ namespace FastGraph.Tests.Algorithms
         }
 
         [TestCaseSource(nameof(ComputeEulerianPathCountTestCases))]
-        public int ComputeEulerianPathCount([NotNull] AdjacencyGraph<int, Edge<int>> graph)
+        public int ComputeEulerianPathCount(AdjacencyGraph<int, Edge<int>> graph)
         {
             return EulerianTrailAlgorithm<int, Edge<int>>.ComputeEulerianPathCount(graph);
         }
@@ -275,11 +278,12 @@ namespace FastGraph.Tests.Algorithms
         public void ComputeEulerianPathCount_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => EulerianTrailAlgorithm<int, Edge<int>>.ComputeEulerianPathCount(null));
+                () => EulerianTrailAlgorithm<int, Edge<int>>.ComputeEulerianPathCount(default));
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> AddTemporaryEdgesTestCases
         {
             [UsedImplicitly]
@@ -360,8 +364,8 @@ namespace FastGraph.Tests.Algorithms
 
         [TestCaseSource(nameof(AddTemporaryEdgesTestCases))]
         public void AddTemporaryEdges(
-            [NotNull] AdjacencyGraph<int, EquatableEdge<int>> graph,
-            [NotNull, ItemNotNull] EquatableEdge<int>[] expectedTemporaryEdges)
+            AdjacencyGraph<int, EquatableEdge<int>> graph,
+            EquatableEdge<int>[] expectedTemporaryEdges)
         {
             var algorithm = new EulerianTrailAlgorithm<int, EquatableEdge<int>>(graph);
             int edgeCount = graph.EdgeCount;
@@ -384,10 +388,11 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new EulerianTrailAlgorithm<int, Edge<int>>(graph);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.AddTemporaryEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.AddTemporaryEdges(default));
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> RemoveTemporaryEdgesTestCases
         {
             [UsedImplicitly]
@@ -435,7 +440,7 @@ namespace FastGraph.Tests.Algorithms
         }
 
         [TestCaseSource(nameof(RemoveTemporaryEdgesTestCases))]
-        public void RemoveTemporaryEdges([NotNull] AdjacencyGraph<int, EquatableEdge<int>> graph)
+        public void RemoveTemporaryEdges(AdjacencyGraph<int, EquatableEdge<int>> graph)
         {
             var algorithm = new EulerianTrailAlgorithm<int, EquatableEdge<int>>(graph);
             int edgeCount = graph.EdgeCount;
@@ -779,7 +784,9 @@ namespace FastGraph.Tests.Algorithms
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
             var algorithm = new EulerianTrailAlgorithm<TestVertex, Edge<TestVertex>>(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.Trails(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.Trails(default));
+#pragma warning restore CS8625
         }
 
         #endregion

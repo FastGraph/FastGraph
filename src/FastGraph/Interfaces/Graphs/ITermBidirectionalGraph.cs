@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -11,6 +13,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface ITermBidirectionalGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : ITermEdge<TVertex>
     {
         /// <summary>
@@ -21,7 +24,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int OutTerminalCount([NotNull] TVertex vertex);
+        int OutTerminalCount(TVertex vertex);
 
         /// <summary>
         /// Checks if the requested out terminal is empty or not for the given <paramref name="vertex"/>.
@@ -32,7 +35,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        bool IsOutEdgesEmptyAt([NotNull] TVertex vertex, int terminal);
+        bool IsOutEdgesEmptyAt(TVertex vertex, int terminal);
 
         /// <summary>
         /// Gets the <paramref name="vertex"/> out-degree for the requested terminal.
@@ -43,7 +46,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int OutDegreeAt([NotNull] TVertex vertex, int terminal);
+        int OutDegreeAt(TVertex vertex, int terminal);
 
         /// <summary>
         /// Gets the <paramref name="vertex"/> out edges for the requested terminal.
@@ -54,8 +57,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TEdge> OutEdgesAt([NotNull] TVertex vertex, int terminal);
+        IEnumerable<TEdge> OutEdgesAt(TVertex vertex, int terminal);
 
         /// <summary>
         /// Tries to get the <paramref name="vertex"/> out-edges for the requested terminal.
@@ -67,7 +69,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
-        bool TryGetOutEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
+        bool TryGetOutEdgesAt(TVertex vertex, int terminal, [NotNullWhen(true)] out IEnumerable<TEdge>? edges);
 
         /// <summary>
         /// Gets the number of in terminals on the given <paramref name="vertex"/>.
@@ -77,7 +79,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int InTerminalCount([NotNull] TVertex vertex);
+        int InTerminalCount(TVertex vertex);
 
         /// <summary>
         /// Checks if the requested in terminal is empty or not for the given <paramref name="vertex"/>.
@@ -88,7 +90,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        bool IsInEdgesEmptyAt([NotNull] TVertex vertex, int terminal);
+        bool IsInEdgesEmptyAt(TVertex vertex, int terminal);
 
         /// <summary>
         /// Gets the <paramref name="vertex"/> in-degree for the requested terminal.
@@ -99,7 +101,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int InDegreeAt([NotNull] TVertex vertex, int terminal);
+        int InDegreeAt(TVertex vertex, int terminal);
 
         /// <summary>
         /// Gets the <paramref name="vertex"/> in-edges for the requested terminal.
@@ -110,8 +112,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TEdge> InEdgesAt([NotNull] TVertex vertex, int terminal);
+        IEnumerable<TEdge> InEdgesAt(TVertex vertex, int terminal);
 
         /// <summary>
         /// Tries to get the <paramref name="vertex"/> in-edges for the requested terminal.
@@ -123,6 +124,6 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
-        bool TryGetInEdgesAt([NotNull] TVertex vertex, int terminal, [ItemNotNull] out IEnumerable<TEdge> edges);
+        bool TryGetInEdgesAt(TVertex vertex, int terminal, [NotNullWhen(true)] out IEnumerable<TEdge>? edges);
     }
 }

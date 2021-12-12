@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using static FastGraph.Utils.DisposableHelpers;
 
 namespace FastGraph.Algorithms.Observers
@@ -16,6 +13,7 @@ namespace FastGraph.Algorithms.Observers
     [Serializable]
 #endif
     public sealed class EdgeRecorderObserver<TVertex, TEdge> : IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -31,7 +29,7 @@ namespace FastGraph.Algorithms.Observers
         /// </summary>
         /// <param name="edges">Set of edges.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
-        public EdgeRecorderObserver([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        public EdgeRecorderObserver(IEnumerable<TEdge> edges)
         {
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
@@ -39,13 +37,11 @@ namespace FastGraph.Algorithms.Observers
             _edges = edges.ToList();
         }
 
-        [NotNull, ItemNotNull]
         private readonly IList<TEdge> _edges;
 
         /// <summary>
         /// Encountered edges.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<TEdge> Edges => _edges.AsEnumerable();
 
         #region IObserver<TAlgorithm>
@@ -62,10 +58,8 @@ namespace FastGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        private void OnEdgeDiscovered(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             _edges.Add(edge);
         }
     }

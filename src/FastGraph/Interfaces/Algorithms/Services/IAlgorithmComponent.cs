@@ -1,4 +1,7 @@
-﻿using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.Services
 {
@@ -10,7 +13,6 @@ namespace FastGraph.Algorithms.Services
         /// <summary>
         /// Algorithm common services.
         /// </summary>
-        [NotNull]
         IAlgorithmServices Services { get; }
 
         /// <summary>
@@ -19,8 +21,7 @@ namespace FastGraph.Algorithms.Services
         /// <typeparam name="T">Service type.</typeparam>
         /// <returns>Found service, otherwise <see langword="null"/>.</returns>
         [Pure]
-        [CanBeNull]
-        T GetService<T>();
+        T? GetService<T>();
 
         /// <summary>
         /// Tries to get the service with given <typeparamref name="T"/>.
@@ -30,6 +31,6 @@ namespace FastGraph.Algorithms.Services
         /// <returns>True if the service was found, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, service:notnull;=> false, service:null")]
-        bool TryGetService<T>(out T service);
+        bool TryGetService<T>([NotNullWhen(true)] out T? service);
     }
 }

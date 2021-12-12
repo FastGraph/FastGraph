@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph.Serialization
 {
     /// <summary>

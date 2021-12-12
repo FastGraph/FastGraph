@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
 
@@ -16,10 +13,10 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
     public sealed class PrimMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
             , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
-        private readonly Func<TEdge, double> _edgeWeights;
+        private readonly Func<TEdge, double>? _edgeWeights;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PrimMinimumSpanningTreeAlgorithm{TVertex,TEdge}"/> class.
@@ -29,9 +26,9 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public PrimMinimumSpanningTreeAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
-            : this(null, visitedGraph, edgeWeights)
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
+            : this(default, visitedGraph, edgeWeights)
         {
         }
 
@@ -44,9 +41,9 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public PrimMinimumSpanningTreeAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IAlgorithmComponent? host,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : base(host, visitedGraph)
         {
             _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -55,24 +52,20 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         /// <summary>
         /// Fired when an edge is going to be analyzed.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+        public event EdgeAction<TVertex, TEdge>? ExamineEdge;
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             ExamineEdge?.Invoke(edge);
         }
 
         #region ITreeBuilderAlgorithm<TVertex,TEdge>
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
@@ -80,12 +73,12 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
 
         #region AlgorithmBase<TGraph>
 
-        private Dictionary<TVertex, HashSet<TEdge>> _verticesEdges;
-        private HashSet<TVertex> _visitedVertices;
-        private ForestDisjointSet<TVertex> _sets;
+        private Dictionary<TVertex, HashSet<TEdge>>? _verticesEdges;
+        private HashSet<TVertex>? _visitedVertices;
+        private ForestDisjointSet<TVertex>? _sets;
 
-        private HashSet<TEdge> _edges;
-        private BinaryQueue<TEdge, double> _queue;
+        private HashSet<TEdge>? _edges;
+        private BinaryQueue<TEdge, double>? _queue;
 
         private void InitializeVerticesToEdges()
         {
@@ -114,9 +107,9 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         private void InitializeQueue()
         {
             _edges = new HashSet<TEdge>();
-            _queue = new BinaryQueue<TEdge, double>(_edgeWeights);
-            TVertex lastVertex = _visitedVertices.First();
-            foreach (TEdge edge in _verticesEdges[lastVertex])
+            _queue = new BinaryQueue<TEdge, double>(_edgeWeights!);
+            TVertex lastVertex = _visitedVertices!.First();
+            foreach (TEdge edge in _verticesEdges![lastVertex])
             {
                 if (!_edges.Contains(edge))
                 {
@@ -143,12 +136,12 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         {
             ThrowIfCancellationRequested();
 
-            while (_edges.Count > 0 && _visitedVertices.Count < VisitedGraph.VertexCount)
+            while (_edges!.Count > 0 && _visitedVertices!.Count < VisitedGraph.VertexCount)
             {
-                TEdge minEdge = _queue.Dequeue();
+                TEdge minEdge = _queue!.Dequeue();
                 OnExamineEdge(minEdge);
 
-                if (!_sets.AreInSameSet(minEdge.Source, minEdge.Target))
+                if (!_sets!.AreInSameSet(minEdge.Source, minEdge.Target))
                 {
                     OnTreeEdge(minEdge);
                     _sets.Union(minEdge.Source, minEdge.Target);
@@ -170,15 +163,15 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
             }
         }
 
-        private void EnqueueEdgesFrom([NotNull] TVertex vertex)
+        private void EnqueueEdgesFrom(TVertex vertex)
         {
-            foreach (TEdge edge in _verticesEdges[vertex])
+            foreach (TEdge edge in _verticesEdges![vertex])
             {
-                if (_edges.Contains(edge))
+                if (_edges!.Contains(edge))
                     continue;
 
-                _edges.Add(edge);
-                _queue.Enqueue(edge);
+                _edges!.Add(edge);
+                _queue!.Enqueue(edge);
             }
         }
 

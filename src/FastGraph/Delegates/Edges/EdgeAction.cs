@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -8,6 +8,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="edge">Edge to treat.</param>
-    public delegate void EdgeAction<TVertex, in TEdge>([NotNull] TEdge edge)
+    public delegate void EdgeAction<TVertex, in TEdge>(TEdge edge)
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>;
 }

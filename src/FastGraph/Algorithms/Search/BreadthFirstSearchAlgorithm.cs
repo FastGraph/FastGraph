@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
 
@@ -21,9 +19,9 @@ namespace FastGraph.Algorithms.Search
         , IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
         , IDistanceRecorderAlgorithm<TVertex>
         , IVertexColorizerAlgorithm<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly IQueue<TVertex> _vertexQueue;
 
         /// <summary>
@@ -31,7 +29,7 @@ namespace FastGraph.Algorithms.Search
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public BreadthFirstSearchAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+        public BreadthFirstSearchAlgorithm(IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
         {
         }
@@ -46,10 +44,10 @@ namespace FastGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IQueue<TVertex> vertexQueue,
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
-            : this(null, visitedGraph, vertexQueue, verticesColors)
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IQueue<TVertex> vertexQueue,
+            IDictionary<TVertex, GraphColor> verticesColors)
+            : this(default, visitedGraph, vertexQueue, verticesColors)
         {
         }
 
@@ -64,10 +62,10 @@ namespace FastGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IQueue<TVertex> vertexQueue,
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
+            IAlgorithmComponent? host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IQueue<TVertex> vertexQueue,
+            IDictionary<TVertex, GraphColor> verticesColors)
             : this(host, visitedGraph, vertexQueue, verticesColors, edges => edges)
         {
         }
@@ -85,11 +83,11 @@ namespace FastGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="outEdgesFilter"/> is <see langword="null"/>.</exception>
         public BreadthFirstSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IQueue<TVertex> vertexQueue,
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors,
-            [NotNull] Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgesFilter)
+            IAlgorithmComponent? host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IQueue<TVertex> vertexQueue,
+            IDictionary<TVertex, GraphColor> verticesColors,
+            Func<IEnumerable<TEdge>, IEnumerable<TEdge>> outEdgesFilter)
             : base(host, visitedGraph)
         {
             VerticesColors = verticesColors ?? throw new ArgumentNullException(nameof(verticesColors));
@@ -100,122 +98,101 @@ namespace FastGraph.Algorithms.Search
         /// <summary>
         /// Filter of edges.
         /// </summary>
-        [NotNull]
         public Func<IEnumerable<TEdge>, IEnumerable<TEdge>> OutEdgesFilter { get; }
 
         #region Events
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> InitializeVertex;
+        public event VertexAction<TVertex>? InitializeVertex;
 
-        private void OnVertexInitialized([NotNull] TVertex vertex)
+        private void OnVertexInitialized(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             InitializeVertex?.Invoke(vertex);
         }
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> StartVertex;
+        public event VertexAction<TVertex>? StartVertex;
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             StartVertex?.Invoke(vertex);
         }
 
         /// <summary>
         /// Fired when a vertex is going to be analyzed.
         /// </summary>
-        public event VertexAction<TVertex> ExamineVertex;
+        public event VertexAction<TVertex>? ExamineVertex;
 
-        private void OnExamineVertex([NotNull] TVertex vertex)
+        private void OnExamineVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             ExamineVertex?.Invoke(vertex);
         }
 
         /// <summary>
         /// Fired when a vertex is discovered and under treatment.
         /// </summary>
-        public event VertexAction<TVertex> DiscoverVertex;
+        public event VertexAction<TVertex>? DiscoverVertex;
 
-        private void OnDiscoverVertex([NotNull] TVertex vertex)
+        private void OnDiscoverVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             DiscoverVertex?.Invoke(vertex);
         }
 
         /// <summary>
         /// Fired when an edge is going to be analyzed.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+        public event EdgeAction<TVertex, TEdge>? ExamineEdge;
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             ExamineEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when an edge is going to be treated when coming from a white vertex.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when an edge is going to be treated when coming from a gray vertex.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> NonTreeEdge;
+        public event EdgeAction<TVertex, TEdge>? NonTreeEdge;
 
-        private void OnNonTreeEdge([NotNull] TEdge edge)
+        private void OnNonTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             NonTreeEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when the target vertex of an out-edge from the currently treated vertex is marked as gray.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> GrayTarget;
+        public event EdgeAction<TVertex, TEdge>? GrayTarget;
 
-        private void OnGrayTarget([NotNull] TEdge edge)
+        private void OnGrayTarget(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             GrayTarget?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when the target vertex of an out-edge from the currently treated vertex is marked as black.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> BlackTarget;
+        public event EdgeAction<TVertex, TEdge>? BlackTarget;
 
-        private void OnBlackTarget([NotNull] TEdge edge)
+        private void OnBlackTarget(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             BlackTarget?.Invoke(edge);
         }
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> FinishVertex;
+        public event VertexAction<TVertex>? FinishVertex;
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             FinishVertex?.Invoke(vertex);
         }
 
@@ -244,7 +221,7 @@ namespace FastGraph.Algorithms.Search
             if (VisitedGraph.VertexCount == 0)
                 return;
 
-            if (TryGetRootVertex(out TVertex rootVertex))
+            if (TryGetRootVertex(out TVertex? rootVertex))
             {
                 AssertRootInGraph(rootVertex);
 
@@ -268,7 +245,6 @@ namespace FastGraph.Algorithms.Search
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, GraphColor> VerticesColors { get; }
 
         #region IVertexColorizerAlgorithm<TVertex>
@@ -283,15 +259,13 @@ namespace FastGraph.Algorithms.Search
 
         #endregion
 
-        internal void Visit([NotNull] TVertex root)
+        internal void Visit(TVertex root)
         {
-            Debug.Assert(root != null);
-
             EnqueueRoot(root);
             FlushVisitQueue();
         }
 
-        private void EnqueueRoot([NotNull] TVertex vertex)
+        private void EnqueueRoot(TVertex vertex)
         {
             OnStartVertex(vertex);
 

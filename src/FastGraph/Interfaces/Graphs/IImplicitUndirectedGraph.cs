@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -10,12 +12,12 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IImplicitUndirectedGraph<TVertex, TEdge> : IImplicitVertexSet<TVertex>, IGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Comparer for edges.
         /// </summary>
-        [NotNull]
         EdgeEqualityComparer<TVertex> EdgeEqualityComparer { get; }
 
         /// <summary>
@@ -26,8 +28,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TEdge> AdjacentEdges([NotNull] TVertex vertex);
+        IEnumerable<TEdge> AdjacentEdges(TVertex vertex);
 
         /// <summary>
         /// Gives the adjacent degree of the given <paramref name="vertex"/>.
@@ -37,7 +38,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int AdjacentDegree([NotNull] TVertex vertex);
+        int AdjacentDegree(TVertex vertex);
 
         /// <summary>
         /// Indicates if the given <paramref name="vertex"/> has at least one adjacent edge.
@@ -47,7 +48,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        bool IsAdjacentEdgesEmpty([NotNull] TVertex vertex);
+        bool IsAdjacentEdgesEmpty(TVertex vertex);
 
         /// <summary>
         /// Gets the <paramref name="index"/>th adjacent edge of the given <paramref name="vertex"/>.
@@ -59,8 +60,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentOutOfRangeException">No vertex at <paramref name="index"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        [NotNull]
-        TEdge AdjacentEdge([NotNull] TVertex vertex, int index);
+        TEdge AdjacentEdge(TVertex vertex, int index);
 
         /// <summary>
         /// Tries to get the edge that link
@@ -74,7 +74,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edge:notnull;=> false, edge:null")]
-        bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
+        bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge);
 
         /// <summary>
         /// Checks if this graph contains an edge that link
@@ -86,6 +86,6 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
+        bool ContainsEdge(TVertex source, TVertex target);
     }
 }

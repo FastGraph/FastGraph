@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Predicates
@@ -9,9 +10,9 @@ namespace FastGraph.Predicates
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class SinkVertexPredicate<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly IIncidenceGraph<TVertex, TEdge> _visitedGraph;
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace FastGraph.Predicates
         /// </summary>
         /// <param name="visitedGraph">Graph to consider.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public SinkVertexPredicate([NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
+        public SinkVertexPredicate(IIncidenceGraph<TVertex, TEdge> visitedGraph)
         {
             _visitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
         }
@@ -32,7 +33,7 @@ namespace FastGraph.Predicates
         /// <returns>True if the vertex is a sink, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        public bool Test([NotNull] TVertex vertex)
+        public bool Test(TVertex vertex)
         {
             return _visitedGraph.IsOutEdgesEmpty(vertex);
         }

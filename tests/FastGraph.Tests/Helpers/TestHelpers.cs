@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Tests.Algorithms;
 
@@ -21,11 +21,11 @@ namespace FastGraph.Tests
         /// <param name="edgeFactory">An object to use for creating edges.</param>
         /// <returns>List of edges.</returns>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<Edge<TVertex>> CreateAllPairwiseEdges<TVertex>(
-            [NotNull, ItemNotNull] IEnumerable<TVertex> leftVertices,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> rightVertices,
-            [NotNull] EdgeFactory<TVertex, Edge<TVertex>> edgeFactory)
+            IEnumerable<TVertex> leftVertices,
+            IEnumerable<TVertex> rightVertices,
+            EdgeFactory<TVertex, Edge<TVertex>> edgeFactory)
+            where TVertex : notnull
         {
             TVertex[] rightVerticesArray = rightVertices.ToArray();
 
@@ -39,9 +39,8 @@ namespace FastGraph.Tests
         }
 
         [Pure]
-        [NotNull]
         public static UndirectedGraph<int, UndirectedEdge<int>> CreateUndirectedGraph(
-            [NotNull] IEnumerable<Vertices> vertices)
+            IEnumerable<Vertices> vertices)
         {
             var graph = new UndirectedGraph<int, UndirectedEdge<int>>();
             foreach (Vertices pair in vertices)
@@ -53,9 +52,9 @@ namespace FastGraph.Tests
         }
 
         [Pure]
-        [NotNull]
         public static UndirectedGraph<TVertex, TEdge> CreateUndirectedGraph<TVertex, TEdge>(
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>, ITagged<double>
         {
             var graph = new UndirectedGraph<TVertex, TEdge>(true);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.GraphPartition
@@ -8,17 +9,16 @@ namespace FastGraph.Algorithms.GraphPartition
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public struct Partition<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// First sub set of vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
         public SortedSet<TVertex> VertexSetA { get; }
 
         /// <summary>
         /// Second sub set of vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
         public SortedSet<TVertex> VertexSetB { get; }
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace FastGraph.Algorithms.GraphPartition
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetA"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetB"/> is <see langword="null"/>.</exception>
         public Partition(
-            [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetA,
-            [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetB,
+            SortedSet<TVertex> vertexSetA,
+            SortedSet<TVertex> vertexSetB,
             double cutCost = 0)
         {
             VertexSetA = vertexSetA;
@@ -75,6 +75,7 @@ namespace FastGraph.Algorithms.GraphPartition
         /// <returns>True if both partitions are at least equivalent, false otherwise.</returns>
         [Pure]
         public static bool AreEquivalent<TVertex>(Partition<TVertex> partition1, Partition<TVertex> partition2)
+            where TVertex : notnull
         {
             return Partition<TVertex>.AreEquivalent(partition1, partition2);
         }

@@ -1,8 +1,7 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using static FastGraph.Collections.HeapConstants;
@@ -29,12 +28,12 @@ namespace FastGraph.Collections
 #endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public class BinaryHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
+        where TPriority : notnull
     {
         private int _version;
 
         private const int DefaultCapacity = 16;
 
-        [NotNull]
         private KeyValuePair<TPriority, TValue>[] _items;
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="priorityComparison">Priority comparer.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
-        public BinaryHeap([NotNull] Comparison<TPriority> priorityComparison)
+        public BinaryHeap(Comparison<TPriority> priorityComparison)
             : this(DefaultCapacity, priorityComparison)
         {
         }
@@ -72,7 +71,7 @@ namespace FastGraph.Collections
         /// <param name="priorityComparison">Priority comparer.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
-        public BinaryHeap(int capacity, [NotNull] Comparison<TPriority> priorityComparison)
+        public BinaryHeap(int capacity, Comparison<TPriority> priorityComparison)
         {
             if (capacity < 0)
                 throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be positive.");
@@ -84,7 +83,6 @@ namespace FastGraph.Collections
         /// <summary>
         /// Priority comparer.
         /// </summary>
-        [NotNull]
         public Comparison<TPriority> PriorityComparison { get; }
 
         /// <summary>
@@ -126,7 +124,7 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="priority">Item priority.</param>
         /// <param name="value">The value.</param>
-        public void Add([NotNull] TPriority priority, [CanBeNull] TValue value)
+        public void Add(TPriority priority, TValue value)
         {
 #if BINARY_HEAP_DEBUG
             Console.WriteLine($"{nameof(Add)}({priority}, {value})");
@@ -246,11 +244,11 @@ namespace FastGraph.Collections
         /// <param name="value">The value.</param>
         /// <returns>Index of the value if found, otherwise -1.</returns>
         [Pure]
-        public int IndexOf([CanBeNull] TValue value)
+        public int IndexOf(TValue? value)
         {
             for (int i = 0; i < Count; i++)
             {
-                if (EqualityComparer<TValue>.Default.Equals(value, _items[i].Value))
+                if (EqualityComparer<TValue?>.Default.Equals(value, _items[i].Value))
                     return i;
             }
 
@@ -262,7 +260,7 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="priority">The priority.</param>
         /// <param name="value">The value.</param>
-        public void Update([NotNull] TPriority priority, [NotNull] TValue value)
+        public void Update(TPriority priority, TValue value)
         {
 #if BINARY_HEAP_DEBUG
             Console.WriteLine($"{nameof(Update)}({priority}, {value})");
@@ -299,7 +297,7 @@ namespace FastGraph.Collections
         /// <param name="priority">The priority.</param>
         /// <param name="value">The value.</param>
         /// <returns>True if the heap was updated, false otherwise.</returns>
-        public bool MinimumUpdate([NotNull] TPriority priority, [NotNull] TValue value)
+        public bool MinimumUpdate(TPriority priority, TValue value)
         {
             // Find index
             int index = IndexOf(value);
@@ -338,15 +336,15 @@ namespace FastGraph.Collections
 
         private struct Enumerator : IEnumerator<KeyValuePair<TPriority, TValue>>
         {
-            private BinaryHeap<TPriority, TValue> _owner;
+            private BinaryHeap<TPriority, TValue>? _owner;
 
-            private KeyValuePair<TPriority, TValue>[] _items;
+            private KeyValuePair<TPriority, TValue>[]? _items;
 
             private readonly int _count;
             private readonly int _version;
             private int _index;
 
-            public Enumerator([NotNull] BinaryHeap<TPriority, TValue> owner)
+            public Enumerator(BinaryHeap<TPriority, TValue> owner)
             {
                 _owner = owner;
                 _items = owner._items;
@@ -359,35 +357,35 @@ namespace FastGraph.Collections
             {
                 get
                 {
-                    if (_version != _owner._version)
+                    if (_version != _owner!._version)
                         throw new InvalidOperationException();
                     if (_index < 0 || _index == _count)
                         throw new InvalidOperationException();
 
                     Debug.Assert(_index <= _count);
 
-                    return _items[_index];
+                    return _items![_index];
                 }
             }
 
             void IDisposable.Dispose()
             {
-                _owner = null;
-                _items = null;
+                _owner = default;
+                _items = default;
             }
 
             object IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
-                if (_version != _owner._version)
+                if (_version != _owner!._version)
                     throw new InvalidOperationException();
                 return ++_index < _count;
             }
 
             public void Reset()
             {
-                if (_version != _owner._version)
+                if (_version != _owner!._version)
                     throw new InvalidOperationException();
                 _index = -1;
             }
@@ -400,7 +398,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>Array of heap values.</returns>
         [Pure]
-        [NotNull]
         public TValue[] ToArray()
         {
             var array = new TValue[Count];
@@ -416,7 +413,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>Array of heap priorities and values.</returns>
         [Pure]
-        [NotNull]
         public KeyValuePair<TPriority, TValue>[] ToPairsArray()
         {
             var array = new KeyValuePair<TPriority, TValue>[Count];
@@ -424,17 +420,16 @@ namespace FastGraph.Collections
             return array;
         }
 
-        [NotNull]
         private string EntryToString(int i)
         {
             if (i < 0 || i >= Count)
-                return "null";
+                return "default";
 
             KeyValuePair<TPriority, TValue> kvp = _items[i];
             TPriority k = kvp.Key;
             TValue v = kvp.Value;
 
-            return $"{k} {(v == null ? "null" : v.ToString())}";
+            return $"{k} {(v == null ? "default" : v.ToString())}";
         }
 
         /// <summary>
@@ -484,7 +479,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>String representation.</returns>
         [Pure]
-        [NotNull]
         public string ToString2()
         {
             bool status = IsConsistent();
@@ -496,7 +490,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>String representation.</returns>
         [Pure]
-        [NotNull]
         public string ToStringTree()
         {
             bool status = IsConsistent();

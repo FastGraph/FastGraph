@@ -1,5 +1,6 @@
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
-using System;
 #endif
 using System.Xml.Serialization;
 
@@ -13,15 +14,16 @@ namespace FastGraph.Serialization
     [Serializable]
 #endif
     public class XmlSerializableEdge<TVertex> : IEdge<TVertex>
+        where TVertex : notnull
     {
         /// <inheritdoc />
         [XmlElement]
         // ReSharper disable once NotNullMemberIsNotInitialized, Justification: Because it's a serializable structure.
-        public TVertex Source { get; set; }
+        public TVertex Source { get; set; } = default!;
 
         /// <inheritdoc />
         [XmlElement]
         // ReSharper disable once NotNullMemberIsNotInitialized, Justification: Because it's a serializable structure.
-        public TVertex Target { get; set; }
+        public TVertex Target { get; set; } = default!;
     }
 }

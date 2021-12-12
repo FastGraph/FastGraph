@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -39,9 +40,11 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new SEdge<TestVertex>(null, new TestVertex("v1")));
-            Assert.Throws<ArgumentNullException>(() => new SEdge<TestVertex>(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => new SEdge<TestVertex>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new SEdge<TestVertex>(default, new TestVertex("v1")));
+            Assert.Throws<ArgumentNullException>(() => new SEdge<TestVertex>(new TestVertex("v1"), default));
+            Assert.Throws<ArgumentNullException>(() => new SEdge<TestVertex>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -77,8 +80,8 @@ namespace FastGraph.Tests.Structures
             Assert.IsFalse(edge3.Equals(edge5));
             Assert.IsFalse(edge5.Equals(edge3));
 
-            Assert.AreNotEqual(edge1, null);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.AreNotEqual(edge1, default);
+            Assert.IsFalse(edge1.Equals(default));
         }
 
         [Test]

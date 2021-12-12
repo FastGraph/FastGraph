@@ -1,8 +1,8 @@
-﻿using System;
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -25,7 +25,7 @@ namespace FastGraph
         /// <summary>
         /// Initializes a new instance of <see cref="NegativeCapacityException"/> class.
         /// </summary>
-        public NegativeCapacityException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public NegativeCapacityException(string message, Exception? innerException = default)
             : base(message, innerException)
         {
         }

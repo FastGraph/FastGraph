@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -24,6 +25,7 @@ namespace FastGraph.Tests.Structures
             #region Local function
 
             void AssertGraphProperties<TVertex, TEdge>(UndirectedBidirectionalGraph<TVertex, TEdge> g, bool parallelEdges = true)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsFalse(g.IsDirected);
@@ -40,7 +42,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new UndirectedBidirectionalGraph<int, Edge<int>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new UndirectedBidirectionalGraph<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         #region Add Vertex => has effect

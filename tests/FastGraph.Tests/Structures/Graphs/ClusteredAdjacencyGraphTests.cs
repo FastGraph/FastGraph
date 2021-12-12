@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -45,7 +43,8 @@ namespace FastGraph.Tests.Structures
                 ClusteredAdjacencyGraph<TVertex, TEdge> g,
                 bool parallelEdges = true,
                 int edgeCapacity = 0,
-                ClusteredAdjacencyGraph<int, Edge<int>> parent = null)
+                ClusteredAdjacencyGraph<int, Edge<int>>? parent = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -68,11 +67,13 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(() =>
-                new ClusteredAdjacencyGraph<int, Edge<int>>((AdjacencyGraph<int, Edge<int>>)null));
+                new ClusteredAdjacencyGraph<int, Edge<int>>((AdjacencyGraph<int, Edge<int>>?)default));
 
             Assert.Throws<ArgumentNullException>(() =>
-                new ClusteredAdjacencyGraph<int, Edge<int>>((ClusteredAdjacencyGraph<int, Edge<int>>)null));
+                new ClusteredAdjacencyGraph<int, Edge<int>>((ClusteredAdjacencyGraph<int, Edge<int>>?)default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -730,7 +731,9 @@ namespace FastGraph.Tests.Structures
             var graph = new ClusteredAdjacencyGraph<TestVertex, Edge<TestVertex>>(wrappedGraph);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.ClearOutEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.ClearOutEdges(default));
+#pragma warning restore CS8625
         }
 
         #endregion
@@ -738,15 +741,15 @@ namespace FastGraph.Tests.Structures
         #region Test helpers
 
         private static void AssertNoCluster(
-            [NotNull] IClusteredGraph graph)
+            IClusteredGraph graph)
         {
             Assert.AreEqual(0, graph.ClustersCount);
             CollectionAssert.IsEmpty(graph.Clusters);
         }
 
         private static void AssertHasClusters(
-            [NotNull] IClusteredGraph graph,
-            [NotNull, ItemNotNull] IEnumerable<IClusteredGraph> clusters)
+            IClusteredGraph graph,
+            IEnumerable<IClusteredGraph> clusters)
         {
             IClusteredGraph[] clusterArray = clusters.ToArray();
             CollectionAssert.IsNotEmpty(clusterArray);
@@ -828,7 +831,9 @@ namespace FastGraph.Tests.Structures
             var graph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveCluster(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveCluster(default));
+#pragma warning restore CS8625
         }
 
         #endregion

@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -10,7 +10,7 @@ namespace FastGraph.Tests.Structures
         #region Remove Edges
 
         protected static void RemoveEdge_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -90,7 +90,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> graph)
+            EdgeListGraph<int, Edge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -149,7 +149,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -220,7 +220,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -303,7 +303,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_EquatableEdge_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
+            IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -384,7 +384,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_EquatableEdge_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, EquatableEdge<int>> graph)
+            EdgeListGraph<int, EquatableEdge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -442,7 +442,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_EquatableEdge_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<EquatableEdge<int>> graph)
+            BidirectionalMatrixGraph<EquatableEdge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -513,7 +513,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_EquatableEdge_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph)
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph)
         {
             var edge12 = new EquatableEdge<int>(1, 2);
             var edge13 = new EquatableEdge<int>(1, 3);
@@ -555,22 +555,28 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdge_Throws_Test<TVertex, TEdge>(
-            [NotNull] IMutableEdgeListGraph<TVertex, TEdge> graph)
+            IMutableEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(default));
+#pragma warning restore CS8625
         }
 
         protected static void RemoveEdge_Throws_Clusters_Test<TVertex, TEdge>(
-            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(default));
+#pragma warning restore CS8625
         }
 
-        protected static void RemoveEdgeIf_Test<TGraph>([NotNull] TGraph graph)
+        protected static void RemoveEdgeIf_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             int verticesRemoved = 0;
@@ -626,7 +632,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdgeIf_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> graph)
+            EdgeListGraph<int, Edge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -671,7 +677,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdgeIf_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -695,23 +701,29 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveEdgeIf_Throws_Test<TVertex, TEdge>(
-            [NotNull] IMutableEdgeListGraph<TVertex, TEdge> graph)
+            IMutableEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(default));
+#pragma warning restore CS8625
         }
 
         protected static void RemoveEdgeIf_Throws_Clusters_Test<TVertex, TEdge>(
-            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(default));
+#pragma warning restore CS8625
         }
 
         protected static void RemoveOutEdgeIf_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -771,7 +783,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveOutEdgeIf_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -819,7 +831,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveOutEdgeIf_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, _ => true));
             AssertEmptyGraph(graph);
@@ -847,39 +859,49 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveOutEdgeIf_Throws_Test<TEdge>(
-            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, default));
+#pragma warning restore CS8625
         }
 
         protected static void RemoveOutEdgeIf_Throws_Test<TVertex, TEdge>(
-            [NotNull] IMutableIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class, new()
+            IMutableIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : notnull, new()
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), null));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
+#pragma warning disable CS8604
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, _ => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), default));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, default));
+#pragma warning restore CS8625
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
         protected static void RemoveOutEdgeIf_Throws_Test<TVertex, TEdge>(
-            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
-            where TVertex : class, new()
+            ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : notnull, new()
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), null));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(null, null));
+#pragma warning disable CS8604
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, _ => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), default));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, default));
+#pragma warning restore CS8625
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
         protected static void RemoveInEdgeIf_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+            IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -939,7 +961,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveInEdgeIf_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             int edgesRemoved = 0;
 
@@ -987,25 +1009,29 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveInEdgeIf_Throws_Test<TEdge>(
-            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, default));
+#pragma warning restore CS8625
         }
 
         protected static void RemoveInEdgeIf_Throws_Test(
-            [NotNull] IMutableBidirectionalGraph<TestVertex, Edge<TestVertex>> graph)
+            IMutableBidirectionalGraph<TestVertex, Edge<TestVertex>> graph)
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, _ => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), default));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
         protected static void RemoveAdjacentEdgeIf_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
+            IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             int verticesRemoved = 0;
             int edgesRemoved = 0;
@@ -1065,12 +1091,14 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void RemoveAdjacentEdgeIf_Throws_Test(
-            [NotNull] IMutableUndirectedGraph<TestVertex, Edge<TestVertex>> graph)
+            IMutableUndirectedGraph<TestVertex, Edge<TestVertex>> graph)
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(null, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(default, _ => true));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(new TestVertex("v1"), default));
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

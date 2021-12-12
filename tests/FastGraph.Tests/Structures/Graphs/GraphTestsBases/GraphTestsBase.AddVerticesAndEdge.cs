@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -10,7 +10,7 @@ namespace FastGraph.Tests.Structures
         #region Add Vertices & Edges
 
         protected static void AddVerticesAndEdge_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int vertexAdded = 0;
             int edgeAdded = 0;
@@ -55,9 +55,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddVerticesAndEdge_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            ClusteredAdjacencyGraph<int, Edge<int>> graph2)
         {
             // Graph without parent
             AssertEmptyGraph(graph1);
@@ -114,34 +114,43 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddVerticesAndEdge_Throws_Test<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> graph)
+            IMutableVertexAndEdgeSet<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(default));
+#pragma warning restore CS8625
             AssertEmptyGraph(graph);
         }
 
         protected static void AddVerticesAndEdge_Throws_EdgesOnly_Test<TVertex, TEdge>(
-            [NotNull] EdgeListGraph<TVertex, TEdge> graph)
+            EdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(default));
+#pragma warning restore CS8625
             AssertEmptyGraph(graph);
         }
 
         protected static void AddVerticesAndEdge_Throws_Clusters_Test<TVertex, TEdge>(
-            [NotNull] ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            ClusteredAdjacencyGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdge(default));
+#pragma warning restore CS8625
             AssertEmptyGraph(graph);
         }
 
         protected static void AddVerticesAndEdgeRange_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int vertexAdded = 0;
             int edgeAdded = 0;
@@ -179,7 +188,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddVerticesAndEdgeRange_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> graph)
+            EdgeListGraph<int, Edge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -208,9 +217,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddVerticesAndEdgeRange_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            ClusteredAdjacencyGraph<int, Edge<int>> graph2)
         {
             // Graph without parent
             AssertEmptyGraph(graph1);
@@ -255,7 +264,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddVerticesAndEdgeRange_Throws_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             int vertexAdded = 0;
             int edgeAdded = 0;
@@ -275,19 +284,23 @@ namespace FastGraph.Tests.Structures
             };
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(default));
+#pragma warning restore CS8625
 
             // Edge 1, 2, 3
             var edge1 = new Edge<int>(1, 2);
             var edge3 = new Edge<int>(1, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, null, edge3 }));
+#pragma warning disable CS8620
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, default, edge3 }));
+#pragma warning restore CS8620
             Assert.AreEqual(0, vertexAdded);
             Assert.AreEqual(0, edgeAdded);
             AssertEmptyGraph(graph);
         }
 
         protected static void AddVerticesAndEdgeRange_Throws_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> graph)
+            EdgeListGraph<int, Edge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -300,28 +313,36 @@ namespace FastGraph.Tests.Structures
             };
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(default));
+#pragma warning restore CS8625
 
             // Edge 1, 2, 3
             var edge1 = new Edge<int>(1, 2);
             var edge3 = new Edge<int>(1, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, null, edge3 }));
+#pragma warning disable CS8620
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, default, edge3 }));
+#pragma warning restore CS8620
             Assert.AreEqual(0, edgeAdded);
             AssertEmptyGraph(graph);
         }
 
         protected static void AddVerticesAndEdgeRange_Throws_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             AssertEmptyGraph(graph);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(default));
+#pragma warning restore CS8625
 
             // Edge 1, 2, 3
             var edge1 = new Edge<int>(1, 2);
             var edge3 = new Edge<int>(1, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, null, edge3 }));
+#pragma warning disable CS8620
+            Assert.Throws<ArgumentNullException>(() => graph.AddVerticesAndEdgeRange(new[] { edge1, default, edge3 }));
+#pragma warning restore CS8620
             AssertEmptyGraph(graph);
         }
 

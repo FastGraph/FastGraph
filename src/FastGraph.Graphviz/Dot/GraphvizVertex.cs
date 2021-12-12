@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using System.Collections.Generic;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -25,13 +25,13 @@ namespace FastGraph.Graphviz.Dot
         /// Position.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:pos">See more</see>
         /// </summary>
-        public GraphvizPoint Position { get; set; }
+        public GraphvizPoint? Position { get; set; }
 
         /// <summary>
         /// Comment.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
         /// </summary>
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// Indicates if label should be read as HTML or normal text. By default it is normal text.
@@ -50,19 +50,19 @@ namespace FastGraph.Graphviz.Dot
         /// to generate the label you can define it using your own way in the <see cref="Label"/>.
         /// The only constraint will be to generate a fully valid record string.
         /// </remarks>
-        public string Label { get; set; }
+        public string? Label { get; set; }
 
         /// <summary>
         /// Tooltip.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tooltip">See more</see>
         /// </summary>
-        public string ToolTip { get; set; }
+        public string? ToolTip { get; set; }
 
         /// <summary>
         /// URL.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Distortion.
@@ -81,7 +81,7 @@ namespace FastGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public GraphvizFont Font { get; set; }
+        public GraphvizFont? Font { get; set; }
 
         /// <summary>
         /// Font color.
@@ -99,13 +99,13 @@ namespace FastGraph.Graphviz.Dot
         /// Vertex group.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:group">See more</see>
         /// </summary>
-        public string Group { get; set; }
+        public string? Group { get; set; }
 
         /// <summary>
         /// Vertex layer.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layer">See more</see>
         /// </summary>
-        public GraphvizLayer Layer { get; set; }
+        public GraphvizLayer? Layer { get; set; }
 
         /// <summary>
         /// Orientation.
@@ -129,7 +129,7 @@ namespace FastGraph.Graphviz.Dot
         /// Record info.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
         /// </summary>
-        public GraphvizRecord Record { get; set; } = new GraphvizRecord();
+        public GraphvizRecord? Record { get; set; } = new GraphvizRecord();
 
         /// <summary>
         /// Vertex shape.
@@ -181,13 +181,12 @@ namespace FastGraph.Graphviz.Dot
         public double Z { get; set; } = -1;
 
         [Pure]
-        [NotNull]
-        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
+        internal string GenerateDot(Dictionary<string, object?> properties)
         {
             var builder = new StringBuilder();
 
             bool flag = false;
-            foreach (KeyValuePair<string, object> pair in properties)
+            foreach (KeyValuePair<string, object?> pair in properties)
             {
                 if (flag)
                 {
@@ -241,7 +240,7 @@ namespace FastGraph.Graphviz.Dot
                         continue;
 
                     default:
-                        builder.Append($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        builder.Append($"{pair.Key}={pair.Value!.ToString()!.ToLower()}");
                         break;
                 }
             }
@@ -252,9 +251,9 @@ namespace FastGraph.Graphviz.Dot
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void TextRelatedPropertiesToDot([NotNull] IDictionary<string, object> properties)
+        private void TextRelatedPropertiesToDot(IDictionary<string, object?> properties)
         {
-            if (Font != null)
+            if (Font != default)
             {
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
@@ -270,17 +269,17 @@ namespace FastGraph.Graphviz.Dot
                 properties["penwidth"] = PenWidth;
             }
 
-            if (ToolTip != null)
+            if (ToolTip != default)
             {
                 properties["tooltip"] = Escape(ToolTip);
             }
 
-            if (Comment != null)
+            if (Comment != default)
             {
                 properties["comment"] = Escape(Comment);
             }
 
-            if (Url != null)
+            if (Url != default)
             {
                 properties["URL"] = Url;
             }
@@ -290,7 +289,7 @@ namespace FastGraph.Graphviz.Dot
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private void LabelOrRecordToDot(
-            [NotNull] IDictionary<string, object> properties,
+            IDictionary<string, object?> properties,
             GraphvizVertexShape shape)
         {
             if (shape == GraphvizVertexShape.Record)
@@ -300,7 +299,7 @@ namespace FastGraph.Graphviz.Dot
                 {
                     properties["label"] = Label;
                 }
-                else if (Record != null && Record.Cells.Count > 0)
+                else if (Record != default && Record.Cells.Count > 0)
                 {
                     properties["label"] = Record;
                 }
@@ -308,8 +307,8 @@ namespace FastGraph.Graphviz.Dot
             else if (!string.IsNullOrEmpty(Label))
             {
                 properties["label"] = IsHtmlLabel
-                    ? (object)new HtmlString(Label)
-                    : Escape(Label);
+                    ? (object)new HtmlString(Label!)
+                    : Escape(Label!);
             }
         }
 
@@ -317,15 +316,15 @@ namespace FastGraph.Graphviz.Dot
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private void ShapeRelatedPropertiesToDot(
-            [CanBeNull] GraphvizVertex commonFormat,
-            [NotNull] IDictionary<string, object> properties)
+            GraphvizVertex? commonFormat,
+            IDictionary<string, object?> properties)
         {
             if (Shape != GraphvizVertexShape.Unspecified)
             {
                 properties["shape"] = Shape;
             }
 
-            GraphvizVertexShape shape = Shape == GraphvizVertexShape.Unspecified && commonFormat != null
+            GraphvizVertexShape shape = Shape == GraphvizVertexShape.Unspecified && commonFormat != default
                 ? commonFormat.Shape
                 : Shape;
 
@@ -353,7 +352,7 @@ namespace FastGraph.Graphviz.Dot
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void LayoutRelatedPropertiesToDot([NotNull] IDictionary<string, object> properties)
+        private void LayoutRelatedPropertiesToDot(IDictionary<string, object?> properties)
         {
             if (FixedSize)
             {
@@ -393,14 +392,14 @@ namespace FastGraph.Graphviz.Dot
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void PositionRelatedProperties([NotNull] IDictionary<string, object> properties)
+        private void PositionRelatedProperties(IDictionary<string, object?> properties)
         {
             if (Z > 0)
             {
                 properties["z"] = Z;
             }
 
-            if (Position != null)
+            if (Position != default)
             {
                 properties["pos"] = $"{Position.X},{Position.Y}!";
             }
@@ -412,10 +411,9 @@ namespace FastGraph.Graphviz.Dot
         /// <param name="commonFormat">Common vertex format to apply.</param>
         /// <returns>Vertex as DOT.</returns>
         [Pure]
-        [NotNull]
-        internal string InternalToDot([CanBeNull] GraphvizVertex commonFormat = null)
+        internal string InternalToDot(GraphvizVertex? commonFormat = default)
         {
-            var properties = new Dictionary<string, object>();
+            var properties = new Dictionary<string, object?>();
             TextRelatedPropertiesToDot(properties);
             ShapeRelatedPropertiesToDot(commonFormat, properties);
             LayoutRelatedPropertiesToDot(properties);
@@ -423,11 +421,11 @@ namespace FastGraph.Graphviz.Dot
             {
                 properties["regular"] = Regular;
             }
-            if (Group != null)
+            if (Group != default)
             {
                 properties["group"] = Group;
             }
-            if (Layer != null)
+            if (Layer != default)
             {
                 properties["layer"] = Layer.Name;
             }
@@ -445,7 +443,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Vertex as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             return InternalToDot();

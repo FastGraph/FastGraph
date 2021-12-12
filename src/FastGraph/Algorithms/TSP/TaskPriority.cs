@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.TSP
 {
@@ -17,14 +16,14 @@ namespace FastGraph.Algorithms.TSP
         #region Equality
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
                 return false;
             return obj is TaskPriority priority && Equals(priority);
         }
 
-        private bool Equals([NotNull] TaskPriority other)
+        private bool Equals(TaskPriority other)
         {
             return _cost.Equals(other._cost)
                    && _pathSize == other._pathSize;
@@ -55,7 +54,7 @@ namespace FastGraph.Algorithms.TSP
         #region IComparable<T>
 
         /// <inheritdoc />
-        public int CompareTo(TaskPriority other)
+        public int CompareTo(TaskPriority? other)
         {
             if (other is null)
                 return 1;

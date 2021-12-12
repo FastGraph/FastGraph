@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -105,8 +105,7 @@ namespace FastGraph
         /// <inheritdoc />
         public int EdgeCount { get; private set; }
 
-        [NotNull]
-        private readonly TEdge[,] _edges;
+        private readonly TEdge?[,] _edges;
 
         /// <inheritdoc />
         public IEnumerable<TEdge> Edges
@@ -117,8 +116,8 @@ namespace FastGraph
                 {
                     for (int j = 0; j < VertexCount; ++j)
                     {
-                        TEdge edge = _edges[i, j];
-                        if (edge != null)
+                        TEdge? edge = _edges[i, j];
+                        if (edge != default)
                             yield return edge;
                     }
                 }
@@ -128,12 +127,12 @@ namespace FastGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
-            if (edge == null)
+            if (edge == default)
                 throw new ArgumentNullException(nameof(edge));
             if (!AreInGraph(edge.Source, edge.Target))
                 return false;
 
-            return _edges[edge.Source, edge.Target] != null;
+            return _edges[edge.Source, edge.Target] != default;
         }
 
         #endregion
@@ -145,16 +144,16 @@ namespace FastGraph
         {
             if (!AreInGraph(source, target))
                 return false;
-            return _edges[source, target] != null;
+            return _edges[source, target] != default;
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(int source, int target, out TEdge edge)
+        public bool TryGetEdge(int source, int target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (AreInGraph(source, target))
             {
                 edge = _edges[source, target];
-                return edge != null;
+                return edge != default;
             }
 
             edge = default(TEdge);
@@ -162,18 +161,18 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(int source, int target, out IEnumerable<TEdge> edges)
+        public bool TryGetEdges(int source, int target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (AreInGraph(source, target))
             {
-                TEdge edge = _edges[source, target];
+                TEdge? edge = _edges[source, target];
                 edges = edge is null
                     ? Enumerable.Empty<TEdge>()
                     : new[] { edge };
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -188,7 +187,7 @@ namespace FastGraph
 
             for (int j = 0; j < VertexCount; ++j)
             {
-                if (_edges[vertex, j] != null)
+                if (_edges[vertex, j] != default)
                     return false;
             }
 
@@ -203,7 +202,7 @@ namespace FastGraph
             int count = 0;
             for (int j = 0; j < VertexCount; ++j)
             {
-                if (_edges[vertex, j] != null)
+                if (_edges[vertex, j] != default)
                 {
                     ++count;
                 }
@@ -219,14 +218,14 @@ namespace FastGraph
 
             for (int j = 0; j < VertexCount; ++j)
             {
-                TEdge edge = _edges[vertex, j];
-                if (edge != null)
+                TEdge? edge = _edges[vertex, j];
+                if (edge != default)
                     yield return edge;
             }
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(int vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetOutEdges(int vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (IsInGraph(vertex))
             {
@@ -234,7 +233,7 @@ namespace FastGraph
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -246,8 +245,8 @@ namespace FastGraph
             int count = 0;
             for (int j = 0; j < VertexCount; ++j)
             {
-                TEdge edge = _edges[vertex, j];
-                if (edge != null)
+                TEdge? edge = _edges[vertex, j];
+                if (edge != default)
                 {
                     if (count == index)
                         return edge;
@@ -269,7 +268,7 @@ namespace FastGraph
 
             for (int i = 0; i < VertexCount; ++i)
             {
-                if (_edges[i, vertex] != null)
+                if (_edges[i, vertex] != default)
                     return false;
             }
 
@@ -284,7 +283,7 @@ namespace FastGraph
             int count = 0;
             for (int i = 0; i < VertexCount; ++i)
             {
-                if (_edges[i, vertex] != null)
+                if (_edges[i, vertex] != default)
                 {
                     ++count;
                 }
@@ -300,14 +299,14 @@ namespace FastGraph
 
             for (int i = 0; i < VertexCount; ++i)
             {
-                TEdge edge = _edges[i, vertex];
-                if (edge != null)
+                TEdge? edge = _edges[i, vertex];
+                if (edge != default)
                     yield return edge;
             }
         }
 
         /// <inheritdoc />
-        public bool TryGetInEdges(int vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetInEdges(int vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (IsInGraph(vertex))
             {
@@ -315,7 +314,7 @@ namespace FastGraph
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -327,8 +326,8 @@ namespace FastGraph
             int count = 0;
             for (int i = 0; i < VertexCount; ++i)
             {
-                TEdge edge = _edges[i, vertex];
-                if (edge != null)
+                TEdge? edge = _edges[i, vertex];
+                if (edge != default)
                 {
                     if (count == index)
                         return edge;
@@ -357,10 +356,10 @@ namespace FastGraph
             {
                 for (int j = 0; j < VertexCount; ++j)
                 {
-                    TEdge edge = _edges[i, j];
-                    _edges[i, j] = null;
+                    TEdge? edge = _edges[i, j];
+                    _edges[i, j] = default;
 
-                    if (edge != null)
+                    if (edge != default)
                     {
                         OnEdgeRemoved(edge);
                     }
@@ -380,7 +379,7 @@ namespace FastGraph
         /// <param name="predicate">Edge predicate.</param>
         /// <returns>Number of edges removed.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
+        public int RemoveInEdgeIf(int vertex, [InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
@@ -390,8 +389,8 @@ namespace FastGraph
             int count = 0;
             for (int i = 0; i < VertexCount; ++i)
             {
-                TEdge edge = _edges[i, vertex];
-                if (edge != null && predicate(edge))
+                TEdge? edge = _edges[i, vertex];
+                if (edge != default && predicate(edge))
                 {
                     RemoveEdgeInternal(edge);
                     ++count;
@@ -408,8 +407,8 @@ namespace FastGraph
         {
             for (int i = 0; i < VertexCount; ++i)
             {
-                TEdge edge = _edges[i, vertex];
-                if (edge != null)
+                TEdge? edge = _edges[i, vertex];
+                if (edge != default)
                 {
                     RemoveEdgeInternal(edge);
                 }
@@ -453,7 +452,7 @@ namespace FastGraph
         /// <param name="predicate">Predicate to remove edges.</param>
         /// <returns>The number of removed edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        public int RemoveOutEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
+        public int RemoveOutEdgeIf(int vertex, [InstantHandle] EdgePredicate<int, TEdge> predicate)
         {
             if (predicate is null)
                 throw new ArgumentNullException(nameof(predicate));
@@ -463,8 +462,8 @@ namespace FastGraph
             int count = 0;
             for (int j = 0; j < VertexCount; ++j)
             {
-                TEdge edge = _edges[vertex, j];
-                if (edge != null && predicate(edge))
+                TEdge? edge = _edges[vertex, j];
+                if (edge != default && predicate(edge))
                 {
                     RemoveEdgeInternal(edge);
                     ++count;
@@ -481,8 +480,8 @@ namespace FastGraph
         {
             for (int j = 0; j < VertexCount; ++j)
             {
-                TEdge edge = _edges[vertex, j];
-                if (edge != null)
+                TEdge? edge = _edges[vertex, j];
+                if (edge != default)
                 {
                     RemoveEdgeInternal(edge);
                 }
@@ -509,7 +508,7 @@ namespace FastGraph
         /// <exception cref="ParallelEdgeNotAllowedException"><paramref name="edge"/> is already present in graph.</exception>
         public bool AddEdge(TEdge edge)
         {
-            if (edge == null)
+            if (edge == default)
                 throw new ArgumentNullException(nameof(edge));
             AssertAreInGraph(edge.Source, edge.Target);
 
@@ -530,35 +529,30 @@ namespace FastGraph
             if (edges is null)
                 throw new ArgumentNullException(nameof(edges));
             TEdge[] edgesArray = edges.ToArray();
-            if (edgesArray.Any(e => e == null))
+            if (edgesArray.Any(e => e == default))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
 
             return edgesArray.Count(AddEdge);
         }
 
         /// <inheritdoc />
-        public event EdgeAction<int, TEdge> EdgeAdded;
+        public event EdgeAction<int, TEdge>? EdgeAdded;
 
         /// <summary>
         /// Called on each added edge.
         /// </summary>
         /// <param name="edge">Added edge.</param>
-        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        protected virtual void OnEdgeAdded(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeAdded?.Invoke(edge);
         }
 
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void RemoveEdgeInternal([NotNull] TEdge edge)
+        private void RemoveEdgeInternal(TEdge edge)
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(_edges[edge.Source, edge.Target] != null);
-
-            _edges[edge.Source, edge.Target] = null;
+            _edges[edge.Source, edge.Target] = default;
             --EdgeCount;
             Debug.Assert(EdgeCount >= 0);
             OnEdgeRemoved(edge);
@@ -567,11 +561,11 @@ namespace FastGraph
         /// <inheritdoc />
         public bool RemoveEdge(TEdge edge)
         {
-            if (edge == null)
+            if (edge == default)
                 throw new ArgumentNullException(nameof(edge));
             if (!AreInGraph(edge.Source, edge.Target))
                 return false;
-            TEdge edgeToRemove = _edges[edge.Source, edge.Target];
+            TEdge? edgeToRemove = _edges[edge.Source, edge.Target];
             if (edgeToRemove is null)
                 return false;
 
@@ -581,16 +575,14 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public event EdgeAction<int, TEdge> EdgeRemoved;
+        public event EdgeAction<int, TEdge>? EdgeRemoved;
 
         /// <summary>
         /// Called on each removed edge.
         /// </summary>
         /// <param name="edge">Removed edge.</param>
-        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
+        protected virtual void OnEdgeRemoved(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeRemoved?.Invoke(edge);
         }
 
@@ -610,11 +602,10 @@ namespace FastGraph
         private BidirectionalMatrixGraph(
             int vertexCount,
             int edgeCount,
-            [NotNull] TEdge[,] edges)
+            TEdge[,] edges)
         {
             Debug.Assert(vertexCount > 0);
             Debug.Assert(edgeCount >= 0);
-            Debug.Assert(edges != null);
             Debug.Assert(vertexCount == edges.GetLength(0));
             Debug.Assert(vertexCount == edges.GetLength(1));
 
@@ -628,7 +619,6 @@ namespace FastGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
         public BidirectionalMatrixGraph<TEdge> Clone()
         {
             return new BidirectionalMatrixGraph<TEdge>(

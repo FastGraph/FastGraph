@@ -1,8 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 #endif
-using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace FastGraph.Collections
 {
@@ -15,6 +14,7 @@ namespace FastGraph.Collections
     [Serializable]
 #endif
     public sealed class EdgeList<TVertex, TEdge> : List<TEdge>, IEdgeList<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -36,7 +36,7 @@ namespace FastGraph.Collections
 
         /// <inheritdoc />
         /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        public EdgeList([NotNull] EdgeList<TVertex, TEdge> other)
+        public EdgeList(EdgeList<TVertex, TEdge> other)
             : base(other)
         {
         }
@@ -45,7 +45,6 @@ namespace FastGraph.Collections
         /// Clones this edge list.
         /// </summary>
         /// <returns>Cloned list.</returns>
-        [NotNull]
         public EdgeList<TVertex, TEdge> Clone()
         {
             return new EdgeList<TVertex, TEdge>(this);

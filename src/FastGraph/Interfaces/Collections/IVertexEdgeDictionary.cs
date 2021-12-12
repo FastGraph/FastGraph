@@ -1,7 +1,7 @@
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
 #endif
-using System.Collections.Generic;
 using JetBrains.Annotations;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
@@ -21,14 +21,14 @@ namespace FastGraph.Collections
 #if SUPPORTS_SERIALIZATION
         , ISerializable
 #endif
-     where TEdge : IEdge<TVertex>
+        where TVertex : notnull
+        where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Gets a clone of the dictionary. The vertices and edges are not cloned.
         /// </summary>
         /// <returns>Cloned dictionary.</returns>
         [Pure]
-        [NotNull]
 #if SUPPORTS_CLONEABLE
         new
 #endif

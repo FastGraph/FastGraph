@@ -1,10 +1,8 @@
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
-using System;
 #endif
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
 
 namespace FastGraph.Collections
 {
@@ -16,35 +14,31 @@ namespace FastGraph.Collections
 #if SUPPORTS_SERIALIZATION
     [Serializable]
 #endif
-    public sealed class FibonacciHeapLinkedList<TPriority, TValue> : IEnumerable<FibonacciHeapCell<TPriority, TValue>>
+    public sealed class FibonacciHeapLinkedList<TPriority, TValue> : IEnumerable<FibonacciHeapCell<TPriority, TValue>> where TPriority : notnull
     {
-        [CanBeNull]
-        private FibonacciHeapCell<TPriority, TValue> _last;
+        private FibonacciHeapCell<TPriority, TValue>? _last;
 
         /// <summary>
         /// First <see cref="FibonacciHeapCell{TPriority,TValue}"/>.
         /// </summary>
-        [CanBeNull]
-        public FibonacciHeapCell<TPriority, TValue> First { get; private set; }
+        public FibonacciHeapCell<TPriority, TValue>? First { get; private set; }
 
         internal FibonacciHeapLinkedList()
         {
-            First = null;
-            _last = null;
+            First = default;
+            _last = default;
         }
 
         /// <summary>
         /// Merges the given <paramref name="cells"/> at the end of this cells list.
         /// </summary>
         /// <param name="cells">Cells to merge.</param>
-        internal void MergeLists([NotNull] FibonacciHeapLinkedList<TPriority, TValue> cells)
+        internal void MergeLists(FibonacciHeapLinkedList<TPriority, TValue> cells)
         {
-            Debug.Assert(cells != null);
-
             if (cells.First is null)
                 return;
 
-            if (_last != null)
+            if (_last != default)
             {
                 _last.Next = cells.First;
             }
@@ -62,11 +56,9 @@ namespace FastGraph.Collections
         /// Adds the given <paramref name="cell"/> at the end of this cells list.
         /// </summary>
         /// <param name="cell">Cell to add.</param>
-        internal void AddLast([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        internal void AddLast(FibonacciHeapCell<TPriority, TValue> cell)
         {
-            Debug.Assert(cell != null);
-
-            if (_last != null)
+            if (_last != default)
             {
                 _last.Next = cell;
             }
@@ -84,11 +76,9 @@ namespace FastGraph.Collections
         /// Removes the given <paramref name="cell"/> from this cells list.
         /// </summary>
         /// <param name="cell">Cell to remove.</param>
-        internal void Remove([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        internal void Remove(FibonacciHeapCell<TPriority, TValue> cell)
         {
-            Debug.Assert(cell != null);
-
-            if (cell.Previous != null)
+            if (cell.Previous != default)
             {
                 cell.Previous.Next = cell.Next;
             }
@@ -97,7 +87,7 @@ namespace FastGraph.Collections
                 First = cell.Next;
             }
 
-            if (cell.Next != null)
+            if (cell.Next != default)
             {
                 cell.Next.Previous = cell.Previous;
             }
@@ -106,8 +96,8 @@ namespace FastGraph.Collections
                 _last = cell.Previous;
             }
 
-            cell.Next = null;
-            cell.Previous = null;
+            cell.Next = default;
+            cell.Previous = default;
         }
 
         #region IEnumerable
@@ -125,8 +115,8 @@ namespace FastGraph.Collections
         /// <inheritdoc />
         public IEnumerator<FibonacciHeapCell<TPriority, TValue>> GetEnumerator()
         {
-            FibonacciHeapCell<TPriority, TValue> current = First;
-            while (current != null)
+            FibonacciHeapCell<TPriority, TValue>? current = First;
+            while (current != default)
             {
                 yield return current;
                 current = current.Next;

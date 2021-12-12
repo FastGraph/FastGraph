@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.MaximumFlow;
 
 namespace FastGraph.Algorithms
@@ -12,6 +11,7 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class MaximumBipartiteMatchingAlgorithm<TVertex, TEdge> : AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -28,11 +28,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MaximumBipartiteMatchingAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> sourceToVertices,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> verticesToSink,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            IEnumerable<TVertex> sourceToVertices,
+            IEnumerable<TVertex> verticesToSink,
+            VertexFactory<TVertex> vertexFactory,
+            EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(visitedGraph)
         {
             SourceToVertices = sourceToVertices ?? throw new ArgumentNullException(nameof(sourceToVertices));
@@ -44,35 +44,29 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Vertices to which augmented edge from super source are created with augmentation.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<TVertex> SourceToVertices { get; }
 
         /// <summary>
         /// Vertices from which augmented edge to super sink are created with augmentation.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<TVertex> VerticesToSink { get; }
 
         /// <summary>
         /// Vertex factory method.
         /// </summary>
-        [NotNull]
         public VertexFactory<TVertex> VertexFactory { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
 
-        [NotNull, ItemNotNull]
         private readonly List<TEdge> _matchedEdges = new List<TEdge>();
 
         /// <summary>
         /// Maximal edges matching.
         /// </summary>
-        [NotNull, ItemNotNull]
         public TEdge[] MatchedEdges => _matchedEdges.ToArray();
 
         #region AlgorithmBase<TGraph>
@@ -88,8 +82,8 @@ namespace FastGraph.Algorithms
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge> augmentor = null;
-            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverser = null;
+            BipartiteToMaximumFlowGraphAugmentorAlgorithm<TVertex, TEdge>? augmentor = default;
+            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>? reverser = default;
 
             try
             {
@@ -123,7 +117,7 @@ namespace FastGraph.Algorithms
                     EdgeFactory,
                     reverser);
 
-                flow.Compute(augmentor.SuperSource, augmentor.SuperSink);
+                flow.Compute(augmentor.SuperSource!, augmentor.SuperSink!);
 
                 ThrowIfCancellationRequested();
 
@@ -131,10 +125,10 @@ namespace FastGraph.Algorithms
                 {
                     if (Math.Abs(flow.ResidualCapacities[edge]) < float.Epsilon)
                     {
-                        if (EqualityComparer<TVertex>.Default.Equals(edge.Source, augmentor.SuperSource)
-                            || EqualityComparer<TVertex>.Default.Equals(edge.Source, augmentor.SuperSink)
-                            || EqualityComparer<TVertex>.Default.Equals(edge.Target, augmentor.SuperSource)
-                            || EqualityComparer<TVertex>.Default.Equals(edge.Target, augmentor.SuperSink))
+                        if (EqualityComparer<TVertex?>.Default.Equals(edge.Source, augmentor.SuperSource)
+                            || EqualityComparer<TVertex?>.Default.Equals(edge.Source, augmentor.SuperSink)
+                            || EqualityComparer<TVertex?>.Default.Equals(edge.Target, augmentor.SuperSource)
+                            || EqualityComparer<TVertex?>.Default.Equals(edge.Target, augmentor.SuperSink))
                         {
                             // Skip all edges that connect to SuperSource or SuperSink
                             continue;
@@ -146,11 +140,11 @@ namespace FastGraph.Algorithms
             }
             finally
             {
-                if (reverser != null && reverser.Augmented)
+                if (reverser != default && reverser.Augmented)
                 {
                     reverser.RemoveReversedEdges();
                 }
-                if (augmentor != null && augmentor.Augmented)
+                if (augmentor != default && augmentor.Augmented)
                 {
                     augmentor.Rollback();
                 }

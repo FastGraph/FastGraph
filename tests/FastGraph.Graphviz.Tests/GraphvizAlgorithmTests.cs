@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.Graphviz.Tests
 {
@@ -42,6 +41,7 @@ namespace FastGraph.Graphviz.Tests
                 GraphvizAlgorithm<TVertex, TEdge> algo,
                 IEdgeListGraph<TVertex, TEdge> treatedGraph,
                 GraphvizImageType imageType = GraphvizImageType.Png)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.AreSame(treatedGraph, algo.VisitedGraph);
@@ -60,12 +60,14 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(null));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(null, GraphvizImageType.Gif));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(default));
+            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(default, GraphvizImageType.Gif));
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<ArgumentNullException>(() => algorithm.VisitedGraph = null);
+            Assert.Throws<ArgumentNullException>(() => algorithm.VisitedGraph = default);
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -149,6 +151,7 @@ namespace FastGraph.Graphviz.Tests
             }
 
             List<TVertex> RegisterOnFormatVertex<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<TVertex> vertices)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 var verticesList = new List<TVertex>(vertices);
@@ -165,6 +168,7 @@ namespace FastGraph.Graphviz.Tests
             }
 
             List<TEdge> RegisterOnFormatEdge<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<TEdge> edges)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 var edgeList = new List<TEdge>(edges);
@@ -181,6 +185,7 @@ namespace FastGraph.Graphviz.Tests
             }
 
             List<IVertexAndEdgeListGraph<TVertex, TEdge>> RegisterOnFormatCluster<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<IVertexAndEdgeListGraph<TVertex, TEdge>> clusters)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 var clusterList = new List<IVertexAndEdgeListGraph<TVertex, TEdge>>(clusters);
@@ -229,6 +234,7 @@ namespace FastGraph.Graphviz.Tests
             #region Local function
 
             void TestGenerate<TVertex, TEdge>(IEdgeListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(g);
@@ -243,7 +249,6 @@ namespace FastGraph.Graphviz.Tests
             #endregion
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
             [UsedImplicitly]
@@ -604,7 +609,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(GenerateTestCases))]
-        public string Generate([NotNull] IEdgeListGraph<int, Edge<int>> graph)
+        public string Generate(IEdgeListGraph<int, Edge<int>> graph)
         {
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
             return algorithm.Generate();
@@ -714,11 +719,13 @@ namespace FastGraph.Graphviz.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, "NotSaved.dot"));
-            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, "NotSaved.dot"));
+            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, default));
             Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, string.Empty));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, null));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, default));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, string.Empty));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
     }

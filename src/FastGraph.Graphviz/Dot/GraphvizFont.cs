@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿#nullable enable
 
 namespace FastGraph.Graphviz.Dot
 {
@@ -30,10 +29,10 @@ namespace FastGraph.Graphviz.Dot
         /// <param name="sizeInPoints">Font size.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="sizeInPoints"/> is negative or equal to 0.</exception>
-        public GraphvizFont([NotNull] string name, float sizeInPoints)
+        public GraphvizFont(string name, float sizeInPoints)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("Font name cannot be null or empty.", nameof(name));
+                throw new ArgumentException("Font name cannot be default or empty.", nameof(name));
             if (sizeInPoints <= 0)
                 throw new ArgumentOutOfRangeException(nameof(sizeInPoints), "Size must be positive.");
 

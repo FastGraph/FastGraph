@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -8,11 +9,12 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IMutableVertexSet<TVertex> : IVertexSet<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Fired when a vertex is added to this set.
         /// </summary>
-        event VertexAction<TVertex> VertexAdded;
+        event VertexAction<TVertex>? VertexAdded;
 
         /// <summary>
         /// Adds a vertex to this set.
@@ -20,7 +22,7 @@ namespace FastGraph
         /// <param name="vertex">Vertex to add.</param>
         /// <returns>True if the vertex was added, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        bool AddVertex([NotNull] TVertex vertex);
+        bool AddVertex(TVertex vertex);
 
         /// <summary>
         /// Adds given vertices to this set.
@@ -30,12 +32,12 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException">
         /// <paramref name="vertices"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
         /// </exception>
-        int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices);
+        int AddVertexRange(IEnumerable<TVertex> vertices);
 
         /// <summary>
         /// Fired when a vertex is removed from this set.
         /// </summary>
-        event VertexAction<TVertex> VertexRemoved;
+        event VertexAction<TVertex>? VertexRemoved;
 
         /// <summary>
         /// Removes the given vertex from this set.
@@ -43,7 +45,7 @@ namespace FastGraph
         /// <param name="vertex">Vertex to remove.</param>
         /// <returns>True if the vertex was removed, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        bool RemoveVertex([NotNull] TVertex vertex);
+        bool RemoveVertex(TVertex vertex);
 
         /// <summary>
         /// Removes all vertices matching the given <paramref name="predicate"/>.
@@ -51,6 +53,6 @@ namespace FastGraph
         /// <param name="predicate">Predicate to check on each vertex.</param>
         /// <returns>The number of vertex removed.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate);
+        int RemoveVertexIf([InstantHandle] VertexPredicate<TVertex> predicate);
     }
 }

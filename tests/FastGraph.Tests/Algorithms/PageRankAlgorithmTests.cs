@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Ranking;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -54,6 +53,7 @@ namespace FastGraph.Tests.Algorithms
                 double d = -1,
                 double t = -1,
                 int iterations = -1)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -94,8 +94,10 @@ namespace FastGraph.Tests.Algorithms
             var graph = new BidirectionalGraph<int, Edge<int>>();
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new PageRankAlgorithm<int, Edge<int>>(null));
+                () => new PageRankAlgorithm<int, Edge<int>>(default));
+#pragma warning restore CS8625
 
             var algorithm = new PageRankAlgorithm<int, Edge<int>>(graph);
             Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Damping = -10.0);

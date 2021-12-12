@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Tests
 {
@@ -13,15 +12,14 @@ namespace FastGraph.Tests
         {
         }
 
-        public ComparableTestVertex([NotNull] string name)
+        public ComparableTestVertex(string name)
         {
             Name = name;
         }
 
-        [NotNull]
         public string Name { get; }
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj is null)
                 return 1;

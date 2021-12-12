@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -17,6 +18,7 @@ namespace FastGraph.Algorithms
     [Serializable]
 #endif
     public abstract class AlgorithmBase<TGraph> : IAlgorithm<TGraph>, IAlgorithmComponent
+        where TGraph : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AlgorithmBase{TGraph}"/> class (with optional host).
@@ -24,7 +26,7 @@ namespace FastGraph.Algorithms
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        protected AlgorithmBase([CanBeNull] IAlgorithmComponent host, [NotNull] TGraph visitedGraph)
+        protected AlgorithmBase(IAlgorithmComponent? host, TGraph visitedGraph)
         {
             if (visitedGraph == null)
                 throw new ArgumentNullException(nameof(visitedGraph));
@@ -42,7 +44,7 @@ namespace FastGraph.Algorithms
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        protected AlgorithmBase([NotNull] TGraph visitedGraph)
+        protected AlgorithmBase(TGraph visitedGraph)
         {
             if (visitedGraph == null)
                 throw new ArgumentNullException(nameof(visitedGraph));
@@ -115,58 +117,50 @@ namespace FastGraph.Algorithms
         }
 
         /// <inheritdoc />
-        public event EventHandler StateChanged;
+        public event EventHandler? StateChanged;
 
         /// <summary>
         /// Called on algorithm state changed.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnStateChanged([NotNull] EventArgs args)
+        protected virtual void OnStateChanged(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             StateChanged?.Invoke(this, args);
         }
 
         /// <inheritdoc />
-        public event EventHandler Started;
+        public event EventHandler? Started;
 
         /// <summary>
         /// Called on algorithm start.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnStarted([NotNull] EventArgs args)
+        protected virtual void OnStarted(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             Started?.Invoke(this, args);
         }
 
         /// <inheritdoc />
-        public event EventHandler Finished;
+        public event EventHandler? Finished;
 
         /// <summary>
         /// Called on algorithm finished.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnFinished([NotNull] EventArgs args)
+        protected virtual void OnFinished(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             Finished?.Invoke(this, args);
         }
 
         /// <inheritdoc />
-        public event EventHandler Aborted;
+        public event EventHandler? Aborted;
 
         /// <summary>
         /// Called on algorithm abort.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnAborted([NotNull] EventArgs args)
+        protected virtual void OnAborted(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             Aborted?.Invoke(this, args);
         }
 
@@ -181,7 +175,6 @@ namespace FastGraph.Algorithms
 
         #region IAlgorithmComponent
 
-        [NotNull]
         private readonly AlgorithmServices _algorithmServices;
 
         /// <inheritdoc />
@@ -191,15 +184,15 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.InvalidOperationException">Requested service is not present on algorithm.</exception>
         public T GetService<T>()
         {
-            if (!TryGetService(out T service))
+            if (!TryGetService(out T? service))
                 throw new InvalidOperationException("Service not found.");
             return service;
         }
 
         /// <inheritdoc />
-        public bool TryGetService<T>(out T service)
+        public bool TryGetService<T>([NotNullWhen(true)] out T? service)
         {
-            if (TryGetService(typeof(T), out object serviceObject))
+            if (TryGetService(typeof(T), out object? serviceObject))
             {
                 service = (T)serviceObject;
                 return true;
@@ -209,8 +202,7 @@ namespace FastGraph.Algorithms
             return false;
         }
 
-        [CanBeNull]
-        private Dictionary<Type, object> _services;
+        private Dictionary<Type, object?>? _services;
 
         /// <summary>
         /// Tries to get the service with given <paramref name="serviceType"/>.
@@ -220,7 +212,7 @@ namespace FastGraph.Algorithms
         /// <returns>True if the service was found, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, service:notnull;=> false, service:null")]
-        protected virtual bool TryGetService([NotNull] Type serviceType, out object service)
+        protected virtual bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
         {
             if (serviceType is null)
                 throw new ArgumentNullException(nameof(serviceType));
@@ -229,11 +221,11 @@ namespace FastGraph.Algorithms
             {
                 if (_services is null)
                 {
-                    _services = new Dictionary<Type, object>();
+                    _services = new Dictionary<Type, object?>();
                 }
 
                 if (_services.TryGetValue(serviceType, out service))
-                    return service != null;
+                    return service != default;
 
                 if (serviceType == typeof(ICancelManager))
                 {
@@ -241,10 +233,10 @@ namespace FastGraph.Algorithms
                 }
                 else
                 {
-                    _services[serviceType] = null;
+                    _services[serviceType] = default;
                 }
 
-                return service != null;
+                return service != default;
             }
         }
 

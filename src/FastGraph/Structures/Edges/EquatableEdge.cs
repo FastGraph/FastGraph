@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -14,6 +13,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class EquatableEdge<TVertex> : Edge<TVertex>, IEquatable<EquatableEdge<TVertex>>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EquatableEdge{TVertex}"/> class.
@@ -22,13 +22,13 @@ namespace FastGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public EquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public EquatableEdge(TVertex source, TVertex target)
             : base(source, target)
         {
         }
 
         /// <inheritdoc />
-        public virtual bool Equals(EquatableEdge<TVertex> other)
+        public virtual bool Equals(EquatableEdge<TVertex>? other)
         {
             if (other is null)
                 return false;
@@ -37,7 +37,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as EquatableEdge<TVertex>);
         }

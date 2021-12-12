@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.RandomWalks
@@ -9,6 +11,7 @@ namespace FastGraph.Algorithms.RandomWalks
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IEdgeChain<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -22,7 +25,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, successor:notnull;=> false, successor:null")]
-        bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, out TEdge successor);
+        bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, [NotNullWhen(true)] TVertex vertex, out TEdge? successor);
 
         /// <summary>
         /// Tries to get the successor of the given <paramref name="vertex"/> in the given set of <paramref name="edges"/>.
@@ -35,6 +38,6 @@ namespace FastGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, successor:notnull;=> false, successor:null")]
-        bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TVertex vertex, out TEdge successor);
+        bool TryGetSuccessor(IEnumerable<TEdge> edges, [NotNullWhen(true)] TVertex vertex, out TEdge? successor);
     }
 }

@@ -1,6 +1,5 @@
-using System;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using static FastGraph.Tests.TestHelpers;
@@ -17,7 +16,7 @@ namespace FastGraph.Tests.Algorithms
 
         private static void AssertIsEulerian(
             bool expectedEulerian,
-            [NotNull] IUndirectedGraph<int, UndirectedEdge<int>> graph)
+            IUndirectedGraph<int, UndirectedEdge<int>> graph)
         {
             var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
             Assert.AreEqual(expectedEulerian, algorithm.IsEulerian());
@@ -163,12 +162,14 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(null));
+                () => new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(default));
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<ArgumentNullException>(
-                () => IsEulerianGraphAlgorithm.IsEulerian<int, UndirectedEdge<int>>(null));
+                () => IsEulerianGraphAlgorithm.IsEulerian<int, UndirectedEdge<int>>(default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Petri
 {
@@ -15,7 +14,7 @@ namespace FastGraph.Petri
         /// <param name="transition">Transition (Target).</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
-        public Arc([NotNull] IPlace<TToken> place, [NotNull] ITransition<TToken> transition)
+        public Arc(IPlace<TToken> place, ITransition<TToken> transition)
             : base(place, transition)
         {
             Place = place;
@@ -30,7 +29,7 @@ namespace FastGraph.Petri
         /// <param name="place">Place (Target).</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
-        public Arc([NotNull] ITransition<TToken> transition, [NotNull] IPlace<TToken> place)
+        public Arc(ITransition<TToken> transition, IPlace<TToken> place)
             : base(place, transition)
         {
             Place = place;
@@ -47,7 +46,6 @@ namespace FastGraph.Petri
         /// <inheritdoc />
         public ITransition<TToken> Transition { get; }
 
-        [NotNull]
         private IExpression<TToken> _annotation = new IdentityExpression<TToken>();
 
         /// <inheritdoc />

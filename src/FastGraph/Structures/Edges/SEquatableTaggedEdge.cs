@@ -1,9 +1,8 @@
-﻿using System;
+#nullable enable
+
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Constants;
-using System.Collections.Generic;
 
 namespace FastGraph
 {
@@ -18,6 +17,7 @@ namespace FastGraph
     [StructLayout(LayoutKind.Auto)]
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
     public struct SEquatableTaggedEdge<TVertex, TTag> : IEdge<TVertex>, ITagged<TTag>, IEquatable<SEquatableTaggedEdge<TVertex, TTag>>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SEquatableTaggedEdge{TVertex, TTag}"/> struct.
@@ -27,7 +27,7 @@ namespace FastGraph
         /// <param name="tag">Edge tag.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public SEquatableTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
+        public SEquatableTaggedEdge(TVertex source, TVertex target, TTag? tag)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -37,7 +37,7 @@ namespace FastGraph
             Source = source;
             Target = target;
             _tag = tag;
-            TagChanged = null;
+            TagChanged = default;
         }
 
         /// <inheritdoc />
@@ -47,28 +47,26 @@ namespace FastGraph
         public TVertex Target { get; }
 
         /// <inheritdoc />
-        public event EventHandler TagChanged;
+        public event EventHandler? TagChanged;
 
         /// <summary>
         /// Event invoker for <see cref="TagChanged"/> event.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        private void OnTagChanged([NotNull] EventArgs args)
+        private void OnTagChanged(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             TagChanged?.Invoke(this, args);
         }
 
-        private TTag _tag;
+        private TTag? _tag;
 
         /// <inheritdoc />
-        public TTag Tag
+        public TTag? Tag
         {
             get => _tag;
             set
             {
-                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
+                if (EqualityComparer<TTag?>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;
@@ -77,7 +75,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is SEquatableTaggedEdge<TVertex, TTag> edge
                    && Equals(edge);

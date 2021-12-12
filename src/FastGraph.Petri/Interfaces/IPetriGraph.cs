@@ -1,4 +1,6 @@
-﻿namespace FastGraph.Petri
+﻿#nullable enable
+
+namespace FastGraph.Petri
 {
     /// <summary>
     /// Represents a Petri Graph (a mutable bidirectional directed graph).

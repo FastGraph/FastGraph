@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -13,6 +12,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class DelegateVertexAndEdgeListGraph<TVertex, TEdge> : DelegateIncidenceGraph<TVertex, TEdge>, IVertexAndEdgeListGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -28,8 +28,8 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateVertexAndEdgeListGraph(
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            IEnumerable<TVertex> vertices,
+            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             bool allowParallelEdges = true)
             : base(tryGetOutEdges, allowParallelEdges)
         {
@@ -44,7 +44,6 @@ namespace FastGraph
         /// <inheritdoc />
         public int VertexCount => _vertices.Count();
 
-        [NotNull]
         private readonly IEnumerable<TVertex> _vertices;
 
         /// <inheritdoc />
@@ -79,7 +78,7 @@ namespace FastGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (TryGetOutEdges(edge.Source, out IEnumerable<TEdge> outEdges))
+            if (TryGetOutEdges(edge.Source, out IEnumerable<TEdge>? outEdges))
                 return outEdges.Any(outEdge => EqualityComparer<TEdge>.Default.Equals(outEdge, edge));
             return false;
         }
@@ -105,7 +104,7 @@ namespace FastGraph
 
         #region IIncidenceGraph<TVertex,TEdge>
 
-        private bool FilterEdges([NotNull] TEdge edge, [NotNull] TVertex vertex)
+        private bool FilterEdges(TEdge edge, TVertex vertex)
         {
             return IsInGraph(edge, vertex) && EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex);
         }
@@ -117,11 +116,8 @@ namespace FastGraph
         /// in the graph before.
         /// </summary>
         [Pure]
-        private bool IsInGraph([NotNull] TEdge edge, [NotNull] TVertex vertex)
+        private bool IsInGraph(TEdge edge, TVertex vertex)
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(vertex != null);
-
             return ContainsVertexInternal(edge.GetOtherVertex(vertex));
         }
 
@@ -149,17 +145,17 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        internal override bool TryGetOutEdgesInternal(TVertex vertex, out IEnumerable<TEdge> edges)
+        internal override bool TryGetOutEdgesInternal(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (!ContainsVertexInternal(vertex))
             {
-                edges = null;
+                edges = default;
                 return false;
             }
 
             // Ignore return because "vertex" exists in the graph
             // so it should always return true.
-            base.TryGetOutEdgesInternal(vertex, out IEnumerable<TEdge> unfilteredOutEdges);
+            base.TryGetOutEdgesInternal(vertex, out IEnumerable<TEdge>? unfilteredOutEdges);
 
             edges = unfilteredOutEdges is null
                 ? Enumerable.Empty<TEdge>()

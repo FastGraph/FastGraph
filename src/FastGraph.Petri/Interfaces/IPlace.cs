@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Petri
@@ -20,14 +21,13 @@ namespace FastGraph.Petri
         /// <summary>
         /// Set of tokens (marking of the place).
         /// </summary>
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         IList<TToken> Marking { get; }
 
         /// <summary>
         /// Converts this <see cref="IPlace{TToken}"/> to string (includes <see cref="Marking"/>).
         /// </summary>
         [Pure]
-        [NotNull]
         string ToStringWithMarking();
     }
 }

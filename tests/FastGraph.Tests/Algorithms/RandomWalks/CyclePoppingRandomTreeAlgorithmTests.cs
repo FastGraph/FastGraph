@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.RandomWalks;
@@ -18,8 +17,9 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         #region Test helpers
 
         private static void RunCyclePoppingRandomTreeAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+            IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var randomChain = new Random(123456);
@@ -54,10 +54,10 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         }
 
         [Pure]
-        [NotNull]
         private static IVertexListGraph<TVertex, TEdge> MakeGraph<TVertex, TEdge>(
-            [NotNull] TVertex root,
-            [NotNull] IDictionary<TVertex, TEdge> successors)
+            TVertex root,
+            IDictionary<TVertex, TEdge> successors)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var graph = new AdjacencyGraph<TVertex, TEdge>();
@@ -70,8 +70,9 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         }
 
         private static void AssertIsTree<TVertex, TEdge>(
-            [NotNull] TVertex root,
-            [NotNull] IDictionary<TVertex, TEdge> successors)
+            TVertex root,
+            IDictionary<TVertex, TEdge> successors)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             IVertexListGraph<TVertex, TEdge> graph = MakeGraph(root, successors);
@@ -99,7 +100,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, markovChain2);
             AssertAlgorithmProperties(algorithm, graph, markovChain2);
 
-            algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null, graph, markovChain1);
+            algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, graph, markovChain1);
             AssertAlgorithmProperties(algorithm, graph, markovChain1);
 
             var random = new Random(123456);
@@ -111,8 +112,9 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 CyclePoppingRandomTreeAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g,
-                IMarkovEdgeChain<TVertex, TEdge> chain = null,
-                Random rand = null)
+                IMarkovEdgeChain<TVertex, TEdge>? chain = default,
+                Random? rand = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -139,25 +141,27 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, null));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null, chain));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, chain));
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null, null));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null, graph, null));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null, null, chain));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default, chain));
             Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(null, null, null));
+                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default, default));
 
             var algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, chain);
-            Assert.Throws<ArgumentNullException>(() => algorithm.Rand = null);
+            Assert.Throws<ArgumentNullException>(() => algorithm.Rand = default);
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -402,9 +406,9 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         }
 
         [Pure]
-        [NotNull]
         public static CyclePoppingRandomTreeAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -414,7 +418,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             var algorithm = new CyclePoppingRandomTreeAlgorithm<T, Edge<T>>(graph, chain);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

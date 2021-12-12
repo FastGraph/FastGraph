@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -34,8 +35,10 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new GraphvizRecordCellCollection((GraphvizRecordCell[])null));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizRecordCellCollection((GraphvizRecordCellCollection)null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new GraphvizRecordCellCollection((GraphvizRecordCell[]?)default));
+            Assert.Throws<ArgumentNullException>(() => new GraphvizRecordCellCollection((GraphvizRecordCellCollection?)default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

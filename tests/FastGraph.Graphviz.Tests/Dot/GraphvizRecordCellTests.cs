@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -27,11 +26,13 @@ namespace FastGraph.Graphviz.Tests
         public void Port()
         {
             var cell = new GraphvizRecordCell();
-            if (cell.Port != null)
-                throw new InvalidOperationException($"Cell has not null {nameof(GraphvizRecordCell.Port)}.");
+            if (cell.Port != default)
+                throw new InvalidOperationException($"Cell has not default {nameof(GraphvizRecordCell.Port)}.");
             Assert.IsFalse(cell.HasPort);
 
-            cell.Port = null;
+#pragma warning disable CS8625
+            cell.Port = default;
+#pragma warning restore CS8625
 
             Assert.IsFalse(cell.HasPort);
             Assert.IsNull(cell.Port);
@@ -52,11 +53,13 @@ namespace FastGraph.Graphviz.Tests
         public void Text()
         {
             var cell = new GraphvizRecordCell();
-            if (cell.Text != null)
-                throw new InvalidOperationException($"Cell has not null {nameof(GraphvizRecordCell.Text)}.");
+            if (cell.Text != default)
+                throw new InvalidOperationException($"Cell has not default {nameof(GraphvizRecordCell.Text)}.");
             Assert.IsFalse(cell.HasText);
 
-            cell.Port = null;
+#pragma warning disable CS8625
+            cell.Port = default;
+#pragma warning restore CS8625
 
             Assert.IsFalse(cell.HasText);
             Assert.IsNull(cell.Text);
@@ -78,7 +81,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var cell = new GraphvizRecordCell();
             if (cell.Cells is null)
-                throw new InvalidOperationException($"Cell has null {nameof(GraphvizRecordCell.Cells)}.");
+                throw new InvalidOperationException($"Cell has default {nameof(GraphvizRecordCell.Cells)}.");
 
             var recordCollection = new GraphvizRecordCellCollection();
             cell.Cells = recordCollection;
@@ -90,10 +93,11 @@ namespace FastGraph.Graphviz.Tests
         {
             var cell = new GraphvizRecordCell();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => cell.Cells = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => cell.Cells = default);
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -357,7 +361,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizRecordCell recordCell, [NotNull] string expectedDot)
+        public void ToDot(GraphvizRecordCell recordCell, string expectedDot)
         {
             Assert.AreEqual(expectedDot, recordCell.ToDot());
             Assert.AreEqual(expectedDot, recordCell.ToString());

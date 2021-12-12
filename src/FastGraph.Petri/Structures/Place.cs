@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using System.Text;
-using JetBrains.Annotations;
 
 namespace FastGraph.Petri
 {
@@ -16,7 +14,7 @@ namespace FastGraph.Petri
         /// </summary>
         /// <param name="name">Place name.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-        public Place([NotNull] string name)
+        public Place(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
@@ -41,7 +39,7 @@ namespace FastGraph.Petri
 
             builder.Append(
                 string.Join(
-                    Environment.NewLine + "\t", Marking.Select(token => token.GetType().Name)));
+                    Environment.NewLine + "\t", Marking.Select(token => token!.GetType().Name)));
 
             return builder.ToString();
         }

@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -8,6 +10,7 @@ namespace FastGraph
     /// <typeparam name="TEdge">Edge type.</typeparam>
     // ReSharper disable once UnusedTypeParameter
     public interface IGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>

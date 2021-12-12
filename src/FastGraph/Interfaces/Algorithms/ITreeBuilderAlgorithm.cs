@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph.Algorithms
 {
     /// <summary>
@@ -6,11 +8,12 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface ITreeBuilderAlgorithm<TVertex, out TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Fired when an edge is encountered.
         /// </summary>
-        event EdgeAction<TVertex, TEdge> TreeEdge;
+        event EdgeAction<TVertex, TEdge>? TreeEdge;
     }
 }

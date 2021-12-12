@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -24,7 +23,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var record = new GraphvizRecord();
             if (record.Cells is null)
-                throw new InvalidOperationException($"Cell has null {nameof(GraphvizRecord.Cells)}.");
+                throw new InvalidOperationException($"Cell has default {nameof(GraphvizRecord.Cells)}.");
 
             var recordCollection = new GraphvizRecordCellCollection();
             record.Cells = recordCollection;
@@ -36,10 +35,11 @@ namespace FastGraph.Graphviz.Tests
         {
             var record = new GraphvizRecord();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => record.Cells = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => record.Cells = default);
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -163,7 +163,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizRecord record, [NotNull] string expectedDot)
+        public void ToDot(GraphvizRecord record, string expectedDot)
         {
             Assert.AreEqual(expectedDot, record.ToDot());
             Assert.AreEqual(expectedDot, record.ToString());

@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Search;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -17,8 +16,9 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunEdgeDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
+            IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
             int maxDepth = int.MaxValue)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TEdge, TEdge>();
@@ -113,7 +113,7 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm = new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, edgesColors);
             AssertAlgorithmProperties(algorithm, graph, edgesColors);
 
-            algorithm = new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, edgesColors);
+            algorithm = new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, edgesColors);
             AssertAlgorithmProperties(algorithm, graph, edgesColors);
 
             algorithm.MaxDepth = 12;
@@ -127,9 +127,10 @@ namespace FastGraph.Tests.Algorithms.Search
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 EdgeDepthFirstSearchAlgorithm<TVertex, TEdge> algo,
                 IEdgeListAndIncidenceGraph<TVertex, TEdge> g,
-                IDictionary<TEdge, GraphColor> vColors = null,
+                IDictionary<TEdge, GraphColor>? vColors = default,
                 int maxDepth = int.MaxValue,
                 bool processAllComponents = false)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -149,25 +150,27 @@ namespace FastGraph.Tests.Algorithms.Search
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgesColors = new Dictionary<Edge<int>, GraphColor>();
 
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, edgesColors));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, edgesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, edgesColors));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, edgesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 

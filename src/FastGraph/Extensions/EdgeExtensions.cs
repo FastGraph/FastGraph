@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -19,7 +18,8 @@ namespace FastGraph
         /// <returns>True if edge is a self one, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsSelfEdge<TVertex>([NotNull] this IEdge<TVertex> edge)
+        public static bool IsSelfEdge<TVertex>(this IEdge<TVertex> edge)
+            where TVertex : notnull
         {
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
@@ -37,8 +37,8 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static TVertex GetOtherVertex<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
+        public static TVertex GetOtherVertex<TVertex>(this IEdge<TVertex> edge, TVertex vertex)
+            where TVertex : notnull
         {
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
@@ -59,11 +59,12 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsAdjacent<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
+        public static bool IsAdjacent<TVertex>(this IEdge<TVertex> edge, TVertex vertex)
+            where TVertex : notnull
         {
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
-            if (vertex == null)
+            if (vertex == null )
                 throw new ArgumentNullException(nameof(vertex));
 
             return EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)
@@ -79,7 +80,8 @@ namespace FastGraph
         /// <returns>True if the set makes a complete path, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsPath<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
+        public static bool IsPath<TVertex, TEdge>(this IEnumerable<TEdge> path)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (path is null)
@@ -96,7 +98,7 @@ namespace FastGraph
                 }
                 else
                 {
-                    if (!EqualityComparer<TVertex>.Default.Equals(lastTarget, edge.Source))
+                    if (!EqualityComparer<TVertex?>.Default.Equals(lastTarget, edge.Source))
                         return false;
                     lastTarget = edge.Target;
                 }
@@ -115,7 +117,8 @@ namespace FastGraph
         /// <returns>True if the set makes a cycle, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool HasCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
+        public static bool HasCycles<TVertex, TEdge>(this IEnumerable<TEdge> path)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (path is null)
@@ -153,7 +156,8 @@ namespace FastGraph
         /// <returns>True if the path makes a cycle, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsPathWithoutCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
+        public static bool IsPathWithoutCycles<TVertex, TEdge>(this IEnumerable<TEdge> path)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (path is null)
@@ -175,7 +179,7 @@ namespace FastGraph
                 }
                 else
                 {
-                    if (!EqualityComparer<TVertex>.Default.Equals(lastTarget, edge.Source))
+                    if (!EqualityComparer<TVertex?>.Default.Equals(lastTarget, edge.Source))
                         return false;
                     if (vertices.ContainsKey(edge.Target))
                         return false;
@@ -196,7 +200,8 @@ namespace FastGraph
         /// <returns>A <see cref="SEquatableEdge{TVertex}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static SEquatableEdge<TVertex> ToVertexPair<TVertex>([NotNull] this IEdge<TVertex> edge)
+        public static SEquatableEdge<TVertex> ToVertexPair<TVertex>(this IEdge<TVertex> edge)
+            where TVertex : notnull
         {
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
@@ -217,9 +222,10 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsPredecessor<TVertex, TEdge>(
-            [NotNull] this IDictionary<TVertex, TEdge> predecessors,
-            [NotNull] TVertex root,
-            [NotNull] TVertex vertex)
+            this IDictionary<TVertex, TEdge> predecessors,
+            TVertex root,
+            TVertex vertex)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (predecessors is null)
@@ -233,7 +239,7 @@ namespace FastGraph
             if (EqualityComparer<TVertex>.Default.Equals(root, currentVertex))
                 return true;
 
-            while (predecessors.TryGetValue(currentVertex, out TEdge predecessor))
+            while (predecessors.TryGetValue(currentVertex, out TEdge? predecessor))
             {
                 TVertex source = GetOtherVertex(predecessor, currentVertex);
                 if (EqualityComparer<TVertex>.Default.Equals(currentVertex, source))
@@ -260,9 +266,10 @@ namespace FastGraph
         [Pure]
         [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         public static bool TryGetPath<TVertex, TEdge>(
-            [NotNull] this IDictionary<TVertex, TEdge> predecessors,
-            [NotNull] TVertex vertex,
-            [ItemNotNull] out IEnumerable<TEdge> path)
+            this IDictionary<TVertex, TEdge> predecessors,
+            TVertex vertex,
+            [NotNullWhen(true)] out IEnumerable<TEdge>? path)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (predecessors is null)
@@ -273,7 +280,7 @@ namespace FastGraph
             var computedPath = new List<TEdge>();
 
             TVertex currentVertex = vertex;
-            while (predecessors.TryGetValue(currentVertex, out TEdge edge))
+            while (predecessors.TryGetValue(currentVertex, out TEdge? edge))
             {
                 if (edge.IsSelfEdge())
                     break;
@@ -289,7 +296,7 @@ namespace FastGraph
                 return true;
             }
 
-            path = null;
+            path = default;
             return false;
         }
 
@@ -303,8 +310,8 @@ namespace FastGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>The best edge equality comparer.</returns>
         [Pure]
-        [NotNull]
         public static EdgeEqualityComparer<TVertex> GetUndirectedVertexEquality<TVertex, TEdge>()
+            where TVertex : notnull
         {
             if (typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge)))
                 return SortedVertexEquality;
@@ -327,9 +334,10 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool UndirectedVertexEquality<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
+            where TVertex : notnull
         {
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
@@ -343,14 +351,11 @@ namespace FastGraph
 
         [Pure]
         internal static bool UndirectedVertexEqualityInternal<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
+            where TVertex : notnull
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(source != null);
-            Debug.Assert(target != null);
-
             return (EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
                         && EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
                    || (EqualityComparer<TVertex>.Default.Equals(edge.Target, source)
@@ -372,9 +377,10 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool SortedVertexEquality<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
+            where TVertex : notnull
         {
             if (edge is null)
                 throw new ArgumentNullException(nameof(edge));
@@ -388,14 +394,11 @@ namespace FastGraph
 
         [Pure]
         internal static bool SortedVertexEqualityInternal<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
+            where TVertex : notnull
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(source != null);
-            Debug.Assert(target != null);
-
             return EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
                 && EqualityComparer<TVertex>.Default.Equals(edge.Target, target);
         }
@@ -409,9 +412,9 @@ namespace FastGraph
         /// <returns>Reversed edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IEnumerable<SReversedEdge<TVertex, TEdge>> ReverseEdges<TVertex, TEdge>(
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IEnumerable<TEdge> edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (edges is null)

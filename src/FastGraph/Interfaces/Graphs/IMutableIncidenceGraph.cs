@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+#nullable enable
+
+using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -9,6 +11,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IMutableIncidenceGraph<TVertex, TEdge> : IMutableGraph<TVertex, TEdge>, IIncidenceGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -20,14 +23,14 @@ namespace FastGraph
         /// <returns>The number of removed edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        int RemoveOutEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate);
+        int RemoveOutEdgeIf(TVertex vertex, [InstantHandle] EdgePredicate<TVertex, TEdge> predicate);
 
         /// <summary>
         /// Trims the out-edges of the given <paramref name="vertex"/>
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        void ClearOutEdges([NotNull] TVertex vertex);
+        void ClearOutEdges(TVertex vertex);
 
         /// <summary>
         /// Trims excess storage allocated for edges.

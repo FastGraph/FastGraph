@@ -1,5 +1,5 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Cliques;
 using FastGraph.Algorithms.Services;
@@ -16,14 +16,15 @@ namespace FastGraph.Tests.Algorithms.Cliques
         #region Test classes
 
         private class TestMaximumCliqueAlgorithm<TVertex, TEdge> : MaximumCliqueAlgorithmBase<TVertex, TEdge>
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            public TestMaximumCliqueAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            public TestMaximumCliqueAlgorithm(IUndirectedGraph<TVertex, TEdge> visitedGraph)
                 : base(visitedGraph)
             {
             }
 
-            public TestMaximumCliqueAlgorithm([CanBeNull] IAlgorithmComponent host, [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            public TestMaximumCliqueAlgorithm(IAlgorithmComponent? host, IUndirectedGraph<TVertex, TEdge> visitedGraph)
                 : base(host, visitedGraph)
             {
             }
@@ -44,7 +45,7 @@ namespace FastGraph.Tests.Algorithms.Cliques
             var algorithm = new TestMaximumCliqueAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmState(algorithm, graph);
 
-            algorithm = new TestMaximumCliqueAlgorithm<int, Edge<int>>(null, graph);
+            algorithm = new TestMaximumCliqueAlgorithm<int, Edge<int>>(default, graph);
             AssertAlgorithmState(algorithm, graph);
         }
 
@@ -53,11 +54,15 @@ namespace FastGraph.Tests.Algorithms.Cliques
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new TestMaximumCliqueAlgorithm<int, Edge<int>>(null));
+#pragma warning disable CS8625
 
             Assert.Throws<ArgumentNullException>(
-                () => new TestMaximumCliqueAlgorithm<int, Edge<int>>(null, null));
+                () => new TestMaximumCliqueAlgorithm<int, Edge<int>>(default));
+
+            Assert.Throws<ArgumentNullException>(
+                () => new TestMaximumCliqueAlgorithm<int, Edge<int>>(default, default));
+
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

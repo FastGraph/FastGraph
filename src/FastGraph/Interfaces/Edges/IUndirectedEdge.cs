@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -8,6 +10,7 @@ namespace FastGraph
     /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IUndirectedEdge<out TVertex> : IEdge<TVertex>
+        where TVertex : notnull
     {
     }
 }

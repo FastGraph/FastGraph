@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -7,17 +7,16 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IEdge<out TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Gets the source vertex.
         /// </summary>
-        [NotNull]
         TVertex Source { get; }
 
         /// <summary>
         /// Gets the target vertex.
         /// </summary>
-        [NotNull]
         TVertex Target { get; }
     }
 }

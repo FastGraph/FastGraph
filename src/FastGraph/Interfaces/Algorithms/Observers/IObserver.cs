@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.Observers
 {
@@ -9,6 +8,7 @@ namespace FastGraph.Algorithms.Observers
     /// <typeparam name="TAlgorithm">Algorithm type.</typeparam>
     /// <reference-ref id="gof02designpatterns" />
     public interface IObserver<in TAlgorithm>
+        where TAlgorithm : notnull
     {
         /// <summary>
         /// Attaches to the algorithm events and returns a <see cref="T:System.IDisposable"/>
@@ -17,7 +17,6 @@ namespace FastGraph.Algorithms.Observers
         /// <param name="algorithm">Algorithm to observe.</param>
         /// <returns><see cref="T:System.IDisposable"/> allowing to detach from registered events.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="algorithm"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        IDisposable Attach([NotNull] TAlgorithm algorithm);
+        IDisposable Attach(TAlgorithm algorithm);
     }
 }

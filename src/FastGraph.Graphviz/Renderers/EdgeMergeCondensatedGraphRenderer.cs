@@ -1,5 +1,6 @@
-﻿using System.Text;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Text;
 using FastGraph.Algorithms.Condensation;
 
 namespace FastGraph.Graphviz
@@ -10,6 +11,7 @@ namespace FastGraph.Graphviz
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class EdgeMergeCondensatedGraphRenderer<TVertex, TEdge> : GraphRendererBase<TVertex, MergedEdge<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -18,7 +20,7 @@ namespace FastGraph.Graphviz
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public EdgeMergeCondensatedGraphRenderer(
-            [NotNull] IEdgeListGraph<TVertex, MergedEdge<TVertex, TEdge>> graph)
+            IEdgeListGraph<TVertex, MergedEdge<TVertex, TEdge>> graph)
             : base(graph)
         {
         }
@@ -41,12 +43,12 @@ namespace FastGraph.Graphviz
             base.Clean();
         }
 
-        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TVertex> args)
+        private static void OnFormatVertex(object sender, FormatVertexEventArgs<TVertex> args)
         {
             args.VertexFormat.Label = args.Vertex.ToString();
         }
 
-        private static void OnFormatEdge([NotNull] object sender, [NotNull] FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> args)
+        private static void OnFormatEdge(object sender, FormatEdgeEventArgs<TVertex, MergedEdge<TVertex, TEdge>> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine(args.Edge.Edges.Count.ToString());

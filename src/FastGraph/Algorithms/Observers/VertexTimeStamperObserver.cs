@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using static FastGraph.Utils.DisposableHelpers;
 
 namespace FastGraph.Algorithms.Observers
@@ -14,6 +12,7 @@ namespace FastGraph.Algorithms.Observers
     [Serializable]
 #endif
     public sealed class VertexTimeStamperObserver<TVertex> : IObserver<IVertexTimeStamperAlgorithm<TVertex>>
+        where TVertex : notnull
     {
         private int _currentTime;
 
@@ -30,10 +29,10 @@ namespace FastGraph.Algorithms.Observers
         /// </summary>
         /// <param name="discoverTimes">Vertices discover times.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="discoverTimes"/> is <see langword="null"/>.</exception>
-        public VertexTimeStamperObserver([NotNull] IDictionary<TVertex, int> discoverTimes)
+        public VertexTimeStamperObserver(IDictionary<TVertex, int> discoverTimes)
         {
             DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
-            FinishTimes = null;
+            FinishTimes = default;
         }
 
         /// <summary>
@@ -44,8 +43,8 @@ namespace FastGraph.Algorithms.Observers
         /// <exception cref="T:System.ArgumentNullException"><paramref name="discoverTimes"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="finishTimes"/> is <see langword="null"/>.</exception>
         public VertexTimeStamperObserver(
-            [NotNull] IDictionary<TVertex, int> discoverTimes,
-            [NotNull] IDictionary<TVertex, int> finishTimes)
+            IDictionary<TVertex, int> discoverTimes,
+            IDictionary<TVertex, int> finishTimes)
         {
             DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
             FinishTimes = finishTimes ?? throw new ArgumentNullException(nameof(finishTimes));
@@ -54,14 +53,12 @@ namespace FastGraph.Algorithms.Observers
         /// <summary>
         /// Times of vertices discover.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, int> DiscoverTimes { get; }
 
         /// <summary>
         /// Times of vertices fully treated.
         /// </summary>
-        [CanBeNull]
-        public IDictionary<TVertex, int> FinishTimes { get; }
+        public IDictionary<TVertex, int>? FinishTimes { get; }
 
         #region IObserver<TAlgorithm>
 
@@ -72,7 +69,7 @@ namespace FastGraph.Algorithms.Observers
                 throw new ArgumentNullException(nameof(algorithm));
 
             algorithm.DiscoverVertex += OnVertexDiscovered;
-            if (FinishTimes != null)
+            if (FinishTimes != default)
             {
                 algorithm.FinishVertex += OnVertexFinished;
             }
@@ -80,7 +77,7 @@ namespace FastGraph.Algorithms.Observers
             return Finally(() =>
             {
                 algorithm.DiscoverVertex -= OnVertexDiscovered;
-                if (FinishTimes != null)
+                if (FinishTimes != default)
                 {
                     algorithm.FinishVertex -= OnVertexFinished;
                 }
@@ -89,19 +86,15 @@ namespace FastGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             DiscoverTimes[vertex] = _currentTime++;
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
-            // ReSharper disable once PossibleNullReferenceException, Justification: Not null if the handler is attached
-            FinishTimes[vertex] = _currentTime++;
+            // ReSharper disable once PossibleNullReferenceException, Justification: Not default if the handler is attached
+            FinishTimes![vertex] = _currentTime++;
         }
     }
 }

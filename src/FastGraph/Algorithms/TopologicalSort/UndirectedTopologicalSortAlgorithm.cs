@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Search;
 
 namespace FastGraph.Algorithms.TopologicalSort
@@ -11,9 +10,9 @@ namespace FastGraph.Algorithms.TopologicalSort
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class UndirectedTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull, ItemNotNull]
         private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
@@ -23,7 +22,7 @@ namespace FastGraph.Algorithms.TopologicalSort
         /// <param name="capacity">Sorted vertices capacity.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public UndirectedTopologicalSortAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
             : base(visitedGraph)
         {
@@ -33,21 +32,20 @@ namespace FastGraph.Algorithms.TopologicalSort
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [ItemNotNull]
-        public TVertex[] SortedVertices { get; private set; }
+        public TVertex[]? SortedVertices { get; private set; }
 
         /// <summary>
         /// Gets or sets the flag that indicates if cyclic graph are supported or not.
         /// </summary>
         public bool AllowCyclicGraph { get; set; }
 
-        private void BackEdge([NotNull] object sender, [NotNull] UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void BackEdge(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
             if (!AllowCyclicGraph)
                 throw new NonAcyclicGraphException();
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished(TVertex vertex)
         {
             _sortedVertices.Add(vertex);
         }
@@ -59,14 +57,14 @@ namespace FastGraph.Algorithms.TopologicalSort
         {
             base.Initialize();
 
-            SortedVertices = null;
+            SortedVertices = default;
             _sortedVertices.Clear();
         }
 
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
+            UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>? dfs = default;
             try
             {
                 dfs = new UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>(
@@ -80,7 +78,7 @@ namespace FastGraph.Algorithms.TopologicalSort
             }
             finally
             {
-                if (dfs != null)
+                if (dfs != default)
                 {
                     dfs.BackEdge -= BackEdge;
                     dfs.FinishVertex -= OnVertexFinished;

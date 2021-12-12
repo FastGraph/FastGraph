@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using JetBrains.Annotations;
 using FastGraph.Graphviz.Helpers;
 using static FastGraph.Graphviz.DotEscapers;
 using static FastGraph.Utils.MathUtils;
@@ -38,7 +38,7 @@ namespace FastGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public GraphvizFont Font { get; set; }
+        public GraphvizFont? Font { get; set; }
 
         /// <summary>
         /// Font color.
@@ -56,19 +56,19 @@ namespace FastGraph.Graphviz.Dot
         /// Label text.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:label">See more</see>
         /// </summary>
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         /// <summary>
         /// Adds this edge label parameters to the given <paramref name="parameters"/> map.
         /// </summary>
         /// <param name="parameters">Parameter map to fill.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-        public void AddParameters([NotNull] IDictionary parameters)
+        public void AddParameters(IDictionary parameters)
         {
             if (parameters is null)
                 throw new ArgumentNullException(nameof(parameters));
 
-            if (Value != null)
+            if (Value != default)
             {
                 if (IsHtmlLabel)
                 {
@@ -90,7 +90,7 @@ namespace FastGraph.Graphviz.Dot
                 {
                     parameters["labelfloat"] = Float;
                 }
-                if (Font != null)
+                if (Font != default)
                 {
                     parameters["labelfontname"] = Font.Name;
                     parameters["labelfontsize"] = Font.SizeInPoints;

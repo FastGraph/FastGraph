@@ -1,8 +1,7 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 
 namespace FastGraph.Collections
 {
@@ -18,22 +17,18 @@ namespace FastGraph.Collections
 #endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class SoftHeap<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+        where TKey : notnull
     {
         private sealed class Cell
         {
-            [NotNull]
             public TKey Key { get; }
 
-            [CanBeNull]
-            public TValue Value { get; }
+            public TValue? Value { get; }
 
-            [CanBeNull]
-            public Cell Next { get; internal set; }
+            public Cell? Next { get; internal set; }
 
-            public Cell([NotNull] TKey key, [CanBeNull] TValue value)
+            public Cell(TKey key, TValue? value)
             {
-                Debug.Assert(key != null);
-
                 Key = key;
                 Value = value;
             }
@@ -41,26 +36,21 @@ namespace FastGraph.Collections
 
         private sealed class Node
         {
-            [NotNull]
             public TKey CKey { get; internal set; }
 
             public int Rank { get; }
 
-            [CanBeNull]
-            public Node Next { get; internal set; }
+            public Node? Next { get; internal set; }
 
-            [CanBeNull]
-            public Node Child { get; internal set; }
+            public Node? Child { get; internal set; }
 
             // ReSharper disable once InconsistentNaming
-            [CanBeNull]
-            public Cell IL { get; internal set; }
+            public Cell? IL { get; internal set; }
 
             // ReSharper disable once InconsistentNaming
-            [CanBeNull]
-            public Cell ILTail { get; internal set; }
+            public Cell? ILTail { get; internal set; }
 
-            public Node([NotNull] Cell cell)
+            public Node(Cell cell)
             {
                 Rank = 0;
                 CKey = cell.Key;
@@ -69,12 +59,12 @@ namespace FastGraph.Collections
             }
 
             public Node(
-                [NotNull] TKey cKey,
+                TKey cKey,
                 int rank,
-                [NotNull] Node next,
-                [NotNull] Node child,
-                [CanBeNull] Cell il,
-                [CanBeNull] Cell ilTail)
+                Node next,
+                Node child,
+                Cell? il,
+                Cell? ilTail)
             {
                 CKey = cKey;
                 Rank = rank;
@@ -87,17 +77,15 @@ namespace FastGraph.Collections
 
         private sealed class Head
         {
-            public Node Queue { get; internal set; }
-            public Head Next { get; internal set; }
-            public Head Prev { get; internal set; }
-            public Head SuffixMin { get; internal set; }
+            public Node? Queue { get; internal set; }
+            public Head? Next { get; internal set; }
+            public Head? Prev { get; internal set; }
+            public Head? SuffixMin { get; internal set; }
             public int Rank { get; internal set; }
         }
 
-        [NotNull]
         private readonly Head _header;
 
-        [NotNull]
         private readonly Head _tail;
 
         /// <summary>
@@ -107,7 +95,7 @@ namespace FastGraph.Collections
         /// <param name="keyMaxValue">Gives the maximum key value.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="keyMaxValue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maximumErrorRate"/> is not in range ]0, 0.5].</exception>
-        public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue)
+        public SoftHeap(double maximumErrorRate, TKey keyMaxValue)
             : this(maximumErrorRate, keyMaxValue, Comparer<TKey>.Default.Compare)
         {
         }
@@ -121,7 +109,7 @@ namespace FastGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="keyMaxValue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="comparison"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maximumErrorRate"/> is not in range ]0, 0.5].</exception>
-        public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue, [NotNull] Comparison<TKey> comparison)
+        public SoftHeap(double maximumErrorRate, TKey keyMaxValue, Comparison<TKey> comparison)
         {
             if (keyMaxValue == null)
                 throw new ArgumentNullException(nameof(keyMaxValue));
@@ -147,13 +135,11 @@ namespace FastGraph.Collections
         /// <summary>
         /// Key comparer.
         /// </summary>
-        [NotNull]
         public Comparison<TKey> KeyComparison { get; }
 
         /// <summary>
         /// Maximal authorized key.
         /// </summary>
-        [NotNull]
         public TKey KeyMaxValue { get; }
 
         /// <summary>
@@ -173,7 +159,7 @@ namespace FastGraph.Collections
         /// <param name="value">Value to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="key"/> is superior to <see cref="KeyMaxValue"/>.</exception>
-        public void Add([NotNull] TKey key, [CanBeNull] TValue value)
+        public void Add(TKey key, TValue? value)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
@@ -187,23 +173,21 @@ namespace FastGraph.Collections
             ++Count;
         }
 
-        private void Meld([NotNull] Node node)
+        private void Meld(Node node)
         {
-            Debug.Assert(node != null);
-
-            Head toHead = _header.Next;
+            Head toHead = _header.Next!;
             while (node.Rank > toHead.Rank)
             {
-                Debug.Assert(toHead.Next != null);
+                Debug.Assert(toHead.Next != default);
 
-                toHead = toHead.Next;
+                toHead = toHead.Next!;
             }
 
-            Head prevHead = toHead.Prev;
+            Head prevHead = toHead.Prev!;
             while (node.Rank == toHead.Rank)
             {
                 Node top, bottom;
-                if (KeyComparison(toHead.Queue.CKey, node.CKey) > 0)
+                if (KeyComparison(toHead.Queue!.CKey, node.CKey) > 0)
                 {
                     top = node;
                     bottom = toHead.Queue;
@@ -215,12 +199,12 @@ namespace FastGraph.Collections
                 }
 
                 node = new Node(top.CKey, top.Rank + 1, bottom, top, top.IL, top.ILTail);
-                toHead = toHead.Next;
+                toHead = toHead.Next!;
             }
 
             Head head = prevHead == toHead.Prev
                 ? new Head()
-                : prevHead.Next;
+                : prevHead.Next!;
 
             head.Queue = node;
             head.Rank = node.Rank;
@@ -232,42 +216,37 @@ namespace FastGraph.Collections
             FixMinList(head);
         }
 
-        private void FixMinList([NotNull] Head head)
+        private void FixMinList(Head head)
         {
-            Debug.Assert(head != null);
-
             Head tmpMin = head.Next == _tail
                 ? head
-                : head.Next.SuffixMin;
+                : head.Next!.SuffixMin!;
 
             while (head != _header)
             {
-                if (KeyComparison(tmpMin.Queue.CKey, head.Queue.CKey) > 0)
+                if (KeyComparison(tmpMin.Queue!.CKey, head.Queue!.CKey) > 0)
                 {
                     tmpMin = head;
                 }
 
                 head.SuffixMin = tmpMin;
-                head = head.Prev;
+                head = head.Prev!;
             }
         }
 
-        [NotNull]
-        private Node Shift([NotNull] Node v)
+        private Node Shift(Node v)
         {
-            Debug.Assert(v != null);
-
-            v.IL = null;
-            v.ILTail = null;
+            v.IL = default;
+            v.ILTail = default;
             if (v.Next is null && v.Child is null)
             {
                 v.CKey = KeyMaxValue;
                 return v;
             }
 
-            v.Next = Shift(v.Next);
+            v.Next = Shift(v.Next!);
             // Restore heap ordering that might be broken by shifting
-            if (KeyComparison(v.Next.CKey, v.Child.CKey) > 0)
+            if (KeyComparison(v.Next.CKey, v.Child!.CKey) > 0)
             {
                 Node tmp = v.Child;
                 v.Child = v.Next;
@@ -286,27 +265,27 @@ namespace FastGraph.Collections
             return v;
         }
 
-        private void SoftenHeap([NotNull] Node node)
+        private void SoftenHeap(Node node)
         {
             if (node.Rank > MinRank
-                && (node.Rank % 2 == 1 || node.Child.Rank < node.Rank - 1))
+                && (node.Rank % 2 == 1 || node.Child!.Rank < node.Rank - 1))
             {
-                Debug.Assert(node.Next != null);
+                Debug.Assert(node.Next != default);
 
-                node.Next = Shift(node.Next);
+                node.Next = Shift(node.Next!);
                 // Restore heap ordering that might be broken by shifting
-                if (KeyComparison(node.Next.CKey, node.Child.CKey) > 0)
+                if (KeyComparison(node.Next.CKey, node.Child!.CKey) > 0)
                 {
                     Node tmp = node.Child;
                     node.Child = node.Next;
                     node.Next = tmp;
                 }
 
-                if (KeyComparison(node.Next.CKey, KeyMaxValue) != 0 && node.Next.IL != null)
+                if (KeyComparison(node.Next.CKey, KeyMaxValue) != 0 && node.Next.IL != default)
                 {
-                    node.Next.ILTail.Next = node.IL;
+                    node.Next.ILTail!.Next = node.IL;
                     node.IL = node.Next.IL;
-                    if (node.ILTail == null)
+                    if (node.ILTail == default)
                     {
                         node.ILTail = node.Next.ILTail;
                     }
@@ -315,16 +294,16 @@ namespace FastGraph.Collections
             } // End second shift
         }
 
-        private void UpdateChildAndNext([NotNull] Node node)
+        private void UpdateChildAndNext(Node node)
         {
-            Debug.Assert(node.Child != null);
-            if (KeyComparison(node.Child.CKey, KeyMaxValue) == 0)
+            Debug.Assert(node.Child != default);
+            if (KeyComparison(node.Child!.CKey, KeyMaxValue) == 0)
             {
-                Debug.Assert(node.Next != null);
-                if (KeyComparison(node.Next.CKey, KeyMaxValue) == 0)
+                Debug.Assert(node.Next != default);
+                if (KeyComparison(node.Next!.CKey, KeyMaxValue) == 0)
                 {
-                    node.Child = null;
-                    node.Next = null;
+                    node.Child = default;
+                    node.Next = default;
                 }
                 else
                 {
@@ -344,12 +323,12 @@ namespace FastGraph.Collections
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty.");
 
-            Head head = _header.Next.SuffixMin;
-            while (head.Queue.IL is null)
+            Head head = _header.Next!.SuffixMin!;
+            while (head.Queue!.IL is null)
             {
                 Node tmp = head.Queue;
                 int childCount = 0;
-                while (tmp.Next != null)
+                while (tmp.Next != default)
                 {
                     tmp = tmp.Next;
                     ++childCount;
@@ -357,13 +336,13 @@ namespace FastGraph.Collections
 
                 if (childCount < head.Rank / 2)
                 {
-                    head.Prev.Next = head.Next;
-                    head.Next.Prev = head.Prev;
+                    head.Prev!.Next = head.Next;
+                    head.Next!.Prev = head.Prev;
                     FixMinList(head.Prev);
                     tmp = head.Queue;
-                    while (tmp.Next != null)
+                    while (tmp.Next != default)
                     {
-                        Meld(tmp.Child);
+                        Meld(tmp.Child!);
                         tmp = tmp.Next;
                     }
                 }
@@ -372,23 +351,23 @@ namespace FastGraph.Collections
                     head.Queue = Shift(head.Queue);
                     if (KeyComparison(head.Queue.CKey, KeyMaxValue) == 0)
                     {
-                        head.Prev.Next = head.Next;
-                        head.Next.Prev = head.Prev;
+                        head.Prev!.Next = head.Next;
+                        head.Next!.Prev = head.Prev;
                         head = head.Prev;
                     }
 
                     FixMinList(head);
                 }
 
-                head = _header.Next.SuffixMin;
+                head = _header.Next.SuffixMin!;
             } // End of outer while loop
 
             TKey min = head.Queue.IL.Key;
-            TValue value = head.Queue.IL.Value;
+            TValue value = head.Queue.IL.Value!;
             head.Queue.IL = head.Queue.IL.Next;
             if (head.Queue.IL is null)
             {
-                head.Queue.ILTail = null;
+                head.Queue.ILTail = default;
             }
 
             --Count;

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
 
@@ -19,12 +17,11 @@ namespace FastGraph.Algorithms.Search
     public sealed class BestFirstFrontierSearchAlgorithm<TVertex, TEdge>
         : RootedSearchAlgorithmBase<TVertex, IBidirectionalIncidenceGraph<TVertex, TEdge>>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Func<TEdge, double> _edgeWeights;
 
-        [NotNull]
         private readonly IDistanceRelaxer _distanceRelaxer;
 
         /// <summary>
@@ -37,10 +34,10 @@ namespace FastGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BestFirstFrontierSearchAlgorithm(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
-            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+            IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
+            : this(default, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
 
@@ -55,10 +52,10 @@ namespace FastGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BestFirstFrontierSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -71,13 +68,13 @@ namespace FastGraph.Algorithms.Search
         protected override void InternalCompute()
         {
             TVertex root = GetAndAssertRootInGraph();
-            if (!TryGetTargetVertex(out TVertex target))
+            if (!TryGetTargetVertex(out TVertex? target))
                 throw new InvalidOperationException("Target vertex not set.");
             if (!VisitedGraph.ContainsVertex(target))
                 throw new VertexNotFoundException("Target vertex is not part of the graph.");
 
             // Little shortcut
-            if (EqualityComparer<TVertex>.Default.Equals(root, target))
+            if (EqualityComparer<TVertex?>.Default.Equals(root, target))
             {
                 OnTargetReached();
                 return; // Found it
@@ -99,7 +96,7 @@ namespace FastGraph.Algorithms.Search
                 TVertex n = entry.Value;
 
                 // (4) If node n is a target node, terminate with success
-                if (EqualityComparer<TVertex>.Default.Equals(n, target))
+                if (EqualityComparer<TVertex?>.Default.Equals(n, target))
                 {
                     OnTargetReached();
                     return;
@@ -129,10 +126,10 @@ namespace FastGraph.Algorithms.Search
         }
 
         private void ExpandNode(
-            [NotNull] TVertex n,
-            [NotNull] IDictionary<TEdge, GraphColor> operators,
+            TVertex n,
+            IDictionary<TEdge, GraphColor> operators,
             double cost,
-            [NotNull] BinaryHeap<double, TVertex> open)
+            BinaryHeap<double, TVertex> open)
         {
             // Skip self-edges
             foreach (TEdge edge in VisitedGraph.OutEdges(n).Where(e => !e.IsSelfEdge()))
@@ -175,12 +172,10 @@ namespace FastGraph.Algorithms.Search
         #region ITreeBuilderAlgorithm<TVertex,TEdge>
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 

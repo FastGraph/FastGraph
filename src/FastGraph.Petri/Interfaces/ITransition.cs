@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Petri
 {
@@ -12,7 +12,6 @@ namespace FastGraph.Petri
         /// <summary>
         /// A boolean expression associated with the transition.
         /// </summary>
-        [NotNull]
         IConditionExpression<TToken> Condition { get; set; }
     }
 }

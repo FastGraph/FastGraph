@@ -1,5 +1,5 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -16,15 +16,16 @@ namespace FastGraph.Tests.Algorithms
         #region Test helpers
 
         private static void RunSourceFirstTopologicalSortAndCheck<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph,
+            IBidirectionalGraph<TVertex, TEdge> graph,
             TopologicalSortDirection direction)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction);
             algorithm.Compute();
 
             Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices.Length);
+            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
             Assert.IsNotNull(algorithm.InDegrees);
             Assert.AreEqual(graph.VertexCount, algorithm.InDegrees.Count);
         }
@@ -76,6 +77,7 @@ namespace FastGraph.Tests.Algorithms
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge> algo,
                 IBidirectionalGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -91,12 +93,14 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(null));
+                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default));
             Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(null, TopologicalSortDirection.Forward));
+                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default, TopologicalSortDirection.Forward));
             Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(null, TopologicalSortDirection.Backward));
+                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default, TopologicalSortDirection.Backward));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Text;
 using JetBrains.Annotations;
 using FastGraph.Graphviz.Helpers;
@@ -20,16 +20,14 @@ namespace FastGraph.Graphviz.Dot
         /// Comment.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:comment">See more</see>
         /// </summary>
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
-        [NotNull]
         private GraphvizEdgeLabel _label = new GraphvizEdgeLabel();
 
         /// <summary>
         /// Label.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public GraphvizEdgeLabel Label
         {
             get => _label;
@@ -40,13 +38,13 @@ namespace FastGraph.Graphviz.Dot
         /// Tooltip.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tooltip">See more</see>
         /// </summary>
-        public string ToolTip { get; set; }
+        public string? ToolTip { get; set; }
 
         /// <summary>
         /// URL.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:URL">See more</see>
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Direction.
@@ -59,7 +57,7 @@ namespace FastGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontname">See more</see> or
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:fontsize">See more</see>
         /// </summary>
-        public GraphvizFont Font { get; set; }
+        public GraphvizFont? Font { get; set; }
 
         /// <summary>
         /// Font color.
@@ -73,7 +71,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         public double PenWidth { get; set; } = 1.0;
 
-        [NotNull]
         private GraphvizEdgeExtremity _head = new GraphvizEdgeExtremity(true);
 
         /// <summary>
@@ -81,7 +78,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">Set extremity is not corresponding to a head one.</exception>
-        [NotNull]
         public GraphvizEdgeExtremity Head
         {
             get => _head;
@@ -99,15 +95,14 @@ namespace FastGraph.Graphviz.Dot
         /// Edge arrow.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:arrowhead">See more</see>
         /// </summary>
-        public GraphvizArrow HeadArrow { get; set; }
+        public GraphvizArrow? HeadArrow { get; set; }
 
         /// <summary>
         /// Head port.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:headport">See more</see>
         /// </summary>
-        public string HeadPort { get; set; }
+        public string? HeadPort { get; set; }
 
-        [NotNull]
         private GraphvizEdgeExtremity _tail = new GraphvizEdgeExtremity(false);
 
         /// <summary>
@@ -115,7 +110,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">Set extremity is not corresponding to a tail one.</exception>
-        [NotNull]
         public GraphvizEdgeExtremity Tail
         {
             get => _tail;
@@ -133,13 +127,13 @@ namespace FastGraph.Graphviz.Dot
         /// Tail arrow.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:arrowtail">See more</see>
         /// </summary>
-        public GraphvizArrow TailArrow { get; set; }
+        public GraphvizArrow? TailArrow { get; set; }
 
         /// <summary>
         /// Tail port.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:tailport">See more</see>
         /// </summary>
-        public string TailPort { get; set; }
+        public string? TailPort { get; set; }
 
         /// <summary>
         /// Indicates if edge is constrained.
@@ -157,7 +151,7 @@ namespace FastGraph.Graphviz.Dot
         /// Layer.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layer">See more</see>
         /// </summary>
-        public GraphvizLayer Layer { get; set; }
+        public GraphvizLayer? Layer { get; set; }
 
         /// <summary>
         /// Stroke color.
@@ -190,8 +184,7 @@ namespace FastGraph.Graphviz.Dot
         public int MinLength { get; set; } = 1;
 
         [Pure]
-        [NotNull]
-        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
+        internal string GenerateDot(Dictionary<string, object> properties)
         {
             var builder = new StringBuilder();
 
@@ -244,7 +237,7 @@ namespace FastGraph.Graphviz.Dot
                         continue;
 
                     default:
-                        builder.Append($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        builder.Append($"{pair.Key}={pair.Value.ToString()!.ToLower()}");
                         break;
                 }
             }
@@ -257,7 +250,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Edge as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             var properties = new Dictionary<string, object>();
@@ -265,7 +257,7 @@ namespace FastGraph.Graphviz.Dot
             {
                 properties["dir"] = Direction;
             }
-            if (Font != null)
+            if (Font != default)
             {
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
@@ -279,11 +271,11 @@ namespace FastGraph.Graphviz.Dot
                 properties["penwidth"] = PenWidth;
             }
             Head.AddParameters(properties);
-            if (HeadArrow != null)
+            if (HeadArrow != default)
             {
                 properties["arrowhead"] = HeadArrow.ToDot();
             }
-            if (HeadPort != null)
+            if (HeadPort != default)
             {
                 properties["headport"] = EscapePort(HeadPort);
             }
@@ -296,7 +288,7 @@ namespace FastGraph.Graphviz.Dot
                 properties["decorate"] = IsDecorated;
             }
             Label.AddParameters(properties);
-            if (Layer != null)
+            if (Layer != default)
             {
                 properties["layer"] = Layer.Name;
             }
@@ -317,23 +309,23 @@ namespace FastGraph.Graphviz.Dot
                 properties["style"] = Style;
             }
             Tail.AddParameters(properties);
-            if (TailArrow != null)
+            if (TailArrow != default)
             {
                 properties["arrowtail"] = TailArrow.ToDot();
             }
-            if (TailPort != null)
+            if (TailPort != default)
             {
                 properties["tailport"] = EscapePort(TailPort);
             }
-            if (ToolTip != null)
+            if (ToolTip != default)
             {
                 properties["tooltip"] = Escape(ToolTip);
             }
-            if (Comment != null)
+            if (Comment != default)
             {
                 properties["comment"] = Escape(Comment);
             }
-            if (Url != null)
+            if (Url != default)
             {
                 properties["URL"] = Url;
             }

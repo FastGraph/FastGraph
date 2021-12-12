@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -43,6 +42,7 @@ namespace FastGraph.Tests.Structures
                 BidirectionalGraph<TVertex, TEdge> g,
                 bool parallelEdges = true,
                 int edgeCapacity = 0)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -391,12 +391,12 @@ namespace FastGraph.Tests.Structures
         #region Merge
 
         public void Merge_Test(
-            [NotNull] IEnumerable<int> setupVertices,
-            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> setupEdges,
+            IEnumerable<int> setupVertices,
+            IEnumerable<EquatableEdge<int>> setupEdges,
             int vertexToMerge,
             int expectedEdgesAdded,
             int expectedEdgesRemoved,
-            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> expectedEdges)
+            IEnumerable<EquatableEdge<int>> expectedEdges)
         {
             int verticesAdded = 0;
             int edgesAdded = 0;
@@ -538,23 +538,25 @@ namespace FastGraph.Tests.Structures
             var graph2 = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
             Assert.Throws<ArgumentNullException>(
                 // ReSharper disable AssignNullToNotNullAttribute
-                () => graph2.MergeVertex(null, (source, target) => new Edge<TestVertex>(source, target)));
+#pragma warning disable CS8625
+                () => graph2.MergeVertex(default, (source, target) => new Edge<TestVertex>(source, target)));
             Assert.Throws<ArgumentNullException>(
-                () => graph2.MergeVertex(new TestVertex("1"), null));
+                () => graph2.MergeVertex(new TestVertex("1"), default));
             Assert.Throws<ArgumentNullException>(
-                () => graph2.MergeVertex(null, null));
+                () => graph2.MergeVertex(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
         public void MergeIf_Test(
-            [NotNull] IEnumerable<int> setupVertices,
-            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> setupEdges,
-            [NotNull, InstantHandle] VertexPredicate<int> vertexPredicate,
+            IEnumerable<int> setupVertices,
+            IEnumerable<EquatableEdge<int>> setupEdges,
+            [InstantHandle] VertexPredicate<int> vertexPredicate,
             int expectedVerticesRemoved,
             int expectedEdgesAdded,
             int expectedEdgesRemoved,
-            [NotNull] IEnumerable<int> expectedVertices,
-            [NotNull, ItemNotNull] IEnumerable<EquatableEdge<int>> expectedEdges)
+            IEnumerable<int> expectedVertices,
+            IEnumerable<EquatableEdge<int>> expectedEdges)
         {
             int verticesAdded = 0;
             int edgesAdded = 0;
@@ -717,9 +719,11 @@ namespace FastGraph.Tests.Structures
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(null, (source, target) => new Edge<int>(source, target)));
-            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(_ => true, null));
-            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(default, (source, target) => new Edge<int>(source, target)));
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(_ => true, default));
+            Assert.Throws<ArgumentNullException>(() => graph.MergeVerticesIf(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -962,7 +966,9 @@ namespace FastGraph.Tests.Structures
         public void ClearOutEdges_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -1041,7 +1047,9 @@ namespace FastGraph.Tests.Structures
         public void ClearInEdges_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearInEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearInEdges(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -1114,7 +1122,9 @@ namespace FastGraph.Tests.Structures
         public void ClearEdges_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<TestVertex, Edge<TestVertex>>().ClearEdges(default));
+#pragma warning restore CS8625
         }
 
         #endregion
@@ -1193,7 +1203,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(() => new BidirectionalGraph<int, Edge<int>>(null));
+#pragma warning restore CS8625
         }
 
         [Test]

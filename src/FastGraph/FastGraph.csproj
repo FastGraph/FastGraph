@@ -2,6 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <Title>FastGraph</Title>
     <RootNamespace>FastGraph</RootNamespace>
@@ -45,4 +47,7 @@ It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.</De
     <AssemblyTitle>FastGraph .NET 6</AssemblyTitle>
     <DefineConstants>$(DefineConstants);SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_SVG_CONVERSION;SUPPORTS_DESCRIPTION;SUPPORTS_XML_DTD_PROCESSING;SUPPORTS_STREAM_FULL_FEATURES;SUPPORTS_SERIALIZATION;SUPPORTS_GRAPHS_SERIALIZATION;SUPPORTS_CLONEABLE;SUPPORTS_CONVERTER;SUPPORTS_ENUMERABLE_COVARIANT;SUPPORTS_AGGRESSIVE_INLINING;SUPPORTS_CRYPTO_RANDOM;$(AdditionalConstants)</DefineConstants>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
+  </ItemGroup>
 </Project>

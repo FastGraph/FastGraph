@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 #endif
 using JetBrains.Annotations;
 
@@ -26,6 +25,7 @@ namespace FastGraph
 #if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
         , ISerializable
 #endif
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -33,7 +33,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public ArrayUndirectedGraph([NotNull] IUndirectedGraph<TVertex, TEdge> baseGraph)
+        public ArrayUndirectedGraph(IUndirectedGraph<TVertex, TEdge> baseGraph)
         {
             if (baseGraph is null)
                 throw new ArgumentNullException(nameof(baseGraph));
@@ -73,7 +73,6 @@ namespace FastGraph
         /// <inheritdoc />
         public int VertexCount => _vertexEdges.Count;
 
-        [NotNull]
         private readonly IDictionary<TVertex, TEdge[]> _vertexEdges;
 
         /// <inheritdoc />
@@ -102,7 +101,6 @@ namespace FastGraph
         /// <inheritdoc />
         public int EdgeCount { get; }
 
-        [NotNull, ItemNotNull]
         private readonly IList<TEdge> _edges;
 
         /// <inheritdoc />
@@ -114,7 +112,7 @@ namespace FastGraph
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            if (_vertexEdges.TryGetValue(edge.Source, out TEdge[] edges))
+            if (_vertexEdges.TryGetValue(edge.Source, out TEdge[]? edges))
                 return edges.Any(e => EqualityComparer<TEdge>.Default.Equals(e, edge));
             return false;
         }
@@ -135,7 +133,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
+            if (_vertexEdges.TryGetValue(vertex, out TEdge[]? edges))
                 return edges.AsEnumerable();
             throw new VertexNotFoundException();
         }
@@ -146,7 +144,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
+            if (_vertexEdges.TryGetValue(vertex, out TEdge[]? edges))
                 return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
             throw new VertexNotFoundException();
         }
@@ -163,13 +161,13 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_vertexEdges.TryGetValue(vertex, out TEdge[] adjacentEdges))
+            if (_vertexEdges.TryGetValue(vertex, out TEdge[]? adjacentEdges))
                 return adjacentEdges[index];
             throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -183,7 +181,7 @@ namespace FastGraph
                 target = temp;
             }
 
-            if (_vertexEdges.TryGetValue(source, out TEdge[] adjacentEdges))
+            if (_vertexEdges.TryGetValue(source, out TEdge[]? adjacentEdges))
             {
                 foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
@@ -230,7 +228,6 @@ namespace FastGraph
         /// </summary>
         /// <returns>This graph.</returns>
         [Pure]
-        [NotNull]
         public ArrayUndirectedGraph<TVertex, TEdge> Clone()
         {
             return this;

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -16,6 +15,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
     public class EquatableTaggedEdge<TVertex, TTag> : EquatableEdge<TVertex>, ITagged<TTag>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EquatableTaggedEdge{TVertex,TTag}"/> class.
@@ -25,35 +25,33 @@ namespace FastGraph
         /// <param name="tag">Edge tag.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public EquatableTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
+        public EquatableTaggedEdge(TVertex source, TVertex target, TTag? tag)
             : base(source, target)
         {
             _tag = tag;
         }
 
         /// <inheritdoc />
-        public event EventHandler TagChanged;
+        public event EventHandler? TagChanged;
 
         /// <summary>
         /// Event invoker for <see cref="TagChanged"/> event.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        protected virtual void OnTagChanged([NotNull] EventArgs args)
+        protected virtual void OnTagChanged(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             TagChanged?.Invoke(this, args);
         }
 
-        private TTag _tag;
+        private TTag? _tag;
 
         /// <inheritdoc />
-        public TTag Tag
+        public TTag? Tag
         {
             get => _tag;
             set
             {
-                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
+                if (EqualityComparer<TTag?>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;

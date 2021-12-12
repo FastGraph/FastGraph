@@ -38,7 +38,7 @@
 //                CentralityApproximationAlgorithm<TVertex, TEdge> algo,
 //                IVertexListGraph<TVertex, TEdge> g,
 //                Func<TEdge, double> d,
-//                Random r = null,
+//                Random r = default,
 //                int iterations = -1)
 //                where TEdge : IEdge<TVertex>
 //            {
@@ -65,19 +65,21 @@
 
 //            // ReSharper disable ObjectCreationAsStatement
 //            // ReSharper disable AssignNullToNotNullAttribute
+//#pragma warning disable CS8625
 //            Assert.Throws<ArgumentNullException>(
-//                () => new CentralityApproximationAlgorithm<int, Edge<int>>(null, distances));
+//                () => new CentralityApproximationAlgorithm<int, Edge<int>>(default, distances));
 //            Assert.Throws<ArgumentNullException>(
-//                () => new CentralityApproximationAlgorithm<int, Edge<int>>(graph, null));
+//                () => new CentralityApproximationAlgorithm<int, Edge<int>>(graph, default));
 //            Assert.Throws<ArgumentNullException>(
-//                () => new CentralityApproximationAlgorithm<int, Edge<int>>(null, null));
+//                () => new CentralityApproximationAlgorithm<int, Edge<int>>(default, default));
 
 //            var algorithm = new CentralityApproximationAlgorithm<int, Edge<int>>(graph, distances);
 //            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.MaxIterationCount = 0);
 //            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.MaxIterationCount = -1);
 //            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.MaxIterationCount = -10);
 
-//            Assert.Throws<ArgumentNullException>(() => algorithm.Rand = null);
+//            Assert.Throws<ArgumentNullException>(() => algorithm.Rand = default);
+//#pragma warning restore CS8625
 //            // ReSharper restore AssignNullToNotNullAttribute
 //            // ReSharper restore ObjectCreationAsStatement
 //        }

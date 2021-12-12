@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -40,7 +39,6 @@ namespace FastGraph.Graphviz.Tests
             #endregion
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> AddParametersTestCases
         {
             get
@@ -163,8 +161,8 @@ namespace FastGraph.Graphviz.Tests
 
         [TestCaseSource(nameof(AddParametersTestCases))]
         public void AddParameters(
-            [NotNull] GraphvizEdgeExtremity extremity,
-            [NotNull] Dictionary<string, object> expectedParameters)
+            GraphvizEdgeExtremity extremity,
+            Dictionary<string, object> expectedParameters)
         {
             var parameters = new Dictionary<string, object>();
             extremity.AddParameters(parameters);
@@ -175,10 +173,12 @@ namespace FastGraph.Graphviz.Tests
         public void AddParameters_Throws()
         {
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             var extremity = new GraphvizEdgeExtremity(false);
-            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(null));
+            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(default));
             extremity = new GraphvizEdgeExtremity(true);
-            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(null));
+            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
     }

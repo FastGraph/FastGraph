@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.VertexColoring;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -27,8 +26,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new VertexColoringAlgorithm<int, Edge<int>>(null));
+                () => new VertexColoringAlgorithm<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -71,10 +72,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get only 1 color
             Assert.AreEqual(1, result.Max() + 1);
 
-            // Not equal to null
+            // Not equal to default
             foreach (int? color in result)
             {
-                Assert.AreNotEqual(null, color);
+                Assert.AreNotEqual(default, color);
             }
 
             // and corresponding colors of vertices
@@ -126,10 +127,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 3 different colors
             Assert.AreEqual(3, result.Max() + 1);
 
-            // Not equal to null
+            // Not equal to default
             foreach (int? color in result)
             {
-                Assert.AreNotEqual(null, color);
+                Assert.AreNotEqual(default, color);
             }
 
             // and corresponding colors of vertices
@@ -190,10 +191,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 3 different colors
             Assert.AreEqual(3, result.Max() + 1);
 
-            // Not equal to null
+            // Not equal to default
             foreach (int? color in result)
             {
-                Assert.AreNotEqual(null, color);
+                Assert.AreNotEqual(default, color);
             }
 
             // And corresponding colors of vertices
@@ -259,10 +260,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 6 different colors
             Assert.AreEqual(6, result.Max() + 1);
 
-            // Not equal to null
+            // Not equal to default
             foreach (int? color in result)
             {
-                Assert.AreNotEqual(null, color);
+                Assert.AreNotEqual(default, color);
             }
 
             // and corresponding colors of vertices
@@ -336,10 +337,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // Expecting to get 2 different colors
             Assert.AreEqual(2, result.Max() + 1);
 
-            // Not equal to null
+            // Not equal to default
             foreach (int? color in result)
             {
-                Assert.AreNotEqual(null, color);
+                Assert.AreNotEqual(default, color);
             }
 
             // and corresponding colors of vertices

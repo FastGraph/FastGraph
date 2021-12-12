@@ -5,11 +5,6 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <!-- C# configuration -->
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
   <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />

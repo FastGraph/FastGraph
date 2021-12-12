@@ -1,6 +1,6 @@
-using System;
+#nullable enable
+
 using System.Collections;
-using System.Collections.Generic;
 
 namespace FastGraph.Serialization.Tests
 {
@@ -37,7 +37,7 @@ namespace FastGraph.Serialization.Tests
         }
 
         /// <inheritdoc />
-        public int Compare(object x, object y)
+        public int Compare(object? x, object? y)
         {
             if (x is null)
                 return y is null ? 0 : -1;
@@ -91,7 +91,7 @@ namespace FastGraph.Serialization.Tests
         }
 
         /// <inheritdoc />
-        public int Compare(object x, object y)
+        public int Compare(object? x, object? y)
         {
             if (x is null)
                 return y is null ? 0 : -1;

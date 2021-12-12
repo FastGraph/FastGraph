@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -9,6 +10,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IEdgeSet<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -25,7 +27,6 @@ namespace FastGraph
         /// <summary>
         /// Gets the edges.
         /// </summary>
-        [NotNull, ItemNotNull]
         IEnumerable<TEdge> Edges { get; }
 
         /// <summary>
@@ -35,6 +36,6 @@ namespace FastGraph
         /// <returns>True if the specified <paramref name="edge"/> is contained in this set, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool ContainsEdge([NotNull] TEdge edge);
+        bool ContainsEdge(TEdge edge);
     }
 }

@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
@@ -13,8 +12,8 @@ namespace FastGraph.Tests.Structures
         #region Out Edges
 
         protected static void OutEdge_Test(
-            [NotNull] IImplicitGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
+            IImplicitGraph<int, Edge<int>> graph,
+            [InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -33,7 +32,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             OutEdge_Test(
                 graph,
@@ -41,8 +40,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, Edge<int>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -62,8 +61,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -83,7 +82,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -102,8 +101,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -124,19 +123,21 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IImplicitGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            IImplicitGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.OutEdge(null, 0));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.OutEdge(default, 0));
+#pragma warning restore CS8604
         }
 
         protected static void OutEdge_Throws_Test(
-            [NotNull] IImplicitGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<int> addVertex,
-            [NotNull, InstantHandle] Action<Edge<int>> addEdge)
+            IImplicitGraph<int, Edge<int>> graph,
+            [InstantHandle] Action<int> addVertex,
+            [InstantHandle] Action<Edge<int>> addEdge)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -154,7 +155,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_Throws_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             OutEdge_Throws_Test(
                 graph,
@@ -163,8 +164,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_Throws_ImmutableGraph_Test<TEdge>(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, TEdge>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, TEdge>> createGraph)
             where TEdge : IEdge<int>
         {
             IImplicitGraph<int, TEdge> graph = createGraph();
@@ -187,7 +188,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_Throws_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(-1, 0));
@@ -199,8 +200,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_Throws_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
@@ -222,9 +223,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_Test(
-            [NotNull] IImplicitGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<int> addVertex,
-            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
+            IImplicitGraph<int, Edge<int>> graph,
+            [InstantHandle] Action<int> addVertex,
+            [InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -245,7 +246,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             OutEdges_Test(
                 graph,
@@ -254,8 +255,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, Edge<int>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -278,8 +279,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -320,7 +321,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge01 = new Edge<int>(0, 1);
             var edge02 = new Edge<int>(0, 2);
@@ -340,8 +341,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -364,21 +365,23 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IImplicitGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            IImplicitGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.IsOutEdgesEmpty(null));
-            Assert.Throws<ArgumentNullException>(() => graph.OutDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph.OutEdges(null).ToArray());
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.IsOutEdgesEmpty(default));
+            Assert.Throws<ArgumentNullException>(() => graph.OutDegree(default));
+            Assert.Throws<ArgumentNullException>(() => graph.OutEdges(default).ToArray());
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void OutEdges_Throws_Test<TVertex, TEdge>(
-            [NotNull] IImplicitGraph<TVertex, TEdge> graph)
+            IImplicitGraph<TVertex, TEdge> graph)
             where TVertex : IEquatable<TVertex>, new()
             where TEdge : IEdge<TVertex>
         {
@@ -393,7 +396,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_Throws_Matrix_Test<TEdge>(
-            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
         {
             const int vertex = 10;

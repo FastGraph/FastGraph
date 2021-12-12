@@ -1,5 +1,6 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_CRYPTO_RANDOM
 using FastGraph.Utils;
 #endif
@@ -15,6 +16,7 @@ namespace FastGraph.Algorithms.RandomWalks
     [Serializable]
 #endif
     public abstract class MarkovEdgeChainBase<TVertex, TEdge> : IMarkovEdgeChain<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <inheritdoc />
@@ -26,9 +28,9 @@ namespace FastGraph.Algorithms.RandomWalks
 #endif
 
         /// <inheritdoc />
-        public abstract bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor);
+        public abstract bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, [NotNullWhen(true)] out TEdge? successor);
 
         /// <inheritdoc />
-        public abstract bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor);
+        public abstract bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, [NotNullWhen(true)] out TEdge? successor);
     }
 }

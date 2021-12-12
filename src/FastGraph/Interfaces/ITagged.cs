@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -12,12 +11,11 @@ namespace FastGraph
         /// <summary>
         /// Fired when the tag is changed.
         /// </summary>
-        event EventHandler TagChanged;
+        event EventHandler? TagChanged;
 
         /// <summary>
         /// Gets or sets the tag.
         /// </summary>
-        [CanBeNull]
-        TTag Tag { get; set; }
+        TTag? Tag { get; set; }
     }
 }

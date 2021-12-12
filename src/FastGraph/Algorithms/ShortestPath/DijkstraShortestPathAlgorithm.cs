@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Algorithms.Search;
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
@@ -17,9 +17,10 @@ namespace FastGraph.Algorithms.ShortestPath
         : ShortestPathAlgorithmBase<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         , IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>
         , IDistanceRecorderAlgorithm<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        private FibonacciQueue<TVertex, double> _vertexQueue;
+        private FibonacciQueue<TVertex, double>? _vertexQueue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DijkstraShortestPathAlgorithm{TVertex,TEdge}"/> class.
@@ -29,8 +30,8 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public DijkstraShortestPathAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -45,10 +46,10 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public DijkstraShortestPathAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
-            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
+            : this(default, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
 
@@ -63,10 +64,10 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public DijkstraShortestPathAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -74,7 +75,7 @@ namespace FastGraph.Algorithms.ShortestPath
         [Conditional("DEBUG")]
         private void AssertHeap()
         {
-            if (_vertexQueue.Count == 0)
+            if (_vertexQueue!.Count == 0)
                 return;
 
             TVertex top = _vertexQueue.Peek();
@@ -89,51 +90,45 @@ namespace FastGraph.Algorithms.ShortestPath
         #region Events
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> InitializeVertex;
+        public event VertexAction<TVertex>? InitializeVertex;
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> DiscoverVertex;
+        public event VertexAction<TVertex>? DiscoverVertex;
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> StartVertex;
+        public event VertexAction<TVertex>? StartVertex;
 
         /// <summary>
         /// Fired when a vertex is going to be analyzed.
         /// </summary>
-        public event VertexAction<TVertex> ExamineVertex;
+        public event VertexAction<TVertex>? ExamineVertex;
 
         /// <summary>
         /// Fired when an edge is going to be analyzed.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+        public event EdgeAction<TVertex, TEdge>? ExamineEdge;
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> FinishVertex;
+        public event VertexAction<TVertex>? FinishVertex;
 
         /// <summary>
         /// Fired when relax of an edge does not decrease distance.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> EdgeNotRelaxed;
+        public event EdgeAction<TVertex, TEdge>? EdgeNotRelaxed;
 
-        private void OnEdgeNotRelaxed([NotNull] TEdge edge)
+        private void OnEdgeNotRelaxed(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeNotRelaxed?.Invoke(edge);
         }
 
-        private void InternalExamineEdge([NotNull] TEdge edge)
+        private void InternalExamineEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             if (Weights(edge) < 0)
                 throw new NegativeWeightException();
         }
 
-        private void OnDijkstraTreeEdge([NotNull] TEdge edge)
+        private void OnDijkstraTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             bool decreased = Relax(edge);
             if (decreased)
             {
@@ -146,14 +141,12 @@ namespace FastGraph.Algorithms.ShortestPath
             }
         }
 
-        private void OnGrayTarget([NotNull] TEdge edge)
+        private void OnGrayTarget(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             bool decreased = Relax(edge);
             if (decreased)
             {
-                _vertexQueue.Update(edge.Target);
+                _vertexQueue!.Update(edge.Target);
                 AssertHeap();
                 OnTreeEdge(edge);
             }
@@ -176,7 +169,7 @@ namespace FastGraph.Algorithms.ShortestPath
             double initialDistance = DistanceRelaxer.InitialDistance;
             foreach (TVertex vertex in VisitedGraph.Vertices)
             {
-                VerticesColors.Add(vertex, GraphColor.White);
+                VerticesColors!.Add(vertex, GraphColor.White);
                 SetVertexDistance(vertex, initialDistance);
             }
 
@@ -186,7 +179,7 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (TryGetRootVertex(out TVertex rootVertex))
+            if (TryGetRootVertex(out TVertex? rootVertex))
             {
                 AssertRootInGraph(rootVertex);
                 ComputeFromRoot(rootVertex);
@@ -195,7 +188,7 @@ namespace FastGraph.Algorithms.ShortestPath
             {
                 foreach (TVertex vertex in VisitedGraph.Vertices)
                 {
-                    if (VerticesColors[vertex] == GraphColor.White)
+                    if (VerticesColors![vertex] == GraphColor.White)
                     {
                         ComputeFromRoot(vertex);
                     }
@@ -205,28 +198,27 @@ namespace FastGraph.Algorithms.ShortestPath
 
         #endregion
 
-        private void ComputeFromRoot([NotNull] TVertex rootVertex)
+        private void ComputeFromRoot(TVertex rootVertex)
         {
-            Debug.Assert(rootVertex != null);
             Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
-            Debug.Assert(VerticesColors[rootVertex] == GraphColor.White);
+            Debug.Assert(VerticesColors![rootVertex] == GraphColor.White);
 
             VerticesColors[rootVertex] = GraphColor.Gray;
             SetVertexDistance(rootVertex, 0);
             ComputeNoInit(rootVertex);
         }
 
-        private void ComputeNoInit([NotNull] TVertex root)
+        private void ComputeNoInit(TVertex root)
         {
-            BreadthFirstSearchAlgorithm<TVertex, TEdge> bfs = null;
+            BreadthFirstSearchAlgorithm<TVertex, TEdge>? bfs = default;
 
             try
             {
                 bfs = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(
                     this,
                     VisitedGraph,
-                    _vertexQueue,
-                    VerticesColors);
+                    _vertexQueue!,
+                    VerticesColors!);
 
                 bfs.InitializeVertex += InitializeVertex;
                 bfs.DiscoverVertex += DiscoverVertex;
@@ -246,7 +238,7 @@ namespace FastGraph.Algorithms.ShortestPath
             }
             finally
             {
-                if (bfs != null)
+                if (bfs != default)
                 {
                     bfs.InitializeVertex -= InitializeVertex;
                     bfs.DiscoverVertex -= DiscoverVertex;

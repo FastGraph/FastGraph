@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Predicates;
 
@@ -12,6 +11,7 @@ namespace FastGraph.Algorithms.Ranking
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class PageRankAlgorithm<TVertex, TEdge> : AlgorithmBase<IBidirectionalGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace FastGraph.Algorithms.Ranking
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public PageRankAlgorithm([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+        public PageRankAlgorithm(IBidirectionalGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -27,7 +27,6 @@ namespace FastGraph.Algorithms.Ranking
         /// <summary>
         /// Ranks per vertices.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, double> Ranks { get; private set; } = new Dictionary<TVertex, double>();
 
         private double _damping = 0.85;

@@ -1,8 +1,6 @@
-﻿#if SUPPORTS_CLONEABLE
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
+#if SUPPORTS_CLONEABLE
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 
@@ -25,8 +23,8 @@ namespace FastGraph.Algorithms.Exploration
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public CloneableVertexGraphExplorerAlgorithm(
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
+            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            : this(default, visitedGraph)
         {
         }
 
@@ -37,8 +35,8 @@ namespace FastGraph.Algorithms.Exploration
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public CloneableVertexGraphExplorerAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent? host,
+            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -46,53 +44,45 @@ namespace FastGraph.Algorithms.Exploration
         /// <summary>
         /// Transitions factories.
         /// </summary>
-        [NotNull, ItemNotNull]
         private readonly List<ITransitionFactory<TVertex, TEdge>> _transitionFactories =
             new List<ITransitionFactory<TVertex, TEdge>>();
 
-        [NotNull]
         private VertexPredicate<TVertex> _addVertexPredicate = vertex => true;
 
         /// <summary>
         /// Predicate that a vertex must match to be added in the graph.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public VertexPredicate<TVertex> AddVertexPredicate
         {
             get => _addVertexPredicate;
             set => _addVertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        [NotNull]
         private VertexPredicate<TVertex> _exploreVertexPredicate = vertex => true;
 
         /// <summary>
         /// Predicate that checks if a given vertex should be explored or ignored.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public VertexPredicate<TVertex> ExploreVertexPredicate
         {
             get => _exploreVertexPredicate;
             set => _exploreVertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        [NotNull]
         private EdgePredicate<TVertex, TEdge> _addEdgePredicate = edge => true;
 
         /// <summary>
         /// Predicate that an edge must match to be added in the graph.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public EdgePredicate<TVertex, TEdge> AddEdgePredicate
         {
             get => _addEdgePredicate;
             set => _addEdgePredicate = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        [NotNull]
         private Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> _finishedPredicate =
             new DefaultFinishedPredicate().Test;
 
@@ -100,20 +90,17 @@ namespace FastGraph.Algorithms.Exploration
         /// Predicate that checks if the exploration is finished or not.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public Predicate<CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge>> FinishedPredicate
         {
             get => _finishedPredicate;
             set => _finishedPredicate = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        [NotNull, ItemNotNull]
         private readonly Queue<TVertex> _unExploredVertices = new Queue<TVertex>();
 
         /// <summary>
         /// Gets the enumeration of unexplored vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<TVertex> UnExploredVertices => _unExploredVertices.AsEnumerable();
 
         /// <summary>
@@ -126,12 +113,10 @@ namespace FastGraph.Algorithms.Exploration
         /// <summary>
         /// Fired when a vertex is discovered.
         /// </summary>
-        public event VertexAction<TVertex> DiscoverVertex;
+        public event VertexAction<TVertex>? DiscoverVertex;
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             VisitedGraph.AddVertex(vertex);
             _unExploredVertices.Enqueue(vertex);
 
@@ -141,36 +126,30 @@ namespace FastGraph.Algorithms.Exploration
         /// <summary>
         /// Fired when an edge is encountered.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when a back edge is encountered.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> BackEdge;
+        public event EdgeAction<TVertex, TEdge>? BackEdge;
 
-        private void OnBackEdge([NotNull] TEdge edge)
+        private void OnBackEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             BackEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when an edge was skipped from exploration due to failed vertex or edge predicate check.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> EdgeSkipped;
+        public event EdgeAction<TVertex, TEdge>? EdgeSkipped;
 
-        private void OnEdgeSkipped([NotNull] TEdge edge)
+        private void OnEdgeSkipped(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             EdgeSkipped?.Invoke(edge);
         }
 
@@ -181,7 +160,7 @@ namespace FastGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="transitionFactory">Transition factory to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactory"/> is <see langword="null"/>.</exception>
-        public void AddTransitionFactory([NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        public void AddTransitionFactory(ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             if (transitionFactory is null)
                 throw new ArgumentNullException(nameof(transitionFactory));
@@ -195,7 +174,7 @@ namespace FastGraph.Algorithms.Exploration
         /// <param name="transitionFactories">Transition factories to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactories"/> is <see langword="null"/>.</exception>
         public void AddTransitionFactories(
-            [NotNull, ItemNotNull] IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
+            IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
         {
             if (transitionFactories is null)
                 throw new ArgumentNullException(nameof(transitionFactories));
@@ -207,7 +186,7 @@ namespace FastGraph.Algorithms.Exploration
         /// Removes the given <paramref name="transitionFactory"/> from this algorithm.
         /// </summary>
         /// <param name="transitionFactory">Transition factory to remove.</param>
-        public bool RemoveTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        public bool RemoveTransitionFactory(ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             return _transitionFactories.Remove(transitionFactory);
         }
@@ -225,7 +204,7 @@ namespace FastGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="transitionFactory">Transition factory to check.</param>
         [Pure]
-        public bool ContainsTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        public bool ContainsTransitionFactory(ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             return _transitionFactories.Contains(transitionFactory);
         }
@@ -235,7 +214,7 @@ namespace FastGraph.Algorithms.Exploration
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex root))
+            if (!TryGetRootVertex(out TVertex? root))
                 throw new InvalidOperationException("Root vertex not set.");
 
             VisitedGraph.Clear();
@@ -281,12 +260,9 @@ namespace FastGraph.Algorithms.Exploration
         #endregion
 
         private void GenerateFromTransitionFactory(
-            [NotNull] TVertex current,
-            [NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+            TVertex current,
+            ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
-            Debug.Assert(current != null);
-            Debug.Assert(transitionFactory != null);
-
             if (!transitionFactory.IsValid(current))
                 return;
 
@@ -351,7 +327,7 @@ namespace FastGraph.Algorithms.Exploration
             /// <returns>True if the explorer can continue to explore, false otherwise.</returns>
             /// <exception cref="T:System.ArgumentNullException"><paramref name="algorithm"/> is <see langword="null"/>.</exception>
             [Pure]
-            public bool Test([NotNull] CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
+            public bool Test(CloneableVertexGraphExplorerAlgorithm<TVertex, TEdge> algorithm)
             {
                 if (algorithm is null)
                     throw new ArgumentNullException(nameof(algorithm));

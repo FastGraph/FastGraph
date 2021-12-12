@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -34,6 +35,7 @@ namespace FastGraph.Tests.Structures
                 EdgeListGraph<TVertex, TEdge> g,
                 bool isDirected = true,
                 bool parallelEdges = true)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.AreEqual(isDirected, g.IsDirected);

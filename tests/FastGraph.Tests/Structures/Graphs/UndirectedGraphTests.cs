@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -36,6 +35,7 @@ namespace FastGraph.Tests.Structures
             void AssertGraphProperties<TVertex, TEdge>(
                 UndirectedGraph<TVertex, TEdge> g,
                 bool parallelEdges = true)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsFalse(g.IsDirected);
@@ -52,7 +52,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new UndirectedGraph<int, Edge<int>>(true, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new UndirectedGraph<int, Edge<int>>(true, default));
+#pragma warning restore CS8625
         }
 
         #region Add Vertices
@@ -521,11 +523,15 @@ namespace FastGraph.Tests.Structures
             graph.AddVerticesAndEdge(edge);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdges(default));
+#pragma warning restore CS8625
             AssertHasEdges(graph, new[] { edge });
             CheckCounters();
 
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdges(new[] { edge, null }));
+#pragma warning disable CS8620
+            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdges(new[] { edge, default }));
+#pragma warning restore CS8620
             Assert.AreEqual(0, edgesRemoved);
             AssertHasEdges(graph, new[] { edge });
             CheckCounters();
@@ -608,7 +614,7 @@ namespace FastGraph.Tests.Structures
             #endregion
         }
 
-        private static void ClearEdgesCommon([NotNull, InstantHandle] Action<UndirectedGraph<int, Edge<int>>, int> clearEdges)
+        private static void ClearEdgesCommon([InstantHandle] Action<UndirectedGraph<int, Edge<int>>, int> clearEdges)
         {
             int edgesRemoved = 0;
 

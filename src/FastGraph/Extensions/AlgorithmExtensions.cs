@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Condensation;
@@ -32,16 +31,16 @@ namespace FastGraph.Algorithms
         /// <returns>A function allowing key indexed access.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static Func<TKey, TValue> GetIndexer<TKey, TValue>([NotNull] IDictionary<TKey, TValue> dictionary)
+        public static Func<TKey, TValue> GetIndexer<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
+            where TKey : notnull
         {
             if (dictionary is null)
                 throw new ArgumentNullException(nameof(dictionary));
 
             // ReSharper disable once PossibleNullReferenceException, Justification: Dictionary has the [] operator called "Item".
-            MethodInfo method = dictionary.GetType().GetProperty("Item").GetGetMethod();
+            MethodInfo method = dictionary.GetType().GetProperty("Item")!.GetGetMethod()!;
             // ReSharper disable once AssignNullToNotNullAttribute, Justification: Throws if the method is not found.
-            return (Func<TKey, TValue>)Delegate.CreateDelegate(typeof(Func<TKey, TValue>), dictionary, method, true);
+            return (Func<TKey, TValue>)(Delegate.CreateDelegate(typeof(Func<TKey, TValue>), dictionary, method, true)!);
         }
 
         /// <summary>
@@ -56,8 +55,8 @@ namespace FastGraph.Algorithms
         /// <returns>A function that computes a vertex identity for the given <paramref name="graph"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>([NotNull] this IVertexSet<TVertex> graph)
+        public static VertexIdentity<TVertex> GetVertexIdentity<TVertex>(this IVertexSet<TVertex> graph)
+            where TVertex : notnull
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -79,14 +78,14 @@ namespace FastGraph.Algorithms
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
-                    return vertex => vertex.ToString();
+                    return vertex => vertex.ToString()!;
             }
 
             // Create dictionary
             var ids = new Dictionary<TVertex, string>(graph.VertexCount);
             return vertex =>
             {
-                if (!ids.TryGetValue(vertex, out string id))
+                if (!ids.TryGetValue(vertex, out string? id))
                 {
                     ids[vertex] = id = ids.Count.ToString();
                 }
@@ -103,8 +102,8 @@ namespace FastGraph.Algorithms
         /// <returns>A function that computes an edge identity for the given <paramref name="graph"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>([NotNull] this IEdgeSet<TVertex, TEdge> graph)
+        public static EdgeIdentity<TVertex, TEdge> GetEdgeIdentity<TVertex, TEdge>(this IEdgeSet<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -114,7 +113,7 @@ namespace FastGraph.Algorithms
             var ids = new Dictionary<TEdge, string>(graph.EdgeCount);
             return edge =>
             {
-                if (!ids.TryGetValue(edge, out string id))
+                if (!ids.TryGetValue(edge, out string? id))
                 {
                     ids[edge] = id = ids.Count.ToString();
                 }
@@ -123,15 +122,13 @@ namespace FastGraph.Algorithms
         }
 
         [Pure]
-        [NotNull]
         private static TryFunc<TVertex, IEnumerable<TEdge>> RunDirectedRootedAlgorithm<TVertex, TEdge, TAlgorithm>(
-            [NotNull] TVertex source,
-            [NotNull] TAlgorithm algorithm)
+            TVertex source,
+            TAlgorithm algorithm)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TAlgorithm : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>, ITreeBuilderAlgorithm<TVertex, TEdge>
         {
-            Debug.Assert(algorithm != null);
-
             var predecessorRecorder = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessorRecorder.Attach(algorithm))
             {
@@ -139,7 +136,7 @@ namespace FastGraph.Algorithms
             }
 
             IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
-            return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
+            return (TVertex vertex, out IEnumerable<TEdge>? edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
         /// <summary>
@@ -156,10 +153,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeBreadthFirstSearch<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new BreadthFirstSearchAlgorithm<TVertex, TEdge>(graph);
@@ -182,10 +179,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeDepthFirstSearch<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
@@ -209,10 +206,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return TreeCyclePoppingRandom(graph, root, new NormalizedMarkovEdgeChain<TVertex, TEdge>());
@@ -235,11 +232,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> TreeCyclePoppingRandom<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root,
-            [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root,
+            IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>(graph, edgeChain);
@@ -266,11 +263,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
-            [NotNull] TVertex root)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new DijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
@@ -295,11 +292,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDijkstra<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
-            [NotNull] TVertex root)
+            this IUndirectedGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new UndirectedDijkstraShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights);
@@ -310,7 +307,7 @@ namespace FastGraph.Algorithms
             }
 
             IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
-            return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
+            return (TVertex vertex, out IEnumerable<TEdge>? edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
         /// <summary>
@@ -331,12 +328,12 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsAStar<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
-            [NotNull, InstantHandle] Func<TVertex, double> costHeuristic,
-            [NotNull] TVertex root)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights,
+            [InstantHandle] Func<TVertex, double> costHeuristic,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new AStarShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights, costHeuristic);
@@ -362,12 +359,12 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsBellmanFord<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
-            [NotNull] TVertex root,
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights,
+            TVertex root,
             out bool hasNegativeCycle)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -387,7 +384,7 @@ namespace FastGraph.Algorithms
             hasNegativeCycle = algorithm.FoundNegativeCycle;
 
             IDictionary<TVertex, TEdge> predecessors = predecessorRecorder.VerticesPredecessors;
-            return (TVertex vertex, out IEnumerable<TEdge> edges) => predecessors.TryGetPath(vertex, out edges);
+            return (TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges) => predecessors.TryGetPath(vertex, out edges);
         }
 
         /// <summary>
@@ -406,11 +403,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<TVertex, IEnumerable<TEdge>> ShortestPathsDag<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
-            [NotNull] TVertex root)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -449,13 +446,13 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> or <paramref name="target"/> are not part of <paramref name="graph"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maxCount"/> is lower or equal to 1.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<IEnumerable<TEdge>> RankedShortestPathHoffmanPavley<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights,
-            [NotNull] TVertex root,
-            [NotNull] TVertex target,
+            this IBidirectionalGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights,
+            TVertex root,
+            TVertex target,
             int maxCount = 3)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(graph, edgeWeights)
@@ -478,9 +475,9 @@ namespace FastGraph.Algorithms
         /// <returns>Sink vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Sinks<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
+            this IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -497,9 +494,9 @@ namespace FastGraph.Algorithms
         /// <returns>Root vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
+            this IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
@@ -523,9 +520,9 @@ namespace FastGraph.Algorithms
         /// <returns>Root vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> Roots<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
+            this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -542,9 +539,9 @@ namespace FastGraph.Algorithms
         /// <returns>Root vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> IsolatedVertices<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
+            this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -564,9 +561,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
+            this IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -574,7 +571,7 @@ namespace FastGraph.Algorithms
 
             var algorithm = new TopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
             algorithm.Compute();
-            return algorithm.SortedVertices.AsEnumerable();
+            return algorithm.SortedVertices!.AsEnumerable();
         }
 
         /// <summary>
@@ -587,9 +584,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> TopologicalSort<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
+            this IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -597,7 +594,7 @@ namespace FastGraph.Algorithms
 
             var algorithm = new UndirectedTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
             algorithm.Compute();
-            return algorithm.SortedVertices.AsEnumerable();
+            return algorithm.SortedVertices!.AsEnumerable();
         }
 
         /// <summary>
@@ -610,9 +607,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -620,7 +617,7 @@ namespace FastGraph.Algorithms
 
             var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
             algorithm.Compute();
-            return algorithm.SortedVertices.AsEnumerable();
+            return algorithm.SortedVertices!.AsEnumerable();
         }
 
         /// <summary>
@@ -633,9 +630,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> SourceFirstTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
+            this IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -643,7 +640,7 @@ namespace FastGraph.Algorithms
 
             var algorithm = new UndirectedFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph, graph.VertexCount);
             algorithm.Compute();
-            return algorithm.SortedVertices.AsEnumerable();
+            return algorithm.SortedVertices!.AsEnumerable();
         }
 
         /// <summary>
@@ -658,7 +655,8 @@ namespace FastGraph.Algorithms
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
         public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph)
+            this IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return SourceFirstBidirectionalTopologicalSort(graph, TopologicalSortDirection.Forward);
@@ -675,10 +673,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="NonAcyclicGraphException">If the input graph has a cycle.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> SourceFirstBidirectionalTopologicalSort<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
+            this IBidirectionalGraph<TVertex, TEdge> graph,
             TopologicalSortDirection direction)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -686,7 +684,7 @@ namespace FastGraph.Algorithms
 
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction, graph.VertexCount);
             algorithm.Compute();
-            return algorithm.SortedVertices.AsEnumerable();
+            return algorithm.SortedVertices!.AsEnumerable();
         }
 
         #endregion
@@ -704,8 +702,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public static int ConnectedComponents<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] IDictionary<TVertex, int> components)
+            this IUndirectedGraph<TVertex, TEdge> graph,
+            IDictionary<TVertex, int> components)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new ConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
@@ -725,10 +724,10 @@ namespace FastGraph.Algorithms
         /// <returns>A <see cref="T:System.IDisposable"/> of the used algorithm.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IDisposable IncrementalConnectedComponents<TVertex, TEdge>(
-            [NotNull] this IMutableVertexAndEdgeSet<TVertex, TEdge> graph,
-            [NotNull] out Func<KeyValuePair<int, IDictionary<TVertex, int>>> getComponents)
+            this IMutableVertexAndEdgeSet<TVertex, TEdge> graph,
+            out Func<KeyValuePair<int, IDictionary<TVertex, int>>> getComponents)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var incrementalComponents = new IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
@@ -748,8 +747,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public static int StronglyConnectedComponents<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] IDictionary<TVertex, int> components)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            IDictionary<TVertex, int> components)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
@@ -768,8 +768,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public static int WeaklyConnectedComponents<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] IDictionary<TVertex, int> components)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            IDictionary<TVertex, int> components)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(graph, components);
@@ -787,9 +788,9 @@ namespace FastGraph.Algorithms
         /// <returns>The condensed graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateStronglyConnected<TVertex, TEdge, TGraph>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
@@ -798,7 +799,7 @@ namespace FastGraph.Algorithms
                 StronglyConnected = true
             };
             algorithm.Compute();
-            return algorithm.CondensedGraph;
+            return algorithm.CondensedGraph!;
         }
 
         /// <summary>
@@ -811,9 +812,9 @@ namespace FastGraph.Algorithms
         /// <returns>The condensed graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensateWeaklyConnected<TVertex, TEdge, TGraph>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
         {
@@ -822,7 +823,7 @@ namespace FastGraph.Algorithms
                 StronglyConnected = false
             };
             algorithm.Compute();
-            return algorithm.CondensedGraph;
+            return algorithm.CondensedGraph!;
         }
 
         /// <summary>
@@ -836,10 +837,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> CondensateEdges<TVertex, TEdge>(
-            [NotNull] this IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate)
+            this IBidirectionalGraph<TVertex, TEdge> graph,
+            VertexPredicate<TVertex> vertexPredicate)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var condensedGraph = new BidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>>();
@@ -860,9 +861,9 @@ namespace FastGraph.Algorithms
         /// <returns>Enumerable of odd vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TVertex> OddVertices<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -899,7 +900,8 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsDirectedAcyclicGraph<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph)
+            this IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -908,15 +910,14 @@ namespace FastGraph.Algorithms
         }
 
         private sealed class DagTester<TVertex, TEdge>
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             private bool _isDag = true;
 
             [Pure]
-            public bool IsDag([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+            public bool IsDag(IVertexListGraph<TVertex, TEdge> graph)
             {
-                Debug.Assert(graph != null);
-
                 var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph);
                 try
                 {
@@ -931,7 +932,7 @@ namespace FastGraph.Algorithms
                 }
             }
 
-            private void DfsBackEdge([NotNull] TEdge edge)
+            private void DfsBackEdge(TEdge edge)
             {
                 _isDag = false;
             }
@@ -951,9 +952,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         public static double ComputePredecessorCost<TVertex, TEdge>(
-            [NotNull] IDictionary<TVertex, TEdge> predecessors,
-            [NotNull] IDictionary<TEdge, double> edgeCosts,
-            [NotNull] TVertex target)
+            IDictionary<TVertex, TEdge> predecessors,
+            IDictionary<TEdge, double> edgeCosts,
+            TVertex target)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (predecessors is null)
@@ -965,7 +967,7 @@ namespace FastGraph.Algorithms
 
             double cost = 0;
             TVertex current = target;
-            while (predecessors.TryGetValue(current, out TEdge edge))
+            while (predecessors.TryGetValue(current, out TEdge? edge))
             {
                 cost += edgeCosts[edge];
                 current = edge.Source;
@@ -983,9 +985,9 @@ namespace FastGraph.Algorithms
         /// <returns>Found disjoint sets.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IDisjointSet<TVertex> ComputeDisjointSet<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph)
+            this IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -1017,10 +1019,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreePrim<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights)
+            this IUndirectedGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -1053,10 +1055,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<TEdge> MinimumSpanningTreeKruskal<TVertex, TEdge>(
-            [NotNull] this IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights)
+            this IUndirectedGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> edgeWeights)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -1098,11 +1100,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="pairs"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">At least one of <paramref name="pairs"/> vertices is not part of <paramref name="graph"/>.</exception>
         [Pure]
-        [NotNull]
         public static TryFunc<SEquatableEdge<TVertex>, TVertex> OfflineLeastCommonAncestor<TVertex, TEdge>(
-            [NotNull] this IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root,
-            [NotNull] IEnumerable<SEquatableEdge<TVertex>> pairs)
+            this IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root,
+            IEnumerable<SEquatableEdge<TVertex>> pairs)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -1119,7 +1121,7 @@ namespace FastGraph.Algorithms
             algorithm.Compute(root, pairsArray);
 
             IDictionary<SEquatableEdge<TVertex>, TVertex> ancestors = algorithm.Ancestors;
-            return (SEquatableEdge<TVertex> pair, out TVertex vertex) => ancestors.TryGetValue(pair, out vertex);
+            return (SEquatableEdge<TVertex> pair, out TVertex? vertex) => ancestors.TryGetValue(pair, out vertex);
         }
 
         /// <summary>
@@ -1144,13 +1146,14 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="reversedEdgeAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="source"/> and <paramref name="sink"/> are the same vertex.</exception>
         public static double MaximumFlow<TVertex, TEdge>(
-            [NotNull] this IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TEdge, double> edgeCapacities,
-            [NotNull] TVertex source,
-            [NotNull] TVertex sink,
-            [NotNull] out TryFunc<TVertex, TEdge> flowPredecessors,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            this IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            Func<TEdge, double> edgeCapacities,
+            TVertex source,
+            TVertex sink,
+            out TryFunc<TVertex, TEdge> flowPredecessors,
+            EdgeFactory<TVertex, TEdge> edgeFactory,
+            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reversedEdgeAugmentorAlgorithm)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (EqualityComparer<TVertex>.Default.Equals(source, sink))
@@ -1177,9 +1180,9 @@ namespace FastGraph.Algorithms
         /// <returns>Transitive graph reduction.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveReduction<TVertex, TEdge>(
-            [NotNull] this BidirectionalGraph<TVertex, TEdge> graph)
+            this BidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new TransitiveReductionAlgorithm<TVertex, TEdge>(graph);
@@ -1198,10 +1201,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static BidirectionalGraph<TVertex, TEdge> ComputeTransitiveClosure<TVertex, TEdge>(
-            [NotNull] this BidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TVertex, TVertex, TEdge> edgeFactory)
+            this BidirectionalGraph<TVertex, TEdge> graph,
+            Func<TVertex, TVertex, TEdge> edgeFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new TransitiveClosureAlgorithm<TVertex, TEdge>(graph, edgeFactory);
@@ -1223,10 +1226,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeCloner"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="clone"/> is <see langword="null"/>.</exception>
         public static void Clone<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TVertex, TVertex> vertexCloner,
-            [NotNull, InstantHandle] Func<TEdge, TVertex, TVertex, TEdge> edgeCloner,
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> clone)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TVertex, TVertex> vertexCloner,
+            [InstantHandle] Func<TEdge, TVertex, TVertex, TEdge> edgeCloner,
+            IMutableVertexAndEdgeSet<TVertex, TEdge> clone)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)

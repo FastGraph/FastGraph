@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -10,6 +9,7 @@ namespace FastGraph.Algorithms
     /// <param name="args">Event arguments.</param>
     /// <typeparam name="TGraph"></typeparam>
     public delegate void AlgorithmEventHandler<in TGraph>(
-        [NotNull] IAlgorithm<TGraph> sender,
-        [NotNull] EventArgs args);
+        IAlgorithm<TGraph> sender,
+        EventArgs args)
+        where TGraph : notnull;
 }

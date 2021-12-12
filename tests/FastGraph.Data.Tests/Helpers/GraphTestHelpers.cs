@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
 using System.Data;
-using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace FastGraph.Data.Tests
@@ -9,8 +8,8 @@ namespace FastGraph.Data.Tests
     internal static class GraphTestHelpers
     {
         public static void AssertHasRelations(
-            [NotNull] IEdgeSet<DataTable, DataRelationEdge> graph,
-            [NotNull, ItemNotNull] IEnumerable<DataRelationEdge> relations)
+            IEdgeSet<DataTable, DataRelationEdge> graph,
+            IEnumerable<DataRelationEdge> relations)
         {
             DataRelation[] relationArray = relations
                 .Select(r => r.Relation)

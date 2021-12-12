@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using Microsoft.Msagl.Drawing;
 
 namespace FastGraph.MSAGL
@@ -12,16 +10,17 @@ namespace FastGraph.MSAGL
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class MsaglDefaultGraphPopulator<TVertex, TEdge> : MsaglGraphPopulator<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        private Dictionary<TVertex, string> _verticesIds;
+        private Dictionary<TVertex, string>? _verticesIds;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MsaglDefaultGraphPopulator{TVertex,TEdge}"/> class.
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public MsaglDefaultGraphPopulator([NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public MsaglDefaultGraphPopulator(IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -29,8 +28,6 @@ namespace FastGraph.MSAGL
         /// <inheritdoc />
         protected override void OnStarted(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             base.OnStarted(args);
 
             _verticesIds = new Dictionary<TVertex, string>(VisitedGraph.VertexCount);
@@ -39,9 +36,7 @@ namespace FastGraph.MSAGL
         /// <inheritdoc />
         protected override void OnFinished(EventArgs args)
         {
-            Debug.Assert(args != null);
-
-            _verticesIds = null;
+            _verticesIds = default;
 
             base.OnFinished(args);
         }
@@ -53,8 +48,8 @@ namespace FastGraph.MSAGL
                 throw new ArgumentNullException(nameof(vertex));
 
             string id = GetVertexId(vertex);
-            _verticesIds.Add(vertex, id);
-            Node node = MsaglGraph.AddNode(id);
+            _verticesIds!.Add(vertex, id);
+            Node node = MsaglGraph!.AddNode(id);
             node.Attr.Shape = Shape.Box;
             node.LabelText = GetVertexLabel(id, vertex);
             return node;
@@ -65,9 +60,9 @@ namespace FastGraph.MSAGL
         /// </summary>
         /// <param name="vertex">Vertex to get id.</param>
         /// <returns>Vertex id.</returns>
-        protected virtual string GetVertexId([NotNull] TVertex vertex)
+        protected virtual string GetVertexId(TVertex vertex)
         {
-            return _verticesIds.Count.ToString();
+            return _verticesIds!.Count.ToString();
         }
 
         /// <summary>
@@ -76,7 +71,7 @@ namespace FastGraph.MSAGL
         /// <param name="id">Vertex id.</param>
         /// <param name="vertex">Vertex to get label.</param>
         /// <returns>Vertex label.</returns>
-        protected virtual string GetVertexLabel([NotNull] string id, [NotNull] TVertex vertex)
+        protected virtual string GetVertexLabel(string id, TVertex vertex)
         {
             return $"{id}: {vertex}";
         }
@@ -87,8 +82,8 @@ namespace FastGraph.MSAGL
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
 
-            return MsaglGraph.AddEdge(
-                _verticesIds[edge.Source],
+            return MsaglGraph!.AddEdge(
+                _verticesIds![edge.Source],
                 _verticesIds[edge.Target]);
         }
     }

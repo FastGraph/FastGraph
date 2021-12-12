@@ -1,8 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Graphviz.Dot;
 
 namespace FastGraph.Graphviz
@@ -14,14 +13,13 @@ namespace FastGraph.Graphviz
     [Serializable]
 #endif
     public sealed class FormatEdgeEventArgs<TVertex, TEdge> : EdgeEventArgs<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary />
-        internal FormatEdgeEventArgs([NotNull] TEdge edge, [NotNull] GraphvizEdge edgeFormat)
+        internal FormatEdgeEventArgs(TEdge edge, GraphvizEdge edgeFormat)
             : base(edge)
         {
-            Debug.Assert(edgeFormat != null);
-
             EdgeFormat = edgeFormat;
         }
 

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -18,6 +17,7 @@ namespace FastGraph
     [StructLayout(LayoutKind.Auto)]
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
     public struct STaggedUndirectedEdge<TVertex, TTag> : IUndirectedEdge<TVertex>, ITagged<TTag>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="STaggedUndirectedEdge{TVertex, TTag}"/> struct.
@@ -30,7 +30,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentException">
         /// <paramref name="target"/> is not lower than <paramref name="source"/> when using <see cref="M:System.Collections.Generic.Comparer{T}.Default"/>.
         /// </exception>
-        public STaggedUndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
+        public STaggedUndirectedEdge(TVertex source, TVertex target, TTag? tag)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -40,7 +40,7 @@ namespace FastGraph
             Source = source;
             Target = target;
             _tag = tag;
-            TagChanged = null;
+            TagChanged = default;
 
             if (Comparer<TVertex>.Default.Compare(source, target) > 0)
                 throw new ArgumentException($"{nameof(source)} must be lower than {nameof(target)} in {GetType().Name}.");
@@ -53,28 +53,26 @@ namespace FastGraph
         public TVertex Target { get; }
 
         /// <inheritdoc />
-        public event EventHandler TagChanged;
+        public event EventHandler? TagChanged;
 
         /// <summary>
         /// Event invoker for <see cref="TagChanged"/> event.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        private void OnTagChanged([NotNull] EventArgs args)
+        private void OnTagChanged(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             TagChanged?.Invoke(this, args);
         }
 
-        private TTag _tag;
+        private TTag? _tag;
 
         /// <inheritdoc />
-        public TTag Tag
+        public TTag? Tag
         {
             get => _tag;
             set
             {
-                if (EqualityComparer<TTag>.Default.Equals(_tag, value))
+                if (EqualityComparer<TTag?>.Default.Equals(_tag, value))
                     return;
 
                 _tag = value;

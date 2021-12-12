@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Petri
@@ -13,6 +14,6 @@ namespace FastGraph.Petri
         /// Checks if the condition is true (enabled), or not.
         /// </summary>
         [Pure]
-        bool IsEnabled([NotNull, ItemNotNull] IList<TToken> tokens);
+        bool IsEnabled([ItemNotNull] IList<TToken> tokens);
     }
 }

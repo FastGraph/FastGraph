@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using Microsoft.Msagl.Drawing;
 
 namespace FastGraph.MSAGL
@@ -18,7 +18,8 @@ namespace FastGraph.MSAGL
         /// <returns>Graph populator.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
+            this IEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return new MsaglDefaultGraphPopulator<TVertex, TEdge>(graph);
@@ -35,9 +36,10 @@ namespace FastGraph.MSAGL
         /// <returns>Graph populator.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [CanBeNull] string format,
-            [CanBeNull] IFormatProvider formatProvider = null)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            string? format,
+            IFormatProvider? formatProvider = default)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return new MsaglToStringGraphPopulator<TVertex, TEdge>(graph, format, formatProvider);
@@ -54,8 +56,9 @@ namespace FastGraph.MSAGL
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            VertexIdentity<TVertex> vertexIdentity)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return new MsaglIdentifiableGraphPopulator<TVertex, TEdge>(graph, vertexIdentity);
@@ -72,35 +75,36 @@ namespace FastGraph.MSAGL
         /// <returns>MSAGL Graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static Graph ToMsaglGraph<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [CanBeNull] MsaglVertexNodeEventHandler<TVertex> nodeAdded = null,
-            [CanBeNull] MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded = null)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            MsaglVertexNodeEventHandler<TVertex>? nodeAdded = default,
+            MsaglEdgeEventHandler<TVertex, TEdge>? edgeAdded = default)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             MsaglGraphPopulator<TVertex, TEdge> populator = CreateMsaglPopulator(graph);
             try
             {
-                if (nodeAdded != null)
+                if (nodeAdded != default)
                 {
                     populator.NodeAdded += nodeAdded;
                 }
 
-                if (edgeAdded != null)
+                if (edgeAdded != default)
                 {
                     populator.EdgeAdded += edgeAdded;
                 }
 
                 populator.Compute();
-                return populator.MsaglGraph;
+                return populator.MsaglGraph!;
             }
             finally
             {
-                if (nodeAdded != null)
+                if (nodeAdded != default)
                 {
                     populator.NodeAdded -= nodeAdded;
                 }
 
-                if (edgeAdded != null)
+                if (edgeAdded != default)
                 {
                     populator.EdgeAdded -= edgeAdded;
                 }
@@ -120,36 +124,37 @@ namespace FastGraph.MSAGL
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         public static Graph ToMsaglGraph<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [CanBeNull] MsaglVertexNodeEventHandler<TVertex> nodeAdded = null,
-            [CanBeNull] MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded = null)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            VertexIdentity<TVertex> vertexIdentity,
+            MsaglVertexNodeEventHandler<TVertex>? nodeAdded = default,
+            MsaglEdgeEventHandler<TVertex, TEdge>? edgeAdded = default)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             MsaglGraphPopulator<TVertex, TEdge> populator = CreateMsaglPopulator(graph, vertexIdentity);
             try
             {
-                if (nodeAdded != null)
+                if (nodeAdded != default)
                 {
                     populator.NodeAdded += nodeAdded;
                 }
 
-                if (edgeAdded != null)
+                if (edgeAdded != default)
                 {
                     populator.EdgeAdded += edgeAdded;
                 }
 
                 populator.Compute();
-                return populator.MsaglGraph;
+                return populator.MsaglGraph!;
             }
             finally
             {
-                if (nodeAdded != null)
+                if (nodeAdded != default)
                 {
                     populator.NodeAdded -= nodeAdded;
                 }
 
-                if (edgeAdded != null)
+                if (edgeAdded != default)
                 {
                     populator.EdgeAdded -= edgeAdded;
                 }

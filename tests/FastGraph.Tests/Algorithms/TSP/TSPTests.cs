@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -19,29 +18,24 @@ namespace FastGraph.Tests.Algorithms.TSP
 
         private class TestCase
         {
-            [NotNull]
             public BidirectionalGraph<string, EquatableEdge<string>> Graph { get; } = new BidirectionalGraph<string, EquatableEdge<string>>();
 
-            [NotNull]
             private readonly Dictionary<EquatableEdge<string>, double> _weightsDict = new Dictionary<EquatableEdge<string>, double>();
 
-            [NotNull]
-            public TestCase AddVertex([NotNull] string vertex)
+            public TestCase AddVertex(string vertex)
             {
                 Graph.AddVertex(vertex);
                 return this;
             }
 
-            [NotNull]
-            public TestCase AddUndirectedEdge([NotNull] string source, [NotNull] string target, double weight)
+            public TestCase AddUndirectedEdge(string source, string target, double weight)
             {
                 AddDirectedEdge(source, target, weight);
                 AddDirectedEdge(target, source, weight);
                 return this;
             }
 
-            [NotNull]
-            public TestCase AddDirectedEdge([NotNull] string source, [NotNull] string target, double weight)
+            public TestCase AddDirectedEdge(string source, string target, double weight)
             {
                 var edge = new EquatableEdge<string>(source, target);
                 Graph.AddEdge(edge);
@@ -51,7 +45,6 @@ namespace FastGraph.Tests.Algorithms.TSP
             }
 
             [Pure]
-            [NotNull]
             public Func<EquatableEdge<string>, double> GetWeightsFunc()
             {
                 return edge => _weightsDict[edge];
@@ -74,7 +67,8 @@ namespace FastGraph.Tests.Algorithms.TSP
             void AssertAlgorithmProperties<TVertex, TEdge, TGraph>(
                 TSP<TVertex, TEdge, TGraph> algo,
                 TGraph g,
-                Func<TEdge, double> eWeights)
+                Func<TEdge, double>? eWeights)
+                where TVertex : notnull
                 where TEdge : EquatableEdge<TVertex>
                 where TGraph : BidirectionalGraph<TVertex, TEdge>
             {
@@ -100,12 +94,14 @@ namespace FastGraph.Tests.Algorithms.TSP
 
             Func<EquatableEdge<int>, double> Weights = _ => 1.0;
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(null, Weights));
+                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(default, Weights));
             Assert.Throws<ArgumentNullException>(
-                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, null));
+                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(null, null));
+                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -187,7 +183,9 @@ namespace FastGraph.Tests.Algorithms.TSP
             var graph2 = new BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>();
             var algorithm2 = new TSP<TestVertex, EquatableEdge<TestVertex>, BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>>(graph2, _ => 1.0);
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm2.TryGetDistance(null, out _));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm2.TryGetDistance(default, out _));
+#pragma warning restore CS8625
 
             var vertex = new TestVertex();
             Assert.Throws<InvalidOperationException>(() => algorithm2.TryGetDistance(vertex, out _));
@@ -237,7 +235,7 @@ namespace FastGraph.Tests.Algorithms.TSP
 
             Assert.AreEqual(25, tsp.BestCost);
             Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath.IsDirectedAcyclicGraph());
+            Assert.IsFalse(tsp.ResultPath!.IsDirectedAcyclicGraph());
         }
 
         [Test]
@@ -269,7 +267,7 @@ namespace FastGraph.Tests.Algorithms.TSP
 
             Assert.AreEqual(47, tsp.BestCost);
             Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath.IsDirectedAcyclicGraph());
+            Assert.IsFalse(tsp.ResultPath!.IsDirectedAcyclicGraph());
         }
 
         [Test]
@@ -333,13 +331,13 @@ namespace FastGraph.Tests.Algorithms.TSP
 
             Assert.AreEqual(45, tsp.BestCost);
             Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath.IsDirectedAcyclicGraph());
+            Assert.IsFalse(tsp.ResultPath!.IsDirectedAcyclicGraph());
         }
 
         [Pure]
-        [NotNull]
         public static TSP<T, EquatableEdge<T>, BidirectionalGraph<T, EquatableEdge<T>>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new BidirectionalGraph<T, EquatableEdge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new EquatableEdge<T>(e.Source, e.Target)));
@@ -349,7 +347,7 @@ namespace FastGraph.Tests.Algorithms.TSP
             var algorithm = new TSP<T, EquatableEdge<T>, BidirectionalGraph<T, EquatableEdge<T>>>(graph, Weights);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

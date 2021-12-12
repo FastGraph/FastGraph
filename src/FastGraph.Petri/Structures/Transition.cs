@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Petri
 {
@@ -13,7 +12,7 @@ namespace FastGraph.Petri
         /// </summary>
         /// <param name="name">Transition name.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-        public Transition([NotNull] string name)
+        public Transition(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
@@ -21,7 +20,6 @@ namespace FastGraph.Petri
         /// <inheritdoc />
         public string Name { get; }
 
-        [NotNull]
         private IConditionExpression<TToken> _condition = new AlwaysTrueConditionExpression<TToken>();
 
         /// <inheritdoc />

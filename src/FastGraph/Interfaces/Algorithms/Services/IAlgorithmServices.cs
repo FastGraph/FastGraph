@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.Services
 {
@@ -10,7 +10,6 @@ namespace FastGraph.Algorithms.Services
         /// <summary>
         /// Algorithm cancel manager.
         /// </summary>
-        [NotNull]
         ICancelManager CancelManager { get; }
     }
 }

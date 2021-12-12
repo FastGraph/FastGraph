@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.MaximumFlow;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -15,7 +15,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         #region Test helpers
 
         private static void RunAugmentationAndCheck(
-            [NotNull] IMutableVertexAndEdgeListGraph<string, Edge<string>> graph)
+            IMutableVertexAndEdgeListGraph<string, Edge<string>> graph)
         {
             int vertexCount = graph.VertexCount;
             int edgeCount = graph.EdgeCount;
@@ -41,20 +41,22 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         private static void VerifyVertexCount<TVertex, TEdge>(
-            [NotNull] IVertexSet<TVertex> graph,
+            IVertexSet<TVertex> graph,
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+            AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
             int vertexCount)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.AreEqual(vertexCount + 2 /* Source + Sink */, graph.VertexCount);
-            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSource));
-            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSink));
+            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSource!));
+            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSink!));
         }
 
         private static void VerifySourceConnector<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            IVertexListGraph<TVertex, TEdge> graph,
+            AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             foreach (TVertex vertex in graph.Vertices)
@@ -63,13 +65,14 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource, vertex));
+                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource!, vertex));
             }
         }
 
         private static void VerifySinkConnector<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            IVertexListGraph<TVertex, TEdge> graph,
+            AllVerticesGraphAugmentorAlgorithm<TVertex, TEdge> augmentor)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             foreach (TVertex vertex in graph.Vertices)
@@ -78,7 +81,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink));
+                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink!));
             }
         }
 
@@ -94,7 +97,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, edgeFactory);
             AssertAlgorithmProperties(algorithm, graph, vertexFactory, edgeFactory);
 
-            algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, vertexFactory, edgeFactory);
+            algorithm = new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, vertexFactory, edgeFactory);
             AssertAlgorithmProperties(algorithm, graph, vertexFactory, edgeFactory);
 
             #region Local function
@@ -104,6 +107,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 IMutableVertexAndEdgeSet<TVertex, TEdge> g,
                 VertexFactory<int> vFactory,
                 EdgeFactory<int, Edge<int>> eFactory)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -127,35 +131,37 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, vertexFactory, edgeFactory));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, vertexFactory, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, null, edgeFactory));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, default, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, edgeFactory));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, default, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, vertexFactory, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, vertexFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, vertexFactory, edgeFactory));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, default, vertexFactory, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, null, edgeFactory));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, default, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, vertexFactory, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, vertexFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null, edgeFactory));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, vertexFactory, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, default, vertexFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, graph, null, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new AllVerticesGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

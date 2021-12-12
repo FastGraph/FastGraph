@@ -1,8 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.Condensation
 {
@@ -16,6 +15,7 @@ namespace FastGraph.Algorithms.Condensation
     [Serializable]
 #endif
     public sealed class CondensedEdge<TVertex, TEdge, TGraph> : Edge<TGraph>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
     {
@@ -26,7 +26,7 @@ namespace FastGraph.Algorithms.Condensation
         /// <param name="target">The target graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public CondensedEdge([NotNull] TGraph source, [NotNull] TGraph target)
+        public CondensedEdge(TGraph source, TGraph target)
             : base(source, target)
         {
         }
@@ -34,7 +34,6 @@ namespace FastGraph.Algorithms.Condensation
         /// <summary>
         /// Edges between source and target graphs.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IList<TEdge> Edges { get; } = new List<TEdge>();
     }
 }

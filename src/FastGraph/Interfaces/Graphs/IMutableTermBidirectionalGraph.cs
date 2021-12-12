@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -10,6 +12,7 @@ namespace FastGraph
     public interface IMutableTermBidirectionalGraph<TVertex, TEdge>
         : ITermBidirectionalGraph<TVertex, TEdge>
         , IMutableBidirectionalGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : ITermEdge<TVertex>
     {
     }

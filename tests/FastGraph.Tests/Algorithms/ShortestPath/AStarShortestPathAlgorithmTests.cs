@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -19,8 +18,9 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         #region Test helpers
 
         private static void RunAStarAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+            IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            TVertex root)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -34,17 +34,17 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors![vertex]);
             };
 
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors![vertex]);
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors![vertex]);
             };
 
             var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
@@ -58,14 +58,15 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         }
 
         private static void Verify<TVertex, TEdge>(
-            [NotNull] AStarShortestPathAlgorithm<TVertex, TEdge> algorithm,
-            [NotNull] VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            AStarShortestPathAlgorithm<TVertex, TEdge> algorithm,
+            VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // Verify the result
             foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
             {
-                if (!predecessors.VerticesPredecessors.TryGetValue(vertex, out TEdge predecessor))
+                if (!predecessors.VerticesPredecessors.TryGetValue(vertex, out TEdge? predecessor))
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;
@@ -91,7 +92,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, Heuristic, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmProperties(algorithm, graph, Heuristic, Weights, DistanceRelaxers.CriticalDistance);
 
-            algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, Heuristic, DistanceRelaxers.CriticalDistance);
+            algorithm = new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, Heuristic, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmProperties(algorithm, graph, Heuristic, Weights, DistanceRelaxers.CriticalDistance);
 
             #region Local function
@@ -99,9 +100,10 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 AStarShortestPathAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g,
-                Func<TVertex, double> heuristic = null,
-                Func<TEdge, double> eWeights = null,
-                IDistanceRelaxer relaxer = null)
+                Func<TVertex, double>? heuristic = default,
+                Func<TEdge, double>? eWeights = default,
+                IDistanceRelaxer? relaxer = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -134,80 +136,82 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             Func<int, double> Heuristic = _ => 1.0;
             Func<Edge<int>, double> Weights = _ => 1.0;
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, Heuristic));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, Weights, Heuristic));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, null, Heuristic));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, default, Heuristic));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Heuristic));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Heuristic));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Heuristic));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Heuristic));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, Heuristic, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, Weights, Heuristic, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, null, Heuristic, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, default, Heuristic, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, null, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, default, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, null, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(graph, default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, Weights, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, Weights, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Heuristic, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Heuristic, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, Weights, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, Weights, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, Heuristic, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, Heuristic, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, null, Heuristic, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, default, Heuristic, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, null, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, default, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, graph, null, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null, Heuristic, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default, Heuristic, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null, Heuristic, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default, Heuristic, default));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null, null, DistanceRelaxers.CriticalDistance));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new AStarShortestPathAlgorithm<int, Edge<int>>(null, null, null, null, null));
+                () => new AStarShortestPathAlgorithm<int, Edge<int>>(default, default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -356,12 +360,12 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             };
 
             int heuristicCalls = 0;
-            AStarShortestPathAlgorithm<int, Edge<int>> algorithm = null;
+            AStarShortestPathAlgorithm<int, Edge<int>>? algorithm = default;
             Func<int, double> heuristic = v =>
             {
                 // ReSharper disable once PossibleNullReferenceException
                 // ReSharper disable once AccessToModifiedClosure
-                colorUpdates.Remove(algorithm.GetVertexColor(v));
+                colorUpdates.Remove(algorithm!.GetVertexColor(v));
                 ++heuristicCalls;
                 return 10.0 / heuristicCalls;
             };
@@ -424,9 +428,9 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         }
 
         [Pure]
-        [NotNull]
         public static AStarShortestPathAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -437,7 +441,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             var algorithm = new AStarShortestPathAlgorithm<T, Edge<T>>(graph, Weights, Heuristic);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

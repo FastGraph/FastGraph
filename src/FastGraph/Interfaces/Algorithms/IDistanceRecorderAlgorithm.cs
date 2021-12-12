@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph.Algorithms
 {
     /// <summary>
@@ -5,15 +7,16 @@ namespace FastGraph.Algorithms
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IDistanceRecorderAlgorithm<out TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Fired when a vertex is initialized.
         /// </summary>
-        event VertexAction<TVertex> InitializeVertex;
+        event VertexAction<TVertex>? InitializeVertex;
 
         /// <summary>
         /// Fired when a vertex is discovered.
         /// </summary>
-        event VertexAction<TVertex> DiscoverVertex;
+        event VertexAction<TVertex>? DiscoverVertex;
     }
 }

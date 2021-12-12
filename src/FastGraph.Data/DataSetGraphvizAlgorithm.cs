@@ -1,7 +1,7 @@
-﻿using System.Data;
-using System.Diagnostics;
+#nullable enable
+
+using System.Data;
 using System.Text;
-using JetBrains.Annotations;
 using FastGraph.Graphviz;
 using FastGraph.Graphviz.Dot;
 
@@ -17,7 +17,7 @@ namespace FastGraph.Data
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public DataSetGraphvizAlgorithm([NotNull] DataSetGraph visitedGraph)
+        public DataSetGraphvizAlgorithm(DataSetGraph visitedGraph)
             : base(visitedGraph)
         {
             InitializeFormat();
@@ -30,7 +30,7 @@ namespace FastGraph.Data
         /// <param name="imageType">Target output image type.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public DataSetGraphvizAlgorithm(
-            [NotNull] DataSetGraph visitedGraph,
+            DataSetGraph visitedGraph,
             GraphvizImageType imageType)
             : base(visitedGraph, imageType)
         {
@@ -51,11 +51,8 @@ namespace FastGraph.Data
         /// </summary>
         /// <param name="sender">The <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> performing the formatting.</param>
         /// <param name="args">Vertex event arguments.</param>
-        protected virtual void FormatTable([NotNull] object sender, [NotNull] FormatVertexEventArgs<DataTable> args)
+        protected virtual void FormatTable(object sender, FormatVertexEventArgs<DataTable> args)
         {
-            Debug.Assert(sender != null);
-            Debug.Assert(args != null);
-
             DataTable vertex = args.Vertex;
             GraphvizVertex format = args.VertexFormat;
             format.Shape = GraphvizVertexShape.Record;
@@ -68,7 +65,7 @@ namespace FastGraph.Data
 
             var builder = new StringBuilder();
             bool flag = true;
-            foreach (DataColumn column in vertex.Columns)
+            foreach (DataColumn? column in vertex.Columns)
             {
                 if (flag)
                 {
@@ -79,7 +76,7 @@ namespace FastGraph.Data
                     builder.AppendLine();
                 }
 
-                builder.Append($"+ {column.ColumnName} : {column.DataType.Name}");
+                builder.Append($"+ {column!.ColumnName} : {column.DataType.Name}");
                 if (column.Unique)
                 {
                     builder.Append(" unique");
@@ -90,7 +87,7 @@ namespace FastGraph.Data
                 Text = builder.ToString().TrimEnd()
             };
 
-            format.Record.Cells.Add(title);
+            format.Record!.Cells.Add(title);
             format.Record.Cells.Add(columns);
         }
 
@@ -99,11 +96,8 @@ namespace FastGraph.Data
         /// </summary>
         /// <param name="sender">The <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> performing the formatting.</param>
         /// <param name="args">Edge event arguments.</param>
-        protected virtual void FormatRelation([NotNull] object sender, [NotNull] FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
+        protected virtual void FormatRelation(object sender, FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
         {
-            Debug.Assert(sender != null);
-            Debug.Assert(args != null);
-
             GraphvizEdge format = args.EdgeFormat;
             format.Label.Value = args.Edge.Relation.RelationName;
         }

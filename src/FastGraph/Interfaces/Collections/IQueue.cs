@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+﻿#nullable enable
+
+using JetBrains.Annotations;
 
 namespace FastGraph.Collections
 {
@@ -47,7 +49,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>Array composed of elements.</returns>
         [Pure]
-        [NotNull]
         T[] ToArray();
     }
 }

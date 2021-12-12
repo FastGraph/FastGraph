@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.Tests
 {
@@ -19,8 +18,8 @@ namespace FastGraph.Tests
         /// <param name="values">Values to check.</param>
         /// <param name="onValue">Predicate.</param>
         public static void TrueForAll<T>(
-            [NotNull, ItemCanBeNull] IEnumerable<T> values,
-            [NotNull, InstantHandle] Predicate<T> onValue)
+            IEnumerable<T> values,
+            [InstantHandle] Predicate<T> onValue)
         {
             foreach (T value in values)
             {
@@ -32,7 +31,7 @@ namespace FastGraph.Tests
         /// Asserts implication is true (if <paramref name="value" /> is true,
         /// <paramref name="impliedValue" /> should hold).
         /// </summary>
-        public static void ImpliesIsTrue(bool value, [NotNull, InstantHandle] Func<bool> impliedValue)
+        public static void ImpliesIsTrue(bool value, [InstantHandle] Func<bool> impliedValue)
         {
             if (!value)
                 return;
@@ -46,11 +45,11 @@ namespace FastGraph.Tests
         /// <param name="right">An exception object.</param>
         /// <returns>Returns true if <paramref name="left" /> and <paramref name="right" /> have
         /// the same type, otherwise false.</returns>
-        private static bool EqualExceptions(Exception left, Exception right)
+        private static bool EqualExceptions(Exception? left, Exception? right)
         {
             Assert.IsNotNull(left);
             Assert.IsNotNull(right);
-            return left.GetType() == right.GetType();
+            return left!.GetType() == right!.GetType();
         }
 
         /// <summary>
@@ -61,14 +60,13 @@ namespace FastGraph.Tests
             /// <summary>
             /// Contains the exception object, if any.
             /// </summary>
-            [CanBeNull]
-            public Exception Exception { get; }
+            public Exception? Exception { get; }
 
             /// <summary>
             /// Initializes a new instance of the structure.
             /// </summary>
             /// <param name="exception">The exception object.</param>
-            public CatchResult([CanBeNull] Exception exception)
+            public CatchResult(Exception? exception)
             {
                 Exception = exception;
             }
@@ -76,13 +74,13 @@ namespace FastGraph.Tests
             /// <summary>
             /// Indicates whether the structure contains an exception.
             /// </summary>
-            public bool HasException => Exception != null;
+            public bool HasException => Exception != default;
 
             /// <summary>
             /// Contains the exception type.
             /// </summary>
             /// <remarks>If the structure does not contain an exception object, this property is null.</remarks>
-            public Type ExceptionType => Exception?.GetType();
+            public Type? ExceptionType => Exception?.GetType();
         }
 
         /// <summary>
@@ -91,7 +89,7 @@ namespace FastGraph.Tests
         /// <param name="action">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         /// <returns>Returns a <see cref="CatchResult"/> structure that contains an exception object,
         /// if an exception was thrown.</returns>
-        private static CatchResult Catch([NotNull, InstantHandle] Action action)
+        private static CatchResult Catch([InstantHandle] Action action)
         {
             try
             {
@@ -112,8 +110,8 @@ namespace FastGraph.Tests
         /// <param name="right">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         /// <remarks>"Same behavior" is defined as both delegates throwing the same exception or neither delegate throwing an exception.</remarks>
         public static void AreBehaviorsEqual(
-            [NotNull, InstantHandle] Action left,
-            [NotNull, InstantHandle] Action right)
+            [InstantHandle] Action left,
+            [InstantHandle] Action right)
         {
             CatchResult catchResult1 = Catch(left);
             CatchResult catchResult2 = Catch(right);
@@ -144,30 +142,28 @@ namespace FastGraph.Tests
             /// <summary>
             /// Contains the return value, if any.
             /// </summary>
-            [CanBeNull]
-            public T Value { get; }
+            public T? Value { get; }
 
             /// <summary>
             /// Contains the exception, if any.
             /// </summary>
-            [CanBeNull]
-            public Exception Exception { get; }
+            public Exception? Exception { get; }
 
             /// <summary>
             /// Initializes a new instance of <see cref="CatchResult{T}" />.
             /// </summary>
             /// <param name="value">A return value.</param>
-            public CatchResult([CanBeNull] T value)
+            public CatchResult(T? value)
             {
                 Value = value;
-                Exception = null;
+                Exception = default;
             }
 
             /// <summary>
             /// Initializes a new instance of <see cref="CatchResult{T}" />.
             /// </summary>
             /// <param name="exception">An exception object.</param>
-            public CatchResult([NotNull] Exception exception)
+            public CatchResult(Exception exception)
             {
                 Value = default;
                 Exception = exception;
@@ -178,11 +174,11 @@ namespace FastGraph.Tests
             /// this parameter is set to <c>default(T)</c>.</param>
             /// <returns>Returns <c>true</c> if the structure contains a return value and<c>false</c> otherwise.</returns>
             [Pure]
-            public bool TryGetValue(out T value)
+            public bool TryGetValue([NotNullWhen(true)] out T? value)
             {
                 if (HasValue)
                 {
-                    value = Value;
+                    value = Value!;
                     return true;
                 }
                 value = default;
@@ -191,30 +187,31 @@ namespace FastGraph.Tests
 
             /// <summary>Tries to get the exception object.</summary>
             /// <param name="exception">Receives the exception object.If the structure does not contain an exception object,
-            /// this parameter is set to <c>null</c>.</param>
+            /// this parameter is set to <c>default</c>.</param>
             /// <returns>Returns <c>true</c> if the structure contains an exception object and<c>false</c> otherwise.</returns>
             [Pure]
-            public bool TryGetException(out Exception exception)
+            public bool TryGetException([NotNullWhen(true)] out Exception? exception)
             {
                 exception = Exception;
-                return exception != null;
+                return exception != default;
             }
 
             /// <summary>
             /// Indicates whether the structure contains a return value.
             /// </summary>
-            public bool HasValue => Exception == null;
+            [MemberNotNullWhen(true, nameof(Value))]
+            public bool HasValue => Exception == default;
 
             /// <summary>
             /// Indicates whether the structure contains an exception object.
             /// </summary>
-            public bool HasException => Exception != null;
+            public bool HasException => Exception != default;
 
             /// <summary>
             /// Contains the exception type, if the structure contains an exception object.
             /// </summary>
             /// <remarks>If the structure does not contain an exception object, this property is null.</remarks>
-            public Type ExceptionType => Exception?.GetType();
+            public Type? ExceptionType => Exception?.GetType();
         }
 
         /// <summary>
@@ -225,7 +222,7 @@ namespace FastGraph.Tests
         /// and returns a value of type <typeparamref name="T"/>.</param>
         /// <returns>Returns a <see cref="CatchResult"/> structure that contains a return value or,
         /// if an exception was thrown, an exception object.</returns>
-        private static CatchResult<T> Catch<T>([NotNull, InstantHandle] Func<T> function)
+        private static CatchResult<T> Catch<T>([InstantHandle] Func<T> function)
         {
             try
             {
@@ -245,8 +242,8 @@ namespace FastGraph.Tests
         /// <param name="right">A <see cref="Func{TResult}"/> delegate that performs a user-defined action and returns a value of type <typeparamref name="T"/>.</param>
         /// <remarks>"Same behavior" is defined as both delegates returning the same value or both delegates throwing the same exception.</remarks>
         public static void AreBehaviorsEqual<T>(
-            [NotNull, InstantHandle] Func<T> left,
-            [NotNull, InstantHandle] Func<T> right)
+            [InstantHandle] Func<T> left,
+            [InstantHandle] Func<T> right)
         {
             CatchResult<T> catchResult1 = Catch(left);
             CatchResult<T> catchResult2 = Catch(right);
@@ -257,7 +254,7 @@ namespace FastGraph.Tests
                     $"result '{catchResult1.Value}' <> raised '{catchResult2.ExceptionType}'");
 
                 Assert.IsTrue(
-                    (EqualityComparer<T>.Default.Equals(catchResult1.Value, catchResult2.Value) ? 1 : 0) != 0,
+                    (EqualityComparer<T?>.Default.Equals(catchResult1.Value, catchResult2.Value) ? 1 : 0) != 0,
                     $"result '{catchResult1.Value}' <> result '{catchResult2.Value}'");
             }
             else

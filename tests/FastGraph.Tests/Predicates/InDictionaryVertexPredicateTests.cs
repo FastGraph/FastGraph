@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Predicates;
 
@@ -25,7 +25,9 @@ namespace FastGraph.Tests.Predicates
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new InDictionaryVertexPredicate<int, double>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new InDictionaryVertexPredicate<int, double>(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -66,7 +68,9 @@ namespace FastGraph.Tests.Predicates
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+#pragma warning restore CS8625
         }
     }
 }

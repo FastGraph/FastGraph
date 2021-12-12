@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Collections;
 using static FastGraph.Tests.AssertHelpers;
@@ -13,9 +12,10 @@ namespace FastGraph.Tests.Collections
     internal abstract class QueueTestsBase
     {
         protected static void Contains_Test<TVertex>(
-            [NotNull] IQueue<TVertex> queue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2)
+            IQueue<TVertex> queue,
+            TVertex vertex1,
+            TVertex vertex2)
+            where TVertex : notnull
         {
             Assert.IsFalse(queue.Contains(vertex1));
             Assert.IsFalse(queue.Contains(vertex2));
@@ -46,9 +46,10 @@ namespace FastGraph.Tests.Collections
         }
 
         protected static void Enqueue_Test<TVertex>(
-            [NotNull] IQueue<TVertex> queue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2)
+            IQueue<TVertex> queue,
+            TVertex vertex1,
+            TVertex vertex2)
+            where TVertex : notnull
         {
             Assert.AreEqual(0, queue.Count);
 
@@ -63,11 +64,12 @@ namespace FastGraph.Tests.Collections
         }
 
         protected static void Dequeue_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2,
-            [NotNull] TVertex vertex3,
-            [NotNull] TVertex vertex4)
+            Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
+            TVertex vertex1,
+            TVertex vertex2,
+            TVertex vertex3,
+            TVertex vertex4)
+            where TVertex : notnull
         {
             DequeueInternalTest();
             DequeueInternalSameDistanceTest();
@@ -153,17 +155,19 @@ namespace FastGraph.Tests.Collections
             #endregion
         }
 
-        protected static void Dequeue_Throws_Test<TVertex>([NotNull] IQueue<TVertex> queue)
+        protected static void Dequeue_Throws_Test<TVertex>(IQueue<TVertex> queue)
+            where TVertex : notnull
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
         }
 
         protected static void Peek_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2,
-            [NotNull] TVertex vertex3)
+            Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
+            TVertex vertex1,
+            TVertex vertex2,
+            TVertex vertex3)
+            where TVertex : notnull
         {
             PeekInternalTest();
             PeekInternalSameDistanceTest();
@@ -238,16 +242,18 @@ namespace FastGraph.Tests.Collections
             #endregion
         }
 
-        protected static void Peek_Throws_Test<TVertex>([NotNull] IQueue<TVertex> queue)
+        protected static void Peek_Throws_Test<TVertex>(IQueue<TVertex> queue)
+            where TVertex : notnull
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<InvalidOperationException>(() => queue.Peek());
         }
 
         protected static void Update_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IPriorityQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2)
+            Func<Func<TVertex, double>, IPriorityQueue<TVertex>> createQueue,
+            TVertex vertex1,
+            TVertex vertex2)
+            where TVertex : notnull
         {
             var distances = new Stack<double>(new[] { 0.5, 10.0, 5.0, 1.0 });
             IPriorityQueue<TVertex> queue = createQueue(_ => distances.Pop());
@@ -266,11 +272,12 @@ namespace FastGraph.Tests.Collections
         }
 
         protected static void ToArray_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2,
-            [NotNull] TVertex vertex3,
-            [NotNull] TVertex vertex4)
+            Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
+            TVertex vertex1,
+            TVertex vertex2,
+            TVertex vertex3,
+            TVertex vertex4)
+            where TVertex : notnull
         {
             var distances = new Stack<double>(new[] { 123.0, 3.0, 2.0, 4.0, 5.0, 1.0 });
             IQueue<TVertex> queue = createQueue(_ => distances.Pop());

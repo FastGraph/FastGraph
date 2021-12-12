@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Tests;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -22,13 +23,17 @@ namespace FastGraph.MSAGL.Tests
             public void AddNode_Test()
             {
                 // ReSharper disable once AssignNullToNotNullAttribute
-                Assert.Throws<ArgumentNullException>(() => base.AddNode(null));
+#pragma warning disable CS8625
+                Assert.Throws<ArgumentNullException>(() => base.AddNode(default));
+#pragma warning restore CS8625
             }
 
             public void AddEdge_Test()
             {
                 // ReSharper disable once AssignNullToNotNullAttribute
-                Assert.Throws<ArgumentNullException>(() => base.AddEdge(null));
+#pragma warning disable CS8625
+                Assert.Throws<ArgumentNullException>(() => base.AddEdge(default));
+#pragma warning restore CS8625
             }
         }
 
@@ -50,6 +55,7 @@ namespace FastGraph.MSAGL.Tests
             void AssertPopulatorProperties<TVertex, TEdge>(
                 MsaglDefaultGraphPopulator<TVertex, TEdge> p,
                 IEdgeListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
@@ -64,8 +70,10 @@ namespace FastGraph.MSAGL.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglDefaultGraphPopulator<int, Edge<int>>(null));
+                () => new MsaglDefaultGraphPopulator<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]

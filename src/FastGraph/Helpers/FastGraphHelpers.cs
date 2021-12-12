@@ -1,5 +1,5 @@
-using System;
-using System.Diagnostics;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -17,16 +17,13 @@ namespace FastGraph
         /// <param name="func"></param>
         /// <returns></returns>
         [Pure]
-        [NotNull]
-        public static TryFunc<T, TResult> ToTryFunc<T, TResult>([NotNull] Func<T, TResult> func)
+        public static TryFunc<T, TResult> ToTryFunc<T, TResult>(Func<T, TResult?> func)
             where TResult : class
         {
-            Debug.Assert(func != null);
-
-            return (T value, out TResult result) =>
+            return (T value, out TResult? result) =>
             {
                 result = func(value);
-                return result != null;
+                return result != default;
             };
         }
     }

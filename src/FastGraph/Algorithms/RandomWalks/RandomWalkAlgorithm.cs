@@ -1,6 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph.Algorithms.RandomWalks
 {
@@ -12,6 +12,7 @@ namespace FastGraph.Algorithms.RandomWalks
     public sealed class RandomWalkAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IImplicitGraph<TVertex, TEdge>>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -19,7 +20,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public RandomWalkAlgorithm([NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph)
+        public RandomWalkAlgorithm(IImplicitGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
         {
         }
@@ -32,65 +33,56 @@ namespace FastGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public RandomWalkAlgorithm(
-            [NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
-            : base(null, visitedGraph)
+            IImplicitGraph<TVertex, TEdge> visitedGraph,
+            IEdgeChain<TVertex, TEdge> edgeChain)
+            : base(default, visitedGraph)
         {
             _edgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
         }
 
-        [NotNull]
         private IEdgeChain<TVertex, TEdge> _edgeChain;
 
         /// <summary>
         /// Edge chain strategy for the random walk.
         /// </summary>
-        [NotNull]
         public IEdgeChain<TVertex, TEdge> EdgeChain
         {
             get => _edgeChain;
-            set => _edgeChain = value ?? throw new ArgumentNullException(nameof(value), $"{nameof(EdgeChain)} cannot be null.");
+            set => _edgeChain = value ?? throw new ArgumentNullException(nameof(value), $"{nameof(EdgeChain)} cannot be default.");
         }
 
         /// <summary>
         /// Predicate to prematurely ends the walk.
         /// </summary>
-        [CanBeNull]
-        public EdgePredicate<TVertex, TEdge> EndPredicate { get; set; }
+        public EdgePredicate<TVertex, TEdge>? EndPredicate { get; set; }
 
         /// <summary>
         /// Fired on a starting vertex once before the start of the walk from it.
         /// </summary>
-        public event VertexAction<TVertex> StartVertex;
+        public event VertexAction<TVertex>? StartVertex;
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             StartVertex?.Invoke(vertex);
         }
 
         /// <summary>
         /// Fired when the walk ends.
         /// </summary>
-        public event VertexAction<TVertex> EndVertex;
+        public event VertexAction<TVertex>? EndVertex;
 
         private void OnEndVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             EndVertex?.Invoke(vertex);
         }
 
         /// <summary>
         /// Fired when an edge is encountered.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
@@ -99,7 +91,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            if (!TryGetRootVertex(out TVertex root))
+            if (!TryGetRootVertex(out TVertex? root))
                 throw new InvalidOperationException("Root vertex not set.");
             Generate(root);
         }
@@ -111,7 +103,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <exception cref="VertexNotFoundException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void Generate([NotNull] TVertex root)
+        public void Generate(TVertex root)
         {
             Generate(root, 100);
         }
@@ -122,7 +114,7 @@ namespace FastGraph.Algorithms.RandomWalks
         /// <param name="root">Root vertex.</param>
         /// <param name="walkCount">Number of steps for the random walk.</param>VertexNotFoundException
         /// <exception cref="VertexNotFoundException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void Generate([NotNull] TVertex root, int walkCount)
+        public void Generate(TVertex root, int walkCount)
         {
             AssertRootInGraph(root);
 
@@ -131,14 +123,14 @@ namespace FastGraph.Algorithms.RandomWalks
 
             OnStartVertex(root);
 
-            while (count < walkCount && TryGetSuccessor(current, out TEdge edge))
+            while (count < walkCount && TryGetSuccessor(current, out TEdge? edge))
             {
                 // If dead end stop
                 if (edge == null)
                     break;
 
                 // If end predicate
-                if (EndPredicate != null && EndPredicate(edge))
+                if (EndPredicate != default && EndPredicate(edge))
                     break;
 
                 OnTreeEdge(edge);
@@ -152,7 +144,7 @@ namespace FastGraph.Algorithms.RandomWalks
 
             #region Local function
 
-            bool TryGetSuccessor(TVertex vertex, out TEdge successor)
+            bool TryGetSuccessor(TVertex vertex, [NotNullWhen(true)] out TEdge? successor)
             {
                 return EdgeChain.TryGetSuccessor(VisitedGraph, vertex, out successor);
             }

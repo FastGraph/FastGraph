@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
@@ -75,40 +76,29 @@ namespace FastGraph.Serialization.Tests
         [NotNull]
         private const string DefaultFirstName = "Unknown";
 
-        [NotNull]
         private string _id;
 
-        [NotNull]
         private string _firstName;
 
-        [CanBeNull]
-        private string _lastName;
+        private string? _lastName;
 
-        [CanBeNull]
-        private string _middleName;
+        private string? _middleName;
 
-        [CanBeNull]
-        private string _suffix;
+        private string? _suffix;
 
-        [CanBeNull]
-        private string _nickName;
+        private string? _nickName;
 
-        [CanBeNull]
-        private string _maidenName;
+        private string? _maidenName;
 
         private Gender _gender;
 
-        [CanBeNull]
         private DateTime? _birthDate;
 
-        [CanBeNull]
-        private string _birthPlace;
+        private string? _birthPlace;
 
-        [CanBeNull]
         private DateTime? _deathDate;
 
-        [CanBeNull]
-        private string _deathPlace;
+        private string? _deathPlace;
 
         private bool _isLiving;
 
@@ -134,7 +124,7 @@ namespace FastGraph.Serialization.Tests
         /// </summary>
         /// <param name="firstName">First name.</param>
         /// <param name="lastName">Last name.</param>
-        public Person([CanBeNull] string firstName, [CanBeNull] string lastName)
+        public Person(string? firstName, string? lastName)
             : this()
         {
             // Use the first name if specified, if not, the default first name is used.
@@ -154,7 +144,7 @@ namespace FastGraph.Serialization.Tests
         /// <param name="firstName">First name.</param>
         /// <param name="lastName">Last name.</param>
         /// <param name="gender">Gender of the person.</param>
-        public Person([CanBeNull] string firstName, [CanBeNull] string lastName, Gender gender)
+        public Person(string? firstName, string? lastName, Gender gender)
             : this(firstName, lastName)
         {
             _gender = gender;
@@ -167,7 +157,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the unique identifier for each person.
         /// </summary>
-        [NotNull]
         [XmlAttribute]
         public string Id
         {
@@ -185,7 +174,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the name that occurs first in a given name.
         /// </summary>
-        [NotNull]
         [XmlElement]
         public string FirstName
         {
@@ -205,9 +193,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the part of a given name that indicates what family the person belongs to.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string LastName
+        public string? LastName
         {
             get => _lastName;
             set
@@ -225,9 +212,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the name that occurs between the first and last name.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string MiddleName
+        public string? MiddleName
         {
             get => _middleName;
             set
@@ -244,7 +230,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets the person's name in the format <see cref="FirstName"/> <see cref="LastName"/>.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string Name
         {
@@ -268,7 +253,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets the person's fully qualified name: <see cref="FirstName"/> <see cref="MiddleName"/> <see cref="LastName"/> <see cref="Suffix"/>.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string FullName
         {
@@ -302,9 +286,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the text that appear behind the last name providing additional information about the person.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string Suffix
+        public string? Suffix
         {
             get => _suffix;
             set
@@ -321,9 +304,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's familiar or shortened name.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string NickName
+        public string? NickName
         {
             get => _nickName;
             set
@@ -339,9 +321,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's name carried before marriage.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string MaidenName
+        public string? MaidenName
         {
             get => _maidenName;
             set
@@ -374,14 +355,13 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets the age of the person.
         /// </summary>
-        [CanBeNull]
         [XmlIgnore]
         public int? Age
         {
             get
             {
                 if (BirthDate is null)
-                    return null;
+                    return default;
 
                 // Determine the age of the person based on just the year.
                 DateTime startDate = BirthDate.Value;
@@ -437,7 +417,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets the year the person was born.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string YearOfBirth
         {
@@ -455,7 +434,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets the year the person died.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string YearOfDeath
         {
@@ -473,7 +451,6 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's birth date.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
         public DateTime? BirthDate
         {
@@ -496,9 +473,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's place of birth.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string BirthPlace
+        public string? BirthPlace
         {
             get => _birthPlace;
             set
@@ -515,9 +491,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets the month and day the person was born in.
         /// </summary>
-        [CanBeNull]
         [XmlIgnore]
-        public string BirthMonthAndDay =>
+        public string? BirthMonthAndDay =>
             _birthDate?.ToString(
                 DateTimeFormatInfo.CurrentInfo?.MonthDayPattern,
                 CultureInfo.CurrentCulture);
@@ -525,14 +500,13 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets a friendly string for BirthDate and Place.
         /// </summary>
-        [CanBeNull]
         [XmlIgnore]
-        public string BirthDateAndPlace
+        public string? BirthDateAndPlace
         {
             get
             {
                 if (_birthDate is null)
-                    return null;
+                    return default;
 
                 var returnValue = new StringBuilder();
                 returnValue.Append("Born ");
@@ -554,14 +528,13 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's death of death.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
         public DateTime? DeathDate
         {
             get => _deathDate;
             set
             {
-                if (_deathDate == null || _deathDate != value)
+                if (_deathDate == default || _deathDate != value)
                 {
                     IsLiving = false;
                     _deathDate = value;
@@ -575,9 +548,8 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's place of death.
         /// </summary>
-        [CanBeNull]
         [XmlElement]
-        public string DeathPlace
+        public string? DeathPlace
         {
             get => _deathPlace;
             set
@@ -611,28 +583,24 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets a string that describes this person to their parents.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string ParentRelationshipText => _gender == Gender.Male ? "Son" : "Daughter";
 
         /// <summary>
         /// Gets a string that describes this person to their siblings.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string SiblingRelationshipText => _gender == Gender.Male ? "Brother" : "Sister";
 
         /// <summary>
         /// Gets a string that describes this person to their spouses.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string SpouseRelationshipText => _gender == Gender.Male ? "Husband" : "Wife";
 
         /// <summary>
         /// Gets a string that describes this person to their children.
         /// </summary>
-        [NotNull]
         [XmlIgnore]
         public string ChildRelationshipText => _gender == Gender.Male ? "Father" : "Mother";
 
@@ -643,13 +611,13 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// <see cref="INotifyPropertyChanged"/> requires an event called <see cref="PropertyChanged"/>.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Fires the event for the property when it changes.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
-        protected virtual void OnPropertyChanged([NotNull] string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -659,7 +627,7 @@ namespace FastGraph.Serialization.Tests
         #region IEquatable
 
         /// <inheritdoc />
-        public bool Equals(Person other)
+        public bool Equals(Person? other)
         {
             if (other is null)
                 return false;
@@ -683,8 +651,7 @@ namespace FastGraph.Serialization.Tests
         /// <summary>
         /// Gets an error message indicating what is wrong with this object.
         /// </summary>
-        [CanBeNull]
-        public string Error => null;
+        public string Error => default!;
 
         /// <summary>
         /// Gets the error message for the property with the given name.

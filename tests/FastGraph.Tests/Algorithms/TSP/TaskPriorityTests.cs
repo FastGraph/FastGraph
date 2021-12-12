@@ -1,3 +1,5 @@
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.TSP;
 
@@ -50,12 +52,16 @@ namespace FastGraph.Tests.Algorithms.TSP
             Assert.IsTrue(priority1 != priority5);
             Assert.IsTrue(priority5 != priority1);
 
-            Assert.AreNotEqual(priority1, null);
-            Assert.IsFalse(priority1.Equals(null));
-            Assert.IsFalse(priority1 == null);
-            Assert.IsFalse(null == priority1);
-            Assert.IsTrue(priority1 != null);
-            Assert.IsTrue(null != priority1);
+#pragma warning disable CS8625
+#pragma warning disable CS8604
+            Assert.AreNotEqual(priority1, default);
+            Assert.IsFalse(priority1.Equals(default));
+            Assert.IsFalse(priority1 == default);
+            Assert.IsFalse(default == priority1);
+            Assert.IsTrue(priority1 != default);
+            Assert.IsTrue(default != priority1);
+#pragma warning restore CS8604
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -92,10 +98,14 @@ namespace FastGraph.Tests.Algorithms.TSP
             Assert.IsFalse(priority1 > priority4);
             Assert.IsFalse(priority1 >= priority4);
 
+#pragma warning disable CS8625
+#pragma warning disable CS8604
             Assert.IsFalse(priority1 < null);
             Assert.IsFalse(priority1 <= null);
             Assert.IsTrue(priority1 > null);
             Assert.IsTrue(priority1 >= null);
+#pragma warning restore CS8604
+#pragma warning restore CS8625
         }
     }
 }

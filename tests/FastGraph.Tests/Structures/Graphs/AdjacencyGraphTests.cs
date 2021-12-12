@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -41,6 +42,7 @@ namespace FastGraph.Tests.Structures
                 AdjacencyGraph<TVertex, TEdge> g,
                 bool parallelEdges = true,
                 int edgeCapacity = 0)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -459,7 +461,7 @@ namespace FastGraph.Tests.Structures
             #endregion
         }
 
-        private static void ClearEdgesCommon([NotNull, InstantHandle] Action<AdjacencyGraph<int, Edge<int>>, int> clearEdges)
+        private static void ClearEdgesCommon([InstantHandle] Action<AdjacencyGraph<int, Edge<int>>, int> clearEdges)
         {
             int edgesRemoved = 0;
 
@@ -546,8 +548,10 @@ namespace FastGraph.Tests.Structures
         public void ClearEdges_Throws()
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(null));
-            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearEdges(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearOutEdges(default));
+            Assert.Throws<ArgumentNullException>(() => new AdjacencyGraph<TestVertex, Edge<TestVertex>>().ClearEdges(default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

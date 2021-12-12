@@ -1,9 +1,9 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
-using System.Collections.Generic;
+#nullable enable
+
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
@@ -36,44 +36,39 @@ namespace FastGraph.Serialization
     /// </para>
     /// </remarks>
     public sealed class GraphMLDeserializer<TVertex, TEdge, TGraph> : SerializerBase
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
     {
         #region Compiler
 
         private delegate void ReadVertexAttributesDelegate(
-            [NotNull] XmlReader reader,
-            [NotNull] string namespaceUri,
-            [NotNull] TVertex vertex);
+            XmlReader reader,
+            string namespaceUri,
+            TVertex vertex);
 
         private delegate void ReadEdgeAttributesDelegate(
-            [NotNull] XmlReader reader,
-            [NotNull] string namespaceUri,
-            [NotNull] TEdge edge);
+            XmlReader reader,
+            string namespaceUri,
+            TEdge edge);
 
         private delegate void ReadGraphAttributesDelegate(
-            [NotNull] XmlReader reader,
-            [NotNull] string namespaceUri,
-            [NotNull] TGraph graph);
+            XmlReader reader,
+            string namespaceUri,
+            TGraph graph);
 
         private static class ReadDelegateCompiler
         {
-            [NotNull]
             public static ReadVertexAttributesDelegate VertexAttributesReader { get; }
 
-            [NotNull]
             public static ReadEdgeAttributesDelegate EdgeAttributesReader { get; }
 
-            [NotNull]
             public static ReadGraphAttributesDelegate GraphAttributesReader { get; }
 
-            [NotNull]
             public static Action<TVertex> SetVertexDefault { get; }
 
-            [NotNull]
             public static Action<TEdge> SetEdgeDefault { get; }
 
-            [NotNull]
             public static Action<TGraph> SetGraphDefault { get; }
 
             static ReadDelegateCompiler()
@@ -109,14 +104,10 @@ namespace FastGraph.Serialization
                         typeof(TGraph));
             }
 
-            [NotNull]
             private static Delegate CreateSetDefaultDelegate(
-                [NotNull] Type delegateType,
-                [NotNull] Type elementType)
+                Type delegateType,
+                Type elementType)
             {
-                Debug.Assert(delegateType != null);
-                Debug.Assert(elementType != null);
-
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Set{elementType.Name}Default",
                     typeof(void),
@@ -134,13 +125,13 @@ namespace FastGraph.Serialization
                     if (defaultValueAttribute is null)
                         continue;
 
-                    MethodInfo setMethod = property.GetSetMethod();
+                    MethodInfo? setMethod = property.GetSetMethod();
                     if (setMethod is null)
                         throw new InvalidOperationException($"Property {property.Name} is not settable.");
                     if (property.PropertyType.IsArray)
                         throw new NotSupportedException("Default values for array types are not implemented.");
 
-                    object value = defaultValueAttribute.Value;
+                    object? value = defaultValueAttribute.Value;
                     if (value is null)
                         throw new NotSupportedException($"Null default value is not supported for property {property.Name}.");
                     if (value.GetType() != property.PropertyType)
@@ -157,14 +148,10 @@ namespace FastGraph.Serialization
                 return method.CreateDelegate(delegateType);
             }
 
-            [NotNull]
             private static Delegate CreateReadDelegate(
-                [NotNull] Type delegateType,
-                [NotNull] Type elementType)
+                Type delegateType,
+                Type elementType)
             {
-                Debug.Assert(delegateType != null);
-                Debug.Assert(elementType != null);
-
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Read{elementType.Name}",
                     typeof(void),
@@ -177,7 +164,7 @@ namespace FastGraph.Serialization
 
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, "key");
-                generator.EmitCall(OpCodes.Callvirt, Metadata.GetAttributeMethod, null);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.GetAttributeMethod, default);
                 generator.Emit(OpCodes.Stloc_0);
 
                 // We need to create the switch for each property
@@ -196,17 +183,17 @@ namespace FastGraph.Serialization
 
                     generator.Emit(OpCodes.Ldloc_0);
                     generator.Emit(OpCodes.Ldstr, info.Name);
-                    generator.EmitCall(OpCodes.Call, Metadata.StringEqualsMethod, null);
+                    generator.EmitCall(OpCodes.Call, Metadata.StringEqualsMethod, default);
 
                     // If false jump to next
                     generator.Emit(OpCodes.Brfalse, next);
 
                     // Do our stuff
-                    if (!Metadata.TryGetReadContentMethod(property.PropertyType, out MethodInfo readMethod))
+                    if (!Metadata.TryGetReadContentMethod(property.PropertyType, out MethodInfo? readMethod))
                         throw new NotSupportedException($"Property {property.Name} has a non supported type.");
 
                     // Do we have a set method?
-                    MethodInfo setMethod = property.GetSetMethod();
+                    MethodInfo? setMethod = property.GetSetMethod();
                     if (setMethod is null)
                         throw new InvalidOperationException($"Property {property.DeclaringType}.{property.Name} has no setter.");
 
@@ -223,8 +210,8 @@ namespace FastGraph.Serialization
                             ? OpCodes.Call
                             : OpCodes.Callvirt,
                         readMethod,
-                        null);
-                    generator.EmitCall(OpCodes.Callvirt, setMethod, null);
+                        default);
+                    generator.EmitCall(OpCodes.Callvirt, setMethod, default);
 
                     // Jump to do while
                     generator.Emit(OpCodes.Br, @return);
@@ -262,10 +249,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public void Deserialize(
-            [NotNull] XmlReader reader,
-            [NotNull] TGraph graph,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            XmlReader reader,
+            TGraph graph,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
         {
             if (reader is null)
                 throw new ArgumentNullException(nameof(reader));
@@ -282,32 +269,22 @@ namespace FastGraph.Serialization
 
         private sealed class ReaderWorker
         {
-            [NotNull]
             private readonly XmlReader _reader;
 
-            [NotNull]
             private readonly TGraph _graph;
 
-            [NotNull]
             private readonly IdentifiableVertexFactory<TVertex> _vertexFactory;
 
-            [NotNull]
             private readonly IdentifiableEdgeFactory<TVertex, TEdge> _edgeFactory;
 
-            [NotNull]
             private string _graphMLNamespace = string.Empty;
 
             public ReaderWorker(
-                [NotNull] XmlReader reader,
-                [NotNull] TGraph graph,
-                [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-                [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+                XmlReader reader,
+                TGraph graph,
+                IdentifiableVertexFactory<TVertex> vertexFactory,
+                IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             {
-                Debug.Assert(reader != null);
-                Debug.Assert(graph != null);
-                Debug.Assert(vertexFactory != null);
-                Debug.Assert(edgeFactory != null);
-
                 _reader = reader;
                 _graph = graph;
                 _vertexFactory = vertexFactory;
@@ -376,9 +353,8 @@ namespace FastGraph.Serialization
                 }
             }
 
-            private void ReadEdge([NotNull] IDictionary<string, TVertex> vertices)
+            private void ReadEdge(IDictionary<string, TVertex> vertices)
             {
-                Debug.Assert(vertices != null);
                 Debug.Assert(
                     _reader.NodeType == XmlNodeType.Element
                     && _reader.Name == EdgeTag
@@ -390,10 +366,10 @@ namespace FastGraph.Serialization
                     // Read id
                     string id = ReadAttributeValue(_reader, IdAttribute);
                     string sourceId = ReadAttributeValue(_reader, SourceAttribute);
-                    if (!vertices.TryGetValue(sourceId, out TVertex source))
+                    if (!vertices.TryGetValue(sourceId, out TVertex? source))
                         throw new ArgumentException($"Could not find vertex {sourceId}.");
                     string targetId = ReadAttributeValue(_reader, TargetAttribute);
-                    if (!vertices.TryGetValue(targetId, out TVertex target))
+                    if (!vertices.TryGetValue(targetId, out TVertex? target))
                         throw new ArgumentException($"Could not find vertex {targetId}.");
 
                     TEdge edge = _edgeFactory(source, target, id);
@@ -414,9 +390,8 @@ namespace FastGraph.Serialization
                 }
             }
 
-            private void ReadVertex([NotNull] IDictionary<string, TVertex> vertices)
+            private void ReadVertex(IDictionary<string, TVertex> vertices)
             {
-                Debug.Assert(vertices != null);
                 Debug.Assert(
                     _reader.NodeType == XmlNodeType.Element
                     && _reader.Name == NodeTag
@@ -448,11 +423,8 @@ namespace FastGraph.Serialization
                 }
             }
 
-            private static string ReadAttributeValue([NotNull] XmlReader reader, [NotNull] string attributeName)
+            private static string ReadAttributeValue(XmlReader reader, string attributeName)
             {
-                Debug.Assert(reader != null);
-                Debug.Assert(attributeName != null);
-
                 reader.MoveToAttribute(attributeName);
                 if (!reader.ReadAttributeValue())
                     throw new ArgumentException($"Missing {attributeName} attribute.");
@@ -463,39 +435,34 @@ namespace FastGraph.Serialization
 
     internal static partial class Metadata
     {
-        [NotNull]
         public static readonly MethodInfo GetAttributeMethod =
             typeof(XmlReader).GetMethod(
                 nameof(XmlReader.GetAttribute),
                 BindingFlags.Instance | BindingFlags.Public,
-                null,
+                default,
                 new[] { typeof(string) },
-                null) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlReader.GetAttribute)} method on {nameof(XmlReader)}.");
+                default) ?? throw new InvalidOperationException($"Cannot find {nameof(XmlReader.GetAttribute)} method on {nameof(XmlReader)}.");
 
-        [NotNull]
         public static MethodInfo StringEqualsMethod { get; } =
             typeof(string).GetMethod(
                 "op_Equality",
                 BindingFlags.Static | BindingFlags.Public,
-                null,
+                default,
                 new[] { typeof(string), typeof(string) },
-                null) ?? throw new InvalidOperationException("Cannot find == operator method on string.");
+                default) ?? throw new InvalidOperationException("Cannot find == operator method on string.");
 
-        [NotNull]
         public static readonly ConstructorInfo ArgumentExceptionCtor =
             typeof(ArgumentException).GetConstructor(new[] { typeof(string) })
             ?? throw new InvalidOperationException($"Cannot find {nameof(ArgumentException)} constructor.");
 
-        [NotNull]
-        private static readonly Dictionary<Type, MethodInfo> ReadContentMethods = InitializeReadMethods();
+        private static readonly Dictionary<Type, MethodInfo?> ReadContentMethods = InitializeReadMethods();
 
-        [NotNull]
-        private static Dictionary<Type, MethodInfo> InitializeReadMethods()
+        private static Dictionary<Type, MethodInfo?> InitializeReadMethods()
         {
             Type readerType = typeof(XmlReader);
             Type readerExtensionsType = typeof(XmlReaderExtensions);
 
-            return new Dictionary<Type, MethodInfo>
+            return new Dictionary<Type, MethodInfo?>
             {
                 [typeof(bool)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsBoolean), new[] { typeof(string), typeof(string) }),
                 [typeof(int)] = readerType.GetMethod(nameof(XmlReader.ReadElementContentAsInt), new[] { typeof(string), typeof(string) }),
@@ -522,13 +489,11 @@ namespace FastGraph.Serialization
         }
 
         [Pure]
-        public static bool TryGetReadContentMethod([NotNull] Type type, out MethodInfo method)
+        public static bool TryGetReadContentMethod(Type type, [NotNullWhen(true)] out MethodInfo? method)
         {
-            Debug.Assert(type != null);
-
             bool result = ReadContentMethods.TryGetValue(type, out method);
 
-            Debug.Assert(!result || method != null);
+            Debug.Assert(!result || method != default);
 
             return result;
         }

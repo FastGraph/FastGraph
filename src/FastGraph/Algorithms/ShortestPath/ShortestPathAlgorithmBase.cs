@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 
@@ -18,13 +16,14 @@ namespace FastGraph.Algorithms.ShortestPath
         , IVertexColorizerAlgorithm<TVertex>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
         , IDistancesCollection<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IVertexSet<TVertex>
     {
         /// <summary>
         /// Vertices distances.
         /// </summary>
-        private IDictionary<TVertex, double> _distances;
+        private IDictionary<TVertex, double>? _distances;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShortestPathAlgorithmBase{TVertex,TEdge,TGraph}"/> class.
@@ -35,9 +34,9 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         protected ShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IAlgorithmComponent? host,
+            TGraph visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : this(host, visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -53,10 +52,10 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected ShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            TGraph visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             Weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -67,16 +66,16 @@ namespace FastGraph.Algorithms.ShortestPath
         /// Vertices distances.
         /// </summary>
         [Obsolete("Use methods on " + nameof(IDistancesCollection<object>) + " to interact with the distances instead.")]
-        public IDictionary<TVertex, double> Distances => _distances;
+        public IDictionary<TVertex, double>? Distances => _distances;
 
         /// <summary>
         /// Gets the distance associated to the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex to get the distance for.</param>
         [Pure]
-        protected double GetVertexDistance([NotNull] TVertex vertex)
+        protected double GetVertexDistance(TVertex vertex)
         {
-            return _distances[vertex];
+            return _distances![vertex];
         }
 
         /// <summary>
@@ -84,9 +83,9 @@ namespace FastGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="vertex">The vertex to get the distance for.</param>
         /// <param name="distance">The distance.</param>
-        protected void SetVertexDistance([NotNull] TVertex vertex, double distance)
+        protected void SetVertexDistance(TVertex vertex, double distance)
         {
-            _distances[vertex] = distance;
+            _distances![vertex] = distance;
         }
 
         /// <inheritdoc />
@@ -121,22 +120,19 @@ namespace FastGraph.Algorithms.ShortestPath
         /// Gets the function that gives access to distances from a vertex.
         /// </summary>
         [Pure]
-        [NotNull]
         protected Func<TVertex, double> DistancesIndexGetter()
         {
-            return AlgorithmExtensions.GetIndexer(_distances);
+            return AlgorithmExtensions.GetIndexer(_distances!);
         }
 
         /// <summary>
         /// Function that given an edge return the weight of this edge.
         /// </summary>
-        [NotNull]
         public Func<TEdge, double> Weights { get; }
 
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         #region AlgorithmBase<TGraph>
@@ -155,14 +151,14 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        public IDictionary<TVertex, GraphColor> VerticesColors { get; private set; }
+        public IDictionary<TVertex, GraphColor>? VerticesColors { get; private set; }
 
         #region IVertexColorizerAlgorithm<TVertex>
 
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+            if (VerticesColors!.TryGetValue(vertex, out GraphColor color))
                 return color;
             throw new VertexNotFoundException();
         }
@@ -174,16 +170,14 @@ namespace FastGraph.Algorithms.ShortestPath
         /// The edge that participated in the last relaxation for vertex v is
         /// an edge in the shortest paths tree.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
         /// <summary>
         /// Called on each <see cref="TreeEdge"/> event.
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
-        protected virtual void OnTreeEdge([NotNull] TEdge edge)
+        protected virtual void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
@@ -192,10 +186,8 @@ namespace FastGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="edge">Edge to relax.</param>
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
-        protected bool Relax([NotNull] TEdge edge)
+        protected bool Relax(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TVertex source = edge.Source;
             TVertex target = edge.Target;
             double du = GetVertexDistance(source);
@@ -205,7 +197,7 @@ namespace FastGraph.Algorithms.ShortestPath
             double duwe = DistanceRelaxer.Combine(du, we);
             if (DistanceRelaxer.Compare(duwe, dv) < 0)
             {
-                _distances[target] = duwe;
+                _distances![target] = duwe;
                 return true;
             }
 

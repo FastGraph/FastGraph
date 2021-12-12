@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Exploration;
 
 namespace FastGraph.Tests.Algorithms.Exploration
@@ -14,28 +13,26 @@ namespace FastGraph.Tests.Algorithms.Exploration
         public struct VertexEdgesSet
         {
             public VertexEdgesSet(
-                [NotNull] TVertex vertex,
-                [NotNull, ItemNotNull] IEnumerable<Edge<TVertex>> edges)
+                TVertex vertex,
+                IEnumerable<Edge<TVertex>> edges)
             {
                 Vertex = vertex;
                 Edges = edges;
             }
 
-            [NotNull]
             public TVertex Vertex { get; }
 
-            [NotNull, ItemNotNull]
             public IEnumerable<Edge<TVertex>> Edges { get; }
         }
 
         public TestTransitionFactory(
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<Edge<TVertex>> edges)
+            TVertex vertex,
+            IEnumerable<Edge<TVertex>> edges)
         {
             AddEdgeSet(vertex, edges);
         }
 
-        public TestTransitionFactory([NotNull] IEnumerable<VertexEdgesSet> sets)
+        public TestTransitionFactory(IEnumerable<VertexEdgesSet> sets)
         {
             foreach (VertexEdgesSet set in sets)
             {
@@ -44,8 +41,8 @@ namespace FastGraph.Tests.Algorithms.Exploration
         }
 
         private void AddEdgeSet(
-            [NotNull] TVertex vertex,
-            [NotNull, ItemNotNull] IEnumerable<Edge<TVertex>> edges)
+            TVertex vertex,
+            IEnumerable<Edge<TVertex>> edges)
         {
             _edges.Add(vertex, edges.ToList());
         }

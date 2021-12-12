@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
@@ -11,7 +12,7 @@ namespace FastGraph.Tests.Structures
         #region Adjacent Edges
 
         protected static void AdjacentEdge_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
+            IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -31,8 +32,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -53,17 +54,19 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdge_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            IImplicitUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdge(null, 0));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdge(default, 0));
+#pragma warning restore CS8604
         }
 
         protected static void AdjacentEdge_Throws_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
+            IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -81,8 +84,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdge_Throws_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -103,7 +106,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdges_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
+            IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -126,8 +129,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -152,22 +155,24 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdges_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            IImplicitUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.IsAdjacentEdgesEmpty(null));
-            Assert.Throws<ArgumentNullException>(() => graph.AdjacentDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdges(null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.IsAdjacentEdgesEmpty(default));
+            Assert.Throws<ArgumentNullException>(() => graph.AdjacentDegree(default));
+            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdges(default));
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void AdjacentEdges_Throws_Test<TVertex>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph)
-            where TVertex : class, IEquatable<TVertex>, new()
+            IImplicitUndirectedGraph<TVertex, Edge<TVertex>> graph)
+            where TVertex : IEquatable<TVertex>, new()
         {
             AdjacentEdges_NullThrows_Test(graph);
 

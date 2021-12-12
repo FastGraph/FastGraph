@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿#nullable enable
+
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using FastGraph.Graphviz.Dot;
@@ -18,8 +18,7 @@ namespace FastGraph.Graphviz
         /// <param name="svgFilePath">SVG file path.</param>
         /// <returns>Dumped HTML file path.</returns>
         [Pure]
-        [NotNull]
-        public static string DumpHtml(GraphvizSize size, [NotNull] string svgFilePath)
+        public static string DumpHtml(GraphvizSize size, string svgFilePath)
         {
             if (svgFilePath is null)
                 throw new ArgumentNullException(nameof(svgFilePath));
@@ -51,8 +50,7 @@ namespace FastGraph.Graphviz
         /// <param name="svgFilePath">SVG file path.</param>
         /// <returns>HTML file path.</returns>
         [Pure]
-        [NotNull]
-        public static string WrapSvg([NotNull] string svgFilePath)
+        public static string WrapSvg(string svgFilePath)
         {
 #if SUPPORTS_STREAM_FULL_FEATURES
             using (var reader = new StreamReader(svgFilePath))
@@ -79,7 +77,6 @@ namespace FastGraph.Graphviz
         [NotNull]
         private const string HeightGroupName = "Height";
 
-        [NotNull]
         private static readonly Regex SizeRegex = new Regex(
             $@"<\s*svg.*width\s*=\s*""\s*(?<{WidthGroupName}>\d+)\s*(px|)\s*"".*height\s*=\s*""\s*(?<{HeightGroupName}>\d+)\s*(px|)\s*""",
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
@@ -90,7 +87,7 @@ namespace FastGraph.Graphviz
         /// <param name="svg">SVG content.</param>
         /// <returns>SVG size.</returns>
         [Pure]
-        public static GraphvizSize ParseSize([NotNull] string svg)
+        public static GraphvizSize ParseSize(string svg)
         {
             Match match = SizeRegex.Match(svg);
             if (!match.Success)

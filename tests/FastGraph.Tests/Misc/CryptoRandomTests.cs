@@ -1,5 +1,6 @@
-﻿#if SUPPORTS_CRYPTO_RANDOM
-using System;
+#nullable enable
+
+#if SUPPORTS_CRYPTO_RANDOM
 using NUnit.Framework;
 using FastGraph.Utils;
 
@@ -110,7 +111,9 @@ namespace FastGraph.Tests.Utils
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => rng.NextBytes(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => rng.NextBytes(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
     }
 }

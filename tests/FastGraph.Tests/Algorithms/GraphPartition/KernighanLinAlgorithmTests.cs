@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.GraphPartition;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -28,7 +28,9 @@ namespace FastGraph.Tests.Algorithms.GraphPartitioning
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => new KernighanLinAlgorithm<int, TaggedUndirectedEdge<int, double>>(null, 42));
+#pragma warning disable CS8625
+                () => new KernighanLinAlgorithm<int, TaggedUndirectedEdge<int, double>>(default, 42));
+#pragma warning restore CS8625
         }
 
         [Test]

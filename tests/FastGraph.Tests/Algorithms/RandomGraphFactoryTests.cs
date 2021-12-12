@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Tests.Structures;
@@ -44,13 +44,15 @@ namespace FastGraph.Tests.Algorithms
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(null, random));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex(graph2, null));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(default, random));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex(graph2, default));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(default, default));
 
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(null, 1, random));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex(Enumerable.Empty<int>(), 1, null));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(null, 1, null));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(default, 1, random));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex(Enumerable.Empty<int>(), 1, default));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetVertex<int>(default, 1, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetVertex(graph, random));
 
@@ -100,13 +102,15 @@ namespace FastGraph.Tests.Algorithms
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, random));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge(graph2, null));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(default, random));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge(graph2, default));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(default, default));
 
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, 1, random));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(Enumerable.Empty<Edge<int>>(), 1, null));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, 1, null));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(default, 1, random));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(Enumerable.Empty<Edge<int>>(), 1, default));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(default, 1, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetVertex(graph, random));
 
@@ -260,9 +264,10 @@ namespace FastGraph.Tests.Algorithms
             var random = new Random();
 
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
                     random,
@@ -270,7 +275,7 @@ namespace FastGraph.Tests.Algorithms
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
+                    default,
                     (source, target) => new Edge<int>(source, target),
                     random,
                     1, 1, false));
@@ -278,7 +283,7 @@ namespace FastGraph.Tests.Algorithms
                 () => RandomGraphFactory.Create(
                     graph,
                     () => 1,
-                    null,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
@@ -286,85 +291,86 @@ namespace FastGraph.Tests.Algorithms
                     graph,
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
-                    null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
+                    default,
                     (source, target) => new Edge<int>(source, target),
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
                     () => 1,
-                    null,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
-                    null,
+                    default,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
+                    default,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
                     () => 1,
-                    null,
-                    null,
+                    default,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
-                    null,
-                    null,
+                    default,
+                    default,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
                     () => 1,
-                    null,
-                    null,
+                    default,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
-                    null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
+                    default,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
-                    null,
-                    null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
+                    default,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>)null,
-                    null,
-                    null,
-                    null,
+                    (IMutableVertexAndEdgeListGraph<int, Edge<int>>?)default,
+                    default,
+                    default,
+                    default,
                     1, 1, false));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => RandomGraphFactory.Create(
@@ -542,9 +548,10 @@ namespace FastGraph.Tests.Algorithms
             var random = new Random();
 
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
                     random,
@@ -552,7 +559,7 @@ namespace FastGraph.Tests.Algorithms
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
+                    default,
                     (source, target) => new Edge<int>(source, target),
                     random,
                     1, 1, false));
@@ -560,7 +567,7 @@ namespace FastGraph.Tests.Algorithms
                 () => RandomGraphFactory.Create(
                     graph,
                     () => 1,
-                    null,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
@@ -568,85 +575,86 @@ namespace FastGraph.Tests.Algorithms
                     graph,
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
-                    null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
+                    default,
                     (source, target) => new Edge<int>(source, target),
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
                     () => 1,
-                    null,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
                     () => 1,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
-                    null,
+                    default,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
+                    default,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
                     () => 1,
-                    null,
-                    null,
+                    default,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
                     graph,
-                    null,
-                    null,
-                    null,
+                    default,
+                    default,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
                     () => 1,
-                    null,
-                    null,
+                    default,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
-                    null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
+                    default,
                     (source, target) => new Edge<int>(source, target),
-                    null,
+                    default,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
-                    null,
-                    null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
+                    default,
+                    default,
                     random,
                     1, 1, false));
             Assert.Throws<ArgumentNullException>(
                 () => RandomGraphFactory.Create(
-                    (IMutableUndirectedGraph<int, Edge<int>>)null,
-                    null,
-                    null,
-                    null,
+                    (IMutableUndirectedGraph<int, Edge<int>>?)default,
+                    default,
+                    default,
+                    default,
                     1, 1, false));
+#pragma warning disable CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => RandomGraphFactory.Create(

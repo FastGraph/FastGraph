@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.RandomWalks
 {
@@ -9,12 +8,12 @@ namespace FastGraph.Algorithms.RandomWalks
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IMarkovEdgeChain<TVertex, TEdge> : IEdgeChain<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Random number generator for a Markov process to do random walks.
         /// </summary>
-        [NotNull]
         Random Rand { get; set; }
     }
 }

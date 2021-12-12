@@ -1,5 +1,5 @@
-using System;
-using System.IO;
+#nullable enable
+
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
@@ -20,8 +20,9 @@ namespace FastGraph.Serialization.Tests
         #region Test helpers
 
         private static void SerializeAndRead<TVertex, TEdge, TGraph>(
-            [NotNull] XmlSerializableGraph<TVertex, TEdge, TGraph> graph,
-            [NotNull, InstantHandle] Action<string> checkSerializedContent)
+            XmlSerializableGraph<TVertex, TEdge, TGraph> graph,
+            [InstantHandle] Action<string> checkSerializedContent)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
         {
@@ -145,8 +146,10 @@ namespace FastGraph.Serialization.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
+                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -179,8 +182,10 @@ namespace FastGraph.Serialization.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(null));
+                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -210,7 +215,9 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
             var vertexList = new XmlSerializableGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>.XmlVertexList(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => vertexList.Add(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => vertexList.Add(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -243,8 +250,10 @@ namespace FastGraph.Serialization.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(null));
+                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -276,7 +285,9 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => edgeList.Add(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => edgeList.Add(default));
+#pragma warning restore CS8625
         }
     }
 }

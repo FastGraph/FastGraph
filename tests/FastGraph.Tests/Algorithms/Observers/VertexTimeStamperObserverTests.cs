@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Search;
@@ -69,12 +69,14 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new VertexTimeStamperObserver<int>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new VertexTimeStamperObserver<int>(default));
             Assert.Throws<ArgumentNullException>(() =>
-                new VertexTimeStamperObserver<int>(new Dictionary<int, int>(), null));
+                new VertexTimeStamperObserver<int>(new Dictionary<int, int>(), default));
             Assert.Throws<ArgumentNullException>(() =>
-                new VertexTimeStamperObserver<int>(null, new Dictionary<int, int>()));
-            Assert.Throws<ArgumentNullException>(() => new VertexTimeStamperObserver<int>(null, null));
+                new VertexTimeStamperObserver<int>(default, new Dictionary<int, int>()));
+            Assert.Throws<ArgumentNullException>(() => new VertexTimeStamperObserver<int>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore ObjectCreationAsStatement
             // ReSharper restore AssignNullToNotNullAttribute
         }

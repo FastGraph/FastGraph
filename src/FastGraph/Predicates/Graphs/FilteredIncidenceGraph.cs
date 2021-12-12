@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph.Predicates
 {
@@ -15,6 +14,7 @@ namespace FastGraph.Predicates
     public class FilteredIncidenceGraph<TVertex, TEdge, TGraph>
         : FilteredImplicitGraph<TVertex, TEdge, TGraph>
         , IIncidenceGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IIncidenceGraph<TVertex, TEdge>
     {
@@ -28,9 +28,9 @@ namespace FastGraph.Predicates
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
         public FilteredIncidenceGraph(
-            [NotNull] TGraph baseGraph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate,
-            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            TGraph baseGraph,
+            VertexPredicate<TVertex> vertexPredicate,
+            EdgePredicate<TVertex, TEdge> edgePredicate)
             : base(baseGraph, vertexPredicate, edgePredicate)
         {
         }
@@ -42,7 +42,7 @@ namespace FastGraph.Predicates
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -51,7 +51,7 @@ namespace FastGraph.Predicates
 
             if (VertexPredicate(source)
                 && VertexPredicate(target)
-                && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
+                && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge>? unfilteredEdges))
             {
                 foreach (TEdge unfilteredEdge in unfilteredEdges.Where(unfilteredEdge => EdgePredicate(unfilteredEdge)))
                 {
@@ -65,7 +65,7 @@ namespace FastGraph.Predicates
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        public bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -74,13 +74,13 @@ namespace FastGraph.Predicates
 
             if (VertexPredicate(source)
                 && VertexPredicate(target)
-                && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge> unfilteredEdges))
+                && BaseGraph.TryGetEdges(source, target, out IEnumerable<TEdge>? unfilteredEdges))
             {
                 edges = unfilteredEdges.Where(edge => EdgePredicate(edge));
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
     }

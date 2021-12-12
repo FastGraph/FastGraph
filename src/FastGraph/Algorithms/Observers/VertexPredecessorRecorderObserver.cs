@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using static FastGraph.Utils.DisposableHelpers;
 
@@ -15,6 +15,7 @@ namespace FastGraph.Algorithms.Observers
     [Serializable]
 #endif
     public sealed class VertexPredecessorRecorderObserver<TVertex, TEdge> : IObserver<ITreeBuilderAlgorithm<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -31,7 +32,7 @@ namespace FastGraph.Algorithms.Observers
         /// <param name="verticesPredecessors">Vertices predecessors.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesPredecessors"/> is <see langword="null"/>.</exception>
         public VertexPredecessorRecorderObserver(
-            [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
+            IDictionary<TVertex, TEdge> verticesPredecessors)
         {
             VerticesPredecessors = verticesPredecessors ?? throw new ArgumentNullException(nameof(verticesPredecessors));
         }
@@ -39,7 +40,6 @@ namespace FastGraph.Algorithms.Observers
         /// <summary>
         /// Vertices predecessors.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
 
         #region IObserver<TAlgorithm>
@@ -56,10 +56,8 @@ namespace FastGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        private void OnEdgeDiscovered(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             VerticesPredecessors[edge.Target] = edge;
         }
 
@@ -72,7 +70,7 @@ namespace FastGraph.Algorithms.Observers
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
-        public bool TryGetPath([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> path)
+        public bool TryGetPath(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? path)
         {
             return VerticesPredecessors.TryGetPath(vertex, out path);
         }

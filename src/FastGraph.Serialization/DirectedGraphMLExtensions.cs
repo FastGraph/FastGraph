@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Diagnostics;
-using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
@@ -14,13 +14,11 @@ namespace FastGraph.Serialization
     /// </summary>
     public static class DirectedGraphMLExtensions
     {
-        [CanBeNull]
-        private static XmlSerializer _directedGraphSerializer;
+        private static XmlSerializer? _directedGraphSerializer;
 
         /// <summary>
         /// Gets the DirectedGraph XML serializer.
         /// </summary>
-        [NotNull]
         public static XmlSerializer DirectedGraphSerializer =>
             _directedGraphSerializer ?? (_directedGraphSerializer = new XmlSerializer(typeof(DirectedGraph)));
 
@@ -31,7 +29,7 @@ namespace FastGraph.Serialization
         /// <param name="filePath">Path to the file to write into.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="filePath"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] string filePath)
+        public static void WriteXml(this DirectedGraph graph, string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
@@ -49,7 +47,7 @@ namespace FastGraph.Serialization
         /// <param name="writer">XML writer in which writing graph data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] XmlWriter writer)
+        public static void WriteXml(this DirectedGraph graph, XmlWriter writer)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -66,7 +64,7 @@ namespace FastGraph.Serialization
         /// <param name="stream">Stream in which writing graph data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] Stream stream)
+        public static void WriteXml(this DirectedGraph graph, Stream stream)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -83,7 +81,7 @@ namespace FastGraph.Serialization
         /// <param name="writer">Text writer in which writing graph data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] TextWriter writer)
+        public static void WriteXml(this DirectedGraph graph, TextWriter writer)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -102,9 +100,9 @@ namespace FastGraph.Serialization
         /// <returns>Converted graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return ToDirectedGraphML(
@@ -124,10 +122,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TVertex, GraphColor> verticesColors)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            Func<TVertex, GraphColor> verticesColors)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (verticesColors is null)
@@ -153,7 +151,7 @@ namespace FastGraph.Serialization
                             break;
                     }
                 },
-                null);
+                default);
         }
 
         /// <summary>
@@ -169,19 +167,19 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return ToDirectedGraphML(
                 graph,
                 vertexIdentity,
                 edgeIdentity,
-                null,
-                null);
+                default,
+                default);
         }
 
         /// <summary>
@@ -199,13 +197,13 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity,
-            [CanBeNull] Action<TVertex, DirectedGraphNode> formatNode,
-            [CanBeNull] Action<TEdge, DirectedGraphLink> formatEdge)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity,
+            Action<TVertex, DirectedGraphNode>? formatNode,
+            Action<TEdge, DirectedGraphLink>? formatEdge)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
@@ -213,19 +211,19 @@ namespace FastGraph.Serialization
                 vertexIdentity,
                 edgeIdentity);
 
-            if (formatNode != null)
+            if (formatNode != default)
             {
                 algorithm.FormatNode += formatNode;
             }
 
-            if (formatEdge != null)
+            if (formatEdge != default)
             {
                 algorithm.FormatEdge += formatEdge;
             }
 
             algorithm.Compute();
 
-            return algorithm.DirectedGraph;
+            return algorithm.DirectedGraph!;
         }
 
         /// <summary>
@@ -237,8 +235,9 @@ namespace FastGraph.Serialization
         /// <param name="filePath">Path to the file to save.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static void OpenAsDGML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [CanBeNull] string filePath)
+            this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            string? filePath)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
@@ -56,7 +56,6 @@ namespace FastGraph.Graphviz.Tests
             #endregion
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -70,7 +69,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull, InstantHandle] Func<GraphvizArrow, string> convert)
+        public void ToDot([InstantHandle] Func<GraphvizArrow, string> convert)
         {
             // Box variants
             var arrow = new GraphvizArrow(GraphvizArrowShape.Box, GraphvizArrowClipping.None, GraphvizArrowFilling.Close);
@@ -180,7 +179,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot_SkippedModifiers([NotNull, InstantHandle] Func<GraphvizArrow, string> convert)
+        public void ToDot_SkippedModifiers([InstantHandle] Func<GraphvizArrow, string> convert)
         {
             // Skipped Crow variants
             var arrow = new GraphvizArrow(GraphvizArrowShape.Crow, GraphvizArrowClipping.None, GraphvizArrowFilling.Open);

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -17,6 +16,7 @@ namespace FastGraph
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     [StructLayout(LayoutKind.Auto)]
     public struct SEquatableEdge<TVertex> : IEdge<TVertex>, IEquatable<SEquatableEdge<TVertex>>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SEquatableEdge{TVertex}"/> struct.
@@ -25,7 +25,7 @@ namespace FastGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public SEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public SEquatableEdge(TVertex source, TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -43,7 +43,7 @@ namespace FastGraph
         public TVertex Target { get; }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is SEquatableEdge<TVertex> edge
                    && Equals(edge);

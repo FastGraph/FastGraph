@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -9,7 +10,7 @@ namespace FastGraph.Tests.Structures
     {
         #region Add Edges
 
-        protected static void AddEdge_ParallelEdges_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_ParallelEdges_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             int edgeAdded = 0;
@@ -56,9 +57,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_ParallelEdges_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            ClusteredAdjacencyGraph<int, Edge<int>> graph2)
         {
             // Graph without parent
             graph1.AddVertex(1);
@@ -128,7 +129,7 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge1, edge4 });
         }
 
-        protected static void AddEdge_ParallelEdges_EquatableEdge_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_ParallelEdges_EquatableEdge_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, EquatableEdge<int>>
         {
             int edgeAdded = 0;
@@ -175,9 +176,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_ParallelEdges_EquatableEdge_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph2)
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph1,
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> parent2,
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph2)
         {
             // Graph without parent
             graph1.AddVertex(1);
@@ -247,7 +248,7 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph2, new[] { edge1, edge2, edge3, edge1, edge4 });
         }
 
-        protected static void AddEdge_NoParallelEdges_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_NoParallelEdges_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             int edgeAdded = 0;
@@ -293,7 +294,7 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge3, edge4 });
         }
 
-        protected static void AddEdge_NoParallelEdges_UndirectedGraph_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_NoParallelEdges_UndirectedGraph_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             int edgeAdded = 0;
@@ -340,9 +341,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_NoParallelEdges_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            ClusteredAdjacencyGraph<int, Edge<int>> graph2)
         {
             // Graph without parent
             graph1.AddVertex(1);
@@ -412,7 +413,7 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph2, new[] { edge1, edge3, edge4 });
         }
 
-        protected static void AddEdge_NoParallelEdges_EquatableEdge_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_NoParallelEdges_EquatableEdge_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, EquatableEdge<int>>
         {
             int edgeAdded = 0;
@@ -458,7 +459,7 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge3, edge4 });
         }
 
-        protected static void AddEdge_NoParallelEdges_EquatableEdge_UndirectedGraph_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_NoParallelEdges_EquatableEdge_UndirectedGraph_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, EquatableEdge<int>>
         {
             int edgeAdded = 0;
@@ -505,9 +506,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_NoParallelEdges_EquatableEdge_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph2)
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph1,
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> parent2,
+            ClusteredAdjacencyGraph<int, EquatableEdge<int>> graph2)
         {
             // Graph without parent
             graph1.AddVertex(1);
@@ -578,7 +579,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_ForbiddenParallelEdges_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -610,7 +611,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_EquatableEdge_ForbiddenParallelEdges_Test(
-            [NotNull] BidirectionalMatrixGraph<EquatableEdge<int>> graph)
+            BidirectionalMatrixGraph<EquatableEdge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -642,14 +643,16 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_Throws_EdgesOnly_Test(
-            [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
+            IMutableEdgeListGraph<int, Edge<int>> graph)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             AssertNoEdge(graph);
         }
 
-        protected static void AddEdge_Throws_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdge_Throws_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             AddEdge_Throws_EdgesOnly_Test(graph);
@@ -669,10 +672,12 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_Throws_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             AssertNoEdge(graph);
 
             // Both vertices not in graph
@@ -690,7 +695,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdgeRange_EdgesOnly_Test(
-            [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
+            IMutableEdgeListGraph<int, Edge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -717,7 +722,7 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3, edge4 });
         }
 
-        protected static void AddEdgeRange_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdgeRange_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             graph.AddVertex(1);
@@ -756,9 +761,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdgeRange_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph1,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> parent2,
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph2)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph1,
+            ClusteredAdjacencyGraph<int, Edge<int>> parent2,
+            ClusteredAdjacencyGraph<int, Edge<int>> graph2)
         {
             // Graph without parent
             graph1.AddVertex(1);
@@ -804,7 +809,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdgeRange_Throws_EdgesOnly_Test(
-            [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
+            IMutableEdgeListGraph<int, Edge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -817,19 +822,23 @@ namespace FastGraph.Tests.Structures
             };
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             AssertNoEdge(graph);
             Assert.AreEqual(0, edgeAdded);
 
             // Edge 1, 2, 3
             var edge1 = new Edge<int>(1, 2);
             var edge3 = new Edge<int>(2, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, null, edge3 }));
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, default, edge3 }));
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
             Assert.AreEqual(0, edgeAdded);
             AssertNoEdge(graph);
         }
 
-        protected static void AddEdgeRange_Throws_Test<TGraph>([NotNull] TGraph graph)
+        protected static void AddEdgeRange_Throws_Test<TGraph>(TGraph graph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             graph.AddVertex(1);
@@ -840,7 +849,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdgeRange_Throws_Clusters_Test(
-            [NotNull] ClusteredAdjacencyGraph<int, Edge<int>> graph)
+            ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
             graph.AddVertex(1);
             graph.AddVertex(2);
@@ -849,18 +858,22 @@ namespace FastGraph.Tests.Structures
             AssertNoEdge(graph);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(default));
+#pragma warning restore CS8625
             AssertNoEdge(graph);
 
             // Edge 1, 2, 3
             var edge1 = new Edge<int>(1, 2);
             var edge3 = new Edge<int>(2, 3);
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, null, edge3 }));
+#pragma warning disable CS8620
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, default, edge3 }));
+#pragma warning restore CS8620
             AssertNoEdge(graph);
         }
 
         protected static void AddEdgeRange_ForbiddenParallelEdges_Throws_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             int edgeAdded = 0;
 
@@ -873,14 +886,18 @@ namespace FastGraph.Tests.Structures
             };
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(default));
+#pragma warning restore CS8625
             AssertNoEdge(graph);
             Assert.AreEqual(0, edgeAdded);
 
             // Edge 1, 2, 3
             var edge1 = new Edge<int>(0, 1);
             var edge3 = new Edge<int>(1, 2);
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, null, edge3 }));
+#pragma warning disable CS8620
+            Assert.Throws<ArgumentNullException>(() => graph.AddEdgeRange(new[] { edge1, default, edge3 }));
+#pragma warning restore CS8620
             Assert.AreEqual(0, edgeAdded);
             AssertNoEdge(graph);
 
@@ -898,9 +915,9 @@ namespace FastGraph.Tests.Structures
 
 
         protected static void AddEdge_ParallelEdges_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> directedGraph,
-            [NotNull] EdgeListGraph<int, Edge<int>> undirectedGraph,
-            [NotNull, InstantHandle] Func<
+            EdgeListGraph<int, Edge<int>> directedGraph,
+            EdgeListGraph<int, Edge<int>> undirectedGraph,
+            [InstantHandle] Func<
                 EdgeListGraph<int, Edge<int>>,
                 Edge<int>,
                 bool> addEdge)
@@ -980,9 +997,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_ParallelEdges_EquatableEdge_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, EquatableEdge<int>> directedGraph,
-            [NotNull] EdgeListGraph<int, EquatableEdge<int>> undirectedGraph,
-            [NotNull, InstantHandle] Func<
+            EdgeListGraph<int, EquatableEdge<int>> directedGraph,
+            EdgeListGraph<int, EquatableEdge<int>> undirectedGraph,
+            [InstantHandle] Func<
                 EdgeListGraph<int, EquatableEdge<int>>,
                 EquatableEdge<int>,
                 bool> addEdge)
@@ -1062,9 +1079,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_NoParallelEdges_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> directedGraph,
-            [NotNull] EdgeListGraph<int, Edge<int>> undirectedGraph,
-            [NotNull, InstantHandle] Func<
+            EdgeListGraph<int, Edge<int>> directedGraph,
+            EdgeListGraph<int, Edge<int>> undirectedGraph,
+            [InstantHandle] Func<
                 EdgeListGraph<int, Edge<int>>,
                 Edge<int>,
                 bool> addEdge)
@@ -1144,9 +1161,9 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_NoParallelEdges_EquatableEdge_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, EquatableEdge<int>> directedGraph,
-            [NotNull] EdgeListGraph<int, EquatableEdge<int>> undirectedGraph,
-            [NotNull, InstantHandle] Func<
+            EdgeListGraph<int, EquatableEdge<int>> directedGraph,
+            EdgeListGraph<int, EquatableEdge<int>> undirectedGraph,
+            [InstantHandle] Func<
                 EdgeListGraph<int, EquatableEdge<int>>,
                 EquatableEdge<int>,
                 bool> addEdge)
@@ -1227,8 +1244,8 @@ namespace FastGraph.Tests.Structures
 
 
         protected static void AddEdge_ImmutableGraph_NoUpdate<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, Edge<int>>> createGraph)
+            TGraph wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, Edge<int>>> createGraph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             IEdgeSet<int, Edge<int>> graph = createGraph();
@@ -1242,8 +1259,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AddEdge_ImmutableGraph_WithUpdate<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, Edge<int>>> createGraph)
+            TGraph wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, Edge<int>>> createGraph)
             where TGraph : IMutableVertexSet<int>, IMutableEdgeListGraph<int, Edge<int>>
         {
             IEdgeSet<int, Edge<int>> graph = createGraph();

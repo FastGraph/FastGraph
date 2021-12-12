@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_CRYPTO_RANDOM
-using System;
+﻿#nullable enable
+
+#if SUPPORTS_CRYPTO_RANDOM
 using System.Security.Cryptography;
-using JetBrains.Annotations;
 
 namespace FastGraph.Utils
 {
@@ -14,10 +14,8 @@ namespace FastGraph.Utils
     /// </remarks>
     public class CryptoRandom : Random
     {
-        [NotNull]
         private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
-        [NotNull]
         private readonly byte[] _uint32Buffer = new byte[4];
 
         /// <summary>

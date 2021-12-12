@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.Observers;
@@ -20,7 +18,8 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunAndCheckSearch<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+            IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph.VertexCount == 0)
@@ -44,9 +43,9 @@ namespace FastGraph.Tests.Algorithms.Search
 
             if (recorder.VerticesPredecessors.ContainsKey(target))
             {
-                Assert.IsTrue(recorder.TryGetPath(target, out IEnumerable<TEdge> path));
+                Assert.IsTrue(recorder.TryGetPath(target, out IEnumerable<TEdge>? path));
 
-                if (Equals(root, path.First().Source))
+                if (Equals(root, path!.First().Source))
                     Assert.IsTrue(targetReached);
                 else
                     Assert.IsFalse(targetReached);
@@ -54,9 +53,10 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         private static void CompareSearches<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root,
-            [NotNull] TVertex target)
+            IBidirectionalGraph<TVertex, TEdge> graph,
+            TVertex root,
+            TVertex target)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             double EdgeWeights(TEdge edge) => 1.0;
@@ -94,7 +94,7 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(graph, _ => 1.0, DistanceRelaxers.ShortestDistance);
             AssertAlgorithmState(algorithm, graph);
 
-            algorithm = new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(null, graph, _ => 1.0, DistanceRelaxers.ShortestDistance);
+            algorithm = new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(default, graph, _ => 1.0, DistanceRelaxers.ShortestDistance);
             AssertAlgorithmState(algorithm, graph);
         }
 
@@ -105,43 +105,45 @@ namespace FastGraph.Tests.Algorithms.Search
             // ReSharper disable AssignNullToNotNullAttribute
             var graph = new BidirectionalGraph<int, Edge<int>>();
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, _ => 1.0, DistanceRelaxers.ShortestDistance));
+                    default, _ => 1.0, DistanceRelaxers.ShortestDistance));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    graph, null, DistanceRelaxers.ShortestDistance));
+                    graph, default, DistanceRelaxers.ShortestDistance));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    graph, _ => 1.0, null));
+                    graph, _ => 1.0, default));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, null, DistanceRelaxers.ShortestDistance));
+                    default, default, DistanceRelaxers.ShortestDistance));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    graph, null, null));
+                    graph, default, default));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, null, null));
+                    default, default, default));
 
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, null, _ => 1.0, DistanceRelaxers.ShortestDistance));
+                    default, default, _ => 1.0, DistanceRelaxers.ShortestDistance));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, graph, null, DistanceRelaxers.ShortestDistance));
+                    default, graph, default, DistanceRelaxers.ShortestDistance));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, graph, _ => 1.0, null));
+                    default, graph, _ => 1.0, default));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, null, null, DistanceRelaxers.ShortestDistance));
+                    default, default, default, DistanceRelaxers.ShortestDistance));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, graph, null, null));
+                    default, graph, default, default));
             Assert.Throws<ArgumentNullException>(
                 () => new BestFirstFrontierSearchAlgorithm<int, Edge<int>>(
-                    null, null, null, null));
+                    default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

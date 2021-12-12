@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Search;
 using FastGraph.Algorithms.Services;
@@ -20,9 +19,9 @@ namespace FastGraph.Algorithms.ConnectedComponents
     public sealed class StronglyConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
         , IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Stack<TVertex> _stack;
 
         private int _dfsTime;
@@ -33,7 +32,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public StronglyConnectedComponentsAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+            IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
         {
         }
@@ -46,9 +45,9 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public StronglyConnectedComponentsAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
-            : this(null, visitedGraph, components)
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IDictionary<TVertex, int> components)
+            : this(default, visitedGraph, components)
         {
         }
 
@@ -61,9 +60,9 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public StronglyConnectedComponentsAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
+            IAlgorithmComponent? host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
             Components = components ?? throw new ArgumentNullException(nameof(components));
@@ -77,13 +76,11 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Root vertices associated to their minimal linked vertex.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, TVertex> Roots { get; }
 
         /// <summary>
         /// Times of vertices discover.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, int> DiscoverTimes { get; }
 
         /// <summary>
@@ -94,20 +91,18 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <summary>
         /// Number of components discovered per step.
         /// </summary>
-        public List<int> ComponentsPerStep { get; private set; }
+        public List<int>? ComponentsPerStep { get; private set; }
 
         /// <summary>
         /// Vertices treated per step.
         /// </summary>
-        public List<TVertex> VerticesPerStep { get; private set; }
+        public List<TVertex>? VerticesPerStep { get; private set; }
 
-        [ItemNotNull]
-        private BidirectionalGraph<TVertex, TEdge>[] _graphs;
+        private BidirectionalGraph<TVertex, TEdge>[]? _graphs;
 
         /// <summary>
         /// Strongly connected components.
         /// </summary>
-        [NotNull, ItemNotNull]
         public BidirectionalGraph<TVertex, TEdge>[] Graphs
         {
             get
@@ -140,12 +135,8 @@ namespace FastGraph.Algorithms.ConnectedComponents
         }
 
         [Pure]
-        [NotNull]
-        private TVertex MinDiscoverTime([NotNull] TVertex u, [NotNull] TVertex v)
+        private TVertex MinDiscoverTime(TVertex u, TVertex v)
         {
-            Debug.Assert(u != null);
-            Debug.Assert(v != null);
-
             // Min vertex
             return DiscoverTimes[u] < DiscoverTimes[v]
                 ? u
@@ -173,7 +164,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            DepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
+            DepthFirstSearchAlgorithm<TVertex, TEdge>? dfs = default;
             try
             {
                 dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(
@@ -187,7 +178,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
             }
             finally
             {
-                if (dfs != null)
+                if (dfs != default)
                 {
                     dfs.DiscoverVertex -= OnVertexDiscovered;
                     dfs.FinishVertex -= OnVertexFinished;
@@ -213,20 +204,20 @@ namespace FastGraph.Algorithms.ConnectedComponents
 
         #endregion
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered(TVertex vertex)
         {
             Roots[vertex] = vertex;
             Components[vertex] = int.MaxValue;
 
-            ComponentsPerStep.Add(ComponentCount);
-            VerticesPerStep.Add(vertex);
+            ComponentsPerStep!.Add(ComponentCount);
+            VerticesPerStep!.Add(vertex);
             ++Steps;
 
             DiscoverTimes[vertex] = _dfsTime++;
             _stack.Push(vertex);
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished(TVertex vertex)
         {
             foreach (TVertex target in VisitedGraph.OutEdges(vertex).Select(edge => edge.Target))
             {
@@ -244,8 +235,8 @@ namespace FastGraph.Algorithms.ConnectedComponents
                     w = _stack.Pop();
                     Components[w] = ComponentCount;
 
-                    ComponentsPerStep.Add(ComponentCount);
-                    VerticesPerStep.Add(w);
+                    ComponentsPerStep!.Add(ComponentCount);
+                    VerticesPerStep!.Add(w);
                     ++Steps;
                 }
                 while (!EqualityComparer<TVertex>.Default.Equals(w, vertex));

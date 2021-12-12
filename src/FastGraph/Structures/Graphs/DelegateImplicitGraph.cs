@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -11,6 +11,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class DelegateImplicitGraph<TVertex, TEdge> : IImplicitGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace FastGraph
         /// </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateImplicitGraph(
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             bool allowParallelEdges = true)
         {
             _tryGetOutEdgesFunc = tryGetOutEdges ?? throw new ArgumentNullException(nameof(tryGetOutEdges));
@@ -34,7 +35,6 @@ namespace FastGraph
         /// <summary>
         /// Getter of out-edges.
         /// </summary>
-        [NotNull]
         private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetOutEdgesFunc;
 
         #region IGraph<TVertex,TEdge>
@@ -62,13 +62,12 @@ namespace FastGraph
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
-        internal virtual IEnumerable<TEdge> OutEdgesInternal([NotNull] TVertex vertex)
+        internal virtual IEnumerable<TEdge> OutEdgesInternal(TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge> outEdges))
+            if (_tryGetOutEdgesFunc(vertex, out IEnumerable<TEdge>? outEdges))
                 return outEdges;
             throw new VertexNotFoundException();
         }
@@ -80,7 +79,7 @@ namespace FastGraph
         }
 
         [Pure]
-        internal virtual bool TryGetOutEdgesInternal([NotNull] TVertex vertex, out IEnumerable<TEdge> edges)
+        internal virtual bool TryGetOutEdgesInternal(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -89,7 +88,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             return TryGetOutEdgesInternal(vertex, out edges);
         }
@@ -101,7 +100,7 @@ namespace FastGraph
         }
 
         [Pure]
-        internal virtual bool ContainsVertexInternal([NotNull] TVertex vertex)
+        internal virtual bool ContainsVertexInternal(TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));

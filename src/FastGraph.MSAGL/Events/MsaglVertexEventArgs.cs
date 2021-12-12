@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using Microsoft.Msagl.Drawing;
 
 namespace FastGraph.MSAGL
@@ -10,6 +10,7 @@ namespace FastGraph.MSAGL
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     [Serializable]
     public class MsaglVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MsaglVertexEventArgs{TVertex}"/> class.
@@ -18,7 +19,7 @@ namespace FastGraph.MSAGL
         /// <param name="node">Concerned <see cref="T:Microsoft.Msagl.Drawing.Node"/>.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="node"/> is <see langword="null"/>.</exception>
-        public MsaglVertexEventArgs([NotNull] TVertex vertex, [NotNull] Node node)
+        public MsaglVertexEventArgs(TVertex vertex, Node node)
             : base(vertex)
         {
             Node = node ?? throw new ArgumentNullException(nameof(node));
@@ -27,7 +28,6 @@ namespace FastGraph.MSAGL
         /// <summary>
         /// <see cref="T:Microsoft.Msagl.Drawing.Node"/> concerned by the event.
         /// </summary>
-        [NotNull]
         public Node Node { get; }
     }
 }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
@@ -15,28 +14,26 @@ namespace FastGraph.Algorithms.ShortestPath
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class FloydWarshallAllShortestPathAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Func<TEdge, double> _weights;
 
-        [NotNull]
         private readonly IDistanceRelaxer _distanceRelaxer;
 
-        [NotNull]
         private readonly Dictionary<SEquatableEdge<TVertex>, VertexData> _data;
 
         private struct VertexData
         {
             public double Distance { get; }
 
-            private readonly TVertex _predecessor;
-            private readonly TEdge _edge;
+            private readonly TVertex? _predecessor;
+            private readonly TEdge? _edge;
 
             private readonly bool _edgeStored;
 
             // Null edge for self edge data
-            public VertexData(double distance, [CanBeNull] TEdge edge)
+            public VertexData(double distance, TEdge? edge)
             {
                 Distance = distance;
                 _predecessor = default(TVertex);
@@ -44,10 +41,8 @@ namespace FastGraph.Algorithms.ShortestPath
                 _edgeStored = true;
             }
 
-            public VertexData(double distance, [NotNull] TVertex predecessor)
+            public VertexData(double distance, TVertex predecessor)
             {
-                Debug.Assert(predecessor != null);
-
                 Distance = distance;
                 _predecessor = predecessor;
                 _edge = default(TEdge);
@@ -55,14 +50,14 @@ namespace FastGraph.Algorithms.ShortestPath
             }
 
             [Pure]
-            public bool TryGetPredecessor(out TVertex predecessor)
+            public bool TryGetPredecessor([NotNullWhen(true)] out TVertex? predecessor)
             {
                 predecessor = _predecessor;
                 return !_edgeStored;
             }
 
             [Pure]
-            public bool TryGetEdge(out TEdge edge)
+            public bool TryGetEdge([NotNullWhen(true)] out TEdge? edge)
             {
                 edge = _edge;
                 return _edgeStored;
@@ -84,8 +79,8 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -100,10 +95,10 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
-            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
+            : this(default, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
 
@@ -118,10 +113,10 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             _weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -139,7 +134,7 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <returns>True if the distance was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double distance)
+        public bool TryGetDistance(TVertex source, TVertex target, out double distance)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -169,9 +164,9 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.InvalidOperationException">Failed to find a predecessor vertex while getting path.</exception>
         [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         public bool TryGetPath(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
-            out IEnumerable<TEdge> path)
+            TVertex source,
+            TVertex target,
+            [NotNullWhen(true)] out IEnumerable<TEdge>? path)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -180,7 +175,7 @@ namespace FastGraph.Algorithms.ShortestPath
 
             if (EqualityComparer<TVertex>.Default.Equals(source, target))
             {
-                path = null;
+                path = default;
                 return false;
             }
 
@@ -189,9 +184,9 @@ namespace FastGraph.Algorithms.ShortestPath
 
         [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         private bool TryGetPathInternal(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
-            out IEnumerable<TEdge> path)
+            TVertex source,
+            TVertex target,
+            [NotNullWhen(true)] out IEnumerable<TEdge>? path)
         {
 #if DEBUG && !NET20
             var set = new HashSet<TVertex> { source, target };
@@ -208,13 +203,13 @@ namespace FastGraph.Algorithms.ShortestPath
 
                 if (_data.TryGetValue(current, out VertexData data))
                 {
-                    if (data.TryGetEdge(out TEdge edge))
+                    if (data.TryGetEdge(out TEdge? edge))
                     {
                         edges.Add(edge);
                     }
                     else
                     {
-                        if (data.TryGetPredecessor(out TVertex intermediate))
+                        if (data.TryGetPredecessor(out TVertex? intermediate))
                         {
 #if DEBUG && !NET20
                             Debug.Assert(set.Add(intermediate));
@@ -232,7 +227,7 @@ namespace FastGraph.Algorithms.ShortestPath
                 else
                 {
                     // No path found
-                    path = null;
+                    path = default;
                     return false;
                 }
             }
@@ -298,7 +293,7 @@ namespace FastGraph.Algorithms.ShortestPath
             CheckNegativeCycles(vertices);
         }
 
-        private void FillIData([NotNull, ItemNotNull] TVertex[] vertices, [NotNull] TVertex vk)
+        private void FillIData(TVertex[] vertices, TVertex vk)
         {
             foreach (TVertex vi in vertices)
             {
@@ -311,9 +306,9 @@ namespace FastGraph.Algorithms.ShortestPath
         }
 
         private void FillJData(
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
-            [NotNull] TVertex vi,
-            [NotNull] TVertex vk,
+            IEnumerable<TVertex> vertices,
+            TVertex vi,
+            TVertex vk,
             VertexData pathIk)
         {
             foreach (TVertex vj in vertices)
@@ -339,7 +334,7 @@ namespace FastGraph.Algorithms.ShortestPath
             }
         }
 
-        private void CheckNegativeCycles([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        private void CheckNegativeCycles(IEnumerable<TVertex> vertices)
         {
             foreach (TVertex vi in vertices)
             {
@@ -355,7 +350,7 @@ namespace FastGraph.Algorithms.ShortestPath
         /// Dumps current data state to stream <paramref name="writer"/>.
         /// </summary>
         [Conditional("DEBUG")]
-        public void Dump([NotNull] TextWriter writer)
+        public void Dump(TextWriter writer)
         {
             writer.WriteLine("data:");
             foreach (KeyValuePair<SEquatableEdge<TVertex>, VertexData> kv in _data)

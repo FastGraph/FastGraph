@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Xml;
 #if SUPPORTS_GRAPHS_SERIALIZATION
 using System.Xml.XPath;
@@ -14,17 +15,18 @@ namespace FastGraph.Serialization
     {
         [Pure]
         private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
-            [NotNull] XmlReader reader,
-            [NotNull, InstantHandle] Predicate<XmlReader> graphPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> vertexPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> edgePredicate,
-            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            XmlReader reader,
+            [InstantHandle] Predicate<XmlReader> graphPredicate,
+            [InstantHandle] Predicate<XmlReader> vertexPredicate,
+            [InstantHandle] Predicate<XmlReader> edgePredicate,
+            [InstantHandle] Func<XmlReader, TGraph> graphFactory,
+            [InstantHandle] Func<XmlReader, TVertex> vertexFactory,
+            [InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            where TVertex : notnull
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge> where TEdge : IEdge<TVertex>
         {
             // Find the graph node
-            TGraph graph = null;
+            TGraph? graph = default;
             while (reader.Read())
             {
                 if (reader.NodeType == XmlNodeType.Element && graphPredicate(reader))
@@ -62,30 +64,31 @@ namespace FastGraph.Serialization
 
 #if SUPPORTS_GRAPHS_SERIALIZATION
         private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
-            [NotNull] this IXPathNavigable document,
-            [NotNull] string graphXPath,
-            [NotNull] string vertexXPath,
-            [NotNull] string edgeXPath,
-            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            this IXPathNavigable document,
+            string graphXPath,
+            string vertexXPath,
+            string edgeXPath,
+            [InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
+            [InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
+            [InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            where TVertex : notnull
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            XPathNavigator navigator = document.CreateNavigator();
-            XPathNavigator graphNode = navigator?.SelectSingleNode(graphXPath);
+            XPathNavigator? navigator = document.CreateNavigator();
+            XPathNavigator? graphNode = navigator?.SelectSingleNode(graphXPath);
             if (graphNode is null)
                 throw new InvalidOperationException("Could not find graph node.");
             TGraph graph = graphFactory(graphNode);
-            foreach (XPathNavigator vertexNode in graphNode.Select(vertexXPath))
+            foreach (XPathNavigator? vertexNode in graphNode.Select(vertexXPath))
             {
-                TVertex vertex = vertexFactory(vertexNode);
+                TVertex vertex = vertexFactory(vertexNode!);
                 graph.AddVertex(vertex);
             }
 
-            foreach (XPathNavigator edgeNode in graphNode.Select(edgeXPath))
+            foreach (XPathNavigator? edgeNode in graphNode.Select(edgeXPath))
             {
-                TEdge edge = edgeFactory(edgeNode);
+                TEdge edge = edgeFactory(edgeNode!);
                 graph.AddEdge(edge);
             }
 
@@ -119,24 +122,25 @@ namespace FastGraph.Serialization
         /// </exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-            [NotNull] this IXPathNavigable document,
-            [NotNull] string graphXPath,
-            [NotNull] string vertexXPath,
-            [NotNull] string edgeXPath,
-            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            this IXPathNavigable document,
+            string graphXPath,
+            string vertexXPath,
+            string edgeXPath,
+            [InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
+            [InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
+            [InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            where TVertex : notnull
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             if (document is null)
                 throw new ArgumentNullException(nameof(document));
             if (string.IsNullOrEmpty(graphXPath))
-                throw new ArgumentException("Graph path cannot be null or empty", nameof(graphXPath));
+                throw new ArgumentException("Graph path cannot be default or empty", nameof(graphXPath));
             if (string.IsNullOrEmpty(vertexXPath))
-                throw new ArgumentException("Vertex path cannot be null or empty", nameof(vertexXPath));
+                throw new ArgumentException("Vertex path cannot be default or empty", nameof(vertexXPath));
             if (string.IsNullOrEmpty(edgeXPath))
-                throw new ArgumentException("Edge path cannot be null or empty", nameof(edgeXPath));
+                throw new ArgumentException("Edge path cannot be default or empty", nameof(edgeXPath));
             if (graphFactory is null)
                 throw new ArgumentNullException(nameof(graphFactory));
             if (vertexFactory is null)
@@ -179,13 +183,14 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-            [NotNull] this XmlReader reader,
-            [NotNull, InstantHandle] Predicate<XmlReader> graphPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> vertexPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> edgePredicate,
-            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            this XmlReader reader,
+            [InstantHandle] Predicate<XmlReader> graphPredicate,
+            [InstantHandle] Predicate<XmlReader> vertexPredicate,
+            [InstantHandle] Predicate<XmlReader> edgePredicate,
+            [InstantHandle] Func<XmlReader, TGraph> graphFactory,
+            [InstantHandle] Func<XmlReader, TVertex> vertexFactory,
+            [InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            where TVertex : notnull
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
@@ -233,23 +238,24 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-            [NotNull] this XmlReader reader,
-            [NotNull] string graphElementName,
-            [NotNull] string vertexElementName,
-            [NotNull] string edgeElementName,
-            [NotNull] string namespaceUri,
-            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            this XmlReader reader,
+            string graphElementName,
+            string vertexElementName,
+            string edgeElementName,
+            string namespaceUri,
+            [InstantHandle] Func<XmlReader, TGraph> graphFactory,
+            [InstantHandle] Func<XmlReader, TVertex> vertexFactory,
+            [InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            where TVertex : notnull
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             if (string.IsNullOrEmpty(graphElementName))
-                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.", nameof(graphElementName));
+                throw new ArgumentException($"{nameof(graphElementName)} cannot be default or empty.", nameof(graphElementName));
             if (string.IsNullOrEmpty(vertexElementName))
-                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.", nameof(vertexElementName));
+                throw new ArgumentException($"{nameof(vertexElementName)} cannot be default or empty.", nameof(vertexElementName));
             if (string.IsNullOrEmpty(edgeElementName))
-                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.", nameof(edgeElementName));
+                throw new ArgumentException($"{nameof(edgeElementName)} cannot be default or empty.", nameof(edgeElementName));
             if (namespaceUri is null)
                 throw new ArgumentNullException(nameof(namespaceUri));
 
@@ -286,14 +292,15 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer,
-            [NotNull, InstantHandle] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull, InstantHandle] EdgeIdentity<TVertex, TEdge> edgeIdentity,
-            [NotNull] string graphElementName,
-            [NotNull] string vertexElementName,
-            [NotNull] string edgeElementName,
-            [NotNull] string namespaceUri)
+            this TGraph graph,
+            XmlWriter writer,
+            [InstantHandle] VertexIdentity<TVertex> vertexIdentity,
+            [InstantHandle] EdgeIdentity<TVertex, TEdge> edgeIdentity,
+            string graphElementName,
+            string vertexElementName,
+            string edgeElementName,
+            string namespaceUri)
+            where TVertex : notnull
             where TGraph : IEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
@@ -306,9 +313,9 @@ namespace FastGraph.Serialization
                 vertexElementName,
                 edgeElementName,
                 namespaceUri,
-                null,
-                null,
-                null);
+                default,
+                default,
+                default);
         }
 
         /// <summary>
@@ -337,17 +344,18 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer,
-            [NotNull, InstantHandle] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull, InstantHandle] EdgeIdentity<TVertex, TEdge> edgeIdentity,
-            [NotNull] string graphElementName,
-            [NotNull] string vertexElementName,
-            [NotNull] string edgeElementName,
-            [NotNull] string namespaceUri,
-            [CanBeNull, InstantHandle] Action<XmlWriter, TGraph> writeGraphAttributes,
-            [CanBeNull, InstantHandle] Action<XmlWriter, TVertex> writeVertexAttributes,
-            [CanBeNull, InstantHandle] Action<XmlWriter, TEdge> writeEdgeAttributes)
+            this TGraph graph,
+            XmlWriter writer,
+            [InstantHandle] VertexIdentity<TVertex> vertexIdentity,
+            [InstantHandle] EdgeIdentity<TVertex, TEdge> edgeIdentity,
+            string graphElementName,
+            string vertexElementName,
+            string edgeElementName,
+            string namespaceUri,
+            [InstantHandle] Action<XmlWriter, TGraph>? writeGraphAttributes,
+            [InstantHandle] Action<XmlWriter, TVertex>? writeVertexAttributes,
+            [InstantHandle] Action<XmlWriter, TEdge>? writeEdgeAttributes)
+            where TVertex : notnull
             where TGraph : IEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
@@ -360,11 +368,11 @@ namespace FastGraph.Serialization
             if (edgeIdentity is null)
                 throw new ArgumentNullException(nameof(edgeIdentity));
             if (string.IsNullOrEmpty(graphElementName))
-                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.", nameof(graphElementName));
+                throw new ArgumentException($"{nameof(graphElementName)} cannot be default or empty.", nameof(graphElementName));
             if (string.IsNullOrEmpty(vertexElementName))
-                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.", nameof(vertexElementName));
+                throw new ArgumentException($"{nameof(vertexElementName)} cannot be default or empty.", nameof(vertexElementName));
             if (string.IsNullOrEmpty(edgeElementName))
-                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.", nameof(edgeElementName));
+                throw new ArgumentException($"{nameof(edgeElementName)} cannot be default or empty.", nameof(edgeElementName));
             if (namespaceUri is null)
                 throw new ArgumentNullException(nameof(namespaceUri));
 

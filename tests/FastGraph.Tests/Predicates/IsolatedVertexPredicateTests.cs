@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Predicates;
@@ -26,10 +26,11 @@ namespace FastGraph.Tests.Predicates
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new IsolatedVertexPredicate<int, Edge<int>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new IsolatedVertexPredicate<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> PredicateTestCases
         {
             [UsedImplicitly]
@@ -40,7 +41,7 @@ namespace FastGraph.Tests.Predicates
         }
 
         [TestCaseSource(nameof(PredicateTestCases))]
-        public void Predicate<TGraph>([NotNull] TGraph graph)
+        public void Predicate<TGraph>(TGraph graph)
             where TGraph
             : IBidirectionalGraph<int, Edge<int>>
             , IMutableVertexSet<int>
@@ -97,7 +98,9 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<VertexNotFoundException>(() => predicate.Test(new TestVertex("1")));
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+#pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
     }

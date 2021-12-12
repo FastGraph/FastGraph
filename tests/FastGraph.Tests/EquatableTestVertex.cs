@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Tests
 {
@@ -13,19 +12,19 @@ namespace FastGraph.Tests
         {
         }
 
-        public EquatableTestVertex([NotNull] string name)
+        public EquatableTestVertex(string name)
             : base(name)
         {
         }
 
-        public bool Equals(EquatableTestVertex other)
+        public bool Equals(EquatableTestVertex? other)
         {
             if (other is null)
                 return false;
             return string.Equals(Name, other.Name);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj) || Equals(obj as EquatableTestVertex);
         }
