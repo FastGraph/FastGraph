@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -28,6 +29,7 @@ namespace FastGraph.Tests.Structures
             void AssertGraphProperties<TVertex, TEdge>(
                 DelegateBidirectionalIncidenceGraph<TVertex, TEdge> g,
                 bool parallelEdges = true)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -42,16 +44,18 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
                 () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(
                     GetEmptyGetter<int, Edge<int>>(),
-                    null));
+                    default));
             Assert.Throws<ArgumentNullException>(
                 () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(
-                    null,
+                    default,
                     GetEmptyGetter<int, Edge<int>>()));
             Assert.Throws<ArgumentNullException>(
-                () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(null, null));
+                () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+﻿#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 
@@ -12,7 +10,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
     /// </summary>
     internal sealed class DistancesCollectionGetDistancesContract : DistancesCollectionContractBase
     {
-        public DistancesCollectionGetDistancesContract([NotNull] Type algorithmToTest)
+        public DistancesCollectionGetDistancesContract(Type algorithmToTest)
             : base(algorithmToTest)
         {
         }

@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 #endif
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -24,6 +22,7 @@ namespace FastGraph
 #if SUPPORTS_SERIALIZATION && NETSTANDARD2_0_OR_GREATER
         , ISerializable
 #endif
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -31,7 +30,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="originalGraph">Bidirectional graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="originalGraph"/> is <see langword="null"/>.</exception>
-        public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
+        public UndirectedBidirectionalGraph(IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
             OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
 
@@ -57,12 +56,11 @@ namespace FastGraph
         }
 
         private delegate void ReorderVertices(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
-            [NotNull] out TVertex orderedSource,
-            [NotNull] out TVertex orderedTarget);
+            TVertex source,
+            TVertex target,
+            out TVertex orderedSource,
+            out TVertex orderedTarget);
 
-        [NotNull]
         private readonly ReorderVertices _reorder;
 
         /// <inheritdoc />
@@ -164,7 +162,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));

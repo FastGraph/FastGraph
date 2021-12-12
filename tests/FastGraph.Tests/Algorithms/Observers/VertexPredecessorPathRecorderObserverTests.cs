@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Search;
@@ -38,7 +38,9 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new VertexPredecessorPathRecorderObserver<int, Edge<int>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new VertexPredecessorPathRecorderObserver<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]

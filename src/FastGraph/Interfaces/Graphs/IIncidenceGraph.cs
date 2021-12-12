@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -10,6 +12,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IIncidenceGraph<TVertex, TEdge> : IImplicitGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -22,7 +25,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool ContainsEdge([NotNull] TVertex source, [NotNull] TVertex target);
+        bool ContainsEdge(TVertex source, TVertex target);
 
         /// <summary>
         /// Tries to get the edge that link
@@ -36,7 +39,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edge:notnull;=> false, edge:null")]
-        bool TryGetEdge([NotNull] TVertex source, [NotNull] TVertex target, out TEdge edge);
+        bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge);
 
         /// <summary>
         /// Tries to get edges that link
@@ -50,6 +53,6 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
-        bool TryGetEdges([NotNull] TVertex source, [NotNull] TVertex target, [ItemNotNull] out IEnumerable<TEdge> edges);
+        bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges);
     }
 }

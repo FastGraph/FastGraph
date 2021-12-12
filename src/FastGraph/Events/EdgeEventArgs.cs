@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -12,6 +11,7 @@ namespace FastGraph
     [Serializable]
 #endif
     public class EdgeEventArgs<TVertex, TEdge> : EventArgs
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        public EdgeEventArgs([NotNull] TEdge edge)
+        public EdgeEventArgs(TEdge edge)
         {
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
@@ -30,7 +30,6 @@ namespace FastGraph
         /// <summary>
         /// Edge concerned by the event.
         /// </summary>
-        [NotNull]
         public TEdge Edge { get; }
     }
 }

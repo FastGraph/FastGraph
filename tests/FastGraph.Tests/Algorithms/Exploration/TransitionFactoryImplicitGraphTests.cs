@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Exploration;
 using FastGraph.Tests.Structures;
@@ -44,8 +43,10 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
 
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.SuccessorVertexPredicate = null);
-            Assert.Throws<ArgumentNullException>(() => graph.SuccessorEdgePredicate = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.SuccessorVertexPredicate = default);
+            Assert.Throws<ArgumentNullException>(() => graph.SuccessorEdgePredicate = default);
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -78,7 +79,9 @@ namespace FastGraph.Tests.Algorithms.Exploration
         {
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddTransitionFactory(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddTransitionFactory(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -109,7 +112,9 @@ namespace FastGraph.Tests.Algorithms.Exploration
         {
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.AddTransitionFactories(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.AddTransitionFactories(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -117,7 +122,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
         {
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
 
-            Assert.IsFalse(graph.RemoveTransitionFactory(null));
+            Assert.IsFalse(graph.RemoveTransitionFactory(default!));
 
             var vertex1 = new CloneableTestVertex("1");
             var vertex2 = new CloneableTestVertex("2");
@@ -127,7 +132,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory3 = new TestTransitionFactory<CloneableTestVertex>(vertex3, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactories(new[] { factory1, factory2 });
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(null));
+            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
             Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
             Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
 
@@ -160,25 +165,25 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var vertex1 = new CloneableTestVertex("1");
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(vertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(null));
+            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
             Assert.IsFalse(graph.ContainsTransitionFactory(factory1));
 
             graph.AddTransitionFactory(factory1);
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(null));
+            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
             Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
 
             var vertex2 = new CloneableTestVertex("2");
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory2);
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(null));
+            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
             Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
             Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
 
             graph.RemoveTransitionFactory(factory1);
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(null));
+            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
             Assert.IsFalse(graph.ContainsTransitionFactory(factory1));
             Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
         }
@@ -589,7 +594,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
 
             Assert.IsFalse(graph.TryGetOutEdges(vertex5, out _));   // Vertex5 was not discovered
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex3, out IEnumerable<Edge<CloneableTestVertex>> gotEdges));
+            Assert.IsTrue(graph.TryGetOutEdges(vertex3, out IEnumerable<Edge<CloneableTestVertex>>? gotEdges));
             CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
 
             Assert.IsTrue(graph.TryGetOutEdges(vertex1, out gotEdges));
@@ -643,7 +648,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             graph.SuccessorVertexPredicate = vertex => vertex != vertex4;
             graph.SuccessorEdgePredicate = edge => edge.Source != edge.Target;
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex2, out IEnumerable<Edge<CloneableTestVertex>> gotEdges));
+            Assert.IsTrue(graph.TryGetOutEdges(vertex2, out IEnumerable<Edge<CloneableTestVertex>>? gotEdges));
             CollectionAssert.IsEmpty(gotEdges); // Both edges filtered by the 2 filters combined
 
             // Restore no filter

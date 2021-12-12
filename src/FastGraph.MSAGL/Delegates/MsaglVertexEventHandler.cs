@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.MSAGL
 {
@@ -9,6 +9,7 @@ namespace FastGraph.MSAGL
     /// <param name="sender">Event sender.</param>
     /// <param name="args">Event arguments.</param>
     public delegate void MsaglVertexNodeEventHandler<TVertex>(
-        [NotNull] object sender,
-        [NotNull] MsaglVertexEventArgs<TVertex> args);
+        object sender,
+        MsaglVertexEventArgs<TVertex> args)
+        where TVertex : notnull;
 }

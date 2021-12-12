@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.VertexCover;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -29,14 +30,16 @@ namespace FastGraph.Tests.Algorithms.VertexCover
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(null));
+                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default));
             Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(null, new Random(123)));
+                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default, new Random(123)));
             Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(new UndirectedGraph<int, Edge<int>>(), null));
+                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(new UndirectedGraph<int, Edge<int>>(), default));
             Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(null, null));
+                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

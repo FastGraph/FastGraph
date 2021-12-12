@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -14,7 +15,7 @@ namespace FastGraph.Tests
         /// <see cref="ArgumentOutOfRangeException"/> or <see cref="IndexOutOfRangeException"/>.
         /// </summary>
         /// <param name="action">Test delegate.</param>
-        public static void AssertIndexOutOfRange([NotNull, InstantHandle] TestDelegate action)
+        public static void AssertIndexOutOfRange([InstantHandle] TestDelegate action)
         {
             Assert.That(
                 action,
@@ -30,7 +31,7 @@ namespace FastGraph.Tests
         /// <typeparam name="T">Object type.</typeparam>
         /// <param name="arg1">First object.</param>
         /// <param name="arg2">Second object.</param>
-        public static void AssertEqual<T>([CanBeNull] T arg1, [CanBeNull] T arg2)
+        public static void AssertEqual<T>(T? arg1, T? arg2)
         {
             if (typeof(T).IsValueType)
                 Assert.AreEqual(arg1, arg2);

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -13,6 +13,7 @@ namespace FastGraph.Collections
     [Serializable]
 #endif
     public class ForestDisjointSet<T> : IDisjointSet<T>
+        where T : notnull
     {
 #if DEBUG
         [DebuggerDisplay("{" + nameof(_id) + "}:{" + nameof(Rank) + "}->{" + nameof(Parent) + "}")]
@@ -25,27 +26,23 @@ namespace FastGraph.Collections
             private static int _nextId;
 #endif
 
-            [CanBeNull]
-            public Element Parent { get; set; }
+            public Element? Parent { get; set; }
 
             public int Rank { get; set; }
 
-            [NotNull]
             public T Value { get; }
 
-            public Element([NotNull] T value)
+            public Element(T value)
             {
-                Debug.Assert(value != null);
 #if DEBUG
                 _id = _nextId++;
 #endif
-                Parent = null;
+                Parent = default;
                 Rank = 0;
                 Value = value;
             }
         }
 
-        [NotNull]
         private readonly Dictionary<T, Element> _elements;
 
         /// <summary>
@@ -125,19 +122,15 @@ namespace FastGraph.Collections
         #endregion
 
         [Pure]
-        [NotNull]
-        private static Element FindNoCompression([NotNull] Element element)
+        private static Element FindNoCompression(Element element)
         {
-            Debug.Assert(element != null);
-
             // Find root
             Element current = element;
-            while (current.Parent != null)
+            while (current.Parent != default)
             {
                 current = current.Parent;
             }
 
-            Debug.Assert(current != null);
             return current;
         }
 
@@ -146,26 +139,19 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="element">Element to search parent.</param>
         /// <returns>Root parent element.</returns>
-        [NotNull]
-        private static Element Find([NotNull] Element element)
+        private static Element Find(Element element)
         {
-            Debug.Assert(element != null);
-
             Element root = FindNoCompression(element);
             CompressPath(element, root);
 
-            Debug.Assert(root != null);
             return root;
         }
 
-        private static void CompressPath([NotNull] Element element, [NotNull] Element root)
+        private static void CompressPath(Element element, Element root)
         {
-            Debug.Assert(element != null);
-            Debug.Assert(root != null);
-
             // Path compression
-            Element current = element;
-            while (current != root && current != null)
+            Element? current = element;
+            while (current != root && current != default)
             {
                 Element temp = current;
                 current = current.Parent;
@@ -173,11 +159,8 @@ namespace FastGraph.Collections
             }
         }
 
-        private bool Union([NotNull] Element left, [NotNull] Element right)
+        private bool Union(Element left, Element right)
         {
-            Debug.Assert(left != null);
-            Debug.Assert(right != null);
-
             // Shortcut when already unioned
             if (left == right)
                 return false;

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -22,6 +22,7 @@ namespace FastGraph
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
+        where TVertex : notnull
     {
 #if SUPPORTS_SERIALIZATION
         [Serializable]
@@ -44,12 +45,9 @@ namespace FastGraph
         }
 
         private CompressedSparseRowGraph(
-            [NotNull] Dictionary<TVertex, Range> outEdgeStartRanges,
-            [NotNull, ItemNotNull] TVertex[] outEdges)
+            Dictionary<TVertex, Range> outEdgeStartRanges,
+            TVertex[] outEdges)
         {
-            Debug.Assert(outEdgeStartRanges != null);
-            Debug.Assert(outEdges != null);
-
             _outEdgeStartRanges = outEdgeStartRanges;
             _outEdges = outEdges;
         }
@@ -61,9 +59,8 @@ namespace FastGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>A corresponding <see cref="CompressedSparseRowGraph{TVertex}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        [NotNull]
         public static CompressedSparseRowGraph<TVertex> FromGraph<TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -134,10 +131,8 @@ namespace FastGraph
         /// <inheritdoc />
         public int EdgeCount => _outEdges.Length;
 
-        [NotNull, ItemNotNull]
         private readonly TVertex[] _outEdges;
 
-        [NotNull]
         private readonly Dictionary<TVertex, Range> _outEdgeStartRanges;
 
         /// <inheritdoc />
@@ -202,7 +197,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<SEquatableEdge<TVertex>> edges)
+        public bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<SEquatableEdge<TVertex>>? edges)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -215,7 +210,7 @@ namespace FastGraph
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
 
             #region Local function
@@ -262,14 +257,11 @@ namespace FastGraph
         }
 
         [Pure]
-        [NotNull]
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator([NotNull] TVertex vertex)
+        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             if (_outEdgeStartRanges.TryGetValue(vertex, out Range range))
             {
                 for (int i = range.Start; i < range.End; ++i)
@@ -280,7 +272,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<SEquatableEdge<TVertex>> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<SEquatableEdge<TVertex>>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -291,7 +283,7 @@ namespace FastGraph
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -319,7 +311,6 @@ namespace FastGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
         public CompressedSparseRowGraph<TVertex> Clone()
         {
             var ranges = new Dictionary<TVertex, Range>(_outEdgeStartRanges);

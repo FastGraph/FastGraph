@@ -1,7 +1,6 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
-using System.Diagnostics;
-using System.IO;
+#nullable enable
+
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System.Net;
 using System.Xml;
 using JetBrains.Annotations;
@@ -14,7 +13,6 @@ namespace FastGraph.Serialization
     // ReSharper disable once InconsistentNaming
     public sealed class GraphMLXmlResolver : XmlResolver
     {
-        [NotNull]
         private readonly XmlResolver _baseResolver;
 
         /// <summary>
@@ -30,7 +28,7 @@ namespace FastGraph.Serialization
         /// </summary>
         /// <param name="baseResolver">Base XML resolver.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseResolver"/> is <see langword="null"/>.</exception>
-        public GraphMLXmlResolver([NotNull] XmlResolver baseResolver)
+        public GraphMLXmlResolver(XmlResolver baseResolver)
         {
             _baseResolver = baseResolver ?? throw new ArgumentNullException(nameof(baseResolver));
         }
@@ -52,7 +50,7 @@ namespace FastGraph.Serialization
         }
 
         /// <inheritdoc />
-        public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
+        public override object? GetEntity(Uri absoluteUri, string? role, Type? ofObjectToReturn)
         {
             if (absoluteUri.AbsoluteUri.EndsWith("graphml.dtd"))
                 return GetResource("graphml.dtd");
@@ -76,14 +74,13 @@ namespace FastGraph.Serialization
 
             #region Local function
 
-            Stream GetResource(string resourceName)
+            Stream? GetResource(string resourceName)
             {
-                Stream resourceStream = typeof(GraphMLExtensions).Assembly
+                Stream? resourceStream = typeof(GraphMLExtensions).Assembly
                     .GetManifestResourceStream(
                         typeof(GraphMLExtensions),
                         resourceName);
 
-                Debug.Assert(resourceStream != null);
                 return resourceStream;
             }
 

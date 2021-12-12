@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Text;
 using JetBrains.Annotations;
 
@@ -12,14 +13,14 @@ namespace FastGraph.Graphviz.Dot
 #endif
     public class GraphvizRecord
     {
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         private GraphvizRecordCellCollection _cells = new GraphvizRecordCellCollection();
 
         /// <summary>
         /// Record cells.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         public GraphvizRecordCellCollection Cells
         {
             get => _cells;
@@ -31,7 +32,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Record as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             if (Cells.Count == 0)

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿#nullable enable
+
+using System.Globalization;
 using JetBrains.Annotations;
 
 namespace FastGraph.Graphviz.Helpers
@@ -15,7 +17,6 @@ namespace FastGraph.Graphviz.Helpers
         /// <param name="value">Value to convert.</param>
         /// <returns>Float as string.</returns>
         [Pure]
-        [NotNull]
         public static string ToInvariantString(this float value)
         {
             return value.ToString(CultureInfo.InvariantCulture);
@@ -28,7 +29,6 @@ namespace FastGraph.Graphviz.Helpers
         /// <param name="value">Value to convert.</param>
         /// <returns>Double as string.</returns>
         [Pure]
-        [NotNull]
         public static string ToInvariantString(this double value)
         {
             return value.ToString(CultureInfo.InvariantCulture);

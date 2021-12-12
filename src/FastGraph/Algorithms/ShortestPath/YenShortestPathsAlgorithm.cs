@@ -1,8 +1,7 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Collections;
@@ -15,19 +14,19 @@ namespace FastGraph.Algorithms.ShortestPath
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public class YenShortestPathsAlgorithm<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Class representing a sorted path.
         /// </summary>
         public struct SortedPath : IEnumerable<EquatableTaggedEdge<TVertex, double>>, IEquatable<SortedPath>
         {
-            [NotNull, ItemNotNull]
             private readonly List<EquatableTaggedEdge<TVertex, double>> _edges;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="SortedPath"/> struct.
             /// </summary>
-            public SortedPath([NotNull, ItemNotNull] IEnumerable<EquatableTaggedEdge<TVertex, double>> edges)
+            public SortedPath(IEnumerable<EquatableTaggedEdge<TVertex, double>> edges)
             {
                 _edges = edges.ToList();
             }
@@ -38,7 +37,6 @@ namespace FastGraph.Algorithms.ShortestPath
             public int Count => _edges.Count;
 
             [Pure]
-            [NotNull]
             internal TVertex GetVertex(int i)
             {
                 Debug.Assert(i >= 0 && i < _edges.Count);
@@ -47,7 +45,6 @@ namespace FastGraph.Algorithms.ShortestPath
             }
 
             [Pure]
-            [NotNull]
             internal EquatableTaggedEdge<TVertex, double> GetEdge(int i)
             {
                 Debug.Assert(i >= 0 && i < _edges.Count);
@@ -56,7 +53,6 @@ namespace FastGraph.Algorithms.ShortestPath
             }
 
             [Pure]
-            [NotNull, ItemNotNull]
             internal EquatableTaggedEdge<TVertex, double>[] GetEdges(int count)
             {
                 if (count > _edges.Count)
@@ -70,7 +66,7 @@ namespace FastGraph.Algorithms.ShortestPath
             }
 
             /// <inheritdoc />
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is SortedPath path && Equals(path);
             }
@@ -103,16 +99,13 @@ namespace FastGraph.Algorithms.ShortestPath
         private readonly TVertex _sourceVertex;
         private readonly TVertex _targetVertex;
 
-        [NotNull]
         private readonly Func<EquatableTaggedEdge<TVertex, double>, double> _weights;
 
-        [NotNull]
         private readonly Func<IEnumerable<SortedPath>, IEnumerable<SortedPath>> _filter;
 
         // Limit for the amount of paths
         private readonly int _k;
 
-        [NotNull]
         private readonly IMutableVertexAndEdgeListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> _graph;
 
         /// <summary>
@@ -134,12 +127,12 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentException"><paramref name="target"/> is not part of <paramref name="graph"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="k"/> is lower than 1.</exception>
         public YenShortestPathsAlgorithm(
-            [NotNull] AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
+            AdjacencyGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
+            TVertex source,
+            TVertex target,
             int k,
-            [CanBeNull] Func<EquatableTaggedEdge<TVertex, double>, double> edgeWeights = null,
-            [CanBeNull] Func<IEnumerable<SortedPath>, IEnumerable<SortedPath>> filter = null)
+            Func<EquatableTaggedEdge<TVertex, double>, double>? edgeWeights = default,
+            Func<IEnumerable<SortedPath>, IEnumerable<SortedPath>>? filter = default)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -163,14 +156,13 @@ namespace FastGraph.Algorithms.ShortestPath
         }
 
         [Pure]
-        [NotNull]
-        private static IEnumerable<SortedPath> DefaultFilter([NotNull] IEnumerable<SortedPath> paths)
+        private static IEnumerable<SortedPath> DefaultFilter(IEnumerable<SortedPath> paths)
         {
             return paths;
         }
 
         [Pure]
-        private static double DefaultGetWeights([NotNull] EquatableTaggedEdge<TVertex, double> edge)
+        private static double DefaultGetWeights(EquatableTaggedEdge<TVertex, double> edge)
         {
             return edge.Tag;
         }
@@ -194,16 +186,11 @@ namespace FastGraph.Algorithms.ShortestPath
         }
 
         [Pure]
-        [CanBeNull]
         private SortedPath? GetShortestPathInGraph(
-            [NotNull] IVertexListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            IVertexListGraph<TVertex, EquatableTaggedEdge<TVertex, double>> graph,
+            TVertex source,
+            TVertex target)
         {
-            Debug.Assert(graph != null);
-            Debug.Assert(source != null);
-            Debug.Assert(target != null);
-
             // Compute distances between the start vertex and other
             var algorithm = new DijkstraShortestPathAlgorithm<TVertex, EquatableTaggedEdge<TVertex, double>>(graph, _weights);
             var recorder = new VertexPredecessorRecorderObserver<TVertex, EquatableTaggedEdge<TVertex, double>>();
@@ -214,19 +201,18 @@ namespace FastGraph.Algorithms.ShortestPath
             }
 
             // Get shortest path from start (source) vertex to target
-            return recorder.TryGetPath(target, out IEnumerable<EquatableTaggedEdge<TVertex, double>> path)
+            return recorder.TryGetPath(target, out IEnumerable<EquatableTaggedEdge<TVertex, double>>? path)
                 ? new SortedPath(path)
-                : (SortedPath?)null;
+                : (SortedPath?)default;
         }
 
         [Pure]
-        [CanBeNull]
         private static SortedPath? ExtractShortestPathCandidate(
-            [NotNull] List<SortedPath> shortestPaths,
-            [NotNull] IQueue<SortedPath> shortestPathCandidates)
+            List<SortedPath> shortestPaths,
+            IQueue<SortedPath> shortestPathCandidates)
         {
             bool isNewPath = false;
-            SortedPath? newPath = null;
+            SortedPath? newPath = default;
             while (shortestPathCandidates.Count > 0 && !isNewPath)
             {
                 newPath = shortestPathCandidates.Dequeue();
@@ -235,7 +221,7 @@ namespace FastGraph.Algorithms.ShortestPath
                 if (shortestPaths.Any(path => newPath.Value.Equals(path)))
                 {
                     isNewPath = false;
-                    newPath = null;
+                    newPath = default;
                 }
             }
 
@@ -245,8 +231,8 @@ namespace FastGraph.Algorithms.ShortestPath
         [Pure]
         private bool SearchAndAddKthShortestPath(
             SortedPath previousPath,
-            [NotNull] List<SortedPath> shortestPaths,
-            [NotNull] IQueue<SortedPath> shortestPathCandidates)
+            List<SortedPath> shortestPaths,
+            IQueue<SortedPath> shortestPathCandidates)
         {
             // Iterate over all of the nodes in the (k-1)st shortest path except for the target node
             // For each node (up to) one new candidate path is generated by temporarily modifying
@@ -322,7 +308,6 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <returns>Found paths.</returns>
         /// <exception cref="NoPathFoundException">No shortest path was found.</exception>
         [Pure]
-        [NotNull]
         public IEnumerable<SortedPath> Execute()
         {
             SortedPath initialPath = GetInitialShortestPath();
@@ -342,11 +327,10 @@ namespace FastGraph.Algorithms.ShortestPath
             return _filter(shortestPaths);
         }
 
-        [NotNull, ItemNotNull]
         private readonly List<EquatableTaggedEdge<TVertex, double>> _edgesToRestore =
             new List<EquatableTaggedEdge<TVertex, double>>();
 
-        private void OnGraphEdgeRemoved([NotNull] EquatableTaggedEdge<TVertex, double> edge)
+        private void OnGraphEdgeRemoved(EquatableTaggedEdge<TVertex, double> edge)
         {
             _edgesToRestore.Add(edge);
         }

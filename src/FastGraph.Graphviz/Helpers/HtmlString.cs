@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿#nullable enable
 
 namespace FastGraph.Graphviz.Helpers
 {
@@ -12,7 +12,7 @@ namespace FastGraph.Graphviz.Helpers
         /// </summary>
         /// <param name="html">HTML string.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="html"/> is <see langword="null"/>.</exception>
-        public HtmlString([NotNull] string html)
+        public HtmlString(string html)
         {
             String = html;
         }
@@ -20,7 +20,6 @@ namespace FastGraph.Graphviz.Helpers
         /// <summary>
         /// HTML string.
         /// </summary>
-        [NotNull]
         public string String { get; }
     }
 }

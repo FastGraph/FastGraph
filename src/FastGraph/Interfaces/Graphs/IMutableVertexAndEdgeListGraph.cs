@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -10,6 +12,7 @@ namespace FastGraph
         : IMutableVertexListGraph<TVertex, TEdge>
         , IMutableVertexAndEdgeSet<TVertex, TEdge>
         , IVertexAndEdgeListGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
     }

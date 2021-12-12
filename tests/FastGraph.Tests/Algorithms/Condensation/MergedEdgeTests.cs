@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Condensation;
 using FastGraph.Tests.Structures;
@@ -32,9 +33,11 @@ namespace FastGraph.Tests.Algorithms.Condensation
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(null, new TestVertex("v1")));
-            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(default, new TestVertex("v1")));
+            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(new TestVertex("v1"), default));
+            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -98,9 +101,11 @@ namespace FastGraph.Tests.Algorithms.Condensation
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge(edge, null));
-            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge(null, edge));
-            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge<int, Edge<int>>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge(edge, default));
+            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge(default, edge));
+            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -119,7 +124,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             Assert.AreNotEqual(edge1, edge3);
             Assert.AreNotEqual(edge1, edge4);
 
-            Assert.AreNotEqual(edge1, null);
+            Assert.AreNotEqual(edge1, default);
         }
 
         [Test]

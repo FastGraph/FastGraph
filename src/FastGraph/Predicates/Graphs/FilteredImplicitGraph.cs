@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph.Predicates
 {
@@ -15,6 +14,7 @@ namespace FastGraph.Predicates
     public class FilteredImplicitGraph<TVertex, TEdge, TGraph>
         : FilteredImplicitVertexSet<TVertex, TEdge, TGraph>
         , IImplicitGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IImplicitGraph<TVertex, TEdge>
     {
@@ -28,9 +28,9 @@ namespace FastGraph.Predicates
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
         public FilteredImplicitGraph(
-            [NotNull] TGraph baseGraph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate,
-            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            TGraph baseGraph,
+            VertexPredicate<TVertex> vertexPredicate,
+            EdgePredicate<TVertex, TEdge> edgePredicate)
             : base(baseGraph, vertexPredicate, edgePredicate)
         {
         }
@@ -61,19 +61,19 @@ namespace FastGraph.Predicates
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
             if (VertexPredicate(vertex)
-                && BaseGraph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+                && BaseGraph.TryGetOutEdges(vertex, out IEnumerable<TEdge>? outEdges))
             {
                 edges = outEdges.Where(FilterEdge);
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 

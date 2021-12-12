@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -15,11 +15,11 @@ namespace FastGraph.Collections
 #endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class BinaryQueue<TVertex, TDistance> : IPriorityQueue<TVertex>
+        where TVertex : notnull
+        where TDistance : notnull
     {
-        [NotNull]
         private readonly Func<TVertex, TDistance> _distanceFunc;
 
-        [NotNull]
         private readonly BinaryHeap<TDistance, TVertex> _heap;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
-        public BinaryQueue([NotNull] Func<TVertex, TDistance> distanceFunc)
+        public BinaryQueue(Func<TVertex, TDistance> distanceFunc)
             : this(distanceFunc, Comparer<TDistance>.Default.Compare)
         {
         }
@@ -40,8 +40,8 @@ namespace FastGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
         public BinaryQueue(
-            [NotNull] Func<TVertex, TDistance> distanceFunc,
-            [NotNull] Comparison<TDistance> distanceComparison)
+            Func<TVertex, TDistance> distanceFunc,
+            Comparison<TDistance> distanceComparison)
         {
             if (distanceComparison is null)
                 throw new ArgumentNullException(nameof(distanceComparison));
@@ -62,20 +62,18 @@ namespace FastGraph.Collections
         }
 
         /// <inheritdoc />
-        public void Enqueue([NotNull] TVertex value)
+        public void Enqueue(TVertex value)
         {
             _heap.Add(_distanceFunc(value), value);
         }
 
         /// <inheritdoc />
-        [NotNull]
         public TVertex Dequeue()
         {
             return _heap.RemoveMinimum().Value;
         }
 
         /// <inheritdoc />
-        [NotNull]
         public TVertex Peek()
         {
             return _heap.Minimum().Value;
@@ -92,7 +90,7 @@ namespace FastGraph.Collections
         #region IPriorityQueue
 
         /// <inheritdoc />
-        public void Update([NotNull] TVertex value)
+        public void Update(TVertex value)
         {
             _heap.Update(_distanceFunc(value), value);
         }
@@ -104,7 +102,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>Array composed of elements.</returns>
         [Pure]
-        [NotNull]
         public KeyValuePair<TDistance, TVertex>[] ToPairsArray()
         {
             return _heap.ToPairsArray();
@@ -115,7 +112,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>String representation.</returns>
         [Pure]
-        [NotNull]
         public string ToString2()
         {
             return _heap.ToString2();

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms
@@ -12,15 +10,13 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     internal sealed class TransitiveAlgorithmHelper<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly BidirectionalGraph<TVertex, TEdge> _graph;
 
-        internal TransitiveAlgorithmHelper([NotNull] BidirectionalGraph<TVertex, TEdge> initialGraph)
+        internal TransitiveAlgorithmHelper(BidirectionalGraph<TVertex, TEdge> initialGraph)
         {
-            Debug.Assert(initialGraph != null);
-
             _graph = initialGraph;
         }
 
@@ -29,14 +25,14 @@ namespace FastGraph.Algorithms
         /// for each couple of indirect ancestor vertex of a given vertex.
         /// </summary>
         public void InternalCompute(
-            [NotNull, InstantHandle]
+            [InstantHandle]
             Action
             <
                 BidirectionalGraph<TVertex, TEdge>,
                 TVertex,
                 TVertex,
                 bool,
-                TEdge
+                TEdge?
             > action)
         {
             // Iterate in topological order, track indirect ancestors and remove edges from them to the visited vertex
@@ -62,7 +58,7 @@ namespace FastGraph.Algorithms
                     bool found = _graph.TryGetEdge(
                         indirectAncestor,
                         vertexId,
-                        out TEdge foundIndirectEdge);
+                        out TEdge? foundIndirectEdge);
 
                     action(_graph, indirectAncestor, vertexId, found, foundIndirectEdge);
                 }

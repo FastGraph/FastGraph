@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms;
 using FastGraph.Serialization.DirectedGraphML;
 
@@ -14,12 +12,11 @@ namespace FastGraph.Serialization
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class DirectedGraphMLAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly VertexIdentity<TVertex> _vertexIdentity;
 
-        [NotNull]
         private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
 
         /// <summary>
@@ -32,9 +29,9 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         public DirectedGraphMLAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
             : base(visitedGraph)
         {
             _vertexIdentity = vertexIdentity ?? throw new ArgumentNullException(nameof(vertexIdentity));
@@ -44,7 +41,7 @@ namespace FastGraph.Serialization
         /// <summary>
         /// Gets the resulting <see cref="DirectedGraphML.DirectedGraph"/>.
         /// </summary>
-        public DirectedGraph DirectedGraph { get; private set; }
+        public DirectedGraph? DirectedGraph { get; private set; }
 
         #region AlgorithmBase<TGraph>
 
@@ -90,37 +87,31 @@ namespace FastGraph.Serialization
         /// <summary>
         /// Fired when a new node is added to the <see cref="DirectedGraph"/>.
         /// </summary>
-        public event Action<TVertex, DirectedGraphNode> FormatNode;
+        public event Action<TVertex, DirectedGraphNode>? FormatNode;
 
-        private void OnFormatNode([NotNull] TVertex vertex, [NotNull] DirectedGraphNode node)
+        private void OnFormatNode(TVertex vertex, DirectedGraphNode node)
         {
-            Debug.Assert(vertex != null);
-            Debug.Assert(node != null);
-
             FormatNode?.Invoke(vertex, node);
         }
 
         /// <summary>
         /// Fired when a new link is added to the <see cref="DirectedGraph"/>.
         /// </summary>
-        public event Action<TEdge, DirectedGraphLink> FormatEdge;
+        public event Action<TEdge, DirectedGraphLink>? FormatEdge;
 
-        private void OnFormatEdge([NotNull] TEdge edge, [NotNull] DirectedGraphLink link)
+        private void OnFormatEdge(TEdge edge, DirectedGraphLink link)
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(link != null);
-
             FormatEdge?.Invoke(edge, link);
         }
 
         /// <summary>
         /// Fired when the graph is about to be returned.
         /// </summary>
-        public event Action<IVertexAndEdgeListGraph<TVertex, TEdge>, DirectedGraph> FormatGraph;
+        public event Action<IVertexAndEdgeListGraph<TVertex, TEdge>, DirectedGraph>? FormatGraph;
 
         private void OnFormatGraph()
         {
-            FormatGraph?.Invoke(VisitedGraph, DirectedGraph);
+            FormatGraph?.Invoke(VisitedGraph, DirectedGraph!);
         }
     }
 }

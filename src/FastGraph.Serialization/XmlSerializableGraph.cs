@@ -1,6 +1,7 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 using JetBrains.Annotations;
 
@@ -17,6 +18,7 @@ namespace FastGraph.Serialization
 #endif
     [XmlRoot("graph")]
     public class XmlSerializableGraph<TVertex, TEdge, TGraph>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
     {
@@ -33,7 +35,7 @@ namespace FastGraph.Serialization
         /// </summary>
         /// <param name="graph">Graph to serialize.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public XmlSerializableGraph([NotNull] TGraph graph)
+        public XmlSerializableGraph(TGraph graph)
         {
             if (graph == null)
                 throw new ArgumentNullException(nameof(graph));
@@ -44,15 +46,14 @@ namespace FastGraph.Serialization
         /// <summary>
         /// Gets the graph to serialize.
         /// </summary>
-        [NotNull]
         public TGraph Graph { get; }
 
-        private XmlVertexList _vertices;
+        private XmlVertexList? _vertices;
 
         /// <summary>
         /// Gets the vertices to serialize.
         /// </summary>
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         [XmlArray("vertices")]
         [XmlArrayItem("vertex")]
         public XmlVertexList Vertices
@@ -61,17 +62,21 @@ namespace FastGraph.Serialization
             set => _vertices = value;
         }
 
-        private XmlEdgeList _edges;
+        private XmlEdgeList? _edges;
 
         /// <summary>
         /// Gets the edges to serialize.
         /// </summary>
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         [XmlArray("edges")]
         [XmlArrayItem("edge")]
         public XmlEdgeList Edges
         {
-            get => _edges ?? (_edges = new XmlEdgeList(Graph));
+            [MemberNotNull(nameof(_edges))]
+            get
+            {
+                return _edges ?? (_edges = new XmlEdgeList(Graph));
+            }
             set => _edges = value;
         }
 
@@ -83,10 +88,9 @@ namespace FastGraph.Serialization
 #endif
         public class XmlVertexList : IEnumerable<TVertex>
         {
-            [NotNull]
             private readonly TGraph _graph;
 
-            internal XmlVertexList([NotNull] TGraph graph)
+            internal XmlVertexList(TGraph graph)
             {
                 if (graph == null)
                     throw new ArgumentNullException(nameof(graph));
@@ -115,7 +119,7 @@ namespace FastGraph.Serialization
             /// </summary>
             /// <param name="vertex">Vertex to add.</param>
             /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-            public void Add([NotNull] TVertex vertex)
+            public void Add(TVertex vertex)
             {
                 if (vertex == null)
                     throw new ArgumentNullException(nameof(vertex));
@@ -132,10 +136,9 @@ namespace FastGraph.Serialization
 #endif
         public class XmlEdgeList : IEnumerable<TEdge>
         {
-            [NotNull]
             private readonly TGraph _graph;
 
-            internal XmlEdgeList([NotNull] TGraph graph)
+            internal XmlEdgeList(TGraph graph)
             {
                 if (graph == null)
                     throw new ArgumentNullException(nameof(graph));
@@ -164,7 +167,7 @@ namespace FastGraph.Serialization
             /// </summary>
             /// <param name="edge">Edge to add.</param>
             /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-            public void Add([NotNull] TEdge edge)
+            public void Add(TEdge edge)
             {
                 if (edge == null)
                     throw new ArgumentNullException(nameof(edge));

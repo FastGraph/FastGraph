@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -8,6 +7,7 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IVertexSet<TVertex> : IImplicitVertexSet<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Gets a value indicating whether there are no vertices in this set.
@@ -23,7 +23,6 @@ namespace FastGraph
         /// <summary>
         /// Gets the vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
         IEnumerable<TVertex> Vertices { get; }
     }
 }

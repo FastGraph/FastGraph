@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Petri.Tests

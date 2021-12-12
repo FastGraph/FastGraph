@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -9,7 +10,6 @@ namespace FastGraph.Serialization.Tests
     /// </summary>
     internal static class SerializationTestCaseSources
     {
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationAdjacencyGraphTestCases
         {
             [UsedImplicitly]
@@ -32,7 +32,6 @@ namespace FastGraph.Serialization.Tests
             }
         }
 
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationClusteredAdjacencyGraphTestCases
         {
             [UsedImplicitly]
@@ -72,7 +71,6 @@ namespace FastGraph.Serialization.Tests
             }
         }
 
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationCompressedGraphTestCases
         {
             [UsedImplicitly]
@@ -97,7 +95,6 @@ namespace FastGraph.Serialization.Tests
             }
         }
 
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationBidirectionalGraphTestCases
         {
             [UsedImplicitly]
@@ -121,7 +118,6 @@ namespace FastGraph.Serialization.Tests
             }
         }
 
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationBidirectionalMatrixGraphTestCases
         {
             [UsedImplicitly]
@@ -144,7 +140,6 @@ namespace FastGraph.Serialization.Tests
             }
         }
 
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationUndirectedGraphTestCases
         {
             [UsedImplicitly]
@@ -168,7 +163,6 @@ namespace FastGraph.Serialization.Tests
             }
         }
 
-        [NotNull, ItemNotNull]
         public static IEnumerable<TestCaseData> SerializationEdgeListGraphTestCases
         {
             [UsedImplicitly]

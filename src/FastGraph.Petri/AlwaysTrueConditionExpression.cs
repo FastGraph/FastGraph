@@ -1,7 +1,7 @@
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
-using System;
 #endif
-using System.Collections.Generic;
 
 namespace FastGraph.Petri
 {

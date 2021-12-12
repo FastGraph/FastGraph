@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -37,8 +38,10 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new GraphvizLayerCollection((GraphvizLayer[])null));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizLayerCollection((GraphvizLayerCollection)null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new GraphvizLayerCollection((GraphvizLayer[]?)default));
+            Assert.Throws<ArgumentNullException>(() => new GraphvizLayerCollection((GraphvizLayerCollection?)default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -60,7 +63,9 @@ namespace FastGraph.Graphviz.Tests
             var layerCollection = new GraphvizLayerCollection();
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentException>(() => layerCollection.Separators = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentException>(() => layerCollection.Separators = default);
+#pragma warning restore CS8625
             Assert.Throws<ArgumentException>(() => layerCollection.Separators = "");
             // ReSharper restore ObjectCreationAsStatement
         }

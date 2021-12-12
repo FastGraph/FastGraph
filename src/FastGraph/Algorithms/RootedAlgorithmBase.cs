@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -19,10 +19,10 @@ namespace FastGraph.Algorithms
     [Serializable]
 #endif
     public abstract class RootedAlgorithmBase<TVertex, TGraph> : AlgorithmBase<TGraph>
+        where TVertex : notnull
         where TGraph : IImplicitVertexSet<TVertex>
     {
-        [CanBeNull]
-        private TVertex _root;
+        private TVertex? _root;
 
         private bool _hasRootVertex;
 
@@ -33,8 +33,8 @@ namespace FastGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         protected RootedAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph)
+            IAlgorithmComponent? host,
+            TGraph visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -46,11 +46,11 @@ namespace FastGraph.Algorithms
         /// <returns>True if the root vertex was set, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, root:notnull;=> false, root:null")]
-        public bool TryGetRootVertex(out TVertex root)
+        public bool TryGetRootVertex([NotNullWhen(true)] out TVertex? root)
         {
             if (_hasRootVertex)
             {
-                root = _root;
+                root = _root!;
                 return true;
             }
 
@@ -63,12 +63,12 @@ namespace FastGraph.Algorithms
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
-        public void SetRootVertex([NotNull] TVertex root)
+        public void SetRootVertex(TVertex root)
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
 
-            bool changed = !_hasRootVertex || !EqualityComparer<TVertex>.Default.Equals(_root, root);
+            bool changed = !_hasRootVertex || !EqualityComparer<TVertex?>.Default.Equals(_root, root);
             _root = root;
             _hasRootVertex = true;
 
@@ -96,16 +96,14 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Fired when the root vertex is changed.
         /// </summary>
-        public event EventHandler RootVertexChanged;
+        public event EventHandler? RootVertexChanged;
 
         /// <summary>
         /// Called on each root vertex change.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnRootVertexChanged([NotNull] EventArgs args)
+        protected virtual void OnRootVertexChanged(EventArgs args)
         {
-            Debug.Assert(args != null);
-
             RootVertexChanged?.Invoke(this, args);
         }
 
@@ -118,10 +116,9 @@ namespace FastGraph.Algorithms
         /// <exception cref="VertexNotFoundException">
         /// If the set root vertex is not part of the <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
         /// </exception>
-        [NotNull]
         protected TVertex GetAndAssertRootInGraph()
         {
-            if (!TryGetRootVertex(out TVertex root))
+            if (!TryGetRootVertex(out TVertex? root))
                 throw new InvalidOperationException("Root vertex not set.");
             AssertRootInGraph(root);
             return root;
@@ -137,7 +134,7 @@ namespace FastGraph.Algorithms
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        protected void AssertRootInGraph([NotNull] TVertex root)
+        protected void AssertRootInGraph(TVertex root)
         {
             if (!VisitedGraph.ContainsVertex(root))
                 throw new VertexNotFoundException("Root vertex is not part of the graph.");
@@ -150,7 +147,7 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
-        public virtual void Compute([NotNull] TVertex root)
+        public virtual void Compute(TVertex root)
         {
             SetRootVertex(root);
             if (!VisitedGraph.ContainsVertex(root))

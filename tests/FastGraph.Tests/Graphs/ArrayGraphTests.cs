@@ -1,4 +1,5 @@
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -11,7 +12,8 @@ namespace FastGraph.Tests.Structures
     {
         #region Test helpers
 
-        private static void AssertSameProperties<TVertex, TEdge>([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+        private static void AssertSameProperties<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             ArrayAdjacencyGraph<TVertex, TEdge> adjacencyGraph = graph.ToArrayAdjacencyGraph();
@@ -26,7 +28,8 @@ namespace FastGraph.Tests.Structures
                 CollectionAssert.AreEqual(graph.OutEdges(vertex), adjacencyGraph.OutEdges(vertex));
         }
 
-        private static void AssertSameProperties<TVertex, TEdge>([NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+        private static void AssertSameProperties<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             ArrayBidirectionalGraph<TVertex, TEdge> bidirectionalGraph = graph.ToArrayBidirectionalGraph();
@@ -41,7 +44,8 @@ namespace FastGraph.Tests.Structures
                 CollectionAssert.AreEqual(graph.OutEdges(vertex), bidirectionalGraph.OutEdges(vertex));
         }
 
-        private static void AssertSameProperties<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        private static void AssertSameProperties<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             ArrayUndirectedGraph<TVertex, TEdge> undirectedGraph = graph.ToArrayUndirectedGraph();

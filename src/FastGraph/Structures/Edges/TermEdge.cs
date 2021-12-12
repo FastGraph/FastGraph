@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -14,6 +14,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class TermEdge<TVertex> : ITermEdge<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TermEdge{TVertex}"/> class
@@ -23,7 +24,7 @@ namespace FastGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public TermEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public TermEdge(TVertex source, TVertex target)
             : this(source, target, 0, 0)
         {
         }
@@ -40,7 +41,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="sourceTerminal"/> is negative.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="targetTerminal"/> is negative.</exception>
-        public TermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
+        public TermEdge(TVertex source, TVertex target, int sourceTerminal, int targetTerminal)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

@@ -1,6 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
 using System.Data;
-using JetBrains.Annotations;
 
 namespace FastGraph.Data
 {
@@ -14,7 +14,7 @@ namespace FastGraph.Data
         /// </summary>
         /// <param name="relation">Data relation.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="relation"/> is <see langword="null"/>.</exception>
-        public DataRelationEdge([NotNull] DataRelation relation)
+        public DataRelationEdge(DataRelation relation)
         {
             Relation = relation ?? throw new ArgumentNullException(nameof(relation));
         }

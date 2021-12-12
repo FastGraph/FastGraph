@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
@@ -47,7 +47,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             if (edge.Label is null)
-                throw new InvalidOperationException($"Edge has null {nameof(GraphvizEdge.Label)}.");
+                throw new InvalidOperationException($"Edge has default {nameof(GraphvizEdge.Label)}.");
 
             var label = new GraphvizEdgeLabel();
             edge.Label = label;
@@ -59,7 +59,9 @@ namespace FastGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => edge.Label = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => edge.Label = default);
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -67,7 +69,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             if (edge.Head is null)
-                throw new InvalidOperationException($"Edge has null {nameof(GraphvizEdge.Head)}.");
+                throw new InvalidOperationException($"Edge has default {nameof(GraphvizEdge.Head)}.");
 
             var headExtremity = new GraphvizEdgeExtremity(true);
             edge.Head = headExtremity;
@@ -79,7 +81,9 @@ namespace FastGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => edge.Head = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => edge.Head = default);
+#pragma warning restore CS8625
             Assert.Throws<ArgumentException>(() => edge.Head = new GraphvizEdgeExtremity(false));
         }
 
@@ -88,7 +92,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             if (edge.Tail is null)
-                throw new InvalidOperationException($"Edge has null {nameof(GraphvizEdge.Tail)}.");
+                throw new InvalidOperationException($"Edge has default {nameof(GraphvizEdge.Tail)}.");
 
             var tailExtremity = new GraphvizEdgeExtremity(false);
             edge.Tail = tailExtremity;
@@ -100,11 +104,12 @@ namespace FastGraph.Graphviz.Tests
         {
             var edge = new GraphvizEdge();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => edge.Tail = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => edge.Tail = default);
+#pragma warning restore CS8625
             Assert.Throws<ArgumentException>(() => edge.Tail = new GraphvizEdgeExtremity(true));
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -274,13 +279,12 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizEdge edge, [NotNull] string expectedDot)
+        public void ToDot(GraphvizEdge edge, string expectedDot)
         {
             Assert.AreEqual(expectedDot, edge.ToDot());
             Assert.AreEqual(expectedDot, edge.ToString());
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
         {
             get
@@ -294,7 +298,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotCultureInvariantTestCases))]
-        public void ToDot_InvariantCulture([NotNull, InstantHandle] Func<GraphvizEdge, string> convert)
+        public void ToDot_InvariantCulture([InstantHandle] Func<GraphvizEdge, string> convert)
         {
             var edge = new GraphvizEdge
             {

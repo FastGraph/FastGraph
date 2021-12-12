@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph.Algorithms
 {
     /// <summary>
@@ -7,16 +9,17 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IVertexPredecessorRecorderAlgorithm<TVertex, out TEdge>
         : ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Fired on a starting vertex once before the start of the search from it.
         /// </summary>
-        event VertexAction<TVertex> StartVertex;
+        event VertexAction<TVertex>? StartVertex;
 
         /// <summary>
         /// Fired when a vertex is fully treated.
         /// </summary>
-        event VertexAction<TVertex> FinishVertex;
+        event VertexAction<TVertex>? FinishVertex;
     }
 }

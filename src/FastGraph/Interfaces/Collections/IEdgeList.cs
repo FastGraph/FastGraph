@@ -1,7 +1,7 @@
+#nullable enable
+
 #if SUPPORTS_CLONEABLE
-using System;
 #endif
-using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace FastGraph.Collections
@@ -15,6 +15,7 @@ namespace FastGraph.Collections
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -27,7 +28,6 @@ namespace FastGraph.Collections
         /// </summary>
         /// <returns>Cloned list.</returns>
         [Pure]
-        [NotNull]
 #if SUPPORTS_CLONEABLE
         new
 #endif

@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Predicates;
 
@@ -25,7 +25,9 @@ namespace FastGraph.Tests.Predicates
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new ResidualEdgePredicate<int, Edge<int>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new ResidualEdgePredicate<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -54,7 +56,9 @@ namespace FastGraph.Tests.Predicates
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+#pragma warning restore CS8625
 
             var edge12 = new Edge<int>(1, 2);
             Assert.Throws<KeyNotFoundException>(() => predicate.Test(edge12));

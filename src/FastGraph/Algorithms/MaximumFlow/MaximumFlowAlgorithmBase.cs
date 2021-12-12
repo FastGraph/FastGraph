@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Services;
 
 namespace FastGraph.Algorithms.MaximumFlow
@@ -13,7 +12,7 @@ namespace FastGraph.Algorithms.MaximumFlow
     public abstract class MaximumFlowAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
         , IVertexColorizerAlgorithm<TVertex>
-        where TEdge : IEdge<TVertex>
+        where TEdge : IEdge<TVertex> where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MaximumFlowAlgorithm{TVertex,TEdge}"/> class.
@@ -26,10 +25,10 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="capacities"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         protected MaximumFlowAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> capacities,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            IAlgorithmComponent? host,
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> capacities,
+            EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
             Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
@@ -41,44 +40,40 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Flow vertices predecessors.
         /// </summary>
-        [NotNull]
         public Dictionary<TVertex, TEdge> Predecessors { get; } = new Dictionary<TVertex, TEdge>();
 
         /// <summary>
         /// Function that given an edge return the capacity of this edge.
         /// </summary>
-        [NotNull]
         public Func<TEdge, double> Capacities { get; }
 
         /// <summary>
         /// Residual capacities per edge.
         /// </summary>
-        [NotNull]
         public Dictionary<TEdge, double> ResidualCapacities { get; } = new Dictionary<TEdge, double>();
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
         /// Graph reversed edges.
         /// </summary>
         /// <remarks>Should be not <see langword="null"/> but may be empty.</remarks>
-        public IDictionary<TEdge, TEdge> ReversedEdges { get; protected set; }
+        public IDictionary<TEdge, TEdge>? ReversedEdges { get; protected set; }
 
         /// <summary>
         /// Flow source vertex.
         /// </summary>
         /// <remarks>Must not be <see langword="null"/> to run the algorithm.</remarks>
-        public TVertex Source { get; set; }
+        public TVertex? Source { get; set; }
 
         /// <summary>
         /// Flow sink vertex.
         /// </summary>
         /// <remarks>Must not be <see langword="null"/> to run the algorithm.</remarks>
-        public TVertex Sink { get; set; }
+        public TVertex? Sink { get; set; }
 
         /// <summary>
         /// Maximal flow value.
@@ -88,7 +83,6 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 
         #region IVertexColorizerAlgorithm<TVertex>
@@ -116,7 +110,7 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="source"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="sink"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public double Compute([NotNull] TVertex source, [NotNull] TVertex sink)
+        public double Compute(TVertex source, TVertex sink)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

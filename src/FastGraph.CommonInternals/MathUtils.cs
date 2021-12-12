@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Utils

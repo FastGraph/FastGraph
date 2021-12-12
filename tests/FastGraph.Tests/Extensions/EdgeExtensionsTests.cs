@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Extensions
@@ -46,7 +45,9 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => ((Edge<int>)null).IsSelfEdge());
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => ((Edge<int>?)default).IsSelfEdge());
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -90,12 +91,16 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable AssignNullToNotNullAttribute
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => ((Edge<int>)null).GetOtherVertex(1));
+#pragma warning disable CS8714
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => ((Edge<int>?)default).GetOtherVertex(1));
 
             var testEdge = new Edge<TestVertex>(new TestVertex("1"), new TestVertex("2"));
-            Assert.Throws<ArgumentNullException>(() => testEdge.GetOtherVertex(null));
+            Assert.Throws<ArgumentNullException>(() => testEdge.GetOtherVertex(default));
 
-            Assert.Throws<ArgumentNullException>(() => ((Edge<TestVertex>)null).GetOtherVertex(null));
+            Assert.Throws<ArgumentNullException>(() => ((Edge<TestVertex>?)default).GetOtherVertex(default));
+#pragma warning restore CS8625
+#pragma warning restore CS8714
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -146,12 +151,16 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable AssignNullToNotNullAttribute
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => ((Edge<int>)null).IsAdjacent(1));
+#pragma warning disable CS8625
+#pragma warning disable CS8714
+            Assert.Throws<ArgumentNullException>(() => ((Edge<int>?)default).IsAdjacent(1));
 
             var testEdge = new Edge<TestVertex>(new TestVertex("1"), new TestVertex("2"));
-            Assert.Throws<ArgumentNullException>(() => testEdge.IsAdjacent(null));
+            Assert.Throws<ArgumentNullException>(() => testEdge.IsAdjacent(default));
 
-            Assert.Throws<ArgumentNullException>(() => ((Edge<TestVertex>)null).IsAdjacent(null));
+            Assert.Throws<ArgumentNullException>(() => ((Edge<TestVertex>?)default).IsAdjacent(default));
+#pragma warning restore CS8714
+#pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -233,7 +242,9 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => ((IEnumerable<Edge<int>>)null).IsPath<int, Edge<int>>());
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => ((IEnumerable<Edge<int>>?)default).IsPath<int, Edge<int>>());
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -358,7 +369,9 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => ((IEnumerable<Edge<int>>)null).HasCycles<int, Edge<int>>());
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => ((IEnumerable<Edge<int>>?)default).HasCycles<int, Edge<int>>());
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -475,7 +488,9 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => ((IEnumerable<Edge<int>>)null).IsPathWithoutCycles<int, Edge<int>>());
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => ((IEnumerable<Edge<int>>?)default).IsPathWithoutCycles<int, Edge<int>>());
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -497,8 +512,10 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<int>)null).ToVertexPair());
+                () => ((Edge<int>?)default).ToVertexPair());
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -537,22 +554,28 @@ namespace FastGraph.Tests.Extensions
             var v2 = new TestVertex("2");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
+#pragma warning disable CS8620
+#pragma warning disable CS8714
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<TestVertex, Edge<TestVertex>>)null).IsPredecessor(v1, v2));
+                () => ((Dictionary<TestVertex, Edge<TestVertex>>?)default).IsPredecessor(v1, v2));
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<TestVertex, Edge<TestVertex>>)null).IsPredecessor(null, v2));
+                () => ((Dictionary<TestVertex, Edge<TestVertex>>?)default).IsPredecessor(default, v2));
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<TestVertex, Edge<TestVertex>>)null).IsPredecessor(v1, null));
+                () => ((Dictionary<TestVertex, Edge<TestVertex>>?)default).IsPredecessor(v1, default));
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<TestVertex, Edge<TestVertex>>)null).IsPredecessor(null, null));
+                () => ((Dictionary<TestVertex, Edge<TestVertex>>?)default).IsPredecessor(default, default));
 
             var predecessors = new Dictionary<TestVertex, Edge<TestVertex>>();
             Assert.Throws<ArgumentNullException>(
-                () => predecessors.IsPredecessor(null, v2));
+                () => predecessors.IsPredecessor(default, v2));
             Assert.Throws<ArgumentNullException>(
-                () => predecessors.IsPredecessor(v1, null));
+                () => predecessors.IsPredecessor(v1, default));
             Assert.Throws<ArgumentNullException>(
-                () => predecessors.IsPredecessor(null, null));
+                () => predecessors.IsPredecessor(default, default));
+#pragma warning restore CS8714
+#pragma warning restore CS8620
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -569,7 +592,7 @@ namespace FastGraph.Tests.Extensions
 
             var edge2 = new Edge<int>(0, 2);
             predecessors.Add(2, edge2);
-            Assert.IsTrue(predecessors.TryGetPath(2, out IEnumerable<Edge<int>> path));
+            Assert.IsTrue(predecessors.TryGetPath(2, out IEnumerable<Edge<int>>? path));
             CollectionAssert.AreEqual(
                 new[] { edge2 },
                 path);
@@ -613,14 +636,20 @@ namespace FastGraph.Tests.Extensions
             var v1 = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
+#pragma warning disable CS8620
+#pragma warning disable CS8714
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<TestVertex, Edge<TestVertex>>)null).TryGetPath(v1, out _));
+                () => ((Dictionary<TestVertex, Edge<TestVertex>>?)default).TryGetPath(v1, out _));
             Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<TestVertex, Edge<TestVertex>>)null).TryGetPath(null, out _));
+                () => ((Dictionary<TestVertex, Edge<TestVertex>>?)default).TryGetPath(default, out _));
 
             var predecessors = new Dictionary<TestVertex, Edge<TestVertex>>();
             Assert.Throws<ArgumentNullException>(
-                () => predecessors.TryGetPath(null, out _));
+                () => predecessors.TryGetPath(default, out _));
+#pragma warning restore CS8714
+#pragma warning restore CS8620
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -648,22 +677,26 @@ namespace FastGraph.Tests.Extensions
             var v2 = new TestVertex("2");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
+#pragma warning disable CS8714
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).UndirectedVertexEquality(v1, v2));
+                () => ((Edge<TestVertex>?)default).UndirectedVertexEquality(v1, v2));
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).UndirectedVertexEquality(null, v2));
+                () => ((Edge<TestVertex>?)default).UndirectedVertexEquality(default, v2));
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).UndirectedVertexEquality(v1, null));
+                () => ((Edge<TestVertex>?)default).UndirectedVertexEquality(v1, default));
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).UndirectedVertexEquality(null, null));
+                () => ((Edge<TestVertex>?)default).UndirectedVertexEquality(default, default));
 
             var edge = new Edge<TestVertex>(v1, v2);
             Assert.Throws<ArgumentNullException>(
-                () => edge.UndirectedVertexEquality(null, v2));
+                () => edge.UndirectedVertexEquality(default, v2));
             Assert.Throws<ArgumentNullException>(
-                () => edge.UndirectedVertexEquality(v1, null));
+                () => edge.UndirectedVertexEquality(v1, default));
             Assert.Throws<ArgumentNullException>(
-                () => edge.UndirectedVertexEquality(null, null));
+                () => edge.UndirectedVertexEquality(default, default));
+#pragma warning restore CS8714
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -691,22 +724,26 @@ namespace FastGraph.Tests.Extensions
             var v2 = new TestVertex("2");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
+#pragma warning disable CS8714
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).SortedVertexEquality(v1, v2));
+                () => ((Edge<TestVertex>?)default).SortedVertexEquality(v1, v2));
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).SortedVertexEquality(null, v2));
+                () => ((Edge<TestVertex>?)default).SortedVertexEquality(default, v2));
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).SortedVertexEquality(v1, null));
+                () => ((Edge<TestVertex>?)default).SortedVertexEquality(v1, default));
             Assert.Throws<ArgumentNullException>(
-                () => ((Edge<TestVertex>)null).SortedVertexEquality(null, null));
+                () => ((Edge<TestVertex>?)default).SortedVertexEquality(default, default));
 
             var edge = new Edge<TestVertex>(v1, v2);
             Assert.Throws<ArgumentNullException>(
-                () => edge.SortedVertexEquality(null, v2));
+                () => edge.SortedVertexEquality(default, v2));
             Assert.Throws<ArgumentNullException>(
-                () => edge.SortedVertexEquality(v1, null));
+                () => edge.SortedVertexEquality(v1, default));
             Assert.Throws<ArgumentNullException>(
-                () => edge.SortedVertexEquality(null, null));
+                () => edge.SortedVertexEquality(default, default));
+#pragma warning restore CS8714
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -738,8 +775,10 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => EdgeExtensions.ReverseEdges<int, Edge<int>>(null));
+                () => EdgeExtensions.ReverseEdges<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
     }
 }

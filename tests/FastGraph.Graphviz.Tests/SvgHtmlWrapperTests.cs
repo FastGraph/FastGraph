@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+#nullable enable
+
 using HtmlAgilityPack;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 using static FastGraph.Tests.FastGraphUnitTestsHelpers;
@@ -17,8 +15,7 @@ namespace FastGraph.Graphviz.Tests
     {
         #region Test helpers
 
-        [NotNull]
-        private static string CheckValidHtmlFile([NotNull] string htmlFilePath)
+        private static string CheckValidHtmlFile(string htmlFilePath)
         {
             Assert.IsTrue(File.Exists(htmlFilePath));
             var htmlDocument = new HtmlDocument();
@@ -47,10 +44,11 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.DumpHtml(new GraphvizSize(150, 150), null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.DumpHtml(new GraphvizSize(150, 150), default));
+#pragma warning restore CS8625
         }
 
-        [NotNull]
         private static readonly string SampleSvg =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + Environment.NewLine +
             "<svg xmlns = \"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"300\" height=\"200\">" + Environment.NewLine +
@@ -66,7 +64,6 @@ namespace FastGraph.Graphviz.Tests
             "  <text x=\"180\" y=\"60\">A text</text>" + Environment.NewLine +
             "</svg>";
 
-        [NotNull]
         private static readonly string MissingSizeSampleSvg =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + Environment.NewLine +
             "<svg xmlns = \"http://www.w3.org/2000/svg\" version=\"1.1\">" + Environment.NewLine +
@@ -94,7 +91,9 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.WrapSvg(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.WrapSvg(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -113,7 +112,9 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.ParseSize(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.ParseSize(default));
+#pragma warning restore CS8625
         }
     }
 }

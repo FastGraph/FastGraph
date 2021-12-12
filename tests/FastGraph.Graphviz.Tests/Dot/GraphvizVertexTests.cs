@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
@@ -46,7 +46,6 @@ namespace FastGraph.Graphviz.Tests
             Assert.AreEqual(-1, vertex.Z);
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -306,13 +305,12 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizVertex vertex, [NotNull] string expectedDot)
+        public void ToDot(GraphvizVertex vertex, string expectedDot)
         {
             Assert.AreEqual(expectedDot, vertex.ToDot());
             Assert.AreEqual(expectedDot, vertex.ToString());
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
         {
             get
@@ -326,7 +324,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotCultureInvariantTestCases))]
-        public void ToDot_InvariantCulture([NotNull, InstantHandle] Func<GraphvizVertex, string> convert)
+        public void ToDot_InvariantCulture([InstantHandle] Func<GraphvizVertex, string> convert)
         {
             var vertex = new GraphvizVertex
             {

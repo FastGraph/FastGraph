@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -26,10 +25,11 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeEquality"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> h,
-            [NotNull] IEqualityComparer<TVertex> vertexEquality,
-            [NotNull] IEqualityComparer<TEdge> edgeEquality)
+            IEdgeListGraph<TVertex, TEdge>? g,
+            IEdgeListGraph<TVertex, TEdge>? h,
+            IEqualityComparer<TVertex> vertexEquality,
+            IEqualityComparer<TEdge> edgeEquality)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (vertexEquality is null)
@@ -80,8 +80,9 @@ namespace FastGraph
         /// <returns>True if both graphs are equal, false otherwise.</returns>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> h)
+            IEdgeListGraph<TVertex, TEdge>? g,
+            IEdgeListGraph<TVertex, TEdge>? h)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return Equate(g, h, EqualityComparer<TVertex>.Default, EqualityComparer<TEdge>.Default);

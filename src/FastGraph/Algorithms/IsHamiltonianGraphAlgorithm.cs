@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms
@@ -12,9 +11,9 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class IsHamiltonianGraphAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IUndirectedEdge<TVertex>
     {
-        [NotNull]
         private readonly UndirectedGraph<TVertex, TEdge> _graph;
 
         private readonly double _threshold;
@@ -24,7 +23,7 @@ namespace FastGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to check.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public IsHamiltonianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        public IsHamiltonianGraphAlgorithm(IUndirectedGraph<TVertex, TEdge> graph)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -46,7 +45,6 @@ namespace FastGraph.Algorithms
         /// </summary>
         /// <returns>List of permutations.</returns>
         [Pure]
-        [NotNull, ItemNotNull]
         public List<List<TVertex>> GetPermutations()
         {
             List<TVertex> vertices = _graph.Vertices.ToList();
@@ -58,10 +56,10 @@ namespace FastGraph.Algorithms
         }
 
         private static void GetPermutations(
-            [NotNull, ItemNotNull] IList<TVertex> vertices,
+            IList<TVertex> vertices,
             int recursionDepth,
             int maxDepth,
-            [NotNull, ItemNotNull] ICollection<List<TVertex>> permutations)
+            ICollection<List<TVertex>> permutations)
         {
             if (recursionDepth == maxDepth)
             {
@@ -79,7 +77,7 @@ namespace FastGraph.Algorithms
         }
 
         [Pure]
-        private bool ExistsInGraph([NotNull, ItemNotNull] List<TVertex> path)
+        private bool ExistsInGraph(List<TVertex> path)
         {
             if (path.Count > 1)
             {
@@ -98,7 +96,7 @@ namespace FastGraph.Algorithms
         }
 
         [Pure]
-        private bool SatisfiesDiracTheorem([NotNull] TVertex vertex)
+        private bool SatisfiesDiracTheorem(TVertex vertex)
         {
             // Using Dirac's theorem:
             // if |vertices| >= 3 and for any vertex deg(vertex) >= (|vertices| / 2)
@@ -121,7 +119,7 @@ namespace FastGraph.Algorithms
 
         #region Helpers
 
-        private static void Swap([NotNull, ItemNotNull] IList<TVertex> vertices, int indexA, int indexB)
+        private static void Swap(IList<TVertex> vertices, int indexA, int indexB)
         {
             TVertex tmp = vertices[indexA];
             vertices[indexA] = vertices[indexB];
@@ -147,7 +145,8 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsHamiltonian<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IUndirectedEdge<TVertex>
         {
             return new IsHamiltonianGraphAlgorithm<TVertex, TEdge>(graph).IsHamiltonian();

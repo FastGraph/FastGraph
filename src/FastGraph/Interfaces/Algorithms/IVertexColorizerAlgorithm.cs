@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+#nullable enable
+
+using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms
 {
@@ -7,6 +9,7 @@ namespace FastGraph.Algorithms
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IVertexColorizerAlgorithm<in TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Gets the <see cref="GraphColor"/> associated to the given <paramref name="vertex"/>.
@@ -16,6 +19,6 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> has no associated color.</exception>
         [Pure]
-        GraphColor GetVertexColor([NotNull] TVertex vertex);
+        GraphColor GetVertexColor(TVertex vertex);
     }
 }

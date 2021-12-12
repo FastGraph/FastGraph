@@ -1,8 +1,8 @@
-﻿using System;
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -19,7 +19,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
-        protected FastGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        protected FastGraphException(string message, Exception? innerException = default)
             : base(message, innerException)
         {
         }

@@ -1,9 +1,7 @@
-﻿//#define FULL_SLOW_TESTS_RUN
+#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+//#define FULL_SLOW_TESTS_RUN
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Serialization;
@@ -28,9 +26,8 @@ namespace FastGraph.Tests
         /// Gets graph ML file paths.
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<string> GetGraphMLFilePaths(
-            [CanBeNull, InstantHandle] Func<string, int, bool> filter = null)
+            [InstantHandle] Func<string, int, bool>? filter = default)
         {
             string testPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "GraphML");
             if (Directory.Exists(testPath))
@@ -47,8 +44,7 @@ namespace FastGraph.Tests
         /// Creates an adjacency graph from the given file.
         /// </summary>
         [Pure]
-        [NotNull]
-        public static AdjacencyGraph<string, Edge<string>> LoadGraph([NotNull] string graphMLFilePath)
+        public static AdjacencyGraph<string, Edge<string>> LoadGraph(string graphMLFilePath)
         {
             var graph = new AdjacencyGraph<string, Edge<string>>();
             using (var reader = new StreamReader(graphMLFilePath))
@@ -66,8 +62,7 @@ namespace FastGraph.Tests
         /// Creates a bidirectional graph from the given file.
         /// </summary>
         [Pure]
-        [NotNull]
-        public static BidirectionalGraph<string, Edge<string>> LoadBidirectionalGraph([NotNull] string graphMLFilePath)
+        public static BidirectionalGraph<string, Edge<string>> LoadBidirectionalGraph(string graphMLFilePath)
         {
             var graph = new BidirectionalGraph<string, Edge<string>>();
             using (var reader = new StreamReader(graphMLFilePath))
@@ -85,8 +80,7 @@ namespace FastGraph.Tests
         /// Creates an undirected graph from the given file.
         /// </summary>
         [Pure]
-        [NotNull]
-        public static UndirectedGraph<string, Edge<string>> LoadUndirectedGraph([NotNull] string graphMLFilePath)
+        public static UndirectedGraph<string, Edge<string>> LoadUndirectedGraph(string graphMLFilePath)
         {
             AdjacencyGraph<string, Edge<string>> graph = LoadGraph(graphMLFilePath);
             var undirectedGraph = new UndirectedGraph<string, Edge<string>>();
@@ -98,9 +92,8 @@ namespace FastGraph.Tests
         /// Creates adjacency graphs (filterable).
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<AdjacencyGraph<string, Edge<string>>> GetAdjacencyGraphsInternal(
-            [CanBeNull, InstantHandle] Func<string, int, bool> filter = null)
+            [InstantHandle] Func<string, int, bool>? filter = default)
         {
             yield return new AdjacencyGraph<string, Edge<string>>();
             foreach (string graphMLFilePath in GetGraphMLFilePaths(filter))
@@ -113,7 +106,6 @@ namespace FastGraph.Tests
         /// Creates adjacency graphs.
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<AdjacencyGraph<string, Edge<string>>> GetAdjacencyGraphs_All()
         {
             return GetAdjacencyGraphsInternal();
@@ -123,7 +115,6 @@ namespace FastGraph.Tests
         /// Creates adjacency graphs (version manageable with define for slow tests).
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<AdjacencyGraph<string, Edge<string>>> GetAdjacencyGraphs_SlowTests(int rate = -1)
         {
 #if !FULL_SLOW_TESTS_RUN
@@ -141,9 +132,8 @@ namespace FastGraph.Tests
         /// Creates bidirectional graphs (filterable).
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<BidirectionalGraph<string, Edge<string>>> GetBidirectionalGraphsInternal(
-            [CanBeNull, InstantHandle] Func<string, int, bool> filter = null)
+            [InstantHandle] Func<string, int, bool>? filter = default)
         {
             yield return new BidirectionalGraph<string, Edge<string>>();
             foreach (string graphMLFilePath in GetGraphMLFilePaths(filter))
@@ -156,7 +146,6 @@ namespace FastGraph.Tests
         /// Creates bidirectional graphs.
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<BidirectionalGraph<string, Edge<string>>> GetBidirectionalGraphs_All()
         {
             return GetBidirectionalGraphsInternal();
@@ -166,7 +155,6 @@ namespace FastGraph.Tests
         /// Creates bidirectional graphs (version manageable with define for slow tests).
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<BidirectionalGraph<string, Edge<string>>> GetBidirectionalGraphs_SlowTests(int rate = -1)
         {
 #if !FULL_SLOW_TESTS_RUN
@@ -184,9 +172,8 @@ namespace FastGraph.Tests
         /// Creates undirected graphs (filterable).
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<UndirectedGraph<string, Edge<string>>> GetUndirectedGraphsInternal(
-            [CanBeNull, InstantHandle] Func<string, int, bool> filter = null)
+            [InstantHandle] Func<string, int, bool>? filter = default)
         {
             yield return new UndirectedGraph<string, Edge<string>>();
             foreach (string graphMLFilePath in GetGraphMLFilePaths(filter))
@@ -199,7 +186,6 @@ namespace FastGraph.Tests
         /// Creates undirected graphs.
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<UndirectedGraph<string, Edge<string>>> GetUndirectedGraphs_All()
         {
             return GetUndirectedGraphsInternal();
@@ -209,7 +195,6 @@ namespace FastGraph.Tests
         /// Creates undirected graphs (version manageable with define for slow tests).
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         public static IEnumerable<UndirectedGraph<string, Edge<string>>> GetUndirectedGraphs_SlowTests(int rate = -1)
         {
 #if !FULL_SLOW_TESTS_RUN

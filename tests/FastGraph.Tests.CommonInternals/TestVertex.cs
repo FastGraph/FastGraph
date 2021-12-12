@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Tests
 {
@@ -14,12 +14,11 @@ namespace FastGraph.Tests
         {
         }
 
-        public TestVertex([NotNull] string name)
+        public TestVertex(string name)
         {
             Name = name;
         }
 
-        [NotNull]
         public string Name { get; }
     }
 }

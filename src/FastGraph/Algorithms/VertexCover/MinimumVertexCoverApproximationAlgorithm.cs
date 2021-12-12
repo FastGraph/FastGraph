@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Collections;
 #if SUPPORTS_CRYPTO_RANDOM
 using FastGraph.Utils;
@@ -16,12 +15,11 @@ namespace FastGraph.Algorithms.VertexCover
     /// Mihalis Yannakakis and Fanica Gavril algorithm.
     /// </remarks>
     public sealed class MinimumVertexCoverApproximationAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly VertexList<TVertex> _coverSet = new VertexList<TVertex>();
 
-        [NotNull]
         private readonly Random _rng;
 
 #if SUPPORTS_CRYPTO_RANDOM
@@ -32,7 +30,7 @@ namespace FastGraph.Algorithms.VertexCover
         /// <param name="graph">Graph to compute the cover.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            IUndirectedGraph<TVertex, TEdge> graph)
             : this(graph, new CryptoRandom())
         {
         }
@@ -57,8 +55,8 @@ namespace FastGraph.Algorithms.VertexCover
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] Random rng)
+            IUndirectedGraph<TVertex, TEdge> graph,
+            Random rng)
             : base(graph)
         {
             _rng = rng ?? throw new ArgumentNullException(nameof(rng));
@@ -67,10 +65,10 @@ namespace FastGraph.Algorithms.VertexCover
         /// <summary>
         /// Set of covering vertices.
         /// </summary>
-        public VertexList<TVertex> CoverSet =>
+        public VertexList<TVertex>? CoverSet =>
             State == ComputationState.Finished
                 ? _coverSet
-                : null;
+                : default;
 
         #region AlgorithmBase<TGraph>
 

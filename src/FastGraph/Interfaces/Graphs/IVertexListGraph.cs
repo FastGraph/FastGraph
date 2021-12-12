@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -9,6 +11,7 @@ namespace FastGraph
     public interface IVertexListGraph<TVertex, TEdge>
         : IIncidenceGraph<TVertex, TEdge>
         , IVertexSet<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
     }

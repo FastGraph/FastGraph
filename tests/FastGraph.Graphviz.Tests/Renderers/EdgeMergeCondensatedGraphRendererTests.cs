@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.Condensation;
@@ -26,10 +26,11 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
             [UsedImplicitly]
@@ -116,8 +117,8 @@ namespace FastGraph.Graphviz.Tests
 
         [TestCaseSource(nameof(GenerateTestCases))]
         public void Generate(
-            [NotNull] AdjacencyGraph<int, MergedEdge<int, Edge<int>>> graph,
-            [NotNull] string expectedDot)
+            AdjacencyGraph<int, MergedEdge<int, Edge<int>>> graph,
+            string expectedDot)
         {
             var dotEngine = new TestDotEngine
             {

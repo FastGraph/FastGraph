@@ -1,5 +1,5 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -17,8 +17,9 @@ namespace FastGraph.Tests.Algorithms
         #region Test helpers
 
         private static void RunUndirectedTopologicalSortAndCheck<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
+            IUndirectedGraph<TVertex, TEdge> graph,
             bool allowCycles)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new UndirectedTopologicalSortAlgorithm<TVertex, TEdge>(graph)
@@ -29,7 +30,7 @@ namespace FastGraph.Tests.Algorithms
             algorithm.Compute();
 
             Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices.Length);
+            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
         }
 
         #endregion
@@ -59,6 +60,7 @@ namespace FastGraph.Tests.Algorithms
                 UndirectedTopologicalSortAlgorithm<TVertex, TEdge> algo,
                 IUndirectedGraph<TVertex, TEdge> g,
                 bool allowCycles = false)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -74,8 +76,10 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(null));
+                () => new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]

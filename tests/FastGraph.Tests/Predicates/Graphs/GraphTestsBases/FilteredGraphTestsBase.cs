@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Tests.Structures;
 using static FastGraph.Tests.AssertHelpers;
@@ -16,8 +15,8 @@ namespace FastGraph.Tests.Predicates
         #region Vertices & Edges
 
         protected static void Vertices_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IVertexSet<int>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IVertexSet<int>> createFilteredGraph)
             where TGraph : IMutableVertexSet<int>, IMutableGraph<int, Edge<int>>
         {
             IVertexSet<int> filteredGraph = createFilteredGraph(_ => true, _ => true);
@@ -36,8 +35,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         public void Edges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IEdgeSet<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IEdgeSet<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             IEdgeSet<int, Edge<int>> filteredGraph = createFilteredGraph(_ => true, _ => true);
@@ -82,8 +81,8 @@ namespace FastGraph.Tests.Predicates
         #region Contains Vertex
 
         protected static void ContainsVertex_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitVertexSet<int>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitVertexSet<int>> createFilteredGraph)
             where TGraph : IMutableVertexSet<int>, IMutableGraph<int, Edge<int>>
         {
             IImplicitVertexSet<int> filteredGraph = createFilteredGraph(
@@ -141,8 +140,8 @@ namespace FastGraph.Tests.Predicates
         #region Contains Edge
 
         protected static void ContainsEdge_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IEdgeSet<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IEdgeSet<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -335,8 +334,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void ContainsEdge_EquatableEdge_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, EquatableEdge<int>>, IEdgeSet<int, EquatableEdge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, EquatableEdge<int>>, IEdgeSet<int, EquatableEdge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, EquatableEdge<int>>, IMutableGraph<int, EquatableEdge<int>>
         {
             #region Part 1
@@ -529,8 +528,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void ContainsEdge_SourceTarget_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -631,8 +630,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void ContainsEdge_SourceTarget_UndirectedGraph_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -737,8 +736,8 @@ namespace FastGraph.Tests.Predicates
         #region Out Edges
 
         protected static void OutEdge_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -808,8 +807,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void OutEdge_Throws_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -896,8 +895,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void OutEdges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -976,8 +975,8 @@ namespace FastGraph.Tests.Predicates
         #region In Edges
 
         protected static void InEdge_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1045,8 +1044,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void InEdge_Throws_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1127,8 +1126,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void InEdges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1221,8 +1220,8 @@ namespace FastGraph.Tests.Predicates
         #region Adjacent Edges
 
         protected static void AdjacentEdge_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1293,8 +1292,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void AdjacentEdge_Throws_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1383,8 +1382,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void AdjacentEdges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part1
@@ -1469,8 +1468,8 @@ namespace FastGraph.Tests.Predicates
         #region Degree
 
         protected static void Degree_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1554,8 +1553,8 @@ namespace FastGraph.Tests.Predicates
         #region Try Get Edges
 
         protected static void TryGetEdge_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1586,7 +1585,7 @@ namespace FastGraph.Tests.Predicates
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out Edge<int> gotEdge));
+            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
             Assert.AreSame(edge5, gotEdge);
 
             Assert.IsTrue(filteredGraph.TryGetEdge(2, 2, out gotEdge));
@@ -1658,8 +1657,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void TryGetEdges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1689,7 +1688,7 @@ namespace FastGraph.Tests.Predicates
             Assert.IsFalse(filteredGraph.TryGetEdges(0, 10, out _));
             Assert.IsFalse(filteredGraph.TryGetEdges(0, 1, out _));
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges));
+            Assert.IsTrue(filteredGraph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges));
             CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
 
             Assert.IsFalse(filteredGraph.TryGetEdges(2, 4, out _)); // Filtered
@@ -1755,8 +1754,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void TryGetEdge_UndirectedGraph_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitUndirectedGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1787,7 +1786,7 @@ namespace FastGraph.Tests.Predicates
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
             Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out Edge<int> gotEdge));
+            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
             Assert.AreSame(edge5, gotEdge);
 
             Assert.IsTrue(filteredGraph.TryGetEdge(2, 2, out gotEdge));
@@ -1868,8 +1867,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void TryGetOutEdges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IImplicitGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1901,7 +1900,7 @@ namespace FastGraph.Tests.Predicates
 
             Assert.IsFalse(filteredGraph.TryGetOutEdges(5, out _)); // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(3, out IEnumerable<Edge<int>> gotEdges));
+            Assert.IsTrue(filteredGraph.TryGetOutEdges(3, out IEnumerable<Edge<int>>? gotEdges));
             CollectionAssert.IsEmpty(gotEdges);
 
             Assert.IsTrue(filteredGraph.TryGetOutEdges(4, out gotEdges));
@@ -1961,8 +1960,8 @@ namespace FastGraph.Tests.Predicates
         }
 
         protected static void TryGetInEdges_Test<TGraph>(
-            [NotNull] TGraph wrappedGraph,
-            [NotNull] Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
+            TGraph wrappedGraph,
+            Func<VertexPredicate<int>, EdgePredicate<int, Edge<int>>, IBidirectionalIncidenceGraph<int, Edge<int>>> createFilteredGraph)
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>, IMutableGraph<int, Edge<int>>
         {
             #region Part 1
@@ -1993,7 +1992,7 @@ namespace FastGraph.Tests.Predicates
 
             Assert.IsFalse(filteredGraph.TryGetInEdges(5, out _));  // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(4, out IEnumerable<Edge<int>> gotEdges));
+            Assert.IsTrue(filteredGraph.TryGetInEdges(4, out IEnumerable<Edge<int>>? gotEdges));
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
 
             Assert.IsTrue(filteredGraph.TryGetInEdges(2, out gotEdges));

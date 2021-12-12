@@ -1,8 +1,8 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
-using System.Collections.Generic;
+#nullable enable
+
+#if SUPPORTS_GRAPHS_SERIALIZATION
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
@@ -35,32 +35,30 @@ namespace FastGraph.Serialization
     /// </para>
     /// </remarks>
     public sealed class GraphMLSerializer<TVertex, TEdge, TGraph> : SerializerBase
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IEdgeListGraph<TVertex, TEdge>
     {
         #region Compiler
 
         private delegate void WriteVertexAttributesDelegate(
-            [NotNull] XmlWriter writer,
-            [NotNull] TVertex vertex);
+            XmlWriter writer,
+            TVertex vertex);
 
         private delegate void WriteEdgeAttributesDelegate(
-            [NotNull] XmlWriter writer,
-            [NotNull] TEdge edge);
+            XmlWriter writer,
+            TEdge edge);
 
         private delegate void WriteGraphAttributesDelegate(
-            [NotNull] XmlWriter writer,
-            [NotNull] TGraph graph);
+            XmlWriter writer,
+            TGraph graph);
 
         private static class WriteDelegateCompiler
         {
-            [NotNull]
             public static WriteVertexAttributesDelegate VertexAttributesWriter { get; }
 
-            [NotNull]
             public static WriteEdgeAttributesDelegate EdgeAttributesWriter { get; }
 
-            [NotNull]
             public static WriteGraphAttributesDelegate GraphAttributesWriter { get; }
 
             static WriteDelegateCompiler()
@@ -81,7 +79,7 @@ namespace FastGraph.Serialization
                         typeof(WriteGraphAttributesDelegate));
             }
 
-            private static void EmitCallWriter([NotNull] ILGenerator generator, [NotNull] MethodInfo writer)
+            private static void EmitCallWriter(ILGenerator generator, MethodInfo writer)
             {
                 // When reading scalar values we call member methods of XmlReader, while for array values
                 // we call our own static methods.  These two types of methods seem to need different OpCode.
@@ -90,26 +88,26 @@ namespace FastGraph.Serialization
                         ? OpCodes.Call
                         : OpCodes.Callvirt,
                     writer,
-                    null);
+                    default);
             }
 
-            private static void EmitWriteProperty(PropertySerializationInfo info, [NotNull] ILGenerator generator)
+            private static void EmitWriteProperty(PropertySerializationInfo info, ILGenerator generator)
             {
                 var @default = default(Label);
                 PropertyInfo property = info.Property;
 
-                MethodInfo getMethod = property.GetGetMethod();
+                MethodInfo? getMethod = property.GetGetMethod();
                 if (getMethod is null)
                     throw new NotSupportedException($"Property {property.DeclaringType}.{property.Name} has no getter.");
-                if (!Metadata.TryGetWriteValueMethod(property.PropertyType, out MethodInfo writeMethod))
+                if (!Metadata.TryGetWriteValueMethod(property.PropertyType, out MethodInfo? writeMethod))
                     throw new NotSupportedException($"Property {property.DeclaringType}.{property.Name} type is not supported.");
 
                 var defaultValueAttribute =
                     Attribute.GetCustomAttribute(property, typeof(DefaultValueAttribute)) as DefaultValueAttribute;
-                if (defaultValueAttribute != null)
+                if (defaultValueAttribute != default)
                 {
                     @default = generator.DefineLabel();
-                    object value = defaultValueAttribute.Value;
+                    object? value = defaultValueAttribute.Value;
                     if (value is null)
                         throw new NotSupportedException($"Null default value is not supported for property {property.Name}.");
                     if (value.GetType() != property.PropertyType)
@@ -117,7 +115,7 @@ namespace FastGraph.Serialization
 
                     EmitValue(generator, property, value);
                     generator.Emit(OpCodes.Ldarg_1);
-                    generator.EmitCall(OpCodes.Callvirt, getMethod, null);
+                    generator.EmitCall(OpCodes.Callvirt, getMethod, default);
                     generator.Emit(OpCodes.Ceq);
                     generator.Emit(OpCodes.Brtrue, @default);
                 }
@@ -128,36 +126,32 @@ namespace FastGraph.Serialization
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, "data");
                 generator.Emit(OpCodes.Ldstr, GraphMLXmlResolver.GraphMLNamespace);
-                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteStartElementMethod, null);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteStartElementMethod, default);
 
                 // writer.WriteStartAttribute("key");
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldstr, "key");
                 generator.Emit(OpCodes.Ldstr, info.Name);
-                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteAttributeStringMethod, null);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteAttributeStringMethod, default);
 
                 // writer.WriteValue(v.xxx);
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldarg_1);
-                generator.EmitCall(OpCodes.Callvirt, getMethod, null);
+                generator.EmitCall(OpCodes.Callvirt, getMethod, default);
                 EmitCallWriter(generator, writeMethod);
 
                 // writer.WriteEndElement()
                 generator.Emit(OpCodes.Ldarg_0);
-                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteEndElementMethod, null);
+                generator.EmitCall(OpCodes.Callvirt, Metadata.WriteEndElementMethod, default);
 
-                if (defaultValueAttribute != null)
+                if (defaultValueAttribute != default)
                 {
                     generator.MarkLabel(@default);
                 }
             }
 
-            [NotNull]
-            private static Delegate CreateWriteDelegate([NotNull] Type elementType, [NotNull] Type delegateType)
+            private static Delegate CreateWriteDelegate(Type elementType, Type delegateType)
             {
-                Debug.Assert(elementType != null);
-                Debug.Assert(delegateType != null);
-
                 var method = new DynamicMethod(
                     $"{DynamicMethodPrefix}Write{delegateType.Name}_{elementType.Name}",
                     typeof(void),
@@ -194,10 +188,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public void Serialize(
-            [NotNull] XmlWriter writer,
-            [NotNull] TGraph graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            XmlWriter writer,
+            TGraph graph,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
         {
             if (writer is null)
                 throw new ArgumentNullException(nameof(writer));
@@ -214,34 +208,23 @@ namespace FastGraph.Serialization
 
         internal sealed class WriterWorker
         {
-            [NotNull]
             private readonly GraphMLSerializer<TVertex, TEdge, TGraph> _serializer;
 
-            [NotNull]
             private readonly XmlWriter _writer;
 
-            [NotNull]
             private readonly TGraph _graph;
 
-            [NotNull]
             private readonly VertexIdentity<TVertex> _vertexIdentity;
 
-            [NotNull]
             private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
 
             public WriterWorker(
-                [NotNull] GraphMLSerializer<TVertex, TEdge, TGraph> serializer,
-                [NotNull] XmlWriter writer,
-                [NotNull] TGraph graph,
-                [NotNull] VertexIdentity<TVertex> vertexIdentity,
-                [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+                GraphMLSerializer<TVertex, TEdge, TGraph> serializer,
+                XmlWriter writer,
+                TGraph graph,
+                VertexIdentity<TVertex> vertexIdentity,
+                EdgeIdentity<TVertex, TEdge> edgeIdentity)
             {
-                Debug.Assert(serializer != null);
-                Debug.Assert(writer != null);
-                Debug.Assert(graph != null);
-                Debug.Assert(vertexIdentity != null);
-                Debug.Assert(edgeIdentity != null);
-
                 _serializer = serializer;
                 _writer = writer;
                 _graph = graph;
@@ -311,7 +294,7 @@ namespace FastGraph.Serialization
                 WriteAttributeDefinitions(EdgeTag, typeof(TEdge));
             }
 
-            private static string ConstructTypeCodeForSimpleType([NotNull] Type type)
+            private static string ConstructTypeCodeForSimpleType(Type type)
             {
                 switch (Type.GetTypeCode(type))
                 {
@@ -334,7 +317,7 @@ namespace FastGraph.Serialization
                 }
             }
 
-            private static string ConstructTypeCode([NotNull] Type type)
+            private static string ConstructTypeCode(Type type)
             {
                 string code = ConstructTypeCodeForSimpleType(type);
                 if (code == "invalid")
@@ -345,8 +328,8 @@ namespace FastGraph.Serialization
                 if (code == "object")
                 {
                     Type iListType = typeof(IList<>);
-                    Type typeIListType = type.Name == iListType.Name ? type : type.GetInterface(iListType.Name, false);
-                    if (typeIListType != null && typeIListType.Name == iListType.Name)
+                    Type? typeIListType = type.Name == iListType.Name ? type : type.GetInterface(iListType.Name, false);
+                    if (typeIListType != default && typeIListType.Name == iListType.Name)
                     {
                         Type elementType = typeIListType.GetGenericArguments()[0];
                         string elementCode = ConstructTypeCodeForSimpleType(elementType);
@@ -359,11 +342,8 @@ namespace FastGraph.Serialization
                 return code;
             }
 
-            private void WriteAttributeDefinitions([NotNull] string elementName, [NotNull] Type elementType)
+            private void WriteAttributeDefinitions(string elementName, Type elementType)
             {
-                Debug.Assert(elementName != null);
-                Debug.Assert(elementType != null);
-
                 foreach (PropertySerializationInfo info in SerializationHelpers.GetAttributeProperties(elementType))
                 {
                     PropertyInfo property = info.Property;
@@ -390,7 +370,7 @@ namespace FastGraph.Serialization
                     _writer.WriteAttributeString("attr.type", typeCodeStr);
 
                     // <default>...</default>
-                    if (info.TryGetDefaultValue(out object defaultValue))
+                    if (info.TryGetDefaultValue(out object? defaultValue))
                     {
                         _writer.WriteStartElement("default");
                         Type defaultValueType = defaultValue.GetType();
@@ -459,46 +439,41 @@ namespace FastGraph.Serialization
 
     internal static partial class Metadata
     {
-        [NotNull]
         public static readonly MethodInfo WriteStartElementMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteStartElement),
                 BindingFlags.Instance | BindingFlags.Public,
-                null,
+                default,
                 new[] { typeof(string), typeof(string) },
-                null) ?? throw new InvalidOperationException(
+                default) ?? throw new InvalidOperationException(
                 $"Cannot find {nameof(XmlWriter.WriteStartElement)} method on {nameof(XmlWriter)}.");
 
-        [NotNull]
         public static readonly MethodInfo WriteEndElementMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteEndElement),
                 BindingFlags.Instance | BindingFlags.Public,
-                null,
+                default,
                 Type.EmptyTypes,
-                null) ?? throw new InvalidOperationException(
+                default) ?? throw new InvalidOperationException(
                 $"Cannot find {nameof(XmlWriter.WriteEndElement)} method on {nameof(XmlWriter)}.");
 
-        [NotNull]
         public static readonly MethodInfo WriteAttributeStringMethod =
             typeof(XmlWriter).GetMethod(
                 nameof(XmlWriter.WriteAttributeString),
                 BindingFlags.Instance | BindingFlags.Public,
-                null,
+                default,
                 new[] { typeof(string), typeof(string) },
-                null) ?? throw new InvalidOperationException(
+                default) ?? throw new InvalidOperationException(
                 $"Cannot find {nameof(XmlWriter.WriteAttributeString)} method on {nameof(XmlWriter)}.");
 
-        [NotNull]
-        private static readonly Dictionary<Type, MethodInfo> WriteContentMethods = InitializeWriteMethods();
+        private static readonly Dictionary<Type, MethodInfo?> WriteContentMethods = InitializeWriteMethods();
 
-        [NotNull]
-        private static Dictionary<Type, MethodInfo> InitializeWriteMethods()
+        private static Dictionary<Type, MethodInfo?> InitializeWriteMethods()
         {
             Type writerType = typeof(XmlWriter);
             Type writerExtensionsType = typeof(XmlWriterExtensions);
 
-            return new Dictionary<Type, MethodInfo>
+            return new Dictionary<Type, MethodInfo?>
             {
                 [typeof(bool)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(bool) }),
                 [typeof(int)] = writerType.GetMethod(nameof(XmlWriter.WriteValue), new[] { typeof(int) }),
@@ -525,10 +500,8 @@ namespace FastGraph.Serialization
         }
 
         [Pure]
-        public static bool TryGetWriteValueMethod([NotNull] Type type, out MethodInfo method)
+        public static bool TryGetWriteValueMethod(Type type, [NotNullWhen(true)] out MethodInfo? method)
         {
-            Debug.Assert(type != null);
-
             bool status = WriteContentMethods.TryGetValue(type, out method);
             return status;
         }

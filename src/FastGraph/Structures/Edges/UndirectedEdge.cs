@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -15,6 +14,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}<->{" + nameof(Target) + "}")]
     public class UndirectedEdge<TVertex> : IUndirectedEdge<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UndirectedEdge{TVertex}"/> class.
@@ -26,7 +26,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentException">
         /// <paramref name="target"/> is not lower than <paramref name="source"/> when using <see cref="M:System.Collections.Generic.Comparer{T}.Default"/>.
         /// </exception>
-        public UndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public UndirectedEdge(TVertex source, TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

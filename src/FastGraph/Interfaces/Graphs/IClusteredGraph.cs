@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -11,8 +10,7 @@ namespace FastGraph
         /// <summary>
         /// Graph clusters.
         /// </summary>
-        [NotNull, ItemNotNull]
-        IEnumerable Clusters { get; }
+        IEnumerable<IClusteredGraph> Clusters { get; }
 
         /// <summary>
         /// Number of clusters.
@@ -28,7 +26,6 @@ namespace FastGraph
         /// Adds a new cluster.
         /// </summary>
         /// <returns>The added cluster.</returns>
-        [NotNull]
         IClusteredGraph AddCluster();
 
         /// <summary>
@@ -36,6 +33,6 @@ namespace FastGraph
         /// </summary>
         /// <param name="graph">The graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        void RemoveCluster([NotNull] IClusteredGraph graph);
+        void RemoveCluster(IClusteredGraph graph);
     }
 }

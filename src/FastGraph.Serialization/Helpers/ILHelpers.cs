@@ -1,9 +1,8 @@
+#nullable enable
+
 #if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using JetBrains.Annotations;
 
 namespace FastGraph.Serialization
 {
@@ -12,11 +11,8 @@ namespace FastGraph.Serialization
     /// </summary>
     internal static class ILHelpers
     {
-        public static void EmitValue([NotNull] ILGenerator generator, [NotNull] PropertyInfo property, [NotNull] object value)
+        public static void EmitValue(ILGenerator generator, PropertyInfo property, object value)
         {
-            Debug.Assert(generator != null);
-            Debug.Assert(property != null);
-
             switch (Type.GetTypeCode(property.PropertyType))
             {
                 case TypeCode.Int32:
@@ -42,14 +38,14 @@ namespace FastGraph.Serialization
             }
         }
 
-        public static void EmitCall([NotNull] ILGenerator generator, [NotNull] MethodInfo method)
+        public static void EmitCall(ILGenerator generator, MethodInfo method)
         {
             generator.EmitCall(
                 method.IsVirtual
                     ? OpCodes.Callvirt
                     : OpCodes.Call,
                 method,
-                null);
+                default);
         }
     }
 }

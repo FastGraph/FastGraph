@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     internal static class PublicKey

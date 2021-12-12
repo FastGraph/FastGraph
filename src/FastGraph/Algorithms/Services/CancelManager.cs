@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+#nullable enable
 
 namespace FastGraph.Algorithms.Services
 {
@@ -9,7 +8,7 @@ namespace FastGraph.Algorithms.Services
     internal sealed class CancelManager : ICancelManager
     {
         /// <inheritdoc />
-        public event EventHandler CancelRequested;
+        public event EventHandler? CancelRequested;
 
         /// <inheritdoc />
         public void Cancel()
@@ -27,7 +26,7 @@ namespace FastGraph.Algorithms.Services
         public bool IsCancelling => _cancelling > 0;
 
         /// <inheritdoc />
-        public event EventHandler CancelReset;
+        public event EventHandler? CancelReset;
 
         /// <inheritdoc />
         public void ResetCancel()

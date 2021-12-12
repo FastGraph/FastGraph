@@ -1,4 +1,5 @@
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Graphs
@@ -12,7 +13,8 @@ namespace FastGraph.Tests.Graphs
         #region Test helpers
 
         private static void AssertDegreeSumEqualsTwiceEdgeCount<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+            IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             int totalDegree = 0;
@@ -23,7 +25,8 @@ namespace FastGraph.Tests.Graphs
         }
 
         private static void AssertInDegreeSumEqualsEdgeCount<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+            IBidirectionalGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             int totalInDegree = 0;
@@ -34,7 +37,8 @@ namespace FastGraph.Tests.Graphs
         }
 
         private static void OutDegreeSumEqualsEdgeCount<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             int totalOutDegree = 0;
@@ -45,7 +49,8 @@ namespace FastGraph.Tests.Graphs
         }
 
         private static void AssertAdjacentDegreeSumEqualsTwiceEdgeCount<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             int totalAdjacentDegree = 0;

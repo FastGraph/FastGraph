@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.Condensation;
@@ -26,10 +26,11 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new CondensatedGraphRenderer<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new CondensatedGraphRenderer<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default));
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
             [UsedImplicitly]
@@ -143,8 +144,8 @@ namespace FastGraph.Graphviz.Tests
 
         [TestCaseSource(nameof(GenerateTestCases))]
         public void Generate(
-            [NotNull] AdjacencyGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> graph,
-            [NotNull] string expectedDot)
+            AdjacencyGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> graph,
+            string expectedDot)
         {
             var dotEngine = new TestDotEngine
             {

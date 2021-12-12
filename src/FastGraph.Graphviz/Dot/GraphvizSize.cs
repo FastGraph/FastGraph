@@ -1,9 +1,9 @@
-﻿using System;
+#nullable enable
+
 using System.Diagnostics;
 using System.Globalization;
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 #endif
 using static FastGraph.Utils.MathUtils;
 
@@ -64,8 +64,10 @@ namespace FastGraph.Graphviz.Dot
 
         private GraphvizSizeF(SerializationInfo info, StreamingContext context)
             : this(
+#pragma warning disable CS8605 // Unboxing a possibly null value.
                 (float)info.GetValue("w", typeof(float)),
                 (float)info.GetValue("h", typeof(float)))
+#pragma warning restore CS8605 // Unboxing a possibly null value.
         {
         }
 
@@ -135,8 +137,10 @@ namespace FastGraph.Graphviz.Dot
 
         private GraphvizSize(SerializationInfo info, StreamingContext context)
             : this(
+#pragma warning disable CS8605 // Unboxing a possibly null value.
                 (int)info.GetValue("w", typeof(int)),
                 (int)info.GetValue("h", typeof(int)))
+#pragma warning restore CS8605 // Unboxing a possibly null value.
         {
         }
 

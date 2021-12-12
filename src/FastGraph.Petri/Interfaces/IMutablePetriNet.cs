@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿#nullable enable
 
 namespace FastGraph.Petri
 {
@@ -14,8 +14,7 @@ namespace FastGraph.Petri
         /// <param name="name">Place name.</param>
         /// <returns>Added <see cref="IPlace{TToken}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        IPlace<TToken> AddPlace([NotNull] string name);
+        IPlace<TToken> AddPlace(string name);
 
         /// <summary>
         /// Adds a <see cref="ITransition{TToken}"/> with given <paramref name="name"/> to this Petri net.
@@ -23,8 +22,7 @@ namespace FastGraph.Petri
         /// <param name="name">Transition name.</param>
         /// <returns>Added <see cref="ITransition{TToken}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        ITransition<TToken> AddTransition([NotNull] string name);
+        ITransition<TToken> AddTransition(string name);
 
         /// <summary>
         /// Adds an <see cref="IArc{TToken}"/> with given source <paramref name="place"/> and target <paramref name="transition"/> to this Petri net.
@@ -34,8 +32,7 @@ namespace FastGraph.Petri
         /// <returns>Added <see cref="IArc{TToken}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        IArc<TToken> AddArc([NotNull] IPlace<TToken> place, [NotNull] ITransition<TToken> transition);
+        IArc<TToken> AddArc(IPlace<TToken> place, ITransition<TToken> transition);
 
         /// <summary>
         /// Adds an <see cref="IArc{TToken}"/> with given source <paramref name="transition"/> and target <paramref name="place"/> to this Petri net.
@@ -45,7 +42,6 @@ namespace FastGraph.Petri
         /// <returns>Added <see cref="IArc{TToken}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        IArc<TToken> AddArc([NotNull] ITransition<TToken> transition, [NotNull] IPlace<TToken> place);
+        IArc<TToken> AddArc(ITransition<TToken> transition, IPlace<TToken> place);
     }
 }

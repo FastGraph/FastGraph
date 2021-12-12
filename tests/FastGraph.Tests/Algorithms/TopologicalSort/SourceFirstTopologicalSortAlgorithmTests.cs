@@ -1,5 +1,5 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -15,14 +15,15 @@ namespace FastGraph.Tests.Algorithms
     {
         #region Test helpers
 
-        private static void RunSourceFirstTopologicalSortAndCheck<TVertex, TEdge>([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+        private static void RunSourceFirstTopologicalSortAndCheck<TVertex, TEdge>(IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute();
 
             Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices.Length);
+            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
             Assert.IsNotNull(algorithm.InDegrees);
             Assert.AreEqual(graph.VertexCount, algorithm.InDegrees.Count);
         }
@@ -50,6 +51,7 @@ namespace FastGraph.Tests.Algorithms
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 SourceFirstTopologicalSortAlgorithm<TVertex, TEdge> algo,
                 IVertexAndEdgeListGraph<TVertex, TEdge> g)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -65,8 +67,10 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(null));
+                () => new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]

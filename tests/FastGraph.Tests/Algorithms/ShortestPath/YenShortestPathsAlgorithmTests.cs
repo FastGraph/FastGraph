@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.ShortestPath;
 
@@ -51,20 +51,22 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
             graph.AddVertexRange(new[] { vertex1, vertex2 });
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(null, vertex1, vertex2, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(default, vertex1, vertex2, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, null, vertex2, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, default, vertex2, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, null, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, default, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(null, null, vertex2, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(default, default, vertex2, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(null, vertex1, null, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(default, vertex1, default, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, null, null, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(graph, default, default, int.MaxValue));
             Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(null, null, null, int.MaxValue));
+                () => new YenShortestPathsAlgorithm<TestVertex>(default, default, default, int.MaxValue));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<ArgumentOutOfRangeException>(
@@ -299,7 +301,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             RunYenAndCheck(algorithm);
 
             // Default weight function and custom filter function case
-            algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10, null, e => e);
+            algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10, default, e => e);
             RunYenAndCheck(algorithm);
 
             // Custom weight function and custom filter function case

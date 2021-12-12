@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+#nullable enable
+
+using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -8,6 +10,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface ICloneableEdge<TVertex, out TEdge> : IEdge<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -20,7 +23,6 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        TEdge Clone([NotNull] TVertex source, [NotNull] TVertex target);
+        TEdge Clone(TVertex source, TVertex target);
     }
 }

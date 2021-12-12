@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 
@@ -10,7 +10,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
     /// </summary>
     internal sealed class DistancesCollectionTryGetDistanceContract : DistancesCollectionContractBase
     {
-        public DistancesCollectionTryGetDistanceContract([NotNull] Type algorithmToTest)
+        public DistancesCollectionTryGetDistanceContract(Type algorithmToTest)
             : base(algorithmToTest)
         {
         }
@@ -64,7 +64,9 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<string> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(null, out _));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(default, out _));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

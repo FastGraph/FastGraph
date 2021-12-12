@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -11,13 +10,14 @@ namespace FastGraph
     [Serializable]
 #endif
     public class VertexEventArgs<TVertex> : EventArgs
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexEventArgs{TVertex}"/> class.
         /// </summary>
         /// <param name="vertex">Concerned vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        public VertexEventArgs([NotNull] TVertex vertex)
+        public VertexEventArgs(TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -28,7 +28,6 @@ namespace FastGraph
         /// <summary>
         /// Vertex concerned by the event.
         /// </summary>
-        [NotNull]
         public TVertex Vertex { get; }
     }
 }

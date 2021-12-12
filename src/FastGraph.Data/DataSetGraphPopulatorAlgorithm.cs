@@ -1,6 +1,6 @@
-﻿using System;
+#nullable enable
+
 using System.Data;
-using JetBrains.Annotations;
 using FastGraph.Algorithms;
 
 namespace FastGraph.Data
@@ -13,7 +13,6 @@ namespace FastGraph.Data
         /// <summary>
         /// <see cref="T:System.Data.DataSet"/> to represent as a graph.
         /// </summary>
-        [NotNull]
         public DataSet DataSet { get; }
 
         /// <summary>
@@ -24,8 +23,8 @@ namespace FastGraph.Data
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dataSet"/> is <see langword="null"/>.</exception>
         public DataSetGraphPopulatorAlgorithm(
-            [NotNull] IMutableVertexAndEdgeSet<DataTable, DataRelationEdge> visitedGraph,
-            [NotNull] DataSet dataSet)
+            IMutableVertexAndEdgeSet<DataTable, DataRelationEdge> visitedGraph,
+            DataSet dataSet)
             : base(visitedGraph)
         {
             DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
@@ -36,14 +35,14 @@ namespace FastGraph.Data
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            foreach (DataTable table in DataSet.Tables)
+            foreach (DataTable? table in DataSet.Tables)
             {
-                VisitedGraph.AddVertex(table);
+                VisitedGraph.AddVertex(table!);
             }
 
-            foreach (DataRelation relation in DataSet.Relations)
+            foreach (DataRelation? relation in DataSet.Relations)
             {
-                VisitedGraph.AddEdge(new DataRelationEdge(relation));
+                VisitedGraph.AddEdge(new DataRelationEdge(relation!));
             }
         }
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Search;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -18,8 +16,9 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunUndirectedDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
+            IUndirectedGraph<TVertex, TEdge> graph,
             int maxDepth = int.MaxValue)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TVertex, TVertex>();
@@ -117,10 +116,10 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
-            algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors);
+            algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
-            algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors, edges => edges.Where(e => e != null));
+            algorithm = new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, verticesColors, edges => edges.Where(e => e != default));
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
             algorithm.MaxDepth = 12;
@@ -134,9 +133,10 @@ namespace FastGraph.Tests.Algorithms.Search
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge> algo,
                 IUndirectedGraph<TVertex, TEdge> g,
-                IDictionary<TVertex, GraphColor> vColors = null,
+                IDictionary<TVertex, GraphColor>? vColors = default,
                 int maxDepth = int.MaxValue,
                 bool processAllComponents = false)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -157,41 +157,43 @@ namespace FastGraph.Tests.Algorithms.Search
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             var graph = new UndirectedGraph<int, Edge<int>>();
             var verticesColors = new Dictionary<int, GraphColor>();
-            IEnumerable<Edge<int>> Filter(IEnumerable<Edge<int>> edges) => edges.Where(e => e != null);
+            IEnumerable<Edge<int>> Filter(IEnumerable<Edge<int>> edges) => edges.Where(e => e != default);
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, verticesColors));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors, Filter));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors, Filter));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, Filter));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, Filter));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, verticesColors, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, Filter));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, Filter));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new UndirectedDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
@@ -328,6 +330,7 @@ namespace FastGraph.Tests.Algorithms.Search
 
         public static UndirectedDepthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
             ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new UndirectedGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -336,7 +339,7 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new UndirectedDepthFirstSearchAlgorithm<T, Edge<T>>(graph);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

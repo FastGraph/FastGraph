@@ -1,5 +1,6 @@
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
-using System;
 #endif
 using System.Text;
 using JetBrains.Annotations;
@@ -59,7 +60,6 @@ namespace FastGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Arrow as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             var builder = new StringBuilder();

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+#nullable enable
+
 #if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
 #endif
@@ -17,9 +14,9 @@ namespace FastGraph.Graphviz
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class GraphvizAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Dictionary<TVertex, int> _verticesIds = new Dictionary<TVertex, int>();
 
         /// <summary>
@@ -27,7 +24,7 @@ namespace FastGraph.Graphviz
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public GraphvizAlgorithm([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+        public GraphvizAlgorithm(IEdgeListGraph<TVertex, TEdge> graph)
             : this(graph, GraphvizImageType.Png)
         {
         }
@@ -39,7 +36,7 @@ namespace FastGraph.Graphviz
         /// <param name="imageType">Target output image type.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public GraphvizAlgorithm(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> graph,
+            IEdgeListGraph<TVertex, TEdge> graph,
             GraphvizImageType imageType)
         {
             ClusterCount = 0;
@@ -53,29 +50,24 @@ namespace FastGraph.Graphviz
         /// <summary>
         /// Graph format.
         /// </summary>
-        [NotNull]
         public GraphvizGraph GraphFormat { get; }
 
         /// <summary>
         /// Common vertex format.
         /// </summary>
-        [NotNull]
         public GraphvizVertex CommonVertexFormat { get; }
 
         /// <summary>
         /// Common edge format.
         /// </summary>
-        [NotNull]
         public GraphvizEdge CommonEdgeFormat { get; }
 
-        [NotNull]
         private IEdgeListGraph<TVertex, TEdge> _visitedGraph;
 
         /// <summary>
         /// Graph to convert.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public IEdgeListGraph<TVertex, TEdge> VisitedGraph
         {
             get => _visitedGraph;
@@ -86,7 +78,7 @@ namespace FastGraph.Graphviz
         /// Dot output stream.
         /// </summary>
         /// <remarks>Not <see langword="null"/> after a run of <see cref="Generate()"/> or <see cref="Generate(IDotEngine,string)"/>.</remarks>
-        public StringWriter Output { get; private set; }
+        public StringWriter? Output { get; private set; }
 
         /// <summary>
         /// Current image output type.
@@ -98,13 +90,11 @@ namespace FastGraph.Graphviz
         /// <summary>
         /// Fired when formatting a clustered graph.
         /// </summary>
-        public event FormatClusterEventHandler<TVertex, TEdge> FormatCluster;
+        public event FormatClusterEventHandler<TVertex, TEdge>? FormatCluster;
 
-        private void OnFormatCluster([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> cluster)
+        private void OnFormatCluster(IVertexAndEdgeListGraph<TVertex, TEdge> cluster)
         {
-            Debug.Assert(cluster != null);
-
-            FormatClusterEventHandler<TVertex, TEdge> formatCluster = FormatCluster;
+            FormatClusterEventHandler<TVertex, TEdge>? formatCluster = FormatCluster;
             if (formatCluster is null)
                 return;
 
@@ -113,22 +103,20 @@ namespace FastGraph.Graphviz
             string dot = args.GraphFormat.ToDot();
             if (dot.Length != 0)
             {
-                Output.WriteLine(dot);
+                Output!.WriteLine(dot);
             }
         }
 
         /// <summary>
         /// Fired when formatting a vertex.
         /// </summary>
-        public event FormatVertexEventHandler<TVertex> FormatVertex;
+        public event FormatVertexEventHandler<TVertex>? FormatVertex;
 
-        private void OnFormatVertex([NotNull] TVertex vertex)
+        private void OnFormatVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
-            Output.Write($"{_verticesIds[vertex]}");
-            FormatVertexEventHandler<TVertex> formatVertex = FormatVertex;
-            if (formatVertex != null)
+            Output!.Write($"{_verticesIds[vertex]}");
+            FormatVertexEventHandler<TVertex>? formatVertex = FormatVertex;
+            if (formatVertex != default)
             {
                 var vertexFormat = new GraphvizVertex();
                 formatVertex(this, new FormatVertexEventArgs<TVertex>(vertex, vertexFormat));
@@ -145,14 +133,12 @@ namespace FastGraph.Graphviz
         /// <summary>
         /// Fired when formatting an edge.
         /// </summary>
-        public event FormatEdgeAction<TVertex, TEdge> FormatEdge;
+        public event FormatEdgeAction<TVertex, TEdge>? FormatEdge;
 
-        private void OnFormatEdge([NotNull] TEdge edge)
+        private void OnFormatEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
-            FormatEdgeAction<TVertex, TEdge> formatEdge = FormatEdge;
-            if (formatEdge != null)
+            FormatEdgeAction<TVertex, TEdge>? formatEdge = FormatEdge;
+            if (formatEdge != default)
             {
                 var edgeFormat = new GraphvizEdge();
                 formatEdge(this, new FormatEdgeEventArgs<TVertex, TEdge>(edge, edgeFormat));
@@ -160,10 +146,10 @@ namespace FastGraph.Graphviz
                 string dot = edgeFormat.ToDot();
                 if (dot.Length != 0)
                 {
-                    Output.Write($" [{dot}]");
+                    Output!.Write($" [{dot}]");
                 }
             }
-            Output.WriteLine(";");
+            Output!.WriteLine(";");
         }
 
         /// <summary>
@@ -171,7 +157,6 @@ namespace FastGraph.Graphviz
         /// </summary>
         /// <returns>DOT serialization of <see cref="VisitedGraph"/>.</returns>
         [Pure]
-        [NotNull]
         public string Generate()
         {
             ClusterCount = 0;
@@ -226,30 +211,25 @@ namespace FastGraph.Graphviz
         /// <returns>File path containing DOT serialization of <see cref="VisitedGraph"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="outputFilePath"/> is <see langword="null"/> or empty.</exception>
-        [NotNull]
-        public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
+        public string Generate(IDotEngine dot, string outputFilePath)
         {
             if (dot is null)
                 throw new ArgumentNullException(nameof(dot));
             if (string.IsNullOrEmpty(outputFilePath))
-                throw new ArgumentException("Output file path cannot be null or empty.", nameof(outputFilePath));
+                throw new ArgumentException("Output file path cannot be default or empty.", nameof(outputFilePath));
 
             return dot.Run(ImageType, Generate(), outputFilePath);
         }
 
         private void WriteClusters(
-            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices,
-            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges,
-            [NotNull] IClusteredGraph parent)
+            ICollection<TVertex> remainingVertices,
+            ICollection<TEdge> remainingEdges,
+            IClusteredGraph parent)
         {
-            Debug.Assert(remainingVertices != null);
-            Debug.Assert(remainingEdges != null);
-            Debug.Assert(parent != null);
-
             ++ClusterCount;
             foreach (IVertexAndEdgeListGraph<TVertex, TEdge> subGraph in parent.Clusters)
             {
-                Output.Write($"subgraph cluster{ClusterCount}");
+                Output!.Write($"subgraph cluster{ClusterCount}");
                 Output.WriteLine(" {");
                 OnFormatCluster(subGraph);
                 if (subGraph is IClusteredGraph clusteredGraph)
@@ -281,17 +261,13 @@ namespace FastGraph.Graphviz
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void WriteVertex([NotNull] TVertex vertex)
+        private void WriteVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             OnFormatVertex(vertex);
         }
 
-        private void WriteVertices([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        private void WriteVertices(IEnumerable<TVertex> vertices)
         {
-            Debug.Assert(vertices != null);
-
             foreach (TVertex vertex in vertices)
             {
                 WriteVertex(vertex);
@@ -299,12 +275,9 @@ namespace FastGraph.Graphviz
         }
 
         private void WriteVertices(
-            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+            ICollection<TVertex> remainingVertices,
+            IEnumerable<TVertex> vertices)
         {
-            Debug.Assert(remainingVertices != null);
-            Debug.Assert(vertices != null);
-
             foreach (TVertex vertex in vertices.Where(remainingVertices.Contains))
             {
                 WriteVertex(vertex);
@@ -315,21 +288,17 @@ namespace FastGraph.Graphviz
 #if SUPPORTS_AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void WriteEdge([NotNull] TEdge edge)
+        private void WriteEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
-            Output.Write(VisitedGraph.IsDirected
+            Output!.Write(VisitedGraph.IsDirected
                 ? $"{_verticesIds[edge.Source]} -> {_verticesIds[edge.Target]}"
                 : $"{_verticesIds[edge.Source]} -- {_verticesIds[edge.Target]}");
 
             OnFormatEdge(edge);
         }
 
-        private void WriteEdges([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        private void WriteEdges(IEnumerable<TEdge> edges)
         {
-            Debug.Assert(edges != null);
-
             foreach (TEdge edge in edges)
             {
                 WriteEdge(edge);
@@ -338,12 +307,9 @@ namespace FastGraph.Graphviz
 
 
         private void WriteEdges(
-            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            ICollection<TEdge> remainingEdges,
+            IEnumerable<TEdge> edges)
         {
-            Debug.Assert(remainingEdges != null);
-            Debug.Assert(edges != null);
-
             foreach (TEdge edge in edges.Where(remainingEdges.Contains))
             {
                 WriteEdge(edge);

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 
 namespace FastGraph.Algorithms.Search
@@ -18,6 +17,7 @@ namespace FastGraph.Algorithms.Search
         : RootedAlgorithmBase<TVertex, IIncidenceGraph<TVertex, TEdge>>
         , IEdgeColorizerAlgorithm<TVertex, TEdge>
         , ITreeBuilderAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -26,8 +26,8 @@ namespace FastGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ImplicitEdgeDepthFirstSearchAlgorithm(
-            [NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
-            : this(null, visitedGraph)
+            IIncidenceGraph<TVertex, TEdge> visitedGraph)
+            : this(default, visitedGraph)
         {
         }
 
@@ -38,8 +38,8 @@ namespace FastGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ImplicitEdgeDepthFirstSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent? host,
+            IIncidenceGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -72,37 +72,30 @@ namespace FastGraph.Algorithms.Search
         /// <summary>
         /// Fired on the root vertex once before the start of the search from it.
         /// </summary>
-        public event VertexAction<TVertex> StartVertex;
+        public event VertexAction<TVertex>? StartVertex;
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             StartVertex?.Invoke(vertex);
         }
 
         /// <summary>
         /// Fired when an edge starts to be treated.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> StartEdge;
+        public event EdgeAction<TVertex, TEdge>? StartEdge;
 
-        private void OnStartEdge([NotNull] TEdge edge)
+        private void OnStartEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             StartEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired when an edge is discovered.
         /// </summary>
-        public event EdgeEdgeAction<TVertex, TEdge> DiscoverTreeEdge;
+        public event EdgeEdgeAction<TVertex, TEdge>? DiscoverTreeEdge;
 
-        private void OnDiscoverTreeEdge([NotNull] TEdge edge, [NotNull] TEdge targetEdge)
+        private void OnDiscoverTreeEdge(TEdge edge, TEdge targetEdge)
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(targetEdge != null);
-
             DiscoverTreeEdge?.Invoke(edge, targetEdge);
         }
 
@@ -111,24 +104,20 @@ namespace FastGraph.Algorithms.Search
         /// the search tree. If you wish to record predecessors, do so at this
         /// event point.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 
         /// <summary>
         /// Fired on the back edges in the graph.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> BackEdge;
+        public event EdgeAction<TVertex, TEdge>? BackEdge;
 
-        private void OnBackEdge([NotNull] TEdge edge)
+        private void OnBackEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             BackEdge?.Invoke(edge);
         }
 
@@ -136,12 +125,10 @@ namespace FastGraph.Algorithms.Search
         /// Fired on forward or cross edges in the graph.
         /// (In an undirected graph this method is never called.)
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> ForwardOrCrossEdge;
+        public event EdgeAction<TVertex, TEdge>? ForwardOrCrossEdge;
 
-        private void OnForwardOrCrossEdge([NotNull] TEdge edge)
+        private void OnForwardOrCrossEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             ForwardOrCrossEdge?.Invoke(edge);
         }
 
@@ -150,12 +137,10 @@ namespace FastGraph.Algorithms.Search
         /// the search tree and all of the adjacent vertices have been
         /// discovered (but before their out-edges have been examined).
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> FinishEdge;
+        public event EdgeAction<TVertex, TEdge>? FinishEdge;
 
-        private void OnFinishEdge([NotNull] TEdge edge)
+        private void OnFinishEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             FinishEdge?.Invoke(edge);
         }
 
@@ -201,9 +186,8 @@ namespace FastGraph.Algorithms.Search
 
         #endregion
 
-        private void Visit([NotNull] TEdge startingEdge, int depth)
+        private void Visit(TEdge startingEdge, int depth)
         {
-            Debug.Assert(startingEdge != null);
             Debug.Assert(depth >= 0);
 
             if (depth > MaxDepth)

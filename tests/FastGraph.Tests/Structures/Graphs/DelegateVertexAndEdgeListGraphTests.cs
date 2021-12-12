@@ -1,5 +1,5 @@
-using System;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -31,6 +31,7 @@ namespace FastGraph.Tests.Structures
             void AssertGraphProperties<TVertex, TEdge>(
                 DelegateVertexAndEdgeListGraph<TVertex, TEdge> g,
                 bool parallelEdges = true)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 Assert.IsTrue(g.IsDirected);
@@ -45,12 +46,14 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(null, GetEmptyGetter<int, Edge<int>>()));
+                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(default, GetEmptyGetter<int, Edge<int>>()));
             Assert.Throws<ArgumentNullException>(
-                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(Enumerable.Empty<int>(), null));
+                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(Enumerable.Empty<int>(), default));
             Assert.Throws<ArgumentNullException>(
-                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(null, null));
+                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -82,7 +85,7 @@ namespace FastGraph.Tests.Structures
                 data.TryGetEdges);
 
             data.ShouldReturnValue = false;
-            data.ShouldReturnEdges = null;
+            data.ShouldReturnEdges = default;
             AssertNoEdge(graph);
 
             data.ShouldReturnValue = true;
@@ -98,7 +101,7 @@ namespace FastGraph.Tests.Structures
                 data.TryGetEdges);
 
             data.ShouldReturnValue = true;
-            data.ShouldReturnEdges = null;
+            data.ShouldReturnEdges = default;
             AssertNoEdge(graph);
 
             var edge22 = new Edge<int>(2, 2);
@@ -370,7 +373,7 @@ namespace FastGraph.Tests.Structures
             data.ShouldReturnValue = true;
             data.ShouldReturnEdges = new[] { edge13, edge14, edge21 };
 
-            Assert.IsFalse(graph.TryGetEdge(1, 2, out Edge<int> gotEdge));
+            Assert.IsFalse(graph.TryGetEdge(1, 2, out Edge<int>? gotEdge));
 
             var edge12 = new Edge<int>(1, 2);
             data.ShouldReturnEdges = new[] { edge12, edge13, edge14, edge21 };

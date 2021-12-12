@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph
 {
     /// <summary>
@@ -10,6 +12,7 @@ namespace FastGraph
     public interface IBidirectionalGraph<TVertex, TEdge>
         : IVertexAndEdgeListGraph<TVertex, TEdge>
         , IBidirectionalIncidenceGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
     }

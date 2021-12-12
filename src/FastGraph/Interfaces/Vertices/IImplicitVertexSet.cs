@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+#nullable enable
+
+using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -7,6 +9,7 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     public interface IImplicitVertexSet<in TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Determines whether this set contains the specified <paramref name="vertex"/>.
@@ -15,6 +18,6 @@ namespace FastGraph
         /// <returns>True if the specified <paramref name="vertex"/> is contained in this set, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool ContainsVertex([NotNull] TVertex vertex);
+        bool ContainsVertex(TVertex vertex);
     }
 }

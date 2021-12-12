@@ -1,7 +1,7 @@
-﻿using System;
+#nullable enable
+
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 using FastGraph.Constants;
 
 namespace FastGraph
@@ -16,6 +16,7 @@ namespace FastGraph
     [DebuggerDisplay("{" + nameof(Source) + "}<->{" + nameof(Target) + "}")]
     [StructLayout(LayoutKind.Auto)]
     public struct SUndirectedEdge<TVertex> : IUndirectedEdge<TVertex>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SUndirectedEdge{TVertex}"/> struct.
@@ -24,7 +25,7 @@ namespace FastGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public SUndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public SUndirectedEdge(TVertex source, TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

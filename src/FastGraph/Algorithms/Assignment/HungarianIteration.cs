@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.Assignment
 {
@@ -11,25 +10,21 @@ namespace FastGraph.Algorithms.Assignment
         /// <summary>
         /// Costs matrix.
         /// </summary>
-        [NotNull]
         public int[,] Matrix { get; }
 
         /// <summary>
         /// Matrix mask.
         /// </summary>
-        [NotNull]
         public byte[,] Mask { get; }
 
         /// <summary>
         /// Array of treated rows.
         /// </summary>
-        [NotNull]
         public bool[] RowsCovered { get; }
 
         /// <summary>
         /// Array of treated columns.
         /// </summary>
-        [NotNull]
         public bool[] ColumnsCovered { get; }
 
         /// <summary>
@@ -41,17 +36,12 @@ namespace FastGraph.Algorithms.Assignment
         /// Initializes a new instance of the <see cref="HungarianIteration"/> struct.
         /// </summary>
         internal HungarianIteration(
-            [NotNull] int[,] costs,
-            [NotNull] byte[,] mask,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] columnsCovered,
+            int[,] costs,
+            byte[,] mask,
+            bool[] rowsCovered,
+            bool[] columnsCovered,
             HungarianAlgorithm.Steps step)
         {
-            Debug.Assert(costs != null);
-            Debug.Assert(mask != null);
-            Debug.Assert(rowsCovered != null);
-            Debug.Assert(columnsCovered != null);
-
             Matrix = costs;
             Mask = mask;
             RowsCovered = rowsCovered;

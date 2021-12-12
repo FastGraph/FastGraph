@@ -1,4 +1,6 @@
-﻿namespace FastGraph.Petri
+﻿#nullable enable
+
+namespace FastGraph.Petri
 {
     /// <summary>
     /// Represents a read only Petri Graph (a bidirectional directed graph).

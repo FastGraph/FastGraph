@@ -1,8 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
 #endif
-using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace FastGraph.Collections
 {
@@ -17,6 +16,7 @@ namespace FastGraph.Collections
 #if SUPPORTS_CLONEABLE
         , ICloneable
 #endif
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexList{TVertex}"/> class.
@@ -37,7 +37,7 @@ namespace FastGraph.Collections
 
         /// <inheritdoc />
         /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        public VertexList([NotNull] VertexList<TVertex> other)
+        public VertexList(VertexList<TVertex> other)
             : base(other)
         {
         }
@@ -46,7 +46,6 @@ namespace FastGraph.Collections
         /// Clones this vertex list.
         /// </summary>
         /// <returns>Cloned list.</returns>
-        [NotNull]
         public VertexList<TVertex> Clone()
         {
             return new VertexList<TVertex>(this);

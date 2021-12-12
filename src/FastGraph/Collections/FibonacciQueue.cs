@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
 using JetBrains.Annotations;
 using FastGraph.Algorithms;
 
@@ -17,14 +16,13 @@ namespace FastGraph.Collections
 #endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class FibonacciQueue<TVertex, TDistance> : IPriorityQueue<TVertex>
+        where TVertex : notnull
+        where TDistance : notnull
     {
-        [NotNull]
         private readonly Func<TVertex, TDistance> _distanceFunc;
 
-        [NotNull]
         private readonly FibonacciHeap<TDistance, TVertex> _heap;
 
-        [NotNull]
         private readonly Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>> _cells;
 
         /// <summary>
@@ -32,8 +30,8 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
-        public FibonacciQueue([NotNull] Func<TVertex, TDistance> distanceFunc)
-            : this(0, null, distanceFunc, Comparer<TDistance>.Default.Compare)
+        public FibonacciQueue(Func<TVertex, TDistance> distanceFunc)
+            : this(0, default, distanceFunc, Comparer<TDistance?>.Default.Compare)
         {
         }
 
@@ -47,9 +45,9 @@ namespace FastGraph.Collections
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public FibonacciQueue(
             int capacity,
-            [CanBeNull, ItemNotNull] IEnumerable<TVertex> values,
-            [NotNull] Func<TVertex, TDistance> distanceFunc)
-            : this(capacity, values, distanceFunc, Comparer<TDistance>.Default.Compare)
+            [CanBeNull] IEnumerable<TVertex> values,
+            Func<TVertex, TDistance> distanceFunc)
+            : this(capacity, values, distanceFunc, Comparer<TDistance?>.Default.Compare)
         {
         }
 
@@ -65,9 +63,9 @@ namespace FastGraph.Collections
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is negative.</exception>
         public FibonacciQueue(
             int capacity,
-            [CanBeNull, ItemNotNull] IEnumerable<TVertex> values,
-            [NotNull] Func<TVertex, TDistance> distanceFunc,
-            [NotNull] Comparison<TDistance> distanceComparison)
+            IEnumerable<TVertex>? values,
+            Func<TVertex, TDistance> distanceFunc,
+            Comparison<TDistance?> distanceComparison)
         {
             if (capacity < 0)
                 throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be positive.");
@@ -75,7 +73,7 @@ namespace FastGraph.Collections
             _distanceFunc = distanceFunc ?? throw new ArgumentNullException(nameof(distanceFunc));
             _cells = new Dictionary<TVertex, FibonacciHeapCell<TDistance, TVertex>>(capacity);
 
-            if (values != null)
+            if (values != default)
             {
                 foreach (TVertex vertex in values)
                 {
@@ -100,8 +98,8 @@ namespace FastGraph.Collections
         /// <param name="values">Dictionary of vertices associates to their distance.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="values"/> is <see langword="null"/>.</exception>
         public FibonacciQueue(
-            [NotNull] Dictionary<TVertex, TDistance> values)
-            : this(values, Comparer<TDistance>.Default.Compare)
+            Dictionary<TVertex, TDistance> values)
+            : this(values, Comparer<TDistance?>.Default.Compare)
         {
         }
 
@@ -113,8 +111,8 @@ namespace FastGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="values"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
         public FibonacciQueue(
-            [NotNull] Dictionary<TVertex, TDistance> values,
-            [NotNull] Comparison<TDistance> distanceComparison)
+            Dictionary<TVertex, TDistance> values,
+            Comparison<TDistance?> distanceComparison)
         {
             if (values is null)
                 throw new ArgumentNullException(nameof(values));
@@ -148,21 +146,20 @@ namespace FastGraph.Collections
         /// <inheritdoc />
         public bool Contains(TVertex value)
         {
-            return _cells.TryGetValue(value, out FibonacciHeapCell<TDistance, TVertex> cell)
+            return _cells.TryGetValue(value, out FibonacciHeapCell<TDistance, TVertex>? cell)
                    && !cell.Removed;
         }
 
         /// <inheritdoc />
-        public void Enqueue([NotNull] TVertex value)
+        public void Enqueue(TVertex value)
         {
             _cells[value] = _heap.Enqueue(_distanceFunc(value), value);
         }
 
         /// <inheritdoc />
-        [NotNull]
         public TVertex Dequeue()
         {
-            FibonacciHeapCell<TDistance, TVertex> cell = _heap.Top;
+            FibonacciHeapCell<TDistance, TVertex>? cell = _heap.Top;
 
             if (cell is null)
                 throw new InvalidOperationException("Queue is empty.");
@@ -191,7 +188,7 @@ namespace FastGraph.Collections
         #region IPriorityQueue<TVertex>
 
         /// <inheritdoc />
-        public void Update([NotNull] TVertex value)
+        public void Update(TVertex value)
         {
             _heap.ChangeKey(_cells[value], _distanceFunc(value));
         }

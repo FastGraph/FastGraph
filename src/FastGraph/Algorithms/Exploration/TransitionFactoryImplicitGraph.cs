@@ -1,8 +1,8 @@
-﻿#if SUPPORTS_CLONEABLE
-using System;
-using System.Collections.Generic;
+#nullable enable
+
+#if SUPPORTS_CLONEABLE
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using FastGraph.Collections;
 
@@ -21,18 +21,15 @@ namespace FastGraph.Algorithms.Exploration
         where TVertex : ICloneable
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly VertexEdgeDictionary<TVertex, TEdge> _verticesEdgesCache =
             new VertexEdgeDictionary<TVertex, TEdge>();
 
-        [NotNull]
         private readonly Dictionary<TVertex, HashSet<ITransitionFactory<TVertex, TEdge>>> _verticesNotProcessedCache =
             new Dictionary<TVertex, HashSet<ITransitionFactory<TVertex, TEdge>>>();
 
         /// <summary>
         /// Transitions factories.
         /// </summary>
-        [NotNull, ItemNotNull]
         private readonly List<ITransitionFactory<TVertex, TEdge>> _transitionFactories =
             new List<ITransitionFactory<TVertex, TEdge>>();
 
@@ -56,7 +53,7 @@ namespace FastGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="transitionFactory">Transition factory to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactory"/> is <see langword="null"/>.</exception>
-        public void AddTransitionFactory([NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        public void AddTransitionFactory(ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             if (transitionFactory is null)
                 throw new ArgumentNullException(nameof(transitionFactory));
@@ -71,7 +68,7 @@ namespace FastGraph.Algorithms.Exploration
         /// <param name="transitionFactories">Transition factories to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transitionFactories"/> is <see langword="null"/>.</exception>
         public void AddTransitionFactories(
-            [NotNull, ItemNotNull] IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
+            IEnumerable<ITransitionFactory<TVertex, TEdge>> transitionFactories)
         {
             if (transitionFactories is null)
                 throw new ArgumentNullException(nameof(transitionFactories));
@@ -84,7 +81,7 @@ namespace FastGraph.Algorithms.Exploration
         /// Removes the given <paramref name="transitionFactory"/> from this graph.
         /// </summary>
         /// <param name="transitionFactory">Transition factory to remove.</param>
-        public bool RemoveTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        public bool RemoveTransitionFactory(ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             if (_transitionFactories.Remove(transitionFactory))
             {
@@ -126,19 +123,17 @@ namespace FastGraph.Algorithms.Exploration
         /// </summary>
         /// <param name="transitionFactory">Transition factory to check.</param>
         [Pure]
-        public bool ContainsTransitionFactory([CanBeNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+        public bool ContainsTransitionFactory(ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
             return _transitionFactories.Contains(transitionFactory);
         }
 
-        [NotNull]
         private VertexPredicate<TVertex> _vertexPredicate = vertex => true;
 
         /// <summary>
         /// Predicate that a vertex must match to be the successor (target) of an edge.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public VertexPredicate<TVertex> SuccessorVertexPredicate
         {
             get => _vertexPredicate;
@@ -149,14 +144,12 @@ namespace FastGraph.Algorithms.Exploration
             }
         }
 
-        [NotNull]
         private EdgePredicate<TVertex, TEdge> _edgePredicate = edge => true;
 
         /// <summary>
         /// Predicate that an edge must match to be the successor of a source vertex.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
         public EdgePredicate<TVertex, TEdge> SuccessorEdgePredicate
         {
             get => _edgePredicate;
@@ -204,23 +197,20 @@ namespace FastGraph.Algorithms.Exploration
         /// <inheritdoc />
         public IEnumerable<TEdge> OutEdges(TVertex vertex)
         {
-            if (TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+            if (TryGetOutEdges(vertex, out IEnumerable<TEdge>? outEdges))
                 return outEdges;
             throw new VertexNotFoundException();
         }
 
         private void AddToNotProcessedCacheIfNecessary(
-            [NotNull] TVertex vertex,
-            [NotNull] ITransitionFactory<TVertex, TEdge> transitionFactory)
+            TVertex vertex,
+            ITransitionFactory<TVertex, TEdge> transitionFactory)
         {
-            Debug.Assert(vertex != null);
-            Debug.Assert(transitionFactory != null);
-
             if (!_verticesEdgesCache.ContainsKey(vertex))
             {
                 if (_verticesNotProcessedCache.TryGetValue(
                     vertex,
-                    out HashSet<ITransitionFactory<TVertex, TEdge>> factories))
+                    out HashSet<ITransitionFactory<TVertex, TEdge>>? factories))
                 {
                     factories.Add(transitionFactory);
                 }
@@ -234,12 +224,10 @@ namespace FastGraph.Algorithms.Exploration
         }
 
         [Pure]
-        [CanBeNull, ItemNotNull]
-        private IEdgeList<TVertex, TEdge> ExploreFactoriesForVertex([NotNull] TVertex vertex)
+        [ItemNotNull]
+        private IEdgeList<TVertex, TEdge>? ExploreFactoriesForVertex(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
-            IEdgeList<TVertex, TEdge> edges = null;
+            IEdgeList<TVertex, TEdge>? edges = default;
             foreach (ITransitionFactory<TVertex, TEdge> transitionFactory in _transitionFactories)
             {
                 if (!transitionFactory.IsValid(vertex))
@@ -265,14 +253,14 @@ namespace FastGraph.Algorithms.Exploration
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
             bool wasNotProcessed = _verticesNotProcessedCache.Remove(vertex);
 
-            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edgeList))
+            if (!_verticesEdgesCache.TryGetValue(vertex, out IEdgeList<TVertex, TEdge>? edgeList))
             {
                 edgeList = ExploreFactoriesForVertex(vertex);
 
@@ -285,7 +273,7 @@ namespace FastGraph.Algorithms.Exploration
                     }
                     else
                     {
-                        edges = null;
+                        edges = default;
                         return false;
                     }
                 }

@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#nullable enable
+
+using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
 namespace FastGraph.Graphviz.Tests

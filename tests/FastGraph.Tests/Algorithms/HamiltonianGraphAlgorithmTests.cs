@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using static FastGraph.Tests.TestHelpers;
@@ -209,7 +208,7 @@ namespace FastGraph.Tests.Algorithms
 #endif
         {
 #if SUPPORTS_ENUMERABLE_COVARIANT
-            public bool Equals(IEnumerable<T> seq1, IEnumerable<T> seq2)
+            public bool Equals(IEnumerable<T>? seq1, IEnumerable<T>? seq2)
 #else
             public bool Equals(List<T> seq1, List<T> seq2)
 #endif
@@ -229,7 +228,7 @@ namespace FastGraph.Tests.Algorithms
             {
                 int hash = 1234567;
                 foreach (T elem in seq)
-                    hash = hash * 37 + elem.GetHashCode();
+                    hash = hash * 37 + elem!.GetHashCode();
                 return hash;
             }
         }
@@ -290,12 +289,14 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(null));
+                () => new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(default));
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<ArgumentNullException>(
-                () => IsHamiltonianGraphAlgorithm.IsHamiltonian<int, UndirectedEdge<int>>(null));
+                () => IsHamiltonianGraphAlgorithm.IsHamiltonian<int, UndirectedEdge<int>>(default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

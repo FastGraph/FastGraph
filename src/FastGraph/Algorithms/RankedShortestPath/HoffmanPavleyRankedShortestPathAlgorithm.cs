@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Services;
@@ -22,12 +22,12 @@ namespace FastGraph.Algorithms.RankedShortestPath
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>
         : RankedShortestPathAlgorithmBase<TVertex, TEdge, IBidirectionalGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        private TVertex _target;
+        private TVertex? _target;
         private bool _hasTargetVertex;
 
-        [NotNull]
         private readonly Func<TEdge, double> _edgeWeights;
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public HoffmanPavleyRankedShortestPathAlgorithm(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -54,10 +54,10 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public HoffmanPavleyRankedShortestPathAlgorithm(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
-            : this(null, visitedGraph, edgeWeights, distanceRelaxer)
+            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
+            : this(default, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
 
@@ -72,10 +72,10 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public HoffmanPavleyRankedShortestPathAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            IBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, distanceRelaxer)
         {
             _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -86,7 +86,7 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// </summary>
         /// <param name="target">Target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public void SetTargetVertex([NotNull] TVertex target)
+        public void SetTargetVertex(TVertex target)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
@@ -102,11 +102,11 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// <returns>True if the target vertex was set, false otherwise.</returns>
         [Pure]
         [ContractAnnotation("=> true, target:notnull;=> false, target:null")]
-        public bool TryGetTargetVertex(out TVertex target)
+        public bool TryGetTargetVertex([NotNullWhen(true)] out TVertex? target)
         {
             if (_hasTargetVertex)
             {
-                target = _target;
+                target = _target!;
                 return true;
             }
 
@@ -124,7 +124,7 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="target"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
-        public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
+        public void Compute(TVertex root, TVertex target)
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -140,7 +140,7 @@ namespace FastGraph.Algorithms.RankedShortestPath
         protected override void InternalCompute()
         {
             TVertex root = GetAndAssertRootInGraph();
-            if (!TryGetTargetVertex(out TVertex target))
+            if (!TryGetTargetVertex(out TVertex? target))
                 throw new InvalidOperationException("Target vertex not set.");
             if (!VisitedGraph.ContainsVertex(target))
                 throw new VertexNotFoundException("Target vertex is not part of the graph.");
@@ -198,16 +198,12 @@ namespace FastGraph.Algorithms.RankedShortestPath
         #endregion
 
         private void EnqueueFirstShortestPath(
-            [NotNull] IQueue<DeviationPath> queue,
-            [NotNull] IDictionary<TVertex, TEdge> successors,
-            [NotNull] IDictionary<TVertex, double> distances,
-            [NotNull] TVertex root)
+            IQueue<DeviationPath> queue,
+            IDictionary<TVertex, TEdge> successors,
+            IDictionary<TVertex, double> distances,
+            TVertex root)
         {
-            Debug.Assert(queue != null);
             Debug.Assert(queue.Count == 0);
-            Debug.Assert(successors != null);
-            Debug.Assert(distances != null);
-            Debug.Assert(root != null);
 
             var path = new List<TEdge>();
             AppendShortestPath(path, successors, root);
@@ -228,12 +224,10 @@ namespace FastGraph.Algorithms.RankedShortestPath
         }
 
         private void ComputeMinimumTree(
-            [NotNull] TVertex target,
+            TVertex target,
             out IDictionary<TVertex, TEdge> successors,
             out IDictionary<TVertex, double> distances)
         {
-            Debug.Assert(target != null);
-
             var reversedGraph =
                 new ReversedBidirectionalGraph<TVertex, TEdge>(VisitedGraph);
             var successorsObserver =
@@ -270,16 +264,12 @@ namespace FastGraph.Algorithms.RankedShortestPath
         }
 
         private void EnqueueDeviationPaths(
-            [NotNull] IQueue<DeviationPath> queue,
-            [NotNull] TVertex root,
-            [NotNull] IDictionary<TVertex, double> distances,
-            [NotNull, ItemNotNull] TEdge[] path,
+            IQueue<DeviationPath> queue,
+            TVertex root,
+            IDictionary<TVertex, double> distances,
+            TEdge[] path,
             int startEdge)
         {
-            Debug.Assert(queue != null);
-            Debug.Assert(root != null);
-            Debug.Assert(distances != null);
-            Debug.Assert(path != null);
             Debug.Assert(path[0].IsAdjacent(root));
             Debug.Assert(0 <= startEdge && startEdge < path.Length);
 
@@ -319,23 +309,18 @@ namespace FastGraph.Algorithms.RankedShortestPath
         }
 
         private void EnqueueDeviationPaths(
-            [NotNull] IQueue<DeviationPath> queue,
-            [NotNull] IDictionary<TVertex, double> distances,
-            [NotNull, ItemNotNull] TEdge[] path,
+            IQueue<DeviationPath> queue,
+            IDictionary<TVertex, double> distances,
+            TEdge[] path,
             int edgeIndex,
-            [NotNull] TVertex previousVertex,
+            TVertex previousVertex,
             double previousWeight)
         {
-            Debug.Assert(queue != null);
-            Debug.Assert(distances != null);
-            Debug.Assert(path != null);
-            Debug.Assert(previousVertex != null);
-
             TEdge edge = path[edgeIndex];
             foreach (TEdge deviationEdge in VisitedGraph.OutEdges(previousVertex))
             {
                 // Skip self edges and equal edges
-                if (EqualityComparer<TEdge>.Default.Equals(deviationEdge, edge) || deviationEdge.IsSelfEdge())
+                if (EqualityComparer<TEdge?>.Default.Equals(deviationEdge, edge) || deviationEdge.IsSelfEdge())
                     continue;
 
                 // Any edge obviously creating a loop
@@ -360,46 +345,38 @@ namespace FastGraph.Algorithms.RankedShortestPath
         }
 
         private void AppendShortestPath(
-            [NotNull, ItemNotNull] ICollection<TEdge> path,
-            [NotNull] IDictionary<TVertex, TEdge> successors,
-            [NotNull] TVertex startVertex)
+            ICollection<TEdge> path,
+            IDictionary<TVertex, TEdge> successors,
+            TVertex startVertex)
         {
-            Debug.Assert(path != null);
-            Debug.Assert(successors != null);
-            Debug.Assert(startVertex != null);
-
             TVertex current = startVertex;
-            while (successors.TryGetValue(current, out TEdge edge))
+            while (successors.TryGetValue(current, out TEdge? edge))
             {
                 path.Add(edge);
                 current = edge.Target;
             }
 
-            Debug.Assert(path.Count == 0 || EqualityComparer<TVertex>.Default.Equals(path.ElementAt(path.Count - 1).Target, _target));
+            Debug.Assert(path.Count == 0 || EqualityComparer<TVertex?>.Default.Equals(path.ElementAt(path.Count - 1).Target, _target));
         }
 
         [DebuggerDisplay("Weight = {" + nameof(Weight) + "}, Index = {" + nameof(DeviationIndex) + "}, Edge = {" + nameof(DeviationEdge) + "}")]
         private struct DeviationPath
         {
-            [NotNull, ItemNotNull]
             public TEdge[] ParentPath { get; }
 
             public int DeviationIndex { get; }
 
-            [NotNull]
             public TEdge DeviationEdge { get; }
 
             public double Weight { get; }
 
             public DeviationPath(
-                [NotNull, ItemNotNull] TEdge[] parentPath,
+                TEdge[] parentPath,
                 int deviationIndex,
-                [NotNull] TEdge deviationEdge,
+                TEdge deviationEdge,
                 double weight)
             {
-                Debug.Assert(parentPath != null);
                 Debug.Assert(0 <= deviationIndex && deviationIndex < parentPath.Length);
-                Debug.Assert(deviationEdge != null);
                 Debug.Assert(weight >= 0);
 
                 ParentPath = parentPath;

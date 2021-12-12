@@ -1,5 +1,6 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+﻿#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
 
 namespace FastGraph.Collections

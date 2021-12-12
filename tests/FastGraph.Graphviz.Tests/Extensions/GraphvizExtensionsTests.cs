@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -44,7 +44,7 @@ namespace FastGraph.Graphviz.Tests
             int[] vertices = { 1, 2, 3, 4, 5 };
             var graph = new DelegateVertexAndEdgeListGraph<int, Edge<int>>(
                 vertices,
-                (int vertex, out IEnumerable<Edge<int>> outEdges) =>
+                (int vertex, out IEnumerable<Edge<int>>? outEdges) =>
                 {
                     if (vertex == 1)
                     {
@@ -64,7 +64,7 @@ namespace FastGraph.Graphviz.Tests
                         return true;
                     }
 
-                    outEdges = null;
+                    outEdges = default;
                     return false;
                 });
 
@@ -89,7 +89,7 @@ namespace FastGraph.Graphviz.Tests
             int[] vertices = { 1, 2, 3, 4, 5 };
             var graph = new DelegateVertexAndEdgeListGraph<int, EquatableEdge<int>>(
                 vertices,
-                (int vertex, out IEnumerable<EquatableEdge<int>> outEdges) =>
+                (int vertex, out IEnumerable<EquatableEdge<int>>? outEdges) =>
                 {
                     if (vertex == 1)
                     {
@@ -109,7 +109,7 @@ namespace FastGraph.Graphviz.Tests
                         return true;
                     }
 
-                    outEdges = null;
+                    outEdges = default;
                     return false;
                 });
 
@@ -390,7 +390,9 @@ namespace FastGraph.Graphviz.Tests
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.ToGraphviz(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.ToGraphviz(default));
+#pragma warning restore CS8625
         }
     }
 }

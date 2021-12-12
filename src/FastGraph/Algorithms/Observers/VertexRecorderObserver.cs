@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using static FastGraph.Utils.DisposableHelpers;
 
 namespace FastGraph.Algorithms.Observers
@@ -15,6 +12,7 @@ namespace FastGraph.Algorithms.Observers
     [Serializable]
 #endif
     public sealed class VertexRecorderObserver<TVertex> : IObserver<IVertexTimeStamperAlgorithm<TVertex>>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexRecorderObserver{TVertex}"/> class.
@@ -29,7 +27,7 @@ namespace FastGraph.Algorithms.Observers
         /// </summary>
         /// <param name="vertices">Set of vertices.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
-        public VertexRecorderObserver([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        public VertexRecorderObserver(IEnumerable<TVertex> vertices)
         {
             if (vertices is null)
                 throw new ArgumentNullException(nameof(vertices));
@@ -37,13 +35,11 @@ namespace FastGraph.Algorithms.Observers
             _vertices = vertices.ToList();
         }
 
-        [NotNull, ItemNotNull]
         private readonly IList<TVertex> _vertices;
 
         /// <summary>
         /// Encountered vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<TVertex> Vertices => _vertices.AsEnumerable();
 
         #region IObserver<TAlgorithm>
@@ -60,10 +56,8 @@ namespace FastGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             _vertices.Add(vertex);
         }
     }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
-using System.Linq;
 
 namespace FastGraph.Algorithms.GraphPartition
 {
@@ -13,16 +12,17 @@ namespace FastGraph.Algorithms.GraphPartition
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class KernighanLinAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IUndirectedEdge<TVertex>, ITagged<double>
     {
         private readonly int _nbIterations;
         private readonly int _partitionSize;
 
-        private SortedSet<TVertex> _vertexSetA;
-        private SortedSet<TVertex> _vertexSetB;
+        private SortedSet<TVertex>? _vertexSetA;
+        private SortedSet<TVertex>? _vertexSetB;
 
-        private SortedSet<TVertex> _unSwappedSetA;
-        private SortedSet<TVertex> _unSwappedSetB;
+        private SortedSet<TVertex>? _unSwappedSetA;
+        private SortedSet<TVertex>? _unSwappedSetB;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KernighanLinAlgorithm{TVertex,TEdge}"/> class.
@@ -31,7 +31,7 @@ namespace FastGraph.Algorithms.GraphPartition
         /// <param name="nbIterations">Number of iterations to perform.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public KernighanLinAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int nbIterations)
             : base(visitedGraph)
         {
@@ -49,11 +49,8 @@ namespace FastGraph.Algorithms.GraphPartition
             public TVertex Vertex1 { get; }
             public TVertex Vertex2 { get; }
 
-            public SwapPair([NotNull] TVertex vertex1, [NotNull] TVertex vertex2)
+            public SwapPair(TVertex vertex1, TVertex vertex2)
             {
-                Debug.Assert(vertex1 != null);
-                Debug.Assert(vertex2 != null);
-
                 Vertex1 = vertex1;
                 Vertex2 = vertex2;
             }
@@ -80,22 +77,22 @@ namespace FastGraph.Algorithms.GraphPartition
             {
                 SwapPair pair = swaps.Last();
                 swaps.Remove(pair);
-                SwapVertices(_vertexSetA, pair.Vertex2, _vertexSetB, pair.Vertex1);
+                SwapVertices(_vertexSetA!, pair.Vertex2, _vertexSetB!, pair.Vertex1);
             }
 
-            return new Partition<TVertex>(_vertexSetA, _vertexSetB, minCost);
+            return new Partition<TVertex>(_vertexSetA!, _vertexSetB!, minCost);
         }
 
-        private double SingleSwap([NotNull, ItemNotNull] ICollection<SwapPair> swaps)
+        private double SingleSwap(ICollection<SwapPair> swaps)
         {
-            SwapPair maxPair = null;
+            SwapPair? maxPair = default;
             double maxGain = double.MinValue;
-            foreach (TVertex vertexFromA in _unSwappedSetA)
+            foreach (TVertex vertexFromA in _unSwappedSetA!)
             {
-                foreach (TVertex vertexFromB in _unSwappedSetB)
+                foreach (TVertex vertexFromB in _unSwappedSetB!)
                 {
-                    bool foundEdge = FindEdge(vertexFromA, vertexFromB, out TEdge edge);
-                    double edgeCost = foundEdge ? edge.Tag : 0.0;
+                    bool foundEdge = FindEdge(vertexFromA, vertexFromB, out TEdge? edge);
+                    double edgeCost = foundEdge ? edge!.Tag : 0.0;
 
                     double gain = GetVertexCost(vertexFromA) + GetVertexCost(vertexFromB) - 2 * edgeCost;
                     if (gain > maxGain)
@@ -109,26 +106,24 @@ namespace FastGraph.Algorithms.GraphPartition
             if (maxPair is null)
                 throw new InvalidOperationException("Must find a swap.");
 
-            SwapVertices(_vertexSetA, maxPair.Vertex1, _vertexSetB, maxPair.Vertex2);
+            SwapVertices(_vertexSetA!, maxPair.Vertex1, _vertexSetB!, maxPair.Vertex2);
             swaps.Add(maxPair);
             _unSwappedSetA.Remove(maxPair.Vertex1);
-            _unSwappedSetB.Remove(maxPair.Vertex2);
+            _unSwappedSetB!.Remove(maxPair.Vertex2);
 
             return GetCutCost();
         }
 
         [Pure]
-        private double GetVertexCost([NotNull] TVertex vertex)
+        private double GetVertexCost(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             double cost = 0;
-            bool vertexIsInA = _vertexSetA.Contains(vertex);
+            bool vertexIsInA = _vertexSetA!.Contains(vertex);
 
             foreach (TVertex neighborVertex in GetNeighbors(vertex))
             {
                 bool vertexNeighborIsInA = _vertexSetA.Contains(neighborVertex);
-                if (!FindEdge(vertex, neighborVertex, out TEdge edge))
+                if (!FindEdge(vertex, neighborVertex, out TEdge? edge))
                     continue;
 
                 if (vertexIsInA != vertexNeighborIsInA) // External
@@ -145,11 +140,8 @@ namespace FastGraph.Algorithms.GraphPartition
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
-        private IEnumerable<TVertex> GetNeighbors([NotNull] TVertex vertex)
+        private IEnumerable<TVertex> GetNeighbors(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             var neighbors = new HashSet<TVertex>();
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertex))
             {
@@ -166,16 +158,11 @@ namespace FastGraph.Algorithms.GraphPartition
         }
 
         private static void SwapVertices(
-            [NotNull, ItemNotNull] ISet<TVertex> setA,
-            [NotNull] TVertex vertexA,
-            [NotNull, ItemNotNull] ISet<TVertex> setB,
-            [NotNull] TVertex vertexB)
+            ISet<TVertex> setA,
+            TVertex vertexA,
+            ISet<TVertex> setB,
+            TVertex vertexB)
         {
-            Debug.Assert(setA != null);
-            Debug.Assert(vertexA != null);
-            Debug.Assert(setB != null);
-            Debug.Assert(vertexB != null);
-
             if (!setA.Contains(vertexA)
                 || setA.Contains(vertexB)
                 || !setB.Contains(vertexB)
@@ -195,7 +182,7 @@ namespace FastGraph.Algorithms.GraphPartition
             double cost = 0;
             foreach (TEdge edge in VisitedGraph.Edges)
             {
-                if (_vertexSetA.Contains(edge.Source) != _vertexSetA.Contains(edge.Target))
+                if (_vertexSetA!.Contains(edge.Source) != _vertexSetA.Contains(edge.Target))
                 {
                     cost += edge.Tag;
                 }
@@ -208,7 +195,7 @@ namespace FastGraph.Algorithms.GraphPartition
         /// Searches for an edge that links <paramref name="vertexFromA"/> and <paramref name="vertexFromB"/>.
         /// </summary>
         [Pure]
-        private bool FindEdge([NotNull] TVertex vertexFromA, [NotNull] TVertex vertexFromB, out TEdge foundEdge)
+        private bool FindEdge(TVertex vertexFromA, TVertex vertexFromB, [NotNullWhen(true)] out TEdge? foundEdge)
         {
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertexFromA))
             {
@@ -231,11 +218,11 @@ namespace FastGraph.Algorithms.GraphPartition
             {
                 if (i < _partitionSize)
                 {
-                    _vertexSetA.Add(vertex);
+                    _vertexSetA!.Add(vertex);
                 }
                 else
                 {
-                    _vertexSetB.Add(vertex);
+                    _vertexSetB!.Add(vertex);
                 }
 
                 ++i;

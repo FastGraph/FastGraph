@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -14,6 +14,7 @@ namespace FastGraph
     [Serializable]
 #endif
     public class UndirectedEdgeEventArgs<TVertex, TEdge> : EdgeEventArgs<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -22,7 +23,7 @@ namespace FastGraph
         /// <param name="edge">The edge.</param>
         /// <param name="reversed">Indicates if the edge should be reversed or not.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        public UndirectedEdgeEventArgs([NotNull] TEdge edge, bool reversed)
+        public UndirectedEdgeEventArgs(TEdge edge, bool reversed)
             : base(edge)
         {
             Reversed = reversed;
@@ -36,13 +37,11 @@ namespace FastGraph
         /// <summary>
         /// Edge source.
         /// </summary>
-        [NotNull]
         public TVertex Source => Reversed ? Edge.Target : Edge.Source;
 
         /// <summary>
         /// Edge target.
         /// </summary>
-        [NotNull]
         public TVertex Target => Reversed ? Edge.Source : Edge.Target;
     }
 }

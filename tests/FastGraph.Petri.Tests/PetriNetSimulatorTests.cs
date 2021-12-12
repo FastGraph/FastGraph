@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -54,11 +53,11 @@ namespace FastGraph.Petri.Tests
             public IList<Person> Evaluate(IList<Person> markings)
             {
                 var persons = new List<Person>();
-                Person customer = markings.FirstOrDefault(p => p is Customer);
-                if (customer != null)
+                Person? customer = markings.FirstOrDefault(p => p is Customer);
+                if (customer != default)
                     persons.Add(customer);
-                Person barber = markings.FirstOrDefault(p => p is Barber);
-                if (barber != null)
+                Person? barber = markings.FirstOrDefault(p => p is Barber);
+                if (barber != default)
                     persons.Add(barber);
                 return persons;
             }
@@ -70,8 +69,8 @@ namespace FastGraph.Petri.Tests
             public IList<Person> Evaluate(IList<Person> markings)
             {
                 var persons = new List<Person>();
-                Person customer = markings.FirstOrDefault(p => p is Customer);
-                if (customer != null)
+                Person? customer = markings.FirstOrDefault(p => p is Customer);
+                if (customer != default)
                     persons.Add(customer);
                 return persons;
             }
@@ -83,8 +82,8 @@ namespace FastGraph.Petri.Tests
             public IList<Person> Evaluate(IList<Person> markings)
             {
                 var persons = new List<Person>();
-                Person barber = markings.FirstOrDefault(p => p is Barber);
-                if (barber != null)
+                Person? barber = markings.FirstOrDefault(p => p is Barber);
+                if (barber != default)
                     persons.Add(barber);
                 return persons;
             }
@@ -104,10 +103,9 @@ namespace FastGraph.Petri.Tests
 
         private abstract class Person
         {
-            [NotNull]
             public string Name { [UsedImplicitly] get; }
 
-            public Person([NotNull] string name)
+            public Person(string name)
             {
                 Name = name;
             }
@@ -115,7 +113,7 @@ namespace FastGraph.Petri.Tests
 
         private class Barber : Person
         {
-            public Barber([NotNull] string name)
+            public Barber(string name)
                 : base(name)
             {
             }
@@ -123,7 +121,7 @@ namespace FastGraph.Petri.Tests
 
         private class Customer : Person
         {
-            public Customer([NotNull] string name)
+            public Customer(string name)
                 : base(name)
             {
             }
@@ -146,7 +144,9 @@ namespace FastGraph.Petri.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new PetriNetSimulator<int>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new PetriNetSimulator<int>(default));
+#pragma warning restore CS8625
         }
 
         [Test]

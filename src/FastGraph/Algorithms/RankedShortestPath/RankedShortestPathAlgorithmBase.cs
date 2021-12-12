@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 
 namespace FastGraph.Algorithms.RankedShortestPath
@@ -14,6 +12,7 @@ namespace FastGraph.Algorithms.RankedShortestPath
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public abstract class RankedShortestPathAlgorithmBase<TVertex, TEdge, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IGraph<TVertex, TEdge>, IImplicitVertexSet<TVertex>
     {
@@ -26,9 +25,9 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected RankedShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            TGraph visitedGraph,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
@@ -56,13 +55,11 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// </summary>
         public int ComputedShortestPathCount => _computedShortestPaths?.Count ?? 0;
 
-        [ItemNotNull]
-        private List<IEnumerable<TEdge>> _computedShortestPaths;
+        private List<IEnumerable<TEdge>>? _computedShortestPaths;
 
         /// <summary>
         /// Enumerable of shortest paths found.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IEnumerable<IEnumerable<TEdge>> ComputedShortestPaths
         {
             get
@@ -79,19 +76,17 @@ namespace FastGraph.Algorithms.RankedShortestPath
         /// Adds the given <paramref name="path"/> to the set of found shortest paths.
         /// </summary>
         /// <param name="path">Path to add.</param>
-        protected void AddComputedShortestPath([NotNull, ItemNotNull] IEnumerable<TEdge> path)
+        protected void AddComputedShortestPath(IEnumerable<TEdge> path)
         {
-            Debug.Assert(path != null);
             TEdge[] pathArray = path.ToArray();
-            Debug.Assert(pathArray.All(edge => edge != null), "There is at least one null edge is the path.");
+            Debug.Assert(pathArray.All(edge => edge != null), "There is at least one default edge is the path.");
 
-            _computedShortestPaths.Add(pathArray);
+            _computedShortestPaths!.Add(pathArray);
         }
 
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         #region AlgorithmBase<TGraph>

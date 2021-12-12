@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Petri.Tests
@@ -70,13 +70,15 @@ namespace FastGraph.Petri.Tests
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(null, transition));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(place, null));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>((IPlace<int>)null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new Arc<int>(default, transition));
+            Assert.Throws<ArgumentNullException>(() => new Arc<int>(place, default));
+            Assert.Throws<ArgumentNullException>(() => new Arc<int>((IPlace<int>?)default, default));
 
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(null, place));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(transition, null));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>((ITransition<int>)null, null));
+            Assert.Throws<ArgumentNullException>(() => new Arc<int>(default, place));
+            Assert.Throws<ArgumentNullException>(() => new Arc<int>(transition, default));
+            Assert.Throws<ArgumentNullException>(() => new Arc<int>((ITransition<int>?)default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

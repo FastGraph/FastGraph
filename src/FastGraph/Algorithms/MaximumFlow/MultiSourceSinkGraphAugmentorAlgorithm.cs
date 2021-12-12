@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Services;
 
 namespace FastGraph.Algorithms.MaximumFlow
@@ -10,6 +11,7 @@ namespace FastGraph.Algorithms.MaximumFlow
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge>
         : GraphAugmentorAlgorithmBase<TVertex, TEdge, IMutableBidirectionalGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -22,10 +24,10 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MultiSourceSinkGraphAugmentorAlgorithm(
-            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
-            : this(null, visitedGraph, vertexFactory, edgeFactory)
+            IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            VertexFactory<TVertex> vertexFactory,
+            EdgeFactory<TVertex, TEdge> edgeFactory)
+            : this(default, visitedGraph, vertexFactory, edgeFactory)
         {
         }
 
@@ -40,10 +42,10 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MultiSourceSinkGraphAugmentorAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            IAlgorithmComponent? host,
+            IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+            VertexFactory<TVertex> vertexFactory,
+            EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph, vertexFactory, edgeFactory)
         {
         }
@@ -58,13 +60,13 @@ namespace FastGraph.Algorithms.MaximumFlow
                 // Is source
                 if (VisitedGraph.IsInEdgesEmpty(vertex))
                 {
-                    AddAugmentedEdge(SuperSource, vertex);
+                    AddAugmentedEdge(SuperSource!, vertex);
                 }
 
                 // Is sink
                 if (VisitedGraph.IsOutEdgesEmpty(vertex))
                 {
-                    AddAugmentedEdge(vertex, SuperSink);
+                    AddAugmentedEdge(vertex, SuperSink!);
                 }
             }
         }

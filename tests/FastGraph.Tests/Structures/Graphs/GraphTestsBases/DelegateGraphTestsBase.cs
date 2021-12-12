@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
@@ -14,30 +13,31 @@ namespace FastGraph.Tests.Structures
     internal class DelegateGraphTestsBase : GraphTestsBase
     {
         [Pure]
-        [NotNull]
         protected static TryFunc<TVertex, IEnumerable<TEdge>> GetEmptyGetter<TVertex, TEdge>()
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            return (TVertex _, out IEnumerable<TEdge> edges) =>
+            return (TVertex _, out IEnumerable<TEdge>? edges) =>
             {
-                edges = null;
+                edges = default;
                 return false;
             };
         }
 
         protected class GraphData<TVertex, TEdge>
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             public GraphData()
             {
-                TryGetEdges = (TVertex _, out IEnumerable<TEdge> edges) =>
+                TryGetEdges = (TVertex _, out IEnumerable<TEdge>? edges) =>
                 {
                     ++_nbCalls;
 
                     if (ShouldReturnValue)
                         edges = ShouldReturnEdges ?? Enumerable.Empty<TEdge>();
                     else
-                        edges = null;
+                        edges = default;
 
                     return ShouldReturnValue;
                 };
@@ -45,11 +45,9 @@ namespace FastGraph.Tests.Structures
 
             private int _nbCalls;
 
-            [NotNull]
             public TryFunc<TVertex, IEnumerable<TEdge>> TryGetEdges { get; }
 
-            [CanBeNull, ItemNotNull]
-            public IEnumerable<TEdge> ShouldReturnEdges { get; set; }
+            public IEnumerable<TEdge>? ShouldReturnEdges { get; set; }
 
             public bool ShouldReturnValue { get; set; }
 
@@ -65,8 +63,8 @@ namespace FastGraph.Tests.Structures
         #region Contains Vertex
 
         protected static void ContainsVertex_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitVertexSet<int> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitVertexSet<int> graph)
         {
             data.CheckCalls(0);
 
@@ -84,8 +82,8 @@ namespace FastGraph.Tests.Structures
         #region Contains Edge
 
         protected static void ContainsEdge_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IEdgeSet<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IEdgeSet<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -119,8 +117,8 @@ namespace FastGraph.Tests.Structures
         }
 
         private static void ContainsEdge_SourceTarget_GenericTest(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull, InstantHandle] Func<int, int, bool> hasEdge,
+            GraphData<int, Edge<int>> data,
+            [InstantHandle] Func<int, int, bool> hasEdge,
             bool isDirected = true)
         {
             data.CheckCalls(0);
@@ -152,8 +150,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IIncidenceGraph<int, Edge<int>> graph)
         {
             ContainsEdge_SourceTarget_GenericTest(
                 data,
@@ -161,8 +159,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_UndirectedGraph_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             ContainsEdge_SourceTarget_GenericTest(
                 data,
@@ -175,8 +173,8 @@ namespace FastGraph.Tests.Structures
         #region Out Edges
 
         protected static void OutEdge_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitGraph<int, Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -194,8 +192,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdge_Throws_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data.CheckCalls(0);
@@ -215,8 +213,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -235,8 +233,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void OutEdges_Throws_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data.CheckCalls(0);
@@ -258,8 +256,8 @@ namespace FastGraph.Tests.Structures
         #region Adjacent Edges
 
         protected static void AdjacentEdge_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge12 = new Edge<int>(1, 2);
@@ -277,8 +275,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdge_Throws_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data.CheckCalls(0);
@@ -298,8 +296,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -318,8 +316,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void AdjacentEdges_Throws_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data.CheckCalls(0);
@@ -341,8 +339,8 @@ namespace FastGraph.Tests.Structures
         #region Out Edges
 
         protected static void InEdge_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge21 = new Edge<int>(2, 1);
@@ -360,8 +358,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_Throws_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data.CheckCalls(0);
@@ -381,8 +379,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -401,8 +399,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_Throws_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data.CheckCalls(0);
@@ -424,9 +422,9 @@ namespace FastGraph.Tests.Structures
         #region Degree
 
         protected static void Degree_Test(
-            [NotNull] GraphData<int, Edge<int>> data1,
-            [NotNull] GraphData<int, Edge<int>> data2,
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data1,
+            GraphData<int, Edge<int>> data2,
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             data1.CheckCalls(0);
@@ -456,10 +454,10 @@ namespace FastGraph.Tests.Structures
             Assert.AreEqual(0, graph.Degree(1));
 
             data1.ShouldReturnEdges = new[] { new Edge<int>(1, 2) };
-            data2.ShouldReturnEdges = null;
+            data2.ShouldReturnEdges = default;
             Assert.AreEqual(1, graph.Degree(1));
 
-            data1.ShouldReturnEdges = null;
+            data1.ShouldReturnEdges = default;
             data2.ShouldReturnEdges = new[] { new Edge<int>(3, 1) };
             Assert.AreEqual(1, graph.Degree(1));
 
@@ -478,8 +476,8 @@ namespace FastGraph.Tests.Structures
         #region Try Get Edges
 
         protected static void TryGetEdge_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IIncidenceGraph<int, Edge<int>> graph)
         {
             ContainsEdge_SourceTarget_GenericTest(
                 data,
@@ -487,8 +485,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetEdge_UndirectedGraph_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             ContainsEdge_SourceTarget_GenericTest(
                 data,
@@ -497,8 +495,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IIncidenceGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -507,7 +505,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(1);
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 
@@ -518,8 +516,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] DelegateVertexAndEdgeListGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            DelegateVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -528,7 +526,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetEdges(1, 2, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 
@@ -572,8 +570,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetOutEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IImplicitGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IImplicitGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -582,7 +580,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(1);
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 
@@ -593,8 +591,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetOutEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] DelegateVertexAndEdgeListGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            DelegateVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -603,7 +601,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 
@@ -612,8 +610,8 @@ namespace FastGraph.Tests.Structures
             CollectionAssert.AreEqual(data.ShouldReturnEdges, edges);
             data.CheckCalls(1);
 
-            data.ShouldReturnEdges = null;
-            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>> outEdges));
+            data.ShouldReturnEdges = default;
+            Assert.IsTrue(graph.TryGetOutEdges(1, out IEnumerable<Edge<int>>? outEdges));
             CollectionAssert.IsEmpty(outEdges);
             data.CheckCalls(1);
 
@@ -636,8 +634,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetAdjacentEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] DelegateImplicitUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            DelegateImplicitUndirectedGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -646,7 +644,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(1);
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 
@@ -657,8 +655,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetAdjacentEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] DelegateUndirectedGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            DelegateUndirectedGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -667,7 +665,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 
@@ -676,8 +674,8 @@ namespace FastGraph.Tests.Structures
             CollectionAssert.AreEqual(data.ShouldReturnEdges, edges);
             data.CheckCalls(1);
 
-            data.ShouldReturnEdges = null;
-            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out IEnumerable<Edge<int>> adjacentEdges));
+            data.ShouldReturnEdges = default;
+            Assert.IsTrue(graph.TryGetAdjacentEdges(1, out IEnumerable<Edge<int>>? adjacentEdges));
             CollectionAssert.IsEmpty(adjacentEdges);
             data.CheckCalls(1);
 
@@ -700,17 +698,19 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void TryGetAdjacentEdges_Throws_Test<TVertex, TEdge>(
-            [NotNull] DelegateImplicitUndirectedGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            DelegateImplicitUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetAdjacentEdges(null, out _));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.TryGetAdjacentEdges(default, out _));
+#pragma warning restore CS8604
         }
 
         protected static void TryGetInEdges_Test(
-            [NotNull] GraphData<int, Edge<int>> data,
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph)
+            GraphData<int, Edge<int>> data,
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph)
         {
             data.CheckCalls(0);
 
@@ -719,7 +719,7 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(1);
 
             data.ShouldReturnValue = true;
-            Assert.IsTrue(graph.TryGetInEdges(1, out IEnumerable<Edge<int>> edges));
+            Assert.IsTrue(graph.TryGetInEdges(1, out IEnumerable<Edge<int>>? edges));
             CollectionAssert.IsEmpty(edges);
             data.CheckCalls(1);
 

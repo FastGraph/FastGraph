@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Petri.Tests
@@ -28,7 +28,9 @@ namespace FastGraph.Petri.Tests
 
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => expression.Evaluate(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => expression.Evaluate(default));
+#pragma warning restore CS8625
         }
     }
 }

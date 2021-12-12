@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -9,13 +10,13 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IHierarchy<TVertex, TEdge> : IMutableVertexAndEdgeListGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Gets the root of the hierarchy.
         /// </summary>
-        [CanBeNull]
-        TVertex Root { get; }
+        TVertex? Root { get; }
 
         /// <summary>
         /// Gets the parent vertex of the given <paramref name="vertex"/>.
@@ -25,8 +26,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]
-        [CanBeNull]
-        TVertex GetParent([NotNull] TVertex vertex);
+        TVertex? GetParent(TVertex vertex);
 
         /// <summary>
         /// Gets the parent edge of the <paramref name="vertex"/>.
@@ -36,8 +36,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]
-        [CanBeNull]
-        TEdge GetParentEdge([NotNull] TVertex vertex);
+        TEdge? GetParentEdge(TVertex vertex);
 
         /// <summary>
         /// Gets a value indicating if <paramref name="edge"/> is  a cross edge.
@@ -46,7 +45,7 @@ namespace FastGraph
         /// <returns>True if the edge is a cross edge, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsCrossEdge([NotNull] TEdge edge);
+        bool IsCrossEdge(TEdge edge);
 
         /// <summary>
         /// Gets a value indicating whether the <paramref name="edge"/>
@@ -56,7 +55,7 @@ namespace FastGraph
         /// <returns>True if it's a real edge, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsRealEdge([NotNull] TEdge edge);
+        bool IsRealEdge(TEdge edge);
 
         /// <summary>
         /// Gets a value indicating if <paramref name="source"/>
@@ -68,7 +67,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsPredecessorOf([NotNull] TVertex source, [NotNull] TVertex target);
+        bool IsPredecessorOf(TVertex source, TVertex target);
 
         /// <summary>
         /// Gets the number of edges between the <paramref name="source"/> and <paramref name="target"/> vertex.
@@ -83,7 +82,7 @@ namespace FastGraph
         /// <paramref name="target"/> or the other-way round.
         /// </exception>
         [Pure]
-        int InducedEdgeCount([NotNull] TVertex source, [NotNull] TVertex target);
+        int InducedEdgeCount(TVertex source, TVertex target);
 
         /// <summary>
         /// Gets a value indicating if the <paramref name="vertex"/> is an inner node or a leaf.
@@ -92,7 +91,7 @@ namespace FastGraph
         /// <returns>True if the <paramref name="vertex"/> is not a leaf, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsInnerNode([NotNull] TVertex vertex);
+        bool IsInnerNode(TVertex vertex);
 
         /// <summary>
         /// Gets the collection of children edges from the <paramref name="vertex"/>.
@@ -101,8 +100,7 @@ namespace FastGraph
         /// <returns>Children edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TEdge> ChildrenEdges([NotNull] TVertex vertex);
+        IEnumerable<TEdge> ChildrenEdges(TVertex vertex);
 
         /// <summary>
         /// Gets the collection of children vertices from the <paramref name="vertex"/>.
@@ -111,7 +109,6 @@ namespace FastGraph
         /// <returns>Children vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TVertex> ChildrenVertices([NotNull] TVertex vertex);
+        IEnumerable<TVertex> ChildrenVertices(TVertex vertex);
     }
 }

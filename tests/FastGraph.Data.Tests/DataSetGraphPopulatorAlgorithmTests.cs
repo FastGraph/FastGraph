@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Data;
 using NUnit.Framework;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -43,11 +44,13 @@ namespace FastGraph.Data.Tests
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(graph, null));
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(null, dataSet));
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(null, null));
-            // ReSharper disable AssignNullToNotNullAttribute
-            // ReSharper disable ObjectCreationAsStatement
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(graph, default));
+            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(default, dataSet));
+            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(default, default));
+#pragma warning restore CS8625
+            // ReSharper restore AssignNullToNotNullAttribute
+            // ReSharper restore ObjectCreationAsStatement
         }
 
         [Test]

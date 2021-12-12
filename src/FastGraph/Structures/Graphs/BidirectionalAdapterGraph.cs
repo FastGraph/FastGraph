@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 using FastGraph.Collections;
 
 namespace FastGraph
@@ -18,9 +17,9 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class BidirectionalAdapterGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly IVertexAndEdgeListGraph<TVertex, TEdge> _baseGraph;
 
         /// <summary>
@@ -28,13 +27,13 @@ namespace FastGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public BidirectionalAdapterGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
+        public BidirectionalAdapterGraph(IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
             _baseGraph = baseGraph ?? throw new ArgumentNullException(nameof(baseGraph));
             _inEdges = new Dictionary<TVertex, EdgeList<TVertex, TEdge>>(_baseGraph.VertexCount);
             foreach (TEdge edge in _baseGraph.Edges)
             {
-                if (!_inEdges.TryGetValue(edge.Target, out EdgeList<TVertex, TEdge> edgeList))
+                if (!_inEdges.TryGetValue(edge.Target, out EdgeList<TVertex, TEdge>? edgeList))
                 {
                     edgeList = new EdgeList<TVertex, TEdge>();
                     _inEdges.Add(edge.Target, edgeList);
@@ -107,13 +106,13 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             return _baseGraph.TryGetEdge(source, target, out edge);
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        public bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             return _baseGraph.TryGetEdges(source, target, out edges);
         }
@@ -141,7 +140,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             return _baseGraph.TryGetOutEdges(vertex, out edges);
         }
@@ -156,7 +155,6 @@ namespace FastGraph
 
         #region IBidirectionalIncidenceGraph<TVertex,TEdge>
 
-        [NotNull]
         private readonly Dictionary<TVertex, EdgeList<TVertex, TEdge>> _inEdges;
 
         /// <inheritdoc />
@@ -171,7 +169,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge>? inEdges))
                 return inEdges.Count;
             throw new VertexNotFoundException();
         }
@@ -182,24 +180,24 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge>? inEdges))
                 return inEdges.AsEnumerable();
             throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
-        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetInEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge>? inEdges))
             {
                 edges = inEdges.AsEnumerable();
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -209,7 +207,7 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge> inEdges))
+            if (_inEdges.TryGetValue(vertex, out EdgeList<TVertex, TEdge>? inEdges))
                 return inEdges[index];
             throw new VertexNotFoundException();
         }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using FastGraph.Algorithms;
 
@@ -27,7 +25,7 @@ namespace FastGraph.Tests.Algorithms
             {
             }
 
-            protected override bool TryGetService(Type serviceType, out object service)
+            protected override bool TryGetService(Type serviceType, [NotNullWhen(true)] out object? service)
             {
                 if (serviceType == typeof(TestService))
                 {
@@ -38,7 +36,9 @@ namespace FastGraph.Tests.Algorithms
                 if (serviceType == typeof(TestNullService))
                 {
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    return base.TryGetService(null, out service);
+#pragma warning disable CS8625
+                    return base.TryGetService(default, out service);
+#pragma warning restore CS8625
                 }
 
                 return base.TryGetService(serviceType, out service);
@@ -49,25 +49,19 @@ namespace FastGraph.Tests.Algorithms
 
         private class ManageableTestAlgorithm : AlgorithmBase<AdjacencyGraph<int, Edge<int>>>
         {
-            [NotNull]
             public ManualResetEvent InitializeEvent { get; }
-            [NotNull]
             public ManualResetEvent InitializedEvent { get; } = new ManualResetEvent(false);
 
-            [NotNull]
             public ManualResetEvent ComputeEvent { get; }
-            [NotNull]
             public ManualResetEvent ComputedEvent { get; } = new ManualResetEvent(false);
 
-            [NotNull]
             public ManualResetEvent CleanEvent { get; }
-            [NotNull]
             public ManualResetEvent CleanedEvent { get; } = new ManualResetEvent(false);
 
             public ManageableTestAlgorithm(
-                [NotNull] ManualResetEvent initialize,
-                [NotNull] ManualResetEvent compute,
-                [NotNull] ManualResetEvent clean)
+                ManualResetEvent initialize,
+                ManualResetEvent compute,
+                ManualResetEvent clean)
                 : base(new AdjacencyGraph<int, Edge<int>>())
             {
                 InitializeEvent = initialize;
@@ -385,7 +379,7 @@ namespace FastGraph.Tests.Algorithms
         public void TryGetService()
         {
             var algorithm = new TestAlgorithm();
-            Assert.IsTrue(algorithm.TryGetService(out TestService service));
+            Assert.IsTrue(algorithm.TryGetService(out TestService? service));
             Assert.IsInstanceOf<TestService>(service);
 
             Assert.IsFalse(algorithm.TryGetService<TestNotInService>(out _));

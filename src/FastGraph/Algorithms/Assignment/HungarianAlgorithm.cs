@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.Assignment
@@ -48,32 +48,31 @@ namespace FastGraph.Algorithms.Assignment
             End
         }
 
-        [NotNull]
         private readonly int[,] _costs;
 
         private int _width;
         private int _height;
 
-        private byte[,] _masks;
-        private bool[] _rowsCovered;
-        private bool[] _colsCovered;
+        private byte[,]? _masks;
+        private bool[]? _rowsCovered;
+        private bool[]? _colsCovered;
 
         private Steps _step;
 
         /// <summary>
         /// Computed assignments.
         /// </summary>
-        public int[] AgentsTasks { get; private set; }
+        public int[]? AgentsTasks { get; private set; }
 
         private Location _pathStart;
-        private Location[] _path;
+        private Location[]? _path;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HungarianAlgorithm"/> class.
         /// </summary>
         /// <param name="costs">Costs matrix.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="costs"/> is <see langword="null"/>.</exception>
-        public HungarianAlgorithm([NotNull] int[,] costs)
+        public HungarianAlgorithm(int[,] costs)
         {
             _costs = costs ?? throw new ArgumentNullException(nameof(costs));
             _step = Steps.Init;
@@ -83,7 +82,6 @@ namespace FastGraph.Algorithms.Assignment
         /// Returns assignments (without visualization).
         /// </summary>
         /// <returns>Array of assignments.</returns>
-        [NotNull]
         public int[] Compute()
         {
             while (DoStep() != Steps.End)
@@ -91,7 +89,7 @@ namespace FastGraph.Algorithms.Assignment
                 // Nothing to do there
             }
 
-            return AgentsTasks;
+            return AgentsTasks!;
         }
 
         /// <summary>
@@ -99,7 +97,6 @@ namespace FastGraph.Algorithms.Assignment
         /// </summary>
         /// <returns>An enumerable of algorithm iterations.</returns>
         [Pure]
-        [NotNull]
         public IEnumerable<HungarianIteration> GetIterations()
         {
             Steps step = Steps.Init;
@@ -110,9 +107,9 @@ namespace FastGraph.Algorithms.Assignment
 
                 yield return new HungarianIteration(
                     (int[,])_costs.Clone(),
-                    (byte[,])_masks.Clone(),
-                    (bool[])_rowsCovered.Clone(),
-                    (bool[])_colsCovered.Clone(),
+                    (byte[,])_masks!.Clone(),
+                    (bool[])_rowsCovered!.Clone(),
+                    (bool[])_colsCovered!.Clone(),
                     step);
             }
         }
@@ -136,22 +133,22 @@ namespace FastGraph.Algorithms.Assignment
             {
                 case Steps.Step1:
                     {
-                        _step = RunStep1(_masks, _colsCovered, _width, _height);
+                        _step = RunStep1(_masks!, _colsCovered!, _width, _height);
                         return step;
                     }
                 case Steps.Step2:
                     {
-                        _step = RunStep2(_costs, _masks, _rowsCovered, _colsCovered, _width, _height, ref _pathStart);
+                        _step = RunStep2(_costs, _masks!, _rowsCovered!, _colsCovered!, _width, _height, ref _pathStart);
                         return step;
                     }
                 case Steps.Step3:
                     {
-                        _step = RunStep3(_masks, _rowsCovered, _colsCovered, _width, _height, _path, _pathStart);
+                        _step = RunStep3(_masks!, _rowsCovered!, _colsCovered!, _width, _height, _path!, _pathStart);
                         return step;
                     }
                 case Steps.Step4:
                     {
-                        _step = RunStep4(_costs, _rowsCovered, _colsCovered, _width, _height);
+                        _step = RunStep4(_costs, _rowsCovered!, _colsCovered!, _width, _height);
                         return step;
                     }
             }
@@ -167,7 +164,7 @@ namespace FastGraph.Algorithms.Assignment
             {
                 for (int j = 0; j < _width; ++j)
                 {
-                    if (_masks[i, j] == 1)
+                    if (_masks![i, j] == 1)
                     {
                         AgentsTasks[i] = j;
                         break;
@@ -219,7 +216,7 @@ namespace FastGraph.Algorithms.Assignment
             // Set 1 where job assigned
             AssignJobs();
 
-            ClearCovers(_rowsCovered, _colsCovered, _width, _height);
+            ClearCovers(_rowsCovered!, _colsCovered!, _width, _height);
 
             _path = new Location[_width * _height];
             _pathStart = default(Location);
@@ -229,8 +226,8 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep1(
-            [NotNull] byte[,] masks,
-            [NotNull] bool[] colsCovered,
+            byte[,] masks,
+            bool[] colsCovered,
             int width,
             int height)
         {
@@ -258,10 +255,10 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep2(
-            [NotNull] int[,] costs,
-            [NotNull] byte[,] masks,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+            int[,] costs,
+            byte[,] masks,
+            bool[] rowsCovered,
+            bool[] colsCovered,
             int width,
             int height,
             ref Location pathStart)
@@ -290,12 +287,12 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep3(
-            [NotNull] byte[,] masks,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+            byte[,] masks,
+            bool[] rowsCovered,
+            bool[] colsCovered,
             int width,
             int height,
-            [NotNull] Location[] path,
+            Location[] path,
             Location pathStart)
         {
             int pathIndex = 0;
@@ -320,9 +317,9 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep4(
-            [NotNull] int[,] costs,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+            int[,] costs,
+            bool[] rowsCovered,
+            bool[] colsCovered,
             int width,
             int height)
         {
@@ -347,8 +344,8 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static void ConvertPath(
-            [NotNull] byte[,] masks,
-            [NotNull] Location[] path,
+            byte[,] masks,
+            Location[] path,
             int pathLength)
         {
             for (int i = 0; i < pathLength; ++i)
@@ -366,9 +363,9 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static Location FindZero(
-            [NotNull] int[,] costs,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+            int[,] costs,
+            bool[] rowsCovered,
+            bool[] colsCovered,
             int width,
             int height)
         {
@@ -385,9 +382,9 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static int FindMinimum(
-            [NotNull] int[,] costs,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+            int[,] costs,
+            bool[] rowsCovered,
+            bool[] colsCovered,
             int width,
             int height)
         {
@@ -407,7 +404,7 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static int FindStarInRow(
-            [NotNull] byte[,] masks,
+            byte[,] masks,
             int width,
             int row)
         {
@@ -421,7 +418,7 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static int FindStarInColumn(
-            [NotNull] byte[,] masks,
+            byte[,] masks,
             int height,
             int column)
         {
@@ -435,7 +432,7 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static int FindPrimeInRow(
-            [NotNull] byte[,] masks,
+            byte[,] masks,
             int width,
             int row)
         {
@@ -449,8 +446,8 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static void ClearCovers(
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+            bool[] rowsCovered,
+            bool[] colsCovered,
             int width,
             int height)
         {
@@ -466,7 +463,7 @@ namespace FastGraph.Algorithms.Assignment
         }
 
         private static void ClearPrimes(
-            [NotNull] byte[,] masks,
+            byte[,] masks,
             int width,
             int height)
         {

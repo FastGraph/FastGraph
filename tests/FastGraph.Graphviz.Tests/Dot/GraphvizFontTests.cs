@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 
@@ -27,10 +28,12 @@ namespace FastGraph.Graphviz.Tests
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentException>(() => new GraphvizFont(null, 12.5f));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentException>(() => new GraphvizFont(default, 12.5f));
             Assert.Throws<ArgumentException>(() => new GraphvizFont("", 12.5f));
             Assert.Throws<ArgumentOutOfRangeException>(() => new GraphvizFont("Font", 0.0f));
             Assert.Throws<ArgumentOutOfRangeException>(() => new GraphvizFont("Font", -1.0f));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             // ReSharper restore ObjectCreationAsStatement
         }
     }

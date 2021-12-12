@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Collections
@@ -20,7 +21,7 @@ namespace FastGraph.Tests.Collections
 
             private readonly int _priority;
 
-            public bool Equals(TestPriority other)
+            public bool Equals(TestPriority? other)
             {
                 if (other is null)
                     return false;
@@ -29,12 +30,14 @@ namespace FastGraph.Tests.Collections
                 return _priority == other._priority;
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
+#pragma warning disable CS8604
                 return ReferenceEquals(this, obj) || Equals(obj as TestPriority);
+#pragma warning restore CS8604
             }
 
-            public int CompareTo(TestPriority other)
+            public int CompareTo(TestPriority? other)
             {
                 if (other is null)
                     return 1;

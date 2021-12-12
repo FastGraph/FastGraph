@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Collections;
 using static FastGraph.Tests.AssertHelpers;
@@ -17,8 +15,9 @@ namespace FastGraph.Tests.Collections
         #region Test helpers
 
         private static void AssertHeapSize<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             int expectedCount)
+            where TPriority : notnull
         {
             if (expectedCount > 0)
             {
@@ -39,17 +38,17 @@ namespace FastGraph.Tests.Collections
         /// </summary>
         /// <remarks>This is a destructive assertion.</remarks>
         private static void AssertHeapCondition<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             HeapDirection direction,
             int expectedCount,
-            [CanBeNull, ItemNotNull] IEnumerable<FibonacciHeapCell<TPriority, TValue>> deletedCells = null)
+            IEnumerable<FibonacciHeapCell<TPriority, TValue>>? deletedCells = default)
             where TPriority : struct, IComparable<TPriority>
         {
-            FibonacciHeapCell<TPriority, TValue>[] deletedCellsArray = null;
-            if (deletedCells != null)
+            FibonacciHeapCell<TPriority, TValue>[]? deletedCellsArray = default;
+            if (deletedCells != default)
                 deletedCellsArray = deletedCells.ToArray();
 
-            TPriority? lastValue = null;
+            TPriority? lastValue = default;
             foreach (KeyValuePair<TPriority, TValue> value in heap.GetDestructiveEnumerator())
             {
                 if (lastValue is null)
@@ -63,7 +62,7 @@ namespace FastGraph.Tests.Collections
                     Assert.Fail("Heap condition has been violated.");
                 }
 
-                if (deletedCellsArray != null)
+                if (deletedCellsArray != default)
                     CollectionAssert.DoesNotContain(deletedCellsArray, value, "Found item that was deleted.");
 
                 lastValue = value.Key;
@@ -78,17 +77,17 @@ namespace FastGraph.Tests.Collections
         /// </summary>
         /// <remarks>This is a destructive assertion.</remarks>
         private static void AssertHeapConditionClass<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             HeapDirection direction,
             int expectedCount,
-            [CanBeNull, ItemNotNull] IEnumerable<FibonacciHeapCell<TPriority, TValue>> deletedCells = null)
+            IEnumerable<FibonacciHeapCell<TPriority, TValue>>? deletedCells = default)
             where TPriority : class, IComparable<TPriority>
         {
-            FibonacciHeapCell<TPriority, TValue>[] deletedCellsArray = null;
-            if (deletedCells != null)
+            FibonacciHeapCell<TPriority, TValue>[]? deletedCellsArray = default;
+            if (deletedCells != default)
                 deletedCellsArray = deletedCells.ToArray();
 
-            TPriority lastValue = null;
+            TPriority? lastValue = default;
             foreach (KeyValuePair<TPriority, TValue> value in heap.GetDestructiveEnumerator())
             {
                 if (lastValue is null)
@@ -102,7 +101,7 @@ namespace FastGraph.Tests.Collections
                     Assert.Fail("Heap condition has been violated.");
                 }
 
-                if (deletedCellsArray != null)
+                if (deletedCellsArray != default)
                     CollectionAssert.DoesNotContain(deletedCellsArray, value, "Found item that was deleted.");
 
                 lastValue = value.Key;
@@ -117,9 +116,9 @@ namespace FastGraph.Tests.Collections
         /// </summary>
         /// <remarks>This is a destructive assertion.</remarks>
         private static void AssertHeapCondition<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             HeapDirection direction,
-            [NotNull] TPriority lastValue,
+            TPriority lastValue,
             int expectedCount)
             where TPriority : IComparable<TPriority>
         {
@@ -139,15 +138,17 @@ namespace FastGraph.Tests.Collections
         }
 
         private static void AssertCell<TPriority, TValue>(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [NotNull] TPriority expectedPriority,
-            [NotNull] TValue expectedValue,
+            FibonacciHeapCell<TPriority, TValue> cell,
+            TPriority expectedPriority,
+            TValue expectedValue,
             bool expectedMarked = false,
             bool expectedRemoved = false,
             int expectedDegree = 1,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedPrevious = null,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedNext = null,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedParent = null)
+            FibonacciHeapCell<TPriority, TValue>? expectedPrevious = default,
+            FibonacciHeapCell<TPriority, TValue>? expectedNext = default,
+            FibonacciHeapCell<TPriority, TValue>? expectedParent = default)
+            where TPriority : notnull
+            where TValue : notnull
         {
             Assert.AreEqual(expectedPriority, cell.Priority);
             Assert.AreEqual(expectedValue, cell.Value);
@@ -160,11 +161,13 @@ namespace FastGraph.Tests.Collections
         }
 
         private static void AssertNewCell<TPriority, TValue>(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [NotNull] TPriority expectedPriority,
-            [NotNull] TValue expectedValue,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedPrevious = null,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedNext = null)
+            FibonacciHeapCell<TPriority, TValue> cell,
+            TPriority expectedPriority,
+            TValue expectedValue,
+            FibonacciHeapCell<TPriority, TValue>? expectedPrevious = default,
+            FibonacciHeapCell<TPriority, TValue>? expectedNext = default)
+            where TPriority : notnull
+            where TValue : notnull
         {
             AssertCell(
                 cell,
@@ -199,6 +202,7 @@ namespace FastGraph.Tests.Collections
                 FibonacciHeap<TPriority, TValue> heap,
                 Comparison<TPriority> expectedComparer,
                 HeapDirection expectedDirection = HeapDirection.Increasing)
+                where TPriority : notnull
             {
                 Assert.AreEqual(0, heap.Count);
                 Assert.IsTrue(heap.IsEmpty);
@@ -210,6 +214,7 @@ namespace FastGraph.Tests.Collections
             void AssertHeapBaseProperties<TPriority, TValue>(
                 FibonacciHeap<TPriority, TValue> heap,
                 HeapDirection expectedDirection = HeapDirection.Increasing)
+                where TPriority : notnull
             {
                 AssertHeapProperties(heap, Comparer<TPriority>.Default.Compare, expectedDirection);
             }
@@ -222,10 +227,12 @@ namespace FastGraph.Tests.Collections
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Increasing, null));
+                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Increasing, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Decreasing, null));
+                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Decreasing, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -250,6 +257,7 @@ namespace FastGraph.Tests.Collections
                 TValue value1,
                 TValue value2,
                 TValue value3)
+                where TValue : notnull
             {
                 EnqueueInternalTest();
                 EnqueueInternalTest2();
@@ -315,7 +323,7 @@ namespace FastGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreEqual(topPriority, heap.Top.Priority);
+                        Assert.AreEqual(topPriority, heap.Top!.Priority);
                         Assert.AreEqual(topValue, heap.Top.Value);
                     }
 
@@ -386,7 +394,7 @@ namespace FastGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreSame(topPriority, heap.Top.Priority);
+                        Assert.AreSame(topPriority, heap.Top!.Priority);
                         Assert.AreEqual(topValue, heap.Top.Value);
                     }
 
@@ -434,7 +442,7 @@ namespace FastGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreEqual(1, heap.Top.Priority);
+                        Assert.AreEqual(1, heap.Top!.Priority);
                         Assert.AreEqual(value1, heap.Top.Value);
                     }
 
@@ -451,8 +459,10 @@ namespace FastGraph.Tests.Collections
         public void Add_Throws()
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Enqueue(null, 1));
-            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Enqueue(null, 1));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Enqueue(default, 1));
+            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Enqueue(default, 1));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -579,7 +589,7 @@ namespace FastGraph.Tests.Collections
                     for (int i = 0; i < 10; ++i)
                         cells.Add(heap.Enqueue(i, value1));
 
-                    int lastValue = heap.Top.Priority;
+                    int lastValue = heap.Top!.Priority;
                     heap.Dequeue();
                     heap.ChangeKey(cells[6], 3);
                     heap.ChangeKey(cells[7], 2);
@@ -717,7 +727,7 @@ namespace FastGraph.Tests.Collections
                     for (int i = 0; i < 10; ++i)
                         cells.Add(heap.Enqueue(new TestPriority(i), value1));
 
-                    TestPriority lastValue = heap.Top.Priority;
+                    TestPriority lastValue = heap.Top!.Priority;
                     heap.Dequeue();
                     heap.ChangeKey(cells[6], new TestPriority(3));
                     heap.ChangeKey(cells[7], new TestPriority(2));
@@ -886,18 +896,20 @@ namespace FastGraph.Tests.Collections
             var priority = new TestPriority(1);
             var cell = new FibonacciHeapCell<TestPriority, int>();
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(null, priority));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(default, priority));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(null, priority));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(default, priority));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(null, null));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(null, null));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(cell, null));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(cell, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(cell, null));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(cell, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -1086,10 +1098,12 @@ namespace FastGraph.Tests.Collections
         public void DeleteKey_Throws()
         {
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Delete(null));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Delete(default));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Delete(null));
+                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Delete(default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -1124,7 +1138,7 @@ namespace FastGraph.Tests.Collections
 
                 void DequeueInternalTest()
                 {
-                    var heap = new FibonacciHeap<double, TValue>(HeapDirection.Increasing);
+                    var heap = new FibonacciHeap<double, TValue?>(HeapDirection.Increasing);
                     AssertHeapSize(heap, 0);
 
                     heap.Enqueue(10.0, value1);
@@ -1135,7 +1149,7 @@ namespace FastGraph.Tests.Collections
                     heap.Enqueue(6.0, default);
                     AssertHeapSize(heap, 6);
 
-                    KeyValuePair<double, TValue> pair = heap.Dequeue();
+                    KeyValuePair<double, TValue?> pair = heap.Dequeue();
                     Assert.AreEqual(1.0, pair.Key);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
@@ -1168,7 +1182,7 @@ namespace FastGraph.Tests.Collections
 
                 void DequeueInternalTest2()
                 {
-                    var heap = new FibonacciHeap<TestPriority, TValue>(HeapDirection.Increasing);
+                    var heap = new FibonacciHeap<TestPriority, TValue?>(HeapDirection.Increasing);
                     AssertHeapSize(heap, 0);
 
                     var priority1 = new TestPriority(1);
@@ -1185,7 +1199,7 @@ namespace FastGraph.Tests.Collections
                     heap.Enqueue(priority6, default);
                     AssertHeapSize(heap, 6);
 
-                    KeyValuePair<TestPriority, TValue> pair = heap.Dequeue();
+                    KeyValuePair<TestPriority, TValue?> pair = heap.Dequeue();
                     Assert.AreSame(priority1, pair.Key);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
@@ -1299,7 +1313,7 @@ namespace FastGraph.Tests.Collections
                     heap.Enqueue(9.0, value3);
                     heap.Enqueue(2.0, value2);
                     heap.Enqueue(3.0, value4);
-                    heap.Enqueue(6.0, default);
+                    heap.Enqueue(6.0, default!);
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue> pair = heap.Dequeue();
@@ -1349,7 +1363,7 @@ namespace FastGraph.Tests.Collections
                     heap.Enqueue(priority9, value3);
                     heap.Enqueue(priority2, value2);
                     heap.Enqueue(priority3, value4);
-                    heap.Enqueue(priority6, default);
+                    heap.Enqueue(priority6, default!);
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Dequeue();
@@ -1664,7 +1678,9 @@ namespace FastGraph.Tests.Collections
             var increaseHeap = new FibonacciHeap<int, int>(HeapDirection.Increasing);
             var decreaseHeap = new FibonacciHeap<int, int>(HeapDirection.Decreasing);
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => increaseHeap.Merge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => increaseHeap.Merge(default));
+#pragma warning restore CS8625
 
             Assert.Throws<InvalidOperationException>(() => increaseHeap.Merge(decreaseHeap));
             Assert.Throws<InvalidOperationException>(() => decreaseHeap.Merge(increaseHeap));

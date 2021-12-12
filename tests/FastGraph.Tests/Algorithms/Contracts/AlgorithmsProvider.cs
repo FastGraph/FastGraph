@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms;
 
@@ -15,7 +14,6 @@ namespace FastGraph.Tests.Algorithms.Contracts
         /// Gets all implementations of the given <typeparamref name="T"/> type.
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<Type> GetImplementationsOf<T>()
         {
             return GetImplementationsOf(typeof(T));
@@ -25,8 +23,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
         /// Gets all implementations of the given <paramref name="targetType"/>.
         /// </summary>
         [Pure]
-        [NotNull, ItemNotNull]
-        private static IEnumerable<Type> GetImplementationsOf([NotNull] Type targetType)
+        private static IEnumerable<Type> GetImplementationsOf(Type targetType)
         {
             IEnumerable<Type> implementations = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
@@ -51,13 +48,11 @@ namespace FastGraph.Tests.Algorithms.Contracts
         /// <summary>
         /// Gets all implementations of the <see cref="IVertexColorizerAlgorithm{TVertex}"/> interface.
         /// </summary>
-        [NotNull, ItemNotNull]
         public static IEnumerable<Type> VertexColorizers => GetImplementationsOf(typeof(IVertexColorizerAlgorithm<>));
 
         /// <summary>
         /// Gets all implementations of the <see cref="IDistancesCollection{TVertex}"/> interface.
         /// </summary>
-        [NotNull, ItemNotNull]
         public static IEnumerable<Type> DistanceCollectors => GetImplementationsOf(typeof(IDistancesCollection<>));
     }
 }

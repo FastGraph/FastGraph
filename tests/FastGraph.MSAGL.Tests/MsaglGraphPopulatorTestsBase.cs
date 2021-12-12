@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.MSAGL.Tests.MsaglGraphTestHelpers;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.MSAGL.Tests
 {
@@ -14,21 +13,21 @@ namespace FastGraph.MSAGL.Tests
     internal class MsaglGraphPopulatorTestsBase
     {
         protected static void Compute_Test<TPopulator>(
-            [NotNull, InstantHandle] Func<IEdgeListGraph<int, Edge<int>>, TPopulator> createPopulator)
+            [InstantHandle] Func<IEdgeListGraph<int, Edge<int>>, TPopulator> createPopulator)
             where TPopulator : MsaglGraphPopulator<int, Edge<int>>
         {
             // Empty graph
             var graph = new AdjacencyGraph<int, Edge<int>>();
             MsaglGraphPopulator<int, Edge<int>> populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph);
+            AssertAreEquivalent(graph, populator.MsaglGraph!);
 
             // Only vertices
             graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVertexRange(new[] { 1, 2, 3 });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph);
+            AssertAreEquivalent(graph, populator.MsaglGraph!);
 
             // With vertices and edges
             graph = new AdjacencyGraph<int, Edge<int>>();
@@ -41,7 +40,7 @@ namespace FastGraph.MSAGL.Tests
             graph.AddVertexRange(new[] { 5, 6 });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph);
+            AssertAreEquivalent(graph, populator.MsaglGraph!);
 
             // With cycles
             graph = new AdjacencyGraph<int, Edge<int>>();
@@ -55,7 +54,7 @@ namespace FastGraph.MSAGL.Tests
             });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph);
+            AssertAreEquivalent(graph, populator.MsaglGraph!);
 
             // With self edge
             graph = new AdjacencyGraph<int, Edge<int>>();
@@ -68,7 +67,7 @@ namespace FastGraph.MSAGL.Tests
             });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph);
+            AssertAreEquivalent(graph, populator.MsaglGraph!);
 
             // Undirected graph
             var undirectedGraph = new UndirectedGraph<int, Edge<int>>();
@@ -81,12 +80,12 @@ namespace FastGraph.MSAGL.Tests
             });
             populator = createPopulator(undirectedGraph);
             populator.Compute();
-            AssertAreEquivalent(undirectedGraph, populator.MsaglGraph);
+            AssertAreEquivalent(undirectedGraph, populator.MsaglGraph!);
         }
 
         [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
         protected static void Handlers_Test<TPopulator>(
-            [NotNull, InstantHandle] Func<IEdgeListGraph<int, Edge<int>>, TPopulator> createPopulator)
+            [InstantHandle] Func<IEdgeListGraph<int, Edge<int>>, TPopulator> createPopulator)
             where TPopulator : MsaglGraphPopulator<int, Edge<int>>
         {
             // Empty graph

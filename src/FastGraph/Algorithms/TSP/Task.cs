@@ -1,45 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.TSP
 {
     internal sealed class Task<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : EquatableEdge<TVertex>
     {
-        [NotNull]
         private readonly BidirectionalGraph<TVertex, TEdge> _graph;
 
-        [NotNull]
         private readonly IDictionary<EquatableEdge<TVertex>, double> _weight;
 
-        [NotNull]
         public BidirectionalGraph<TVertex, TEdge> Path { get; }
 
-        [NotNull]
         public string TaskName { get; }
 
         public double MinCost { get; private set; }
 
-        [NotNull]
         public TaskPriority Priority { get; }
 
         public Task(
-            [NotNull] BidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] IDictionary<EquatableEdge<TVertex>, double> weights,
-            [NotNull] BidirectionalGraph<TVertex, TEdge> path,
+            BidirectionalGraph<TVertex, TEdge> graph,
+            IDictionary<EquatableEdge<TVertex>, double> weights,
+            BidirectionalGraph<TVertex, TEdge> path,
             double cost)
             : this(graph, weights, path, cost, "Init")
         {
         }
 
         public Task(
-            [NotNull] BidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] IDictionary<EquatableEdge<TVertex>, double> weights,
-            [NotNull] BidirectionalGraph<TVertex, TEdge> path,
+            BidirectionalGraph<TVertex, TEdge> graph,
+            IDictionary<EquatableEdge<TVertex>, double> weights,
+            BidirectionalGraph<TVertex, TEdge> path,
             double cost,
-            [NotNull] string taskName)
+            string taskName)
         {
             TaskName = taskName;
             _graph = new BidirectionalGraph<TVertex, TEdge>(graph);
@@ -113,7 +109,7 @@ namespace FastGraph.Algorithms.TSP
             double sum = 0;
             foreach (TVertex vertex in _graph.Vertices)
             {
-                if (!_graph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+                if (!_graph.TryGetOutEdges(vertex, out IEnumerable<TEdge>? outEdges))
                     continue;
 
                 TEdge[] outEdgesArray = outEdges.ToArray();
@@ -137,7 +133,7 @@ namespace FastGraph.Algorithms.TSP
             double sum = 0;
             foreach (TVertex vertex in _graph.Vertices)
             {
-                if (!_graph.TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
+                if (!_graph.TryGetInEdges(vertex, out IEnumerable<TEdge>? inEdges))
                     continue;
 
                 TEdge[] inEdgesArray = inEdges.ToArray();
@@ -156,13 +152,12 @@ namespace FastGraph.Algorithms.TSP
             return sum;
         }
 
-        [NotNull, ItemNotNull]
         private IEnumerable<TEdge> GetZeroEdges()
         {
             var zeros = new List<TEdge>();
             foreach (TVertex vertex in _graph.Vertices)
             {
-                if (_graph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+                if (_graph.TryGetOutEdges(vertex, out IEnumerable<TEdge>? outEdges))
                 {
                     zeros.AddRange(outEdges.Where(edge => Math.Abs(_weight[edge]) < double.Epsilon));
                 }
@@ -173,36 +168,36 @@ namespace FastGraph.Algorithms.TSP
 
         [Pure]
         private double ComputeMaxCandidate(
-            [NotNull, ItemNotNull] IEnumerable<TEdge> row,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> column,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            IEnumerable<TEdge> row,
+            IEnumerable<TEdge> column,
+            TVertex source,
+            TVertex target)
         {
             return
-                row.Where(edge => !EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
-                    .DefaultIfEmpty(null)
+                row.Where(edge => !EqualityComparer<TVertex?>.Default.Equals(edge.Target, target))
+                    .DefaultIfEmpty(default)
                     .Min(edge => edge is null
                         ? double.PositiveInfinity
                         : _weight[edge])
                 +
-                column.Where(edge => !EqualityComparer<TVertex>.Default.Equals(edge.Source, source))
-                    .DefaultIfEmpty(null)
+                column.Where(edge => !EqualityComparer<TVertex?>.Default.Equals(edge.Source, source))
+                    .DefaultIfEmpty(default)
                     .Min(edge => edge is null
                         ? double.PositiveInfinity
                         : _weight[edge]);
         }
 
-        private TEdge ChooseEdgeForSplit()
+        private TEdge? ChooseEdgeForSplit()
         {
-            TEdge edgeForSplit = null;
+            TEdge? edgeForSplit = default;
             double max = double.NegativeInfinity;
             foreach (TEdge edge in GetZeroEdges())
             {
                 TVertex v1 = edge.Source;
                 TVertex v2 = edge.Target;
 
-                if (_graph.TryGetOutEdges(v1, out IEnumerable<TEdge> row)
-                    && _graph.TryGetInEdges(v2, out IEnumerable<TEdge> column))
+                if (_graph.TryGetOutEdges(v1, out IEnumerable<TEdge>? row)
+                    && _graph.TryGetInEdges(v2, out IEnumerable<TEdge>? column))
                 {
                     double maxCandidate = ComputeMaxCandidate(row, column, v1, v2);
 
@@ -222,17 +217,17 @@ namespace FastGraph.Algorithms.TSP
             return MinCost < double.PositiveInfinity;
         }
 
-        public bool Split(out Task<TVertex, TEdge> taskTake, out Task<TVertex, TEdge> taskDrop)
+        public bool Split([NotNullWhen(true)] out Task<TVertex, TEdge>? taskTake, [NotNullWhen(true)] out Task<TVertex, TEdge>? taskDrop)
         {
             if (!CanSplit())
             {
-                taskTake = null;
-                taskDrop = null;
+                taskTake = default;
+                taskDrop = default;
                 return false;
             }
 
-            TEdge edgeForSplit = ChooseEdgeForSplit();
-            TVertex v1 = edgeForSplit.Source;
+            TEdge? edgeForSplit = ChooseEdgeForSplit();
+            TVertex v1 = edgeForSplit!.Source;
             TVertex v2 = edgeForSplit.Target;
 
             BidirectionalGraph<TVertex, TEdge> graphTake = _graph.Clone();

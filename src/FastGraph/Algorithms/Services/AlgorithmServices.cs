@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms.Services
 {
@@ -8,7 +7,6 @@ namespace FastGraph.Algorithms.Services
     /// </summary>
     internal sealed class AlgorithmServices : IAlgorithmServices
     {
-        [NotNull]
         private readonly IAlgorithmComponent _host;
 
         /// <summary>
@@ -16,12 +14,12 @@ namespace FastGraph.Algorithms.Services
         /// </summary>
         /// <param name="host">Algorithm host.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="host"/> is <see langword="null"/>.</exception>
-        public AlgorithmServices([NotNull] IAlgorithmComponent host)
+        public AlgorithmServices(IAlgorithmComponent host)
         {
             _host = host ?? throw new ArgumentNullException(nameof(host));
         }
 
-        private ICancelManager _cancelManager;
+        private ICancelManager? _cancelManager;
 
         /// <inheritdoc />
         public ICancelManager CancelManager =>

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.ConnectedComponents;
@@ -20,7 +20,7 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmState(algorithm, graph);
 
-            algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(null, graph);
+            algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default, graph);
             AssertAlgorithmState(algorithm, graph);
         }
 
@@ -29,11 +29,13 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(null));
+                () => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(null, null));
+                () => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

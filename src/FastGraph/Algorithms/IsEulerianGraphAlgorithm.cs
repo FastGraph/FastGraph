@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms.ConnectedComponents;
 
@@ -13,9 +12,9 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class IsEulerianGraphAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IUndirectedEdge<TVertex>
     {
-        [NotNull]
         private readonly UndirectedGraph<TVertex, TEdge> _graph;
 
         /// <summary>
@@ -23,7 +22,7 @@ namespace FastGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to check.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public IsEulerianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        public IsEulerianGraphAlgorithm(IUndirectedGraph<TVertex, TEdge> graph)
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -52,11 +51,11 @@ namespace FastGraph.Algorithms
         }
 
         [Pure]
-        private static TrueIndexes FirstAndSecondIndexOfTrue([NotNull] bool[] data)
+        private static TrueIndexes FirstAndSecondIndexOfTrue(bool[] data)
         {
-            // If no true elements returns (null, null)
-            // If only one true element, returns (indexOfTrue, null)
-            int? firstIndex = null;
+            // If no true elements returns (default, default)
+            // If only one true element, returns (indexOfTrue, default)
+            int? firstIndex = default;
             for (int i = 0; i < data.Length; i++)
             {
                 if (data[i])
@@ -72,7 +71,7 @@ namespace FastGraph.Algorithms
                 }
             }
 
-            return new TrueIndexes(firstIndex, null);
+            return new TrueIndexes(firstIndex, default);
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace FastGraph.Algorithms
         }
 
         [Pure]
-        private bool SatisfiesEulerianCondition([NotNull] TVertex vertex)
+        private bool SatisfiesEulerianCondition(TVertex vertex)
         {
             return _graph.AdjacentDegree(vertex) % 2 == 0;
         }
@@ -143,7 +142,8 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsEulerian<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+            IUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IUndirectedEdge<TVertex>
         {
             return new IsEulerianGraphAlgorithm<TVertex, TEdge>(graph).IsEulerian();

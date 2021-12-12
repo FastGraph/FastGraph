@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms

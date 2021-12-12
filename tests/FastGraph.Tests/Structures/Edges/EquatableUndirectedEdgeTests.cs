@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -28,9 +29,11 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new EquatableUndirectedEdge<TestVertex>(null, new TestVertex("v1")));
-            Assert.Throws<ArgumentNullException>(() => new EquatableUndirectedEdge<TestVertex>(new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => new EquatableUndirectedEdge<TestVertex>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new EquatableUndirectedEdge<TestVertex>(default, new TestVertex("v1")));
+            Assert.Throws<ArgumentNullException>(() => new EquatableUndirectedEdge<TestVertex>(new TestVertex("v1"), default));
+            Assert.Throws<ArgumentNullException>(() => new EquatableUndirectedEdge<TestVertex>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<ArgumentException>(() => new EquatableUndirectedEdge<int>(2, 1));
@@ -60,8 +63,8 @@ namespace FastGraph.Tests.Structures
             Assert.IsTrue(edge1.Equals(edge2));
             Assert.IsTrue(edge2.Equals(edge1));
 
-            Assert.AreNotEqual(edge1, null);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.AreNotEqual(edge1, default);
+            Assert.IsFalse(edge1.Equals(default));
         }
 
         [Test]

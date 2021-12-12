@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
@@ -16,9 +16,11 @@ namespace FastGraph.MSAGL.Tests
 
         private class VertexTestFormatProvider : IFormatProvider
         {
-            public object GetFormat(Type formatType)
+            public object GetFormat(Type? formatType)
             {
-                return null;
+#pragma warning disable CS8603
+                return default;
+#pragma warning restore CS8603
             }
         }
 
@@ -58,13 +60,15 @@ namespace FastGraph.MSAGL.Tests
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default));
 
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, vertex => vertex.ToString()));
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator(graph, null));
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, vertex => vertex.ToString()));
+            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator(graph, default));
+            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, default));
 
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, "Format {0}"));
+            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, "Format {0}"));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

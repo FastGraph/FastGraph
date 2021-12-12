@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.ShortestPath;
@@ -25,7 +25,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, Weights, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmState(algorithm, graph);
 
-            algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, DistanceRelaxers.CriticalDistance);
+            algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmState(algorithm, graph);
         }
 
@@ -38,42 +38,44 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             Func<Edge<int>, double> Weights = _ => 1.0;
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, Weights));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, Weights));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, Weights, DistanceRelaxers.CriticalDistance));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, Weights, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, null, DistanceRelaxers.CriticalDistance));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null, DistanceRelaxers.CriticalDistance));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, Weights, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, DistanceRelaxers.CriticalDistance));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, graph, null, DistanceRelaxers.CriticalDistance));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, graph, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null, null, DistanceRelaxers.CriticalDistance));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, graph, null, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -110,9 +112,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             var vertex = new TestVertex();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(vertex, null, out _));
-            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(null, vertex, out _));
-            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(null, null, out _));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(vertex, default, out _));
+            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(default, vertex, out _));
+            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(default, default, out _));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -143,7 +147,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex1, out _));
 
-            Assert.IsTrue(algorithm.TryGetPath(vertex1, vertex2, out IEnumerable<Edge<int>> path));
+            Assert.IsTrue(algorithm.TryGetPath(vertex1, vertex2, out IEnumerable<Edge<int>>? path));
             CollectionAssert.AreEqual(
                 new[] { edge12 },
                 path);
@@ -164,9 +168,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             var vertex = new TestVertex();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm1.TryGetPath(vertex, null, out _));
-            Assert.Throws<ArgumentNullException>(() => algorithm1.TryGetPath(null, vertex, out _));
-            Assert.Throws<ArgumentNullException>(() => algorithm1.TryGetPath(null, null, out _));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm1.TryGetPath(vertex, default, out _));
+            Assert.Throws<ArgumentNullException>(() => algorithm1.TryGetPath(default, vertex, out _));
+            Assert.Throws<ArgumentNullException>(() => algorithm1.TryGetPath(default, default, out _));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

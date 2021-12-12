@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms.ConnectedComponents;
 
@@ -12,6 +12,7 @@ namespace FastGraph.Algorithms.Condensation
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public sealed class CondensationGraphAlgorithm<TVertex, TEdge, TGraph> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
     {
@@ -20,7 +21,7 @@ namespace FastGraph.Algorithms.Condensation
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public CondensationGraphAlgorithm([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public CondensationGraphAlgorithm(IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -28,7 +29,7 @@ namespace FastGraph.Algorithms.Condensation
         /// <summary>
         /// Condensed graph.
         /// </summary>
-        public IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> CondensedGraph { get; private set; }
+        public IMutableBidirectionalGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>? CondensedGraph { get; private set; }
 
         /// <summary>
         /// Gets or sets the strongly connected components flag.
@@ -89,7 +90,7 @@ namespace FastGraph.Algorithms.Condensation
 
                 // At last add edge
                 var edgeKey = new EdgeKey(sourceID, targetID);
-                if (!condensedEdges.TryGetValue(edgeKey, out CondensedEdge<TVertex, TEdge, TGraph> condensedEdge))
+                if (!condensedEdges.TryGetValue(edgeKey, out CondensedEdge<TVertex, TEdge, TGraph>? condensedEdge))
                 {
                     TGraph targets = condensedVertices[targetID];
 
@@ -105,7 +106,7 @@ namespace FastGraph.Algorithms.Condensation
         #endregion
 
         [Pure]
-        private int ComputeComponentCount([NotNull] IDictionary<TVertex, int> components)
+        private int ComputeComponentCount(IDictionary<TVertex, int> components)
         {
             IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>> componentAlgorithm;
             if (StronglyConnected)
@@ -147,7 +148,7 @@ namespace FastGraph.Algorithms.Condensation
             }
 
             /// <inheritdoc />
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return obj is EdgeKey edgeKey
                        && Equals(edgeKey);

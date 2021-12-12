@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using static FastGraph.Utils.DisposableHelpers;
 
 namespace FastGraph.Algorithms.Observers
@@ -13,6 +11,7 @@ namespace FastGraph.Algorithms.Observers
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class UndirectedVertexDistanceRecorderObserver<TVertex, TEdge>
         : IObserver<IUndirectedTreeBuilderAlgorithm<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -20,7 +19,7 @@ namespace FastGraph.Algorithms.Observers
         /// </summary>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
-        public UndirectedVertexDistanceRecorderObserver([NotNull] Func<TEdge, double> edgeWeights)
+        public UndirectedVertexDistanceRecorderObserver(Func<TEdge, double> edgeWeights)
             : this(edgeWeights, DistanceRelaxers.EdgeShortestDistance, new Dictionary<TVertex, double>())
         {
         }
@@ -35,9 +34,9 @@ namespace FastGraph.Algorithms.Observers
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distances"/> is <see langword="null"/>.</exception>
         public UndirectedVertexDistanceRecorderObserver(
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer,
-            [NotNull] IDictionary<TVertex, double> distances)
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer,
+            IDictionary<TVertex, double> distances)
         {
             EdgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
             DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
@@ -47,19 +46,16 @@ namespace FastGraph.Algorithms.Observers
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         /// <summary>
         /// Function that computes the weight for a given edge.
         /// </summary>
-        [NotNull]
         public Func<TEdge, double> EdgeWeights { get; }
 
         /// <summary>
         /// Distances per vertex.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, double> Distances { get; }
 
         #region IObserver<TAlgorithm>
@@ -76,11 +72,8 @@ namespace FastGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] object sender, [NotNull] UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void OnEdgeDiscovered(object sender, UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
-            Debug.Assert(sender != null);
-            Debug.Assert(args != null);
-
             if (!Distances.TryGetValue(args.Source, out double sourceDistance))
                 Distances[args.Source] = sourceDistance = DistanceRelaxer.InitialDistance;
             Distances[args.Target] = DistanceRelaxer.Combine(sourceDistance, EdgeWeights(args.Edge));

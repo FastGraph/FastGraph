@@ -1,4 +1,5 @@
-using System.IO;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -14,6 +13,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class EquatableTermEdge<TVertex> : TermEdge<TVertex>, IEquatable<EquatableTermEdge<TVertex>>
+        where TVertex : notnull
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EquatableTermEdge{TVertex}"/> class
@@ -23,7 +23,7 @@ namespace FastGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public EquatableTermEdge(TVertex source, TVertex target)
             : base(source, target)
         {
         }
@@ -40,13 +40,13 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="sourceTerminal"/> is negative.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="targetTerminal"/> is negative.</exception>
-        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
+        public EquatableTermEdge(TVertex source, TVertex target, int sourceTerminal, int targetTerminal)
             : base(source, target, sourceTerminal, targetTerminal)
         {
         }
 
         /// <inheritdoc />
-        public virtual bool Equals(EquatableTermEdge<TVertex> other)
+        public virtual bool Equals(EquatableTermEdge<TVertex>? other)
         {
             if (other is null)
                 return false;
@@ -57,7 +57,7 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as EquatableTermEdge<TVertex>);
         }

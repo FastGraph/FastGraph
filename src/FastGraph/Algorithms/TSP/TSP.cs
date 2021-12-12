@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using FastGraph.Algorithms.ShortestPath;
 
@@ -14,17 +14,16 @@ namespace FastGraph.Algorithms.TSP
     /// <typeparam name="TGraph">Graph type.</typeparam>
     // ReSharper disable once InconsistentNaming
     public class TSP<TVertex, TEdge, TGraph> : ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>
+        where TVertex : notnull
         where TEdge : EquatableEdge<TVertex>
         where TGraph : BidirectionalGraph<TVertex, TEdge>
     {
-        [NotNull]
         private readonly TasksManager<TVertex, TEdge> _taskManager = new TasksManager<TVertex, TEdge>();
 
         /// <summary>
         /// Shortest path found, otherwise <see langword="null"/>.
         /// </summary>
-        [CanBeNull]
-        public BidirectionalGraph<TVertex, TEdge> ResultPath { get; private set; }
+        public BidirectionalGraph<TVertex, TEdge>? ResultPath { get; private set; }
 
         /// <summary>
         /// Best cost found to answer the problem.
@@ -39,17 +38,16 @@ namespace FastGraph.Algorithms.TSP
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public TSP(
-            [NotNull] TGraph visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
-            : base(null, visitedGraph, edgeWeights)
+            TGraph visitedGraph,
+            Func<TEdge, double> edgeWeights)
+            : base(default, visitedGraph, edgeWeights)
         {
         }
 
         [Pure]
-        [NotNull]
         private static Dictionary<EquatableEdge<TVertex>, double> BuildWeightsDictionary(
-            [NotNull] TGraph visitedGraph,
-            [NotNull, InstantHandle] Func<TEdge, double> edgeWeights)
+            TGraph visitedGraph,
+            [InstantHandle] Func<TEdge, double> edgeWeights)
         {
             var weights = new Dictionary<EquatableEdge<TVertex>, double>();
             foreach (TEdge edge in visitedGraph.Edges)
@@ -95,8 +93,8 @@ namespace FastGraph.Algorithms.TSP
                 }
 
                 if (task.Split(
-                    out Task<TVertex, TEdge> task1,
-                    out Task<TVertex, TEdge> task2))
+                    out Task<TVertex, TEdge>? task1,
+                    out Task<TVertex, TEdge>? task2))
                 {
                     _taskManager.AddTask(task1);
                     _taskManager.AddTask(task2);

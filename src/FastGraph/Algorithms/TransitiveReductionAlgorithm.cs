@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -9,6 +9,7 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class TransitiveReductionAlgorithm<TVertex, TEdge> : AlgorithmBase<BidirectionalGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -17,7 +18,7 @@ namespace FastGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TransitiveReductionAlgorithm(
-            [NotNull] BidirectionalGraph<TVertex, TEdge> visitedGraph)
+            BidirectionalGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
             TransitiveReduction = new BidirectionalGraph<TVertex, TEdge>();
@@ -26,7 +27,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Transitive reduction graph.
         /// </summary>
-        [NotNull]
         public BidirectionalGraph<TVertex, TEdge> TransitiveReduction { get; }
 
         #region AlgorithmBase<TGraph>
@@ -43,7 +43,7 @@ namespace FastGraph.Algorithms
             {
                 if (found)
                 {
-                    graph.RemoveEdge(edge);
+                    graph.RemoveEdge(edge!);
                 }
             });
         }

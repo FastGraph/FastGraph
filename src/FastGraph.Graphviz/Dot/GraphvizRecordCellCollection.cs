@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
@@ -26,7 +26,7 @@ namespace FastGraph.Graphviz.Dot
         /// Initializes a new instance of the <see cref="GraphvizRecordCellCollection"/> class.
         /// </summary>
         /// <param name="collection">The collection that is wrapped by the new collection.</param>
-        public GraphvizRecordCellCollection([NotNull, ItemNotNull] IList<GraphvizRecordCell> collection)
+        public GraphvizRecordCellCollection(IList<GraphvizRecordCell> collection)
             : base(collection)
         {
         }
@@ -35,7 +35,7 @@ namespace FastGraph.Graphviz.Dot
         /// Initializes a new instance of the <see cref="GraphvizRecordCellCollection"/> class.
         /// </summary>
         /// <param name="collection">The collection that is wrapped by the new collection.</param>
-        public GraphvizRecordCellCollection([NotNull, ItemNotNull] GraphvizRecordCellCollection collection)
+        public GraphvizRecordCellCollection([ItemNotNull] GraphvizRecordCellCollection collection)
             : base(collection)
         {
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Petri
@@ -13,7 +14,7 @@ namespace FastGraph.Petri
         /// Evaluates <paramref name="markings"/>.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="markings"/> is <see langword="null"/>.</exception>
-        [NotNull, ItemNotNull]
-        IList<TToken> Evaluate([NotNull, ItemNotNull] IList<TToken> markings);
+        [ItemNotNull]
+        IList<TToken> Evaluate([ItemNotNull] IList<TToken> markings);
     }
 }

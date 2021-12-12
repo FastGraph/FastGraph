@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -14,20 +15,20 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         protected static void TryGetTargetVertex_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : new()
+            RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+            where TVertex : notnull, new()
             where TGraph : IImplicitVertexSet<TVertex>
         {
             Assert.IsFalse(algorithm.TryGetTargetVertex(out _));
 
             var vertex = new TVertex();
             algorithm.SetTargetVertex(vertex);
-            Assert.IsTrue(algorithm.TryGetTargetVertex(out TVertex target));
+            Assert.IsTrue(algorithm.TryGetTargetVertex(out TVertex? target));
             AssertEqual(vertex, target);
         }
 
         protected static void SetTargetVertex_Test<TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+            RootedSearchAlgorithmBase<int, TGraph> algorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             int targetVertexChangeCount = 0;
@@ -58,17 +59,19 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         protected static void SetTargetVertex_Throws_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : class
+            RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+            where TVertex : notnull
             where TGraph : IImplicitVertexSet<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.SetTargetVertex(null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => algorithm.SetTargetVertex(default));
+#pragma warning restore CS8604
         }
 
         protected static void ClearTargetVertex_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : new()
+            RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+            where TVertex : notnull, new()
             where TGraph : IImplicitVertexSet<TVertex>
         {
             int targetVertexChangeCount = 0;
@@ -98,8 +101,8 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithoutRoot_Throws_Test<TGraph>(
-            [NotNull] IMutableVertexSet<int> graph,
-            [NotNull, InstantHandle] Func<RootedSearchAlgorithmBase<int, TGraph>> createAlgorithm)
+            IMutableVertexSet<int> graph,
+            [InstantHandle] Func<RootedSearchAlgorithmBase<int, TGraph>> createAlgorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             RootedSearchAlgorithmBase<int, TGraph> algorithm = createAlgorithm();
@@ -121,7 +124,7 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithRootAndTarget_Test<TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+            RootedSearchAlgorithmBase<int, TGraph> algorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             const int start = 0;
@@ -134,8 +137,8 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithRootAndTarget_Throws_Test<TGraph>(
-            [NotNull] IMutableVertexSet<int> graph,
-            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+            IMutableVertexSet<int> graph,
+            RootedSearchAlgorithmBase<int, TGraph> algorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             const int start = 1;
@@ -150,18 +153,20 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithRootAndTarget_Throws_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
-            where TVertex : class, new()
+            RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+            where TVertex : notnull, new()
             where TGraph : IImplicitVertexSet<TVertex>
         {
             var start = new TVertex();
             var end = new TVertex();
 
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(start, null));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, end));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(start, default));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, end));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, default));
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
         }
 

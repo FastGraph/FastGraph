@@ -1,5 +1,5 @@
-using System;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
@@ -12,7 +12,7 @@ namespace FastGraph.Tests.Structures
         #region In Edges
 
         protected static void InEdge_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+            IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge13 = new Edge<int>(1, 3);
@@ -27,8 +27,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge13 = new Edge<int>(1, 3);
@@ -44,7 +44,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge14 = new Edge<int>(1, 4);
@@ -63,8 +63,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge11 = new Edge<int>(1, 1);
             var edge31 = new Edge<int>(3, 1);
@@ -80,17 +80,19 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.InEdge(null, 0));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.InEdge(default, 0));
+#pragma warning restore CS8604
         }
 
         protected static void InEdge_Throws_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+            IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -108,8 +110,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_Throws_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -130,7 +132,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_Throws_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<VertexNotFoundException>(() => graph.InEdge(-1, 0));
@@ -142,8 +144,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdge_Throws_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             const int vertex1 = 1;
             const int vertex2 = 2;
@@ -164,7 +166,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+            IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -191,8 +193,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -221,7 +223,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge02 = new Edge<int>(0, 2);
             var edge10 = new Edge<int>(1, 0);
@@ -241,8 +243,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -271,21 +273,23 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class
+            IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.IsInEdgesEmpty(null));
-            Assert.Throws<ArgumentNullException>(() => graph.InDegree(null));
-            Assert.Throws<ArgumentNullException>(() => graph.InEdges(null).ToArray());
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.IsInEdgesEmpty(default));
+            Assert.Throws<ArgumentNullException>(() => graph.InDegree(default));
+            Assert.Throws<ArgumentNullException>(() => graph.InEdges(default).ToArray());
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void InEdges_Throws_Test<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : IEquatable<TVertex>, new()
             where TEdge : IEdge<TVertex>
         {
@@ -298,7 +302,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void InEdges_Throws_Matrix_Test<TEdge>(
-            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+            BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
         {
             const int vertex = 10;

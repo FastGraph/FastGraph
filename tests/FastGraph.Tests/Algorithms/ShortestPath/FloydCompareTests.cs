@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
@@ -17,7 +16,8 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
     {
         #region Test helpers
 
-        private static void CheckPath<TVertex, TEdge>([NotNull] TVertex source, [NotNull] TVertex target, [NotNull, ItemNotNull] TEdge[] edges)
+        private static void CheckPath<TVertex, TEdge>(TVertex source, TVertex target, TEdge[] edges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.AreEqual(source, edges[0].Source);
@@ -27,9 +27,10 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         }
 
         private static void CompareAlgorithms<TVertex, TEdge, TGraph>(
-            [NotNull] AdjacencyGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> getDistances,
-            [NotNull, InstantHandle] Func<AdjacencyGraph<TVertex, TEdge>, Func<TEdge, double>, ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>> shortestPathAlgorithmFactory)
+            AdjacencyGraph<TVertex, TEdge> graph,
+            [InstantHandle] Func<TEdge, double> getDistances,
+            [InstantHandle] Func<AdjacencyGraph<TVertex, TEdge>, Func<TEdge, double>, ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>> shortestPathAlgorithmFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
             where TGraph : IVertexSet<TVertex>
         {
@@ -51,15 +52,15 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                     if (source.Equals(target))
                         continue;
 
-                    bool pathExists = algorithm.TryGetPath(source, target, out IEnumerable<TEdge> floydPath);
-                    Assert.AreEqual(pathExists, otherPaths(target, out IEnumerable<TEdge> otherPath));
+                    bool pathExists = algorithm.TryGetPath(source, target, out IEnumerable<TEdge>? floydPath);
+                    Assert.AreEqual(pathExists, otherPaths(target, out IEnumerable<TEdge>? otherPath));
 
                     if (pathExists)
                     {
-                        TEdge[] floydEdges = floydPath.ToArray();
+                        TEdge[] floydEdges = floydPath!.ToArray();
                         CheckPath(source, target, floydEdges);
 
-                        TEdge[] otherEdges = otherPath.ToArray();
+                        TEdge[] otherEdges = otherPath!.ToArray();
                         CheckPath(source, target, otherEdges);
 
                         // All distances are usually 1 in this test, so it should at least

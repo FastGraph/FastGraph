@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Graphviz.Dot;
 using FastGraph.Utils;
 
@@ -11,6 +11,7 @@ namespace FastGraph.Graphviz
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public abstract class GraphRendererBase<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -18,7 +19,7 @@ namespace FastGraph.Graphviz
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        protected GraphRendererBase([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+        protected GraphRendererBase(IEdgeListGraph<TVertex, TEdge> graph)
         {
             Graphviz = new GraphvizAlgorithm<TVertex, TEdge>(graph);
             InternalInitialize();
@@ -51,14 +52,13 @@ namespace FastGraph.Graphviz
         /// <summary>
         /// Graph to DOT algorithm.
         /// </summary>
-        [NotNull]
         public GraphvizAlgorithm<TVertex, TEdge> Graphviz { get; }
 
         /// <inheritdoc cref="GraphvizAlgorithm{TVertex,TEdge}.VisitedGraph"/>
         public IEdgeListGraph<TVertex, TEdge> VisitedGraph => Graphviz.VisitedGraph;
 
         /// <inheritdoc cref="GraphvizAlgorithm{TVertex,TEdge}.Generate(IDotEngine,string)"/>
-        public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
+        public string Generate(IDotEngine dot, string outputFilePath)
         {
             using (GenerationScope())
             {

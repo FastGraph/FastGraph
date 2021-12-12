@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿#nullable enable
 
 namespace FastGraph.Tests
 {
@@ -13,12 +12,11 @@ namespace FastGraph.Tests
         {
         }
 
-        public CloneableTestVertex([NotNull] string name)
+        public CloneableTestVertex(string name)
         {
             Name = name;
         }
 
-        [NotNull]
         public string Name { get; }
 
         /// <inheritdoc />

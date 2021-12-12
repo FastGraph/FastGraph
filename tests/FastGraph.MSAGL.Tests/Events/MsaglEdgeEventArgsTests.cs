@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
 
@@ -28,12 +29,14 @@ namespace FastGraph.MSAGL.Tests
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglEdgeEventArgs<int, Edge<int>>(edge, null));
+                () => new MsaglEdgeEventArgs<int, Edge<int>>(edge, default));
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglEdgeEventArgs<int, Edge<int>>(null, msaglEdge));
+                () => new MsaglEdgeEventArgs<int, Edge<int>>(default, msaglEdge));
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglEdgeEventArgs<int, Edge<int>>(null, null));
+                () => new MsaglEdgeEventArgs<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

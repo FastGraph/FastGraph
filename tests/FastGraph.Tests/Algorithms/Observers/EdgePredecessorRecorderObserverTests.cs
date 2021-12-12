@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Search;
@@ -39,7 +38,9 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new EdgePredecessorRecorderObserver<int, Edge<int>>(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => new EdgePredecessorRecorderObserver<int, Edge<int>>(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Test]
@@ -257,7 +258,9 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(
-                () => recorder.Path(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                () => recorder.Path(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Test]
@@ -459,13 +462,15 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var recorder = new EdgePredecessorRecorderObserver<int, Edge<int>>();
             Assert.Throws<ArgumentNullException>(
-                () => recorder.MergedPath(null, new Dictionary<Edge<int>, GraphColor>()));
+                () => recorder.MergedPath(default, new Dictionary<Edge<int>, GraphColor>()));
             Assert.Throws<ArgumentNullException>(
-                () => recorder.MergedPath(new Edge<int>(1, 2), null));
+                () => recorder.MergedPath(new Edge<int>(1, 2), default));
             Assert.Throws<ArgumentNullException>(
-                () => recorder.MergedPath(null, null));
+                () => recorder.MergedPath(default, default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             // ReSharper restore AssignNullToNotNullAttribute
 
             var edge = new Edge<int>(1, 2);

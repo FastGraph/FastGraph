@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Xml;
 using JetBrains.Annotations;
 
@@ -20,11 +21,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static bool[] ReadElementContentAsBooleanArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+        public static bool[]? ReadElementContentAsBooleanArray(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToBoolean);
         }
@@ -40,11 +40,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static int[] ReadElementContentAsInt32Array(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+        public static int[]? ReadElementContentAsInt32Array(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToInt32);
         }
@@ -60,11 +59,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static long[] ReadElementContentAsInt64Array(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+        public static long[]? ReadElementContentAsInt64Array(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToInt64);
         }
@@ -80,11 +78,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static float[] ReadElementContentAsSingleArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+        public static float[]? ReadElementContentAsSingleArray(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToSingle);
         }
@@ -100,11 +97,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static double[] ReadElementContentAsDoubleArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+        public static double[]? ReadElementContentAsDoubleArray(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToDouble);
         }
@@ -120,11 +116,10 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static string[] ReadElementContentAsStringArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+        public static string[]? ReadElementContentAsStringArray(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, str => str);
         }
@@ -142,16 +137,15 @@ namespace FastGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
-        public static T[] ReadElementContentAsArray<T>(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI,
-            [NotNull, InstantHandle] Func<string, T> stringToT)
+        public static T[]? ReadElementContentAsArray<T>(
+            XmlReader xmlReader,
+            string localName,
+            string namespaceURI,
+            [InstantHandle] Func<string, T> stringToT)
         {
             string str = xmlReader.ReadElementContentAsString(localName, namespaceURI);
-            if (str == "null")
-                return null;
+            if (str == "default")
+                return default;
 
             if (str.Length > 0 && str[str.Length - 1] == ' ')
             {

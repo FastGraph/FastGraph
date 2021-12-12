@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -10,6 +9,7 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public interface IConnectedComponentAlgorithm<TVertex, TEdge, out TGraph> : IAlgorithm<TGraph>
+        where TVertex : notnull
         where TGraph : IGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
@@ -21,7 +21,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Graph components.
         /// </summary>
-        [NotNull]
         IDictionary<TVertex, int> Components { get; }
     }
 }

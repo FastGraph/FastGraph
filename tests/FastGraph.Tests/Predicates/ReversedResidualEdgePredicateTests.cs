@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Predicates;
 
@@ -26,9 +26,11 @@ namespace FastGraph.Tests.Predicates
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(null, new Dictionary<Edge<int>, Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(new Dictionary<Edge<int>, double>(), null));
-            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(default, new Dictionary<Edge<int>, Edge<int>>()));
+            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(new Dictionary<Edge<int>, double>(), default));
+            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -68,13 +70,15 @@ namespace FastGraph.Tests.Predicates
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
 
             var edge12 = new Edge<int>(1, 2);
             Assert.Throws<KeyNotFoundException>(() => predicate.Test(edge12));
 
             predicate.ReversedEdges.Add(edge12, new Edge<int>(2, 1));
             Assert.Throws<KeyNotFoundException>(() => predicate.Test(edge12));
+#pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
     }

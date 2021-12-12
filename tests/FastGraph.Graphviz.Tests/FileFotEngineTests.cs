@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
 using static FastGraph.Tests.FastGraphUnitTestsHelpers;
@@ -49,12 +49,14 @@ namespace FastGraph.Graphviz.Tests
 
             var dotEngine = new FileDotEngine();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, null, filePath));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, default, filePath));
             Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, string.Empty, filePath));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, null));
+            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, default));
             Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, string.Empty));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, null, null));
+            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, default, default));
             Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, string.Empty, string.Empty));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
     }

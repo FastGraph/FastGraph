@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Data;
 using NUnit.Framework;
 using static FastGraph.Data.Tests.GraphTestHelpers;
@@ -105,7 +106,9 @@ namespace FastGraph.Data.Tests
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => DataSetGraphExtensions.ToGraph(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => DataSetGraphExtensions.ToGraph(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Test]
@@ -179,7 +182,9 @@ namespace FastGraph.Data.Tests
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => DataSetGraphExtensions.ToGraphviz(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => DataSetGraphExtensions.ToGraphviz(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
     }
 }

@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -11,7 +10,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Synchronizer object.
         /// </summary>
-        [NotNull]
         object SyncRoot { get; }
 
         /// <summary>
@@ -32,21 +30,21 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Fired when the computation state changed.
         /// </summary>
-        event EventHandler StateChanged;
+        event EventHandler? StateChanged;
 
         /// <summary>
         /// Fired when the computation start.
         /// </summary>
-        event EventHandler Started;
+        event EventHandler? Started;
 
         /// <summary>
         /// Fired when the computation is finished.
         /// </summary>
-        event EventHandler Finished;
+        event EventHandler? Finished;
 
         /// <summary>
         /// Fired when the computation is aborted.
         /// </summary>
-        event EventHandler Aborted;
+        event EventHandler? Aborted;
     }
 }

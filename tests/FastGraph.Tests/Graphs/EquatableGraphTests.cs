@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -28,7 +28,7 @@ namespace FastGraph.Tests.Structures
 
         private class EdgeTestComparer : IEqualityComparer<Edge<int>>
         {
-            public bool Equals(Edge<int> x, Edge<int> y)
+            public bool Equals(Edge<int>? x, Edge<int>? y)
             {
                 if (x is null)
                     return y is null;
@@ -47,7 +47,6 @@ namespace FastGraph.Tests.Structures
 
         #region Test cases
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> EquateWithComparerTestCases
         {
             [UsedImplicitly]
@@ -59,19 +58,19 @@ namespace FastGraph.Tests.Structures
                 #region Same graph type
 
                 // Directed graph
-                yield return new TestCaseData(null, null, vertexComparer, edgeComparer)
+                yield return new TestCaseData(default, default, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = true
                 };
 
                 var emptyAdjacencyGraph1 = new AdjacencyGraph<int, Edge<int>>();
                 var emptyAdjacencyGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                yield return new TestCaseData(emptyAdjacencyGraph1, null, vertexComparer, edgeComparer)
+                yield return new TestCaseData(emptyAdjacencyGraph1, default, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
                 };
 
-                yield return new TestCaseData(null, emptyAdjacencyGraph1, vertexComparer, edgeComparer)
+                yield return new TestCaseData(default, emptyAdjacencyGraph1, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
                 };
@@ -183,12 +182,12 @@ namespace FastGraph.Tests.Structures
                 // Undirected graph
                 var emptyUndirectedGraph1 = new UndirectedGraph<int, Edge<int>>();
                 var emptyUndirectedGraph2 = new UndirectedGraph<int, Edge<int>>();
-                yield return new TestCaseData(emptyUndirectedGraph1, null, vertexComparer, edgeComparer)
+                yield return new TestCaseData(emptyUndirectedGraph1, default, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
                 };
 
-                yield return new TestCaseData(null, emptyUndirectedGraph1, vertexComparer, edgeComparer)
+                yield return new TestCaseData(default, emptyUndirectedGraph1, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
                 };
@@ -711,10 +710,10 @@ namespace FastGraph.Tests.Structures
 
         [TestCaseSource(nameof(EquateWithComparerTestCases))]
         public bool EquateWithComparer(
-            [NotNull] IEdgeListGraph<int, Edge<int>> g,
-            [NotNull] IEdgeListGraph<int, Edge<int>> h,
-            [NotNull] IEqualityComparer<int> vertexEquality,
-            [NotNull] IEqualityComparer<Edge<int>> edgeEquality)
+            IEdgeListGraph<int, Edge<int>> g,
+            IEdgeListGraph<int, Edge<int>> h,
+            IEqualityComparer<int> vertexEquality,
+            IEqualityComparer<Edge<int>> edgeEquality)
         {
             return EquateGraphs.Equate(g, h, vertexEquality, edgeEquality);
         }
@@ -724,19 +723,20 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => EquateGraphs.Equate<int, Edge<int>>(null, null, EqualityComparer<int>.Default, null));
+                () => EquateGraphs.Equate<int, Edge<int>>(default, default, EqualityComparer<int>.Default, default));
             Assert.Throws<ArgumentNullException>(
-                () => EquateGraphs.Equate<int, Edge<int>>(null, null, null, EqualityComparer<Edge<int>>.Default));
+                () => EquateGraphs.Equate<int, Edge<int>>(default, default, default, EqualityComparer<Edge<int>>.Default));
             Assert.Throws<ArgumentNullException>(
-                () => EquateGraphs.Equate<int, Edge<int>>(null, null, null, null));
+                () => EquateGraphs.Equate<int, Edge<int>>(default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         #region Test cases
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> EquateTestCases
         {
             [UsedImplicitly]
@@ -744,7 +744,7 @@ namespace FastGraph.Tests.Structures
             {
                 #region Same graph type
 
-                yield return new TestCaseData(null, null)
+                yield return new TestCaseData(default, default)
                 {
                     ExpectedResult = true
                 };
@@ -752,12 +752,12 @@ namespace FastGraph.Tests.Structures
                 // Directed graph
                 var emptyAdjacencyGraph1 = new AdjacencyGraph<int, Edge<int>>();
                 var emptyAdjacencyGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                yield return new TestCaseData(emptyAdjacencyGraph1, null)
+                yield return new TestCaseData(emptyAdjacencyGraph1, default)
                 {
                     ExpectedResult = false
                 };
 
-                yield return new TestCaseData(null, emptyAdjacencyGraph1)
+                yield return new TestCaseData(default, emptyAdjacencyGraph1)
                 {
                     ExpectedResult = false
                 };
@@ -855,12 +855,12 @@ namespace FastGraph.Tests.Structures
                 // Undirected graph
                 var emptyUndirectedGraph1 = new UndirectedGraph<int, Edge<int>>();
                 var emptyUndirectedGraph2 = new UndirectedGraph<int, Edge<int>>();
-                yield return new TestCaseData(emptyUndirectedGraph1, null)
+                yield return new TestCaseData(emptyUndirectedGraph1, default)
                 {
                     ExpectedResult = false
                 };
 
-                yield return new TestCaseData(null, emptyUndirectedGraph1)
+                yield return new TestCaseData(default, emptyUndirectedGraph1)
                 {
                     ExpectedResult = false
                 };
@@ -1366,7 +1366,6 @@ namespace FastGraph.Tests.Structures
             }
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ReversedGraphEquateTestCases
         {
             [UsedImplicitly]
@@ -1410,7 +1409,6 @@ namespace FastGraph.Tests.Structures
             }
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> CompressedGraphEquateTestCases
         {
             [UsedImplicitly]
@@ -1457,24 +1455,24 @@ namespace FastGraph.Tests.Structures
 
         [TestCaseSource(nameof(EquateTestCases))]
         public bool Equate(
-            [NotNull] IEdgeListGraph<int, Edge<int>> g,
-            [NotNull] IEdgeListGraph<int, Edge<int>> h)
+            IEdgeListGraph<int, Edge<int>> g,
+            IEdgeListGraph<int, Edge<int>> h)
         {
             return EquateGraphs.Equate(g, h);
         }
 
         [TestCaseSource(nameof(ReversedGraphEquateTestCases))]
         public bool EquateReversedGraph(
-            [NotNull] IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> g,
-            [NotNull] IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> h)
+            IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> g,
+            IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> h)
         {
             return EquateGraphs.Equate(g, h);
         }
 
         [TestCaseSource(nameof(CompressedGraphEquateTestCases))]
         public bool EquateCompressedGraph(
-            [NotNull] IEdgeListGraph<int, SEquatableEdge<int>> g,
-            [NotNull] IEdgeListGraph<int, SEquatableEdge<int>> h)
+            IEdgeListGraph<int, SEquatableEdge<int>> g,
+            IEdgeListGraph<int, SEquatableEdge<int>> h)
         {
             return EquateGraphs.Equate(g, h);
         }

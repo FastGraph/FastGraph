@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -9,8 +10,8 @@ namespace FastGraph.Tests.Structures
         #region Contains Edge
 
         protected static void ContainsEdge_Test(
-            [NotNull] IEdgeSet<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<Edge<int>> addVerticesAndEdge)
+            IEdgeSet<int, Edge<int>> graph,
+            [InstantHandle] Action<Edge<int>> addVerticesAndEdge)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -68,7 +69,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> graph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> graph)
         {
             ContainsEdge_Test(
                 graph,
@@ -76,8 +77,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, Edge<int>>> createGraph)
         {
             IEdgeSet<int, Edge<int>> graph = createGraph();
 
@@ -142,8 +143,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, SEquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, SEquatableEdge<int>>> createGraph)
         {
             IEdgeSet<int, SEquatableEdge<int>> graph = createGraph();
 
@@ -213,7 +214,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, Edge<int>> graph)
+            EdgeListGraph<int, Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -271,7 +272,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_ForbiddenParallelEdges_ImmutableVertices_Test(
-            [NotNull] IMutableEdgeListGraph<int, Edge<int>> graph)
+            IMutableEdgeListGraph<int, Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -322,8 +323,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             IEdgeSet<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
@@ -402,8 +403,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EquatableEdge_Test(
-            [NotNull] IEdgeSet<int, EquatableEdge<int>> graph,
-            [NotNull, InstantHandle] Action<EquatableEdge<int>> addVerticesAndEdge)
+            IEdgeSet<int, EquatableEdge<int>> graph,
+            [InstantHandle] Action<EquatableEdge<int>> addVerticesAndEdge)
         {
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
@@ -461,7 +462,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EquatableEdge_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
+            IMutableVertexAndEdgeSet<int, EquatableEdge<int>> graph)
         {
             ContainsEdge_EquatableEdge_Test(
                 graph,
@@ -469,8 +470,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EquatableEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, EquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, EquatableEdge<int>>> createGraph)
         {
             IEdgeSet<int, EquatableEdge<int>> graph = createGraph();
 
@@ -535,7 +536,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EquatableEdge_EdgesOnly_Test(
-            [NotNull] EdgeListGraph<int, EquatableEdge<int>> graph)
+            EdgeListGraph<int, EquatableEdge<int>> graph)
         {
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
@@ -593,7 +594,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EquatableEdges_ForbiddenParallelEdges_ImmutableVertices_Test(
-            [NotNull] IMutableEdgeListGraph<int, EquatableEdge<int>> graph)
+            IMutableEdgeListGraph<int, EquatableEdge<int>> graph)
         {
             var edge1 = new EquatableEdge<int>(1, 2);
             var edge2 = new EquatableEdge<int>(1, 3);
@@ -644,8 +645,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_EquatableEdge_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, EquatableEdge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph,
+            [InstantHandle] Func<IEdgeSet<int, SReversedEdge<int, EquatableEdge<int>>>> createGraph)
         {
             IEdgeSet<int, SReversedEdge<int, EquatableEdge<int>>> graph = createGraph();
 
@@ -724,8 +725,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_Test(
-            [NotNull] IIncidenceGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<Edge<int>> addVerticesAndEdge)
+            IIncidenceGraph<int, Edge<int>> graph,
+            [InstantHandle] Action<Edge<int>> addVerticesAndEdge)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -752,7 +753,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             ContainsEdge_SourceTarget_Test(
                 graph,
@@ -760,8 +761,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_ImmutableGraph_Test<TEdge>(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, TEdge>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IIncidenceGraph<int, TEdge>> createGraph)
             where TEdge : IEdge<int>
         {
             IIncidenceGraph<int, TEdge> graph = createGraph();
@@ -794,7 +795,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_ForbiddenParallelEdges_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -821,8 +822,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
@@ -854,7 +855,7 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_UndirectedGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
+            IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -881,8 +882,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_ImmutableGraph_UndirectedGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            [InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -913,16 +914,20 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_NullThrows_Test<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, TEdge> graph)
+            IEdgeSet<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
+#pragma warning restore CS8625
         }
 
         protected static void ContainsEdge_DefaultNullThrows_Test<TVertex>(
-            [NotNull] IEdgeSet<TVertex, SEquatableEdge<TVertex>> graph)
+            IEdgeSet<TVertex, SEquatableEdge<TVertex>> graph)
+            where TVertex : notnull
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -930,7 +935,8 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_NullThrows_ReversedTest<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, SReversedEdge<TVertex, TEdge>> graph)
+            IEdgeSet<TVertex, SReversedEdge<TVertex, TEdge>> graph)
+            where TVertex : notnull
             where TEdge : class, IEdge<TVertex>
         {
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -939,37 +945,41 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_SourceTarget_Throws_Test<TVertex, TEdge>(
-            [NotNull] IIncidenceGraph<TVertex, TEdge> graph)
-            where TVertex : class, new()
+            IIncidenceGraph<TVertex, TEdge> graph)
+            where TVertex : notnull, new()
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, new TVertex()));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), default));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, new TVertex()));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, default));
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         protected static void ContainsEdge_SourceTarget_Throws_UndirectedGraph_Test<TVertex, TEdge>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
-            where TVertex : class, new()
+            IImplicitUndirectedGraph<TVertex, TEdge> graph)
+            where TVertex : notnull, new()
             where TEdge : IEdge<TVertex>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), null));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, new TVertex()));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(null, null));
+#pragma warning disable CS8604
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), default));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, new TVertex()));
+            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, default));
+#pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
 
         protected static void ContainsEdge_UndirectedEdge_UndirectedGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, EquatableEdge<int>> graph1,
-            [NotNull] IMutableUndirectedGraph<int, EquatableUndirectedEdge<int>> graph2)
+            IMutableUndirectedGraph<int, EquatableEdge<int>> graph1,
+            IMutableUndirectedGraph<int, EquatableUndirectedEdge<int>> graph2)
         {
             ///////////////////////////////////
             // ContainsEdge => Source/Target //
@@ -1018,10 +1028,10 @@ namespace FastGraph.Tests.Structures
         }
 
         protected static void ContainsEdge_UndirectedEdge_ImmutableGraph_UndirectedGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph1,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, EquatableEdge<int>>> createEquatableEdgeGraph,
-            [NotNull] IMutableVertexAndEdgeSet<int, EquatableUndirectedEdge<int>> wrappedGraph2,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, EquatableUndirectedEdge<int>>> createEquatableUndirectedEdgeGraph)
+            IMutableVertexAndEdgeSet<int, EquatableEdge<int>> wrappedGraph1,
+            [InstantHandle] Func<IImplicitUndirectedGraph<int, EquatableEdge<int>>> createEquatableEdgeGraph,
+            IMutableVertexAndEdgeSet<int, EquatableUndirectedEdge<int>> wrappedGraph2,
+            [InstantHandle] Func<IImplicitUndirectedGraph<int, EquatableUndirectedEdge<int>>> createEquatableUndirectedEdgeGraph)
         {
             ///////////////////////////////////
             // ContainsEdge => Source/Target //

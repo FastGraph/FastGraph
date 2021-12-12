@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿#nullable enable
 
 namespace FastGraph.Algorithms
 {
@@ -10,7 +10,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Shortest distance relaxer.
         /// </summary>
-        [NotNull]
         public static readonly IDistanceRelaxer ShortestDistance = new ShortestDistanceRelaxer();
 
         private sealed class ShortestDistanceRelaxer : IDistanceRelaxer
@@ -34,7 +33,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Critical distance relaxer.
         /// </summary>
-        [NotNull]
         public static readonly IDistanceRelaxer CriticalDistance = new CriticalDistanceRelaxer();
 
         private sealed class CriticalDistanceRelaxer : IDistanceRelaxer
@@ -58,7 +56,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Edge shortest distance relaxer.
         /// </summary>
-        [NotNull]
         public static readonly IDistanceRelaxer EdgeShortestDistance = new EdgeDistanceRelaxer();
 
         private sealed class EdgeDistanceRelaxer : IDistanceRelaxer
@@ -82,7 +79,6 @@ namespace FastGraph.Algorithms
         /// <summary>
         /// Prim relaxer.
         /// </summary>
-        [NotNull]
         public static readonly IDistanceRelaxer Prim = new PrimRelaxer();
 
         private sealed class PrimRelaxer : IDistanceRelaxer

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -11,6 +11,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class DelegateIncidenceGraph<TVertex, TEdge> : DelegateImplicitGraph<TVertex, TEdge>, IIncidenceGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace FastGraph
         /// </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateIncidenceGraph(
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             bool allowParallelEdges = true)
             : base(tryGetOutEdges, allowParallelEdges)
         {
@@ -33,7 +34,7 @@ namespace FastGraph
         #region IIncidenceGraph<TVertex,TEdge>
 
         [Pure]
-        internal virtual bool ContainsEdgeInternal([NotNull] TVertex source, [NotNull] TVertex target)
+        internal virtual bool ContainsEdgeInternal(TVertex source, TVertex target)
         {
             return TryGetEdge(source, target, out _);
         }
@@ -45,12 +46,12 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdge(TVertex source, TVertex target, out TEdge edge)
+        public bool TryGetEdge(TVertex source, TVertex target, [NotNullWhen(true)] out TEdge? edge)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
+            if (TryGetOutEdges(source, out IEnumerable<TEdge>? outEdges))
             {
                 foreach (TEdge outEdge in outEdges.Where(outEdge => EqualityComparer<TVertex>.Default.Equals(outEdge.Target, target)))
                 {
@@ -64,18 +65,18 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<TEdge> edges)
+        public bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if (TryGetOutEdges(source, out IEnumerable<TEdge> outEdges))
+            if (TryGetOutEdges(source, out IEnumerable<TEdge>? outEdges))
             {
                 edges = outEdges.Where(edge => EqualityComparer<TVertex>.Default.Equals(edge.Target, target));
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 

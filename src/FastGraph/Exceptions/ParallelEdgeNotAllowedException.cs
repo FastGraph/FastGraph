@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 #endif
@@ -25,7 +25,7 @@ namespace FastGraph
         /// <summary>
         /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> class.
         /// </summary>
-        public ParallelEdgeNotAllowedException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public ParallelEdgeNotAllowedException(string message, Exception? innerException = default)
             : base(message, innerException)
         {
         }

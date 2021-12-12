@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.MSAGL
 {
@@ -9,6 +8,7 @@ namespace FastGraph.MSAGL
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class MsaglToStringGraphPopulator<TVertex, TEdge> : MsaglDefaultGraphPopulator<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -19,25 +19,23 @@ namespace FastGraph.MSAGL
         /// <param name="format">Graph format.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public MsaglToStringGraphPopulator(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [CanBeNull] string format = null,
-            [CanBeNull] IFormatProvider formatProvider = null)
+            IEdgeListGraph<TVertex, TEdge> visitedGraph,
+            string? format = default,
+            IFormatProvider? formatProvider = default)
             : base(visitedGraph)
         {
             FormatProvider = formatProvider;
-            Format = string.IsNullOrEmpty(format) ? "{0}" : format;
+            Format = string.IsNullOrEmpty(format!) ? "{0}" : format!;
         }
 
         /// <summary>
         /// Vertex format provider.
         /// </summary>
-        [CanBeNull]
-        public IFormatProvider FormatProvider { get; }
+        public IFormatProvider? FormatProvider { get; }
 
         /// <summary>
         /// Vertex id format.
         /// </summary>
-        [NotNull]
         public string Format { get; }
 
         /// <inheritdoc />

@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -40,13 +41,15 @@ namespace FastGraph.Tests.Structures
             var v2 = new TestVertex("v2");
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(null, v1));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(v1, null));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, v1));
+            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(v1, default));
+            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, default));
 
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(null, v1, 0, 1));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(v1, null, 0, 1));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(null, null, 0, 1));
+            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, v1, 0, 1));
+            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(v1, default, 0, 1));
+            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, default, 0, 1));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<ArgumentException>(() => new TermEdge<TestVertex>(v1, v2, -1, 0));
@@ -94,8 +97,8 @@ namespace FastGraph.Tests.Structures
             Assert.IsFalse(edge5.Equals(edge6));
             Assert.IsFalse(edge6.Equals(edge5));
 
-            Assert.AreNotEqual(edge1, null);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.AreNotEqual(edge1, default);
+            Assert.IsFalse(edge1.Equals(default));
         }
 
         [Test]

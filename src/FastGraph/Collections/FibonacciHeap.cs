@@ -1,8 +1,7 @@
-﻿using System;
+#nullable enable
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace FastGraph.Collections
@@ -17,11 +16,11 @@ namespace FastGraph.Collections
 #endif
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class FibonacciHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
+        where TPriority : notnull
     {
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         private readonly FibonacciHeapLinkedList<TPriority, TValue> _cells;
 
-        [NotNull]
         private readonly Dictionary<int, FibonacciHeapCell<TPriority, TValue>> _degreeToCell;
 
         // Used to control the direction of the heap, set to 1 if the Heap is increasing,
@@ -32,7 +31,7 @@ namespace FastGraph.Collections
         /// Initializes a new instance of the <see cref="FibonacciHeap{TPriority,TValue}"/> class.
         /// </summary>
         public FibonacciHeap()
-            : this(HeapDirection.Increasing, Comparer<TPriority>.Default.Compare)
+            : this(HeapDirection.Increasing, Comparer<TPriority?>.Default.Compare)
         {
         }
 
@@ -41,7 +40,7 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="direction">Heap direction.</param>
         public FibonacciHeap(HeapDirection direction)
-            : this(direction, Comparer<TPriority>.Default.Compare)
+            : this(direction, Comparer<TPriority?>.Default.Compare)
         {
         }
 
@@ -51,7 +50,7 @@ namespace FastGraph.Collections
         /// <param name="direction">Heap direction.</param>
         /// <param name="priorityComparison">Priority comparer.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
-        public FibonacciHeap(HeapDirection direction, [NotNull] Comparison<TPriority> priorityComparison)
+        public FibonacciHeap(HeapDirection direction, Comparison<TPriority?> priorityComparison)
         {
             _cells = new FibonacciHeapLinkedList<TPriority, TValue>();
             _degreeToCell = new Dictionary<int, FibonacciHeapCell<TPriority, TValue>>();
@@ -64,8 +63,7 @@ namespace FastGraph.Collections
         /// <summary>
         /// Priority comparer.
         /// </summary>
-        [NotNull]
-        public Comparison<TPriority> PriorityComparison { get; }
+        public Comparison<TPriority?> PriorityComparison { get; }
 
         /// <summary>
         /// Heap direction.
@@ -85,7 +83,7 @@ namespace FastGraph.Collections
         /// <summary>
         /// Top element of the heap.
         /// </summary>
-        public FibonacciHeapCell<TPriority, TValue> Top { get; private set; }
+        public FibonacciHeapCell<TPriority, TValue>? Top { get; private set; }
 
         /// <summary>
         /// Enqueues an element in the heap.
@@ -93,7 +91,7 @@ namespace FastGraph.Collections
         /// <param name="priority">Value priority.</param>
         /// <param name="value">Value to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="priority"/> is <see langword="null"/>.</exception>
-        public FibonacciHeapCell<TPriority, TValue> Enqueue([NotNull] TPriority priority, [CanBeNull] TValue value)
+        public FibonacciHeapCell<TPriority, TValue> Enqueue(TPriority priority, TValue value)
         {
             if (priority == null)
                 throw new ArgumentNullException(nameof(priority));
@@ -105,9 +103,9 @@ namespace FastGraph.Collections
                 Marked = false,
                 Children = new FibonacciHeapLinkedList<TPriority, TValue>(),
                 Degree = 1,
-                Next = null,
-                Previous = null,
-                Parent = null,
+                Next = default,
+                Previous = default,
+                Parent = default,
                 Removed = false
             };
 
@@ -131,7 +129,7 @@ namespace FastGraph.Collections
         /// <param name="newPriority">New priority.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="cell"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="newPriority"/> is <see langword="null"/>.</exception>
-        public void ChangeKey([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newPriority)
+        public void ChangeKey(FibonacciHeapCell<TPriority, TValue> cell, TPriority newPriority)
         {
             if (cell is null)
                 throw new ArgumentNullException(nameof(cell));
@@ -142,12 +140,10 @@ namespace FastGraph.Collections
         }
 
         private void ChangeKeyInternal(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [CanBeNull] TPriority newKey, // Null authorized if deleting the cell
+            FibonacciHeapCell<TPriority, TValue> cell,
+            TPriority? newKey, // Null authorized if deleting the cell
             bool deletingCell)
         {
-            Debug.Assert(cell != null);
-
             int delta = Math.Sign(PriorityComparison(cell.Priority, newKey));
             if (delta == 0)
                 return;
@@ -159,8 +155,8 @@ namespace FastGraph.Collections
             }
             else
             {
-                // Not removing a cell so the newKey must not be null
-                Debug.Assert(newKey != null);
+                // Not removing a cell so the newKey must not be default
+                if (newKey == null) throw new InvalidOperationException();
 
                 // New value is in opposite direction of Heap, cut all children violating heap condition
                 UpdateCellOppositeDirection(cell, newKey);
@@ -168,42 +164,42 @@ namespace FastGraph.Collections
         }
 
         private void UpdateCellSameDirection(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [CanBeNull] TPriority newKey,
+            FibonacciHeapCell<TPriority, TValue> cell,
+            TPriority? newKey,
             bool deletingCell)
         {
-            cell.Priority = newKey;
-            FibonacciHeapCell<TPriority, TValue> parentCell = cell.Parent;
-            if (parentCell != null
+            cell.Priority = newKey!;
+            FibonacciHeapCell<TPriority, TValue>? parentCell = cell.Parent;
+            if (parentCell != default
                 && (PriorityComparison(newKey, parentCell.Priority) * _directionMultiplier < 0 || deletingCell))
             {
                 cell.Marked = false;
 
                 // ReSharper disable once PossibleNullReferenceException
                 // Justification: parentCell must have children because child has parentCell as Parent.
-                parentCell.Children.Remove(cell);
+                parentCell.Children!.Remove(cell);
                 UpdateCellsDegree(parentCell);
-                cell.Parent = null;
+                cell.Parent = default;
                 _cells.AddLast(cell);
 
                 // This loop is the cascading cut, we continue to cut
                 // ancestors of the cell reduced until we hit a root
                 // or we found an unmarked ancestor
-                while (parentCell.Marked && parentCell.Parent != null)
+                while (parentCell.Marked && parentCell.Parent != default)
                 {
                     // ReSharper disable once PossibleNullReferenceException
                     // Justification: parentCell must have children because child has parentCell as Parent.
-                    parentCell.Parent.Children.Remove(parentCell);
+                    parentCell.Parent.Children!.Remove(parentCell);
                     UpdateCellsDegree(parentCell);
                     parentCell.Marked = false;
                     _cells.AddLast(parentCell);
 
                     FibonacciHeapCell<TPriority, TValue> currentParent = parentCell;
                     parentCell = parentCell.Parent;
-                    currentParent.Parent = null;
+                    currentParent.Parent = default;
                 }
 
-                if (parentCell.Parent != null)
+                if (parentCell.Parent != default)
                 {
                     // We mark this cell to note that it had a child
                     // cut from it before
@@ -212,18 +208,18 @@ namespace FastGraph.Collections
             }
 
             // Update next
-            if (deletingCell || PriorityComparison(newKey, Top.Priority) * _directionMultiplier < 0)
+            if (deletingCell || PriorityComparison(newKey, Top!.Priority) * _directionMultiplier < 0)
             {
                 Top = cell;
             }
         }
 
-        private void UpdateCellOppositeDirection([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newKey)
+        private void UpdateCellOppositeDirection(FibonacciHeapCell<TPriority, TValue> cell, TPriority newKey)
         {
             cell.Priority = newKey;
-            if (cell.Children != null)
+            if (cell.Children != default)
             {
-                List<FibonacciHeapCell<TPriority, TValue>> toUpdate = null;
+                List<FibonacciHeapCell<TPriority, TValue>>? toUpdate = default;
                 foreach (FibonacciHeapCell<TPriority, TValue> child in cell.Children)
                 {
                     if (PriorityComparison(cell.Priority, child.Priority) * _directionMultiplier > 0)
@@ -236,13 +232,13 @@ namespace FastGraph.Collections
                     }
                 }
 
-                if (toUpdate != null)
+                if (toUpdate != default)
                 {
                     foreach (FibonacciHeapCell<TPriority, TValue> child in toUpdate)
                     {
                         cell.Marked = true;
                         cell.Children.Remove(child);
-                        child.Parent = null;
+                        child.Parent = default;
                         child.Marked = false;
                         _cells.AddLast(child);
 
@@ -259,24 +255,24 @@ namespace FastGraph.Collections
         /// parents if necessary.
         /// </summary>
         /// <param name="cell">Cell to update.</param>
-        private void UpdateCellsDegree([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        private void UpdateCellsDegree(FibonacciHeapCell<TPriority, TValue> cell)
         {
-            Debug.Assert(cell != null);
-            Debug.Assert(cell.Children != null);
+            var cellChildren = cell.Children;
+            if (cellChildren == default) throw new ArgumentOutOfRangeException(nameof(cell));
 
             int oldDegree = cell.Degree;
-            cell.Degree = cell.Children.First is null
+            cell.Degree = cellChildren.First is null
                 ? 1
-                : cell.Children.Max(x => x.Degree) + 1;
+                : cellChildren.Max(x => x.Degree) + 1;
 
             if (oldDegree != cell.Degree)
             {
-                if (_degreeToCell.TryGetValue(oldDegree, out FibonacciHeapCell<TPriority, TValue> degreeMapValue)
+                if (_degreeToCell.TryGetValue(oldDegree, out FibonacciHeapCell<TPriority, TValue>? degreeMapValue)
                     && degreeMapValue == cell)
                 {
                     _degreeToCell.Remove(oldDegree);
                 }
-                else if (cell.Parent != null)
+                else if (cell.Parent != default)
                 {
                     UpdateCellsDegree(cell.Parent);
                 }
@@ -288,7 +284,7 @@ namespace FastGraph.Collections
         /// </summary>
         /// <param name="cell">Cell to delete.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="cell"/> is <see langword="null"/>.</exception>
-        public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        public void Delete(FibonacciHeapCell<TPriority, TValue> cell)
         {
             if (cell is null)
                 throw new ArgumentNullException(nameof(cell));
@@ -307,29 +303,29 @@ namespace FastGraph.Collections
             if (Count == 0)
                 throw new InvalidOperationException("Heap is empty.");
 
-            var result = new KeyValuePair<TPriority, TValue>(Top.Priority, Top.Value);
+            var result = new KeyValuePair<TPriority, TValue>(Top!.Priority, Top!.Value!);
 
             _cells.Remove(Top);
-            Top.Next = null;
-            Top.Parent = null;
-            Top.Previous = null;
+            Top.Next = default;
+            Top.Parent = default;
+            Top.Previous = default;
             Top.Removed = true;
 
-            if (_degreeToCell.TryGetValue(Top.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell)
+            if (_degreeToCell.TryGetValue(Top.Degree, out FibonacciHeapCell<TPriority, TValue>? currentDegreeCell)
                 && currentDegreeCell == Top)
             {
                 _degreeToCell.Remove(Top.Degree);
             }
 
-            Debug.Assert(Top.Children != null);
+            Debug.Assert(Top.Children != default);
 
-            foreach (FibonacciHeapCell<TPriority, TValue> child in Top.Children)
+            foreach (FibonacciHeapCell<TPriority, TValue> child in Top.Children!)
             {
-                child.Parent = null;
+                child.Parent = default;
             }
 
             _cells.MergeLists(Top.Children);
-            Top.Children = null;
+            Top.Children = default;
 
             --Count;
             UpdateNext();
@@ -345,9 +341,9 @@ namespace FastGraph.Collections
         private void UpdateNext()
         {
             CompressHeap();
-            FibonacciHeapCell<TPriority, TValue> cell = _cells.First;
+            FibonacciHeapCell<TPriority, TValue>? cell = _cells.First;
             Top = cell;
-            while (cell != null)
+            while (cell != default && Top != default)
             {
                 if (PriorityComparison(cell.Priority, Top.Priority) * _directionMultiplier < 0)
                 {
@@ -360,21 +356,20 @@ namespace FastGraph.Collections
 
         private void CompressHeap()
         {
-            FibonacciHeapCell<TPriority, TValue> cell = _cells.First;
-            while (cell != null)
+            FibonacciHeapCell<TPriority, TValue>? cell = _cells.First;
+            while (cell != default)
             {
-                FibonacciHeapCell<TPriority, TValue> nextCell = ReduceCell(ref cell);
+                FibonacciHeapCell<TPriority, TValue>? nextCell = ReduceCell(ref cell);
 
                 _degreeToCell[cell.Degree] = cell;
                 cell = nextCell;
             }
         }
 
-        [CanBeNull]
-        private FibonacciHeapCell<TPriority, TValue> ReduceCell([NotNull] ref FibonacciHeapCell<TPriority, TValue> cell)
+        private FibonacciHeapCell<TPriority, TValue>? ReduceCell(ref FibonacciHeapCell<TPriority, TValue> cell)
         {
-            FibonacciHeapCell<TPriority, TValue> nextCell = cell.Next;
-            while (_degreeToCell.TryGetValue(cell.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell)
+            FibonacciHeapCell<TPriority, TValue>? nextCell = cell.Next;
+            while (_degreeToCell.TryGetValue(cell.Degree, out FibonacciHeapCell<TPriority, TValue>? currentDegreeCell)
                    && currentDegreeCell != cell)
             {
                 _degreeToCell.Remove(cell.Degree);
@@ -408,15 +403,14 @@ namespace FastGraph.Collections
         /// <param name="parentCell">Parent cell.</param>
         /// <param name="childCell">Child cell.</param>
         private void ReduceCells(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> parentCell,
-            [NotNull] FibonacciHeapCell<TPriority, TValue> childCell)
+            FibonacciHeapCell<TPriority, TValue> parentCell,
+            FibonacciHeapCell<TPriority, TValue> childCell)
         {
-            Debug.Assert(parentCell != null);
-            Debug.Assert(parentCell.Children != null);
-            Debug.Assert(childCell != null);
+            var parentCellChildren = parentCell.Children;
+            if (parentCellChildren == default) throw new ArgumentOutOfRangeException(nameof(parentCell));
 
             _cells.Remove(childCell);
-            parentCell.Children.AddLast(childCell);
+            parentCellChildren.AddLast(childCell);
             childCell.Parent = parentCell;
             childCell.Marked = false;
 
@@ -432,7 +426,7 @@ namespace FastGraph.Collections
         /// <param name="heap">Heap to merge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="heap"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException"><paramref name="heap"/> is not in the same direction as this heap.</exception>
-        public void Merge([NotNull] FibonacciHeap<TPriority, TValue> heap)
+        public void Merge(FibonacciHeap<TPriority, TValue> heap)
         {
             if (heap is null)
                 throw new ArgumentNullException(nameof(heap));
@@ -443,7 +437,7 @@ namespace FastGraph.Collections
 
             bool isEmpty = IsEmpty;
             _cells.MergeLists(heap._cells);
-            if (isEmpty || PriorityComparison(heap.Top.Priority, Top.Priority) * _directionMultiplier < 0)
+            if (isEmpty || PriorityComparison(heap.Top!.Priority, Top!.Priority) * _directionMultiplier < 0)
             {
                 Top = heap.Top;
             }
@@ -479,7 +473,7 @@ namespace FastGraph.Collections
 
             while (!tempHeap.IsEmpty)
             {
-                yield return tempHeap.Top.ToKeyValuePair();
+                yield return tempHeap.Top!.ToKeyValuePair();
                 tempHeap.Dequeue();
             }
         }
@@ -490,12 +484,11 @@ namespace FastGraph.Collections
         /// Enumerator for this heap that <see cref="Dequeue"/> elements in the same time.
         /// </summary>
         /// <returns>Heap elements.</returns>
-        [NotNull]
         public IEnumerable<KeyValuePair<TPriority, TValue>> GetDestructiveEnumerator()
         {
             while (!IsEmpty)
             {
-                yield return Top.ToKeyValuePair();
+                yield return Top!.ToKeyValuePair();
                 Dequeue();
             }
         }
@@ -504,12 +497,11 @@ namespace FastGraph.Collections
 
         private struct CellLevel
         {
-            [NotNull]
             public FibonacciHeapCell<TPriority, TValue> Cell { get; }
 
             public int Level { get; }
 
-            public CellLevel([NotNull] FibonacciHeapCell<TPriority, TValue> cell, int level)
+            public CellLevel(FibonacciHeapCell<TPriority, TValue> cell, int level)
             {
                 Cell = cell;
                 Level = level;
@@ -542,7 +534,7 @@ namespace FastGraph.Collections
                 string cellString = $"{currentCell.Cell.Priority}{(currentCell.Cell.Marked ? "*" : string.Empty)} ";
                 currentLine += cellString;
 
-                if (currentCell.Cell.Children?.First != null)
+                if (currentCell.Cell.Children?.First != default)
                 {
                     var children = new List<FibonacciHeapCell<TPriority, TValue>>(currentCell.Cell.Children);
                     children.Reverse();

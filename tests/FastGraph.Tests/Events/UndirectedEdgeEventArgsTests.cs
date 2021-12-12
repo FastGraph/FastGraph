@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Events
@@ -31,10 +32,12 @@ namespace FastGraph.Tests.Events
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedEdgeEventArgs<int, Edge<int>>(null, false));
+                () => new UndirectedEdgeEventArgs<int, Edge<int>>(default, false));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedEdgeEventArgs<int, Edge<int>>(null, true));
+                () => new UndirectedEdgeEventArgs<int, Edge<int>>(default, true));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

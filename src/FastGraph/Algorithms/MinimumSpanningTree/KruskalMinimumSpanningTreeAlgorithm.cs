@@ -1,6 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Services;
 using FastGraph.Collections;
 
@@ -14,9 +13,9 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
     public sealed class KruskalMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Func<TEdge, double> _edgeWeights;
 
         /// <summary>
@@ -27,9 +26,9 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public KruskalMinimumSpanningTreeAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
-            : this(null, visitedGraph, edgeWeights)
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
+            : this(default, visitedGraph, edgeWeights)
         {
         }
 
@@ -42,9 +41,9 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public KruskalMinimumSpanningTreeAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IAlgorithmComponent? host,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : base(host, visitedGraph)
         {
             _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -53,24 +52,20 @@ namespace FastGraph.Algorithms.MinimumSpanningTree
         /// <summary>
         /// Fired when an edge is going to be analyzed.
         /// </summary>
-        public event EdgeAction<TVertex, TEdge> ExamineEdge;
+        public event EdgeAction<TVertex, TEdge>? ExamineEdge;
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             ExamineEdge?.Invoke(edge);
         }
 
         #region ITreeBuilderAlgorithm<TVertex,TEdge>
 
         /// <inheritdoc />
-        public event EdgeAction<TVertex, TEdge> TreeEdge;
+        public event EdgeAction<TVertex, TEdge>? TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(edge);
         }
 

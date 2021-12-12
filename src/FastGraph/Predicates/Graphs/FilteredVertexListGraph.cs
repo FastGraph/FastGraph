@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Predicates
 {
@@ -14,6 +12,7 @@ namespace FastGraph.Predicates
     public class FilteredVertexListGraph<TVertex, TEdge, TGraph>
         : FilteredIncidenceGraph<TVertex, TEdge, TGraph>
         , IVertexListGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IVertexListGraph<TVertex, TEdge>
     {
@@ -27,9 +26,9 @@ namespace FastGraph.Predicates
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
         public FilteredVertexListGraph(
-            [NotNull] TGraph baseGraph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate,
-            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+            TGraph baseGraph,
+            VertexPredicate<TVertex> vertexPredicate,
+            EdgePredicate<TVertex, TEdge> edgePredicate)
             : base(baseGraph, vertexPredicate, edgePredicate)
         {
         }

@@ -1,5 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using Microsoft.Msagl.Drawing;
 
 namespace FastGraph.MSAGL
@@ -11,6 +11,7 @@ namespace FastGraph.MSAGL
     /// <typeparam name="TEdge">Edge type.</typeparam>
     [Serializable]
     public class MsaglEdgeEventArgs<TVertex, TEdge> : EdgeEventArgs<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -20,7 +21,7 @@ namespace FastGraph.MSAGL
         /// <param name="msaglEdge">Concerned <see cref="T:Microsoft.Msagl.Drawing.Edge"/>.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="msaglEdge"/> is <see langword="null"/>.</exception>
-        public MsaglEdgeEventArgs([NotNull] TEdge edge, [NotNull] Edge msaglEdge)
+        public MsaglEdgeEventArgs(TEdge edge, Edge msaglEdge)
             : base(edge)
         {
             MsaglEdge = msaglEdge ?? throw new ArgumentNullException(nameof(msaglEdge));
@@ -29,7 +30,6 @@ namespace FastGraph.MSAGL
         /// <summary>
         /// <see cref="T:Microsoft.Msagl.Drawing.Edge"/> concerned by the event.
         /// </summary>
-        [NotNull]
         public Edge MsaglEdge { get; }
     }
 }

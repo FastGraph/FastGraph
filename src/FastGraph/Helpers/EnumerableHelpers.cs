@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -18,12 +17,9 @@ namespace FastGraph
         /// <param name="elements">Enumerable to iterate through.</param>
         /// <param name="action">Acton to perform on each element.</param>
         public static void ForEach<T>(
-            [NotNull, ItemCanBeNull] this IEnumerable<T> elements,
-            [NotNull, InstantHandle] Action<T> action)
+            this IEnumerable<T> elements,
+            [InstantHandle] Action<T> action)
         {
-            Debug.Assert(elements != null);
-            Debug.Assert(action != null);
-
             foreach (T elem in elements)
             {
                 action(elem);

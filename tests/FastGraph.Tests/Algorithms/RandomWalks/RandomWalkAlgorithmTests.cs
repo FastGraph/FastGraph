@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.RandomWalks;
@@ -18,7 +16,8 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         #region Test helpers
 
         private static void RunRandomWalkAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph)
+            IVertexListGraph<TVertex, TEdge> graph)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph.VertexCount == 0)
@@ -167,8 +166,9 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 RandomWalkAlgorithm<TVertex, TEdge> algo,
                 IVertexListGraph<TVertex, TEdge> g,
-                IEdgeChain<TVertex, TEdge> c = null,
-                EdgePredicate<TVertex, TEdge> p = null)
+                IEdgeChain<TVertex, TEdge>? c = default,
+                EdgePredicate<TVertex, TEdge>? p = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -190,17 +190,19 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(null));
+                () => new RandomWalkAlgorithm<int, Edge<int>>(default));
             Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(graph, null));
+                () => new RandomWalkAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(null, chain));
+                () => new RandomWalkAlgorithm<int, Edge<int>>(default, chain));
             Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(null, null));
+                () => new RandomWalkAlgorithm<int, Edge<int>>(default, default));
 
             var algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph, chain);
-            Assert.Throws<ArgumentNullException>(() => algorithm.EdgeChain = null);
+            Assert.Throws<ArgumentNullException>(() => algorithm.EdgeChain = default);
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

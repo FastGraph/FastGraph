@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Collections;
 using static FastGraph.Tests.AssertHelpers;
@@ -16,9 +15,10 @@ namespace FastGraph.Tests.Collections
         #region Test helpers
 
         private static void AssertSetSizes<T>(
-            [NotNull] ForestDisjointSet<T> set,
+            ForestDisjointSet<T> set,
             int expectedSetCount,
             int expectedCount)
+            where T : notnull
         {
             Assert.AreEqual(expectedSetCount, set.SetCount);
             Assert.AreEqual(expectedCount, set.ElementCount);
@@ -35,6 +35,7 @@ namespace FastGraph.Tests.Collections
             #region Local function
 
             void AssertSetProperties<T>(ForestDisjointSet<T> set)
+                where T : notnull
             {
                 AssertSetSizes(set, 0, 0);
             }
@@ -65,6 +66,7 @@ namespace FastGraph.Tests.Collections
             #region Local function
 
             void MakeSetTest<TValue>(TValue value1, TValue value2)
+                where TValue : notnull
             {
                 var set = new ForestDisjointSet<TValue>();
                 AssertSetSizes(set, 0, 0);
@@ -85,7 +87,9 @@ namespace FastGraph.Tests.Collections
             var testObject = new TestVertex();
             var set = new ForestDisjointSet<TestVertex>();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => set.MakeSet(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => set.MakeSet(default));
+#pragma warning restore CS8625
 
             set.MakeSet(testObject);
             // Double insert
@@ -106,6 +110,7 @@ namespace FastGraph.Tests.Collections
             #region Local function
 
             void FindSetTest<TValue>(TValue value1, TValue value2)
+                where TValue : notnull
             {
                 var set = new ForestDisjointSet<TValue>();
                 AssertSetSizes(set, 0, 0);
@@ -135,8 +140,10 @@ namespace FastGraph.Tests.Collections
             var set = new ForestDisjointSet<TestVertex>();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => set.FindSet(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => set.FindSet(default));
             Assert.Throws<KeyNotFoundException>(() => set.FindSet(vertex));
+#pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -154,6 +161,7 @@ namespace FastGraph.Tests.Collections
             #region Local function
 
             void AreInSameSetTest<TValue>(TValue value1, TValue value2)
+                where TValue : notnull
             {
                 var set = new ForestDisjointSet<TValue>();
                 AssertSetSizes(set, 0, 0);
@@ -185,9 +193,11 @@ namespace FastGraph.Tests.Collections
             var set = new ForestDisjointSet<TestVertex>();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(vertex, default));
+            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(default, vertex));
+            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex, vertex));
@@ -228,6 +238,7 @@ namespace FastGraph.Tests.Collections
                 TValue value3,
                 TValue value4,
                 TValue value5)
+                where TValue : notnull
             {
                 ForestDisjointSet<TValue> set = MakeAndFillSet();
                 set.Union(value1, value2);
@@ -320,9 +331,11 @@ namespace FastGraph.Tests.Collections
             var set = new ForestDisjointSet<TestVertex>();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => set.Union(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => set.Union(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => set.Union(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => set.Union(vertex, default));
+            Assert.Throws<ArgumentNullException>(() => set.Union(default, vertex));
+            Assert.Throws<ArgumentNullException>(() => set.Union(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<KeyNotFoundException>(() => set.Union(vertex, vertex));
@@ -352,6 +365,7 @@ namespace FastGraph.Tests.Collections
             #region Local function
 
             void ContainsTest<TValue>(TValue value1, TValue value2)
+                where TValue : notnull
             {
                 var set = new ForestDisjointSet<TValue>();
                 Assert.IsFalse(set.Contains(value1));
@@ -379,7 +393,9 @@ namespace FastGraph.Tests.Collections
             var set = new ForestDisjointSet<TestVertex>();
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => set.Contains(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => set.Contains(default));
+#pragma warning restore CS8625
         }
     }
 }

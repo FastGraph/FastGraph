@@ -1,8 +1,8 @@
-﻿using System;
+#nullable enable
+
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace FastGraph.Serialization.Tests
 {
@@ -11,18 +11,18 @@ namespace FastGraph.Serialization.Tests
     public sealed class TestEdge : Edge<TestVertex>
     {
         public TestEdge(
-            [NotNull] TestVertex source,
-            [NotNull] TestVertex target,
-            [NotNull] string id)
+            TestVertex source,
+            TestVertex target,
+            string id)
             : base(source, target)
         {
             ID = id;
         }
 
         public TestEdge(
-            [NotNull] TestVertex source,
-            [NotNull] TestVertex target,
-            [NotNull] string id,
+            TestVertex source,
+            TestVertex target,
+            string id,
             string @string,
             int @int,
             long @long,
@@ -39,12 +39,11 @@ namespace FastGraph.Serialization.Tests
             Bool = @bool;
         }
 
-        [NotNull]
         public string ID { get; }
 
         [XmlAttribute("e_string")]
         [DefaultValue("defaultString")]
-        public string String { get; set; }
+        public string? String { get; set; }
 
         [XmlAttribute("e_int")]
         [DefaultValue(1)]
@@ -67,20 +66,19 @@ namespace FastGraph.Serialization.Tests
     public sealed class EquatableTestEdge : Edge<EquatableTestVertex>, IEquatable<EquatableTestEdge>
     {
         public EquatableTestEdge(
-            [NotNull] EquatableTestVertex source,
-            [NotNull] EquatableTestVertex target,
-            [NotNull] string id)
+            EquatableTestVertex source,
+            EquatableTestVertex target,
+            string id)
             : base(source, target)
         {
             ID = id;
         }
 
-        [NotNull]
         public string ID { get; }
 
         [XmlAttribute("e_string")]
         [DefaultValue("defaultString")]
-        public string String { get; set; }
+        public string? String { get; set; }
 
         [XmlAttribute("e_int")]
         [DefaultValue(1)]
@@ -99,7 +97,7 @@ namespace FastGraph.Serialization.Tests
         [XmlAttribute("e_float")]
         public float Float { get; set; }
 
-        public bool Equals(EquatableTestEdge other)
+        public bool Equals(EquatableTestEdge? other)
         {
             if (other is null)
                 return false;
@@ -114,7 +112,7 @@ namespace FastGraph.Serialization.Tests
                    && Float.Equals(other.Float);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as EquatableTestEdge);
         }
@@ -125,7 +123,7 @@ namespace FastGraph.Serialization.Tests
             unchecked
             {
                 int hashCode = ID.GetHashCode();
-                hashCode = (hashCode * 397) ^ (String != null ? String.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (String != default ? String.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Int;
                 hashCode = (hashCode * 397) ^ Long.GetHashCode();
                 hashCode = (hashCode * 397) ^ Double.GetHashCode();
@@ -139,19 +137,18 @@ namespace FastGraph.Serialization.Tests
     public sealed class TestEdgeNoSetter : Edge<TestVertex>
     {
         public TestEdgeNoSetter(
-            [NotNull] TestVertex source,
-            [NotNull] TestVertex target,
-            [NotNull] string id)
+            TestVertex source,
+            TestVertex target,
+            string id)
             : base(source, target)
         {
             ID = id;
         }
 
-        [NotNull]
         public string ID { get; }
 
         [XmlAttribute("e_string")]
-        public string String { get; }
+        public string? String { get; }
     }
 
     #endregion

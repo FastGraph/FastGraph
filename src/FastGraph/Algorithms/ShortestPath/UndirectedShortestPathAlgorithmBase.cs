@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using FastGraph.Algorithms.Services;
 
@@ -17,12 +17,13 @@ namespace FastGraph.Algorithms.ShortestPath
         , IVertexColorizerAlgorithm<TVertex>
         , IUndirectedTreeBuilderAlgorithm<TVertex, TEdge>
         , IDistancesCollection<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Vertices distances.
         /// </summary>
-        private IDictionary<TVertex, double> _distances;
+        private IDictionary<TVertex, double>? _distances;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UndirectedShortestPathAlgorithmBase{TVertex,TEdge}"/> class.
@@ -33,9 +34,9 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         protected UndirectedShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IAlgorithmComponent? host,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : this(host, visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -51,10 +52,10 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected UndirectedShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent? host,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             Weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -65,16 +66,16 @@ namespace FastGraph.Algorithms.ShortestPath
         /// Vertices distances.
         /// </summary>
         [Obsolete("Use methods on " + nameof(IDistancesCollection<object>) + " to interact with the distances instead.")]
-        public IDictionary<TVertex, double> Distances => _distances;
+        public IDictionary<TVertex, double>? Distances => _distances;
 
         /// <summary>
         /// Gets the distance associated to the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex to get the distance for.</param>
         [Pure]
-        protected double GetVertexDistance([NotNull] TVertex vertex)
+        protected double GetVertexDistance(TVertex vertex)
         {
-            return _distances[vertex];
+            return _distances![vertex];
         }
 
         /// <summary>
@@ -82,9 +83,9 @@ namespace FastGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="vertex">The vertex to get the distance for.</param>
         /// <param name="distance">The distance.</param>
-        protected void SetVertexDistance([NotNull] TVertex vertex, double distance)
+        protected void SetVertexDistance(TVertex vertex, double distance)
         {
-            _distances[vertex] = distance;
+            _distances![vertex] = distance;
         }
 
         /// <inheritdoc />
@@ -119,27 +120,25 @@ namespace FastGraph.Algorithms.ShortestPath
         /// Gets the function that gives access to distances from a vertex.
         /// </summary>
         [Pure]
-        [NotNull]
         protected Func<TVertex, double> DistancesIndexGetter()
         {
-            return AlgorithmExtensions.GetIndexer(_distances);
+            return AlgorithmExtensions.GetIndexer(_distances!);
         }
 
         /// <summary>
         /// Function that given an edge return the weight of this edge.
         /// </summary>
-        [NotNull]
         public Func<TEdge, double> Weights { get; }
 
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         #region AlgorithmBase<TGraph>
 
         /// <inheritdoc />
+        [MemberNotNull(nameof(VerticesColors), nameof(_distances))]
         protected override void Initialize()
         {
             base.Initialize();
@@ -155,12 +154,12 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        public IDictionary<TVertex, GraphColor> VerticesColors { get; private set; }
+        public IDictionary<TVertex, GraphColor>? VerticesColors { get; private set; }
 
         /// <inheritdoc />
         public GraphColor GetVertexColor(TVertex vertex)
         {
-            if (VerticesColors.TryGetValue(vertex, out GraphColor color))
+            if (VerticesColors!.TryGetValue(vertex, out GraphColor color))
                 return color;
             throw new VertexNotFoundException();
         }
@@ -172,17 +171,15 @@ namespace FastGraph.Algorithms.ShortestPath
         /// The edge that participated in the last relaxation for vertex v is
         /// an edge in the shortest paths tree.
         /// </summary>
-        public event UndirectedEdgeAction<TVertex, TEdge> TreeEdge;
+        public event UndirectedEdgeAction<TVertex, TEdge>? TreeEdge;
 
         /// <summary>
         /// Called on each <see cref="TreeEdge"/> event.
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
         /// <param name="reversed">Indicates if the edge is reversed.</param>
-        protected virtual void OnTreeEdge([NotNull] TEdge edge, bool reversed)
+        protected virtual void OnTreeEdge(TEdge edge, bool reversed)
         {
-            Debug.Assert(edge != null);
-
             TreeEdge?.Invoke(
                 this,
                 new UndirectedEdgeEventArgs<TVertex, TEdge>(edge, reversed));
@@ -195,11 +192,8 @@ namespace FastGraph.Algorithms.ShortestPath
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
-        protected bool Relax([NotNull] TEdge edge, [NotNull] TVertex source, [NotNull] TVertex target)
+        protected bool Relax(TEdge edge, TVertex source, TVertex target)
         {
-            Debug.Assert(edge != null);
-            Debug.Assert(source != null);
-            Debug.Assert(target != null);
             Debug.Assert(
                 (EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
                     && EqualityComparer<TVertex>.Default.Equals(edge.Target, target))

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Search;
 using FastGraph.Algorithms.Services;
 
@@ -14,6 +13,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
     public sealed class ConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         , IConnectedComponentAlgorithm<TVertex, TEdge, IUndirectedGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -21,7 +21,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public ConnectedComponentsAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        public ConnectedComponentsAlgorithm(IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
         {
         }
@@ -34,9 +34,9 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
-            : this(null, visitedGraph, components)
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            IDictionary<TVertex, int> components)
+            : this(default, visitedGraph, components)
         {
         }
 
@@ -49,9 +49,9 @@ namespace FastGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
+            IAlgorithmComponent? host,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
             Components = components ?? throw new ArgumentNullException(nameof(components));
@@ -75,7 +75,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
                 return;
 
             ComponentCount = -1;
-            UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
+            UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>? dfs = default;
             try
             {
                 dfs = new UndirectedDepthFirstSearchAlgorithm<TVertex, TEdge>(
@@ -90,7 +90,7 @@ namespace FastGraph.Algorithms.ConnectedComponents
             }
             finally
             {
-                if (dfs != null)
+                if (dfs != default)
                 {
                     dfs.StartVertex -= OnStartVertex;
                     dfs.DiscoverVertex -= OnVertexDiscovered;
@@ -110,12 +110,12 @@ namespace FastGraph.Algorithms.ConnectedComponents
 
         #endregion
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex(TVertex vertex)
         {
             ++ComponentCount;
         }
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered(TVertex vertex)
         {
             Components[vertex] = ComponentCount;
         }

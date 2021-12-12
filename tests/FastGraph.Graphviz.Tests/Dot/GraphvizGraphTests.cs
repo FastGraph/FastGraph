@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
@@ -62,7 +62,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var graph = new GraphvizGraph();
             if (graph.Name is null)
-                throw new InvalidOperationException($"Graph has null {nameof(GraphvizGraph.Name)}.");
+                throw new InvalidOperationException($"Graph has default {nameof(GraphvizGraph.Name)}.");
 
             graph.Name = "GraphName";
             Assert.AreSame("GraphName", graph.Name);
@@ -73,10 +73,11 @@ namespace FastGraph.Graphviz.Tests
         {
             var graph = new GraphvizGraph();
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => graph.Name = null);
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => graph.Name = default);
+#pragma warning restore CS8625
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -197,13 +198,12 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizGraph graph, [NotNull] string expectedDot)
+        public void ToDot(GraphvizGraph graph, string expectedDot)
         {
             Assert.AreEqual(expectedDot, graph.ToDot());
             Assert.AreEqual(expectedDot, graph.ToString());
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
         {
             get
@@ -217,7 +217,7 @@ namespace FastGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotCultureInvariantTestCases))]
-        public void ToDot_InvariantCulture([NotNull, InstantHandle] Func<GraphvizGraph, string> convert)
+        public void ToDot_InvariantCulture([InstantHandle] Func<GraphvizGraph, string> convert)
         {
             var graph = new GraphvizGraph
             {

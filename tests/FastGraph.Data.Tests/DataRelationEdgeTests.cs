@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Data;
 using NUnit.Framework;
 
@@ -53,7 +54,9 @@ namespace FastGraph.Data.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new DataRelationEdge(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => new DataRelationEdge(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Test]
@@ -79,8 +82,8 @@ namespace FastGraph.Data.Tests
             Assert.IsFalse(relation1.Equals(relation3));
             Assert.IsFalse(relation3.Equals(relation1));
 
-            Assert.AreNotEqual(relation1, null);
-            Assert.IsFalse(relation1.Equals(null));
+            Assert.AreNotEqual(relation1, default);
+            Assert.IsFalse(relation1.Equals(default));
 
             #region Local function
 

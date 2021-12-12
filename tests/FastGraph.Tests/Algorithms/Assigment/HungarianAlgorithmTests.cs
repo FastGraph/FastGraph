@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Assignment;
 
@@ -32,7 +32,9 @@ namespace FastGraph.Tests.Algorithms.Assignment
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new HungarianAlgorithm(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new HungarianAlgorithm(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -73,7 +75,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
             algorithm.Compute();
 
             Assert.IsNotNull(algorithm.AgentsTasks);
-            int[] tasks = algorithm.AgentsTasks;
+            int[] tasks = algorithm.AgentsTasks!;
             Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
             Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
             Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
@@ -92,7 +94,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
-            int[] tasks = algorithm.AgentsTasks;
+            int[] tasks = algorithm.AgentsTasks!;
             Assert.AreEqual(0, tasks[0]);
             Assert.AreEqual(1, tasks[1]);
             Assert.AreEqual(2, tasks[2]);
@@ -161,7 +163,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
             Assert.IsNotNull(algorithm.AgentsTasks);
-            int[] tasks = algorithm.AgentsTasks;
+            int[] tasks = algorithm.AgentsTasks!;
             Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
             Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
             Assert.AreEqual(0, tasks[2]); // J3 to be done by W1

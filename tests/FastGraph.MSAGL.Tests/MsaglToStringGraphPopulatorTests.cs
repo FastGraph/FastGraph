@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
@@ -13,20 +14,20 @@ namespace FastGraph.MSAGL.Tests
 
         private class NullVertexTestFormatProvider : IFormatProvider
         {
-            public object GetFormat(Type formatType)
+            public object? GetFormat(Type? formatType)
             {
-                return null;
+                return default;
             }
         }
 
         private class VertexTestFormatProvider : IFormatProvider, ICustomFormatter
         {
-            public object GetFormat(Type formatType)
+            public object? GetFormat(Type? formatType)
             {
-                return formatType == typeof(ICustomFormatter) ? this : null;
+                return formatType == typeof(ICustomFormatter) ? this : default;
             }
 
-            public string Format(string format, object arg, IFormatProvider formatProvider)
+            public string Format(string? format, object? arg, IFormatProvider? formatProvider)
             {
                 return $"MySpecialFormatProvider {arg}";
             }
@@ -60,8 +61,9 @@ namespace FastGraph.MSAGL.Tests
             void AssertPopulatorProperties<TVertex, TEdge>(
                 MsaglToStringGraphPopulator<TVertex, TEdge> p,
                 IEdgeListGraph<TVertex, TEdge> g,
-                string f = null,
-                IFormatProvider provider = null)
+                string? f = default,
+                IFormatProvider? provider = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
@@ -85,8 +87,10 @@ namespace FastGraph.MSAGL.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglToStringGraphPopulator<int, Edge<int>>(null));
+                () => new MsaglToStringGraphPopulator<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -119,7 +123,7 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("0"));
+            Assert.IsNull(populator.MsaglGraph!.FindNode("0"));
             Assert.IsNotNull(populator.MsaglGraph.FindNode("1"));
 
 
@@ -128,7 +132,7 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("0"));
+            Assert.IsNull(populator.MsaglGraph!.FindNode("0"));
             Assert.IsNotNull(populator.MsaglGraph.FindNode("1"));
 
 
@@ -138,7 +142,7 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestFormat 0 Vertex"));
+            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestFormat 0 Vertex"));
             Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"));
 
 
@@ -147,7 +151,7 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestFormat 0 Vertex"));
+            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestFormat 0 Vertex"));
             Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"));
 
 
@@ -156,7 +160,7 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MySpecialFormatProvider 0"));
+            Assert.IsNull(populator.MsaglGraph!.FindNode("MySpecialFormatProvider 0"));
             Assert.IsNotNull(populator.MsaglGraph.FindNode("MySpecialFormatProvider 1"));
 
 
@@ -165,7 +169,7 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 0 Vertex"));
+            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestFormat MySpecialFormatProvider 0 Vertex"));
             Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 1 Vertex"));
         }
     }

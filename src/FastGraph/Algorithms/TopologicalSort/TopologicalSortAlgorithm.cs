@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Search;
 
 namespace FastGraph.Algorithms.TopologicalSort
@@ -14,9 +12,9 @@ namespace FastGraph.Algorithms.TopologicalSort
     public sealed class TopologicalSortAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
         , IVertexTimeStamperAlgorithm<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull, ItemNotNull]
         private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
@@ -26,7 +24,7 @@ namespace FastGraph.Algorithms.TopologicalSort
         /// <param name="capacity">Sorted vertices capacity.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TopologicalSortAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
             : base(visitedGraph)
         {
@@ -37,20 +35,15 @@ namespace FastGraph.Algorithms.TopologicalSort
         /// Sorted vertices.
         /// </summary>
         /// <remarks>It is <see langword="null"/> if the algorithm has not been run yet.</remarks>
-        [ItemNotNull]
-        public TVertex[] SortedVertices { get; private set; }
+        public TVertex[]? SortedVertices { get; private set; }
 
-        private static void OnBackEdge([NotNull] TEdge edge)
+        private static void OnBackEdge(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             throw new NonAcyclicGraphException();
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             _sortedVertices.Add(vertex);
         }
 
@@ -61,14 +54,14 @@ namespace FastGraph.Algorithms.TopologicalSort
         {
             base.Initialize();
 
-            SortedVertices = null;
+            SortedVertices = default;
             _sortedVertices.Clear();
         }
 
         /// <inheritdoc />
         protected override void InternalCompute()
         {
-            DepthFirstSearchAlgorithm<TVertex, TEdge> dfs = null;
+            DepthFirstSearchAlgorithm<TVertex, TEdge>? dfs = default;
             try
             {
                 dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(
@@ -84,7 +77,7 @@ namespace FastGraph.Algorithms.TopologicalSort
             }
             finally
             {
-                if (dfs != null)
+                if (dfs != default)
                 {
                     dfs.BackEdge -= OnBackEdge;
                     dfs.FinishVertex -= OnVertexFinished;
@@ -101,10 +94,10 @@ namespace FastGraph.Algorithms.TopologicalSort
         #region IVertexTimeStamperAlgorithm<TVertex>
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> DiscoverVertex;
+        public event VertexAction<TVertex>? DiscoverVertex;
 
         /// <inheritdoc />
-        public event VertexAction<TVertex> FinishVertex;
+        public event VertexAction<TVertex>? FinishVertex;
 
         #endregion
     }

@@ -1,4 +1,4 @@
-using System;
+#nullable enable
 
 namespace FastGraph.Algorithms.Services
 {
@@ -10,7 +10,7 @@ namespace FastGraph.Algorithms.Services
         /// <summary>
         /// Fired when the cancel method is called.
         /// </summary>
-        event EventHandler CancelRequested;
+        event EventHandler? CancelRequested;
 
         /// <summary>
         /// Requests the component to cancel its computation.
@@ -25,7 +25,7 @@ namespace FastGraph.Algorithms.Services
         /// <summary>
         /// Fired when the cancel state has been resetting.
         /// </summary>
-        event EventHandler CancelReset;
+        event EventHandler? CancelReset;
 
         /// <summary>
         /// Resets the cancel state.

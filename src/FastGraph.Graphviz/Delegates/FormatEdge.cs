@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph.Graphviz
 {
@@ -10,7 +10,8 @@ namespace FastGraph.Graphviz
     /// <param name="sender">Event sender.</param>
     /// <param name="args">Event arguments.</param>
     public delegate void FormatEdgeAction<TVertex, TEdge>(
-        [NotNull] object sender,
-        [NotNull] FormatEdgeEventArgs<TVertex, TEdge> args)
+        object sender,
+        FormatEdgeEventArgs<TVertex, TEdge> args)
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>;
 }

@@ -1,3 +1,5 @@
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Constants

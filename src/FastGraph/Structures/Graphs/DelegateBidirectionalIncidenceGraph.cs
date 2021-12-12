@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph
 {
@@ -11,6 +10,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public class DelegateBidirectionalIncidenceGraph<TVertex, TEdge> : DelegateIncidenceGraph<TVertex, TEdge>, IBidirectionalIncidenceGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -26,8 +26,8 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetInEdges"/> is <see langword="null"/>.</exception>
         public DelegateBidirectionalIncidenceGraph(
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges,
+            TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+            TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges,
             bool allowParallelEdges = true)
             : base(tryGetOutEdges, allowParallelEdges)
         {
@@ -37,7 +37,6 @@ namespace FastGraph
         /// <summary>
         /// Getter of in-edges.
         /// </summary>
-        [NotNull]
         private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetInEdgesFunc;
 
         #region IBidirectionalImplicitGraph<TVertex,TEdge>
@@ -60,13 +59,13 @@ namespace FastGraph
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
-            if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge> inEdges))
+            if (_tryGetInEdgesFunc(vertex, out IEnumerable<TEdge>? inEdges))
                 return inEdges;
             throw new VertexNotFoundException();
         }
 
         /// <inheritdoc />
-        public bool TryGetInEdges(TVertex vertex, out IEnumerable<TEdge> edges)
+        public bool TryGetInEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));

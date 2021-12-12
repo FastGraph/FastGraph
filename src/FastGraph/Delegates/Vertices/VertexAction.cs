@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+#nullable enable
 
 namespace FastGraph
 {
@@ -7,5 +7,6 @@ namespace FastGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <param name="vertex">Vertex to treat.</param>
-    public delegate void VertexAction<in TVertex>([NotNull] TVertex vertex);
+    public delegate void VertexAction<in TVertex>(TVertex vertex)
+        where TVertex : notnull;
 }

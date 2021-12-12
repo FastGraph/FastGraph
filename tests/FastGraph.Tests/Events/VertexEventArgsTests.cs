@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Events
@@ -22,8 +23,10 @@ namespace FastGraph.Tests.Events
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new VertexEventArgs<TestVertex>(null));
+                () => new VertexEventArgs<TestVertex>(default));
+#pragma warning restore CS8625
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -18,8 +17,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         #region Test helpers
 
         private static void EdmondsKarpMaxFlow<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            EdgeFactory<TVertex, TEdge> edgeFactory)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             Assert.IsTrue(graph.VertexCount > 0);
@@ -37,10 +37,11 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         private static double RunMaxFlowAlgorithmAndCheck<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] TVertex source,
-            [NotNull] TVertex sink)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            EdgeFactory<TVertex, TEdge> edgeFactory,
+            TVertex source,
+            TVertex sink)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var reversedEdgeAugmentorAlgorithm = new ReversedEdgeAugmentorAlgorithm<TVertex, TEdge>(graph, edgeFactory);
@@ -80,7 +81,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 edgeFactory);
 
             algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(
-                null,
+                default,
                 graph,
                 capacities,
                 edgeFactory,
@@ -97,7 +98,8 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge> algo,
                 IMutableVertexAndEdgeListGraph<TVertex, TEdge> g,
                 Func<TEdge, double> c,
-                EdgeFactory<int, Edge<int>> eFactory)
+                EdgeFactory<int, Edge<int>>? eFactory)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -130,67 +132,69 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, capacities, edgeFactory, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, edgeFactory, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, null, edgeFactory, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, edgeFactory, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, edgeFactory, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, edgeFactory, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, capacities, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, capacities, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, null, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, null, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, capacities, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, null, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, capacities, edgeFactory, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, edgeFactory, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, null, edgeFactory, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, edgeFactory, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, capacities, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, capacities, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, null, edgeFactory, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, edgeFactory, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, capacities, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, capacities, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, null, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, null, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, capacities, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, null, null, reverseEdgesAlgorithm1));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default, reverseEdgesAlgorithm1));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, null, edgeFactory, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, edgeFactory, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, capacities, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, graph1, null, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(null, null, null, null, null));
+                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
             Assert.Throws<ArgumentException>(
@@ -246,7 +250,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             void CheckReversedEdges()
             {
-                Assert.IsTrue(algorithm.ReversedEdges.Count % 2 == 0);
+                Assert.IsTrue(algorithm.ReversedEdges!.Count % 2 == 0);
                 foreach (var pair in algorithm.ReversedEdges)
                 {
                     Assert.AreEqual(pair.Key.Source, pair.Value.Target);
@@ -393,9 +397,11 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             var vertex = new TestVertex("1");
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, vertex));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(vertex, null));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(null, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, vertex));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(vertex, default));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -498,9 +504,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         [Pure]
-        [NotNull]
         public static EdmondsKarpMaximumFlowAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -514,7 +520,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var algorithm = new EdmondsKarpMaximumFlowAlgorithm<T, Edge<T>>(graph, Capacities, EdgeFactory, reverseEdgesAlgorithm);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root, scenario.AccessibleVerticesFromRoot.First());
+                algorithm.Compute(scenario.Root!, scenario.AccessibleVerticesFromRoot.First());
             return algorithm;
         }
     }

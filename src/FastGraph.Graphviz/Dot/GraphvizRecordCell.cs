@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+
 using System.Text;
 using JetBrains.Annotations;
 using static FastGraph.Graphviz.DotEscapers;
@@ -13,14 +14,14 @@ namespace FastGraph.Graphviz.Dot
 #endif
     public class GraphvizRecordCell
     {
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         private GraphvizRecordCellCollection _cells = new GraphvizRecordCellCollection();
 
         /// <summary>
         /// Record cells.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull, ItemNotNull]
+        [ItemNotNull]
         public GraphvizRecordCellCollection Cells
         {
             get => _cells;
@@ -35,7 +36,7 @@ namespace FastGraph.Graphviz.Dot
         /// <summary>
         /// Port.
         /// </summary>
-        public string Port { get; set; }
+        public string Port { get; set; } = default!;
 
         /// <summary>
         /// Indicates if record has text.
@@ -45,14 +46,13 @@ namespace FastGraph.Graphviz.Dot
         /// <summary>
         /// Text.
         /// </summary>
-        public string Text { get; set; }
+        public string Text { get; set; } = default!;
 
         /// <summary>
         /// Converts this record cell to DOT.
         /// </summary>
         /// <returns>Record cell as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             var builder = new StringBuilder();

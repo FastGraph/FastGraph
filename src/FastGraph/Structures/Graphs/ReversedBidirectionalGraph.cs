@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FastGraph
 {
@@ -17,6 +16,7 @@ namespace FastGraph
 #endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class ReversedBidirectionalGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, SReversedEdge<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -24,7 +24,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="originalGraph">Original graph to reverse.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="originalGraph"/> is <see langword="null"/>.</exception>
-        public ReversedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
+        public ReversedBidirectionalGraph(IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
             OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
         }
@@ -32,7 +32,6 @@ namespace FastGraph
         /// <summary>
         /// Original graph.
         /// </summary>
-        [NotNull]
         public IBidirectionalGraph<TVertex, TEdge> OriginalGraph { get; }
 
         #region IGraph<TVertex,TEdge>
@@ -95,7 +94,7 @@ namespace FastGraph
         /// <inheritdoc />
         public bool TryGetEdge(TVertex source, TVertex target, out SReversedEdge<TVertex, TEdge> edge)
         {
-            if (OriginalGraph.TryGetEdge(target, source, out TEdge originalEdge))
+            if (OriginalGraph.TryGetEdge(target, source, out TEdge? originalEdge))
             {
                 edge = new SReversedEdge<TVertex, TEdge>(originalEdge);
                 return true;
@@ -106,16 +105,16 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetEdges(TVertex source, TVertex target, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
+        public bool TryGetEdges(TVertex source, TVertex target, [NotNullWhen(true)] out IEnumerable<SReversedEdge<TVertex, TEdge>>? edges)
         {
-            if (OriginalGraph.TryGetEdges(target, source, out IEnumerable<TEdge> originalEdges)
+            if (OriginalGraph.TryGetEdges(target, source, out IEnumerable<TEdge>? originalEdges)
                 && ContainsVertex(source))
             {
                 edges = originalEdges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge));
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -142,15 +141,15 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetOutEdges(TVertex vertex, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
+        public bool TryGetOutEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<SReversedEdge<TVertex, TEdge>>? edges)
         {
-            if (OriginalGraph.TryGetInEdges(vertex, out IEnumerable<TEdge> inEdges))
+            if (OriginalGraph.TryGetInEdges(vertex, out IEnumerable<TEdge>? inEdges))
             {
                 edges = EdgeExtensions.ReverseEdges<TVertex, TEdge>(inEdges);
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 
@@ -191,15 +190,15 @@ namespace FastGraph
         }
 
         /// <inheritdoc />
-        public bool TryGetInEdges(TVertex vertex, out IEnumerable<SReversedEdge<TVertex, TEdge>> edges)
+        public bool TryGetInEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<SReversedEdge<TVertex, TEdge>>? edges)
         {
-            if (OriginalGraph.TryGetOutEdges(vertex, out IEnumerable<TEdge> outEdges))
+            if (OriginalGraph.TryGetOutEdges(vertex, out IEnumerable<TEdge>? outEdges))
             {
                 edges = EdgeExtensions.ReverseEdges<TVertex, TEdge>(outEdges);
                 return true;
             }
 
-            edges = null;
+            edges = default;
             return false;
         }
 

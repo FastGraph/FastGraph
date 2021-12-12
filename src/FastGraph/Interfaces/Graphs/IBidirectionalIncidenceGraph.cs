@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace FastGraph
@@ -11,6 +13,7 @@ namespace FastGraph
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IBidirectionalIncidenceGraph<TVertex, TEdge> : IIncidenceGraph<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -21,7 +24,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        bool IsInEdgesEmpty([NotNull] TVertex vertex);
+        bool IsInEdgesEmpty(TVertex vertex);
 
         /// <summary>
         /// Gets the number of in-edges of <paramref name="vertex"/>.
@@ -31,7 +34,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int InDegree([NotNull] TVertex vertex);
+        int InDegree(TVertex vertex);
 
         /// <summary>
         /// Gets the collection of in-edges of <paramref name="vertex"/>.
@@ -41,8 +44,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TEdge> InEdges([NotNull] TVertex vertex);
+        IEnumerable<TEdge> InEdges(TVertex vertex);
 
         /// <summary>
         /// Tries to get the in-edges of <paramref name="vertex"/>.
@@ -53,7 +55,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         [ContractAnnotation("=> true, edges:notnull;=> false, edges:null")]
-        bool TryGetInEdges([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> edges);
+        bool TryGetInEdges(TVertex vertex, [NotNullWhen(true)] out IEnumerable<TEdge>? edges);
 
         /// <summary>
         /// Gets the in-edge at location <paramref name="index"/>.
@@ -65,8 +67,7 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentOutOfRangeException">No vertex at <paramref name="index"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        [NotNull]
-        TEdge InEdge([NotNull] TVertex vertex, int index);
+        TEdge InEdge(TVertex vertex, int index);
 
         /// <summary>
         /// Gets the degree of <paramref name="vertex"/>, i.e.
@@ -77,6 +78,6 @@ namespace FastGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         [Pure]
-        int Degree([NotNull] TVertex vertex);
+        int Degree(TVertex vertex);
     }
 }

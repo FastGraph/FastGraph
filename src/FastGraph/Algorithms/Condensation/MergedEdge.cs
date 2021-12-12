@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.Condensation
@@ -13,6 +13,7 @@ namespace FastGraph.Algorithms.Condensation
     [Serializable]
 #endif
     public sealed class MergedEdge<TVertex, TEdge> : Edge<TVertex>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -22,18 +23,16 @@ namespace FastGraph.Algorithms.Condensation
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public MergedEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public MergedEdge(TVertex source, TVertex target)
             : base(source, target)
         {
         }
 
-        [NotNull, ItemNotNull]
         private List<TEdge> _edges = new List<TEdge>();
 
         /// <summary>
         /// Merged edges.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IList<TEdge> Edges => _edges;
 
         /// <summary>
@@ -45,10 +44,9 @@ namespace FastGraph.Algorithms.Condensation
         /// <exception cref="T:System.ArgumentNullException"><paramref name="inEdge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="outEdge"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static MergedEdge<TVertex, TEdge> Merge(
-            [NotNull] MergedEdge<TVertex, TEdge> inEdge,
-            [NotNull] MergedEdge<TVertex, TEdge> outEdge)
+            MergedEdge<TVertex, TEdge> inEdge,
+            MergedEdge<TVertex, TEdge> outEdge)
         {
             if (inEdge is null)
                 throw new ArgumentNullException(nameof(inEdge));
@@ -73,10 +71,10 @@ namespace FastGraph.Algorithms.Condensation
     {
         /// <inheritdoc cref="MergedEdge{TVertex,TEdge}.Merge"/>
         [Pure]
-        [NotNull]
         public static MergedEdge<TVertex, TEdge> Merge<TVertex, TEdge>(
-            [NotNull] MergedEdge<TVertex, TEdge> inEdge,
-            [NotNull] MergedEdge<TVertex, TEdge> outEdge)
+            MergedEdge<TVertex, TEdge> inEdge,
+            MergedEdge<TVertex, TEdge> outEdge)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             return MergedEdge<TVertex, TEdge>.Merge(inEdge, outEdge);

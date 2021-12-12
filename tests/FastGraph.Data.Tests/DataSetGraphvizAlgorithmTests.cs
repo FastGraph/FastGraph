@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Data;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -58,17 +58,18 @@ namespace FastGraph.Data.Tests
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphvizAlgorithm(null));
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphvizAlgorithm(null, GraphvizImageType.Gif));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new DataSetGraphvizAlgorithm(default));
+            Assert.Throws<ArgumentNullException>(() => new DataSetGraphvizAlgorithm(default, GraphvizImageType.Gif));
 
             DataSetGraph graph = new DataSet().ToGraph();
             var algorithm = new DataSetGraphvizAlgorithm(graph);
-            Assert.Throws<ArgumentNullException>(() => algorithm.VisitedGraph = null);
+            Assert.Throws<ArgumentNullException>(() => algorithm.VisitedGraph = default);
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
             [UsedImplicitly]
@@ -195,7 +196,7 @@ namespace FastGraph.Data.Tests
         }
 
         [TestCaseSource(nameof(GenerateTestCases))]
-        public string Generate([NotNull] DataSet dataSet)
+        public string Generate(DataSet dataSet)
         {
             var algorithm = new DataSetGraphvizAlgorithm(dataSet.ToGraph());
             return algorithm.Generate();
@@ -208,11 +209,13 @@ namespace FastGraph.Data.Tests
             DataSetGraph graph = new DataSet().ToGraph();
             var algorithm = new DataSetGraphvizAlgorithm(graph);
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, "NotSaved.dot"));
-            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, "NotSaved.dot"));
+            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, default));
             Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, string.Empty));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, null));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(null, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, default));
+            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, string.Empty));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
     }

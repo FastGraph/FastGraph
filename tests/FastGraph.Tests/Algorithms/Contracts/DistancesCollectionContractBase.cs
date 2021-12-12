@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -17,11 +16,10 @@ namespace FastGraph.Tests.Algorithms.Contracts
     [TestFixtureSource(typeof(AlgorithmsProvider), nameof(AlgorithmsProvider.DistanceCollectors))]
     internal abstract class DistancesCollectionContractBase
     {
-        [NotNull]
         private readonly Type _testedAlgorithm;
 
         /// <summary/>
-        protected DistancesCollectionContractBase([NotNull] Type algorithmToTest)
+        protected DistancesCollectionContractBase(Type algorithmToTest)
         {
             _testedAlgorithm = algorithmToTest;
         }
@@ -36,17 +34,17 @@ namespace FastGraph.Tests.Algorithms.Contracts
         }
 
         [Pure]
-        [NotNull]
         protected IDistancesCollection<T> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             Func<ContractScenario<T>, IDistancesCollection<T>> instantiateAlgorithm = GetAlgorithmFactory<T>();
             return instantiateAlgorithm(scenario);
         }
 
         [Pure]
-        [NotNull]
         private Func<ContractScenario<T>, IDistancesCollection<T>> GetAlgorithmFactory<T>()
+            where T : notnull
         {
             return _testedAlgorithm switch
             {
@@ -75,7 +73,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
     internal sealed class TheTryGetDistanceMethod : DistancesCollectionContractBase
     {
-        public TheTryGetDistanceMethod([NotNull] Type algorithmToTest) : base(algorithmToTest)
+        public TheTryGetDistanceMethod(Type algorithmToTest) : base(algorithmToTest)
         {
         }
 
@@ -128,7 +126,9 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<string> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(null, out _));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(default, out _));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
     internal sealed class TheGetDistanceMethod : DistancesCollectionContractBase
     {
-        public TheGetDistanceMethod([NotNull] Type algorithmToTest) : base(algorithmToTest)
+        public TheGetDistanceMethod(Type algorithmToTest) : base(algorithmToTest)
         {
         }
 
@@ -221,7 +221,9 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<string> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => { double _ = algorithm.GetDistance(null); });
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => { double _ = algorithm.GetDistance(default); });
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -260,7 +262,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
     internal sealed class TheGetKnownDistancesMethod : DistancesCollectionContractBase
     {
-        public TheGetKnownDistancesMethod([NotNull] Type algorithmToTest) : base(algorithmToTest)
+        public TheGetKnownDistancesMethod(Type algorithmToTest) : base(algorithmToTest)
         {
         }
 

@@ -1,5 +1,6 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace FastGraph.Tests.Exceptions
     internal sealed class ExceptionTests
     {
         private static void ExceptionConstructorTest<TException>(
-            [NotNull, InstantHandle] Func<string, Exception, TException> createException)
+            [InstantHandle] Func<string, Exception, TException> createException)
             where TException : Exception
         {
             const string message = "Test exception message.";
@@ -22,7 +23,9 @@ namespace FastGraph.Tests.Exceptions
             Assert.AreEqual(message, exception.Message);
             Assert.AreSame(innerException, exception.InnerException);
 
-            exception = createException(message, null);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            exception = createException(message, default);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.AreEqual(message, exception.Message);
             Assert.IsNull(exception.InnerException);
         }

@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
 using FastGraph.Tests;
@@ -29,12 +30,14 @@ namespace FastGraph.MSAGL.Tests
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglVertexEventArgs<TestVertex>(vertex, null));
+                () => new MsaglVertexEventArgs<TestVertex>(vertex, default));
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglVertexEventArgs<TestVertex>(null, node));
+                () => new MsaglVertexEventArgs<TestVertex>(default, node));
             Assert.Throws<ArgumentNullException>(
-                () => new MsaglVertexEventArgs<TestVertex>(null, null));
+                () => new MsaglVertexEventArgs<TestVertex>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

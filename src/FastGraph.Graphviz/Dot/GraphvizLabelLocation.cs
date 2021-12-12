@@ -1,5 +1,6 @@
+#nullable enable
+
 #if SUPPORTS_SERIALIZATION
-using System;
 #endif
 
 namespace FastGraph.Graphviz.Dot

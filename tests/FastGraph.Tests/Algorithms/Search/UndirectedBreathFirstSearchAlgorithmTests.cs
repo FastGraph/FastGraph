@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
@@ -19,13 +18,14 @@ namespace FastGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunBFSAndCheck<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex sourceVertex)
+            IUndirectedGraph<TVertex, TEdge> graph,
+            TVertex sourceVertex)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var parents = new Dictionary<TVertex, TVertex>();
             var distances = new Dictionary<TVertex, int>();
-            TVertex currentVertex = default;
+            TVertex? currentVertex = default;
             int currentDistance = 0;
             var algorithm = new UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge>(graph);
 
@@ -162,7 +162,7 @@ namespace FastGraph.Tests.Algorithms.Search
                 if (algorithm.VerticesColors[vertex] == GraphColor.White)
                 {
                     // Check !IsReachable(sourceVertex, vertex, graph);
-                    if (recorder.TryGetPath(vertex, out IEnumerable<TEdge> path))
+                    if (recorder.TryGetPath(vertex, out IEnumerable<TEdge>? path))
                     {
                         foreach (TEdge edge in path)
                         {
@@ -196,7 +196,7 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
-            algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, queue, verticesColors);
+            algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, queue, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
             #region Local function
@@ -204,7 +204,8 @@ namespace FastGraph.Tests.Algorithms.Search
             void AssertAlgorithmProperties<TVertex, TEdge>(
                 UndirectedBreadthFirstSearchAlgorithm<TVertex, TEdge> algo,
                 IUndirectedGraph<TVertex, TEdge> g,
-                IDictionary<TVertex, GraphColor> vColors = null)
+                IDictionary<TVertex, GraphColor>? vColors = default)
+                where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
@@ -226,38 +227,40 @@ namespace FastGraph.Tests.Algorithms.Search
             var verticesColors = new Dictionary<int, GraphColor>();
             var queue = new BinaryQueue<int, double>(_ => 1.0);
 
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, queue, verticesColors));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, queue, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, null, verticesColors));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, queue, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, queue, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, null, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, queue, verticesColors));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, queue, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, verticesColors));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, queue, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, queue, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, verticesColors));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, verticesColors));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, queue, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, queue, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null));
+                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -352,9 +355,9 @@ namespace FastGraph.Tests.Algorithms.Search
         }
 
         [Pure]
-        [NotNull]
         public static UndirectedBreadthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
+            where T : notnull
         {
             var graph = new UndirectedGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));
@@ -363,7 +366,7 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new UndirectedBreadthFirstSearchAlgorithm<T, Edge<T>>(graph);
 
             if (scenario.DoComputation)
-                algorithm.Compute(scenario.Root);
+                algorithm.Compute(scenario.Root!);
             return algorithm;
         }
     }

@@ -1,5 +1,5 @@
-using System;
-using JetBrains.Annotations;
+#nullable enable
+
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Algorithms.Observers
@@ -10,11 +10,13 @@ namespace FastGraph.Tests.Algorithms.Observers
     internal abstract class ObserverTestsBase
     {
         protected static void Attach_Throws_Test<TAlgorithm>(
-            [NotNull] FastGraph.Algorithms.Observers.IObserver<TAlgorithm> observer)
+            FastGraph.Algorithms.Observers.IObserver<TAlgorithm> observer)
             where TAlgorithm : class
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => observer.Attach(null));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => observer.Attach(default));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
     }
 }

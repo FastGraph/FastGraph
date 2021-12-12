@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 
 namespace FastGraph
 {
@@ -17,6 +16,7 @@ namespace FastGraph
     [StructLayout(LayoutKind.Auto)]
     [DebuggerDisplay("{" + nameof(Source) + "}<-{" + nameof(Target) + "}")]
     public struct SReversedEdge<TVertex, TEdge> : IEdge<TVertex>, IEquatable<SReversedEdge<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -24,7 +24,7 @@ namespace FastGraph
         /// </summary>
         /// <param name="originalEdge">Original edge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="originalEdge"/> is <see langword="null"/>.</exception>
-        public SReversedEdge([NotNull] TEdge originalEdge)
+        public SReversedEdge(TEdge originalEdge)
         {
             if (originalEdge == null)
                 throw new ArgumentNullException(nameof(originalEdge));
@@ -35,7 +35,6 @@ namespace FastGraph
         /// <summary>
         /// Original edge.
         /// </summary>
-        [NotNull]
         public TEdge OriginalEdge { get; }
 
         /// <inheritdoc />
@@ -45,7 +44,7 @@ namespace FastGraph
         public TVertex Target => OriginalEdge.Source;
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is SReversedEdge<TVertex, TEdge> reversedEdge
                    && Equals(reversedEdge);

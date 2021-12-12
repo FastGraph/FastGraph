@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -27,12 +28,14 @@ namespace FastGraph.Tests.Algorithms
             var graph = new BidirectionalGraph<int, Edge<int>>();
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new TransitiveClosureAlgorithm<int, Edge<int>>(null, (v1, v2) => new Edge<int>(v1, v2)));
+                () => new TransitiveClosureAlgorithm<int, Edge<int>>(default, (v1, v2) => new Edge<int>(v1, v2)));
             Assert.Throws<ArgumentNullException>(
-                () => new TransitiveClosureAlgorithm<int, Edge<int>>(graph, null));
+                () => new TransitiveClosureAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new TransitiveClosureAlgorithm<int, Edge<int>>(null, null));
+                () => new TransitiveClosureAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }

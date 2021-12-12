@@ -1,5 +1,6 @@
-﻿using System.Text;
-using JetBrains.Annotations;
+#nullable enable
+
+using System.Text;
 using FastGraph.Algorithms.Condensation;
 
 namespace FastGraph.Graphviz
@@ -11,6 +12,7 @@ namespace FastGraph.Graphviz
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
     public class CondensatedGraphRenderer<TVertex, TEdge, TGraph> : GraphRendererBase<TGraph, CondensedEdge<TVertex, TEdge, TGraph>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
         where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
     {
@@ -20,7 +22,7 @@ namespace FastGraph.Graphviz
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public CondensatedGraphRenderer(
-            [NotNull] IEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> graph)
+            IEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> graph)
             : base(graph)
         {
         }
@@ -43,7 +45,7 @@ namespace FastGraph.Graphviz
             base.Clean();
         }
 
-        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TGraph> args)
+        private static void OnFormatVertex(object sender, FormatVertexEventArgs<TGraph> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine($"{args.Vertex.VertexCount}-{args.Vertex.EdgeCount}");
@@ -61,8 +63,8 @@ namespace FastGraph.Graphviz
         }
 
         private static void OnFormatEdge(
-            [NotNull] object sender,
-            [NotNull] FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
+            object sender,
+            FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine(args.Edge.Edges.Count.ToString());

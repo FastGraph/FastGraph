@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
+#nullable enable
+
+#if SUPPORTS_SERIALIZATION
 #endif
-using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace FastGraph.Collections
@@ -15,6 +15,7 @@ namespace FastGraph.Collections
     [Serializable]
 #endif
     public sealed class FibonacciHeapCell<TPriority, TValue>
+        where TPriority : notnull
     {
         /// <summary>
         /// Determines if a node has had a child cut from it before.
@@ -29,12 +30,12 @@ namespace FastGraph.Collections
         /// <summary>
         /// Gets or sets the value priority.
         /// </summary>
-        public TPriority Priority { get; internal set; }
+        public TPriority Priority { get; internal set; } = default!;
 
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        public TValue Value { get; internal set; }
+        public TValue Value { get; internal set; } = default!;
 
         /// <summary>
         /// Gets or sets the state removed of a cell.
@@ -44,26 +45,22 @@ namespace FastGraph.Collections
         /// <summary>
         /// Parent cell.
         /// </summary>
-        [CanBeNull]
-        public FibonacciHeapCell<TPriority, TValue> Parent { get; internal set; }
+        public FibonacciHeapCell<TPriority, TValue>? Parent { get; internal set; }
 
         /// <summary>
         /// Children cells.
         /// </summary>
-        [CanBeNull]
-        public FibonacciHeapLinkedList<TPriority, TValue> Children { get; internal set; }
+        public FibonacciHeapLinkedList<TPriority, TValue>? Children { get; internal set; }
 
         /// <summary>
         /// Previous cell.
         /// </summary>
-        [CanBeNull]
-        public FibonacciHeapCell<TPriority, TValue> Previous { get; internal set; }
+        public FibonacciHeapCell<TPriority, TValue>? Previous { get; internal set; }
 
         /// <summary>
         /// Next cell.
         /// </summary>
-        [CanBeNull]
-        public FibonacciHeapCell<TPriority, TValue> Next { get; internal set; }
+        public FibonacciHeapCell<TPriority, TValue>? Next { get; internal set; }
 
         /// <summary>
         /// Converts this cell to a <see cref="T:System.Collections.Generic.KeyValuePair{TPriority,TValue}"/>.

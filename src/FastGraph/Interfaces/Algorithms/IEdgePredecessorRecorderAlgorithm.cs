@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace FastGraph.Algorithms
 {
     /// <summary>
@@ -6,16 +8,17 @@ namespace FastGraph.Algorithms
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IEdgePredecessorRecorderAlgorithm<TVertex, out TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
         /// Fired when an edge is discovered.
         /// </summary>
-        event EdgeEdgeAction<TVertex, TEdge> DiscoverTreeEdge;
+        event EdgeEdgeAction<TVertex, TEdge>? DiscoverTreeEdge;
 
         /// <summary>
         /// Fired when an edge is fully treated.
         /// </summary>
-        event EdgeAction<TVertex, TEdge> FinishEdge;
+        event EdgeAction<TVertex, TEdge>? FinishEdge;
     }
 }

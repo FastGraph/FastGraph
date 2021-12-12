@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms
@@ -19,10 +19,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static TVertex GetVertex<TVertex>(
-            [NotNull] IVertexSet<TVertex> graph,
-            [NotNull] Random rng)
+            IVertexSet<TVertex> graph,
+            Random rng)
+            where TVertex : notnull
         {
             if (graph is null)
                 throw new ArgumentNullException(nameof(graph));
@@ -42,11 +42,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is negative or equal 0.</exception>
         /// <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is higher than <paramref name="vertices"/> count.</exception>
         [Pure]
-        [NotNull]
         public static TVertex GetVertex<TVertex>(
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
+            IEnumerable<TVertex> vertices,
             int count,
-            [NotNull] Random rng)
+            Random rng)
+            where TVertex : notnull
         {
             if (vertices is null)
                 throw new ArgumentNullException(nameof(vertices));
@@ -78,10 +78,10 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static TEdge GetEdge<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, TEdge> graph,
-            [NotNull] Random rng)
+            IEdgeSet<TVertex, TEdge> graph,
+            Random rng)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -103,11 +103,11 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is negative or equal 0.</exception>
         /// <exception cref="T:System.InvalidOperationException"><paramref name="count"/> is higher than <paramref name="edges"/> count.</exception>
         [Pure]
-        [NotNull]
         public static TEdge GetEdge<TVertex, TEdge>(
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges,
+            IEnumerable<TEdge> edges,
             int count,
-            [NotNull] Random rng)
+            Random rng)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (edges is null)
@@ -130,13 +130,14 @@ namespace FastGraph.Algorithms
         }
 
         private static void CreateInternal<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] VertexFactory<TVertex> vertexFactory,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] Random rng,
+            IMutableVertexAndEdgeSet<TVertex, TEdge> graph,
+            [InstantHandle] VertexFactory<TVertex> vertexFactory,
+            [InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
+            Random rng,
             int vertexCount,
             int edgeCount,
             bool selfEdges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             if (graph is null)
@@ -169,7 +170,7 @@ namespace FastGraph.Algorithms
                 {
                     b = vertices[rng.Next(vertexCount)];
                 }
-                while (!selfEdges && EqualityComparer<TVertex>.Default.Equals(a, b));
+                while (!selfEdges && EqualityComparer<TVertex?>.Default.Equals(a, b));
 
                 if (graph.AddEdge(edgeFactory(a, b)))
                 {
@@ -198,13 +199,14 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="vertexCount"/> is negative or equal 0.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="edgeCount"/> is negative.</exception>
         public static void Create<TVertex, TEdge>(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] VertexFactory<TVertex> vertexFactory,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] Random rng,
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> graph,
+            [InstantHandle] VertexFactory<TVertex> vertexFactory,
+            [InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
+            Random rng,
             int vertexCount,
             int edgeCount,
             bool selfEdges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             CreateInternal(graph, vertexFactory, edgeFactory, rng, vertexCount, edgeCount, selfEdges);
@@ -230,13 +232,14 @@ namespace FastGraph.Algorithms
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="vertexCount"/> is negative or equal 0.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="edgeCount"/> is negative.</exception>
         public static void Create<TVertex, TEdge>(
-            [NotNull] IMutableUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] VertexFactory<TVertex> vertexFactory,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] Random rng,
+            IMutableUndirectedGraph<TVertex, TEdge> graph,
+            [InstantHandle] VertexFactory<TVertex> vertexFactory,
+            [InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
+            Random rng,
             int vertexCount,
             int edgeCount,
             bool selfEdges)
+            where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             CreateInternal(graph, vertexFactory, edgeFactory, rng, vertexCount, edgeCount, selfEdges);

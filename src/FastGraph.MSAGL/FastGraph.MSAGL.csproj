@@ -2,6 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <Title>FastGraph.MSAGL</Title>
     <RootNamespace>FastGraph.MSAGL</RootNamespace>
@@ -49,6 +51,7 @@ It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.MSAG
   <ItemGroup>
     <PackageReference Include="AutomaticGraphLayout" Version="1.1.11" />
     <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
 
   <!-- Projects -->

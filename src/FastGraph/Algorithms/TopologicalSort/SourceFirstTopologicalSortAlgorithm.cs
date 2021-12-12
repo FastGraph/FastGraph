@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable enable
+
 using System.Diagnostics;
-using System.Linq;
-using JetBrains.Annotations;
 using FastGraph.Collections;
 
 namespace FastGraph.Algorithms.TopologicalSort
@@ -12,12 +11,11 @@ namespace FastGraph.Algorithms.TopologicalSort
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class SourceFirstTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly BinaryQueue<TVertex, int> _heap;
 
-        [NotNull, ItemNotNull]
         private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
@@ -27,7 +25,7 @@ namespace FastGraph.Algorithms.TopologicalSort
         /// <param name="capacity">Sorted vertices capacity.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public SourceFirstTopologicalSortAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
             : base(visitedGraph)
         {
@@ -38,24 +36,20 @@ namespace FastGraph.Algorithms.TopologicalSort
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [ItemNotNull]
-        public TVertex[] SortedVertices { get; private set; }
+        public TVertex[]? SortedVertices { get; private set; }
 
         /// <summary>
         /// Vertices in-degrees.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, int> InDegrees { get; } = new Dictionary<TVertex, int>();
 
         /// <summary>
         /// Fired when a vertex is added to the set of sorted vertices.
         /// </summary>
-        public event VertexAction<TVertex> VertexAdded;
+        public event VertexAction<TVertex>? VertexAdded;
 
-        private void OnVertexAdded([NotNull] TVertex vertex)
+        private void OnVertexAdded(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
             VertexAdded?.Invoke(vertex);
         }
 
@@ -87,7 +81,7 @@ namespace FastGraph.Algorithms.TopologicalSort
         {
             base.Initialize();
 
-            SortedVertices = null;
+            SortedVertices = default;
             _sortedVertices.Clear();
             InDegrees.Clear();
 

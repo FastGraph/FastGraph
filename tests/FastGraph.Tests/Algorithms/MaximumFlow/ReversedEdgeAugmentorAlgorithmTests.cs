@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms.MaximumFlow;
@@ -35,17 +34,18 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(null, edgeFactory));
+                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(default, edgeFactory));
             Assert.Throws<ArgumentNullException>(
-                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, null));
+                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, default));
             Assert.Throws<ArgumentNullException>(
-                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(null, null));
+                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> AddReversedEdgeTestCases
         {
             [UsedImplicitly]
@@ -61,7 +61,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         }
 
         [TestCaseSource(nameof(AddReversedEdgeTestCases))]
-        public void AddReversedEdges<TEdge>([NotNull] EdgeFactory<int, TEdge> edgeFactory)
+        public void AddReversedEdges<TEdge>(EdgeFactory<int, TEdge> edgeFactory)
             where TEdge : IEdge<int>
         {
             TEdge edge12 = edgeFactory(1, 2);

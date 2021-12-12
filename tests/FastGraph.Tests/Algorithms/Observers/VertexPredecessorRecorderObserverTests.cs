@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Search;
@@ -35,7 +35,9 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new VertexPredecessorRecorderObserver<int, Edge<int>>(null));
+#pragma warning disable CS8625
+            Assert.Throws<ArgumentNullException>(() => new VertexPredecessorRecorderObserver<int, Edge<int>>(default));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -201,7 +203,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Assert.IsTrue(recorder.TryGetPath(4, out IEnumerable<Edge<int>> path));
+                    Assert.IsTrue(recorder.TryGetPath(4, out IEnumerable<Edge<int>>? path));
                     CollectionAssert.AreEqual(new[] { edge12, edge24 }, path);
                 }
             }
@@ -229,7 +231,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Assert.IsTrue(recorder.TryGetPath(4, out IEnumerable<Edge<int>> path));
+                    Assert.IsTrue(recorder.TryGetPath(4, out IEnumerable<Edge<int>>? path));
                     CollectionAssert.AreEqual(new[] { edge12, edge24 }, path);
                 }
             }
@@ -239,8 +241,10 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void TryGetPath_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new VertexPredecessorRecorderObserver<TestVertex, Edge<TestVertex>>().TryGetPath(null, out _));
+                () => new VertexPredecessorRecorderObserver<TestVertex, Edge<TestVertex>>().TryGetPath(default, out _));
+#pragma warning restore CS8625
         }
     }
 }

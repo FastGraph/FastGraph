@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#nullable enable
+
 using JetBrains.Annotations;
 using static FastGraph.Utils.DisposableHelpers;
 
@@ -17,6 +15,7 @@ namespace FastGraph.Algorithms.Observers
 #endif
     public sealed class VertexPredecessorPathRecorderObserver<TVertex, TEdge> :
         IObserver<IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -33,7 +32,7 @@ namespace FastGraph.Algorithms.Observers
         /// <param name="verticesPredecessors">Vertices predecessors.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesPredecessors"/> is <see langword="null"/>.</exception>
         public VertexPredecessorPathRecorderObserver(
-            [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
+            IDictionary<TVertex, TEdge> verticesPredecessors)
         {
             VerticesPredecessors = verticesPredecessors ?? throw new ArgumentNullException(nameof(verticesPredecessors));
         }
@@ -41,13 +40,11 @@ namespace FastGraph.Algorithms.Observers
         /// <summary>
         /// Vertices predecessors.
         /// </summary>
-        [NotNull]
         public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
 
         /// <summary>
         /// Path ending vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
         public ICollection<TVertex> EndPathVertices { get; } = new List<TVertex>();
 
         /// <summary>
@@ -55,12 +52,11 @@ namespace FastGraph.Algorithms.Observers
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
         [Pure]
-        [NotNull, ItemNotNull]
         public IEnumerable<IEnumerable<TEdge>> AllPaths()
         {
             return EndPathVertices
-                .Select(vertex => VerticesPredecessors.TryGetPath(vertex, out IEnumerable<TEdge> path) ? path : null)
-                .Where(path => path != null);
+                .Select(vertex => VerticesPredecessors.TryGetPath(vertex, out IEnumerable<TEdge>? path) ? path : default)
+                .Where(path => path != default)!;
         }
 
         #region IObserver<TAlgorithm>
@@ -82,18 +78,14 @@ namespace FastGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        private void OnEdgeDiscovered(TEdge edge)
         {
-            Debug.Assert(edge != null);
-
             VerticesPredecessors[edge.Target] = edge;
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished(TVertex vertex)
         {
-            Debug.Assert(vertex != null);
-
-            if (VerticesPredecessors.Values.Any(edge => EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)))
+            if (VerticesPredecessors.Values.Any(edge => EqualityComparer<TVertex?>.Default.Equals(edge.Source, vertex)))
                 return;
 
             EndPathVertices.Add(vertex);

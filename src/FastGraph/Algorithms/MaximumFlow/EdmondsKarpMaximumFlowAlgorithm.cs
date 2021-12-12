@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using JetBrains.Annotations;
+#nullable enable
+
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.Search;
 using FastGraph.Algorithms.Services;
@@ -15,9 +13,9 @@ namespace FastGraph.Algorithms.MaximumFlow
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge> : MaximumFlowAlgorithm<TVertex, TEdge>
+        where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> _reverserAlgorithm;
 
         /// <summary>
@@ -33,11 +31,11 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="reverseEdgesAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="reverseEdgesAugmentorAlgorithm"/> targets a graph different from <paramref name="visitedGraph"/>.</exception>
         public EdmondsKarpMaximumFlowAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> capacities,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
-            : this(null, visitedGraph, capacities, edgeFactory, reverseEdgesAugmentorAlgorithm)
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> capacities,
+            EdgeFactory<TVertex, TEdge> edgeFactory,
+            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
+            : this(default, visitedGraph, capacities, edgeFactory, reverseEdgesAugmentorAlgorithm)
         {
         }
 
@@ -55,11 +53,11 @@ namespace FastGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="reverseEdgesAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="reverseEdgesAugmentorAlgorithm"/> targets a graph different from <paramref name="visitedGraph"/>.</exception>
         public EdmondsKarpMaximumFlowAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> capacities,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
+            IAlgorithmComponent? host,
+            IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> capacities,
+            EdgeFactory<TVertex, TEdge> edgeFactory,
+            ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
             : base(host, visitedGraph, capacities, edgeFactory)
         {
             if (reverseEdgesAugmentorAlgorithm is null)
@@ -71,18 +69,14 @@ namespace FastGraph.Algorithms.MaximumFlow
             ReversedEdges = reverseEdgesAugmentorAlgorithm.ReversedEdges;
         }
 
-        [NotNull]
         private IVertexListGraph<TVertex, TEdge> ResidualGraph =>
             new FilteredVertexListGraph<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>(
                 VisitedGraph,
                 vertex => true,
                 new ResidualEdgePredicate<TVertex, TEdge>(ResidualCapacities).Test);
 
-        private void Augment([NotNull] TVertex source, [NotNull] TVertex sink)
+        private void Augment(TVertex source, TVertex sink)
         {
-            Debug.Assert(source != null);
-            Debug.Assert(sink != null);
-
             // Find minimum residual capacity along the augmenting path
             double delta = double.MaxValue;
             TVertex u = sink;
@@ -100,7 +94,7 @@ namespace FastGraph.Algorithms.MaximumFlow
             {
                 e = Predecessors[u];
                 ResidualCapacities[e] -= delta;
-                if (ReversedEdges != null && ReversedEdges.ContainsKey(e))
+                if (ReversedEdges != default && ReversedEdges.ContainsKey(e))
                 {
                     ResidualCapacities[ReversedEdges[e]] += delta;
                 }
@@ -152,8 +146,8 @@ namespace FastGraph.Algorithms.MaximumFlow
                 }
             }
 
-            VerticesColors[Sink] = GraphColor.Gray;
-            while (VerticesColors[Sink] != GraphColor.White)
+            VerticesColors[Sink!] = GraphColor.Gray;
+            while (VerticesColors[Sink!] != GraphColor.White)
             {
                 var verticesPredecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>(Predecessors);
                 var queue = new Collections.Queue<TVertex>();
@@ -163,16 +157,16 @@ namespace FastGraph.Algorithms.MaximumFlow
                     VerticesColors);
 
                 using (verticesPredecessors.Attach(bfs))
-                    bfs.Compute(Source);
+                    bfs.Compute(Source!);
 
-                if (VerticesColors[Sink] != GraphColor.White)
+                if (VerticesColors[Sink!] != GraphColor.White)
                 {
-                    Augment(Source, Sink);
+                    Augment(Source!, Sink!);
                 }
             }
 
             MaxFlow = 0;
-            foreach (TEdge edge in graph.OutEdges(Source))
+            foreach (TEdge edge in graph.OutEdges(Source!))
             {
                 MaxFlow += Capacities(edge) - ResidualCapacities[edge];
             }

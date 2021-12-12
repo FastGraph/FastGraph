@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+#nullable enable
+
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.Observers;
@@ -37,21 +37,23 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
+#pragma warning disable CS8625
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(null));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default));
 
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(null, DistanceRelaxers.ShortestDistance, new Dictionary<int, double>()));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, DistanceRelaxers.ShortestDistance, new Dictionary<int, double>()));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, null, new Dictionary<int, double>()));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, default, new Dictionary<int, double>()));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, DistanceRelaxers.ShortestDistance, null));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, DistanceRelaxers.ShortestDistance, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(null, null, new Dictionary<int, double>()));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, default, new Dictionary<int, double>()));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, null, null));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, default, default));
             Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(null, null, null));
+                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, default, default));
+#pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
