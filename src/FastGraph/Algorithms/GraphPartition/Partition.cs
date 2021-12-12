@@ -1,8 +1,4 @@
-﻿#if SUPPORTS_SORTEDSET
-using System.Collections.Generic;
-#else
-using FastGraph.Collections;
-#endif
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace FastGraph.Algorithms.GraphPartition
