@@ -1,11 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
-#if REQUIRE_STRING_COMPATIBILITY
-using static FastGraph.Utils.StringUtils;
-#endif
 
 namespace FastGraph.Petri
 {
@@ -43,11 +40,7 @@ namespace FastGraph.Petri
             }
 
             builder.Append(
-#if REQUIRE_STRING_COMPATIBILITY
-                Join(
-#else
                 string.Join(
-#endif
                     Environment.NewLine + "\t", Marking.Select(token => token.GetType().Name)));
 
             return builder.ToString();

@@ -1,12 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using FastGraph.Graphviz.Helpers;
 using static FastGraph.Graphviz.DotEscapers;
 using static FastGraph.Utils.MathUtils;
-#if REQUIRE_STRING_COMPATIBILITY
-using static FastGraph.Utils.StringUtils;
-#endif
 
 namespace FastGraph.Graphviz.Dot
 {
@@ -295,11 +292,7 @@ namespace FastGraph.Graphviz.Dot
             }
 
             string dot =
-#if REQUIRE_STRING_COMPATIBILITY
-                Join(
-#else
                 string.Join(
-#endif
                     "; ", dotParts);
 
             dot = dotParts.Count > 1 ? dot + ";" : dot;
