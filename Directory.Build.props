@@ -7,7 +7,7 @@
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <Authors>Alexandre Rabérin</Authors>
+    <Authors>FastGraph Contributors</Authors>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
