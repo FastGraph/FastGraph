@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
@@ -44,7 +44,7 @@ namespace FastGraph.Graphviz
         {
             return RecordEscapeRegex.Replace(
                 value,
-                match => "_");
+                _ => "_");
         }
 
         /// <summary>

@@ -39,7 +39,7 @@ namespace FastGraph.Algorithms
             TransitiveReduction.AddEdgeRange(VisitedGraph.Edges);
 
             var algorithmHelper = new TransitiveAlgorithmHelper<TVertex, TEdge>(TransitiveReduction);
-            algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
+            algorithmHelper.InternalCompute((graph, _, _, found, edge) =>
             {
                 if (found)
                 {

@@ -113,7 +113,7 @@ namespace FastGraph.Algorithms
                 var flow = new EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge>(
                     this,
                     VisitedGraph,
-                    edge => 1.0,
+                    _ => 1.0,
                     EdgeFactory,
                     reverser);
 

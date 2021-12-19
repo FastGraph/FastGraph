@@ -128,7 +128,7 @@ namespace FastGraph.Algorithms.Exploration
             return _transitionFactories.Contains(transitionFactory);
         }
 
-        private VertexPredicate<TVertex> _vertexPredicate = vertex => true;
+        private VertexPredicate<TVertex> _vertexPredicate = _ => true;
 
         /// <summary>
         /// Predicate that a vertex must match to be the successor (target) of an edge.
@@ -144,7 +144,7 @@ namespace FastGraph.Algorithms.Exploration
             }
         }
 
-        private EdgePredicate<TVertex, TEdge> _edgePredicate = edge => true;
+        private EdgePredicate<TVertex, TEdge> _edgePredicate = _ => true;
 
         /// <summary>
         /// Predicate that an edge must match to be the successor of a source vertex.

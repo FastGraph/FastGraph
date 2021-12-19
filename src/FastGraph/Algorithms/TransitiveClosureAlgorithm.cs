@@ -45,7 +45,7 @@ namespace FastGraph.Algorithms
             TransitiveClosure.AddEdgeRange(VisitedGraph.Edges);
 
             var algorithmHelper = new TransitiveAlgorithmHelper<TVertex, TEdge>(TransitiveClosure);
-            algorithmHelper.InternalCompute((graph, u, v, found, edge) =>
+            algorithmHelper.InternalCompute((graph, u, v, found, _) =>
             {
                 if (!found)
                 {
