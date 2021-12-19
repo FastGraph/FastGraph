@@ -67,15 +67,15 @@ namespace FastGraph.MSAGL.Tests
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
-                Assert.IsNull(p.MsaglGraph);
-                Assert.AreEqual(f ?? "{0}", p.Format);
+                p.MsaglGraph.Should().BeNull();
+                p.Format.Should().Be(f ?? "{0}");
                 if (provider is null)
                 {
-                    Assert.IsNull(p.FormatProvider);
+                    p.FormatProvider.Should().BeNull();
                 }
                 else
                 {
-                    Assert.AreSame(provider, p.FormatProvider);
+                    p.FormatProvider.Should().BeSameAs(provider);
                 }
             }
 
@@ -88,8 +88,7 @@ namespace FastGraph.MSAGL.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglToStringGraphPopulator<int, Edge<int>>(default));
+            Invoking(() => new MsaglToStringGraphPopulator<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -123,8 +122,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("1"));
+            populator.MsaglGraph!.FindNode("0").Should().BeNull();
+            populator.MsaglGraph.FindNode("1").Should().NotBeNull();
 
 
             // No special format (2)
@@ -132,8 +131,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("1"));
+            populator.MsaglGraph!.FindNode("0").Should().BeNull();
+            populator.MsaglGraph.FindNode("1").Should().NotBeNull();
 
 
 
@@ -142,8 +141,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestFormat 0 Vertex"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"));
+            populator.MsaglGraph!.FindNode("MyTestFormat 0 Vertex").Should().BeNull();
+            populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex").Should().NotBeNull();
 
 
             // With special format (2)
@@ -151,8 +150,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestFormat 0 Vertex"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"));
+            populator.MsaglGraph!.FindNode("MyTestFormat 0 Vertex").Should().BeNull();
+            populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex").Should().NotBeNull();
 
 
             // With special format (3)
@@ -160,8 +159,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("MySpecialFormatProvider 0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MySpecialFormatProvider 1"));
+            populator.MsaglGraph!.FindNode("MySpecialFormatProvider 0").Should().BeNull();
+            populator.MsaglGraph.FindNode("MySpecialFormatProvider 1").Should().NotBeNull();
 
 
             // With special format (4)
@@ -169,8 +168,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestFormat MySpecialFormatProvider 0 Vertex"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 1 Vertex"));
+            populator.MsaglGraph!.FindNode("MyTestFormat MySpecialFormatProvider 0 Vertex").Should().BeNull();
+            populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 1 Vertex").Should().NotBeNull();
         }
     }
 }

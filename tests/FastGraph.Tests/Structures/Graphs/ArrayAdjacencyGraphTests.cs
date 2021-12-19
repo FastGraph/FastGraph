@@ -51,8 +51,8 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.AreEqual(allowParallelEdges, g.AllowParallelEdges);
+                g.IsDirected.Should().BeTrue();
+                g.AllowParallelEdges.Should().Be(allowParallelEdges);
             }
 
             #endregion
@@ -64,7 +64,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new ArrayAdjacencyGraph<int, Edge<int>>(default));
+            Invoking(() => new ArrayAdjacencyGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -275,11 +275,11 @@ namespace FastGraph.Tests.Structures
             AssertEmptyGraph(graph);
 
             var clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertEmptyGraph(clonedGraph);
 
             clonedGraph = (ArrayAdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertEmptyGraph(clonedGraph);
 
             wrappedGraph.AddVertexRange(new[] { 1, 2, 3 });
@@ -288,12 +288,12 @@ namespace FastGraph.Tests.Structures
             AssertNoEdge(graph);
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertNoEdge(clonedGraph);
 
             clonedGraph = (ArrayAdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertNoEdge(clonedGraph);
 
@@ -307,12 +307,12 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = (ArrayAdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
@@ -322,12 +322,12 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = (ArrayAdjacencyGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
         }

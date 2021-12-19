@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
@@ -33,9 +33,9 @@ namespace FastGraph.Graphviz.Tests
 
             void CheckSize(GraphvizSize s, int w, int h, bool empty)
             {
-                Assert.AreEqual(w, s.Width);
-                Assert.AreEqual(h, s.Height);
-                Assert.AreEqual(empty, s.IsEmpty);
+                s.Width.Should().Be(w);
+                s.Height.Should().Be(h);
+                s.IsEmpty.Should().Be(empty);
             }
 
             #endregion
@@ -45,9 +45,9 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor_SizeThrow()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.Throws<ArgumentException>(() => new GraphvizSize(-1, 10));
-            Assert.Throws<ArgumentException>(() => new GraphvizSize(10, -2));
-            Assert.Throws<ArgumentException>(() => new GraphvizSize(-5, -2));
+            Invoking(() => new GraphvizSize(-1, 10)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphvizSize(10, -2)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphvizSize(-5, -2)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -73,9 +73,9 @@ namespace FastGraph.Graphviz.Tests
 
             void CheckSize(GraphvizSizeF s, float w, float h, bool empty)
             {
-                Assert.AreEqual(w, s.Width);
-                Assert.AreEqual(h, s.Height);
-                Assert.AreEqual(empty, s.IsEmpty);
+                s.Width.Should().Be(w);
+                s.Height.Should().Be(h);
+                s.IsEmpty.Should().Be(empty);
             }
 
             #endregion
@@ -85,9 +85,9 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor_SizeFThrow()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.Throws<ArgumentException>(() => new GraphvizSizeF(-1.0f, 10.0f));
-            Assert.Throws<ArgumentException>(() => new GraphvizSizeF(10.0f, -2.0f));
-            Assert.Throws<ArgumentException>(() => new GraphvizSizeF(-5.0f, -2.0f));
+            Invoking(() => new GraphvizSizeF(-1.0f, 10.0f)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphvizSizeF(10.0f, -2.0f)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphvizSizeF(-5.0f, -2.0f)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -97,8 +97,8 @@ namespace FastGraph.Graphviz.Tests
             var size1 = default(GraphvizSize);
             var size2 = new GraphvizSize(12, 25);
 
-            Assert.AreEqual("0x0", size1.ToString());
-            Assert.AreEqual("12x25", size2.ToString());
+            size1.ToString().Should().Be("0x0");
+            size2.ToString().Should().Be("12x25");
         }
 
         [Test]
@@ -107,8 +107,8 @@ namespace FastGraph.Graphviz.Tests
             var size1 = default(GraphvizSizeF);
             var size2 = new GraphvizSizeF(12.2f, 25.6f);
 
-            Assert.AreEqual("0x0", size1.ToString());
-            Assert.AreEqual("12.2x25.6", size2.ToString());
+            size1.ToString().Should().Be("0x0");
+            size2.ToString().Should().Be("12.2x25.6");
         }
     }
 }

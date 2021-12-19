@@ -25,18 +25,18 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph =
                 graph.CondensateEdges(predicate);
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.LessOrEqual(condensedGraph.VertexCount, graph.VertexCount);
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().BeLessThanOrEqualTo(graph.VertexCount);
 
             TVertex[] vertices = condensedGraph.Vertices.ToArray();
             foreach (MergedEdge<TVertex, TEdge> edge in condensedGraph.Edges)
             {
-                Assert.Contains(edge.Source, vertices);
-                Assert.Contains(edge.Target, vertices);
+                vertices.Should().Contain(edge.Source);
+                vertices.Should().Contain(edge.Target);
 
-                Assert.Positive(edge.Edges.Count);
-                Assert.Contains(edge.Edges.First().Source, vertices);
-                Assert.Contains(edge.Edges.Last().Target, vertices);
+                edge.Edges.Count.Should().BePositive();
+                vertices.Should().Contain(edge.Edges.First().Source);
+                vertices.Should().Contain(edge.Edges.Last().Target);
             }
         }
 
@@ -62,8 +62,8 @@ namespace FastGraph.Tests.Algorithms.Condensation
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreSame(predicate, algo.VertexPredicate);
-                Assert.AreSame(cg, algo.CondensedGraph);
+                algo.VertexPredicate.Should().BeSameAs(predicate);
+                algo.CondensedGraph.Should().BeSameAs(cg);
             }
 
             #endregion
@@ -79,20 +79,13 @@ namespace FastGraph.Tests.Algorithms.Condensation
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, default, vertexPredicate));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, condensedGraph, vertexPredicate));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, condensedGraph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, default, vertexPredicate));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, default, vertexPredicate)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, condensedGraph, vertexPredicate)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, condensedGraph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, default, vertexPredicate)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -147,11 +140,11 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<int, MergedEdge<int, Edge<int>>> condensedGraph =
                 graph.CondensateEdges(_ => true);
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(graph.VertexCount, condensedGraph.VertexCount);
-            Assert.AreEqual(graph.EdgeCount, condensedGraph.EdgeCount);
-            CollectionAssert.AreEquivalent(graph.Vertices, condensedGraph.Vertices);
-            CollectionAssert.AreEquivalent(graph.Edges, condensedGraph.Edges.SelectMany(e => e.Edges));
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().Be(graph.VertexCount);
+            condensedGraph.EdgeCount.Should().Be(graph.EdgeCount);
+            condensedGraph.Vertices.Should().BeEquivalentTo(graph.Vertices);
+            condensedGraph.Edges.SelectMany(e => e.Edges).Should().BeEquivalentTo(graph.Edges);
         }
 
         [Test]
@@ -187,16 +180,16 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<int, MergedEdge<int, Edge<int>>> condensedGraph =
                 graph.CondensateEdges(v => v == 4 || v == 8);
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(2, condensedGraph.VertexCount);
-            Assert.AreEqual(6, condensedGraph.EdgeCount);
-            CollectionAssert.AreEquivalent(new[] { 4, 8 }, condensedGraph.Vertices);
-            CollectionAssert.AreEquivalent(new[] { edge82, edge23, edge38 }, condensedGraph.Edges.ElementAt(0).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge44 }, condensedGraph.Edges.ElementAt(1).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge43, edge38 }, condensedGraph.Edges.ElementAt(2).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge42, edge23, edge38 }, condensedGraph.Edges.ElementAt(3).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge45, edge57, edge71, edge13, edge38 }, condensedGraph.Edges.ElementAt(4).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge45, edge57, edge71, edge12, edge23, edge38 }, condensedGraph.Edges.ElementAt(5).Edges);
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().Be(2);
+            condensedGraph.EdgeCount.Should().Be(6);
+            condensedGraph.Vertices.Should().BeEquivalentTo(new[] { 4, 8 });
+            condensedGraph.Edges.ElementAt(0).Edges.Should().BeEquivalentTo(new[] { edge82, edge23, edge38 });
+            condensedGraph.Edges.ElementAt(1).Edges.Should().BeEquivalentTo(new[] { edge44 });
+            condensedGraph.Edges.ElementAt(2).Edges.Should().BeEquivalentTo(new[] { edge43, edge38 });
+            condensedGraph.Edges.ElementAt(3).Edges.Should().BeEquivalentTo(new[] { edge42, edge23, edge38 });
+            condensedGraph.Edges.ElementAt(4).Edges.Should().BeEquivalentTo(new[] { edge45, edge57, edge71, edge13, edge38 });
+            condensedGraph.Edges.ElementAt(5).Edges.Should().BeEquivalentTo(new[] { edge45, edge57, edge71, edge12, edge23, edge38 });
         }
 
         [Test]

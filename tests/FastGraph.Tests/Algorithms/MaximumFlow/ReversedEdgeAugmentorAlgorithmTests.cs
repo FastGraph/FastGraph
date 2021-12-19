@@ -19,11 +19,11 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
             var algorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.AreSame(edgeFactory, algorithm.EdgeFactory);
-            Assert.IsFalse(algorithm.Augmented);
-            CollectionAssert.IsEmpty(algorithm.AugmentedEdges);
-            CollectionAssert.IsEmpty(algorithm.ReversedEdges);
+            algorithm.VisitedGraph.Should().BeSameAs(graph);
+            algorithm.EdgeFactory.Should().BeSameAs(edgeFactory);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().BeEmpty();
+            algorithm.ReversedEdges.Should().BeEmpty();
         }
 
         [Test]
@@ -35,12 +35,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -82,28 +79,26 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             algorithm.AddReversedEdges();
 
-            Assert.IsTrue(algorithm.Augmented);
-            CollectionAssert.IsNotEmpty(algorithm.AugmentedEdges);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeEmpty();
             TEdge[] augmentedEdges = algorithm.AugmentedEdges.ToArray();
-            Assert.AreEqual(2, augmentedEdges.Length);
-            Assert.AreEqual(2, augmentedEdges[0].Source);
-            Assert.AreEqual(1, augmentedEdges[0].Target);
-            Assert.AreEqual(3, augmentedEdges[1].Source);
-            Assert.AreEqual(1, augmentedEdges[1].Target);
+            augmentedEdges.Length.Should().Be(2);
+            augmentedEdges[0].Source.Should().Be(2);
+            augmentedEdges[0].Target.Should().Be(1);
+            augmentedEdges[1].Source.Should().Be(3);
+            augmentedEdges[1].Target.Should().Be(1);
 
-            CollectionAssert.AreEquivalent(
-                new Dictionary<TEdge, TEdge>
-                {
-                    [edge12] = augmentedEdges[0],
-                    [augmentedEdges[0]] = edge12,
-                    [edge13] = augmentedEdges[1],
-                    [augmentedEdges[1]] = edge13,
-                    [edge23] = edge32,
-                    [edge32] = edge23,
-                },
-                algorithm.ReversedEdges);
+            algorithm.ReversedEdges.Should().BeEquivalentTo(new Dictionary<TEdge, TEdge>
+            {
+                [edge12] = augmentedEdges[0],
+                [augmentedEdges[0]] = edge12,
+                [edge13] = augmentedEdges[1],
+                [augmentedEdges[1]] = edge13,
+                [edge23] = edge32,
+                [edge32] = edge23,
+            });
 
-            CollectionAssert.AreEqual(augmentedEdges, reverseEdgesAdded);
+            augmentedEdges.Should().BeEquivalentTo(reverseEdgesAdded);
         }
 
         [Test]
@@ -113,8 +108,8 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
             var algorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
-            Assert.DoesNotThrow(() => algorithm.AddReversedEdges());
-            Assert.Throws<InvalidOperationException>(() => algorithm.AddReversedEdges());
+            Invoking(() => algorithm.AddReversedEdges()).Should().NotThrow();
+            Invoking(() => algorithm.AddReversedEdges()).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -136,23 +131,23 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 (source, target) => new Edge<int>(source, target));
             algorithm.AddReversedEdges();
 
-            Assert.IsTrue(algorithm.Augmented);
-            CollectionAssert.IsNotEmpty(algorithm.AugmentedEdges);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeEmpty();
             foreach (Edge<int> edge in algorithm.AugmentedEdges)
             {
-                CollectionAssert.Contains(algorithm.VisitedGraph.Edges, edge);
+                algorithm.VisitedGraph.Edges.Should().Contain(edge);
             }
-            CollectionAssert.IsNotEmpty(algorithm.ReversedEdges);
+            algorithm.ReversedEdges.Should().NotBeEmpty();
 
             algorithm.RemoveReversedEdges();
 
-            Assert.IsFalse(algorithm.Augmented);
-            CollectionAssert.IsEmpty(algorithm.AugmentedEdges);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().BeEmpty();
             foreach (Edge<int> edge in algorithm.AugmentedEdges)
             {
-                CollectionAssert.DoesNotContain(algorithm.VisitedGraph.Edges, edge);
+                algorithm.VisitedGraph.Edges.Should().NotContain(edge);
             }
-            CollectionAssert.IsEmpty(algorithm.ReversedEdges);
+            algorithm.ReversedEdges.Should().BeEmpty();
         }
 
         [Test]
@@ -162,7 +157,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
             var algorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
-            Assert.Throws<InvalidOperationException>(() => algorithm.RemoveReversedEdges());
+            Invoking(() => algorithm.RemoveReversedEdges()).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -172,11 +167,11 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
             var algorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
-            CollectionAssert.IsEmpty(algorithm.AugmentedEdges);
-            CollectionAssert.IsEmpty(algorithm.ReversedEdges);
+            algorithm.AugmentedEdges.Should().BeEmpty();
+            algorithm.ReversedEdges.Should().BeEmpty();
             ((IDisposable)algorithm).Dispose();
-            CollectionAssert.IsEmpty(algorithm.AugmentedEdges);
-            CollectionAssert.IsEmpty(algorithm.ReversedEdges);
+            algorithm.AugmentedEdges.Should().BeEmpty();
+            algorithm.ReversedEdges.Should().BeEmpty();
 
             graph.AddVerticesAndEdgeRange(new[]
             {
@@ -187,11 +182,11 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             });
             algorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
             algorithm.AddReversedEdges();
-            CollectionAssert.IsNotEmpty(algorithm.AugmentedEdges);
-            CollectionAssert.IsNotEmpty(algorithm.ReversedEdges);
+            algorithm.AugmentedEdges.Should().NotBeEmpty();
+            algorithm.ReversedEdges.Should().NotBeEmpty();
             ((IDisposable)algorithm).Dispose();
-            CollectionAssert.IsEmpty(algorithm.AugmentedEdges);
-            CollectionAssert.IsEmpty(algorithm.ReversedEdges);
+            algorithm.AugmentedEdges.Should().BeEmpty();
+            algorithm.ReversedEdges.Should().BeEmpty();
         }
     }
 }

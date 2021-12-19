@@ -15,11 +15,11 @@ namespace FastGraph.Tests.Collections
         public void Constructors()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.DoesNotThrow(() => new VertexList<int>());
-            Assert.DoesNotThrow(() => new VertexList<int>(12));
+            Invoking((Func<VertexList<int>>)(() => new VertexList<int>())).Should().NotThrow();
+            Invoking((Func<VertexList<int>>)(() => new VertexList<int>(12))).Should().NotThrow();
             var list = new VertexList<int> { 1, 2, 3 };
             var otherList = new VertexList<int>(list);
-            CollectionAssert.AreEqual(list, otherList);
+            list.Should().BeEquivalentTo(otherList);
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -29,17 +29,17 @@ namespace FastGraph.Tests.Collections
             var list = new VertexList<int>();
 
             VertexList<int> clonedList = list.Clone();
-            CollectionAssert.IsEmpty(clonedList);
+            clonedList.Should().BeEmpty();
 
             clonedList = (VertexList<int>)((ICloneable)list).Clone();
-            CollectionAssert.IsEmpty(clonedList);
+            clonedList.Should().BeEmpty();
 
             list.AddRange(new[] { 1, 2, 3 });
             clonedList = list.Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            list.Should().BeEquivalentTo(clonedList);
 
             clonedList = (VertexList<int>)((ICloneable)list).Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            list.Should().BeEquivalentTo(clonedList);
         }
     }
 }

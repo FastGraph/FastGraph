@@ -42,19 +42,19 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new EquatableTermEdge<TestVertex>(default, v1));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTermEdge<TestVertex>(v1, default));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTermEdge<TestVertex>(default, default));
+            Invoking(() => new EquatableTermEdge<TestVertex>(default, v1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EquatableTermEdge<TestVertex>(v1, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EquatableTermEdge<TestVertex>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(() => new EquatableTermEdge<TestVertex>(default, v1, 0, 1));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTermEdge<TestVertex>(v1, default, 0, 1));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTermEdge<TestVertex>(default, default, 0, 1));
+            Invoking(() => new EquatableTermEdge<TestVertex>(default, v1, 0, 1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EquatableTermEdge<TestVertex>(v1, default, 0, 1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EquatableTermEdge<TestVertex>(default, default, 0, 1)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentException>(() => new EquatableTermEdge<TestVertex>(v1, v2, -1, 0));
-            Assert.Throws<ArgumentException>(() => new EquatableTermEdge<TestVertex>(v1, v2, 0, -1));
-            Assert.Throws<ArgumentException>(() => new EquatableTermEdge<TestVertex>(v1, v2, -1, -1));
+            Invoking(() => new EquatableTermEdge<TestVertex>(v1, v2, -1, 0)).Should().Throw<ArgumentException>();
+            Invoking(() => new EquatableTermEdge<TestVertex>(v1, v2, 0, -1)).Should().Throw<ArgumentException>();
+            Invoking(() => new EquatableTermEdge<TestVertex>(v1, v2, -1, -1)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -68,42 +68,42 @@ namespace FastGraph.Tests.Structures
             var edge5 = new EquatableTermEdge<int>(1, 2, 0, 1);
             var edge6 = new EquatableTermEdge<int>(1, 2, 0, 1);
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreEqual(edge3, edge3);
-            Assert.AreEqual(edge5, edge5);
+            edge1.Should().Be(edge1);
+            edge3.Should().Be(edge3);
+            edge5.Should().Be(edge5);
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            edge2.Should().Be(edge1);
+            edge1.Should().Be(edge2);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge1.Equals(edge2).Should().BeTrue();
+            edge2.Equals(edge1).Should().BeTrue();
 
-            Assert.AreEqual(edge1, edge3);
-            Assert.AreEqual(edge3, edge1);
-            Assert.IsTrue(edge1.Equals((object)edge3));
-            Assert.IsTrue(edge1.Equals(edge3));
-            Assert.IsTrue(edge3.Equals(edge1));
+            edge3.Should().Be(edge1);
+            edge1.Should().Be(edge3);
+            edge1.Equals(edge3).Should().BeTrue();
+            edge1.Equals(edge3).Should().BeTrue();
+            edge3.Equals(edge1).Should().BeTrue();
 
-            Assert.AreNotEqual(edge1, edge5);
-            Assert.AreNotEqual(edge5, edge1);
-            Assert.IsFalse(edge1.Equals((object)edge5));
-            Assert.IsFalse(edge1.Equals(edge5));
-            Assert.IsFalse(edge5.Equals(edge1));
+            edge5.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge5);
+            edge1.Equals(edge5).Should().BeFalse();
+            edge1.Equals(edge5).Should().BeFalse();
+            edge5.Equals(edge1).Should().BeFalse();
 
-            Assert.AreEqual(edge3, edge4);
-            Assert.AreEqual(edge4, edge3);
-            Assert.IsTrue(edge3.Equals((object)edge4));
-            Assert.IsTrue(edge3.Equals(edge4));
-            Assert.IsTrue(edge4.Equals(edge3));
+            edge4.Should().Be(edge3);
+            edge3.Should().Be(edge4);
+            edge3.Equals(edge4).Should().BeTrue();
+            edge3.Equals(edge4).Should().BeTrue();
+            edge4.Equals(edge3).Should().BeTrue();
 
-            Assert.AreEqual(edge5, edge6);
-            Assert.AreEqual(edge6, edge5);
-            Assert.IsTrue(edge5.Equals((object)edge6));
-            Assert.IsTrue(edge5.Equals(edge6));
-            Assert.IsTrue(edge6.Equals(edge5));
+            edge6.Should().Be(edge5);
+            edge5.Should().Be(edge6);
+            edge5.Equals(edge6).Should().BeTrue();
+            edge5.Equals(edge6).Should().BeTrue();
+            edge6.Equals(edge5).Should().BeTrue();
 
-            Assert.AreNotEqual(edge1, default);
-            Assert.IsFalse(edge1.Equals(default));
+            edge1.Should().NotBe(default);
+            edge1.Equals(default).Should().BeFalse();
         }
 
         [Test]
@@ -113,8 +113,8 @@ namespace FastGraph.Tests.Structures
             var edge2 = new EquatableTermEdge<int>(1, 2);
             var edge3 = new EquatableTermEdge<int>(2, 1);
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
-            Assert.AreNotEqual(edge1.GetHashCode(), edge3.GetHashCode());
+            edge2.GetHashCode().Should().Be(edge1.GetHashCode());
+            edge3.GetHashCode().Should().NotBe(edge1.GetHashCode());
         }
 
         [Test]
@@ -124,9 +124,9 @@ namespace FastGraph.Tests.Structures
             var edge2 = new EquatableTermEdge<int>(1, 2, 1, 5);
             var edge3 = new EquatableTermEdge<int>(2, 1);
 
-            Assert.AreEqual("1 (0) -> 2 (0)", edge1.ToString());
-            Assert.AreEqual("1 (1) -> 2 (5)", edge2.ToString());
-            Assert.AreEqual("2 (0) -> 1 (0)", edge3.ToString());
+            edge1.ToString().Should().Be("1 (0) -> 2 (0)");
+            edge2.ToString().Should().Be("1 (1) -> 2 (5)");
+            edge3.ToString().Should().Be("2 (0) -> 1 (0)");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace FastGraph.Tests.Collections
             int expectedCount)
             where TPriority : notnull
         {
-            Assert.AreEqual(expectedCount, heap.Count);
+            heap.Count.Should().Be(expectedCount);
         }
 
         #endregion
@@ -58,10 +58,10 @@ namespace FastGraph.Tests.Collections
                 where TPriority : notnull
             {
                 AssertHeapSize(heap, 0);
-                Assert.AreEqual(expectedErrorRate, heap.ErrorRate);
-                Assert.AreEqual(2 + 2 * (int)Math.Ceiling(Math.Log(1.0 / expectedErrorRate, 2.0)), heap.MinRank);
-                Assert.AreEqual(expectedComparer, heap.KeyComparison);
-                Assert.AreEqual(expectedMaxPriority, heap.KeyMaxValue);
+                heap.ErrorRate.Should().Be(expectedErrorRate);
+                heap.MinRank.Should().Be(2 + 2 * (int)Math.Ceiling(Math.Log(1.0 / expectedErrorRate, 2.0)));
+                heap.KeyComparison.Should().Be(expectedComparer);
+                heap.KeyMaxValue.Should().Be(expectedMaxPriority);
             }
 
             void AssertHeapBaseProperties<TPriority, TValue>(
@@ -86,31 +86,31 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new SoftHeap<TestPriority, double>(ErrorRate, default));
-            Assert.Throws<ArgumentNullException>(() => new SoftHeap<TestPriority, double>(-ErrorRate, default));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(-ErrorRate, new TestPriority(1)));
+            Invoking(() => new SoftHeap<TestPriority, double>(ErrorRate, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new SoftHeap<TestPriority, double>(-ErrorRate, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(-ErrorRate, new TestPriority(1))).Should().Throw<ArgumentOutOfRangeException>();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                new SoftHeap<TestPriority, double>(ErrorRate, default, (p1, p2) => p1.CompareTo(p2)));
-            Assert.Throws<ArgumentNullException>(() =>
-                new SoftHeap<TestPriority, double>(ErrorRate, new TestPriority(10), default));
-            Assert.Throws<ArgumentNullException>(() => new SoftHeap<TestPriority, double>(ErrorRate, default, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                new SoftHeap<TestPriority, double>(-ErrorRate, default, (p1, p2) => p1.CompareTo(p2)));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(-ErrorRate, new TestPriority(10), default));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(FailErrorRate1, new TestPriority(10), default));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(FailErrorRate2, new TestPriority(10), default));
-            Assert.Throws<ArgumentNullException>(() => new SoftHeap<TestPriority, double>(-ErrorRate, default, default));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(-ErrorRate, new TestPriority(1), (p1, p2) => p1.CompareTo(p2)));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(FailErrorRate1, new TestPriority(1), (p1, p2) => p1.CompareTo(p2)));
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                new SoftHeap<TestPriority, double>(FailErrorRate2, new TestPriority(1), (p1, p2) => p1.CompareTo(p2)));
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(ErrorRate, default, (p1, p2) => p1.CompareTo(p2))).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(ErrorRate, new TestPriority(10), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new SoftHeap<TestPriority, double>(ErrorRate, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(-ErrorRate, default, (p1, p2) => p1.CompareTo(p2))).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(-ErrorRate, new TestPriority(10), default)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(FailErrorRate1, new TestPriority(10), default)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(FailErrorRate2, new TestPriority(10), default)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new SoftHeap<TestPriority, double>(-ErrorRate, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(-ErrorRate, new TestPriority(1), (p1, p2) => p1.CompareTo(p2))).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(FailErrorRate1, new TestPriority(1), (p1, p2) => p1.CompareTo(p2))).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() =>
+                new SoftHeap<TestPriority, double>(FailErrorRate2, new TestPriority(1), (p1, p2) => p1.CompareTo(p2))).Should().Throw<ArgumentOutOfRangeException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -235,7 +235,7 @@ namespace FastGraph.Tests.Collections
                     var heap = new SoftHeap<int, TValue>(
                         ErrorRate,
                         10);
-                    Assert.Throws<ArgumentException>(() => heap.Add(150, value));
+                    Invoking(() => heap.Add(150, value)).Should().Throw<ArgumentException>();
                 }
 
                 void AddInternalTest2()
@@ -243,10 +243,10 @@ namespace FastGraph.Tests.Collections
                     var heap = new SoftHeap<TestPriority, TValue>(
                         ErrorRate,
                         new TestPriority(10));
-                    Assert.Throws<ArgumentException>(() => heap.Add(new TestPriority(150), value));
+                    Invoking(() => heap.Add(new TestPriority(150), value)).Should().Throw<ArgumentException>();
                     // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-                    Assert.Throws<ArgumentNullException>(() => heap.Add(default, value));
+                    Invoking(() => heap.Add(default, value)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
                 }
 
@@ -296,15 +296,15 @@ namespace FastGraph.Tests.Collections
         [TestCaseSource(nameof(RemoveMinimumTestCases))]
         public void RemoveMinimum(int[] keys, double errorRate)
         {
-            FastGraphAssert.TrueForAll(keys, k => k < int.MaxValue);
-            Assert.IsTrue(keys.Length > 0);
+            keys.Should().OnlyContain(k => k < int.MaxValue);
+            (keys.Length > 0).Should().BeTrue();
 
             var heap = new SoftHeap<int, string>(errorRate, int.MaxValue);
             foreach (int key in keys)
             {
                 heap.Add(key, key.ToString());
             }
-            Assert.AreEqual(keys.Length, heap.Count);
+            heap.Count.Should().Be(keys.Length);
 
             int lastMinimum = int.MaxValue;
             int nbError = 0;
@@ -317,33 +317,32 @@ namespace FastGraph.Tests.Collections
                 if (lastMinimum < pair.Key)
                     ++nbError;
                 lastMinimum = pair.Key;
-                Assert.AreEqual(pair.Key.ToString(), pair.Value);
+                pair.Value.Should().Be(pair.Key.ToString());
             }
 
-            Assert.IsTrue(nbError / (double)keys.Length <= errorRate);
+            (nbError / (double)keys.Length <= errorRate).Should().BeTrue();
         }
 
         [Test]
         public void RemoveMinimum_Throws()
         {
-            Assert.Throws<InvalidOperationException>(
-                () => new SoftHeap<int, int>(ErrorRate, int.MaxValue).RemoveMinimum());
+            Invoking(() => new SoftHeap<int, int>(ErrorRate, int.MaxValue).RemoveMinimum()).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
         public void EnumerateHeap()
         {
             var heap = new SoftHeap<double, int>(ErrorRate, 10.0);
-            CollectionAssert.IsEmpty(heap);
+            heap.Should<KeyValuePair<double, int>>().BeEmpty();
 
             heap.Add(1.0, 1);
             // Enumerator does nothing!
-            CollectionAssert.IsEmpty(heap);
+            heap.Should<KeyValuePair<double, int>>().BeEmpty();
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
             {
-                Assert.AreEqual(default(KeyValuePair<double, int>), enumerator.Current);
-                Assert.Throws<NotSupportedException>(() => enumerator.Reset());
+                enumerator.Current.Should().Be(default(KeyValuePair<double, int>));
+                Invoking(() => enumerator.Reset()).Should().Throw<NotSupportedException>();
             }
         }
     }

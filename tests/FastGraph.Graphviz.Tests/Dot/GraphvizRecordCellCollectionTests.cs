@@ -15,19 +15,19 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var recordCollection = new GraphvizRecordCellCollection();
-            CollectionAssert.IsEmpty(recordCollection);
+            recordCollection.Should().BeEmpty();
 
             var cell1 = new GraphvizRecordCell();
             recordCollection.Add(cell1);
-            CollectionAssert.AreEqual(new[] { cell1 }, recordCollection);
+            recordCollection.Should().BeEquivalentTo(new[] { cell1 });
 
             var cell2 = new GraphvizRecordCell();
             var cellArray = new[] { cell1, cell2 };
             recordCollection = new GraphvizRecordCellCollection(cellArray);
-            CollectionAssert.AreEqual(cellArray, recordCollection);
+            recordCollection.Should().BeEquivalentTo(cellArray);
 
             var otherRecordCollection = new GraphvizRecordCellCollection(recordCollection);
-            CollectionAssert.AreEqual(recordCollection, otherRecordCollection);
+            otherRecordCollection.Should().BeEquivalentTo(recordCollection);
         }
 
         [Test]
@@ -36,8 +36,8 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new GraphvizRecordCellCollection((GraphvizRecordCell[]?)default));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizRecordCellCollection((GraphvizRecordCellCollection?)default));
+            Invoking(() => new GraphvizRecordCellCollection((GraphvizRecordCell[]?)default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphvizRecordCellCollection((GraphvizRecordCellCollection?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

@@ -17,8 +17,8 @@ namespace FastGraph.Graphviz.Tests
         {
             var graph = new AdjacencyGraph<int, MergedEdge<int, Edge<int>>>();
             var algorithm = new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(graph);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.IsNotNull(algorithm.Graphviz);
+            algorithm.VisitedGraph.Should().BeSameAs(graph);
+            algorithm.Graphviz.Should().NotBeNull();
         }
 
         [Test]
@@ -27,7 +27,7 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(default));
+            Invoking(() => new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 

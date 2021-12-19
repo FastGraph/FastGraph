@@ -33,21 +33,21 @@ namespace FastGraph.Tests.Algorithms.Search
 
             dfs.StartVertex += vertex =>
             {
-                Assert.IsFalse(parents.ContainsKey(vertex));
+                parents.ContainsKey(vertex).Should().BeFalse();
                 parents[vertex] = vertex;
             };
 
             dfs.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[vertex]);
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[parents[vertex]]);
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.Gray);
+                dfs.VerticesColors[parents[vertex]].Should().Be(GraphColor.Gray);
 
                 discoverTimes[vertex] = time++;
             };
 
             dfs.ExamineEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[edge.Source]);
+                dfs.VerticesColors[edge.Source].Should().Be(GraphColor.Gray);
             };
 
             dfs.TreeEdge += edge =>
@@ -57,17 +57,17 @@ namespace FastGraph.Tests.Algorithms.Search
 
             dfs.BackEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[edge.Target]);
+                dfs.VerticesColors[edge.Target].Should().Be(GraphColor.Gray);
             };
 
             dfs.ForwardOrCrossEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[edge.Target]);
+                dfs.VerticesColors[edge.Target].Should().Be(GraphColor.Black);
             };
 
             dfs.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[vertex]);
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.Black);
                 finishTimes[vertex] = time++;
             };
 
@@ -75,9 +75,9 @@ namespace FastGraph.Tests.Algorithms.Search
 
             // Check
             if (maxDepth == int.MaxValue)
-                Assert.AreEqual(discoverTimes.Count, finishTimes.Count);
+                finishTimes.Count.Should().Be(discoverTimes.Count);
             else
-                Assert.GreaterOrEqual(discoverTimes.Count, finishTimes.Count);
+                discoverTimes.Count.Should().BeGreaterThanOrEqualTo(finishTimes.Count);
 
             TVertex[] exploredVertices = finishTimes.Keys.ToArray();
             foreach (TVertex u in exploredVertices)
@@ -86,11 +86,10 @@ namespace FastGraph.Tests.Algorithms.Search
                 {
                     if (!u.Equals(v))
                     {
-                        Assert.IsTrue(
-                            finishTimes[u] < discoverTimes[v]
-                            || finishTimes[v] < discoverTimes[u]
-                            || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v] && IsDescendant(parents, u, v))
-                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] && IsDescendant(parents, v, u)));
+                        (finishTimes[u] < discoverTimes[v]
+                         || finishTimes[v] < discoverTimes[u]
+                         || discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v] && IsDescendant(parents, u, v)
+                         || discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] && IsDescendant(parents, v, u)).Should().BeTrue();
                     }
                 }
             }
@@ -121,8 +120,8 @@ namespace FastGraph.Tests.Algorithms.Search
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                CollectionAssert.IsEmpty(algo.VerticesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
+                algo.VerticesColors.Should().BeEmpty();
+                algo.MaxDepth.Should().Be(maxDepth);
             }
 
             #endregion
@@ -136,16 +135,14 @@ namespace FastGraph.Tests.Algorithms.Search
             var graph = new AdjacencyGraph<int, Edge<int>>();
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new ImplicitDepthFirstSearchAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new ImplicitDepthFirstSearchAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new ImplicitDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new ImplicitDepthFirstSearchAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new ImplicitDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Invoking(() => new ImplicitDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1).Should().Throw<ArgumentOutOfRangeException>();
         }
 
         #region Rooted algorithm

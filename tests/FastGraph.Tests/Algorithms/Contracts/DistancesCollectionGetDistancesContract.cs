@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using NUnit.Framework;
 using FastGraph.Algorithms;
@@ -30,7 +30,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             IEnumerable<KeyValuePair<int, double>> distances = algorithm.GetDistances();
-            CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, distances.Select(pair => pair.Key));
+            distances.Select(pair => pair.Key).Should().BeEquivalentTo(new[] { 1, 2, 3 });
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             IEnumerable<KeyValuePair<int, double>> distances = algorithm.GetDistances();
-            CollectionAssert.IsEmpty(distances);
+            distances.Should<KeyValuePair<int, double>>().BeEmpty();
         }
     }
 }

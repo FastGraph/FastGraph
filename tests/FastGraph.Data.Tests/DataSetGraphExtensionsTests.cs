@@ -21,7 +21,7 @@ namespace FastGraph.Data.Tests
             DataSetGraph graph = dataSet.ToGraph();
 
             AssertEmptyGraph(graph);
-            Assert.AreSame(dataSet, graph.DataSet);
+            graph.DataSet.Should().BeSameAs(dataSet);
 
             // Only tables data set
             dataSet = new DataSet();
@@ -40,7 +40,7 @@ namespace FastGraph.Data.Tests
 
             AssertHasVertices(graph, new[] { ships, modules });
             AssertNoEdge(graph);
-            Assert.AreSame(dataSet, graph.DataSet);
+            graph.DataSet.Should().BeSameAs(dataSet);
 
 
             // Table with relations
@@ -90,15 +90,14 @@ namespace FastGraph.Data.Tests
             graph = dataSet.ToGraph();
 
             AssertHasVertices(graph, new[] { computers, users, printers, phones });
-            AssertHasRelations(
-                graph,
-                new[]
-                {
-                    new DataRelationEdge(use),
-                    new DataRelationEdge(connectedTo),
-                    new DataRelationEdge(phoneWith)
-                });
-            Assert.AreSame(dataSet, graph.DataSet);
+            IReadOnlyList<DataRelation> expectedRelations = new[]
+            {
+                use,
+                connectedTo,
+                phoneWith
+            };
+            graph.Should().BeOfType<DataSetGraph>().HasRelations<DataSetGraph>(expectedRelations);
+            graph.DataSet.Should().BeSameAs(dataSet);
         }
 
         [Test]
@@ -107,7 +106,7 @@ namespace FastGraph.Data.Tests
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => DataSetGraphExtensions.ToGraph(default));
+            Invoking(() => DataSetGraphExtensions.ToGraph(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
@@ -121,7 +120,7 @@ namespace FastGraph.Data.Tests
                 + @"node [shape=record, style=solid];" + Environment.NewLine
                 + @"}";
 
-            Assert.AreEqual(expectedDot, graph.ToGraphviz());
+            graph.ToGraphviz().Should().Be(expectedDot);
 
             var dataSet = new DataSet();
 
@@ -174,7 +173,7 @@ namespace FastGraph.Data.Tests
                 + @"}";
 
             graph = dataSet.ToGraph();
-            Assert.AreEqual(expectedDot, graph.ToGraphviz());
+            graph.ToGraphviz().Should().Be(expectedDot);
         }
 
         [Test]
@@ -183,7 +182,7 @@ namespace FastGraph.Data.Tests
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => DataSetGraphExtensions.ToGraphviz(default));
+            Invoking(() => DataSetGraphExtensions.ToGraphviz(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
     }

@@ -44,12 +44,12 @@ namespace FastGraph.Graphviz.Tests
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.AreSame(treatedGraph, algo.VisitedGraph);
-                Assert.IsNotNull(algo.GraphFormat);
-                Assert.IsNotNull(algo.CommonVertexFormat);
-                Assert.IsNotNull(algo.CommonEdgeFormat);
-                Assert.AreEqual(imageType, algo.ImageType);
-                Assert.IsNull(algo.Output);
+                algo.VisitedGraph.Should().BeSameAs(treatedGraph);
+                algo.GraphFormat.Should().NotBeNull();
+                algo.CommonVertexFormat.Should().NotBeNull();
+                algo.CommonEdgeFormat.Should().NotBeNull();
+                algo.ImageType.Should().Be(imageType);
+                algo.Output.Should().BeNull();
             }
 
             #endregion
@@ -61,19 +61,18 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(default, GraphvizImageType.Gif));
+            Invoking(() => new GraphvizAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphvizAlgorithm<int, Edge<int>>(default, GraphvizImageType.Gif)).Should().Throw<ArgumentNullException>();
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<ArgumentNullException>(() => algorithm.VisitedGraph = default);
+            Invoking(() => algorithm.VisitedGraph = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "ReturnValueOfPureMethodIsNotUsed")]
         public void FormatHandlers()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
@@ -94,7 +93,7 @@ namespace FastGraph.Graphviz.Tests
 
             algorithm.Generate();
 
-            CollectionAssert.IsEmpty(notFormattedVertices);
+            notFormattedVertices.Should().BeEmpty();
 
             // With edges
             graph.AddVerticesAndEdgeRange(new[]
@@ -110,8 +109,8 @@ namespace FastGraph.Graphviz.Tests
 
             algorithm.Generate();
 
-            CollectionAssert.IsEmpty(notFormattedVertices);
-            CollectionAssert.IsEmpty(notFormattedEdges);
+            notFormattedVertices.Should().BeEmpty();
+            notFormattedEdges.Should().BeEmpty();
 
             // With no cluster
             var clusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(graph);
@@ -122,8 +121,8 @@ namespace FastGraph.Graphviz.Tests
 
             algorithm.Generate();
 
-            CollectionAssert.IsEmpty(notFormattedVertices);
-            CollectionAssert.IsEmpty(notFormattedEdges);
+            notFormattedVertices.Should().BeEmpty();
+            notFormattedEdges.Should().BeEmpty();
 
             // With clusters
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph1 = clusteredGraph.AddCluster();
@@ -139,9 +138,9 @@ namespace FastGraph.Graphviz.Tests
 
             algorithm.Generate();
 
-            CollectionAssert.IsEmpty(notFormattedVertices);
-            CollectionAssert.IsEmpty(notFormattedEdges);
-            CollectionAssert.IsEmpty(notFormattedClusters);
+            notFormattedVertices.Should().BeEmpty();
+            notFormattedEdges.Should().BeEmpty();
+            notFormattedClusters.Should().BeEmpty();
 
             #region Local functions
 
@@ -157,7 +156,7 @@ namespace FastGraph.Graphviz.Tests
                 var verticesList = new List<TVertex>(vertices);
                 algo.FormatVertex += (_, args) =>
                 {
-                    Assert.IsTrue(verticesList.Remove(args.Vertex));
+                    verticesList.Remove(args.Vertex).Should().BeTrue();
                 };
                 return verticesList;
             }
@@ -174,7 +173,7 @@ namespace FastGraph.Graphviz.Tests
                 var edgeList = new List<TEdge>(edges);
                 algo.FormatEdge += (_, args) =>
                 {
-                    Assert.IsTrue(edgeList.Remove(args.Edge));
+                    edgeList.Remove(args.Edge).Should().BeTrue();
                 };
                 return edgeList;
             }
@@ -191,7 +190,7 @@ namespace FastGraph.Graphviz.Tests
                 var clusterList = new List<IVertexAndEdgeListGraph<TVertex, TEdge>>(clusters);
                 algo.FormatCluster += (_, args) =>
                 {
-                    Assert.IsTrue(clusterList.Remove(args.Cluster));
+                    clusterList.Remove(args.Cluster).Should().BeTrue();
                 };
                 return clusterList;
             }
@@ -239,7 +238,7 @@ namespace FastGraph.Graphviz.Tests
             {
                 var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(g);
                 string generatedDot = algorithm.Generate();
-                Assert.IsNotEmpty(generatedDot);
+                generatedDot.Should().NotBeEmpty();
 
                 var dotEngine = new TestDotEngine { ExpectedDot = generatedDot };
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -709,7 +708,7 @@ namespace FastGraph.Graphviz.Tests
             + "5 -> 1;" + Environment.NewLine
             + "5 -> 5 [color=\"#FFD700FF\"];" + Environment.NewLine
             + "}";
-            Assert.AreEqual(expectedDot, dot);
+            dot.Should().Be(expectedDot);
         }
 
         [Test]
@@ -720,11 +719,11 @@ namespace FastGraph.Graphviz.Tests
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, "NotSaved.dot"));
-            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, default));
-            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, string.Empty));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, default));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, string.Empty));
+            Invoking(() => algorithm.Generate(default, "NotSaved.dot")).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.Generate(dotEngine, default)).Should().Throw<ArgumentException>();
+            Invoking(() => algorithm.Generate(dotEngine, string.Empty)).Should().Throw<ArgumentException>();
+            Invoking(() => algorithm.Generate(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.Generate(default, string.Empty)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }

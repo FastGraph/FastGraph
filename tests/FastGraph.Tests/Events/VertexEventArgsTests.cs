@@ -15,7 +15,7 @@ namespace FastGraph.Tests.Events
             var vertex = new TestVertex("1");
             var args = new VertexEventArgs<TestVertex>(vertex);
 
-            Assert.AreSame(vertex, args.Vertex);
+            args.Vertex.Should().BeSameAs(vertex);
         }
 
         [Test]
@@ -24,8 +24,7 @@ namespace FastGraph.Tests.Events
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexEventArgs<TestVertex>(default));
+            Invoking(() => new VertexEventArgs<TestVertex>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

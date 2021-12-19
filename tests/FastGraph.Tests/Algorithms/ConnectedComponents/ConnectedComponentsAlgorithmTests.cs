@@ -22,26 +22,26 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new ConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(graph.VertexCount, algorithm.Components.Count);
+            algorithm.Components.Count.Should().Be(graph.VertexCount);
             if (graph.VertexCount == 0)
             {
-                Assert.IsTrue(algorithm.ComponentCount == 0);
+                (algorithm.ComponentCount == 0).Should().BeTrue();
                 return;
             }
 
-            Assert.Positive(algorithm.ComponentCount);
-            Assert.LessOrEqual(algorithm.ComponentCount, graph.VertexCount);
+            algorithm.ComponentCount.Should().BePositive();
+            algorithm.ComponentCount.Should().BeLessThanOrEqualTo(graph.VertexCount);
             foreach (KeyValuePair<TVertex, int> pair in algorithm.Components)
             {
-                Assert.GreaterOrEqual(pair.Value, 0);
-                Assert.IsTrue(pair.Value < algorithm.ComponentCount, $"{pair.Value} < {algorithm.ComponentCount}");
+                pair.Value.Should().BeGreaterThanOrEqualTo(0);
+                (pair.Value < algorithm.ComponentCount).Should().BeTrue();
             }
 
             foreach (TVertex vertex in graph.Vertices)
             {
                 foreach (TEdge edge in graph.AdjacentEdges(vertex))
                 {
-                    Assert.AreEqual(algorithm.Components[edge.Source], algorithm.Components[edge.Target]);
+                    algorithm.Components[edge.Target].Should().Be(algorithm.Components[edge.Source]);
                 }
             }
         }
@@ -71,8 +71,8 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreEqual(0, algo.ComponentCount);
-                CollectionAssert.IsEmpty(algo.Components);
+                algo.ComponentCount.Should().Be(0);
+                algo.Components.Should().BeEmpty();
             }
 
             #endregion
@@ -87,22 +87,15 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -124,16 +117,14 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new ConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(1, algorithm.ComponentCount);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 0
-                },
-                algorithm.Components);
+            algorithm.ComponentCount.Should().Be(1);
+            algorithm.Components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 0
+            });
         }
 
         [Test]
@@ -156,19 +147,17 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new ConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(2, algorithm.ComponentCount);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 0,
-                    [5] = 1,
-                    [6] = 1,
-                    [7] = 1
-                },
-                algorithm.Components);
+            algorithm.ComponentCount.Should().Be(2);
+            algorithm.Components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 0,
+                [5] = 1,
+                [6] = 1,
+                [7] = 1
+            });
         }
 
         [Test]
@@ -194,22 +183,20 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new ConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(4, algorithm.ComponentCount);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 0,
-                    [5] = 1,
-                    [6] = 1,
-                    [7] = 1,
-                    [8] = 2,
-                    [9] = 2,
-                    [10] = 3
-                },
-                algorithm.Components);
+            algorithm.ComponentCount.Should().Be(4);
+            algorithm.Components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 0,
+                [5] = 1,
+                [6] = 1,
+                [7] = 1,
+                [8] = 2,
+                [9] = 2,
+                [10] = 3
+            });
         }
 
         [Test]

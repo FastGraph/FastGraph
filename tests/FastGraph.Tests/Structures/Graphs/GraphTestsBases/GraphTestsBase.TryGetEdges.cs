@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
 namespace FastGraph.Tests.Structures
@@ -23,19 +22,19 @@ namespace FastGraph.Tests.Structures
 
             addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            graph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            graph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            graph.TryGetEdge(2, 1, out _).Should().BeFalse();
         }
 
         protected static void TryGetEdge_Test(
@@ -60,19 +59,19 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            graph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            graph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            graph.TryGetEdge(2, 1, out _).Should().BeFalse();
         }
 
         protected static void TryGetEdge_ImmutableGraph_Test(
@@ -89,19 +88,19 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            graph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out SEquatableEdge<int> gotEdge));
-            Assert.AreEqual(new SEquatableEdge<int>(2, 4), gotEdge);
+            graph.TryGetEdge(2, 4, out SEquatableEdge<int> gotEdge).Should().BeTrue();
+            gotEdge.Should().Be(new SEquatableEdge<int>(2, 4));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreEqual(new SEquatableEdge<int>(2, 2), gotEdge);
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().Be(new SEquatableEdge<int>(2, 2));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreEqual(new SEquatableEdge<int>(1, 2), gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().Be(new SEquatableEdge<int>(1, 2));
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            graph.TryGetEdge(2, 1, out _).Should().BeFalse();
         }
 
         protected static void TryGetEdge_ImmutableVertices_Test(
@@ -115,19 +114,19 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5 });
 
-            Assert.IsFalse(graph.TryGetEdge(6, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(6, 1, out _));
+            graph.TryGetEdge(6, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(6, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            graph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge3, gotEdge);
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge3);
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            graph.TryGetEdge(2, 1, out _).Should().BeFalse();
         }
 
         protected static void TryGetEdge_ImmutableGraph_ReversedTest(
@@ -144,19 +143,19 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            graph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(4, 2, out SReversedEdge<int, Edge<int>> gotEdge));
+            graph.TryGetEdge(4, 2, out SReversedEdge<int, Edge<int>> gotEdge).Should().BeTrue();
             AssertSameReversedEdge(edge5, gotEdge);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
             AssertSameReversedEdge(edge4, gotEdge);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
+            graph.TryGetEdge(2, 1, out gotEdge).Should().BeTrue();
             AssertSameReversedEdge(edge1, gotEdge);
 
-            Assert.IsFalse(graph.TryGetEdge(1, 2, out _));
+            graph.TryGetEdge(1, 2, out _).Should().BeFalse();
         }
 
         protected static void TryGetEdge_UndirectedGraph_Test(
@@ -172,28 +171,28 @@ namespace FastGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            graph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            graph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(2, 1, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsTrue(graph.TryGetEdge(5, 2, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            graph.TryGetEdge(5, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
 
             // 5 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 5, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            graph.TryGetEdge(2, 5, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
         }
 
         protected static void TryGetEdge_ImmutableGraph_UndirectedGraph_Test(
@@ -211,28 +210,28 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            graph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            graph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            graph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            graph.TryGetEdge(2, 1, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsTrue(graph.TryGetEdge(5, 2, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            graph.TryGetEdge(5, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
 
             // 5 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 5, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            graph.TryGetEdge(2, 5, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
         }
 
         protected static void TryGetEdge_Throws_Test<TVertex, TEdge>(
@@ -242,9 +241,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(default, new TVertex(), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TVertex(), default, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(default, default, out _));
+            Invoking(() => graph.TryGetEdge(default, new TVertex(), out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TryGetEdge(new TVertex(), default, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TryGetEdge(default, default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -256,9 +255,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(default, new TVertex(), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(new TVertex(), default, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdge(default, default, out _));
+            Invoking(() => graph.TryGetEdge(default, new TVertex(), out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TryGetEdge(new TVertex(), default, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TryGetEdge(default, default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -276,20 +275,20 @@ namespace FastGraph.Tests.Structures
 
             addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            graph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+            graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            new[] { edge4 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            graph.TryGetEdges(2, 4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+            graph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
         }
 
         protected static void TryGetEdges_Test(
@@ -314,20 +313,20 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            graph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+            graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            new[] { edge4 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            graph.TryGetEdges(2, 4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+            graph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
         }
 
         protected static void TryGetEdges_ImmutableGraph_Test(
@@ -344,30 +343,24 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            graph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<SEquatableEdge<int>>? gotEdges));
-            CollectionAssert.AreEqual(
-                new[] { new SEquatableEdge<int>(2, 2) },
-                gotEdges);
+            graph.TryGetEdges(2, 2, out IEnumerable<SEquatableEdge<int>>? gotEdges).Should().BeTrue();
+            new[] { new SEquatableEdge<int>(2, 2) }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
-            CollectionAssert.AreEqual(
-                new[] { new SEquatableEdge<int>(2, 4), },
-                gotEdges);
+            graph.TryGetEdges(2, 4, out gotEdges).Should().BeTrue();
+            new[] { new SEquatableEdge<int>(2, 4), }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    new SEquatableEdge<int>(1, 2),
-                    new SEquatableEdge<int>(1, 2)
-                },
-                gotEdges);
+            graph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[]
+            {
+                new SEquatableEdge<int>(1, 2),
+                new SEquatableEdge<int>(1, 2)
+            }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
         }
 
         protected static void TryGetEdges_ImmutableVertices_Test(
@@ -381,20 +374,20 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5 });
 
-            Assert.IsFalse(graph.TryGetEdges(6, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(6, 1, out _));
+            graph.TryGetEdges(6, 10, out _).Should().BeFalse();
+            graph.TryGetEdges(6, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.AreEqual(new[] { edge3 }, gotEdges);
+            graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            new[] { edge3 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+            graph.TryGetEdges(2, 4, out gotEdges).Should().BeTrue();
+            new[] { edge4 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1 }, gotEdges);
+            graph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[] { edge1 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
         }
 
         protected static void TryGetEdges_ImmutableGraph_ReversedTest(
@@ -411,20 +404,20 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            graph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            graph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<SReversedEdge<int, Edge<int>>>? gotEdges));
+            graph.TryGetEdges(2, 2, out IEnumerable<SReversedEdge<int, Edge<int>>>? gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge4 }, gotEdges!);
 
-            Assert.IsTrue(graph.TryGetEdges(4, 2, out gotEdges));
+            graph.TryGetEdges(4, 2, out gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge5 }, gotEdges!);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            graph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge1, edge2 }, gotEdges!);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
         }
 
         protected static void TryGetEdges_Throws_Test<TEdge>(
@@ -433,9 +426,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(default, new TestVertex("v2"), out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(new TestVertex("v1"), default, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetEdges(default, default, out _));
+            Invoking(() => graph.TryGetEdges(default, new TestVertex("v2"), out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TryGetEdges(new TestVertex("v1"), default, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TryGetEdges(default, default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -454,16 +447,16 @@ namespace FastGraph.Tests.Structures
 
             addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            graph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetOutEdges(5, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
+            graph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
+            new[] { edge6 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
+            graph.TryGetOutEdges(1, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2, edge3 }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetOutEdges_Test(
@@ -489,16 +482,16 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IImplicitGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            graph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetOutEdges(5, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
+            graph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
+            new[] { edge6 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
+            graph.TryGetOutEdges(1, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2, edge3 }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetOutEdges_ImmutableGraph_Test(
@@ -516,25 +509,21 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IImplicitGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            graph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<SEquatableEdge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetOutEdges(5, out IEnumerable<SEquatableEdge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
-            CollectionAssert.AreEqual(
-                new[] { new SEquatableEdge<int>(3, 1) },
-                gotEdges);
+            graph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
+            new[] { new SEquatableEdge<int>(3, 1) }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    new SEquatableEdge<int>(1, 2),
-                    new SEquatableEdge<int>(1, 2),
-                    new SEquatableEdge<int>(1, 3)
-                },
-                gotEdges);
+            graph.TryGetOutEdges(1, out gotEdges).Should().BeTrue();
+            new[]
+            {
+                new SEquatableEdge<int>(1, 2),
+                new SEquatableEdge<int>(1, 2),
+                new SEquatableEdge<int>(1, 3)
+            }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetOutEdges_ImmutableVertices_Test(
@@ -549,16 +538,16 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.IsFalse(graph.TryGetOutEdges(6, out _));
+            graph.TryGetOutEdges(6, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetOutEdges(5, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            graph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+            graph.TryGetOutEdges(1, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetOutEdges_ImmutableGraph_ReversedTest(
@@ -576,15 +565,15 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            graph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetOutEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
+            graph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge3 }, gotEdges!);
 
-            Assert.IsTrue(graph.TryGetOutEdges(2, out gotEdges));
+            graph.TryGetOutEdges(2, out gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge1, edge2, edge4 }, gotEdges!);
         }
 
@@ -595,7 +584,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetOutEdges(default, out _));
+            Invoking(() => graph.TryGetOutEdges(default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -613,16 +602,16 @@ namespace FastGraph.Tests.Structures
 
             addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+            graph.TryGetInEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetInEdges(5, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            graph.TryGetInEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
+            graph.TryGetInEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2, edge4 }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetInEdges_Test(
@@ -648,16 +637,16 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+            graph.TryGetInEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetInEdges(5, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            graph.TryGetInEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
+            graph.TryGetInEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2, edge4 }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetInEdges_ImmutableVertices_Test(
@@ -672,16 +661,16 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.IsFalse(graph.TryGetInEdges(6, out _));
+            graph.TryGetInEdges(6, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetInEdges(5, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+            graph.TryGetInEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge4 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge3 }, gotEdges);
+            graph.TryGetInEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge3 }.Should().BeEquivalentTo(gotEdges);
         }
 
         protected static void TryGetInEdges_ImmutableGraph_ReversedTest(
@@ -699,15 +688,15 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
             IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+            graph.TryGetInEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetInEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
+            graph.TryGetInEdges(4, out gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge7 }, gotEdges!);
 
-            Assert.IsTrue(graph.TryGetInEdges(1, out gotEdges));
+            graph.TryGetInEdges(1, out gotEdges).Should().BeTrue();
             AssertSameReversedEdges(new[] { edge1, edge2, edge3, edge4 }, gotEdges!);
         }
 
@@ -718,7 +707,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.TryGetInEdges(default, out _));
+            Invoking(() => graph.TryGetInEdges(default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 

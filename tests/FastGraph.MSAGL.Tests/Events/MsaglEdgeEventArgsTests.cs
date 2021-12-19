@@ -17,8 +17,8 @@ namespace FastGraph.MSAGL.Tests
             var msaglEdge = new Edge(new Node("1"), new Node("2"), ConnectionToGraph.Disconnected);
             var args = new MsaglEdgeEventArgs<int, Edge<int>>(edge, msaglEdge);
 
-            Assert.AreSame(edge, args.Edge);
-            Assert.AreSame(msaglEdge, args.MsaglEdge);
+            args.Edge.Should().BeSameAs(edge);
+            args.MsaglEdge.Should().BeSameAs(msaglEdge);
         }
 
         [Test]
@@ -30,12 +30,9 @@ namespace FastGraph.MSAGL.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglEdgeEventArgs<int, Edge<int>>(edge, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglEdgeEventArgs<int, Edge<int>>(default, msaglEdge));
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglEdgeEventArgs<int, Edge<int>>(default, default));
+            Invoking(() => new MsaglEdgeEventArgs<int, Edge<int>>(edge, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MsaglEdgeEventArgs<int, Edge<int>>(default, msaglEdge)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MsaglEdgeEventArgs<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

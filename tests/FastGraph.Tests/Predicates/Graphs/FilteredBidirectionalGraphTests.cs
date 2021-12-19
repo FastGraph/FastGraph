@@ -42,11 +42,11 @@ namespace FastGraph.Tests.Predicates
                 where TEdge : IEdge<TVertex>
                 where TGraph : IBidirectionalGraph<TVertex, TEdge>
             {
-                Assert.AreSame(expectedGraph, g.BaseGraph);
-                Assert.IsTrue(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.AreSame(vertexPredicate, g.VertexPredicate);
-                Assert.AreSame(edgePredicate, g.EdgePredicate);
+                g.BaseGraph.Should().BeSameAs(expectedGraph);
+                g.IsDirected.Should().BeTrue();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
+                g.VertexPredicate.Should().BeSameAs(vertexPredicate);
+                g.EdgePredicate.Should().BeSameAs(edgePredicate);
                 AssertEmptyGraph(g);
             }
 
@@ -59,47 +59,40 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    new BidirectionalGraph<int, Edge<int>>(),
-                    _ => true,
-                    default));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                new BidirectionalGraph<int, Edge<int>>(),
+                _ => true,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    new BidirectionalGraph<int, Edge<int>>(),
-                    default,
-                    _ => true));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                new BidirectionalGraph<int, Edge<int>>(),
+                default,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    default,
-                    _ => true,
-                    _ => true));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                default,
+                _ => true,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    new BidirectionalGraph<int, Edge<int>>(),
-                    default,
-                    default));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                new BidirectionalGraph<int, Edge<int>>(),
+                default,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    default,
-                    _ => true,
-                    default));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                default,
+                _ => true,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    default,
-                    default,
-                    _ => true));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                default,
+                default,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
-                    default,
-                    default,
-                    default));
+            Invoking(() => new FilteredBidirectionalGraph<int, Edge<int>, BidirectionalGraph<int, Edge<int>>>(
+                default,
+                default,
+                default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -288,8 +281,8 @@ namespace FastGraph.Tests.Predicates
 
             graph2.AddVertexRange(new[] { 1, 2, 3, 4, 5 });
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph2.OutEdges(4));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph2.OutEdges(5));
+            Invoking(() => filteredGraph2.OutEdges(4)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => filteredGraph2.OutEdges(5)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -367,8 +360,8 @@ namespace FastGraph.Tests.Predicates
 
             graph2.AddVertexRange(new[] { 1, 2, 3, 4, 5 });
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph2.InEdges(4));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph2.InEdges(5));
+            Invoking(() => filteredGraph2.InEdges(4)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => filteredGraph2.InEdges(5)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 

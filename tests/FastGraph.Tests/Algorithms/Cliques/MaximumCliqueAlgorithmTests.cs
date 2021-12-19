@@ -56,11 +56,9 @@ namespace FastGraph.Tests.Algorithms.Cliques
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
 
-            Assert.Throws<ArgumentNullException>(
-                () => new TestMaximumCliqueAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new TestMaximumCliqueAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new TestMaximumCliqueAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new TestMaximumCliqueAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute

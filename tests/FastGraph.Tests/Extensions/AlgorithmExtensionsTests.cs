@@ -23,23 +23,23 @@ namespace FastGraph.Tests.Extensions
             var dictionary1 = new Dictionary<int, double>();
             Func<int, double> indexer1 = AlgorithmExtensions.GetIndexer(dictionary1);
 
-            Assert.Throws<KeyNotFoundException>(() => indexer1(12));
+            Invoking(() => indexer1(12)).Should().Throw<KeyNotFoundException>();
 
             dictionary1[12] = 42.0;
-            Assert.AreEqual(42.0, indexer1(12));
+            indexer1(12).Should().Be(42.0);
 
             var dictionary2 = new Dictionary<TestVertex, TestVertex>();
             Func<TestVertex, TestVertex> indexer2 = AlgorithmExtensions.GetIndexer(dictionary2);
 
             var key = new TestVertex("1");
             var keyBis = new TestVertex("1");
-            Assert.Throws<KeyNotFoundException>(() => indexer2(key));
+            Invoking(() => indexer2(key)).Should().Throw<KeyNotFoundException>();
 
             var value = new TestVertex("2");
             dictionary2[key] = value;
-            Assert.AreSame(value, indexer2(key));
+            indexer2(key).Should().BeSameAs(value);
 
-            Assert.Throws<KeyNotFoundException>(() => indexer2(keyBis));
+            Invoking(() => indexer2(keyBis)).Should().Throw<KeyNotFoundException>();
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.GetIndexer<int, double>(default));
+            Invoking(() => AlgorithmExtensions.GetIndexer<int, double>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -56,24 +56,24 @@ namespace FastGraph.Tests.Extensions
         public void GetVertexIdentity()
         {
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            VertexIdentity<int> vertexIdentity1 = AlgorithmExtensions.GetVertexIdentity(graph1);
+            VertexIdentity<int> vertexIdentity1 = graph1.GetVertexIdentity();
 
-            Assert.AreEqual("12", vertexIdentity1(12));
-            Assert.AreEqual("42", vertexIdentity1(42));
+            vertexIdentity1(12).Should().Be("12");
+            vertexIdentity1(42).Should().Be("42");
             // Check identity didn't change
-            Assert.AreEqual("12", vertexIdentity1(12));
-            Assert.AreEqual("42", vertexIdentity1(42));
+            vertexIdentity1(12).Should().Be("12");
+            vertexIdentity1(42).Should().Be("42");
 
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            VertexIdentity<TestVertex> vertexIdentity2 = AlgorithmExtensions.GetVertexIdentity(graph2);
+            VertexIdentity<TestVertex> vertexIdentity2 = graph2.GetVertexIdentity();
 
             var vertex1 = new TestVertex("12");
             var vertex2 = new TestVertex("42");
-            Assert.AreEqual("0", vertexIdentity2(vertex1));
-            Assert.AreEqual("1", vertexIdentity2(vertex2));
+            vertexIdentity2(vertex1).Should().Be("0");
+            vertexIdentity2(vertex2).Should().Be("1");
             // Check identity didn't change
-            Assert.AreEqual("0", vertexIdentity2(vertex1));
-            Assert.AreEqual("1", vertexIdentity2(vertex2));
+            vertexIdentity2(vertex1).Should().Be("0");
+            vertexIdentity2(vertex2).Should().Be("1");
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.GetVertexIdentity<int>(default));
+            Invoking(() => AlgorithmExtensions.GetVertexIdentity<int>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -90,21 +90,21 @@ namespace FastGraph.Tests.Extensions
         public void GetEdgeIdentity()
         {
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            EdgeIdentity<int, Edge<int>> edgeIdentity1 = AlgorithmExtensions.GetEdgeIdentity(graph1);
+            EdgeIdentity<int, Edge<int>> edgeIdentity1 = graph1.GetEdgeIdentity();
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(2, 3);
             var edge3 = new Edge<int>(1, 2);
-            Assert.AreEqual("0", edgeIdentity1(edge1));
-            Assert.AreEqual("1", edgeIdentity1(edge2));
-            Assert.AreEqual("2", edgeIdentity1(edge3));
+            edgeIdentity1(edge1).Should().Be("0");
+            edgeIdentity1(edge2).Should().Be("1");
+            edgeIdentity1(edge3).Should().Be("2");
             // Check identity didn't change
-            Assert.AreEqual("0", edgeIdentity1(edge1));
-            Assert.AreEqual("1", edgeIdentity1(edge2));
-            Assert.AreEqual("2", edgeIdentity1(edge3));
+            edgeIdentity1(edge1).Should().Be("0");
+            edgeIdentity1(edge2).Should().Be("1");
+            edgeIdentity1(edge3).Should().Be("2");
 
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            EdgeIdentity<TestVertex, Edge<TestVertex>> edgeIdentity2 = AlgorithmExtensions.GetEdgeIdentity(graph2);
+            EdgeIdentity<TestVertex, Edge<TestVertex>> edgeIdentity2 = graph2.GetEdgeIdentity();
 
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
@@ -112,13 +112,13 @@ namespace FastGraph.Tests.Extensions
             var edge4 = new Edge<TestVertex>(vertex1, vertex2);
             var edge5 = new Edge<TestVertex>(vertex2, vertex3);
             var edge6 = new Edge<TestVertex>(vertex1, vertex2);
-            Assert.AreEqual("0", edgeIdentity2(edge4));
-            Assert.AreEqual("1", edgeIdentity2(edge5));
-            Assert.AreEqual("2", edgeIdentity2(edge6));
+            edgeIdentity2(edge4).Should().Be("0");
+            edgeIdentity2(edge5).Should().Be("1");
+            edgeIdentity2(edge6).Should().Be("2");
             // Check identity didn't change
-            Assert.AreEqual("0", edgeIdentity2(edge4));
-            Assert.AreEqual("1", edgeIdentity2(edge5));
-            Assert.AreEqual("2", edgeIdentity2(edge6));
+            edgeIdentity2(edge4).Should().Be("0");
+            edgeIdentity2(edge5).Should().Be("1");
+            edgeIdentity2(edge6).Should().Be("2");
         }
 
         [Test]
@@ -127,8 +127,8 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.GetEdgeIdentity<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.GetEdgeIdentity<TestVertex, Edge<TestVertex>>(default));
+            Invoking(() => AlgorithmExtensions.GetEdgeIdentity<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.GetEdgeIdentity<TestVertex, Edge<TestVertex>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -153,10 +153,10 @@ namespace FastGraph.Tests.Extensions
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeBreadthFirstSearch(1);
 
-            Assert.IsFalse(pathAccessor(7, out _));
+            pathAccessor(7, out _).Should().BeFalse();
 
-            Assert.IsTrue(pathAccessor(5, out IEnumerable<Edge<int>>? path));
-            CollectionAssert.AreEqual(new[] { edge13, edge35 }, path);
+            pathAccessor(5, out IEnumerable<Edge<int>>? path).Should().BeTrue();
+            new[] { edge13, edge35 }.Should().BeEquivalentTo(path);
         }
 
         [Test]
@@ -170,11 +170,9 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeBreadthFirstSearch(vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.TreeBreadthFirstSearch(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeBreadthFirstSearch(default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeBreadthFirstSearch(vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TreeBreadthFirstSearch(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeBreadthFirstSearch(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -201,10 +199,10 @@ namespace FastGraph.Tests.Extensions
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeDepthFirstSearch(1);
 
-            Assert.IsFalse(pathAccessor(7, out _));
+            pathAccessor(7, out _).Should().BeFalse();
 
-            Assert.IsTrue(pathAccessor(5, out IEnumerable<Edge<int>>? path));
-            CollectionAssert.AreEqual(new[] { edge12, edge23, edge35 }, path);
+            pathAccessor(5, out IEnumerable<Edge<int>>? path).Should().BeTrue();
+            new[] { edge12, edge23, edge35 }.Should().BeEquivalentTo(path);
         }
 
         [Test]
@@ -218,11 +216,9 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeDepthFirstSearch(vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.TreeDepthFirstSearch(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeDepthFirstSearch(default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeDepthFirstSearch(vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TreeDepthFirstSearch(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeDepthFirstSearch(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -260,7 +256,7 @@ namespace FastGraph.Tests.Extensions
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeCyclePoppingRandom(2);
 
-            Assert.IsFalse(pathAccessor(7, out _));
+            pathAccessor(7, out _).Should().BeFalse();
 
             // Would require more tests...
         }
@@ -277,23 +273,17 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TreeCyclePoppingRandom(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(vertex, chain));
-            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(default, chain));
-            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(vertex, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(default, chain));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(vertex, default));
-            Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(default, default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(vertex, chain)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TreeCyclePoppingRandom(default, chain)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TreeCyclePoppingRandom(vertex, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(default, chain)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(vertex, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.TreeCyclePoppingRandom(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).TreeCyclePoppingRandom(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -346,15 +336,15 @@ namespace FastGraph.Tests.Extensions
 
             void CheckResult(TryFunc<int, IEnumerable<Edge<int>>> pathAccessor)
             {
-                Assert.IsNotNull(pathAccessor);
+                pathAccessor.Should().NotBeNull();
 
-                Assert.IsFalse(pathAccessor(1, out _));
+                pathAccessor(1, out _).Should().BeFalse();
 
-                Assert.IsTrue(pathAccessor(7, out IEnumerable<Edge<int>>? path));
-                CollectionAssert.AreEqual(new[] { edge26, edge67 }, path);
+                pathAccessor(7, out IEnumerable<Edge<int>>? path).Should().BeTrue();
+                new[] { edge26, edge67 }.Should().BeEquivalentTo(path);
 
-                Assert.IsTrue(pathAccessor(4, out path));
-                CollectionAssert.AreEqual(new[] { edge24 }, path);
+                pathAccessor(4, out path).Should().BeTrue();
+                new[] { edge24 }.Should().BeEquivalentTo(path);
             }
 
             #endregion
@@ -386,8 +376,8 @@ namespace FastGraph.Tests.Extensions
                 },
                 1,
                 out bool foundNegativeCycle);
-            Assert.IsNotNull(pathAccessor);
-            Assert.IsTrue(foundNegativeCycle);
+            pathAccessor.Should().NotBeNull();
+            foundNegativeCycle.Should().BeTrue();
 
             // Path accessors is usable but will generate a stack overflow
             // if accessing path using edge in the negative cycle.
@@ -404,17 +394,15 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(default, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDijkstra(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDijkstra(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDijkstra(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -434,29 +422,25 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)default).ShortestPathsAStar(_ => 1.0, _ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(default, _ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, _ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(_ => 1.0, default, vertex));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(_ => 1.0, _ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(default, default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(default, _ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, default, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, default, vertex));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, _ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(_ => 1.0, default, default));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(default, default, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, default, default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)default).ShortestPathsAStar(_ => 1.0, _ => 1.0, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(default, _ => 1.0, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(_ => 1.0, default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, _ => 1.0, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(_ => 1.0, default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(_ => 1.0, _ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(default, default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(default, _ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(_ => 1.0, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, _ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(_ => 1.0, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsAStar(default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsAStar(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -476,17 +460,15 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(_ => 1.0, vertex, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(default, vertex, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(_ => 1.0, default, out _));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(default, vertex, out _));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(default, default, out _));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(_ => 1.0, default, out _));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(default, default, out _));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(_ => 1.0, vertex, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsBellmanFord(default, vertex, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsBellmanFord(_ => 1.0, default, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(default, vertex, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsBellmanFord(default, default, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(_ => 1.0, default, out _)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsBellmanFord(default, default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -505,17 +487,15 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(_ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(default, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(default, default));
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(_ => 1.0, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDag(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDag(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDag(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDag(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -544,15 +524,15 @@ namespace FastGraph.Tests.Extensions
             graph.AddVertex(9);
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.ShortestPathsDijkstra(_ => 1.0, 2);
-            Assert.IsNotNull(pathAccessor);
+            pathAccessor.Should().NotBeNull();
 
-            Assert.IsFalse(pathAccessor(9, out _));
+            pathAccessor(9, out _).Should().BeFalse();
 
-            Assert.IsTrue(pathAccessor(8, out IEnumerable<Edge<int>>? path));
-            CollectionAssert.AreEqual(new[] { edge12, edge18 }, path);
+            pathAccessor(8, out IEnumerable<Edge<int>>? path).Should().BeTrue();
+            new[] { edge12, edge18 }.Should().BeEquivalentTo(path);
 
-            Assert.IsTrue(pathAccessor(1, out path));
-            CollectionAssert.AreEqual(new[] { edge12 }, path);
+            pathAccessor(1, out path).Should().BeTrue();
+            new[] { edge12 }.Should().BeEquivalentTo(path);
         }
 
         [Test]
@@ -566,17 +546,15 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(default, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(() =>
-                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, default));
+            Invoking(() => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDijkstra(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDijkstra(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ShortestPathsDijkstra(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>?)default).ShortestPathsDijkstra(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -618,25 +596,21 @@ namespace FastGraph.Tests.Extensions
             });
 
             IEnumerable<IEnumerable<Edge<int>>> paths = graph.RankedShortestPathHoffmanPavley(_ => 1.0, 1, 5, 5);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    new[] { edge12, edge25 },
-                    new[] { edge13, edge34, edge45 },
-                    new[] { edge12, edge24, edge45 },
-                    new[] { edge18, edge810, edge109, edge95 }
-                },
-                paths);
+            new[]
+            {
+                new[] { edge12, edge25 },
+                new[] { edge13, edge34, edge45 },
+                new[] { edge12, edge24, edge45 },
+                new[] { edge18, edge810, edge109, edge95 }
+            }.Should().BeEquivalentTo(paths);
 
             paths = graph.RankedShortestPathHoffmanPavley(_ => 1.0, 1, 5);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    new[] { edge12, edge25 },
-                    new[] { edge13, edge34, edge45 },
-                    new[] { edge12, edge24, edge45 }
-                },
-                paths);
+            new[]
+            {
+                new[] { edge12, edge25 },
+                new[] { edge13, edge34, edge45 },
+                new[] { edge12, edge24, edge45 }
+            }.Should().BeEquivalentTo(paths);
         }
 
         [Test]
@@ -650,43 +624,27 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(default, vertex, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, default, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, vertex, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(_ => 1.0, default, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(default, default, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(default, vertex, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, default, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, default, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, vertex, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(default, default, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, default, default, int.MaxValue));
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(default, vertex, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(_ => 1.0, default, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, vertex, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(_ => 1.0, default, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(default, default, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(default, vertex, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(_ => 1.0, default, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, default, vertex, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, vertex, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(default, default, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>?)default).RankedShortestPathHoffmanPavley(default, default, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, -1));
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, 0)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, -1)).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -776,7 +734,7 @@ namespace FastGraph.Tests.Extensions
             IVertexListGraph<int, Edge<int>> graph,
             IEnumerable<int> expectedSinks)
         {
-            CollectionAssert.AreEquivalent(expectedSinks, graph.Sinks());
+            graph.Sinks().Should().BeEquivalentTo(expectedSinks);
         }
 
         [Test]
@@ -786,8 +744,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8600
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<int, Edge<int>>)default).Sinks().ToArray());
+            Invoking(() => ((IVertexListGraph<int, Edge<int>>)default).Sinks().ToArray()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 #pragma warning restore CS8600
         }
@@ -871,7 +828,7 @@ namespace FastGraph.Tests.Extensions
             IVertexListGraph<int, Edge<int>> graph,
             IEnumerable<int> expectedRoots)
         {
-            CollectionAssert.AreEquivalent(expectedRoots, graph.Roots());
+            graph.Roots().Should().BeEquivalentTo(expectedRoots);
         }
 
         [Test]
@@ -887,7 +844,7 @@ namespace FastGraph.Tests.Extensions
             {
                 var roots = new HashSet<T>(graph.Roots());
                 foreach (Edge<T> edge in graph.Edges)
-                    Assert.IsFalse(roots.Contains(edge.Target));
+                    roots.Contains(edge.Target).Should().BeFalse();
             }
 
             #endregion
@@ -907,7 +864,7 @@ namespace FastGraph.Tests.Extensions
             IBidirectionalGraph<int, Edge<int>> graph,
             IEnumerable<int> expectedRoots)
         {
-            CollectionAssert.AreEquivalent(expectedRoots, graph.Roots());
+            graph.Roots().Should().BeEquivalentTo(expectedRoots);
         }
 
         [Test]
@@ -916,10 +873,8 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<int, Edge<int>>?)default).Roots().ToArray());
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<int, Edge<int>>?)default).Roots().ToArray());
+            Invoking(() => ((IVertexListGraph<int, Edge<int>>?)default).Roots().ToArray()).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<int, Edge<int>>?)default).Roots().ToArray()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1009,7 +964,7 @@ namespace FastGraph.Tests.Extensions
             IBidirectionalGraph<int, Edge<int>> graph,
             IEnumerable<int> expectedIsolatedVertices)
         {
-            CollectionAssert.AreEquivalent(expectedIsolatedVertices, graph.IsolatedVertices());
+            graph.IsolatedVertices().Should().BeEquivalentTo(expectedIsolatedVertices);
         }
 
         [Test]
@@ -1018,8 +973,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((BidirectionalGraph<int, Edge<int>>?)default).IsolatedVertices());
+            Invoking(() => ((BidirectionalGraph<int, Edge<int>>?)default).IsolatedVertices()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1040,9 +994,7 @@ namespace FastGraph.Tests.Extensions
                 new Edge<int>(6, 7)
             });
 
-            CollectionAssert.AreEqual(
-                new[] { 6, 3, 5, 7, 1, 2, 4 },
-                graph.TopologicalSort());
+            new[] { 6, 3, 5, 7, 1, 2, 4 }.Should().BeEquivalentTo(graph.TopologicalSort());
         }
 
         [Test]
@@ -1059,9 +1011,7 @@ namespace FastGraph.Tests.Extensions
                 new Edge<int>(6, 7)
             });
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 3, 5, 7, 6, 2, 4 },
-                graph.TopologicalSort());
+            new[] { 1, 3, 5, 7, 6, 2, 4 }.Should().BeEquivalentTo(graph.TopologicalSort());
         }
 
         [Test]
@@ -1070,11 +1020,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.TopologicalSort((IVertexListGraph<int, Edge<int>>?)default));
+            Invoking(() => ((IVertexListGraph<int, Edge<int>>?)default).TopologicalSort()).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.TopologicalSort((IUndirectedGraph<int, Edge<int>>?)default));
+            Invoking(() => ((IUndirectedGraph<int, Edge<int>>?)default).TopologicalSort()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1095,9 +1043,7 @@ namespace FastGraph.Tests.Extensions
                 new Edge<int>(6, 7)
             });
 
-            CollectionAssert.AreEqual(
-                new[] { 6, 3, 1, 5, 2, 7, 4 },
-                graph.SourceFirstTopologicalSort());
+            new[] { 6, 3, 1, 5, 2, 7, 4 }.Should().BeEquivalentTo(graph.SourceFirstTopologicalSort());
         }
 
         [Test]
@@ -1114,9 +1060,7 @@ namespace FastGraph.Tests.Extensions
                 new Edge<int>(6, 7)
             });
 
-            CollectionAssert.AreEqual(
-                new[] { 4, 6, 2, 7, 1, 5, 3 },
-                graph.SourceFirstTopologicalSort());
+            new[] { 4, 6, 2, 7, 1, 5, 3 }.Should().BeEquivalentTo(graph.SourceFirstTopologicalSort());
         }
 
         [Test]
@@ -1125,11 +1069,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstTopologicalSort((IVertexAndEdgeListGraph<int, Edge<int>>?)default));
+            Invoking(() => ((IVertexAndEdgeListGraph<int, Edge<int>>?)default).SourceFirstTopologicalSort()).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstTopologicalSort((IUndirectedGraph<int, Edge<int>>?)default));
+            Invoking(() => ((IUndirectedGraph<int, Edge<int>>?)default).SourceFirstTopologicalSort()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1150,17 +1092,11 @@ namespace FastGraph.Tests.Extensions
                 new Edge<int>(6, 7)
             });
 
-            CollectionAssert.AreEqual(
-                new[] { 6, 3, 1, 5, 2, 7, 4 },
-                graph.SourceFirstBidirectionalTopologicalSort());
+            graph.SourceFirstBidirectionalTopologicalSort().Should().BeEquivalentTo(new[] { 6, 3, 1, 5, 2, 7, 4 });
 
-            CollectionAssert.AreEqual(
-                new[] { 6, 3, 1, 5, 2, 7, 4 },
-                graph.SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Forward));
+            graph.SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Forward).Should().BeEquivalentTo(new[] { 6, 3, 1, 5, 2, 7, 4 });
 
-            CollectionAssert.AreEqual(
-                new[] { 4, 7, 2, 5, 1, 3, 6 },
-                graph.SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Backward));
+            graph.SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Backward).Should().BeEquivalentTo(new[] { 4, 7, 2, 5, 1, 3, 6 });
         }
 
         [Test]
@@ -1169,13 +1105,10 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>?)default));
+            Invoking(() => ((IBidirectionalGraph<int, Edge<int>>?)default).SourceFirstBidirectionalTopologicalSort()).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>?)default, TopologicalSortDirection.Forward));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>?)default, TopologicalSortDirection.Backward));
+            Invoking(() => ((IBidirectionalGraph<int, Edge<int>>?)default).SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Forward)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<int, Edge<int>>?)default).SourceFirstBidirectionalTopologicalSort(TopologicalSortDirection.Backward)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1205,21 +1138,19 @@ namespace FastGraph.Tests.Extensions
 
             var components = new Dictionary<int, int>();
 
-            Assert.AreEqual(2, graph.ConnectedComponents(components));
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 0,
-                    [5] = 0,
-                    [6] = 0,
-                    [7] = 0,
-                    [8] = 1,
-                    [9] = 1
-                },
-                components);
+            graph.ConnectedComponents(components).Should().Be(2);
+            components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 0,
+                [5] = 0,
+                [6] = 0,
+                [7] = 0,
+                [8] = 1,
+                [9] = 1
+            });
         }
 
         [Test]
@@ -1230,18 +1161,11 @@ namespace FastGraph.Tests.Extensions
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-#pragma warning disable CS8600
 #pragma warning disable CS8625
-#pragma warning disable CS8620
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ConnectedComponents(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(default, default));
-#pragma warning restore CS8620
+            Invoking(() => graph.ConnectedComponents(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
-#pragma warning restore CS8600
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1255,23 +1179,23 @@ namespace FastGraph.Tests.Extensions
                 out Func<KeyValuePair<int, IDictionary<int, int>>> getComponents))
             {
                 KeyValuePair<int, IDictionary<int, int>> current = getComponents();
-                Assert.AreEqual(4, current.Key);
+                current.Key.Should().Be(4);
 
                 graph.AddEdge(new Edge<int>(0, 1));
                 current = getComponents();
-                Assert.AreEqual(3, current.Key);
+                current.Key.Should().Be(3);
 
                 graph.AddEdge(new Edge<int>(2, 3));
                 current = getComponents();
-                Assert.AreEqual(2, current.Key);
+                current.Key.Should().Be(2);
 
                 graph.AddEdge(new Edge<int>(1, 3));
                 current = getComponents();
-                Assert.AreEqual(1, current.Key);
+                current.Key.Should().Be(1);
 
                 graph.AddVertex(4);
                 current = getComponents();
-                Assert.AreEqual(2, current.Key);
+                current.Key.Should().Be(2);
             }
         }
 
@@ -1280,8 +1204,7 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.IncrementalConnectedComponents<int, Edge<int>>(default, out _));
+            Invoking(() => AlgorithmExtensions.IncrementalConnectedComponents<int, Edge<int>>(default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1303,19 +1226,17 @@ namespace FastGraph.Tests.Extensions
 
             var components = new Dictionary<int, int>();
 
-            Assert.AreEqual(3, graph.StronglyConnectedComponents(components));
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 2,
-                    [2] = 2,
-                    [3] = 2,
-                    [4] = 1,
-                    [5] = 0,
-                    [6] = 0,
-                    [7] = 0
-                },
-                components);
+            graph.StronglyConnectedComponents(components).Should().Be(3);
+            components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 2,
+                [2] = 2,
+                [3] = 2,
+                [4] = 1,
+                [5] = 0,
+                [6] = 0,
+                [7] = 0
+            });
         }
 
         [Test]
@@ -1326,18 +1247,11 @@ namespace FastGraph.Tests.Extensions
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-#pragma warning disable CS8600
 #pragma warning disable CS8625
-#pragma warning disable CS8620
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.StronglyConnectedComponents(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(default, default));
-#pragma warning restore CS8620
+            Invoking(() => graph.StronglyConnectedComponents(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
-#pragma warning restore CS8600
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1362,21 +1276,19 @@ namespace FastGraph.Tests.Extensions
 
             var components = new Dictionary<int, int>();
 
-            Assert.AreEqual(2, graph.WeaklyConnectedComponents(components));
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 0,
-                    [5] = 0,
-                    [6] = 0,
-                    [7] = 0,
-                    [8] = 1,
-                    [9] = 1
-                },
-                components);
+            graph.WeaklyConnectedComponents(components).Should().Be(2);
+            components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 0,
+                [5] = 0,
+                [6] = 0,
+                [7] = 0,
+                [8] = 1,
+                [9] = 1
+            });
         }
 
         [Test]
@@ -1388,12 +1300,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.WeaklyConnectedComponents(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(default, default));
+            Invoking(() => graph.WeaklyConnectedComponents(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1404,9 +1313,8 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
 #pragma warning disable CS8625
-                () => AlgorithmExtensions.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default));
+            Invoking(() => AlgorithmExtensions.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1415,9 +1323,8 @@ namespace FastGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
 #pragma warning disable CS8625
-                () => AlgorithmExtensions.CondensateWeaklyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default));
+            Invoking(() => AlgorithmExtensions.CondensateWeaklyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1429,12 +1336,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges((IBidirectionalGraph<int, Edge<int>>?)default, _ => true));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges((IBidirectionalGraph<int, Edge<int>>?)default, default));
+            Invoking(() => ((IBidirectionalGraph<int, Edge<int>>?)default).CondensateEdges(_ => true)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.CondensateEdges(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IBidirectionalGraph<int, Edge<int>>?)default).CondensateEdges(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1524,7 +1428,7 @@ namespace FastGraph.Tests.Extensions
             IVertexAndEdgeListGraph<int, Edge<int>> graph,
             IEnumerable<int> expectedOddVertices)
         {
-            CollectionAssert.AreEquivalent(expectedOddVertices, graph.OddVertices());
+            graph.OddVertices().Should().BeEquivalentTo(expectedOddVertices);
         }
 
         [Test]
@@ -1533,8 +1437,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<int, Edge<int>>?)default).OddVertices());
+            Invoking(() => ((AdjacencyGraph<int, Edge<int>>?)default).OddVertices()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1621,8 +1524,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<int, Edge<int>>?)default).IsDirectedAcyclicGraph());
+            Invoking(() => ((AdjacencyGraph<int, Edge<int>>?)default).IsDirectedAcyclicGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1632,13 +1534,13 @@ namespace FastGraph.Tests.Extensions
             var predecessors = new Dictionary<int, Edge<int>>();
             var edgeCosts = new Dictionary<Edge<int>, double>();
 
-            Assert.AreEqual(0, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1));
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1).Should().Be(0);
 
             var edge12 = new Edge<int>(1, 2);
             predecessors[2] = edge12;
             edgeCosts[edge12] = 12;
-            Assert.AreEqual(0, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1));
-            Assert.AreEqual(12, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2));
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1).Should().Be(0);
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2).Should().Be(12);
 
             var edge31 = new Edge<int>(3, 1);
             predecessors[1] = edge31;
@@ -1647,10 +1549,10 @@ namespace FastGraph.Tests.Extensions
             predecessors[4] = edge34;
             edgeCosts[edge34] = 42;
 
-            Assert.AreEqual(-5, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1));
-            Assert.AreEqual(7, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2));
-            Assert.AreEqual(0, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 3));
-            Assert.AreEqual(42, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 4));
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1).Should().Be(-5);
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2).Should().Be(7);
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 3).Should().Be(0);
+            AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 4).Should().Be(42);
         }
 
         [Test]
@@ -1666,26 +1568,19 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(default, edgeCosts, vertex1));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, default, vertex1));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost<TestVertex, Edge<TestVertex>>(default, default, vertex1));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost<TestVertex, Edge<TestVertex>>(default, default, default));
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost(default, edgeCosts, vertex1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost(predecessors, default, vertex1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost<TestVertex, Edge<TestVertex>>(default, default, vertex1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost(predecessors, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost<TestVertex, Edge<TestVertex>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
 
             // Wrong usage
             predecessors[vertex2] = new Edge<TestVertex>(vertex1, vertex2);
-            Assert.Throws<KeyNotFoundException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, vertex2));
+            Invoking(() => AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, vertex2)).Should().Throw<KeyNotFoundException>();
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1695,14 +1590,14 @@ namespace FastGraph.Tests.Extensions
         {
             var emptyGraph = new UndirectedGraph<int, Edge<int>>();
             IDisjointSet<int> disjointSet = emptyGraph.ComputeDisjointSet();
-            Assert.AreEqual(0, disjointSet.ElementCount);
-            Assert.AreEqual(0, disjointSet.SetCount);
+            disjointSet.ElementCount.Should().Be(0);
+            disjointSet.SetCount.Should().Be(0);
 
             var graph = new UndirectedGraph<int, Edge<int>>();
             graph.AddVertexRange(new[] { 1, 2, 3, 4 });
             disjointSet = graph.ComputeDisjointSet();
-            Assert.AreEqual(4, disjointSet.ElementCount);
-            Assert.AreEqual(4, disjointSet.SetCount);
+            disjointSet.ElementCount.Should().Be(4);
+            disjointSet.SetCount.Should().Be(4);
 
             graph.AddEdgeRange(new[]
             {
@@ -1712,12 +1607,12 @@ namespace FastGraph.Tests.Extensions
             });
             graph.AddVertex(5);
             disjointSet = graph.ComputeDisjointSet();
-            Assert.AreEqual(5, disjointSet.ElementCount);
-            Assert.AreEqual(2, disjointSet.SetCount);
-            Assert.IsTrue(disjointSet.AreInSameSet(1, 2));
-            Assert.IsTrue(disjointSet.AreInSameSet(1, 3));
-            Assert.IsTrue(disjointSet.AreInSameSet(1, 4));
-            Assert.IsFalse(disjointSet.AreInSameSet(1, 5));
+            disjointSet.ElementCount.Should().Be(5);
+            disjointSet.SetCount.Should().Be(2);
+            disjointSet.AreInSameSet(1, 2).Should().BeTrue();
+            disjointSet.AreInSameSet(1, 3).Should().BeTrue();
+            disjointSet.AreInSameSet(1, 4).Should().BeTrue();
+            disjointSet.AreInSameSet(1, 5).Should().BeFalse();
         }
 
         [Test]
@@ -1726,8 +1621,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>?)default).ComputeDisjointSet());
+            Invoking(() => ((UndirectedGraph<int, Edge<int>>?)default).ComputeDisjointSet()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1737,12 +1631,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreePrim(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreePrim(_ => 1.0));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreePrim(default));
+            Invoking(() => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreePrim(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreePrim(_ => 1.0)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreePrim(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1754,12 +1645,9 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreeKruskal(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreeKruskal(_ => 1.0));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreeKruskal(default));
+            Invoking(() => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreeKruskal(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreeKruskal(_ => 1.0)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((UndirectedGraph<int, Edge<int>>?)default).MinimumSpanningTreeKruskal(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1779,29 +1667,20 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8625
 #pragma warning disable CS8620
 #pragma warning disable CS8714
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(vertex1, pairs1));
-            Assert.Throws<ArgumentNullException>(
-                () => graph1.OfflineLeastCommonAncestor(default, pairs1));
-            Assert.Throws<ArgumentNullException>(
-                () => graph1.OfflineLeastCommonAncestor(vertex1, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(default, pairs1));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(vertex1, default));
-            Assert.Throws<ArgumentNullException>(
-                () => graph1.OfflineLeastCommonAncestor(default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(default, default));
+            Invoking(() => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(vertex1, pairs1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph1.OfflineLeastCommonAncestor(default, pairs1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph1.OfflineLeastCommonAncestor(vertex1, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(default, pairs1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(vertex1, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph1.OfflineLeastCommonAncestor(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IVertexListGraph<TestVertex, Edge<TestVertex>>?)default).OfflineLeastCommonAncestor(default, default)).Should().Throw<ArgumentNullException>();
             var pairs2 = new[] { new SEquatableEdge<int>(1, 2) };
             var graph2 = new AdjacencyGraph<int, Edge<int>>();
-            Assert.Throws<ArgumentException>(
-                () => graph2.OfflineLeastCommonAncestor(1, pairs2));
+            Invoking(() => graph2.OfflineLeastCommonAncestor(1, pairs2)).Should().Throw<ArgumentException>();
 
             var graph3 = new AdjacencyGraph<int, Edge<int>>();
             graph3.AddVertex(1);
-            Assert.Throws<ArgumentException>(
-                () => graph3.OfflineLeastCommonAncestor(1, pairs2));
+            Invoking(() => graph3.OfflineLeastCommonAncestor(1, pairs2)).Should().Throw<ArgumentException>();
 #pragma warning restore CS8714
 #pragma warning restore CS8620
 #pragma warning restore CS8625
@@ -1818,11 +1697,9 @@ namespace FastGraph.Tests.Extensions
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
 
-            Assert.Throws<ArgumentException>(
-                () => graph.MaximumFlow(capacities, 1, 1, out _, edgeFactory, reverseEdgesAlgorithm));
+            Invoking(() => graph.MaximumFlow(capacities, 1, 1, out _, edgeFactory, reverseEdgesAlgorithm)).Should().Throw<ArgumentException>();
 
-            Assert.Throws<InvalidOperationException>(
-                () => graph.MaximumFlow(capacities, 1, 2, out _, edgeFactory, reverseEdgesAlgorithm));
+            Invoking(() => graph.MaximumFlow(capacities, 1, 2, out _, edgeFactory, reverseEdgesAlgorithm)).Should().Throw<InvalidOperationException>();
         }
 
         private static IEnumerable<TestCaseData> CloneTestCases
@@ -1888,34 +1765,20 @@ namespace FastGraph.Tests.Extensions
 
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(default, v => v, (e, _, _) => e, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, default, (e, _, _) => e, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, default, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, (e, _, _) => e, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(default, default, (e, _, _) => e, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(default, v => v, default, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(default, v => v, (e, _, _) => e, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, default, default, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, default, (e, _, _) => e, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(default, default, default, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(default, default, (e, _, _) => e, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(default, default, default, default));
+            Invoking(() => AlgorithmExtensions.Clone(default, v => v, (e, _, _) => e, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(default, (e, _, _) => e, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(v => v, default, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(v => v, (e, _, _) => e, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.Clone(default, default, (e, _, _) => e, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.Clone(default, v => v, default, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.Clone<int, Edge<int>>(default, v => v, (e, _, _) => e, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(default, default, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(default, (e, _, _) => e, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(v => v, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.Clone(default, default, default, clone)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.Clone<int, Edge<int>>(default, default, (e, _, _) => e, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.Clone(default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => AlgorithmExtensions.Clone<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }

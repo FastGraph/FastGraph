@@ -85,7 +85,7 @@ namespace FastGraph.Tests.Collections
                 where TVertex : notnull
                 where TDistance : notnull
             {
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
             }
 
             #endregion
@@ -97,48 +97,31 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>((Func<int, double>?)default));
+            Invoking(() => new FibonacciQueue<int, double>((Func<int, double>?)default)).Should().Throw<ArgumentNullException>();
 
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, default, default));
+            Invoking(() => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), default)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciQueue<int, double>(12, default, default)).Should().Throw<ArgumentNullException>();
 
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), default, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, default));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), _ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), default, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, default, default, default));
+            Invoking(() => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, (dist1, dist2) => dist1.CompareTo(dist2))).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), default, (dist1, dist2) => dist1.CompareTo(dist2))).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, default)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), default, default)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), _ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), default, (dist1, dist2) => dist1.CompareTo(dist2))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciQueue<int, double>(12, default, default, default)).Should().Throw<ArgumentNullException>();
 
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>((Dictionary<int, double>?)default));
+            Invoking(() => new FibonacciQueue<int, double>((Dictionary<int, double>?)default)).Should().Throw<ArgumentNullException>();
 
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(new Dictionary<int, double>(), default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(default, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(default, default));
+            Invoking(() => new FibonacciQueue<int, double>(new Dictionary<int, double>(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciQueue<int, double>(default, (dist1, dist2) => dist1.CompareTo(dist2))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciQueue<int, double>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

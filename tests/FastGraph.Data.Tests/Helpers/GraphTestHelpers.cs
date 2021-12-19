@@ -1,26 +1,26 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Data;
-using NUnit.Framework;
+using FluentAssertions.Execution;
+using FluentAssertions.Primitives;
 
 namespace FastGraph.Data.Tests
 {
     internal static class GraphTestHelpers
     {
-        public static void AssertHasRelations(
-            IEdgeSet<DataTable, DataRelationEdge> graph,
-            IEnumerable<DataRelationEdge> relations)
-        {
-            DataRelation[] relationArray = relations
-                .Select(r => r.Relation)
-                .ToArray();
-            CollectionAssert.IsNotEmpty(relationArray);
+        [CustomAssertion]
+        public static void HasRelations<TGraph>(this AndWhichConstraint<ObjectAssertions, TGraph> graph, IReadOnlyList<DataRelation> expectedRelations)
+            where TGraph : IEdgeSet<DataTable, DataRelationEdge>
 
-            Assert.IsFalse(graph.IsEdgesEmpty);
-            Assert.AreEqual(relationArray.Length, graph.EdgeCount);
-            CollectionAssert.AreEquivalent(
-                relationArray,
-                graph.Edges.Select(r => r.Relation));
+        {
+            expectedRelations.Should().NotBeEmpty();
+
+            using (_ = new AssertionScope())
+            {
+                graph.Which.IsEdgesEmpty.Should().BeFalse();
+                graph.Which.EdgeCount.Should().Be(expectedRelations.Count);
+                graph.Which.Edges.Select(r => r.Relation).Should().BeEquivalentTo(expectedRelations);
+            }
         }
     }
 }

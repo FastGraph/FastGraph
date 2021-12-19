@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
 namespace FastGraph.Tests.Structures
@@ -19,31 +18,31 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
-                Assert.IsNotNull(v);
+                v.Should().NotBeNull();
                 ++vertexAdded;
             };
 
             // Vertex 1
             var vertex1 = new TestVertex("1");
-            Assert.IsTrue(graph.AddVertex(vertex1));
-            Assert.AreEqual(1, vertexAdded);
+            graph.AddVertex(vertex1).Should().BeTrue();
+            vertexAdded.Should().Be(1);
             AssertHasVertices(graph, new[] { vertex1 });
 
             // Vertex 2
             var vertex2 = new TestVertex("2");
-            Assert.IsTrue(graph.AddVertex(vertex2));
-            Assert.AreEqual(2, vertexAdded);
+            graph.AddVertex(vertex2).Should().BeTrue();
+            vertexAdded.Should().Be(2);
             AssertHasVertices(graph, new[] { vertex1, vertex2 });
 
             // Vertex 1 bis
-            Assert.IsFalse(graph.AddVertex(vertex1));
-            Assert.AreEqual(2, vertexAdded);
+            graph.AddVertex(vertex1).Should().BeFalse();
+            vertexAdded.Should().Be(2);
             AssertHasVertices(graph, new[] { vertex1, vertex2 });
 
             // Other "Vertex 1"
             var otherVertex1 = new TestVertex("1");
-            Assert.IsTrue(graph.AddVertex(otherVertex1));
-            Assert.AreEqual(3, vertexAdded);
+            graph.AddVertex(otherVertex1).Should().BeTrue();
+            vertexAdded.Should().Be(3);
             AssertHasVertices(graph, new[] { vertex1, vertex2, otherVertex1 });
         }
 
@@ -58,47 +57,47 @@ namespace FastGraph.Tests.Structures
             // Graph without parent
             // Vertex 1
             var vertex1 = new TestVertex("1");
-            Assert.IsTrue(graph1.AddVertex(vertex1));
+            graph1.AddVertex(vertex1).Should().BeTrue();
             AssertHasVertices(graph1, new[] { vertex1 });
 
             // Vertex 2
             var vertex2 = new TestVertex("2");
-            Assert.IsTrue(graph1.AddVertex(vertex2));
+            graph1.AddVertex(vertex2).Should().BeTrue();
             AssertHasVertices(graph1, new[] { vertex1, vertex2 });
 
             // Vertex 1 bis
-            Assert.IsFalse(graph1.AddVertex(vertex1));
+            graph1.AddVertex(vertex1).Should().BeFalse();
             AssertHasVertices(graph1, new[] { vertex1, vertex2 });
 
             // Other "Vertex 1"
             var otherVertex1 = new TestVertex("1");
-            Assert.IsTrue(graph1.AddVertex(otherVertex1));
+            graph1.AddVertex(otherVertex1).Should().BeTrue();
             AssertHasVertices(graph1, new[] { vertex1, vertex2, otherVertex1 });
 
             // Graph with parent
             AssertNoVertex(parent2);
             AssertNoVertex(graph2);
 
-            Assert.IsTrue(graph2.AddVertex(vertex1));
+            graph2.AddVertex(vertex1).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1 });
             AssertHasVertices(graph2, new[] { vertex1 });
 
             // Vertex 2
-            Assert.IsTrue(parent2.AddVertex(vertex2));
+            parent2.AddVertex(vertex2).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1 });
 
-            Assert.IsTrue(graph2.AddVertex(vertex2));
+            graph2.AddVertex(vertex2).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2 });
 
             // Vertex 1 bis
-            Assert.IsFalse(graph2.AddVertex(vertex1));
+            graph2.AddVertex(vertex1).Should().BeFalse();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2 });
 
             // Other "Vertex 1"
-            Assert.IsTrue(graph2.AddVertex(otherVertex1));
+            graph2.AddVertex(otherVertex1).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1, vertex2, otherVertex1 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2, otherVertex1 });
         }
@@ -109,7 +108,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertex(default));
+            Invoking(() => graph.AddVertex(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             AssertNoVertex(graph);
         }
@@ -121,7 +120,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertex(default));
+            Invoking(() => graph.AddVertex(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             AssertNoVertex(graph);
         }
@@ -135,31 +134,31 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
-                Assert.IsNotNull(v);
+                v.Should().NotBeNull();
                 ++vertexAdded;
             };
 
             // Vertex 1
             var vertex1 = new EquatableTestVertex("1");
-            Assert.IsTrue(graph.AddVertex(vertex1));
-            Assert.AreEqual(1, vertexAdded);
+            graph.AddVertex(vertex1).Should().BeTrue();
+            vertexAdded.Should().Be(1);
             AssertHasVertices(graph, new[] { vertex1 });
 
             // Vertex 2
             var vertex2 = new EquatableTestVertex("2");
-            Assert.IsTrue(graph.AddVertex(vertex2));
-            Assert.AreEqual(2, vertexAdded);
+            graph.AddVertex(vertex2).Should().BeTrue();
+            vertexAdded.Should().Be(2);
             AssertHasVertices(graph, new[] { vertex1, vertex2 });
 
             // Vertex 1 bis
-            Assert.IsFalse(graph.AddVertex(vertex1));
-            Assert.AreEqual(2, vertexAdded);
+            graph.AddVertex(vertex1).Should().BeFalse();
+            vertexAdded.Should().Be(2);
             AssertHasVertices(graph, new[] { vertex1, vertex2 });
 
             // Other "Vertex 1"
             var otherVertex1 = new EquatableTestVertex("1");
-            Assert.IsFalse(graph.AddVertex(otherVertex1));
-            Assert.AreEqual(2, vertexAdded);
+            graph.AddVertex(otherVertex1).Should().BeFalse();
+            vertexAdded.Should().Be(2);
             AssertHasVertices(graph, new[] { vertex1, vertex2 });
         }
 
@@ -174,47 +173,47 @@ namespace FastGraph.Tests.Structures
             // Graph without parent
             // Vertex 1
             var vertex1 = new EquatableTestVertex("1");
-            Assert.IsTrue(graph1.AddVertex(vertex1));
+            graph1.AddVertex(vertex1).Should().BeTrue();
             AssertHasVertices(graph1, new[] { vertex1 });
 
             // Vertex 2
             var vertex2 = new EquatableTestVertex("2");
-            Assert.IsTrue(graph1.AddVertex(vertex2));
+            graph1.AddVertex(vertex2).Should().BeTrue();
             AssertHasVertices(graph1, new[] { vertex1, vertex2 });
 
             // Vertex 1 bis
-            Assert.IsFalse(graph1.AddVertex(vertex1));
+            graph1.AddVertex(vertex1).Should().BeFalse();
             AssertHasVertices(graph1, new[] { vertex1, vertex2 });
 
             // Other "Vertex 1"
             var otherVertex1 = new EquatableTestVertex("1");
-            Assert.IsFalse(graph1.AddVertex(otherVertex1));
+            graph1.AddVertex(otherVertex1).Should().BeFalse();
             AssertHasVertices(graph1, new[] { vertex1, vertex2 });
 
             // Graph with parent
             AssertNoVertex(parent2);
             AssertNoVertex(graph2);
 
-            Assert.IsTrue(graph2.AddVertex(vertex1));
+            graph2.AddVertex(vertex1).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1 });
             AssertHasVertices(graph2, new[] { vertex1 });
 
             // Vertex 2
-            Assert.IsTrue(parent2.AddVertex(vertex2));
+            parent2.AddVertex(vertex2).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1 });
 
-            Assert.IsTrue(graph2.AddVertex(vertex2));
+            graph2.AddVertex(vertex2).Should().BeTrue();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2 });
 
             // Vertex 1 bis
-            Assert.IsFalse(graph2.AddVertex(vertex1));
+            graph2.AddVertex(vertex1).Should().BeFalse();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2 });
 
             // Other "Vertex 1"
-            Assert.IsFalse(graph2.AddVertex(otherVertex1));
+            graph2.AddVertex(otherVertex1).Should().BeFalse();
             AssertHasVertices(parent2, new[] { vertex1, vertex2 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2 });
         }
@@ -228,7 +227,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
-                Assert.IsNotNull(v);
+                v.Should().NotBeNull();
                 ++vertexAdded;
             };
 
@@ -236,14 +235,14 @@ namespace FastGraph.Tests.Structures
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
             var vertex3 = new TestVertex("3");
-            Assert.AreEqual(3, graph.AddVertexRange(new[] { vertex1, vertex2, vertex3 }));
-            Assert.AreEqual(3, vertexAdded);
+            graph.AddVertexRange(new[] { vertex1, vertex2, vertex3 }).Should().Be(3);
+            vertexAdded.Should().Be(3);
             AssertHasVertices(graph, new[] { vertex1, vertex2, vertex3 });
 
             // Vertex 1, 4
             var vertex4 = new TestVertex("4");
-            Assert.AreEqual(1, graph.AddVertexRange(new[] { vertex1, vertex4 }));
-            Assert.AreEqual(4, vertexAdded);
+            graph.AddVertexRange(new[] { vertex1, vertex4 }).Should().Be(1);
+            vertexAdded.Should().Be(4);
             AssertHasVertices(graph, new[] { vertex1, vertex2, vertex3, vertex4 });
         }
 
@@ -260,12 +259,12 @@ namespace FastGraph.Tests.Structures
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
             var vertex3 = new TestVertex("3");
-            Assert.AreEqual(3, graph1.AddVertexRange(new[] { vertex1, vertex2, vertex3 }));
+            graph1.AddVertexRange(new[] { vertex1, vertex2, vertex3 }).Should().Be(3);
             AssertHasVertices(graph1, new[] { vertex1, vertex2, vertex3 });
 
             // Vertex 1, 4
             var vertex4 = new TestVertex("4");
-            Assert.AreEqual(1, graph1.AddVertexRange(new[] { vertex1, vertex4 }));
+            graph1.AddVertexRange(new[] { vertex1, vertex4 }).Should().Be(1);
             AssertHasVertices(graph1, new[] { vertex1, vertex2, vertex3, vertex4 });
 
             // Graph with parent
@@ -273,16 +272,16 @@ namespace FastGraph.Tests.Structures
             AssertNoVertex(graph2);
 
             // Vertex 1, 2, 3
-            Assert.AreEqual(3, graph2.AddVertexRange(new[] { vertex1, vertex2, vertex3 }));
+            graph2.AddVertexRange(new[] { vertex1, vertex2, vertex3 }).Should().Be(3);
             AssertHasVertices(parent2, new[] { vertex1, vertex2, vertex3 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2, vertex3 });
 
             // Vertex 1, 4
-            Assert.AreEqual(1, parent2.AddVertexRange(new[] { vertex1, vertex4 }));
+            parent2.AddVertexRange(new[] { vertex1, vertex4 }).Should().Be(1);
             AssertHasVertices(parent2, new[] { vertex1, vertex2, vertex3, vertex4 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2, vertex3 });
 
-            Assert.AreEqual(1, graph2.AddVertexRange(new[] { vertex1, vertex4 }));
+            graph2.AddVertexRange(new[] { vertex1, vertex4 }).Should().Be(1);
             AssertHasVertices(parent2, new[] { vertex1, vertex2, vertex3, vertex4 });
             AssertHasVertices(graph2, new[] { vertex1, vertex2, vertex3, vertex4 });
         }
@@ -296,25 +295,25 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexAdded += v =>
             {
-                Assert.IsNotNull(v);
+                v.Should().NotBeNull();
                 ++vertexAdded;
             };
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(default));
+            Invoking(() => graph.AddVertexRange(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             AssertNoVertex(graph);
-            Assert.AreEqual(0, vertexAdded);
+            vertexAdded.Should().Be(0);
 
             // Vertex 1, 2, 3
             var vertex1 = new TestVertex("1");
             var vertex3 = new TestVertex("3");
 #pragma warning disable CS8620
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(new[] { vertex1, default, vertex3 }));
+            Invoking(() => graph.AddVertexRange(new[] { vertex1, default, vertex3 })).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8620
             AssertNoVertex(graph);
-            Assert.AreEqual(0, vertexAdded);
+            vertexAdded.Should().Be(0);
         }
 
         protected static void AddVertexRange_Throws_Clusters_Test<TEdge>(
@@ -325,7 +324,7 @@ namespace FastGraph.Tests.Structures
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(default));
+            Invoking(() => graph.AddVertexRange(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             AssertNoVertex(graph);
 
@@ -333,7 +332,7 @@ namespace FastGraph.Tests.Structures
             var vertex1 = new TestVertex("1");
             var vertex3 = new TestVertex("3");
 #pragma warning disable CS8620
-            Assert.Throws<ArgumentNullException>(() => graph.AddVertexRange(new[] { vertex1, default, vertex3 }));
+            Invoking(() => graph.AddVertexRange(new[] { vertex1, default, vertex3 })).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8620
             AssertNoVertex(graph);
         }

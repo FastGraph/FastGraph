@@ -136,7 +136,7 @@ namespace FastGraph.Petri.Tests
         {
             var net = new PetriNet<int>();
             var simulator = new PetriNetSimulator<int>(net);
-            Assert.AreSame(net, simulator.Net);
+            simulator.Net.Should().BeSameAs(net);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace FastGraph.Petri.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new PetriNetSimulator<int>(default));
+            Invoking(() => new PetriNetSimulator<int>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -216,77 +216,77 @@ namespace FastGraph.Petri.Tests
             // Run simulation
             var simulator = new PetriNetSimulator<Person>(net);
             simulator.Initialize();
-            CollectionAssert.AreEquivalent(new[] { jean, daniel }, customerAtEntrance.Marking);
-            CollectionAssert.IsEmpty(customerWaiting.Marking);
-            CollectionAssert.IsEmpty(cutting.Marking);
-            CollectionAssert.AreEquivalent(new[] { joe }, idle.Marking);
-            CollectionAssert.IsEmpty(customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.IsEmpty(customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEquivalentTo(new[] { jean, daniel });
+            customerWaiting.Marking.Should().BeEmpty();
+            cutting.Marking.Should().BeEmpty();
+            idle.Marking.Should().BeEquivalentTo(new[] { joe });
+            customerPaying.Marking.Should().BeEmpty();
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEmpty();
 
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.AreEquivalent(new[] { jean, daniel }, customerWaiting.Marking);
-            CollectionAssert.IsEmpty(cutting.Marking);
-            CollectionAssert.AreEquivalent(new[] { joe }, idle.Marking);
-            CollectionAssert.IsEmpty(customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.IsEmpty(customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEquivalentTo(new[] { jean, daniel });
+            cutting.Marking.Should().BeEmpty();
+            idle.Marking.Should().BeEquivalentTo(new[] { joe });
+            customerPaying.Marking.Should().BeEmpty();
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEmpty();
 
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.AreEquivalent(new[] { daniel }, customerWaiting.Marking);
-            CollectionAssert.AreEquivalent(new Person[] { joe, jean }, cutting.Marking);
-            CollectionAssert.IsEmpty(idle.Marking);
-            CollectionAssert.IsEmpty(customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.IsEmpty(customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEquivalentTo(new[] { daniel });
+            cutting.Marking.Should().BeEquivalentTo(new Person[] { joe, jean });
+            idle.Marking.Should().BeEmpty();
+            customerPaying.Marking.Should().BeEmpty();
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEmpty();
 
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.AreEquivalent(new[] { daniel }, customerWaiting.Marking);
-            CollectionAssert.IsEmpty(cutting.Marking);
-            CollectionAssert.AreEquivalent(new[] { joe }, idle.Marking);
-            CollectionAssert.AreEquivalent(new[] { jean }, customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.IsEmpty(customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEquivalentTo(new[] { daniel });
+            cutting.Marking.Should().BeEmpty();
+            idle.Marking.Should().BeEquivalentTo(new[] { joe });
+            customerPaying.Marking.Should().BeEquivalentTo(new[] { jean });
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEmpty();
 
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.IsEmpty(customerWaiting.Marking);
-            CollectionAssert.AreEquivalent(new Person[] { joe, daniel }, cutting.Marking);
-            CollectionAssert.IsEmpty(idle.Marking);
-            CollectionAssert.IsEmpty(customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.AreEquivalent(new[] { jean }, customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEmpty();
+            cutting.Marking.Should().BeEquivalentTo(new Person[] { joe, daniel });
+            idle.Marking.Should().BeEmpty();
+            customerPaying.Marking.Should().BeEmpty();
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEquivalentTo(new[] { jean });
 
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.IsEmpty(customerWaiting.Marking);
-            CollectionAssert.IsEmpty(cutting.Marking);
-            CollectionAssert.AreEquivalent(new Person[] { joe }, idle.Marking);
-            CollectionAssert.AreEquivalent(new Person[] { daniel }, customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.AreEquivalent(new[] { jean }, customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEmpty();
+            cutting.Marking.Should().BeEmpty();
+            idle.Marking.Should().BeEquivalentTo(new Person[] { joe });
+            customerPaying.Marking.Should().BeEquivalentTo(new Person[] { daniel });
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEquivalentTo(new[] { jean });
 
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.IsEmpty(customerWaiting.Marking);
-            CollectionAssert.IsEmpty(cutting.Marking);
-            CollectionAssert.AreEquivalent(new Person[] { joe }, idle.Marking);
-            CollectionAssert.IsEmpty(customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.AreEquivalent(new[] { jean, daniel }, customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEmpty();
+            cutting.Marking.Should().BeEmpty();
+            idle.Marking.Should().BeEquivalentTo(new Person[] { joe });
+            customerPaying.Marking.Should().BeEmpty();
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEquivalentTo(new[] { jean, daniel });
 
             // No more move
             simulator.SimulateStep();
-            CollectionAssert.IsEmpty(customerAtEntrance.Marking);
-            CollectionAssert.IsEmpty(customerWaiting.Marking);
-            CollectionAssert.IsEmpty(cutting.Marking);
-            CollectionAssert.AreEquivalent(new Person[] { joe }, idle.Marking);
-            CollectionAssert.IsEmpty(customerPaying.Marking);
-            CollectionAssert.IsEmpty(customerNotPaying.Marking);
-            CollectionAssert.AreEquivalent(new[] { jean, daniel }, customerOut.Marking);
+            customerAtEntrance.Marking.Should().BeEmpty();
+            customerWaiting.Marking.Should().BeEmpty();
+            cutting.Marking.Should().BeEmpty();
+            idle.Marking.Should().BeEquivalentTo(new Person[] { joe });
+            customerPaying.Marking.Should().BeEmpty();
+            customerNotPaying.Marking.Should().BeEmpty();
+            customerOut.Marking.Should().BeEquivalentTo(new[] { jean, daniel });
         }
     }
 }

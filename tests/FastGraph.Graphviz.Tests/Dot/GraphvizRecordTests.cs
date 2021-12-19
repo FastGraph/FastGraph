@@ -15,7 +15,7 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var record = new GraphvizRecord();
-            CollectionAssert.IsEmpty(record.Cells);
+            record.Cells.Should().BeEmpty();
         }
 
         [Test]
@@ -27,7 +27,7 @@ namespace FastGraph.Graphviz.Tests
 
             var recordCollection = new GraphvizRecordCellCollection();
             record.Cells = recordCollection;
-            Assert.AreSame(recordCollection, record.Cells);
+            record.Cells.Should().BeSameAs(recordCollection);
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace FastGraph.Graphviz.Tests
             var record = new GraphvizRecord();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => record.Cells = default);
+            Invoking(() => record.Cells = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -165,8 +165,8 @@ namespace FastGraph.Graphviz.Tests
         [TestCaseSource(nameof(ToDotTestCases))]
         public void ToDot(GraphvizRecord record, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, record.ToDot());
-            Assert.AreEqual(expectedDot, record.ToString());
+            record.ToDot().Should().Be(expectedDot);
+            record.ToString().Should().Be(expectedDot);
         }
     }
 }

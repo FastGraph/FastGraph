@@ -3,7 +3,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
-using NUnit.Framework;
 
 namespace FastGraph.Serialization.Tests
 {
@@ -59,7 +58,7 @@ namespace FastGraph.Serialization.Tests
             get => default;
             set
             {
-                Assert.IsNull(value);
+                value.Should().BeNull();
             }
         }
 
@@ -110,7 +109,6 @@ namespace FastGraph.Serialization.Tests
             return Equals(obj as EquatableTestGraph);
         }
 
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             unchecked

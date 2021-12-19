@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using FastGraph.Algorithms.MaximumFlow;
 
 namespace FastGraph.Tests.Algorithms.MaximumFlow
@@ -20,12 +19,12 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             algorithm.SuperSourceAdded += vertex =>
             {
                 added = true;
-                Assert.AreEqual(superSource, vertex);
+                vertex.Should().Be(superSource);
             };
 
             algorithm.Compute();
-            Assert.IsTrue(added);
-            Assert.AreEqual(superSource, algorithm.SuperSource);
+            added.Should().BeTrue();
+            algorithm.SuperSource.Should().Be(superSource);
         }
 
         protected static void CreateAndSetSuperSink_Test<TGraph>(
@@ -37,12 +36,12 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             algorithm.SuperSinkAdded += vertex =>
             {
                 added = true;
-                Assert.AreEqual(superSink, vertex);
+                vertex.Should().Be(superSink);
             };
 
             algorithm.Compute();
-            Assert.IsTrue(added);
-            Assert.AreEqual(superSink, algorithm.SuperSink);
+            added.Should().BeTrue();
+            algorithm.SuperSink.Should().Be(superSink);
         }
 
         protected static void RunAugmentation_Test<TGraph>(
@@ -59,58 +58,58 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             int vertexCount = graph.VertexCount;
             // Single run
             GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm = createAlgorithm(graph);
-            Assert.IsFalse(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
 
             // Multiple runs
             graph = new AdjacencyGraph<int, Edge<int>>();
             setupGraph?.Invoke(graph);
             algorithm = createAlgorithm(graph);
-            Assert.IsFalse(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
 
             algorithm.Rollback();
 
-            Assert.IsFalse(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
 
             // Disposed algorithm
             graph = new AdjacencyGraph<int, Edge<int>>();
             setupGraph?.Invoke(graph);
             using (algorithm = createAlgorithm(graph))
             {
-                Assert.IsFalse(algorithm.Augmented);
-                Assert.IsNotNull(algorithm.AugmentedEdges);
-                Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+                algorithm.Augmented.Should().BeFalse();
+                algorithm.AugmentedEdges.Should().NotBeNull();
+                algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
                 algorithm.Compute();
 
-                Assert.IsTrue(algorithm.Augmented);
-                Assert.IsNotNull(algorithm.AugmentedEdges);
-                Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+                algorithm.Augmented.Should().BeTrue();
+                algorithm.AugmentedEdges.Should().NotBeNull();
+                algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
             }
-            Assert.AreEqual(vertexCount, graph.VertexCount);
+            graph.VertexCount.Should().Be(vertexCount);
         }
 
         protected static void RunAugmentation_Test<TGraph>(
@@ -127,58 +126,58 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             int vertexCount = graph.VertexCount;
             // Single run
             GraphAugmentorAlgorithmBase<int, Edge<int>, TGraph> algorithm = createAlgorithm(graph);
-            Assert.IsFalse(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
 
             // Multiple runs
             graph = new BidirectionalGraph<int, Edge<int>>();
             setupGraph?.Invoke(graph);
             algorithm = createAlgorithm(graph);
-            Assert.IsFalse(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
 
             algorithm.Rollback();
 
-            Assert.IsFalse(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeFalse();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.Augmented);
-            Assert.IsNotNull(algorithm.AugmentedEdges);
-            Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+            algorithm.Augmented.Should().BeTrue();
+            algorithm.AugmentedEdges.Should().NotBeNull();
+            algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
 
             // Disposed algorithm
             graph = new BidirectionalGraph<int, Edge<int>>();
             setupGraph?.Invoke(graph);
             using (algorithm = createAlgorithm(graph))
             {
-                Assert.IsFalse(algorithm.Augmented);
-                Assert.IsNotNull(algorithm.AugmentedEdges);
-                Assert.AreEqual(vertexCount, algorithm.VisitedGraph.VertexCount);
+                algorithm.Augmented.Should().BeFalse();
+                algorithm.AugmentedEdges.Should().NotBeNull();
+                algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount);
 
                 algorithm.Compute();
 
-                Assert.IsTrue(algorithm.Augmented);
-                Assert.IsNotNull(algorithm.AugmentedEdges);
-                Assert.AreEqual(vertexCount + 2, algorithm.VisitedGraph.VertexCount);
+                algorithm.Augmented.Should().BeTrue();
+                algorithm.AugmentedEdges.Should().NotBeNull();
+                algorithm.VisitedGraph.VertexCount.Should().Be(vertexCount + 2);
             }
-            Assert.AreEqual(vertexCount, graph.VertexCount);
+            graph.VertexCount.Should().Be(vertexCount);
         }
 
         protected static void RunAugmentation_Throws_Test<TGraph>(
@@ -186,8 +185,8 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             where TGraph : IMutableVertexAndEdgeSet<int, Edge<int>>
         {
             // Multiple runs without clean
-            Assert.DoesNotThrow(algorithm.Compute);
-            Assert.Throws<InvalidOperationException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().NotThrow();
+            Invoking(algorithm.Compute).Should().Throw<InvalidOperationException>();
         }
     }
 }

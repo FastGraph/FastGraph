@@ -1,21 +1,24 @@
 #nullable enable
 
-using NUnit.Framework;
+using FluentAssertions.Execution;
+using FluentAssertions.Primitives;
 using Microsoft.Msagl.Drawing;
 
 namespace FastGraph.MSAGL.Tests
 {
     internal static class MsaglGraphTestHelpers
     {
-        public static void AssertAreEquivalent<TVertex, TEdge>(
-            IEdgeListGraph<TVertex, TEdge> graph,
-            Graph msaglGraph)
+        [CustomAssertion]
+        public static void BeEquivalentTo<TVertex, TEdge>(this AndWhichConstraint<ObjectAssertions, Graph> actual, IEdgeListGraph<TVertex, TEdge> expected)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            Assert.AreEqual(graph.IsDirected, msaglGraph.Directed);
-            Assert.AreEqual(graph.VertexCount, msaglGraph.NodeCount);
-            Assert.AreEqual(graph.EdgeCount, msaglGraph.EdgeCount);
+            using (_ = new AssertionScope())
+            {
+                actual.Which.Directed.Should().Be(expected.IsDirected);
+                actual.Which.NodeCount.Should().Be(expected.VertexCount);
+                actual.Which.EdgeCount.Should().Be(expected.EdgeCount);
+            }
         }
     }
 }

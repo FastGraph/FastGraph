@@ -33,9 +33,9 @@ namespace FastGraph.Graphviz.Tests
 
             void CheckFileContent(string filePath, string fileContent)
             {
-                Assert.IsTrue(File.Exists(filePath));
+                File.Exists(filePath).Should().BeTrue();
                 string loadedContent = File.ReadAllText(filePath);
-                Assert.AreEqual(fileContent, loadedContent);
+                loadedContent.Should().Be(fileContent);
             }
 
             #endregion
@@ -50,12 +50,12 @@ namespace FastGraph.Graphviz.Tests
             var dotEngine = new FileDotEngine();
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, default, filePath));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, string.Empty, filePath));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, default));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, string.Empty));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, default, default));
-            Assert.Throws<ArgumentException>(() => dotEngine.Run(GraphvizImageType.Jpeg, string.Empty, string.Empty));
+            Invoking(() => dotEngine.Run(GraphvizImageType.Jpeg, default, filePath)).Should().Throw<ArgumentException>();
+            Invoking(() => dotEngine.Run(GraphvizImageType.Jpeg, string.Empty, filePath)).Should().Throw<ArgumentException>();
+            Invoking(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, default)).Should().Throw<ArgumentException>();
+            Invoking(() => dotEngine.Run(GraphvizImageType.Jpeg, dot, string.Empty)).Should().Throw<ArgumentException>();
+            Invoking(() => dotEngine.Run(GraphvizImageType.Jpeg, default, default)).Should().Throw<ArgumentException>();
+            Invoking(() => dotEngine.Run(GraphvizImageType.Jpeg, string.Empty, string.Empty)).Should().Throw<ArgumentException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }

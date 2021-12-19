@@ -35,7 +35,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 }
                 else
                 {
-                    Assert.Throws<NonAcyclicGraphException>(() => RunDagShortestPathAndCheck(graph, root, relaxer));
+                    Invoking(() => RunDagShortestPathAndCheck(graph, root, relaxer)).Should().Throw<NonAcyclicGraphException>();
                 }
             }
         }
@@ -69,41 +69,41 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors![vertex]);
+                algorithm.VerticesColors![vertex].Should().Be(GraphColor.White);
             };
 
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors![vertex]);
+                algorithm.VerticesColors![vertex].Should().Be(GraphColor.Gray);
             };
 
             algorithm.StartVertex += vertex =>
             {
-                Assert.AreNotEqual(GraphColor.Black, algorithm.VerticesColors![vertex]);
+                algorithm.VerticesColors![vertex].Should().NotBe(GraphColor.Black);
             };
 
             algorithm.ExamineVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors![vertex]);
+                algorithm.VerticesColors![vertex].Should().Be(GraphColor.Gray);
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors![vertex]);
+                algorithm.VerticesColors![vertex].Should().Be(GraphColor.Black);
             };
 
             var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessors.Attach(algorithm))
                 algorithm.Compute(root);
 
-            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors!.Count);
+            algorithm.VerticesColors!.Count.Should().Be(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.Black);
             }
 
-            CollectionAssert.IsNotEmpty(algorithm.GetDistances());
-            Assert.AreEqual(graph.VertexCount, algorithm.GetDistances().Count());
+            algorithm.GetDistances().Should<KeyValuePair<TVertex, double>>().NotBeEmpty();
+            algorithm.GetDistances().Count().Should().Be(graph.VertexCount);
 
             Verify(algorithm, predecessors);
         }
@@ -121,10 +121,9 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;
-                Assert.AreEqual(
-                    algorithm.TryGetDistance(vertex, out double currentDistance),
-                    algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance));
-                Assert.AreEqual(predecessorDistance + 1, currentDistance);
+                algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance)
+                    .Should().Be(algorithm.TryGetDistance(vertex, out double currentDistance));
+                currentDistance.Should().Be(predecessorDistance + 1);
             }
         }
 
@@ -156,16 +155,16 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.VerticesColors);
+                algo.VerticesColors.Should().BeNull();
                 if (eWeights is null)
-                    Assert.IsNotNull(algo.Weights);
+                    algo.Weights.Should().NotBeNull();
                 else
-                    Assert.AreSame(eWeights, algo.Weights);
-                CollectionAssert.IsEmpty(algo.GetDistances());
+                    algo.Weights.Should().BeSameAs(eWeights);
+                algo.GetDistances().Should<KeyValuePair<TVertex, double>>().BeEmpty();
                 if (relaxer is null)
-                    Assert.IsNotNull(algo.DistanceRelaxer);
+                    algo.DistanceRelaxer.Should().NotBeNull();
                 else
-                    Assert.AreSame(relaxer, algo.DistanceRelaxer);
+                    algo.DistanceRelaxer.Should().BeSameAs(relaxer);
             }
 
             #endregion
@@ -182,42 +181,25 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, Weights));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, Weights)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, Weights, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, Weights, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, graph, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, default, default));
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, graph, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DagShortestPathAlgorithm<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -293,8 +275,8 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             var algorithm = new DagShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.Compute(1);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            algorithm.GetVertexColor(1).Should().Be(GraphColor.Black);
+            algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
         [Test]

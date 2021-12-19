@@ -15,7 +15,7 @@ namespace FastGraph.Tests.Events
             var edge = new Edge<int>(1, 2);
             var args = new EdgeEventArgs<int, Edge<int>>(edge);
 
-            Assert.AreSame(edge, args.Edge);
+            args.Edge.Should().BeSameAs(edge);
         }
 
         [Test]
@@ -24,8 +24,7 @@ namespace FastGraph.Tests.Events
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeEventArgs<int, Edge<int>>(default));
+            Invoking(() => new EdgeEventArgs<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

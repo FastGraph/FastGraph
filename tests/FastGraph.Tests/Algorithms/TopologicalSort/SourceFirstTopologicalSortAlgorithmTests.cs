@@ -22,10 +22,10 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstTopologicalSortAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
-            Assert.IsNotNull(algorithm.InDegrees);
-            Assert.AreEqual(graph.VertexCount, algorithm.InDegrees.Count);
+            algorithm.SortedVertices.Should().NotBeNull();
+            algorithm.SortedVertices!.Length.Should().Be(graph.VertexCount);
+            algorithm.InDegrees.Should().NotBeNull();
+            algorithm.InDegrees.Count.Should().Be(graph.VertexCount);
         }
 
         #endregion
@@ -55,8 +55,8 @@ namespace FastGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.SortedVertices);
-                CollectionAssert.IsEmpty(algo.InDegrees);
+                algo.SortedVertices.Should().BeNull();
+                algo.InDegrees.Should().BeEmpty();
             }
 
             #endregion
@@ -68,8 +68,7 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -93,9 +92,7 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 7, 4, 2, 5, 8, 3, 6 },
-                algorithm.SortedVertices);
+            new[] { 1, 7, 4, 2, 5, 8, 3, 6 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -114,9 +111,7 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 0, 1, 2, 3, 4 },
-                algorithm.SortedVertices);
+            new[] { 0, 1, 2, 3, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -137,9 +132,7 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 0, 5, 1, 6, 2, 3, 4 },
-                algorithm.SortedVertices);
+            new[] { 0, 5, 1, 6, 2, 3, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -157,7 +150,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
 
         [Test]
@@ -187,7 +180,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
     }
 }

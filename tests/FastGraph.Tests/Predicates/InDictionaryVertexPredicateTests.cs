@@ -14,10 +14,8 @@ namespace FastGraph.Tests.Predicates
         [Test]
         public void Construction()
         {
-            Assert.DoesNotThrow(
-                // ReSharper disable once ObjectCreationAsStatement
-                () => new InDictionaryVertexPredicate<int, Edge<int>>(
-                    new Dictionary<int, Edge<int>>()));
+            Invoking((Func<InDictionaryVertexPredicate<int, Edge<int>>>)(() => new InDictionaryVertexPredicate<int, Edge<int>>(
+                new Dictionary<int, Edge<int>>()))).Should().NotThrow();
         }
 
         [Test]
@@ -26,7 +24,7 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new InDictionaryVertexPredicate<int, double>(default));
+            Invoking(() => new InDictionaryVertexPredicate<int, double>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -36,28 +34,28 @@ namespace FastGraph.Tests.Predicates
             var vertexMap = new Dictionary<int, double>();
             var predicate = new InDictionaryVertexPredicate<int, double>(vertexMap);
 
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeFalse();
 
             vertexMap.Add(2, 12);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeTrue();
 
             vertexMap.Add(1, 42);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
+            predicate.Test(1).Should().BeTrue();
+            predicate.Test(2).Should().BeTrue();
 
             vertexMap.Remove(2);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            predicate.Test(1).Should().BeTrue();
+            predicate.Test(2).Should().BeFalse();
 
             vertexMap.Remove(3);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            predicate.Test(1).Should().BeTrue();
+            predicate.Test(2).Should().BeFalse();
 
             vertexMap.Remove(1);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeFalse();
         }
 
         [Test]
@@ -69,7 +67,7 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+            Invoking(() => predicate.Test(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

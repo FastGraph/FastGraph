@@ -20,14 +20,14 @@ namespace FastGraph.Tests.Exceptions
             var innerException = new Exception("Inner");
 
             Exception exception = createException(message, innerException);
-            Assert.AreEqual(message, exception.Message);
-            Assert.AreSame(innerException, exception.InnerException);
+            exception.Message.Should().Be(message);
+            exception.InnerException.Should().BeSameAs(innerException);
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             exception = createException(message, default);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.AreEqual(message, exception.Message);
-            Assert.IsNull(exception.InnerException);
+            exception.Message.Should().Be(message);
+            exception.InnerException.Should().BeNull();
         }
 
         [Test]

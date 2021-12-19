@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -17,33 +17,33 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var vertex = new GraphvizVertex();
-            Assert.IsNull(vertex.Position);
-            Assert.IsNull(vertex.Comment);
-            Assert.IsFalse(vertex.IsHtmlLabel);
-            Assert.IsNull(vertex.Label);
-            Assert.IsNull(vertex.ToolTip);
-            Assert.IsNull(vertex.Url);
-            Assert.Zero(vertex.Distortion);
-            Assert.AreEqual(GraphvizColor.White, vertex.FillColor);
-            Assert.IsNull(vertex.Font);
-            Assert.AreEqual(GraphvizColor.Black, vertex.FontColor);
-            Assert.AreEqual(1.0, vertex.PenWidth);
-            Assert.IsNull(vertex.Group);
-            Assert.IsNull(vertex.Layer);
-            Assert.Zero(vertex.Orientation);
-            Assert.AreEqual(-1, vertex.Peripheries);
-            Assert.IsFalse(vertex.Regular);
-            Assert.IsNotNull(vertex.Record);
-            Assert.AreEqual(GraphvizVertexShape.Unspecified, vertex.Shape);
-            Assert.AreEqual(4, vertex.Sides);
-            Assert.IsNotNull(vertex.Size);
-            Assert.Zero(vertex.Size.Width);
-            Assert.Zero(vertex.Size.Height);
-            Assert.IsFalse(vertex.FixedSize);
-            Assert.Zero(vertex.Skew);
-            Assert.AreEqual(GraphvizColor.Black, vertex.StrokeColor);
-            Assert.AreEqual(GraphvizVertexStyle.Unspecified, vertex.Style);
-            Assert.AreEqual(-1, vertex.Z);
+            vertex.Position.Should().BeNull();
+            vertex.Comment.Should().BeNull();
+            vertex.IsHtmlLabel.Should().BeFalse();
+            vertex.Label.Should().BeNull();
+            vertex.ToolTip.Should().BeNull();
+            vertex.Url.Should().BeNull();
+            vertex.Distortion.Should().BeApproximately(0, double.Epsilon);
+            vertex.FillColor.Should().Be(GraphvizColor.White);
+            vertex.Font.Should().BeNull();
+            vertex.FontColor.Should().Be(GraphvizColor.Black);
+            vertex.PenWidth.Should().Be(1.0);
+            vertex.Group.Should().BeNull();
+            vertex.Layer.Should().BeNull();
+            vertex.Orientation.Should().BeApproximately(0, double.Epsilon);
+            vertex.Peripheries.Should().Be(-1);
+            vertex.Regular.Should().BeFalse();
+            vertex.Record.Should().NotBeNull();
+            vertex.Shape.Should().Be(GraphvizVertexShape.Unspecified);
+            vertex.Sides.Should().Be(4);
+            vertex.Size.Should().NotBeNull();
+            vertex.Size.Width.Should().BeApproximately(0, float.Epsilon);
+            vertex.Size.Height.Should().BeApproximately(0, float.Epsilon);
+            vertex.FixedSize.Should().BeFalse();
+            vertex.Skew.Should().BeApproximately(0, double.Epsilon);
+            vertex.StrokeColor.Should().Be(GraphvizColor.Black);
+            vertex.Style.Should().Be(GraphvizVertexStyle.Unspecified);
+            vertex.Z.Should().Be(-1);
         }
 
         private static IEnumerable<TestCaseData> ToDotTestCases
@@ -307,8 +307,8 @@ namespace FastGraph.Graphviz.Tests
         [TestCaseSource(nameof(ToDotTestCases))]
         public void ToDot(GraphvizVertex vertex, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, vertex.ToDot());
-            Assert.AreEqual(expectedDot, vertex.ToString());
+            vertex.ToDot().Should().Be(expectedDot);
+            vertex.ToString().Should().Be(expectedDot);
         }
 
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
@@ -345,12 +345,12 @@ namespace FastGraph.Graphviz.Tests
 
             using (CultureScope(EnglishCulture))
             {
-                Assert.AreEqual(expectedDot, convert(vertex));
+                convert(vertex).Should().Be(expectedDot);
             }
 
             using (CultureScope(FrenchCulture))
             {
-                Assert.AreEqual(expectedDot, convert(vertex));
+                convert(vertex).Should().Be(expectedDot);
             }
         }
     }

@@ -22,39 +22,39 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var capacities = new Dictionary<Edge<int>, double>();
 
             var algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 2, vertexFactory, edgeFactory);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.AreSame(vertexFactory, algorithm.VertexFactory);
-            Assert.AreSame(edgeFactory, algorithm.EdgeFactory);
-            Assert.IsFalse(algorithm.Balanced);
-            Assert.AreEqual(1, algorithm.Source);
-            Assert.AreEqual(2, algorithm.Sink);
-            Assert.IsNotNull(algorithm.Capacities);
-            Assert.AreEqual(graph.EdgeCount, algorithm.Capacities.Count);
-            CollectionAssert.IsEmpty(algorithm.SurplusVertices);
-            CollectionAssert.IsEmpty(algorithm.SurplusEdges);
-            CollectionAssert.IsEmpty(algorithm.DeficientVertices);
-            CollectionAssert.IsEmpty(algorithm.DeficientEdges);
-            Assert.AreEqual(default(int), algorithm.BalancingSource);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(default(int), algorithm.BalancingSink);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSinkEdge);
+            algorithm.VisitedGraph.Should().BeSameAs(graph);
+            algorithm.VertexFactory.Should().BeSameAs(vertexFactory);
+            algorithm.EdgeFactory.Should().BeSameAs(edgeFactory);
+            algorithm.Balanced.Should().BeFalse();
+            algorithm.Source.Should().Be(1);
+            algorithm.Sink.Should().Be(2);
+            algorithm.Capacities.Should().NotBeNull();
+            algorithm.Capacities.Count.Should().Be(graph.EdgeCount);
+            algorithm.SurplusVertices.Should().BeEmpty();
+            algorithm.SurplusEdges.Should().BeEmpty();
+            algorithm.DeficientVertices.Should().BeEmpty();
+            algorithm.DeficientEdges.Should().BeEmpty();
+            algorithm.BalancingSource.Should().Be(default);
+            algorithm.BalancingSourceEdge.Should().Be(default(Edge<int>));
+            algorithm.BalancingSink.Should().Be(default);
+            algorithm.BalancingSinkEdge.Should().Be(default(Edge<int>));
 
             algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 2, vertexFactory, edgeFactory, capacities);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.AreSame(vertexFactory, algorithm.VertexFactory);
-            Assert.AreSame(edgeFactory, algorithm.EdgeFactory);
-            Assert.IsFalse(algorithm.Balanced);
-            Assert.AreEqual(1, algorithm.Source);
-            Assert.AreEqual(2, algorithm.Sink);
-            Assert.AreSame(capacities, algorithm.Capacities);
-            CollectionAssert.IsEmpty(algorithm.SurplusVertices);
-            CollectionAssert.IsEmpty(algorithm.SurplusEdges);
-            CollectionAssert.IsEmpty(algorithm.DeficientVertices);
-            CollectionAssert.IsEmpty(algorithm.DeficientEdges);
-            Assert.AreEqual(default(int), algorithm.BalancingSource);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(default(int), algorithm.BalancingSink);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSinkEdge);
+            algorithm.VisitedGraph.Should().BeSameAs(graph);
+            algorithm.VertexFactory.Should().BeSameAs(vertexFactory);
+            algorithm.EdgeFactory.Should().BeSameAs(edgeFactory);
+            algorithm.Balanced.Should().BeFalse();
+            algorithm.Source.Should().Be(1);
+            algorithm.Sink.Should().Be(2);
+            algorithm.Capacities.Should().BeSameAs(capacities);
+            algorithm.SurplusVertices.Should().BeEmpty();
+            algorithm.SurplusEdges.Should().BeEmpty();
+            algorithm.DeficientVertices.Should().BeEmpty();
+            algorithm.DeficientEdges.Should().BeEmpty();
+            algorithm.BalancingSource.Should().Be(default);
+            algorithm.BalancingSourceEdge.Should().Be(default(Edge<int>));
+            algorithm.BalancingSink.Should().Be(default);
+            algorithm.BalancingSinkEdge.Should().Be(default(Edge<int>));
         }
 
         [Test]
@@ -73,200 +73,105 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, default));
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graphWithVertex1, vertex1, vertex2, vertexFactory, edgeFactory));
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, edgeFactory)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graphWithVertex1, vertex1, vertex2, vertexFactory, edgeFactory)).Should().Throw<ArgumentException>();
 
 
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, edgeFactory, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, default, capacities));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, default, default));
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, vertex2, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, default, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, edgeFactory, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, vertex2, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, vertexFactory, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, vertex2, default, default, capacities)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, vertex1, default, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, default, default, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(default, default, default, default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, edgeFactory, capacities));
-            Assert.Throws<ArgumentException>(
-                () => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graphWithVertex1, vertex1, vertex2, vertexFactory, edgeFactory, capacities));
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graph, vertex1, vertex2, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphBalancerAlgorithm<TestVertex, Edge<TestVertex>>(graphWithVertex1, vertex1, vertex2, vertexFactory, edgeFactory, capacities)).Should().Throw<ArgumentException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -299,40 +204,48 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             EdgeFactory<int, EquatableEdge<int>> edgeFactory = (s, t) => new EquatableEdge<int>(s, t);
 
             var algorithm = new GraphBalancerAlgorithm<int, EquatableEdge<int>>(graph, source, sink, vertexFactory, edgeFactory);
-            algorithm.BalancingSourceAdded += vertex => Assert.AreEqual(source, vertex);
-            algorithm.BalancingSinkAdded += vertex => Assert.AreEqual(sink, vertex);
+            algorithm.BalancingSourceAdded += vertex =>
+            {
+                vertex.Should().Be(source);
+            };
+            algorithm.BalancingSinkAdded += vertex =>
+            {
+                vertex.Should().Be(sink);
+            };
             var surplusSet = new HashSet<int> { 2, 5, 8 };
-            algorithm.SurplusVertexAdded += vertex => Assert.IsTrue(surplusSet.Remove(vertex));
+            algorithm.SurplusVertexAdded += vertex =>
+            {
+                surplusSet.Remove(vertex).Should().BeTrue();
+            };
             var deficitSet = new HashSet<int> { 6 };
-            algorithm.DeficientVertexAdded += vertex => Assert.IsTrue(deficitSet.Remove(vertex));
+            algorithm.DeficientVertexAdded += vertex =>
+            {
+                deficitSet.Remove(vertex).Should().BeTrue();
+            };
 
             algorithm.Balance();
 
-            Assert.IsTrue(algorithm.Balanced);
-            Assert.AreEqual(source, algorithm.Source);
-            Assert.AreEqual(sink, algorithm.Sink);
-            CollectionAssert.IsEmpty(surplusSet);
-            CollectionAssert.IsEmpty(deficitSet);
-            CollectionAssert.AreEquivalent(new[] { 2, 5, 8 }, algorithm.SurplusVertices);
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    new EquatableEdge<int>(algorithm.BalancingSource, 2),
-                    new EquatableEdge<int>(algorithm.BalancingSource, 5),
-                    new EquatableEdge<int>(algorithm.BalancingSource, 8)
-                },
-                algorithm.SurplusEdges);
-            CollectionAssert.AreEquivalent(new[] { 6 }, algorithm.DeficientVertices);
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    new EquatableEdge<int>(6, algorithm.BalancingSink)
-                },
-                algorithm.DeficientEdges);
-            Assert.AreEqual(9, algorithm.BalancingSource);
-            Assert.AreEqual(new EquatableEdge<int>(algorithm.BalancingSource, source), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(10, algorithm.BalancingSink);
-            Assert.AreEqual(new EquatableEdge<int>(sink, algorithm.BalancingSink), algorithm.BalancingSinkEdge);
+            algorithm.Balanced.Should().BeTrue();
+            algorithm.Source.Should().Be(source);
+            algorithm.Sink.Should().Be(sink);
+            surplusSet.Should().BeEmpty();
+            deficitSet.Should().BeEmpty();
+            algorithm.SurplusVertices.Should().BeEquivalentTo(new[] { 2, 5, 8 });
+            algorithm.SurplusEdges.Should().BeEquivalentTo(new[]
+            {
+                new EquatableEdge<int>(algorithm.BalancingSource, 2),
+                new EquatableEdge<int>(algorithm.BalancingSource, 5),
+                new EquatableEdge<int>(algorithm.BalancingSource, 8)
+            });
+            algorithm.DeficientVertices.Should().BeEquivalentTo(new[] { 6 });
+            algorithm.DeficientEdges.Should().BeEquivalentTo(new[]
+            {
+                new EquatableEdge<int>(6, algorithm.BalancingSink)
+            });
+            algorithm.BalancingSource.Should().Be(9);
+            algorithm.BalancingSourceEdge.Should().Be(new EquatableEdge<int>(algorithm.BalancingSource, source));
+            algorithm.BalancingSink.Should().Be(10);
+            algorithm.BalancingSinkEdge.Should().Be(new EquatableEdge<int>(sink, algorithm.BalancingSink));
         }
 
         [Test]
@@ -345,8 +258,8 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             var algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 2, vertexFactory, edgeFactory);
 
-            Assert.DoesNotThrow(() => algorithm.Balance());
-            Assert.Throws<InvalidOperationException>(() => algorithm.Balance());
+            Invoking(() => algorithm.Balance()).Should().NotThrow();
+            Invoking(() => algorithm.Balance()).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -371,21 +284,21 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 3, vertexFactory, edgeFactory);
             algorithm.Balance();
 
-            Assert.IsTrue(algorithm.Balanced);
+            algorithm.Balanced.Should().BeTrue();
 
             algorithm.UnBalance();
 
-            Assert.IsFalse(algorithm.Balanced);
-            Assert.AreEqual(1, algorithm.Source);
-            Assert.AreEqual(3, algorithm.Sink);
-            CollectionAssert.IsEmpty(algorithm.SurplusVertices);
-            CollectionAssert.IsEmpty(algorithm.SurplusEdges);
-            CollectionAssert.IsEmpty(algorithm.DeficientVertices);
-            CollectionAssert.IsEmpty(algorithm.DeficientEdges);
-            Assert.AreEqual(default(int), algorithm.BalancingSource);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(default(int), algorithm.BalancingSink);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSinkEdge);
+            algorithm.Balanced.Should().BeFalse();
+            algorithm.Source.Should().Be(1);
+            algorithm.Sink.Should().Be(3);
+            algorithm.SurplusVertices.Should().BeEmpty();
+            algorithm.SurplusEdges.Should().BeEmpty();
+            algorithm.DeficientVertices.Should().BeEmpty();
+            algorithm.DeficientEdges.Should().BeEmpty();
+            algorithm.BalancingSource.Should().Be(default);
+            algorithm.BalancingSourceEdge.Should().Be(default(Edge<int>));
+            algorithm.BalancingSink.Should().Be(default);
+            algorithm.BalancingSinkEdge.Should().Be(default(Edge<int>));
         }
 
         [Test]
@@ -398,7 +311,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             var algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 2, vertexFactory, edgeFactory);
 
-            Assert.Throws<InvalidOperationException>(() => algorithm.UnBalance());
+            Invoking(() => algorithm.UnBalance()).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -417,7 +330,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.GetBalancingIndex(default));
+            Invoking(() => algorithm.GetBalancingIndex(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

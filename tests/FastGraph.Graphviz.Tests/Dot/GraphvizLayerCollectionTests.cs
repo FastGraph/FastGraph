@@ -15,22 +15,19 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var layerCollection = new GraphvizLayerCollection();
-            CollectionAssert.IsEmpty(layerCollection);
-            Assert.AreEqual(":", layerCollection.Separators);
+            layerCollection.Should().BeEmpty();
+            layerCollection.Separators.Should().Be(":");
 
-            var layer1 = new GraphvizLayer("L1");
-            layerCollection.Add(layer1);
-            CollectionAssert.AreEqual(new[] { layer1 }, layerCollection);
+            layerCollection.Add(new GraphvizLayer("L1"));
+            layerCollection.Should().BeEquivalentTo(new[] { (GraphvizLayer?)new GraphvizLayer("L1") });
 
-            var layer2 = new GraphvizLayer("L2");
-            var layerArray = new[] { layer1, layer2 };
-            layerCollection = new GraphvizLayerCollection(layerArray);
-            CollectionAssert.AreEqual(layerArray, layerCollection);
-            Assert.AreEqual(":", layerCollection.Separators);
+            layerCollection = new GraphvizLayerCollection(new[] { new GraphvizLayer("L1"), new GraphvizLayer("L2") });
+            layerCollection.Should().BeEquivalentTo(new[] { (GraphvizLayer?)new GraphvizLayer("L1"), new GraphvizLayer("L2") });
+            layerCollection.Separators.Should().Be(":");
 
             var otherLayerCollection = new GraphvizLayerCollection(layerCollection);
-            CollectionAssert.AreEqual(layerCollection, otherLayerCollection);
-            Assert.AreEqual(":", otherLayerCollection.Separators);
+            otherLayerCollection.Should().BeEquivalentTo(layerCollection);
+            otherLayerCollection.Separators.Should().Be(":");
         }
 
         [Test]
@@ -39,8 +36,8 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new GraphvizLayerCollection((GraphvizLayer[]?)default));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizLayerCollection((GraphvizLayerCollection?)default));
+            Invoking(() => new GraphvizLayerCollection((GraphvizLayer[]?)default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new GraphvizLayerCollection((GraphvizLayerCollection?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -54,7 +51,7 @@ namespace FastGraph.Graphviz.Tests
                 throw new InvalidOperationException("Collection has wong separators.");
 
             layerCollection.Separators = ":,-";
-            Assert.AreEqual(":,-", layerCollection.Separators);
+            layerCollection.Separators.Should().Be(":,-");
         }
 
         [Test]
@@ -64,9 +61,9 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentException>(() => layerCollection.Separators = default);
+            Invoking(() => layerCollection.Separators = default).Should().Throw<ArgumentException>();
 #pragma warning restore CS8625
-            Assert.Throws<ArgumentException>(() => layerCollection.Separators = "");
+            Invoking(() => layerCollection.Separators = "").Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -74,15 +71,13 @@ namespace FastGraph.Graphviz.Tests
         public void ToDot()
         {
             var layerCollection = new GraphvizLayerCollection();
-            Assert.AreEqual(string.Empty, layerCollection.ToDot());
+            layerCollection.ToDot().Should().BeEmpty();
 
             layerCollection = new GraphvizLayerCollection(new[]
             {
                 new GraphvizLayer("L0")
             });
-            Assert.AreEqual(
-                "layers=\"L0\"; layersep=\":\"",
-                layerCollection.ToDot());
+            layerCollection.ToDot().Should().Be("layers=\"L0\"; layersep=\":\"");
 
             layerCollection = new GraphvizLayerCollection(new[]
             {
@@ -90,19 +85,13 @@ namespace FastGraph.Graphviz.Tests
                 new GraphvizLayer("L2"),
                 new GraphvizLayer("L3")
             });
-            Assert.AreEqual(
-                "layers=\"L1:L2:L3\"; layersep=\":\"",
-                layerCollection.ToDot());
+            layerCollection.ToDot().Should().Be("layers=\"L1:L2:L3\"; layersep=\":\"");
 
             layerCollection.Separators = " ";
-            Assert.AreEqual(
-                "layers=\"L1 L2 L3\"; layersep=\" \"",
-                layerCollection.ToDot());
+            layerCollection.ToDot().Should().Be("layers=\"L1 L2 L3\"; layersep=\" \"");
 
             layerCollection.Separators = " -/";
-            Assert.AreEqual(
-                "layers=\"L1 -/L2 -/L3\"; layersep=\" -/\"",
-                layerCollection.ToDot());
+            layerCollection.ToDot().Should().Be("layers=\"L1 -/L2 -/L3\"; layersep=\" -/\"");
         }
     }
 }

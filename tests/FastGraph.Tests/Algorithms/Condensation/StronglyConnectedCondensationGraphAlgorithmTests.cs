@@ -22,7 +22,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph =
                 graph.CondensateStronglyConnected<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>();
 
-            Assert.IsNotNull(condensedGraph);
+            condensedGraph.Should().NotBeNull();
             CheckVertexCount(graph, condensedGraph);
             CheckEdgeCount(graph, condensedGraph);
             CheckComponentCount(graph, condensedGraph);
@@ -38,7 +38,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             // Check number of vertices = number of strongly connected components
             var components = new Dictionary<TVertex, int>();
             int componentCount = graph.StronglyConnectedComponents(components);
-            Assert.AreEqual(componentCount, condensedGraph.VertexCount, "Component count does not match.");
+            condensedGraph.VertexCount.Should().Be(componentCount, because: "Component count does not match.");
         }
 
         #endregion
@@ -59,11 +59,11 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
                 graph.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>();
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(1, condensedGraph.VertexCount);
-            Assert.AreEqual(0, condensedGraph.EdgeCount);
-            CollectionAssert.AreEquivalent(graph.Vertices, condensedGraph.Vertices.ElementAt(0).Vertices);
-            CollectionAssert.AreEquivalent(graph.Edges, condensedGraph.Vertices.ElementAt(0).Edges);
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().Be(1);
+            condensedGraph.EdgeCount.Should().Be(0);
+            condensedGraph.Vertices.ElementAt(0).Vertices.Should().BeEquivalentTo(graph.Vertices);
+            condensedGraph.Vertices.ElementAt(0).Edges.Should().BeEquivalentTo(graph.Edges);
         }
 
         [Test]
@@ -95,47 +95,27 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
                 graph.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>();
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(4, condensedGraph.VertexCount);
-            Assert.AreEqual(3, condensedGraph.EdgeCount);
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().Be(4);
+            condensedGraph.EdgeCount.Should().Be(3);
 
             // Condensed edge
-            CollectionAssert.AreEquivalent(
-                new[] { edge56, edge86 },
-                condensedGraph.Edges.ElementAt(0).Edges);
-            CollectionAssert.AreEquivalent(
-                new[] { edge24, edge34 },
-                condensedGraph.Edges.ElementAt(1).Edges);
-            CollectionAssert.AreEquivalent(
-                new[] { edge25 },
-                condensedGraph.Edges.ElementAt(2).Edges);
+            condensedGraph.Edges.ElementAt(0).Edges.Should().BeEquivalentTo(new[] { edge56, edge86 });
+            condensedGraph.Edges.ElementAt(1).Edges.Should().BeEquivalentTo(new[] { edge24, edge34 });
+            condensedGraph.Edges.ElementAt(2).Edges.Should().BeEquivalentTo(new[] { edge25 });
 
             // Components
-            CollectionAssert.AreEquivalent(
-                new[] { 4, 6 },
-                condensedGraph.Vertices.ElementAt(0).Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edge46, edge64 },
-                condensedGraph.Vertices.ElementAt(0).Edges);
+            condensedGraph.Vertices.ElementAt(0).Vertices.Should().BeEquivalentTo(new[] { 4, 6 });
+            condensedGraph.Vertices.ElementAt(0).Edges.Should().BeEquivalentTo(new[] { edge46, edge64 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 5, 7, 8 },
-                condensedGraph.Vertices.ElementAt(1).Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edge57, edge75, edge78, edge87 },
-                condensedGraph.Vertices.ElementAt(1).Edges);
+            condensedGraph.Vertices.ElementAt(1).Vertices.Should().BeEquivalentTo(new[] { 5, 7, 8 });
+            condensedGraph.Vertices.ElementAt(1).Edges.Should().BeEquivalentTo(new[] { edge57, edge75, edge78, edge87 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 3 },
-                condensedGraph.Vertices.ElementAt(2).Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edge12, edge23, edge31 },
-                condensedGraph.Vertices.ElementAt(2).Edges);
+            condensedGraph.Vertices.ElementAt(2).Vertices.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+            condensedGraph.Vertices.ElementAt(2).Edges.Should().BeEquivalentTo(new[] { edge12, edge23, edge31 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 10 },
-                condensedGraph.Vertices.ElementAt(3).Vertices);
-            CollectionAssert.IsEmpty(condensedGraph.Vertices.ElementAt(3).Edges);
+            condensedGraph.Vertices.ElementAt(3).Vertices.Should().BeEquivalentTo(new[] { 10 });
+            condensedGraph.Vertices.ElementAt(3).Edges.Should().BeEmpty();
         }
 
         [Test]

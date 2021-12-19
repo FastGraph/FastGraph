@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -21,9 +20,9 @@ namespace FastGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge21, edge41 });
 
-            Assert.AreSame(edge11, graph.InEdge(1, 0));
-            Assert.AreSame(edge41, graph.InEdge(1, 2));
-            Assert.AreSame(edge13, graph.InEdge(3, 0));
+            graph.InEdge(1, 0).Should().BeSameAs(edge11);
+            graph.InEdge(1, 2).Should().BeSameAs(edge41);
+            graph.InEdge(3, 0).Should().BeSameAs(edge13);
         }
 
         protected static void InEdge_ImmutableGraph_Test(
@@ -38,9 +37,9 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge13, edge21, edge41 });
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.AreSame(edge11, graph.InEdge(1, 0));
-            Assert.AreSame(edge41, graph.InEdge(1, 2));
-            Assert.AreSame(edge13, graph.InEdge(3, 0));
+            graph.InEdge(1, 0).Should().BeSameAs(edge11);
+            graph.InEdge(1, 2).Should().BeSameAs(edge41);
+            graph.InEdge(3, 0).Should().BeSameAs(edge13);
         }
 
         protected static void InEdge_ImmutableVertices_Test(
@@ -55,11 +54,11 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge11, edge14, edge21, edge31, edge33, edge42 });
 
-            Assert.AreSame(edge11, graph.InEdge(1, 0));
-            Assert.AreSame(edge31, graph.InEdge(1, 2));
-            Assert.AreSame(edge42, graph.InEdge(2, 0));
-            Assert.AreSame(edge33, graph.InEdge(3, 0));
-            Assert.AreSame(edge14, graph.InEdge(4, 0));
+            graph.InEdge(1, 0).Should().BeSameAs(edge11);
+            graph.InEdge(1, 2).Should().BeSameAs(edge31);
+            graph.InEdge(2, 0).Should().BeSameAs(edge42);
+            graph.InEdge(3, 0).Should().BeSameAs(edge33);
+            graph.InEdge(4, 0).Should().BeSameAs(edge14);
         }
 
         protected static void InEdge_ImmutableGraph_ReversedTest(
@@ -87,7 +86,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.InEdge(default, 0));
+            Invoking(() => graph.InEdge(default, 0)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -98,7 +97,7 @@ namespace FastGraph.Tests.Structures
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(vertex1, 0));
+            Invoking(() => graph.InEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             graph.AddVertex(vertex1);
             graph.AddVertex(vertex2);
@@ -118,7 +117,7 @@ namespace FastGraph.Tests.Structures
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             IBidirectionalIncidenceGraph<int, Edge<int>> graph1 = createGraph();
-            Assert.Throws<VertexNotFoundException>(() => graph1.InEdge(vertex1, 0));
+            Invoking(() => graph1.InEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             wrappedGraph.AddVertex(vertex1);
             wrappedGraph.AddVertex(vertex2);
@@ -135,8 +134,8 @@ namespace FastGraph.Tests.Structures
             BidirectionalMatrixGraph<Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(-1, 0));
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(4, 0));
+            Invoking(() => graph.InEdge(-1, 0)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.InEdge(4, 0)).Should().Throw<VertexNotFoundException>();
 
             graph.AddEdge(new Edge<int>(2, 1));
             AssertIndexOutOfRange(() => graph.InEdge(1, 5));
@@ -152,7 +151,7 @@ namespace FastGraph.Tests.Structures
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdge(vertex1, 0));
+            Invoking(() => graph.InEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             wrappedGraph.AddVertex(vertex1);
             wrappedGraph.AddVertex(vertex2);
@@ -280,9 +279,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.IsInEdgesEmpty(default));
-            Assert.Throws<ArgumentNullException>(() => graph.InDegree(default));
-            Assert.Throws<ArgumentNullException>(() => graph.InEdges(default).ToArray());
+            Invoking(() => graph.IsInEdgesEmpty(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.InDegree(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.InEdges(default).ToArray()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -295,9 +294,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var vertex = new TVertex();
-            Assert.Throws<VertexNotFoundException>(() => graph.IsInEdgesEmpty(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.InDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(vertex).ToArray());
+            Invoking(() => graph.IsInEdgesEmpty(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.InDegree(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.InEdges(vertex).ToArray()).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -308,9 +307,9 @@ namespace FastGraph.Tests.Structures
             const int vertex = 10;
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<VertexNotFoundException>(() => graph.IsInEdgesEmpty(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.InDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(vertex).ToArray());
+            Invoking(() => graph.IsInEdgesEmpty(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.InDegree(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.InEdges(vertex).ToArray()).Should().Throw<VertexNotFoundException>();
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }

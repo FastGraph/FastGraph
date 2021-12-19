@@ -32,8 +32,8 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
+                g.IsDirected.Should().BeTrue();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
             }
 
             #endregion
@@ -45,16 +45,13 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(
-                    GetEmptyGetter<int, Edge<int>>(),
-                    default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(
-                    default,
-                    GetEmptyGetter<int, Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(default, default));
+            Invoking(() => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(
+                GetEmptyGetter<int, Edge<int>>(),
+                default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(
+                default,
+                GetEmptyGetter<int, Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DelegateBidirectionalIncidenceGraph<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

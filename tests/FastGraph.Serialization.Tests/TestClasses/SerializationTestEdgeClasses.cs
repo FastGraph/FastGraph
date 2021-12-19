@@ -117,7 +117,6 @@ namespace FastGraph.Serialization.Tests
             return Equals(obj as EquatableTestEdge);
         }
 
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             unchecked

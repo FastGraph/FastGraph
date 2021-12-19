@@ -19,10 +19,10 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             var graph = new AdjacencyGraph<int, EquatableTaggedEdge<int, double>>();
             graph.AddVertexRange(new[] { 1, 2 });
             // ReSharper disable ObjectCreationAsStatement
-            Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue));
-            Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, 10));
+            Invoking((Func<YenShortestPathsAlgorithm<int>>)(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue))).Should().NotThrow();
+            Invoking((Func<YenShortestPathsAlgorithm<int>>)(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, 10))).Should().NotThrow();
 
-            Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue, Weights, paths => paths.Where(path => path.Count() > 2)));
+            Invoking((Func<YenShortestPathsAlgorithm<int>>)(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue, Weights, paths => paths.Where(path => path.Count() > 2)))).Should().NotThrow();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -35,44 +35,32 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             var vertex2 = new TestVertex("2");
 
             var graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
-            Assert.Throws<ArgumentException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue)).Should().Throw<ArgumentException>();
 
             graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
             graph.AddVertex(vertex1);
-            Assert.Throws<ArgumentException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue)).Should().Throw<ArgumentException>();
 
             graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
             graph.AddVertex(vertex2);
-            Assert.Throws<ArgumentException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue)).Should().Throw<ArgumentException>();
 
             graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
             graph.AddVertexRange(new[] { vertex1, vertex2 });
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(default, vertex1, vertex2, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, default, vertex2, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(default, default, vertex2, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(default, vertex1, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, default, default, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(default, default, default, int.MaxValue));
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(default, vertex1, vertex2, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, default, vertex2, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(default, default, vertex2, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(default, vertex1, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, default, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(default, default, default, int.MaxValue)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, -1));
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, 0)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, -1)).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -88,11 +76,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '1', 10);
-            Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
+            Invoking(() => algorithm.Execute()).Should().Throw<NoPathFoundException>();
 
             graph.AddVertex('2');
             algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '2', 10);
-            Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
+            Invoking(() => algorithm.Execute()).Should().Throw<NoPathFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -109,7 +97,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '1', 10);
             graph.AddEdge(new EquatableTaggedEdge<char, double>('1', '1', 7));
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<NoPathFoundException>(() => algorithm.Execute());
+            Invoking(() => algorithm.Execute()).Should().Throw<NoPathFoundException>();
         }
 
         [Test]
@@ -130,22 +118,22 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             graph.AddEdgeRange(edges);
 
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
-            YenShortestPathsAlgorithm<char>.SortedPath[] paths = algorithm.Execute().ToArray();
+            var paths = algorithm.Execute().ToArray();
 
             // Expecting to get 2 paths:
             // 1 => 1-2-3-5
             // 2 => 1-3-5
             // Consistently checking the result
-            Assert.AreEqual(2, paths.Length);
+            paths.Length.Should().Be(2);
             // 1
-            EquatableTaggedEdge<char, double>[] path0 = paths[0].ToArray();
-            Assert.AreEqual(path0[0], edges[0]);
-            Assert.AreEqual(path0[1], edges[3]);
-            Assert.AreEqual(path0[2], edges[5]);
+            var path0 = paths[0].ToArray();
+            edges[0].Should().Be(path0[0]);
+            edges[3].Should().Be(path0[1]);
+            edges[5].Should().Be(path0[2]);
             // 2
-            EquatableTaggedEdge<char, double>[] path1 = paths[1].ToArray();
-            Assert.AreEqual(path1[0], edges[1]);
-            Assert.AreEqual(path1[1], edges[5]);
+            var path1 = paths[1].ToArray();
+            edges[1].Should().Be(path1[0]);
+            edges[5].Should().Be(path1[1]);
         }
 
         [Test]
@@ -164,27 +152,27 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             graph.AddEdgeRange(edges);
 
             var algorithm = new YenShortestPathsAlgorithm<string>(graph, "A", "D", 5);
-            YenShortestPathsAlgorithm<string>.SortedPath[] paths = algorithm.Execute().ToArray();
+            var paths = algorithm.Execute().ToArray();
 
             // Expecting to get 3 paths:
             // 1 => A-B-D
             // 2 => A-C-D
             // 3 => A-B-C-D
             // Consistently checking the result
-            Assert.AreEqual(3, paths.Length);
+            paths.Length.Should().Be(3);
             // 1
-            EquatableTaggedEdge<string, double>[] path0 = paths[0].ToArray();
-            Assert.AreEqual(path0[0], edges[0]);
-            Assert.AreEqual(path0[1], edges[3]);
+            var path0 = paths[0].ToArray();
+            edges[0].Should().Be(path0[0]);
+            edges[3].Should().Be(path0[1]);
             // 2
-            EquatableTaggedEdge<string, double>[] path1 = paths[1].ToArray();
-            Assert.AreEqual(path1[0], edges[1]);
-            Assert.AreEqual(path1[1], edges[4]);
+            var path1 = paths[1].ToArray();
+            edges[1].Should().Be(path1[0]);
+            edges[4].Should().Be(path1[1]);
             // 3
-            EquatableTaggedEdge<string, double>[] path2 = paths[2].ToArray();
-            Assert.AreEqual(path2[0], edges[0]);
-            Assert.AreEqual(path2[1], edges[2]);
-            Assert.AreEqual(path2[2], edges[4]);
+            var path2 = paths[2].ToArray();
+            edges[0].Should().Be(path2[0]);
+            edges[2].Should().Be(path2[1]);
+            edges[4].Should().Be(path2[2]);
         }
 
         [Test]
@@ -208,7 +196,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
             // K = 5
             var algorithmK5 = new YenShortestPathsAlgorithm<char>(graph, 'C', 'H', 5);
-            YenShortestPathsAlgorithm<char>.SortedPath[] paths = algorithmK5.Execute().ToArray();
+            var paths = algorithmK5.Execute().ToArray();
 
             // Expecting to get 5 paths:
             // 1 => C-E-F-H
@@ -217,7 +205,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             // 4 => C-E-D-F-H
             // 5 => C-D-F-H
             // Consistently checking the result
-            Assert.AreEqual(5, paths.Length);
+            paths.Length.Should().Be(5);
             CheckFiveFirstPaths(paths);
 
 
@@ -234,53 +222,53 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             // 6 => C-E-D-F-G-H
             // 7 => C-D-F-G-H
             // Consistently checking the result
-            Assert.AreEqual(7, paths.Length);
+            paths.Length.Should().Be(7);
             CheckFiveFirstPaths(paths);
             // 6
-            EquatableTaggedEdge<char, double>[] path5 = paths[5].ToArray();
-            Assert.AreEqual(path5[0], edges[1]);    // C-E
-            Assert.AreEqual(path5[1], edges[3]);    // E-D
-            Assert.AreEqual(path5[2], edges[2]);    // D-F
-            Assert.AreEqual(path5[3], edges[6]);    // F-G
-            Assert.AreEqual(path5[4], edges[8]);    // G-H
+            var path5 = paths[5].ToArray();
+            edges[1].Should().Be(path5[0]);    // C-E
+            edges[3].Should().Be(path5[1]);    // E-D
+            edges[2].Should().Be(path5[2]);    // D-F
+            edges[6].Should().Be(path5[3]);    // F-G
+            edges[8].Should().Be(path5[4]);    // G-H
             // 7
-            EquatableTaggedEdge<char, double>[] path6 = paths[6].ToArray();
-            Assert.AreEqual(path6[0], edges[0]);    // C-D
-            Assert.AreEqual(path6[1], edges[2]);    // D-F
-            Assert.AreEqual(path6[2], edges[6]);    // F-G
-            Assert.AreEqual(path6[3], edges[8]);    // G-H
+            var path6 = paths[6].ToArray();
+            edges[0].Should().Be(path6[0]);    // C-D
+            edges[2].Should().Be(path6[1]);    // D-F
+            edges[6].Should().Be(path6[2]);    // F-G
+            edges[8].Should().Be(path6[3]);    // G-H
 
             #region Local function
 
             void CheckFiveFirstPaths(YenShortestPathsAlgorithm<char>.SortedPath[] ps)
             {
                 // 1
-                EquatableTaggedEdge<char, double>[] path0 = ps[0].ToArray();
-                Assert.AreEqual(path0[0], edges[1]);    // C-E
-                Assert.AreEqual(path0[1], edges[4]);    // E-F
-                Assert.AreEqual(path0[2], edges[7]);    // F-H
+                var path0 = ps[0].ToArray();
+                edges[1].Should().Be(path0[0]);    // C-E
+                edges[4].Should().Be(path0[1]);    // E-F
+                edges[7].Should().Be(path0[2]);    // F-H
                 // 2
-                EquatableTaggedEdge<char, double>[] path1 = ps[1].ToArray();
-                Assert.AreEqual(path1[0], edges[1]);    // C-E
-                Assert.AreEqual(path1[1], edges[5]);    // E-G
-                Assert.AreEqual(path1[2], edges[8]);    // G-H
+                var path1 = ps[1].ToArray();
+                edges[1].Should().Be(path1[0]);    // C-E
+                edges[5].Should().Be(path1[1]);    // E-G
+                edges[8].Should().Be(path1[2]);    // G-H
                 // 3
-                EquatableTaggedEdge<char, double>[] path2 = ps[2].ToArray();
-                Assert.AreEqual(path2[0], edges[1]);    // C-E
-                Assert.AreEqual(path2[1], edges[4]);    // E-F
-                Assert.AreEqual(path2[2], edges[6]);    // F-G
-                Assert.AreEqual(path2[3], edges[8]);    // G-H
+                var path2 = ps[2].ToArray();
+                edges[1].Should().Be(path2[0]);    // C-E
+                edges[4].Should().Be(path2[1]);    // E-F
+                edges[6].Should().Be(path2[2]);    // F-G
+                edges[8].Should().Be(path2[3]);    // G-H
                 // 4
-                EquatableTaggedEdge<char, double>[] path3 = ps[3].ToArray();
-                Assert.AreEqual(path3[0], edges[1]);    // C-E
-                Assert.AreEqual(path3[1], edges[3]);    // E-D
-                Assert.AreEqual(path3[2], edges[2]);    // D-F
-                Assert.AreEqual(path3[3], edges[7]);    // F-H
+                var path3 = ps[3].ToArray();
+                edges[1].Should().Be(path3[0]);    // C-E
+                edges[3].Should().Be(path3[1]);    // E-D
+                edges[2].Should().Be(path3[2]);    // D-F
+                edges[7].Should().Be(path3[3]);    // F-H
                 // 5
-                EquatableTaggedEdge<char, double>[] path4 = ps[4].ToArray();
-                Assert.AreEqual(path4[0], edges[0]);    // C-D
-                Assert.AreEqual(path4[1], edges[2]);    // D-F
-                Assert.AreEqual(path4[2], edges[7]);    // F-H
+                var path4 = ps[4].ToArray();
+                edges[0].Should().Be(path4[0]);    // C-D
+                edges[2].Should().Be(path4[1]);    // D-F
+                edges[7].Should().Be(path4[2]);    // F-H
             }
 
             #endregion
@@ -289,8 +277,8 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
         [Test]
         public void MultipleRunMethods()
         {
-            AdjacencyGraph<char, EquatableTaggedEdge<char, double>> graph = GenerateGraph(
-                out EquatableTaggedEdge<char, double>[] graphEdges);
+            var graph = GenerateGraph(
+                out var graphEdges);
 
             // Default weight function and default filter function case
             var algorithm = new YenShortestPathsAlgorithm<char>(graph, '1', '5', 10);
@@ -338,30 +326,30 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 // Generate simple graph
                 // like this https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
                 // but with directed edges input graph
-                YenShortestPathsAlgorithm<char>.SortedPath[] paths = yen.Execute().ToArray();
+                var paths = yen.Execute().ToArray();
 
                 // Expecting to get 3 paths:
                 // 1 => 1-3-4-5
                 // 2 => 1-2-4-5
                 // 3 => 1-2-3-4-5
                 // Consistently checking the result
-                Assert.AreEqual(3, paths.Length);
+                paths.Length.Should().Be(3);
                 // 1
-                EquatableTaggedEdge<char, double>[] path0 = paths[0].ToArray();
-                Assert.AreEqual(path0[0], graphEdges[1]);
-                Assert.AreEqual(path0[1], graphEdges[5]);
-                Assert.AreEqual(path0[2], graphEdges[7]);
+                var path0 = paths[0].ToArray();
+                graphEdges[1].Should().Be(path0[0]);
+                graphEdges[5].Should().Be(path0[1]);
+                graphEdges[7].Should().Be(path0[2]);
                 // 2
-                EquatableTaggedEdge<char, double>[] path1 = paths[1].ToArray();
-                Assert.AreEqual(path1[0], graphEdges[0]);
-                Assert.AreEqual(path1[1], graphEdges[4]);
-                Assert.AreEqual(path1[2], graphEdges[7]);
+                var path1 = paths[1].ToArray();
+                graphEdges[0].Should().Be(path1[0]);
+                graphEdges[4].Should().Be(path1[1]);
+                graphEdges[7].Should().Be(path1[2]);
                 // 3
-                EquatableTaggedEdge<char, double>[] path2 = paths[2].ToArray();
-                Assert.AreEqual(path2[0], graphEdges[0]);
-                Assert.AreEqual(path2[1], graphEdges[3]);
-                Assert.AreEqual(path2[2], graphEdges[5]);
-                Assert.AreEqual(path2[3], graphEdges[7]);
+                var path2 = paths[2].ToArray();
+                graphEdges[0].Should().Be(path2[0]);
+                graphEdges[3].Should().Be(path2[1]);
+                graphEdges[5].Should().Be(path2[2]);
+                graphEdges[7].Should().Be(path2[3]);
             }
 
             #endregion
@@ -386,10 +374,10 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 new EquatableTaggedEdge<int, double>(3, 4, 1.0)
             });
 
-            Assert.AreEqual(path1.GetHashCode(), path1.GetHashCode());
-            Assert.AreNotEqual(path1.GetHashCode(), path2.GetHashCode());
-            Assert.AreNotEqual(path1.GetHashCode(), path3.GetHashCode());
-            Assert.AreNotEqual(path2.GetHashCode(), path3.GetHashCode());
+            path1.GetHashCode().Should().Be(path1.GetHashCode());
+            path2.GetHashCode().Should().NotBe(path1.GetHashCode());
+            path3.GetHashCode().Should().NotBe(path1.GetHashCode());
+            path3.GetHashCode().Should().NotBe(path2.GetHashCode());
         }
 
         [Test]
@@ -403,11 +391,10 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             };
 
             var path = new YenShortestPathsAlgorithm<int>.SortedPath(edges);
-            CollectionAssert.AreEqual(edges, path);
+            edges.Should().BeEquivalentTo(path);
 
-            CollectionAssert.IsEmpty(
-                new YenShortestPathsAlgorithm<int>.SortedPath(
-                    Enumerable.Empty<EquatableTaggedEdge<int, double>>()));
+            new YenShortestPathsAlgorithm<int>.SortedPath(
+                Enumerable.Empty<EquatableTaggedEdge<int, double>>()).Should().BeEmpty();
         }
     }
 }

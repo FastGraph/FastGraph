@@ -66,99 +66,99 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             IVertexAndEdgeListGraph<int, EquatableEdge<int>> graph1 = CreateGraph1();
 
             var chain = new RoundRobinEdgeChain<int, EquatableEdge<int>>();
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsFalse(chain.TryGetSuccessor(graph1, 3, out edge));
+            chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph1, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph1, 3, out edge).Should().BeFalse();
 
             chain = new RoundRobinEdgeChain<int, EquatableEdge<int>>();
             EquatableEdge<int>[] edges = graph1.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
             // etc.
-            Assert.IsFalse(chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _));
+            chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _).Should().BeFalse();
 
 
             IVertexAndEdgeListGraph<int, EquatableEdge<int>> graph2 = CreateGraph2();
 
             chain = new RoundRobinEdgeChain<int, EquatableEdge<int>>();
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 3, out edge));
-            Assert.AreEqual(3, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 4, out edge));
-            Assert.AreEqual(4, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 5, out edge));
-            Assert.AreEqual(5, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 3, out edge));
-            Assert.AreEqual(3, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 4, out edge));
-            Assert.AreEqual(4, edge!.Source);
-            Assert.AreEqual(7, edge.Target);
+            chain.TryGetSuccessor(graph2, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph2, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph2, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(3);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(graph2, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(4);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(graph2, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(5);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph2, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph2, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(3);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(graph2, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(4);
+            edge.Target.Should().Be(7);
             // Etc.
 
             chain = new RoundRobinEdgeChain<int, EquatableEdge<int>>();
             edges = graph2.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(3, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(3);
+            edge.Target.Should().Be(4);
             // Etc.
         }
 
@@ -171,30 +171,30 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 Rand = new Random(123456)
             };
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsFalse(chain.TryGetSuccessor(graph1, 3, out edge));
+            chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph1, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph1, 3, out edge).Should().BeFalse();
 
             chain = new NormalizedMarkovEdgeChain<int, EquatableEdge<int>>
             {
                 Rand = new Random(123456)
             };
             EquatableEdge<int>[] edges = graph1.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
             // etc.
-            Assert.IsFalse(chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _));
+            chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _).Should().BeFalse();
 
 
             IVertexAndEdgeListGraph<int, EquatableEdge<int>> graph2 = CreateGraph2();
@@ -203,28 +203,28 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 Rand = new Random(123456)
             };
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 3, out edge));
-            Assert.AreEqual(3, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 4, out edge));
-            Assert.AreEqual(4, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 5, out edge));
-            Assert.AreEqual(5, edge!.Source);
-            Assert.AreEqual(6, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 6, out edge));
-            Assert.AreEqual(6, edge!.Source);
-            Assert.AreEqual(7, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 7, out edge));
-            Assert.AreEqual(7, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 4, out edge));
+            chain.TryGetSuccessor(graph2, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph2, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph2, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(3);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(graph2, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(4);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(graph2, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(5);
+            edge.Target.Should().Be(6);
+            chain.TryGetSuccessor(graph2, 6, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(6);
+            edge.Target.Should().Be(7);
+            chain.TryGetSuccessor(graph2, 7, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(7);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(graph2, 4, out edge).Should().BeTrue();
             // Etc.
 
             chain = new NormalizedMarkovEdgeChain<int, EquatableEdge<int>>
@@ -232,15 +232,15 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 Rand = new Random(123456)
             };
             edges = graph2.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
             // Etc.
         }
 
@@ -249,13 +249,13 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         {
             var weights = new Dictionary<Edge<int>, double>();
             var chain1 = new WeightedMarkovEdgeChain<int, Edge<int>>(weights);
-            Assert.AreSame(weights, chain1.Weights);
+            chain1.Weights.Should().BeSameAs(weights);
 
             var chain2 = new VanishingWeightedMarkovEdgeChain<int, Edge<int>>(weights);
-            Assert.AreSame(weights, chain2.Weights);
+            chain2.Weights.Should().BeSameAs(weights);
 
             chain2 = new VanishingWeightedMarkovEdgeChain<int, Edge<int>>(weights, 2.0);
-            Assert.AreSame(weights, chain2.Weights);
+            chain2.Weights.Should().BeSameAs(weights);
         }
 
         [Test]
@@ -264,12 +264,9 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new WeightedMarkovEdgeChain<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new VanishingWeightedMarkovEdgeChain<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new VanishingWeightedMarkovEdgeChain<int, Edge<int>>(default, 2.0));
+            Invoking(() => new WeightedMarkovEdgeChain<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new VanishingWeightedMarkovEdgeChain<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new VanishingWeightedMarkovEdgeChain<int, Edge<int>>(default, 2.0)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -300,42 +297,42 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 Rand = new Random(123456)
             };
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 5, out edge));
-            Assert.AreEqual(5, edge!.Source);
-            Assert.AreEqual(6, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 6, out edge));
-            Assert.AreEqual(6, edge!.Source);
-            Assert.AreEqual(7, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 7, out edge));
-            Assert.AreEqual(7, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 4, out edge));
-            Assert.AreEqual(4, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsFalse(chain.TryGetSuccessor(graph1, 3, out edge));
+            chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph1, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(graph1, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(5);
+            edge.Target.Should().Be(6);
+            chain.TryGetSuccessor(graph1, 6, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(6);
+            edge.Target.Should().Be(7);
+            chain.TryGetSuccessor(graph1, 7, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(7);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(graph1, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(4);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph1, 3, out edge).Should().BeFalse();
 
             chain = new WeightedMarkovEdgeChain<int, EquatableEdge<int>>(weights)
             {
                 Rand = new Random(123456)
             };
             EquatableEdge<int>[] edges = graph1.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 5, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 5, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(edges, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(edges, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
             // etc.
-            Assert.IsFalse(chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _));
+            chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _).Should().BeFalse();
 
 
             IVertexAndEdgeListGraph<int, EquatableEdge<int>> graph2 = CreateGraph2();
@@ -344,25 +341,25 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 Rand = new Random(123456)
             };
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsFalse(chain.TryGetSuccessor(graph2, 2, out edge));
+            chain.TryGetSuccessor(graph2, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph2, 2, out edge).Should().BeFalse();
 
             chain = new WeightedMarkovEdgeChain<int, EquatableEdge<int>>(weights)
             {
                 Rand = new Random(123456)
             };
             edges = graph2.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(3, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 4, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(3);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(edges, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
             // Etc.
         }
 
@@ -391,25 +388,25 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 Rand = new Random(123456)
             };
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 2, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 5, out edge));
-            Assert.AreEqual(5, edge!.Source);
-            Assert.AreEqual(6, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 6, out edge));
-            Assert.AreEqual(6, edge!.Source);
-            Assert.AreEqual(7, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 7, out edge));
-            Assert.AreEqual(7, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(graph1, 4, out edge));
-            Assert.AreEqual(4, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsFalse(chain.TryGetSuccessor(graph1, 3, out edge));
+            chain.TryGetSuccessor(graph1, 1, out EquatableEdge<int>? edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph1, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(graph1, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(5);
+            edge.Target.Should().Be(6);
+            chain.TryGetSuccessor(graph1, 6, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(6);
+            edge.Target.Should().Be(7);
+            chain.TryGetSuccessor(graph1, 7, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(7);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(graph1, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(4);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(graph1, 3, out edge).Should().BeFalse();
 
             weights = new Dictionary<EquatableEdge<int>, double>
             {
@@ -432,17 +429,17 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 Rand = new Random(123456)
             };
             EquatableEdge<int>[] edges = graph1.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 5, out edge));
-            Assert.AreEqual(2, edge!.Source);
-            Assert.AreEqual(5, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 5, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(edges, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(2);
+            edge.Target.Should().Be(5);
+            chain.TryGetSuccessor(edges, 5, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
             // etc.
-            Assert.IsFalse(chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _));
+            chain.TryGetSuccessor(Enumerable.Empty<EquatableEdge<int>>(), 1, out _).Should().BeFalse();
 
 
             IVertexAndEdgeListGraph<int, EquatableEdge<int>> graph2 = CreateGraph2();
@@ -467,10 +464,10 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 Rand = new Random(123456)
             };
-            Assert.IsTrue(chain.TryGetSuccessor(graph2, 1, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsFalse(chain.TryGetSuccessor(graph2, 2, out edge));
+            chain.TryGetSuccessor(graph2, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(graph2, 2, out edge).Should().BeFalse();
 
             weights = new Dictionary<EquatableEdge<int>, double>
             {
@@ -493,18 +490,18 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 Rand = new Random(123456)
             };
             edges = graph2.Edges.ToArray();
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 1, out edge));
-            Assert.AreEqual(3, edge!.Source);
-            Assert.AreEqual(4, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 4, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(3, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 3, out edge));
-            Assert.AreEqual(1, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
-            Assert.IsTrue(chain.TryGetSuccessor(edges, 2, out edge));
-            Assert.AreEqual(5, edge!.Source);
-            Assert.AreEqual(2, edge.Target);
+            chain.TryGetSuccessor(edges, 1, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(3);
+            edge.Target.Should().Be(4);
+            chain.TryGetSuccessor(edges, 4, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(3);
+            chain.TryGetSuccessor(edges, 3, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(1);
+            edge.Target.Should().Be(2);
+            chain.TryGetSuccessor(edges, 2, out edge).Should().BeTrue();
+            edge!.Source.Should().Be(5);
+            edge.Target.Should().Be(2);
             // Etc.
         }
     }

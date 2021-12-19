@@ -22,7 +22,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            Assert.IsTrue(graph.VertexCount > 0);
+            (graph.VertexCount > 0).Should().BeTrue();
 
             foreach (TVertex source in graph.Vertices)
             {
@@ -31,7 +31,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                     if (source.Equals(sink))
                         continue;
 
-                    Assert.Positive(RunMaxFlowAlgorithmAndCheck(graph, edgeFactory, source, sink));
+                    RunMaxFlowAlgorithmAndCheck(graph, edgeFactory, source, sink).Should().BePositive();
                 }
             }
         }
@@ -103,18 +103,18 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                CollectionAssert.IsEmpty(algo.Predecessors);
-                Assert.AreSame(c, algo.Capacities);
-                CollectionAssert.IsEmpty(algo.ResidualCapacities);
+                algo.Predecessors.Should().BeEmpty();
+                algo.Capacities.Should().BeSameAs(c);
+                algo.ResidualCapacities.Should().BeEmpty();
                 if (eFactory is null)
-                    Assert.IsNotNull(algo.EdgeFactory);
+                    algo.EdgeFactory.Should().NotBeNull();
                 else
-                    Assert.AreSame(eFactory, algo.EdgeFactory);
-                CollectionAssert.IsEmpty(algo.ReversedEdges);
-                Assert.AreEqual(default(TVertex), algo.Source);
-                Assert.AreEqual(default(TVertex), algo.Sink);
-                Assert.AreEqual(0.0, algo.MaxFlow);
-                CollectionAssert.IsEmpty(algo.VerticesColors);
+                    algo.EdgeFactory.Should().BeSameAs(eFactory);
+                algo.ReversedEdges.Should().BeEmpty();
+                algo.Source.Should().Be(default(TVertex));
+                algo.Sink.Should().Be(default(TVertex));
+                algo.MaxFlow.Should().Be(0.0);
+                algo.VerticesColors.Should().BeEmpty();
             }
 
             #endregion
@@ -133,74 +133,42 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, edgeFactory, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, edgeFactory, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, edgeFactory, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default));
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, capacities, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, edgeFactory, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, edgeFactory, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, edgeFactory, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default, reverseEdgesAlgorithm1));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, edgeFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default, default));
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, capacities, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default, reverseEdgesAlgorithm1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, edgeFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, capacities, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, graph1, default, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(default, default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, edgeFactory, reverseEdgesAlgorithm2));
-            Assert.Throws<ArgumentException>(
-                () => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph2, capacities, edgeFactory, reverseEdgesAlgorithm1));
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph1, capacities, edgeFactory, reverseEdgesAlgorithm2)).Should().Throw<ArgumentException>();
+            Invoking(() => new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph2, capacities, edgeFactory, reverseEdgesAlgorithm1)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -239,9 +207,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             algorithm.Compute(source, sink);
 
-            Assert.AreEqual(source, algorithm.Source);
-            Assert.AreEqual(sink, algorithm.Sink);
-            Assert.AreEqual(5, algorithm.MaxFlow);
+            algorithm.Source.Should().Be(source);
+            algorithm.Sink.Should().Be(sink);
+            algorithm.MaxFlow.Should().Be(5);
             CheckReversedEdges();
             CheckPredecessors();
             CheckResidualCapacities();
@@ -250,60 +218,56 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             void CheckReversedEdges()
             {
-                Assert.IsTrue(algorithm.ReversedEdges!.Count % 2 == 0);
+                (algorithm.ReversedEdges!.Count % 2 == 0).Should().BeTrue();
                 foreach (var pair in algorithm.ReversedEdges)
                 {
-                    Assert.AreEqual(pair.Key.Source, pair.Value.Target);
-                    Assert.AreEqual(pair.Key.Target, pair.Value.Source);
+                    pair.Value.Target.Should().Be(pair.Key.Source);
+                    pair.Value.Source.Should().Be(pair.Key.Target);
                 }
             }
 
             void CheckPredecessors()
             {
-                Assert.AreEqual(graph.VertexCount - 1, algorithm.Predecessors.Count);
-                CollectionAssert.AreEquivalent(
-                    new Dictionary<string, EquatableTaggedEdge<string, double>>
-                    {
-                        ["B"] = new EquatableTaggedEdge<string, double>("A", "B", 3),
-                        ["C"] = new EquatableTaggedEdge<string, double>("B", "C", 4),
-                        ["D"] = new EquatableTaggedEdge<string, double>("E", "D", 0),
-                        ["E"] = new EquatableTaggedEdge<string, double>("C", "E", 2),
-                        ["F"] = new EquatableTaggedEdge<string, double>("D", "F", 6),
-                        ["G"] = new EquatableTaggedEdge<string, double>("F", "G", 9),
-                    },
-                    algorithm.Predecessors);
+                algorithm.Predecessors.Count.Should().Be(graph.VertexCount - 1);
+                algorithm.Predecessors.Should().BeEquivalentTo(new Dictionary<string, EquatableTaggedEdge<string, double>>
+                {
+                    ["B"] = new EquatableTaggedEdge<string, double>("A", "B", 3),
+                    ["C"] = new EquatableTaggedEdge<string, double>("B", "C", 4),
+                    ["D"] = new EquatableTaggedEdge<string, double>("E", "D", 0),
+                    ["E"] = new EquatableTaggedEdge<string, double>("C", "E", 2),
+                    ["F"] = new EquatableTaggedEdge<string, double>("D", "F", 6),
+                    ["G"] = new EquatableTaggedEdge<string, double>("F", "G", 9),
+                });
             }
 
             void CheckResidualCapacities()
             {
-                Assert.AreEqual(graph.EdgeCount, algorithm.ResidualCapacities.Count);
-                CollectionAssert.AreEquivalent(
-                    new Dictionary<EquatableTaggedEdge<string, double>, double>
-                    {
-                        [new EquatableTaggedEdge<string, double>("A", "B", 3)] = 1,
-                        [new EquatableTaggedEdge<string, double>("A", "C", 0)] = 0,
-                        [new EquatableTaggedEdge<string, double>("A", "D", 3)] = 0,
-                        [new EquatableTaggedEdge<string, double>("B", "A", 0)] = 2,
-                        [new EquatableTaggedEdge<string, double>("B", "C", 4)] = 2,
-                        [new EquatableTaggedEdge<string, double>("B", "E", 0)] = 0,
-                        [new EquatableTaggedEdge<string, double>("C", "A", 3)] = 3,
-                        [new EquatableTaggedEdge<string, double>("C", "B", 0)] = 2,
-                        [new EquatableTaggedEdge<string, double>("C", "D", 1)] = 0,
-                        [new EquatableTaggedEdge<string, double>("C", "E", 2)] = 1,
-                        [new EquatableTaggedEdge<string, double>("D", "A", 0)] = 3,
-                        [new EquatableTaggedEdge<string, double>("D", "C", 0)] = 1,
-                        [new EquatableTaggedEdge<string, double>("D", "E", 2)] = 2,
-                        [new EquatableTaggedEdge<string, double>("D", "F", 6)] = 2,
-                        [new EquatableTaggedEdge<string, double>("E", "B", 1)] = 1,
-                        [new EquatableTaggedEdge<string, double>("E", "C", 0)] = 1,
-                        [new EquatableTaggedEdge<string, double>("E", "D", 0)] = 0,
-                        [new EquatableTaggedEdge<string, double>("E", "G", 1)] = 0,
-                        [new EquatableTaggedEdge<string, double>("F", "D", 0)] = 4,
-                        [new EquatableTaggedEdge<string, double>("F", "G", 9)] = 5,
-                        [new EquatableTaggedEdge<string, double>("G", "E", 0)] = 1,
-                        [new EquatableTaggedEdge<string, double>("G", "F", 0)] = 4,
-                    },
-                    algorithm.ResidualCapacities);
+                algorithm.ResidualCapacities.Count.Should().Be(graph.EdgeCount);
+                algorithm.ResidualCapacities.Should().BeEquivalentTo(new Dictionary<EquatableTaggedEdge<string, double>, double>
+                {
+                    [new EquatableTaggedEdge<string, double>("A", "B", 3)] = 1,
+                    [new EquatableTaggedEdge<string, double>("A", "C", 0)] = 0,
+                    [new EquatableTaggedEdge<string, double>("A", "D", 3)] = 0,
+                    [new EquatableTaggedEdge<string, double>("B", "A", 0)] = 2,
+                    [new EquatableTaggedEdge<string, double>("B", "C", 4)] = 2,
+                    [new EquatableTaggedEdge<string, double>("B", "E", 0)] = 0,
+                    [new EquatableTaggedEdge<string, double>("C", "A", 3)] = 3,
+                    [new EquatableTaggedEdge<string, double>("C", "B", 0)] = 2,
+                    [new EquatableTaggedEdge<string, double>("C", "D", 1)] = 0,
+                    [new EquatableTaggedEdge<string, double>("C", "E", 2)] = 1,
+                    [new EquatableTaggedEdge<string, double>("D", "A", 0)] = 3,
+                    [new EquatableTaggedEdge<string, double>("D", "C", 0)] = 1,
+                    [new EquatableTaggedEdge<string, double>("D", "E", 2)] = 2,
+                    [new EquatableTaggedEdge<string, double>("D", "F", 6)] = 2,
+                    [new EquatableTaggedEdge<string, double>("E", "B", 1)] = 1,
+                    [new EquatableTaggedEdge<string, double>("E", "C", 0)] = 1,
+                    [new EquatableTaggedEdge<string, double>("E", "D", 0)] = 0,
+                    [new EquatableTaggedEdge<string, double>("E", "G", 1)] = 0,
+                    [new EquatableTaggedEdge<string, double>("F", "D", 0)] = 4,
+                    [new EquatableTaggedEdge<string, double>("F", "G", 9)] = 5,
+                    [new EquatableTaggedEdge<string, double>("G", "E", 0)] = 1,
+                    [new EquatableTaggedEdge<string, double>("G", "F", 0)] = 4,
+                });
             }
 
             #endregion
@@ -342,16 +306,14 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             algorithm.Compute(source, sink);
 
-            Assert.AreEqual(source, algorithm.Source);
-            Assert.AreEqual(sink, algorithm.Sink);
-            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors.Count);
+            algorithm.Source.Should().Be(source);
+            algorithm.Sink.Should().Be(sink);
+            algorithm.VerticesColors.Count.Should().Be(graph.VertexCount);
             foreach (KeyValuePair<string, GraphColor> pair in algorithm.VerticesColors)
             {
-                Assert.AreEqual(
-                    pair.Key == sink ? GraphColor.White : GraphColor.Black,
-                    pair.Value);
+                pair.Value.Should().Be(pair.Key == sink ? GraphColor.White : GraphColor.Black);
             }
-            Assert.AreEqual(0, algorithm.MaxFlow);
+            algorithm.MaxFlow.Should().Be(0);
         }
 
         [Test]
@@ -369,9 +331,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, Edge<int>>(graph, capacities, edgeFactory, reverseEdgesAlgorithm);
             algorithm.Compute(1, 2);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.White, algorithm.GetVertexColor(2));
-            Assert.AreEqual(GraphColor.White, algorithm.GetVertexColor(3));
+            algorithm.GetVertexColor(1).Should().Be(GraphColor.Black);
+            algorithm.GetVertexColor(2).Should().Be(GraphColor.White);
+            algorithm.GetVertexColor(3).Should().Be(GraphColor.White);
         }
 
         [Test]
@@ -398,9 +360,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var vertex = new TestVertex("1");
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(vertex, default));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default, default));
+            Invoking(() => algorithm.Compute(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.Compute(vertex, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.Compute(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -417,7 +379,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
-            Assert.Throws<InvalidOperationException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<InvalidOperationException>();
 
             algorithm = new EdmondsKarpMaximumFlowAlgorithm<TestVertex, TaggedEdge<TestVertex, double>>(
                 graph,
@@ -427,7 +389,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             {
                 Source = vertex1
             };
-            Assert.Throws<InvalidOperationException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<InvalidOperationException>();
 
             algorithm = new EdmondsKarpMaximumFlowAlgorithm<TestVertex, TaggedEdge<TestVertex, double>>(
                 graph,
@@ -438,7 +400,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 Source = vertex1,
                 Sink = vertex2
             };
-            Assert.Throws<VertexNotFoundException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<VertexNotFoundException>();
 
             algorithm = new EdmondsKarpMaximumFlowAlgorithm<TestVertex, TaggedEdge<TestVertex, double>>(
                 graph,
@@ -450,7 +412,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 Sink = vertex2
             };
             graph.AddVertex(vertex1);
-            Assert.Throws<VertexNotFoundException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<VertexNotFoundException>();
         }
 
         [Test]
@@ -476,7 +438,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
             var algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, TaggedEdge<int, double>>(graph, edge => edge.Tag, edgeFactory, reverseEdgesAlgorithm);
 
-            Assert.Throws<NegativeCapacityException>(() => algorithm.Compute(source, sink));
+            Invoking(() => algorithm.Compute(source, sink)).Should().Throw<NegativeCapacityException>();
         }
 
         [Test]
@@ -500,7 +462,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, TaggedEdge<int, double>>(graph, edgeFactory);
             var algorithm = new EdmondsKarpMaximumFlowAlgorithm<int, TaggedEdge<int, double>>(graph, edge => edge.Tag, edgeFactory, reverseEdgesAlgorithm);
 
-            Assert.Throws<InvalidOperationException>(() => algorithm.Compute(source, sink));
+            Invoking(() => algorithm.Compute(source, sink)).Should().Throw<InvalidOperationException>();
         }
 
         [Pure]

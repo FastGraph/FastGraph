@@ -29,7 +29,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(3, out _);
-            Assert.False(distanceFound, "No distance should have been found since the vertex does not exist.");
+            distanceFound.Should().BeFalse(because: "No distance should have been found since the vertex does not exist.");
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.Throws<InvalidOperationException>(() => algorithm.TryGetDistance(2, out _));
+            Invoking(() => algorithm.TryGetDistance(2, out _)).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.TryGetDistance(default, out _));
+            Invoking(() => algorithm.TryGetDistance(default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -84,7 +84,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(2, out _);
-            Assert.True(distanceFound, "Distance should have been found since the vertex is accessible from root.");
+            distanceFound.Should().BeTrue(because: "Distance should have been found since the vertex is accessible from root.");
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(3, out _);
-            Assert.True(distanceFound, "Distance should have been found since the vertex exist in the graph.");
+            distanceFound.Should().BeTrue(because: "Distance should have been found since the vertex exist in the graph.");
         }
     }
 }

@@ -15,10 +15,10 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var layer = new GraphvizLayer("TestLayer");
-            Assert.AreEqual("TestLayer", layer.Name);
+            layer.Name.Should().Be("TestLayer");
 
             layer = new GraphvizLayer("OtherLayer");
-            Assert.AreEqual("OtherLayer", layer.Name);
+            layer.Name.Should().Be("OtherLayer");
         }
 
         [Test]
@@ -27,9 +27,9 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentException>(() => new GraphvizLayer(default));
+            Invoking(() => new GraphvizLayer(default)).Should().Throw<ArgumentException>();
 #pragma warning restore CS8625
-            Assert.Throws<ArgumentException>(() => new GraphvizLayer(""));
+            Invoking(() => new GraphvizLayer("")).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -41,7 +41,7 @@ namespace FastGraph.Graphviz.Tests
                 throw new InvalidOperationException("Layer has wong name.");
 
             layer.Name = "LayerUpdated";
-            Assert.AreEqual("LayerUpdated", layer.Name);
+            layer.Name.Should().Be("LayerUpdated");
         }
 
         [Test]
@@ -51,9 +51,9 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentException>(() => layer.Name = default);
+            Invoking(() => layer.Name = default).Should().Throw<ArgumentException>();
 #pragma warning restore CS8625
-            Assert.Throws<ArgumentException>(() => layer.Name = "");
+            Invoking(() => layer.Name = "").Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
     }

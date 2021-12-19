@@ -76,11 +76,10 @@ namespace FastGraph.Tests.Algorithms.Exploration
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNotNull(algo.AddVertexPredicate);
-                Assert.IsNotNull(algo.AddEdgePredicate);
-                Assert.IsNotNull(algo.ExploreVertexPredicate);
-                Assert.IsNotNull(algo.FinishedSuccessfully);
-                Assert.IsFalse(algo.FinishedSuccessfully);
+                algo.AddVertexPredicate.Should().NotBeNull();
+                algo.AddEdgePredicate.Should().NotBeNull();
+                algo.ExploreVertexPredicate.Should().NotBeNull();
+                algo.FinishedSuccessfully.Should().BeFalse();
             }
 
             #endregion
@@ -92,17 +91,15 @@ namespace FastGraph.Tests.Algorithms.Exploration
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(default, default));
+            Invoking(() => new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(default, default)).Should().Throw<ArgumentNullException>();
 
             var graph = new AdjacencyGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
-            Assert.Throws<ArgumentNullException>(() => algorithm.AddEdgePredicate = default);
-            Assert.Throws<ArgumentNullException>(() => algorithm.ExploreVertexPredicate = default);
-            Assert.Throws<ArgumentNullException>(() => algorithm.AddEdgePredicate = default);
-            Assert.Throws<ArgumentNullException>(() => algorithm.FinishedPredicate = default);
+            Invoking(() => algorithm.AddEdgePredicate = default).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.ExploreVertexPredicate = default).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.AddEdgePredicate = default).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.FinishedPredicate = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -129,26 +126,26 @@ namespace FastGraph.Tests.Algorithms.Exploration
 
             var vertex1 = new CloneableTestVertex("1");
             algorithm.SetRootVertex(vertex1);
-            Assert.AreEqual(1, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(1);
             algorithm.TryGetRootVertex(out CloneableTestVertex? root);
-            Assert.AreSame(vertex1, root);
+            root.Should().BeSameAs(vertex1);
 
             // Not changed
             algorithm.SetRootVertex(vertex1);
-            Assert.AreEqual(1, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(1);
             algorithm.TryGetRootVertex(out root);
-            Assert.AreSame(vertex1, root);
+            root.Should().BeSameAs(vertex1);
 
             var vertex2 = new CloneableTestVertex("2");
             algorithm.SetRootVertex(vertex2);
-            Assert.AreEqual(2, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(2);
             algorithm.TryGetRootVertex(out root);
-            Assert.AreSame(vertex2, root);
+            root.Should().BeSameAs(vertex2);
 
             algorithm.SetRootVertex(vertex1);
-            Assert.AreEqual(3, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(3);
             algorithm.TryGetRootVertex(out root);
-            Assert.AreSame(vertex1, root);
+            root.Should().BeSameAs(vertex1);
         }
 
         [Test]
@@ -172,7 +169,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
         {
             var graph = new AdjacencyGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
-            Assert.Throws<InvalidOperationException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -192,9 +189,9 @@ namespace FastGraph.Tests.Algorithms.Exploration
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default));
+            Invoking(() => algorithm.Compute(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
-            Assert.IsFalse(algorithm.TryGetRootVertex(out _));
+            algorithm.TryGetRootVertex(out _).Should().BeFalse();
         }
 
         #endregion
@@ -211,17 +208,17 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(vertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
             algorithm.AddTransitionFactory(factory1);
 
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
 
             var vertex2 = new CloneableTestVertex("2");
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             algorithm.AddTransitionFactory(factory2);
 
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory2));
+            algorithm.ContainsTransitionFactory(factory2).Should().BeTrue();
 
             algorithm.AddTransitionFactory(factory1);
 
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
         }
 
         [Test]
@@ -231,7 +228,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.AddTransitionFactory(default));
+            Invoking(() => algorithm.AddTransitionFactory(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -247,16 +244,16 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             algorithm.AddTransitionFactories(new[] { factory1, factory2 });
 
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory2));
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
+            algorithm.ContainsTransitionFactory(factory2).Should().BeTrue();
 
             var vertex3 = new CloneableTestVertex("3");
             var factory3 = new TestTransitionFactory<CloneableTestVertex>(vertex3, Enumerable.Empty<Edge<CloneableTestVertex>>());
             algorithm.AddTransitionFactory(factory3);
 
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory2));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory3));
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
+            algorithm.ContainsTransitionFactory(factory2).Should().BeTrue();
+            algorithm.ContainsTransitionFactory(factory3).Should().BeTrue();
         }
 
         [Test]
@@ -266,7 +263,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.AddTransitionFactories(default));
+            Invoking(() => algorithm.AddTransitionFactories(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -276,7 +273,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var graph = new AdjacencyGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             var algorithm = new CloneableVertexGraphExplorerAlgorithm<CloneableTestVertex, Edge<CloneableTestVertex>>(graph);
 
-            Assert.IsFalse(algorithm.RemoveTransitionFactory(default!));
+            algorithm.RemoveTransitionFactory(default!).Should().BeFalse();
 
             var vertex1 = new CloneableTestVertex("1");
             var vertex2 = new CloneableTestVertex("2");
@@ -286,14 +283,14 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory3 = new TestTransitionFactory<CloneableTestVertex>(vertex3, Enumerable.Empty<Edge<CloneableTestVertex>>());
             algorithm.AddTransitionFactories(new[] { factory1, factory2 });
 
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(default!));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory2));
+            algorithm.ContainsTransitionFactory(default!).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
+            algorithm.ContainsTransitionFactory(factory2).Should().BeTrue();
 
-            Assert.IsFalse(algorithm.RemoveTransitionFactory(factory3));
-            Assert.IsTrue(algorithm.RemoveTransitionFactory(factory1));
-            Assert.IsFalse(algorithm.RemoveTransitionFactory(factory1));
-            Assert.IsTrue(algorithm.RemoveTransitionFactory(factory2));
+            algorithm.RemoveTransitionFactory(factory3).Should().BeFalse();
+            algorithm.RemoveTransitionFactory(factory1).Should().BeTrue();
+            algorithm.RemoveTransitionFactory(factory1).Should().BeFalse();
+            algorithm.RemoveTransitionFactory(factory2).Should().BeTrue();
 
             var factory4 = new TestTransitionFactory<CloneableTestVertex>(
                 vertex1,
@@ -303,7 +300,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
                     new Edge<CloneableTestVertex>(vertex1, vertex3)
                 });
             algorithm.AddTransitionFactory(factory4);
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory4));
+            algorithm.ContainsTransitionFactory(factory4).Should().BeTrue();
         }
 
         [Test]
@@ -315,27 +312,27 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var vertex1 = new CloneableTestVertex("1");
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(vertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
 
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(default!));
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(factory1));
+            algorithm.ContainsTransitionFactory(default!).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory1).Should().BeFalse();
 
             algorithm.AddTransitionFactory(factory1);
 
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(default!));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
+            algorithm.ContainsTransitionFactory(default!).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
 
             var vertex2 = new CloneableTestVertex("2");
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             algorithm.AddTransitionFactory(factory2);
 
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(default!));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory2));
+            algorithm.ContainsTransitionFactory(default!).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory1).Should().BeTrue();
+            algorithm.ContainsTransitionFactory(factory2).Should().BeTrue();
 
             algorithm.RemoveTransitionFactory(factory1);
 
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(default!));
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(algorithm.ContainsTransitionFactory(factory2));
+            algorithm.ContainsTransitionFactory(default!).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory1).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory2).Should().BeTrue();
         }
 
         [Test]
@@ -366,8 +363,8 @@ namespace FastGraph.Tests.Algorithms.Exploration
 
             algorithm.ClearTransitionFactories();
 
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(factory1));
-            Assert.IsFalse(algorithm.ContainsTransitionFactory(factory2));
+            algorithm.ContainsTransitionFactory(factory1).Should().BeFalse();
+            algorithm.ContainsTransitionFactory(factory2).Should().BeFalse();
         }
 
         #endregion
@@ -389,21 +386,19 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var discoveredVertices = new List<EquatableCloneableTestVertex>(verticesArray);
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.IsTrue(discoveredVertices.Remove(vertex));
+                discoveredVertices.Remove(vertex).Should().BeTrue();
             };
 
-            algorithm.TreeEdge += Assert.IsNotNull;
-            algorithm.BackEdge += Assert.IsNotNull;
+            algorithm.TreeEdge += v => v.Should().NotBeNull();
+            algorithm.BackEdge += v => v.Should().NotBeNull();
             algorithm.EdgeSkipped += _ => Assert.Fail("Edge must not be skipped.");
 
             algorithm.Compute(verticesArray[0]);
 
-            CollectionAssert.AreEquivalent(
-                new[] { verticesArray[7] },
-                discoveredVertices);
+            discoveredVertices.Should().BeEquivalentTo(new[] { verticesArray[7] });
             // Isolated vertex are not considered unexplored
-            CollectionAssert.IsEmpty(algorithm.UnExploredVertices);
-            Assert.IsTrue(algorithm.FinishedSuccessfully);
+            algorithm.UnExploredVertices.Should().BeEmpty();
+            algorithm.FinishedSuccessfully.Should().BeTrue();
         }
 
         [Test]
@@ -428,24 +423,20 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var discoveredVertices = new List<EquatableCloneableTestVertex>(verticesArray);
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.IsTrue(discoveredVertices.Remove(vertex));
+                discoveredVertices.Remove(vertex).Should().BeTrue();
             };
 
-            algorithm.TreeEdge += Assert.IsNotNull;
-            algorithm.BackEdge += Assert.IsNotNull;
+            algorithm.TreeEdge += v => v.Should().NotBeNull();
+            algorithm.BackEdge += v => v.Should().NotBeNull();
             var skippedEdge = new List<Edge<EquatableCloneableTestVertex>>();
             algorithm.EdgeSkipped += edge => skippedEdge.Add(edge);
 
             algorithm.Compute(verticesArray[0]);
 
-            CollectionAssert.AreEquivalent(
-                new[] { verticesArray[1], verticesArray[6], verticesArray[7] },
-                discoveredVertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edgesArray[0], edgesArray[1], edgesArray[3] },
-                skippedEdge);
-            CollectionAssert.IsEmpty(algorithm.UnExploredVertices);
-            Assert.IsTrue(algorithm.FinishedSuccessfully);
+            discoveredVertices.Should().BeEquivalentTo(new[] { verticesArray[1], verticesArray[6], verticesArray[7] });
+            skippedEdge.Should().BeEquivalentTo(new[] { edgesArray[0], edgesArray[1], edgesArray[3] });
+            algorithm.UnExploredVertices.Should().BeEmpty();
+            algorithm.FinishedSuccessfully.Should().BeTrue();
         }
 
         [Test]
@@ -472,22 +463,18 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var discoveredVertices = new List<EquatableCloneableTestVertex>(verticesArray);
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.IsTrue(discoveredVertices.Remove(vertex));
+                discoveredVertices.Remove(vertex).Should().BeTrue();
             };
 
-            algorithm.TreeEdge += Assert.IsNotNull;
-            algorithm.BackEdge += Assert.IsNotNull;
+            algorithm.TreeEdge += v => v.Should().NotBeNull();
+            algorithm.BackEdge += v => v.Should().NotBeNull();
             algorithm.EdgeSkipped += _ => Assert.Fail("Edge must not be skipped.");
 
             algorithm.Compute(verticesArray[0]);
 
-            CollectionAssert.AreEquivalent(
-                new[] { verticesArray[3], verticesArray[4], verticesArray[6], verticesArray[7] },
-                discoveredVertices);
-            CollectionAssert.AreEquivalent(
-                new[] { verticesArray[1], verticesArray[2], verticesArray[5] },
-                algorithm.UnExploredVertices);
-            Assert.IsFalse(algorithm.FinishedSuccessfully);
+            discoveredVertices.Should().BeEquivalentTo(new[] { verticesArray[3], verticesArray[4], verticesArray[6], verticesArray[7] });
+            algorithm.UnExploredVertices.Should().BeEquivalentTo(new[] { verticesArray[1], verticesArray[2], verticesArray[5] });
+            algorithm.FinishedSuccessfully.Should().BeFalse();
         }
 
         [Test]
@@ -514,22 +501,18 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var discoveredVertices = new List<EquatableCloneableTestVertex>(verticesArray);
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.IsTrue(discoveredVertices.Remove(vertex));
+                discoveredVertices.Remove(vertex).Should().BeTrue();
             };
 
-            algorithm.TreeEdge += Assert.IsNotNull;
-            algorithm.BackEdge += Assert.IsNotNull;
+            algorithm.TreeEdge += v => v.Should().NotBeNull();
+            algorithm.BackEdge += v => v.Should().NotBeNull();
             algorithm.EdgeSkipped += _ => Assert.Fail("Edge must not be skipped.");
 
             algorithm.Compute(verticesArray[0]);
 
-            CollectionAssert.AreEquivalent(
-                new[] { verticesArray[3], verticesArray[4], verticesArray[6], verticesArray[7] },
-                discoveredVertices);
-            CollectionAssert.AreEquivalent(
-                new[] { verticesArray[5] },
-                algorithm.UnExploredVertices);
-            Assert.IsFalse(algorithm.FinishedSuccessfully);
+            discoveredVertices.Should().BeEquivalentTo(new[] { verticesArray[3], verticesArray[4], verticesArray[6], verticesArray[7] });
+            algorithm.UnExploredVertices.Should().BeEquivalentTo(new[] { verticesArray[5] });
+            algorithm.FinishedSuccessfully.Should().BeFalse();
         }
 
         [Test]
@@ -545,7 +528,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
                 AddVertexPredicate = vertex => vertex != vertex1
             };
 
-            Assert.Throws<InvalidOperationException>(() => algorithm.Compute(vertex1));
+            Invoking(() => algorithm.Compute(vertex1)).Should().Throw<InvalidOperationException>();
         }
     }
 }

@@ -18,8 +18,8 @@ namespace FastGraph.MSAGL.Tests
             var node = new Node("1");
             var args = new MsaglVertexEventArgs<TestVertex>(vertex, node);
 
-            Assert.AreSame(vertex, args.Vertex);
-            Assert.AreSame(node, args.Node);
+            args.Vertex.Should().BeSameAs(vertex);
+            args.Node.Should().BeSameAs(node);
         }
 
         [Test]
@@ -31,12 +31,9 @@ namespace FastGraph.MSAGL.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglVertexEventArgs<TestVertex>(vertex, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglVertexEventArgs<TestVertex>(default, node));
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglVertexEventArgs<TestVertex>(default, default));
+            Invoking(() => new MsaglVertexEventArgs<TestVertex>(vertex, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MsaglVertexEventArgs<TestVertex>(default, node)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MsaglVertexEventArgs<TestVertex>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

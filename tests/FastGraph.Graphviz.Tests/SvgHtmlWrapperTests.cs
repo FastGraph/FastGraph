@@ -17,11 +17,11 @@ namespace FastGraph.Graphviz.Tests
 
         private static string CheckValidHtmlFile(string htmlFilePath)
         {
-            Assert.IsTrue(File.Exists(htmlFilePath));
+            File.Exists(htmlFilePath).Should().BeTrue();
             var htmlDocument = new HtmlDocument();
             string htmlContent = File.ReadAllText(htmlFilePath);
             htmlDocument.LoadHtml(htmlContent);
-            Assert.IsFalse(htmlDocument.ParseErrors.Any());
+            htmlDocument.ParseErrors.Any().Should().BeFalse();
             return htmlContent;
         }
 
@@ -45,7 +45,7 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.DumpHtml(new GraphvizSize(150, 150), default));
+            Invoking(() => SvgHtmlWrapper.DumpHtml(new GraphvizSize(150, 150), default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -92,7 +92,7 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.WrapSvg(default));
+            Invoking(() => SvgHtmlWrapper.WrapSvg(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -100,11 +100,11 @@ namespace FastGraph.Graphviz.Tests
         public void ParseSize()
         {
             GraphvizSize size = SvgHtmlWrapper.ParseSize(SampleSvg);
-            Assert.AreEqual(new GraphvizSize(300, 200), size);
+            size.Should().Be(new GraphvizSize(300, 200));
 
             // Size not found => fallback
             size = SvgHtmlWrapper.ParseSize(MissingSizeSampleSvg);
-            Assert.AreEqual(new GraphvizSize(400, 400), size);
+            size.Should().Be(new GraphvizSize(400, 400));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.ParseSize(default));
+            Invoking(() => SvgHtmlWrapper.ParseSize(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

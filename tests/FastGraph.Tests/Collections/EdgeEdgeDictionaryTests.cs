@@ -15,8 +15,8 @@ namespace FastGraph.Tests.Collections
         public void Constructors()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.DoesNotThrow(() => new EdgeEdgeDictionary<int, Edge<int>>());
-            Assert.DoesNotThrow(() => new EdgeEdgeDictionary<int, Edge<int>>(12));
+            Invoking((Func<EdgeEdgeDictionary<int, Edge<int>>>)(() => new EdgeEdgeDictionary<int, Edge<int>>())).Should().NotThrow();
+            Invoking((Func<EdgeEdgeDictionary<int, Edge<int>>>)(() => new EdgeEdgeDictionary<int, Edge<int>>(12))).Should().NotThrow();
             // ReSharper restore ObjectCreationAsStatement
         }
     }

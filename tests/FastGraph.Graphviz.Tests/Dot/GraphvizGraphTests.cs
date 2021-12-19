@@ -17,44 +17,44 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var graph = new GraphvizGraph();
-            Assert.IsNull(graph.Comment);
-            Assert.IsNull(graph.Url);
-            Assert.AreEqual(GraphvizColor.White, graph.BackgroundColor);
-            Assert.AreEqual(GraphvizClusterMode.Local, graph.ClusterRank);
-            Assert.IsNull(graph.Font);
-            Assert.AreEqual(GraphvizColor.Black, graph.FontColor);
-            Assert.AreEqual(1.0, graph.PenWidth);
-            Assert.IsFalse(graph.IsCentered);
-            Assert.IsFalse(graph.IsCompounded);
-            Assert.IsFalse(graph.IsConcentrated);
-            Assert.IsFalse(graph.IsLandscape);
-            Assert.IsFalse(graph.IsReMinCross);
-            Assert.IsFalse(graph.IsHtmlLabel);
-            Assert.IsNull(graph.Label);
-            Assert.AreEqual(GraphvizLabelJustification.C, graph.LabelJustification);
-            Assert.IsNotNull(graph.Layers);
-            Assert.AreEqual(1.0, graph.McLimit);
-            Assert.AreEqual(0.25, graph.NodeSeparation);
-            Assert.AreEqual(GraphvizRankDirection.TB, graph.RankDirection);
-            Assert.AreEqual(0.5, graph.RankSeparation);
-            Assert.AreEqual(-1, graph.NsLimit);
-            Assert.AreEqual(-1, graph.NsLimit1);
-            Assert.AreEqual(GraphvizOutputMode.BreadthFirst, graph.OutputOrder);
-            Assert.AreEqual(GraphvizPageDirection.BL, graph.PageDirection);
-            Assert.IsNotNull(graph.PageSize);
-            Assert.Zero(graph.PageSize.Width);
-            Assert.Zero(graph.PageSize.Height);
-            Assert.Zero(graph.Quantum);
-            Assert.AreEqual(GraphvizRatioMode.Auto, graph.Ratio);
-            Assert.AreEqual(0.96, graph.Resolution);
-            Assert.Zero(graph.Rotate);
-            Assert.AreEqual(8, graph.SamplePoints);
-            Assert.AreEqual(30, graph.SearchSize);
-            Assert.IsNotNull(graph.Size);
-            Assert.Zero(graph.Size.Width);
-            Assert.Zero(graph.Size.Height);
-            Assert.AreEqual(GraphvizSplineType.Spline, graph.Splines);
-            Assert.IsNull(graph.StyleSheet);
+            graph.Comment.Should().BeNull();
+            graph.Url.Should().BeNull();
+            graph.BackgroundColor.Should().Be(GraphvizColor.White);
+            graph.ClusterRank.Should().Be(GraphvizClusterMode.Local);
+            graph.Font.Should().BeNull();
+            graph.FontColor.Should().Be(GraphvizColor.Black);
+            graph.PenWidth.Should().Be(1.0);
+            graph.IsCentered.Should().BeFalse();
+            graph.IsCompounded.Should().BeFalse();
+            graph.IsConcentrated.Should().BeFalse();
+            graph.IsLandscape.Should().BeFalse();
+            graph.IsReMinCross.Should().BeFalse();
+            graph.IsHtmlLabel.Should().BeFalse();
+            graph.Label.Should().BeNull();
+            graph.LabelJustification.Should().Be(GraphvizLabelJustification.C);
+            graph.Layers.Should().NotBeNull();
+            graph.McLimit.Should().Be(1.0);
+            graph.NodeSeparation.Should().Be(0.25);
+            graph.RankDirection.Should().Be(GraphvizRankDirection.TB);
+            graph.RankSeparation.Should().Be(0.5);
+            graph.NsLimit.Should().Be(-1);
+            graph.NsLimit1.Should().Be(-1);
+            graph.OutputOrder.Should().Be(GraphvizOutputMode.BreadthFirst);
+            graph.PageDirection.Should().Be(GraphvizPageDirection.BL);
+            graph.PageSize.Should().NotBeNull();
+            graph.PageSize.Width.Should().BeApproximately(0, float.Epsilon);
+            graph.PageSize.Height.Should().BeApproximately(0, float.Epsilon);
+            graph.Quantum.Should().BeApproximately(0, double.Epsilon);
+            graph.Ratio.Should().Be(GraphvizRatioMode.Auto);
+            graph.Resolution.Should().Be(0.96);
+            graph.Rotate.Should().Be(0);
+            graph.SamplePoints.Should().Be(8);
+            graph.SearchSize.Should().Be(30);
+            graph.Size.Should().NotBeNull();
+            graph.Size.Width.Should().BeApproximately(0, float.Epsilon);
+            graph.Size.Height.Should().BeApproximately(0, float.Epsilon);
+            graph.Splines.Should().Be(GraphvizSplineType.Spline);
+            graph.StyleSheet.Should().BeNull();
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace FastGraph.Graphviz.Tests
                 throw new InvalidOperationException($"Graph has default {nameof(GraphvizGraph.Name)}.");
 
             graph.Name = "GraphName";
-            Assert.AreSame("GraphName", graph.Name);
+            graph.Name.Should().BeSameAs("GraphName");
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace FastGraph.Graphviz.Tests
             var graph = new GraphvizGraph();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.Name = default);
+            Invoking(() => graph.Name = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -200,8 +200,8 @@ namespace FastGraph.Graphviz.Tests
         [TestCaseSource(nameof(ToDotTestCases))]
         public void ToDot(GraphvizGraph graph, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, graph.ToDot());
-            Assert.AreEqual(expectedDot, graph.ToString());
+            graph.ToDot().Should().Be(expectedDot);
+            graph.ToString().Should().Be(expectedDot);
         }
 
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
@@ -238,12 +238,12 @@ namespace FastGraph.Graphviz.Tests
 
             using (CultureScope(EnglishCulture))
             {
-                Assert.AreEqual(expectedDot, convert(graph));
+                convert(graph).Should().Be(expectedDot);
             }
 
             using (CultureScope(FrenchCulture))
             {
-                Assert.AreEqual(expectedDot, convert(graph));
+                convert(graph).Should().Be(expectedDot);
             }
         }
     }

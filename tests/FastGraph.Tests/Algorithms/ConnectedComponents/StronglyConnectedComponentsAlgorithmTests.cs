@@ -21,49 +21,49 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new StronglyConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(graph.VertexCount, algorithm.Components.Count);
-            Assert.AreEqual(graph.VertexCount, algorithm.Roots.Count);
-            Assert.AreEqual(graph.VertexCount, algorithm.DiscoverTimes.Count);
+            algorithm.Components.Count.Should().Be(graph.VertexCount);
+            algorithm.Roots.Count.Should().Be(graph.VertexCount);
+            algorithm.DiscoverTimes.Count.Should().Be(graph.VertexCount);
             if (graph.VertexCount == 0)
             {
-                Assert.AreEqual(0, algorithm.Steps);
-                Assert.IsTrue(algorithm.ComponentCount == 0);
+                algorithm.Steps.Should().Be(0);
+                (algorithm.ComponentCount == 0).Should().BeTrue();
                 return;
             }
 
-            Assert.Positive(algorithm.ComponentCount);
-            Assert.LessOrEqual(algorithm.ComponentCount, graph.VertexCount);
+            algorithm.ComponentCount.Should().BePositive();
+            algorithm.ComponentCount.Should().BeLessThanOrEqualTo(graph.VertexCount);
             foreach (TVertex vertex in algorithm.VisitedGraph.Vertices)
             {
-                Assert.IsTrue(algorithm.Components.ContainsKey(vertex));
-                Assert.IsTrue(algorithm.DiscoverTimes.ContainsKey(vertex));
+                algorithm.Components.ContainsKey(vertex).Should().BeTrue();
+                algorithm.DiscoverTimes.ContainsKey(vertex).Should().BeTrue();
             }
 
-            Assert.Positive(algorithm.Steps);
+            algorithm.Steps.Should().BePositive();
             AssertStepsProperties();
             foreach (KeyValuePair<TVertex, int> pair in algorithm.Components)
             {
-                Assert.GreaterOrEqual(pair.Value, 0);
-                Assert.IsTrue(pair.Value < algorithm.ComponentCount, $"{pair.Value} < {algorithm.ComponentCount}");
+                pair.Value.Should().BeGreaterThanOrEqualTo(0);
+                (pair.Value < algorithm.ComponentCount).Should().BeTrue();
             }
 
             foreach (KeyValuePair<TVertex, int> time in algorithm.DiscoverTimes)
             {
-                Assert.IsNotNull(time.Key);
+                time.Key.Should().NotBeNull();
             }
 
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.GreaterOrEqual(algorithm.Components[vertex], 0);
+                algorithm.Components[vertex].Should().BeGreaterThanOrEqualTo(0);
             }
 
             #region Local function
 
             void AssertStepsProperties()
             {
-                Assert.GreaterOrEqual(algorithm.Steps, 0);
-                Assert.AreEqual(algorithm.Steps, algorithm.VerticesPerStep!.Count);
-                Assert.AreEqual(algorithm.Steps, algorithm.ComponentsPerStep!.Count);
+                algorithm.Steps.Should().BeGreaterThanOrEqualTo(0);
+                algorithm.VerticesPerStep!.Count.Should().Be(algorithm.Steps);
+                algorithm.ComponentsPerStep!.Count.Should().Be(algorithm.Steps);
             }
 
             #endregion
@@ -94,15 +94,15 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreEqual(0, algo.ComponentCount);
-                CollectionAssert.IsEmpty(algo.Components);
-                CollectionAssert.IsEmpty(algo.Graphs);
-                CollectionAssert.IsEmpty(algo.Roots);
+                algo.ComponentCount.Should().Be(0);
+                algo.Components.Should().BeEmpty();
+                algo.Graphs.Should().BeEmpty();
+                algo.Roots.Should().BeEmpty();
 
-                Assert.AreEqual(0, algo.Steps);
-                Assert.IsNull(algo.VerticesPerStep);
-                Assert.IsNull(algo.ComponentsPerStep);
-                CollectionAssert.IsEmpty(algo.DiscoverTimes);
+                algo.Steps.Should().Be(0);
+                algo.VerticesPerStep.Should().BeNull();
+                algo.ComponentsPerStep.Should().BeNull();
+                algo.DiscoverTimes.Should().BeEmpty();
             }
 
             #endregion
@@ -117,22 +117,15 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -152,19 +145,15 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(1, algorithm.ComponentCount);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0
-                },
-                algorithm.Components);
-            Assert.AreEqual(1, algorithm.Graphs.Length);
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 3 },
-                algorithm.Graphs[0].Vertices);
+            algorithm.ComponentCount.Should().Be(1);
+            algorithm.Components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 0,
+                [2] = 0,
+                [3] = 0
+            });
+            algorithm.Graphs.Length.Should().Be(1);
+            algorithm.Graphs[0].Vertices.Should().BeEquivalentTo(new[] { 1, 2, 3 });
         }
 
         [Test]
@@ -183,27 +172,19 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(3, algorithm.ComponentCount);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 2,
-                    [2] = 2,
-                    [3] = 2,
-                    [4] = 1,
-                    [5] = 0
-                },
-                algorithm.Components);
-            Assert.AreEqual(3, algorithm.Graphs.Length);
-            CollectionAssert.AreEquivalent(
-                new[] { 5 },
-                algorithm.Graphs[0].Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { 4 },
-                algorithm.Graphs[1].Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 3 },
-                algorithm.Graphs[2].Vertices);
+            algorithm.ComponentCount.Should().Be(3);
+            algorithm.Components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 2,
+                [2] = 2,
+                [3] = 2,
+                [4] = 1,
+                [5] = 0
+            });
+            algorithm.Graphs.Length.Should().Be(3);
+            algorithm.Graphs[0].Vertices.Should().BeEquivalentTo(new[] { 5 });
+            algorithm.Graphs[1].Vertices.Should().BeEquivalentTo(new[] { 4 });
+            algorithm.Graphs[2].Vertices.Should().BeEquivalentTo(new[] { 1, 2, 3 });
         }
 
         [Test]
@@ -232,34 +213,24 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new StronglyConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(4, algorithm.ComponentCount);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [1] = 2,
-                    [2] = 2,
-                    [3] = 2,
-                    [4] = 0,
-                    [5] = 1,
-                    [6] = 0,
-                    [7] = 1,
-                    [8] = 1,
-                    [10] = 3
-                },
-                algorithm.Components);
-            Assert.AreEqual(4, algorithm.Graphs.Length);
-            CollectionAssert.AreEquivalent(
-                new[] { 4, 6 },
-                algorithm.Graphs[0].Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { 5, 7, 8 },
-                algorithm.Graphs[1].Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 3 },
-                algorithm.Graphs[2].Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { 10 },
-                algorithm.Graphs[3].Vertices);
+            algorithm.ComponentCount.Should().Be(4);
+            algorithm.Components.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 2,
+                [2] = 2,
+                [3] = 2,
+                [4] = 0,
+                [5] = 1,
+                [6] = 0,
+                [7] = 1,
+                [8] = 1,
+                [10] = 3
+            });
+            algorithm.Graphs.Length.Should().Be(4);
+            algorithm.Graphs[0].Vertices.Should().BeEquivalentTo(new[] { 4, 6 });
+            algorithm.Graphs[1].Vertices.Should().BeEquivalentTo(new[] { 5, 7, 8 });
+            algorithm.Graphs[2].Vertices.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+            algorithm.Graphs[3].Vertices.Should().BeEquivalentTo(new[] { 10 });
         }
 
         [Test]

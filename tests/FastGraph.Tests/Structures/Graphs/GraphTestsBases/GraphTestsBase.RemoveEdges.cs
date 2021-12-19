@@ -1,6 +1,5 @@
 #nullable enable
 
-using NUnit.Framework;
 using static FastGraph.Tests.GraphTestHelpers;
 
 namespace FastGraph.Tests.Structures
@@ -18,13 +17,12 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -43,36 +41,36 @@ namespace FastGraph.Tests.Structures
             var edgeNotEquatable = new Edge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            graph.RemoveEdge(edgeWithVertexNotInGraph1).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            graph.RemoveEdge(edgeWithVertexNotInGraph2).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+            graph.RemoveEdge(edgeWithVerticesNotInGraph).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotEquatable));
+            graph.RemoveEdge(edgeNotEquatable).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            graph.RemoveEdge(edge13Bis).Should().BeTrue();
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge31));
+            graph.RemoveEdge(edge31).Should().BeTrue();
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge12));
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
+            graph.RemoveEdge(edge12).Should().BeTrue();
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge14).Should().BeTrue();
+            graph.RemoveEdge(edge24).Should().BeTrue();
+            graph.RemoveEdge(edge33).Should().BeTrue();
             CheckCounters(5);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
@@ -81,8 +79,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -97,7 +95,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -113,27 +111,27 @@ namespace FastGraph.Tests.Structures
             var edgeNotEquatable = new Edge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotEquatable));
+            graph.RemoveEdge(edgeNotEquatable).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            graph.RemoveEdge(edge13Bis).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge31));
+            graph.RemoveEdge(edge31).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge12));
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
+            graph.RemoveEdge(edge12).Should().BeTrue();
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge14).Should().BeTrue();
+            graph.RemoveEdge(edge24).Should().BeTrue();
+            graph.RemoveEdge(edge33).Should().BeTrue();
             CheckCounter(5);
             AssertEmptyGraph(graph);    // Vertices removed in the same time as edges
 
@@ -141,7 +139,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -156,7 +154,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -174,36 +172,36 @@ namespace FastGraph.Tests.Structures
             var edgeNotEquatable = new Edge<int>(0, 1);
             graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            graph.RemoveEdge(edgeWithVertexNotInGraph1).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            graph.RemoveEdge(edgeWithVertexNotInGraph2).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+            graph.RemoveEdge(edgeWithVerticesNotInGraph).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsTrue(graph.RemoveEdge(edgeNotEquatable));
+            graph.RemoveEdge(edgeNotEquatable).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge02, edge03, edge13, edge20, edge22 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge02));
+            graph.RemoveEdge(edge02).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge20));
+            graph.RemoveEdge(edge20).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge03, edge13, edge22 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge03));
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge22));
+            graph.RemoveEdge(edge03).Should().BeTrue();
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge22).Should().BeTrue();
             CheckCounter(3);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertNoEdge(graph);
@@ -212,7 +210,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -236,25 +234,25 @@ namespace FastGraph.Tests.Structures
             var edgeNotEquatable = new Edge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
-            Assert.IsFalse(graph.RemoveEdge(edgeNotEquatable));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
+            graph.RemoveEdge(edgeWithVertexNotInGraph1).Should().BeFalse();
+            graph.RemoveEdge(edgeWithVertexNotInGraph2).Should().BeFalse();
+            graph.RemoveEdge(edgeWithVerticesNotInGraph).Should().BeFalse();
+            graph.RemoveEdge(edgeNotEquatable).Should().BeFalse();
 
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            graph.RemoveEdge(edge13Bis).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge31));
+            graph.RemoveEdge(edge31).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge14, edge24, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge12));
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
+            graph.RemoveEdge(edge12).Should().BeTrue();
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge14).Should().BeTrue();
+            graph.RemoveEdge(edge24).Should().BeTrue();
+            graph.RemoveEdge(edge33).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
 
@@ -311,13 +309,12 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -336,37 +333,37 @@ namespace FastGraph.Tests.Structures
             var edgeEquatable = new EquatableEdge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            graph.RemoveEdge(edgeWithVertexNotInGraph1).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            graph.RemoveEdge(edgeWithVertexNotInGraph2).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+            graph.RemoveEdge(edgeWithVerticesNotInGraph).Should().BeFalse();
             CheckCounters(0);
 
-            Assert.IsTrue(graph.RemoveEdge(edgeEquatable));
+            graph.RemoveEdge(edgeEquatable).Should().BeTrue();
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            graph.RemoveEdge(edge13Bis).Should().BeTrue();
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge31));
+            graph.RemoveEdge(edge31).Should().BeTrue();
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge14).Should().BeTrue();
+            graph.RemoveEdge(edge24).Should().BeTrue();
+            graph.RemoveEdge(edge33).Should().BeTrue();
             CheckCounters(4);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
@@ -375,8 +372,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -391,7 +388,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -406,27 +403,27 @@ namespace FastGraph.Tests.Structures
             var edgeEquatable = new EquatableEdge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsTrue(graph.RemoveEdge(edgeEquatable));
+            graph.RemoveEdge(edgeEquatable).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge13));
+            graph.RemoveEdge(edge13).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge31));
+            graph.RemoveEdge(edge31).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge14, edge24, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
+            graph.RemoveEdge(edge14).Should().BeTrue();
+            graph.RemoveEdge(edge24).Should().BeTrue();
+            graph.RemoveEdge(edge33).Should().BeTrue();
             CheckCounter(3);
             AssertEmptyGraph(graph);    // Vertices removed in the same time as edges
 
@@ -434,7 +431,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -449,7 +446,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -467,36 +464,36 @@ namespace FastGraph.Tests.Structures
             var edgeNotEquatable = new EquatableEdge<int>(0, 1);
             graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
+            graph.RemoveEdge(edgeWithVertexNotInGraph1).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
+            graph.RemoveEdge(edgeWithVertexNotInGraph2).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+            graph.RemoveEdge(edgeWithVerticesNotInGraph).Should().BeFalse();
             CheckCounter(0);
 
-            Assert.IsTrue(graph.RemoveEdge(edgeNotEquatable));
+            graph.RemoveEdge(edgeNotEquatable).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge02, edge03, edge13, edge20, edge22 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge02));
+            graph.RemoveEdge(edge02).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge20));
+            graph.RemoveEdge(edge20).Should().BeTrue();
             CheckCounter(1);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertHasEdges(graph, new[] { edge03, edge13, edge22 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge03));
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge22));
+            graph.RemoveEdge(edge03).Should().BeTrue();
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge22).Should().BeTrue();
             CheckCounter(3);
             AssertHasVertices(graph, new[] { 0, 1, 2, 3 });
             AssertNoEdge(graph);
@@ -505,7 +502,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -529,27 +526,27 @@ namespace FastGraph.Tests.Structures
             var edgeEquatable = new EquatableEdge<int>(1, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsFalse(graph.RemoveEdge(edgeNotInGraph));
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph1));
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVertexNotInGraph2));
-            Assert.IsFalse(graph.RemoveEdge(edgeWithVerticesNotInGraph));
+            graph.RemoveEdge(edgeNotInGraph).Should().BeFalse();
+            graph.RemoveEdge(edgeWithVertexNotInGraph1).Should().BeFalse();
+            graph.RemoveEdge(edgeWithVertexNotInGraph2).Should().BeFalse();
+            graph.RemoveEdge(edgeWithVerticesNotInGraph).Should().BeFalse();
 
-            Assert.IsTrue(graph.RemoveEdge(edgeEquatable));
+            graph.RemoveEdge(edgeEquatable).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge13Bis));
+            graph.RemoveEdge(edge13Bis).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge31));
+            graph.RemoveEdge(edge31).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge33 });
 
-            Assert.IsTrue(graph.RemoveEdge(edge13));
-            Assert.IsTrue(graph.RemoveEdge(edge14));
-            Assert.IsTrue(graph.RemoveEdge(edge24));
-            Assert.IsTrue(graph.RemoveEdge(edge33));
+            graph.RemoveEdge(edge13).Should().BeTrue();
+            graph.RemoveEdge(edge14).Should().BeTrue();
+            graph.RemoveEdge(edge24).Should().BeTrue();
+            graph.RemoveEdge(edge33).Should().BeTrue();
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
         }
@@ -561,7 +558,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(default));
+            Invoking(() => graph.RemoveEdge(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -572,7 +569,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdge(default));
+            Invoking(() => graph.RemoveEdge(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -585,13 +582,12 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -606,15 +602,15 @@ namespace FastGraph.Tests.Structures
             graph.AddVertexRange(new[] { 1, 2, 3, 4 });
             graph.AddEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveEdgeIf(edge => edge.Target == 5));
+            graph.RemoveEdgeIf(edge => edge.Target == 5).Should().Be(0);
             CheckCounters(0);
 
-            Assert.AreEqual(2, graph.RemoveEdgeIf(edge => edge.Source == 3));
+            graph.RemoveEdgeIf(edge => edge.Source == 3).Should().Be(2);
             CheckCounters(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
 
-            Assert.AreEqual(5, graph.RemoveEdgeIf(_ => true));
+            graph.RemoveEdgeIf(_ => true).Should().Be(5);
             CheckCounters(5);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
@@ -623,8 +619,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -639,7 +635,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -653,15 +649,15 @@ namespace FastGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
             graph.AddEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveEdgeIf(edge => edge.Target == 5));
+            graph.RemoveEdgeIf(edge => edge.Target == 5).Should().Be(0);
             CheckCounter(0);
 
-            Assert.AreEqual(2, graph.RemoveEdgeIf(edge => edge.Source == 3));
+            graph.RemoveEdgeIf(edge => edge.Source == 3).Should().Be(2);
             CheckCounter(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
 
-            Assert.AreEqual(5, graph.RemoveEdgeIf(_ => true));
+            graph.RemoveEdgeIf(_ => true).Should().Be(5);
             CheckCounter(5);
             AssertEmptyGraph(graph);    // Vertices removed in the same time as edges
 
@@ -669,7 +665,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -689,13 +685,13 @@ namespace FastGraph.Tests.Structures
             graph.AddVertexRange(new[] { 1, 2, 3, 4 });
             graph.AddEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveEdgeIf(edge => edge.Target == 5));
+            graph.RemoveEdgeIf(edge => edge.Target == 5).Should().Be(0);
 
-            Assert.AreEqual(2, graph.RemoveEdgeIf(edge => edge.Source == 3));
+            graph.RemoveEdgeIf(edge => edge.Source == 3).Should().Be(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24 });
 
-            Assert.AreEqual(5, graph.RemoveEdgeIf(_ => true));
+            graph.RemoveEdgeIf(_ => true).Should().Be(5);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
         }
@@ -707,7 +703,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(default));
+            Invoking(() => graph.RemoveEdgeIf(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -718,7 +714,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdgeIf(default));
+            Invoking(() => graph.RemoveEdgeIf(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -731,18 +727,17 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, _ => true));
+            graph.RemoveOutEdgeIf(1, _ => true).Should().Be(0);
             CheckCounters(0);
             AssertEmptyGraph(graph);
 
@@ -755,17 +750,17 @@ namespace FastGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(3, graph.RemoveOutEdgeIf(1, edge => edge.Target >= 3));
+            graph.RemoveOutEdgeIf(1, edge => edge.Target >= 3).Should().Be(3);
             CheckCounters(3);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(3, edge => edge.Target > 5));
+            graph.RemoveOutEdgeIf(3, edge => edge.Target > 5).Should().Be(0);
             CheckCounters(0);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, _ => true));
+            graph.RemoveOutEdgeIf(3, _ => true).Should().Be(2);
             CheckCounters(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24 });
@@ -774,8 +769,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -790,12 +785,12 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(6, _ => true));
+            graph.RemoveOutEdgeIf(6, _ => true).Should().Be(0);
             CheckCounter(0);
             AssertNoEdge(graph);
 
@@ -807,15 +802,15 @@ namespace FastGraph.Tests.Structures
             var edge22 = new Edge<int>(2, 2);
             graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(0, edge => edge.Target >= 2));
+            graph.RemoveOutEdgeIf(0, edge => edge.Target >= 2).Should().Be(2);
             CheckCounter(2);
             AssertHasEdges(graph, new[] { edge01, edge13, edge20, edge22 });
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(2, edge => edge.Target > 4));
+            graph.RemoveOutEdgeIf(2, edge => edge.Target > 4).Should().Be(0);
             CheckCounter(0);
             AssertHasEdges(graph, new[] { edge01, edge13, edge20, edge22 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(2, _ => true));
+            graph.RemoveOutEdgeIf(2, _ => true).Should().Be(2);
             CheckCounter(2);
             AssertHasEdges(graph, new[] { edge01, edge13 });
 
@@ -823,7 +818,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -833,7 +828,7 @@ namespace FastGraph.Tests.Structures
         protected static void RemoveOutEdgeIf_Clusters_Test(
             ClusteredAdjacencyGraph<int, Edge<int>> graph)
         {
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(1, _ => true));
+            graph.RemoveOutEdgeIf(1, _ => true).Should().Be(0);
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -845,15 +840,15 @@ namespace FastGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(3, graph.RemoveOutEdgeIf(1, edge => edge.Target >= 3));
+            graph.RemoveOutEdgeIf(1, edge => edge.Target >= 3).Should().Be(3);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveOutEdgeIf(3, edge => edge.Target > 5));
+            graph.RemoveOutEdgeIf(3, edge => edge.Target > 5).Should().Be(0);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveOutEdgeIf(3, _ => true));
+            graph.RemoveOutEdgeIf(3, _ => true).Should().Be(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24 });
         }
@@ -864,7 +859,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, default));
+            Invoking(() => graph.RemoveOutEdgeIf(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -876,9 +871,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), default));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, default));
+            Invoking(() => graph.RemoveOutEdgeIf(default, _ => true)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveOutEdgeIf(new TVertex(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveOutEdgeIf(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
@@ -892,9 +887,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(new TVertex(), default));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveOutEdgeIf(default, default));
+            Invoking(() => graph.RemoveOutEdgeIf(default, _ => true)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveOutEdgeIf(new TVertex(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveOutEdgeIf(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
@@ -909,18 +904,17 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(1, _ => true));
+            graph.RemoveInEdgeIf(1, _ => true).Should().Be(0);
             CheckCounters(0);
             AssertEmptyGraph(graph);
 
@@ -933,17 +927,17 @@ namespace FastGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveInEdgeIf(3, edge => edge.Source == 1));
+            graph.RemoveInEdgeIf(3, edge => edge.Source == 1).Should().Be(2);
             CheckCounters(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(3, edge => edge.Target > 5));
+            graph.RemoveInEdgeIf(3, edge => edge.Target > 5).Should().Be(0);
             CheckCounters(0);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, _ => true));
+            graph.RemoveInEdgeIf(2, _ => true).Should().Be(1);
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge14, edge24, edge31, edge33 });
@@ -952,8 +946,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -968,12 +962,12 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(6, _ => true));
+            graph.RemoveInEdgeIf(6, _ => true).Should().Be(0);
             CheckCounter(0);
             AssertNoEdge(graph);
 
@@ -985,15 +979,15 @@ namespace FastGraph.Tests.Structures
             var edge22 = new Edge<int>(2, 2);
             graph.AddEdgeRange(new[] { edge01, edge02, edge03, edge13, edge20, edge22 });
 
-            Assert.AreEqual(1, graph.RemoveInEdgeIf(2, edge => edge.Source == 0));
+            graph.RemoveInEdgeIf(2, edge => edge.Source == 0).Should().Be(1);
             CheckCounter(1);
             AssertHasEdges(graph, new[] { edge01, edge03, edge13, edge20, edge22 });
 
-            Assert.AreEqual(0, graph.RemoveInEdgeIf(2, edge => edge.Target > 4));
+            graph.RemoveInEdgeIf(2, edge => edge.Target > 4).Should().Be(0);
             CheckCounter(0);
             AssertHasEdges(graph, new[] { edge01, edge03, edge13, edge20, edge22 });
 
-            Assert.AreEqual(1, graph.RemoveInEdgeIf(1, _ => true));
+            graph.RemoveInEdgeIf(1, _ => true).Should().Be(1);
             CheckCounter(1);
             AssertHasEdges(graph, new[] { edge03, edge13, edge20, edge22 });
 
@@ -1001,7 +995,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -1014,7 +1008,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, default));
+            Invoking(() => graph.RemoveInEdgeIf(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1023,9 +1017,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(new TestVertex("v1"), default));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveInEdgeIf(default, default));
+            Invoking(() => graph.RemoveInEdgeIf(default, _ => true)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveInEdgeIf(new TestVertex("v1"), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveInEdgeIf(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -1039,18 +1033,17 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
 
-            Assert.AreEqual(0, graph.RemoveAdjacentEdgeIf(1, _ => true));
+            graph.RemoveAdjacentEdgeIf(1, _ => true).Should().Be(0);
             CheckCounters(0);
             AssertEmptyGraph(graph);
 
@@ -1063,17 +1056,17 @@ namespace FastGraph.Tests.Structures
             var edge33 = new Edge<int>(3, 3);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(4, graph.RemoveAdjacentEdgeIf(1, edge => edge.Source >= 3 || edge.Target >= 3));
+            graph.RemoveAdjacentEdgeIf(1, edge => edge.Source >= 3 || edge.Target >= 3).Should().Be(4);
             CheckCounters(4);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveAdjacentEdgeIf(3, edge => edge.Target > 5));
+            graph.RemoveAdjacentEdgeIf(3, edge => edge.Target > 5).Should().Be(0);
             CheckCounters(0);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24, edge33 });
 
-            Assert.AreEqual(1, graph.RemoveAdjacentEdgeIf(3, _ => true));
+            graph.RemoveAdjacentEdgeIf(3, _ => true).Should().Be(1);
             CheckCounters(1);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge24 });
@@ -1082,8 +1075,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -1095,9 +1088,9 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(default, _ => true));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(new TestVertex("v1"), default));
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveAdjacentEdgeIf(default, default));
+            Invoking(() => graph.RemoveAdjacentEdgeIf(default, _ => true)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveAdjacentEdgeIf(new TestVertex("v1"), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.RemoveAdjacentEdgeIf(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }

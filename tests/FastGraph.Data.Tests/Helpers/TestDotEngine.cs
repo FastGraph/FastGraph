@@ -1,6 +1,5 @@
 #nullable enable
 
-using NUnit.Framework;
 using FastGraph.Graphviz;
 using FastGraph.Graphviz.Dot;
 
@@ -19,7 +18,7 @@ namespace FastGraph.Data.Tests
         /// <inheritdoc />
         public string Run(GraphvizImageType imageType, string dot, string outputFilePath)
         {
-            Assert.AreEqual(ExpectedDot, dot);
+            dot.Should().Be(ExpectedDot);
             return outputFilePath;
         }
     }

@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -23,12 +22,12 @@ namespace FastGraph.Tests.Structures
 
             graph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
 
-            Assert.AreSame(edge11, graph.AdjacentEdge(1, 0));
-            Assert.AreSame(edge13, graph.AdjacentEdge(1, 2));
-            Assert.AreSame(edge41, graph.AdjacentEdge(1, 3));
-            Assert.AreSame(edge13, graph.AdjacentEdge(3, 0));
-            Assert.AreSame(edge33, graph.AdjacentEdge(3, 1));
-            Assert.AreSame(edge24, graph.AdjacentEdge(4, 0));
+            graph.AdjacentEdge(1, 0).Should().BeSameAs(edge11);
+            graph.AdjacentEdge(1, 2).Should().BeSameAs(edge13);
+            graph.AdjacentEdge(1, 3).Should().BeSameAs(edge41);
+            graph.AdjacentEdge(3, 0).Should().BeSameAs(edge13);
+            graph.AdjacentEdge(3, 1).Should().BeSameAs(edge33);
+            graph.AdjacentEdge(4, 0).Should().BeSameAs(edge24);
         }
 
         protected static void AdjacentEdge_ImmutableGraph_Test(
@@ -45,12 +44,12 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
             IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.AreSame(edge11, graph.AdjacentEdge(1, 0));
-            Assert.AreSame(edge13, graph.AdjacentEdge(1, 2));
-            Assert.AreSame(edge41, graph.AdjacentEdge(1, 3));
-            Assert.AreSame(edge13, graph.AdjacentEdge(3, 0));
-            Assert.AreSame(edge33, graph.AdjacentEdge(3, 1));
-            Assert.AreSame(edge24, graph.AdjacentEdge(4, 0));
+            graph.AdjacentEdge(1, 0).Should().BeSameAs(edge11);
+            graph.AdjacentEdge(1, 2).Should().BeSameAs(edge13);
+            graph.AdjacentEdge(1, 3).Should().BeSameAs(edge41);
+            graph.AdjacentEdge(3, 0).Should().BeSameAs(edge13);
+            graph.AdjacentEdge(3, 1).Should().BeSameAs(edge33);
+            graph.AdjacentEdge(4, 0).Should().BeSameAs(edge24);
         }
 
         protected static void AdjacentEdge_NullThrows_Test<TVertex, TEdge>(
@@ -61,7 +60,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdge(default, 0));
+            Invoking(() => graph.AdjacentEdge(default, 0)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -72,7 +71,7 @@ namespace FastGraph.Tests.Structures
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentEdge(vertex1, 0));
+            Invoking(() => graph.AdjacentEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             graph.AddVertex(vertex1);
             graph.AddVertex(vertex2);
@@ -92,7 +91,7 @@ namespace FastGraph.Tests.Structures
 
             IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentEdge(vertex1, 0));
+            Invoking(() => graph.AdjacentEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             wrappedGraph.AddVertex(vertex1);
             wrappedGraph.AddVertex(vertex2);
@@ -162,9 +161,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.IsAdjacentEdgesEmpty(default));
-            Assert.Throws<ArgumentNullException>(() => graph.AdjacentDegree(default));
-            Assert.Throws<ArgumentNullException>(() => graph.AdjacentEdges(default));
+            Invoking(() => graph.IsAdjacentEdgesEmpty(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.AdjacentDegree(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.AdjacentEdges(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -178,9 +177,9 @@ namespace FastGraph.Tests.Structures
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             var vertex = new TVertex();
-            Assert.Throws<VertexNotFoundException>(() => graph.IsAdjacentEdgesEmpty(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.AdjacentEdges(vertex));
+            Invoking(() => graph.IsAdjacentEdgesEmpty(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.AdjacentDegree(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.AdjacentEdges(vertex)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 

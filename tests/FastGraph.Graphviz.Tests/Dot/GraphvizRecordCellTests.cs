@@ -15,11 +15,11 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var cell = new GraphvizRecordCell();
-            Assert.IsFalse(cell.HasPort);
-            Assert.IsNull(cell.Port);
-            Assert.IsFalse(cell.HasText);
-            Assert.IsNull(cell.Text);
-            CollectionAssert.IsEmpty(cell.Cells);
+            cell.HasPort.Should().BeFalse();
+            cell.Port.Should().BeNull();
+            cell.HasText.Should().BeFalse();
+            cell.Text.Should().BeNull();
+            cell.Cells.Should().BeEmpty();
         }
 
         [Test]
@@ -28,25 +28,25 @@ namespace FastGraph.Graphviz.Tests
             var cell = new GraphvizRecordCell();
             if (cell.Port != default)
                 throw new InvalidOperationException($"Cell has not default {nameof(GraphvizRecordCell.Port)}.");
-            Assert.IsFalse(cell.HasPort);
+            cell.HasPort.Should().BeFalse();
 
 #pragma warning disable CS8625
             cell.Port = default;
 #pragma warning restore CS8625
 
-            Assert.IsFalse(cell.HasPort);
-            Assert.IsNull(cell.Port);
+            cell.HasPort.Should().BeFalse();
+            cell.Port.Should().BeNull();
 
             cell.Port = string.Empty;
 
-            Assert.IsFalse(cell.HasPort);
-            Assert.IsEmpty(cell.Port);
+            cell.HasPort.Should().BeFalse();
+            cell.Port.Should().BeEmpty();
 
             const string port = "TestPort";
             cell.Port = port;
 
-            Assert.IsTrue(cell.HasPort);
-            Assert.AreEqual(port, cell.Port);
+            cell.HasPort.Should().BeTrue();
+            cell.Port.Should().Be(port);
         }
 
         [Test]
@@ -55,25 +55,25 @@ namespace FastGraph.Graphviz.Tests
             var cell = new GraphvizRecordCell();
             if (cell.Text != default)
                 throw new InvalidOperationException($"Cell has not default {nameof(GraphvizRecordCell.Text)}.");
-            Assert.IsFalse(cell.HasText);
+            cell.HasText.Should().BeFalse();
 
 #pragma warning disable CS8625
             cell.Port = default;
 #pragma warning restore CS8625
 
-            Assert.IsFalse(cell.HasText);
-            Assert.IsNull(cell.Text);
+            cell.HasText.Should().BeFalse();
+            cell.Text.Should().BeNull();
 
             cell.Text = string.Empty;
 
-            Assert.IsFalse(cell.HasText);
-            Assert.IsEmpty(cell.Text);
+            cell.HasText.Should().BeFalse();
+            cell.Text.Should().BeEmpty();
 
             const string text = "TestText";
             cell.Text = text;
 
-            Assert.IsTrue(cell.HasText);
-            Assert.AreEqual(text, cell.Text);
+            cell.HasText.Should().BeTrue();
+            cell.Text.Should().Be(text);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace FastGraph.Graphviz.Tests
 
             var recordCollection = new GraphvizRecordCellCollection();
             cell.Cells = recordCollection;
-            Assert.AreSame(recordCollection, cell.Cells);
+            cell.Cells.Should().BeSameAs(recordCollection);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace FastGraph.Graphviz.Tests
             var cell = new GraphvizRecordCell();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => cell.Cells = default);
+            Invoking(() => cell.Cells = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -363,8 +363,8 @@ namespace FastGraph.Graphviz.Tests
         [TestCaseSource(nameof(ToDotTestCases))]
         public void ToDot(GraphvizRecordCell recordCell, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, recordCell.ToDot());
-            Assert.AreEqual(expectedDot, recordCell.ToString());
+            recordCell.ToDot().Should().Be(expectedDot);
+            recordCell.ToString().Should().Be(expectedDot);
         }
     }
 }

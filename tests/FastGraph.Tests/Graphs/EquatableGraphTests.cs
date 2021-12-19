@@ -724,12 +724,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => EquateGraphs.Equate<int, Edge<int>>(default, default, EqualityComparer<int>.Default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => EquateGraphs.Equate<int, Edge<int>>(default, default, default, EqualityComparer<Edge<int>>.Default));
-            Assert.Throws<ArgumentNullException>(
-                () => EquateGraphs.Equate<int, Edge<int>>(default, default, default, default));
+            Invoking(() => EquateGraphs.Equate<int, Edge<int>>(default, default, EqualityComparer<int>.Default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => EquateGraphs.Equate<int, Edge<int>>(default, default, default, EqualityComparer<Edge<int>>.Default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => EquateGraphs.Equate<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed

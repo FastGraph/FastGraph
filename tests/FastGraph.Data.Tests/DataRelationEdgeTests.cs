@@ -39,11 +39,11 @@ namespace FastGraph.Data.Tests
 
             void CheckRelation(DataRelationEdge e, DataRelation r)
             {
-                Assert.IsNotNull(e.Source);
-                Assert.AreSame(r.ParentTable, e.Source);
+                e.Source.Should().NotBeNull();
+                e.Source.Should().BeSameAs(r.ParentTable);
 
-                Assert.IsNotNull(e.Target);
-                Assert.AreSame(r.ChildTable, e.Target);
+                e.Target.Should().NotBeNull();
+                e.Target.Should().BeSameAs(r.ChildTable);
             }
 
             #endregion
@@ -55,7 +55,7 @@ namespace FastGraph.Data.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => new DataRelationEdge(default));
+            Invoking(() => new DataRelationEdge(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
@@ -70,20 +70,20 @@ namespace FastGraph.Data.Tests
             var relation2 = new DataRelation("CustomersOrders", customerIdCol, orderIdCol);
             var relation3 = new DataRelation("CustomersOrders", orderIdCol, customerIdCol);
 
-            Assert.AreEqual(relation1, relation1);
+            relation1.Should().Be(relation1);
 
-            Assert.AreNotEqual(relation1, relation2);
-            Assert.AreNotEqual(relation2, relation1);
-            Assert.IsFalse(relation1.Equals(relation2));
-            Assert.IsFalse(relation2.Equals(relation1));
+            relation2.Should().NotBe(relation1);
+            relation1.Should().NotBe(relation2);
+            relation1.Equals(relation2).Should().BeFalse();
+            relation2.Equals(relation1).Should().BeFalse();
 
-            Assert.AreNotEqual(relation1, relation3);
-            Assert.AreNotEqual(relation3, relation1);
-            Assert.IsFalse(relation1.Equals(relation3));
-            Assert.IsFalse(relation3.Equals(relation1));
+            relation3.Should().NotBe(relation1);
+            relation1.Should().NotBe(relation3);
+            relation1.Equals(relation3).Should().BeFalse();
+            relation3.Equals(relation1).Should().BeFalse();
 
-            Assert.AreNotEqual(relation1, default);
-            Assert.IsFalse(relation1.Equals(default));
+            relation1.Should().NotBe(default);
+            relation1.Equals(default).Should().BeFalse();
 
             #region Local function
 

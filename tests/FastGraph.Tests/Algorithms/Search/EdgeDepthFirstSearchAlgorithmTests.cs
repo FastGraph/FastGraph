@@ -32,13 +32,13 @@ namespace FastGraph.Tests.Algorithms.Search
 
             dfs.InitializeEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.EdgesColors[edge]);
+                dfs.EdgesColors[edge].Should().Be(GraphColor.White);
             };
 
             dfs.StartEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.EdgesColors[edge]);
-                Assert.IsFalse(parents.ContainsKey(edge));
+                dfs.EdgesColors[edge].Should().Be(GraphColor.White);
+                parents.ContainsKey(edge).Should().BeFalse();
                 parents[edge] = edge;
                 discoverTimes[edge] = time++;
             };
@@ -47,30 +47,30 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 parents[targetEdge] = edge;
 
-                Assert.AreEqual(GraphColor.White, dfs.EdgesColors[targetEdge]);
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[parents[targetEdge]]);
+                dfs.EdgesColors[targetEdge].Should().Be(GraphColor.White);
+                dfs.EdgesColors[parents[targetEdge]].Should().Be(GraphColor.Gray);
 
                 discoverTimes[targetEdge] = time++;
             };
 
             dfs.TreeEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[edge]);
+                dfs.EdgesColors[edge].Should().Be(GraphColor.Gray);
             };
 
             dfs.BackEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[edge]);
+                dfs.EdgesColors[edge].Should().Be(GraphColor.Gray);
             };
 
             dfs.ForwardOrCrossEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.EdgesColors[edge]);
+                dfs.EdgesColors[edge].Should().Be(GraphColor.Black);
             };
 
             dfs.FinishEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.EdgesColors[edge]);
+                dfs.EdgesColors[edge].Should().Be(GraphColor.Black);
                 finishTimes[edge] = time++;
             };
 
@@ -80,8 +80,8 @@ namespace FastGraph.Tests.Algorithms.Search
             // All vertices should be black
             foreach (TEdge edge in graph.Edges)
             {
-                Assert.IsTrue(dfs.EdgesColors.ContainsKey(edge));
-                Assert.AreEqual(dfs.EdgesColors[edge], GraphColor.Black);
+                dfs.EdgesColors.ContainsKey(edge).Should().BeTrue();
+                dfs.EdgesColors[edge].Should().Be(GraphColor.Black);
             }
 
             foreach (TEdge e1 in graph.Edges)
@@ -90,11 +90,10 @@ namespace FastGraph.Tests.Algorithms.Search
                 {
                     if (!e1.Equals(e2))
                     {
-                        Assert.IsTrue(
-                            finishTimes[e1] < discoverTimes[e2]
-                            || finishTimes[e2] < discoverTimes[e1]
-                            || (discoverTimes[e2] < discoverTimes[e1] && finishTimes[e1] < finishTimes[e2] && IsDescendant(parents, e1, e2))
-                            || (discoverTimes[e1] < discoverTimes[e2] && finishTimes[e2] < finishTimes[e1] && IsDescendant(parents, e2, e1)));
+                        (finishTimes[e1] < discoverTimes[e2]
+                         || finishTimes[e2] < discoverTimes[e1]
+                         || discoverTimes[e2] < discoverTimes[e1] && finishTimes[e1] < finishTimes[e2] && IsDescendant(parents, e1, e2)
+                         || discoverTimes[e1] < discoverTimes[e2] && finishTimes[e2] < finishTimes[e1] && IsDescendant(parents, e2, e1)).Should().BeTrue();
                     }
                 }
             }
@@ -135,11 +134,11 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 AssertAlgorithmState(algo, g);
                 if (vColors is null)
-                    CollectionAssert.IsEmpty(algo.EdgesColors);
+                    algo.EdgesColors.Should().BeEmpty();
                 else
-                    Assert.AreSame(vColors, algo.EdgesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
-                Assert.AreEqual(processAllComponents, algo.ProcessAllComponents);
+                    algo.EdgesColors.Should().BeSameAs(vColors);
+                algo.MaxDepth.Should().Be(maxDepth);
+                algo.ProcessAllComponents.Should().Be(processAllComponents);
             }
 
             #endregion
@@ -154,27 +153,20 @@ namespace FastGraph.Tests.Algorithms.Search
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgesColors = new Dictionary<Edge<int>, GraphColor>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, edgesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, edgesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, edgesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, edgesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Invoking(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1).Should().Throw<ArgumentOutOfRangeException>();
         }
 
         #region Rooted algorithm
@@ -280,16 +272,12 @@ namespace FastGraph.Tests.Algorithms.Search
 
             if (processAll)
             {
-                FastGraphAssert.TrueForAll(algorithm.EdgesColors, pair => pair.Value == GraphColor.Black);
+                algorithm.EdgesColors.Should().OnlyContain(pair => pair.Value == GraphColor.Black);
             }
             else
             {
-                FastGraphAssert.TrueForAll(
-                    new[] { edge12, edge13, edge24, edge25 },
-                    edge => algorithm.EdgesColors[edge] == GraphColor.Black);
-                FastGraphAssert.TrueForAll(
-                    new[] { edge67, edge68, edge86 },
-                    edge => algorithm.EdgesColors[edge] == GraphColor.White);
+                new[] { edge12, edge13, edge24, edge25 }.Should().OnlyContain(edge => algorithm.EdgesColors[edge] == GraphColor.Black);
+                new[] { edge67, edge68, edge86 }.Should().OnlyContain(edge => algorithm.EdgesColors[edge] == GraphColor.White);
             }
         }
     }

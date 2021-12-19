@@ -38,8 +38,8 @@ namespace FastGraph.Tests.Algorithms.Contracts
                 .Where(pair =>
                     targetType.IsAssignableFrom(pair.InheritedOrImplementedInterface)
                     ||
-                    (pair.InheritedOrImplementedInterface.IsGenericType
-                     && targetType.IsAssignableFrom(pair.InheritedOrImplementedInterface.GetGenericTypeDefinition())))
+                    pair.InheritedOrImplementedInterface.IsGenericType
+                    && targetType.IsAssignableFrom(pair.InheritedOrImplementedInterface.GetGenericTypeDefinition()))
                 .Select(pair => pair.Type);
 
             return implementations;

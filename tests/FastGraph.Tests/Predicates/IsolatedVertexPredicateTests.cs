@@ -15,10 +15,8 @@ namespace FastGraph.Tests.Predicates
         [Test]
         public void Construction()
         {
-            Assert.DoesNotThrow(
-                // ReSharper disable once ObjectCreationAsStatement
-                () => new IsolatedVertexPredicate<int, Edge<int>>(
-                    new BidirectionalGraph<int, Edge<int>>()));
+            Invoking((Func<IsolatedVertexPredicate<int, Edge<int>>>)(() => new IsolatedVertexPredicate<int, Edge<int>>(
+                new BidirectionalGraph<int, Edge<int>>()))).Should().NotThrow();
         }
 
         [Test]
@@ -27,7 +25,7 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new IsolatedVertexPredicate<int, Edge<int>>(default));
+            Invoking(() => new IsolatedVertexPredicate<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -51,42 +49,42 @@ namespace FastGraph.Tests.Predicates
 
             graph.AddVertex(1);
             graph.AddVertex(2);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
+            predicate.Test(1).Should().BeTrue();
+            predicate.Test(2).Should().BeTrue();
 
             graph.AddVertex(3);
             var edge13 = new Edge<int>(1, 3);
             graph.AddEdge(edge13);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeTrue();
+            predicate.Test(3).Should().BeFalse();
 
             var edge12 = new Edge<int>(1, 2);
             graph.AddEdge(edge12);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeFalse();
+            predicate.Test(3).Should().BeFalse();
 
             var edge23 = new Edge<int>(2, 3);
             graph.AddEdge(edge23);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeFalse();
+            predicate.Test(3).Should().BeFalse();
 
             graph.RemoveEdge(edge23);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeFalse();
+            predicate.Test(3).Should().BeFalse();
 
             graph.RemoveEdge(edge12);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            predicate.Test(1).Should().BeFalse();
+            predicate.Test(2).Should().BeTrue();
+            predicate.Test(3).Should().BeFalse();
 
             graph.RemoveEdge(edge13);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
-            Assert.IsTrue(predicate.Test(3));
+            predicate.Test(1).Should().BeTrue();
+            predicate.Test(2).Should().BeTrue();
+            predicate.Test(3).Should().BeTrue();
         }
 
         [Test]
@@ -96,10 +94,10 @@ namespace FastGraph.Tests.Predicates
             var predicate = new IsolatedVertexPredicate<TestVertex, Edge<TestVertex>>(graph);
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => predicate.Test(new TestVertex("1")));
+            Invoking(() => predicate.Test(new TestVertex("1"))).Should().Throw<VertexNotFoundException>();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+            Invoking(() => predicate.Test(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }

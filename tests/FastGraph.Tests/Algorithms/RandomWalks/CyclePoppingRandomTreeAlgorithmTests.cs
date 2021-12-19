@@ -34,20 +34,20 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             };
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.White);
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.Black);
             };
 
             algorithm.Compute(root);
 
-            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors.Count);
+            algorithm.VerticesColors.Count.Should().Be(graph.VertexCount);
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.Black);
             }
 
             AssertIsTree(root, algorithm.Successors);
@@ -119,15 +119,15 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             {
                 AssertAlgorithmState(algo, g);
                 if (chain is null)
-                    Assert.IsNotNull(algo.EdgeChain);
+                    algo.EdgeChain.Should().NotBeNull();
                 else
-                    Assert.AreSame(chain, algo.EdgeChain);
+                    algo.EdgeChain.Should().BeSameAs(chain);
                 if (rand is null)
-                    Assert.IsNotNull(algo.Rand);
+                    algo.Rand.Should().NotBeNull();
                 else
-                    Assert.AreSame(rand, algo.Rand);
-                CollectionAssert.IsEmpty(algo.Successors);
-                CollectionAssert.IsEmpty(algo.VerticesColors);
+                    algo.Rand.Should().BeSameAs(rand);
+                algo.Successors.Should().BeEmpty();
+                algo.VerticesColors.Should().BeEmpty();
             }
 
             #endregion
@@ -142,25 +142,18 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, chain));
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, chain)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default, chain));
-            Assert.Throws<ArgumentNullException>(
-                () => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default, chain)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 
             var algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, chain);
-            Assert.Throws<ArgumentNullException>(() => algorithm.Rand = default);
+            Invoking(() => algorithm.Rand = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -244,8 +237,8 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             var algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, chain);
             algorithm.Compute(1);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            algorithm.GetVertexColor(1).Should().Be(GraphColor.Black);
+            algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
         [Test]
@@ -306,7 +299,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 Rand = randomAlgorithm
             };
 
-            Assert.DoesNotThrow(() => algorithm.Compute(2));
+            Invoking(() => algorithm.Compute(2)).Should().NotThrow();
             // Successors is not a spanning tree...
         }
 
@@ -395,7 +388,7 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
         [Test]
         public void RootIsNotAccessible()
         {
-            AdjacencyGraph<int, Edge<int>> graph = new AdjacencyGraph<int, Edge<int>>(true);
+            var graph = new AdjacencyGraph<int, Edge<int>>(true);
             graph.AddVertex(0);
             graph.AddVertex(1);
             graph.AddEdge(new Edge<int>(0, 1));

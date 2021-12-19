@@ -16,18 +16,18 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void Constructor()
         {
             var recorder = new VertexPredecessorRecorderObserver<int, Edge<int>>();
-            CollectionAssert.IsEmpty(recorder.VerticesPredecessors);
+            recorder.VerticesPredecessors.Should().BeEmpty();
 
             var predecessors = new Dictionary<int, Edge<int>>();
             recorder = new VertexPredecessorRecorderObserver<int, Edge<int>>(predecessors);
-            Assert.AreSame(predecessors, recorder.VerticesPredecessors);
+            recorder.VerticesPredecessors.Should().BeSameAs(predecessors);
 
             predecessors = new Dictionary<int, Edge<int>>
             {
                 [1] = new Edge<int>(2, 1)
             };
             recorder = new VertexPredecessorRecorderObserver<int, Edge<int>>(predecessors);
-            Assert.AreSame(predecessors, recorder.VerticesPredecessors);
+            recorder.VerticesPredecessors.Should().BeSameAs(predecessors);
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new VertexPredecessorRecorderObserver<int, Edge<int>>(default));
+            Invoking(() => new VertexPredecessorRecorderObserver<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -55,7 +55,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.VerticesPredecessors);
+                    recorder.VerticesPredecessors.Should().BeEmpty();
                 }
             }
 
@@ -70,7 +70,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.VerticesPredecessors);
+                    recorder.VerticesPredecessors.Should().BeEmpty();
                 }
             }
 
@@ -96,14 +96,12 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, Edge<int>>
-                        {
-                            [2] = edge12,
-                            [3] = edge13,
-                            [4] = edge24
-                        },
-                        recorder.VerticesPredecessors);
+                    new Dictionary<int, Edge<int>>
+                    {
+                        [2] = edge12,
+                        [3] = edge13,
+                        [4] = edge24
+                    }.Should().BeEquivalentTo(recorder.VerticesPredecessors);
                 }
             }
 
@@ -130,14 +128,12 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, Edge<int>>
-                        {
-                            [2] = edge12,
-                            [3] = edge13,
-                            [4] = edge24
-                        },
-                        recorder.VerticesPredecessors);
+                    new Dictionary<int, Edge<int>>
+                    {
+                        [2] = edge12,
+                        [3] = edge13,
+                        [4] = edge24
+                    }.Should().BeEquivalentTo(recorder.VerticesPredecessors);
                 }
             }
         }
@@ -162,7 +158,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                     dfs.Compute();
 
                     // Vertex not in the graph
-                    Assert.IsFalse(recorder.TryGetPath(2, out _));
+                    recorder.TryGetPath(2, out _).Should().BeFalse();
                 }
             }
 
@@ -177,7 +173,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Assert.IsFalse(recorder.TryGetPath(2, out _));
+                    recorder.TryGetPath(2, out _).Should().BeFalse();
                 }
             }
 
@@ -203,8 +199,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Assert.IsTrue(recorder.TryGetPath(4, out IEnumerable<Edge<int>>? path));
-                    CollectionAssert.AreEqual(new[] { edge12, edge24 }, path);
+                    recorder.TryGetPath(4, out IEnumerable<Edge<int>>? path).Should().BeTrue();
+                    new[] { edge12, edge24 }.Should().BeEquivalentTo(path);
                 }
             }
 
@@ -231,8 +227,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Assert.IsTrue(recorder.TryGetPath(4, out IEnumerable<Edge<int>>? path));
-                    CollectionAssert.AreEqual(new[] { edge12, edge24 }, path);
+                    recorder.TryGetPath(4, out IEnumerable<Edge<int>>? path).Should().BeTrue();
+                    new[] { edge12, edge24 }.Should().BeEquivalentTo(path);
                 }
             }
         }
@@ -242,8 +238,7 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexPredecessorRecorderObserver<TestVertex, Edge<TestVertex>>().TryGetPath(default, out _));
+            Invoking(() => new VertexPredecessorRecorderObserver<TestVertex, Edge<TestVertex>>().TryGetPath(default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

@@ -16,7 +16,7 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void Constructor()
         {
             var recorder = new EdgeRecorderObserver<int, Edge<int>>();
-            CollectionAssert.IsEmpty(recorder.Edges);
+            recorder.Edges.Should().BeEmpty();
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
@@ -25,9 +25,7 @@ namespace FastGraph.Tests.Algorithms.Observers
             {
                 edge12, edge22, edge31
             });
-            CollectionAssert.AreEqual(
-                new[] { edge12, edge22, edge31 },
-                recorder.Edges);
+            new[] { edge12, edge22, edge31 }.Should().BeEquivalentTo(recorder.Edges);
         }
 
         [Test]
@@ -36,7 +34,7 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new EdgeRecorderObserver<int, Edge<int>>(default));
+            Invoking(() => new EdgeRecorderObserver<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -55,7 +53,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.Edges);
+                    recorder.Edges.Should().BeEmpty();
                 }
             }
 
@@ -70,7 +68,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.Edges);
+                    recorder.Edges.Should().BeEmpty();
                 }
             }
 
@@ -87,9 +85,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge12, edge12, edge23 },  // Add without checking if edge already exists
-                        recorder.Edges);
+                    new[] { edge12, edge12, edge23 }.Should().BeEquivalentTo(recorder.Edges);
                 }
             }
 
@@ -106,9 +102,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge12 },  // 3 -> 2 is not reachable (wrong orientation)
-                        recorder.Edges);
+                    new[] { edge12 }.Should().BeEquivalentTo(recorder.Edges);
                 }
             }
 
@@ -130,9 +124,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge12, edge23, edge34 },   // Self edge skipped
-                        recorder.Edges);
+                    new[] { edge12, edge23, edge34 }.Should().BeEquivalentTo(recorder.Edges);
                 }
             }
         }

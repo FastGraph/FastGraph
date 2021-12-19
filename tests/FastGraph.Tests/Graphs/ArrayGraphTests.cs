@@ -1,5 +1,6 @@
 #nullable enable
 
+using FluentAssertions.Execution;
 using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
@@ -16,48 +17,72 @@ namespace FastGraph.Tests.Structures
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            ArrayAdjacencyGraph<TVertex, TEdge> adjacencyGraph = graph.ToArrayAdjacencyGraph();
+            var adjacencyGraph = graph.ToArrayAdjacencyGraph();
 
-            Assert.AreEqual(graph.VertexCount, adjacencyGraph.VertexCount);
-            CollectionAssert.AreEqual(graph.Vertices, adjacencyGraph.Vertices);
+            using (_ = new AssertionScope())
+            {
+                adjacencyGraph.VertexCount.Should().Be(graph.VertexCount);
+                graph.Vertices.Should().BeEquivalentTo(adjacencyGraph.Vertices);
 
-            Assert.AreEqual(graph.EdgeCount, adjacencyGraph.EdgeCount);
-            CollectionAssert.AreEqual(graph.Edges, adjacencyGraph.Edges);
+                adjacencyGraph.EdgeCount.Should().Be(graph.EdgeCount);
+                graph.Edges.Should().BeEquivalentTo(adjacencyGraph.Edges);
+            }
 
-            foreach (TVertex vertex in graph.Vertices)
-                CollectionAssert.AreEqual(graph.OutEdges(vertex), adjacencyGraph.OutEdges(vertex));
+            using (_ = new AssertionScope())
+            {
+                foreach (TVertex vertex in graph.Vertices)
+                {
+                    graph.OutEdges(vertex).Should().BeEquivalentTo(adjacencyGraph.OutEdges(vertex));
+                }
+            }
         }
 
         private static void AssertSameProperties<TVertex, TEdge>(IBidirectionalGraph<TVertex, TEdge> graph)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            ArrayBidirectionalGraph<TVertex, TEdge> bidirectionalGraph = graph.ToArrayBidirectionalGraph();
+            var bidirectionalGraph = graph.ToArrayBidirectionalGraph();
 
-            Assert.AreEqual(graph.VertexCount, bidirectionalGraph.VertexCount);
-            CollectionAssert.AreEqual(graph.Vertices, bidirectionalGraph.Vertices);
+            using (_ = new AssertionScope())
+            {
+                bidirectionalGraph.VertexCount.Should().Be(graph.VertexCount);
+                graph.Vertices.Should().BeEquivalentTo(bidirectionalGraph.Vertices);
 
-            Assert.AreEqual(graph.EdgeCount, bidirectionalGraph.EdgeCount);
-            CollectionAssert.AreEqual(graph.Edges, bidirectionalGraph.Edges);
+                bidirectionalGraph.EdgeCount.Should().Be(graph.EdgeCount);
+                graph.Edges.Should().BeEquivalentTo(bidirectionalGraph.Edges);
+            }
 
-            foreach (TVertex vertex in graph.Vertices)
-                CollectionAssert.AreEqual(graph.OutEdges(vertex), bidirectionalGraph.OutEdges(vertex));
+            using (_ = new AssertionScope())
+            {
+                foreach (TVertex vertex in graph.Vertices)
+                {
+                    graph.OutEdges(vertex).Should().BeEquivalentTo(bidirectionalGraph.OutEdges(vertex));
+                }
+            }
         }
 
         private static void AssertSameProperties<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            ArrayUndirectedGraph<TVertex, TEdge> undirectedGraph = graph.ToArrayUndirectedGraph();
+            var undirectedGraph = graph.ToArrayUndirectedGraph();
 
-            Assert.AreEqual(graph.VertexCount, undirectedGraph.VertexCount);
-            CollectionAssert.AreEqual(graph.Vertices, undirectedGraph.Vertices);
+            using (_ = new AssertionScope())
+            {
+                undirectedGraph.VertexCount.Should().Be(graph.VertexCount);
+                graph.Vertices.Should().BeEquivalentTo(undirectedGraph.Vertices);
 
-            Assert.AreEqual(graph.EdgeCount, undirectedGraph.EdgeCount);
-            CollectionAssert.AreEqual(graph.Edges, undirectedGraph.Edges);
+                undirectedGraph.EdgeCount.Should().Be(graph.EdgeCount);
+                graph.Edges.Should().BeEquivalentTo(undirectedGraph.Edges);
+            }
 
-            foreach (TVertex vertex in graph.Vertices)
-                CollectionAssert.AreEqual(graph.AdjacentEdges(vertex), undirectedGraph.AdjacentEdges(vertex));
+            using (_ = new AssertionScope())
+            {
+                foreach (TVertex vertex in graph.Vertices)
+                {
+                    graph.AdjacentEdges(vertex).Should().BeEquivalentTo(undirectedGraph.AdjacentEdges(vertex));
+                }
+            }
         }
 
         #endregion

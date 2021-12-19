@@ -34,9 +34,9 @@ namespace FastGraph.Tests.Algorithms.Condensation
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(default, new TestVertex("v1")));
-            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(new TestVertex("v1"), default));
-            Assert.Throws<ArgumentNullException>(() => new MergedEdge<TestVertex, Edge<TestVertex>>(default, default));
+            Invoking(() => new MergedEdge<TestVertex, Edge<TestVertex>>(default, new TestVertex("v1"))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MergedEdge<TestVertex, Edge<TestVertex>>(new TestVertex("v1"), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MergedEdge<TestVertex, Edge<TestVertex>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -46,21 +46,21 @@ namespace FastGraph.Tests.Algorithms.Condensation
         public void Edges()
         {
             var edge = new MergedEdge<int, Edge<int>>(1, 2);
-            CollectionAssert.IsEmpty(edge.Edges);
+            edge.Edges.Should().BeEmpty();
 
             var subEdge1 = new Edge<int>(1, 2);
             edge.Edges.Add(subEdge1);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, edge.Edges);
+            new[] { subEdge1 }.Should().BeEquivalentTo(edge.Edges);
 
             var subEdge2 = new MergedEdge<int, Edge<int>>(1, 2);
             edge.Edges.Add(subEdge2);
-            CollectionAssert.AreEqual(new[] { subEdge1, subEdge2 }, edge.Edges);
+            new[] { subEdge1, subEdge2 }.Should().BeEquivalentTo(edge.Edges);
 
             edge.Edges.RemoveAt(1);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, edge.Edges);
+            new[] { subEdge1 }.Should().BeEquivalentTo(edge.Edges);
 
             edge.Edges.Remove(subEdge1);
-            CollectionAssert.IsEmpty(edge.Edges);
+            edge.Edges.Should().BeEmpty();
         }
 
         [Test]
@@ -77,21 +77,21 @@ namespace FastGraph.Tests.Algorithms.Condensation
             edge2.Edges.Add(subEdge2);
             edge2.Edges.Add(subEdge3);
 
-            MergedEdge<int, Edge<int>> mergedEdge = MergedEdge.Merge(emptyEdge1, emptyEdge2);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.IsEmpty(mergedEdge.Edges);
+            var mergedEdge = MergedEdge.Merge(emptyEdge1, emptyEdge2);
+            mergedEdge.Should().NotBeNull();
+            mergedEdge.Edges.Should().BeEmpty();
 
             mergedEdge = MergedEdge.Merge(emptyEdge1, edge1);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, mergedEdge.Edges);
+            mergedEdge.Should().NotBeNull();
+            new[] { subEdge1 }.Should().BeEquivalentTo(mergedEdge.Edges);
 
             mergedEdge = MergedEdge.Merge(edge1, emptyEdge1);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, mergedEdge.Edges);
+            mergedEdge.Should().NotBeNull();
+            new[] { subEdge1 }.Should().BeEquivalentTo(mergedEdge.Edges);
 
             mergedEdge = MergedEdge.Merge(edge1, edge2);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.AreEqual(new[] { subEdge1, subEdge2, subEdge3 }, mergedEdge.Edges);
+            mergedEdge.Should().NotBeNull();
+            new[] { subEdge1, subEdge2, subEdge3 }.Should().BeEquivalentTo(mergedEdge.Edges);
         }
 
         [Test]
@@ -102,9 +102,9 @@ namespace FastGraph.Tests.Algorithms.Condensation
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge(edge, default));
-            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge(default, edge));
-            Assert.Throws<ArgumentNullException>(() => MergedEdge.Merge<int, Edge<int>>(default, default));
+            Invoking(() => MergedEdge.Merge(edge, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => MergedEdge.Merge(default, edge)).Should().Throw<ArgumentNullException>();
+            Invoking(() => MergedEdge.Merge<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -119,12 +119,12 @@ namespace FastGraph.Tests.Algorithms.Condensation
             var edge4 = new MergedEdge<int, Edge<int>>(1, 2);
             edge4.Edges.Add(edge1);
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge1, edge4);
+            edge1.Should().Be(edge1);
+            edge2.Should().NotBe(edge1);
+            edge3.Should().NotBe(edge1);
+            edge4.Should().NotBe(edge1);
 
-            Assert.AreNotEqual(edge1, default);
+            edge1.Should().NotBe(default);
         }
 
         [Test]
@@ -133,8 +133,8 @@ namespace FastGraph.Tests.Algorithms.Condensation
             var edge1 = new MergedEdge<int, Edge<int>>(1, 2);
             var edge2 = new MergedEdge<int, Edge<int>>(2, 1);
 
-            Assert.AreEqual("1 -> 2", edge1.ToString());
-            Assert.AreEqual("2 -> 1", edge2.ToString());
+            edge1.ToString().Should().Be("1 -> 2");
+            edge2.ToString().Should().Be("2 -> 1");
         }
     }
 }

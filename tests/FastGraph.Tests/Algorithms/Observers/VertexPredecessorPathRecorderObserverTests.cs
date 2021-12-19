@@ -16,21 +16,21 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void Constructor()
         {
             var recorder = new VertexPredecessorPathRecorderObserver<int, Edge<int>>();
-            CollectionAssert.IsEmpty(recorder.VerticesPredecessors);
-            CollectionAssert.IsEmpty(recorder.EndPathVertices);
+            recorder.VerticesPredecessors.Should().BeEmpty();
+            recorder.EndPathVertices.Should().BeEmpty();
 
             var predecessors = new Dictionary<int, Edge<int>>();
             recorder = new VertexPredecessorPathRecorderObserver<int, Edge<int>>(predecessors);
-            Assert.AreSame(predecessors, recorder.VerticesPredecessors);
-            CollectionAssert.IsEmpty(recorder.EndPathVertices);
+            recorder.VerticesPredecessors.Should().BeSameAs(predecessors);
+            recorder.EndPathVertices.Should().BeEmpty();
 
             predecessors = new Dictionary<int, Edge<int>>
             {
                 [1] = new Edge<int>(2, 1)
             };
             recorder = new VertexPredecessorPathRecorderObserver<int, Edge<int>>(predecessors);
-            Assert.AreSame(predecessors, recorder.VerticesPredecessors);
-            CollectionAssert.IsEmpty(recorder.EndPathVertices);
+            recorder.VerticesPredecessors.Should().BeSameAs(predecessors);
+            recorder.EndPathVertices.Should().BeEmpty();
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new VertexPredecessorPathRecorderObserver<int, Edge<int>>(default));
+            Invoking(() => new VertexPredecessorPathRecorderObserver<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -58,8 +58,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.VerticesPredecessors);
-                    CollectionAssert.IsEmpty(recorder.EndPathVertices);
+                    recorder.VerticesPredecessors.Should().BeEmpty();
+                    recorder.EndPathVertices.Should().BeEmpty();
                 }
             }
 
@@ -74,8 +74,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.VerticesPredecessors);
-                    CollectionAssert.AreEquivalent(new[] { 1, 2 }, recorder.EndPathVertices);
+                    recorder.VerticesPredecessors.Should().BeEmpty();
+                    recorder.EndPathVertices.Should().BeEquivalentTo(new[] { 1, 2 });
                 }
             }
 
@@ -101,15 +101,14 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
+                    recorder.VerticesPredecessors.Should().BeEquivalentTo(
                         new Dictionary<int, Edge<int>>
                         {
                             [2] = edge12,
                             [3] = edge13,
                             [4] = edge24
-                        },
-                        recorder.VerticesPredecessors);
-                    CollectionAssert.AreEquivalent(new[] { 3, 4 }, recorder.EndPathVertices);
+                        });
+                    recorder.EndPathVertices.Should().BeEquivalentTo(new[] { 3, 4 });
                 }
             }
 
@@ -136,15 +135,14 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
+                    recorder.VerticesPredecessors.Should().BeEquivalentTo(
                         new Dictionary<int, Edge<int>>
                         {
                             [2] = edge12,
                             [3] = edge13,
                             [4] = edge24
-                        },
-                        recorder.VerticesPredecessors);
-                    CollectionAssert.AreEquivalent(new[] { 3, 4 }, recorder.EndPathVertices);
+                        });
+                    recorder.EndPathVertices.Should().BeEquivalentTo(new[] { 3, 4 });
                 }
             }
         }
@@ -168,7 +166,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEmpty();
                 }
             }
 
@@ -183,7 +181,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEmpty();
                 }
             }
 
@@ -209,13 +207,11 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new IEnumerable<Edge<int>>[]
-                        {
-                            new[] { edge13 },
-                            new[] { edge12, edge24 }
-                        },
-                        recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEquivalentTo(new IEnumerable<Edge<int>>[]
+                    {
+                        new[] { edge13 },
+                        new[] { edge12, edge24 }
+                    });
                 }
             }
 
@@ -242,13 +238,11 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new IEnumerable<Edge<int>>[]
-                        {
-                            new[] { edge13 },
-                            new[] { edge12, edge24 }
-                        },
-                        recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEquivalentTo(new IEnumerable<Edge<int>>[]
+                    {
+                        new[] { edge13 },
+                        new[] { edge12, edge24 }
+                    });
                 }
             }
         }

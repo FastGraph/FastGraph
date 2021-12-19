@@ -4,6 +4,7 @@ using System.Data;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
+using FluentAssertions.Primitives;
 
 namespace FastGraph.Data.Tests
 {
@@ -42,12 +43,12 @@ namespace FastGraph.Data.Tests
                 DataSetGraph treatedGraph,
                 GraphvizImageType imageType = GraphvizImageType.Png)
             {
-                Assert.AreSame(treatedGraph, algo.VisitedGraph);
-                Assert.IsNotNull(algo.GraphFormat);
-                Assert.IsNotNull(algo.CommonVertexFormat);
-                Assert.IsNotNull(algo.CommonEdgeFormat);
-                Assert.AreEqual(imageType, algo.ImageType);
-                Assert.IsNull(algo.Output);
+                algo.VisitedGraph.Should().BeAssignableTo<IEdgeSet<DataTable, DataRelationEdge>>().And.BeSameAs(treatedGraph);
+                algo.GraphFormat.Should().NotBeNull();
+                algo.CommonVertexFormat.Should().NotBeNull();
+                algo.CommonEdgeFormat.Should().NotBeNull();
+                algo.ImageType.Should().Be(imageType);
+                algo.Output.Should().BeNull();
             }
 
             #endregion
@@ -59,12 +60,12 @@ namespace FastGraph.Data.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphvizAlgorithm(default));
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphvizAlgorithm(default, GraphvizImageType.Gif));
+            Invoking(() => new DataSetGraphvizAlgorithm(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DataSetGraphvizAlgorithm(default, GraphvizImageType.Gif)).Should().Throw<ArgumentNullException>();
 
             DataSetGraph graph = new DataSet().ToGraph();
             var algorithm = new DataSetGraphvizAlgorithm(graph);
-            Assert.Throws<ArgumentNullException>(() => algorithm.VisitedGraph = default);
+            Invoking(() => algorithm.VisitedGraph = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -210,11 +211,11 @@ namespace FastGraph.Data.Tests
             var algorithm = new DataSetGraphvizAlgorithm(graph);
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, "NotSaved.dot"));
-            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, default));
-            Assert.Throws<ArgumentException>(() => algorithm.Generate(dotEngine, string.Empty));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, default));
-            Assert.Throws<ArgumentNullException>(() => algorithm.Generate(default, string.Empty));
+            Invoking(() => algorithm.Generate(default, "NotSaved.dot")).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.Generate(dotEngine, default)).Should().Throw<ArgumentException>();
+            Invoking(() => algorithm.Generate(dotEngine, string.Empty)).Should().Throw<ArgumentException>();
+            Invoking(() => algorithm.Generate(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.Generate(default, string.Empty)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }

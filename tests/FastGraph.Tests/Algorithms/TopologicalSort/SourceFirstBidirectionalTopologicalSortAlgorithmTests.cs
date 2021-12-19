@@ -24,10 +24,10 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<TVertex, TEdge>(graph, direction);
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
-            Assert.IsNotNull(algorithm.InDegrees);
-            Assert.AreEqual(graph.VertexCount, algorithm.InDegrees.Count);
+            algorithm.SortedVertices.Should().NotBeNull();
+            algorithm.SortedVertices!.Length.Should().Be(graph.VertexCount);
+            algorithm.InDegrees.Should().NotBeNull();
+            algorithm.InDegrees.Count.Should().Be(graph.VertexCount);
         }
 
         #endregion
@@ -81,8 +81,8 @@ namespace FastGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.SortedVertices);
-                CollectionAssert.IsEmpty(algo.InDegrees);
+                algo.SortedVertices.Should().BeNull();
+                algo.InDegrees.Should().BeEmpty();
             }
 
             #endregion
@@ -94,12 +94,9 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default, TopologicalSortDirection.Forward));
-            Assert.Throws<ArgumentNullException>(
-                () => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default, TopologicalSortDirection.Backward));
+            Invoking(() => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default, TopologicalSortDirection.Forward)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(default, TopologicalSortDirection.Backward)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -125,16 +122,12 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 7, 4, 2, 5, 8, 3, 6 },
-                algorithm.SortedVertices);
+            new[] { 1, 7, 4, 2, 5, 8, 3, 6 }.Should().BeEquivalentTo(algorithm.SortedVertices);
 
             algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph, TopologicalSortDirection.Backward);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 3, 6, 8, 5, 2, 7, 1, 4 },
-                algorithm.SortedVertices);
+            new[] { 3, 6, 8, 5, 2, 7, 1, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -153,16 +146,12 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 0, 1, 2, 3, 4 },
-                algorithm.SortedVertices);
+            new[] { 0, 1, 2, 3, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
 
             algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph, TopologicalSortDirection.Backward);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 4, 3, 2, 1, 0 },
-                algorithm.SortedVertices);
+            new[] { 4, 3, 2, 1, 0 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -183,16 +172,12 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 0, 5, 1, 6, 2, 3, 4 },
-                algorithm.SortedVertices);
+            new[] { 0, 5, 1, 6, 2, 3, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
 
             algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph, TopologicalSortDirection.Backward);
             algorithm.Compute();
 
-            CollectionAssert.AreEqual(
-                new[] { 4, 6, 3, 5, 2, 1, 0 },
-                algorithm.SortedVertices);
+            new[] { 4, 6, 3, 5, 2, 1, 0 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -210,10 +195,10 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
 
             algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(graph, TopologicalSortDirection.Backward);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
 
         [Test]
@@ -247,7 +232,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
     }
 }

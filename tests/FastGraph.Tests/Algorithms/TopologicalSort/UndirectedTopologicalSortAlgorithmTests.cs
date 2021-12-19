@@ -29,8 +29,8 @@ namespace FastGraph.Tests.Algorithms
 
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
+            algorithm.SortedVertices.Should().NotBeNull();
+            algorithm.SortedVertices!.Length.Should().Be(graph.VertexCount);
         }
 
         #endregion
@@ -64,8 +64,8 @@ namespace FastGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.SortedVertices);
-                Assert.AreEqual(allowCycles, algo.AllowCyclicGraph);
+                algo.SortedVertices.Should().BeNull();
+                algo.AllowCyclicGraph.Should().Be(allowCycles);
             }
 
             #endregion
@@ -77,8 +77,7 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -102,9 +101,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing,
             // here the order is more vertices ordered by depth
-            CollectionAssert.AreEqual(
-                new[] { 1, 2, 4, 5, 7, 8, 6, 3 },
-                algorithm.SortedVertices);
+            new[] { 1, 2, 4, 5, 7, 8, 6, 3 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -124,9 +121,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing,
             // here the order is more vertices ordered by depth
-            CollectionAssert.AreEqual(
-                new[] { 0, 1, 3, 4, 2 },
-                algorithm.SortedVertices);
+            new[] { 0, 1, 3, 4, 2 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -148,9 +143,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing,
             // here the order is more vertices ordered by depth
-            CollectionAssert.AreEqual(
-                new[] { 5, 6, 0, 1, 3, 4, 2 },
-                algorithm.SortedVertices);
+            new[] { 5, 6, 0, 1, 3, 4, 2 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -168,7 +161,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
 
             algorithm = new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(graph)
             {
@@ -178,9 +171,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing,
             // here the order is more vertices ordered by depth
-            CollectionAssert.AreEqual(
-                new[] { 0, 1, 2, 3, 4 },
-                algorithm.SortedVertices);
+            new[] { 0, 1, 2, 3, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -212,13 +203,13 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
 
             algorithm = new UndirectedTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph)
             {
                 AllowCyclicGraph = true
             };
-            Assert.DoesNotThrow(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().NotThrow();
         }
     }
 }

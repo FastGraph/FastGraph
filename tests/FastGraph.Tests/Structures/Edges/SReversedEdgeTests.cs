@@ -22,10 +22,10 @@ namespace FastGraph.Tests.Structures
             var defaultEdge = default(SReversedEdge<int, Edge<int>>);
             // ReSharper disable HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge.OriginalEdge);
+            defaultEdge.OriginalEdge.Should().BeNull();
             // ReSharper disable  HeuristicUnreachableCode
-            Assert.Throws<NullReferenceException>(() => { int _ = defaultEdge.Source; });
-            Assert.Throws<NullReferenceException>(() => { int _ = defaultEdge.Target; });
+            Invoking(() => { int _ = defaultEdge.Source; }).Should().Throw<NullReferenceException>();
+            Invoking(() => { int _ = defaultEdge.Target; }).Should().Throw<NullReferenceException>();
             // ReSharper restore HeuristicUnreachableCode
 
             // Reference type
@@ -39,10 +39,10 @@ namespace FastGraph.Tests.Structures
             var defaultEdge2 = default(SReversedEdge<TestVertex, Edge<TestVertex>>);
             // ReSharper disable HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge2.OriginalEdge);
+            defaultEdge2.OriginalEdge.Should().BeNull();
             // ReSharper disable  HeuristicUnreachableCode
-            Assert.Throws<NullReferenceException>(() => { TestVertex _ = defaultEdge2.Source; });
-            Assert.Throws<NullReferenceException>(() => { TestVertex _ = defaultEdge2.Target; });
+            Invoking(() => { TestVertex _ = defaultEdge2.Source; }).Should().Throw<NullReferenceException>();
+            Invoking(() => { TestVertex _ = defaultEdge2.Target; }).Should().Throw<NullReferenceException>();
             // ReSharper restore HeuristicUnreachableCode
         }
 
@@ -52,7 +52,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new SReversedEdge<TestVertex, Edge<TestVertex>>(default));
+            Invoking(() => new SReversedEdge<TestVertex, Edge<TestVertex>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -65,28 +65,27 @@ namespace FastGraph.Tests.Structures
             var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
             var edge4 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
 
-            Assert.AreEqual(edge1, edge1);
+            edge1.Should().Be(edge1);
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            edge2.Should().Be(edge1);
+            edge1.Should().Be(edge2);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge1.Equals(edge2).Should().BeTrue();
+            edge2.Equals(edge1).Should().BeTrue();
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals((object)edge3));
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            edge3.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge3);
+            edge1.Equals(edge3).Should().BeFalse();
+            edge1.Equals(edge3).Should().BeFalse();
+            edge3.Equals(edge1).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, edge4);
-            Assert.AreNotEqual(edge4, edge1);
-            Assert.IsFalse(edge1.Equals((object)edge4));
-            Assert.IsFalse(edge1.Equals(edge4));
-            Assert.IsFalse(edge4.Equals(edge1));
+            edge4.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge4);
+            edge1.Equals(edge4).Should().BeFalse();
+            edge1.Equals(edge4).Should().BeFalse();
+            edge4.Equals(edge1).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, default);
-            Assert.IsFalse(edge1.Equals(default));
+            edge1.Equals(default).Should().BeFalse();
         }
 
         [Test]
@@ -95,10 +94,10 @@ namespace FastGraph.Tests.Structures
             var edge1 = default(SReversedEdge<int, Edge<int>>);
             var edge2 = new SReversedEdge<int, Edge<int>>();
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            edge2.Should().Be(edge1);
+            edge1.Should().Be(edge2);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge2.Equals(edge1).Should().BeTrue();
         }
 
         [Test]
@@ -108,13 +107,13 @@ namespace FastGraph.Tests.Structures
             var edge2 = new SReversedEdge<int, EquatableEdge<int>>(new EquatableEdge<int>(1, 2));
             var edge3 = new SReversedEdge<int, EquatableEdge<int>>(new EquatableEdge<int>(2, 1));
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreEqual(edge1, edge2);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.AreNotEqual(edge1, edge3);
+            edge1.Should().Be(edge1);
+            edge2.Should().Be(edge1);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge3.Should().NotBe(edge1);
 
-            Assert.IsFalse(edge1.Equals(default));
-            Assert.AreNotEqual(edge1, default);
+            edge1.Equals(default).Should().BeFalse();
+            edge1.Should().NotBe(default);
         }
 
         [Test]
@@ -126,9 +125,9 @@ namespace FastGraph.Tests.Structures
             var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
             var edge4 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
-            Assert.AreNotEqual(edge1.GetHashCode(), edge3.GetHashCode());
-            Assert.AreNotEqual(edge1.GetHashCode(), edge4.GetHashCode());
+            edge2.GetHashCode().Should().Be(edge1.GetHashCode());
+            edge3.GetHashCode().Should().NotBe(edge1.GetHashCode());
+            edge4.GetHashCode().Should().NotBe(edge1.GetHashCode());
         }
 
         [Test]
@@ -137,7 +136,7 @@ namespace FastGraph.Tests.Structures
             var edge1 = default(SReversedEdge<int, Edge<int>>);
             var edge2 = new SReversedEdge<int, Edge<int>>();
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
+            edge2.GetHashCode().Should().Be(edge1.GetHashCode());
         }
 
         [Test]
@@ -147,9 +146,9 @@ namespace FastGraph.Tests.Structures
             var edge2 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
             var edge3 = new SReversedEdge<int, UndirectedEdge<int>>(new UndirectedEdge<int>(1, 2));
 
-            Assert.AreEqual("R(1 -> 2)", edge1.ToString());
-            Assert.AreEqual("R(2 -> 1)", edge2.ToString());
-            Assert.AreEqual("R(1 <-> 2)", edge3.ToString());
+            edge1.ToString().Should().Be("R(1 -> 2)");
+            edge2.ToString().Should().Be("R(2 -> 1)");
+            edge3.ToString().Should().Be("R(1 <-> 2)");
         }
     }
 }

@@ -1,6 +1,5 @@
 #nullable enable
 
-using NUnit.Framework;
 using FastGraph.Tests.Structures;
 using static FastGraph.Tests.AssertHelpers;
 using static FastGraph.Tests.GraphTestHelpers;
@@ -89,20 +88,20 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.ContainsVertex(1));
-            Assert.IsFalse(filteredGraph.ContainsVertex(2));
+            filteredGraph.ContainsVertex(1).Should().BeFalse();
+            filteredGraph.ContainsVertex(2).Should().BeFalse();
 
             wrappedGraph.AddVertex(1);
-            Assert.IsTrue(filteredGraph.ContainsVertex(1));
-            Assert.IsFalse(filteredGraph.ContainsVertex(2));
+            filteredGraph.ContainsVertex(1).Should().BeTrue();
+            filteredGraph.ContainsVertex(2).Should().BeFalse();
 
             wrappedGraph.AddVertex(2);
-            Assert.IsTrue(filteredGraph.ContainsVertex(1));
-            Assert.IsTrue(filteredGraph.ContainsVertex(2));
+            filteredGraph.ContainsVertex(1).Should().BeTrue();
+            filteredGraph.ContainsVertex(2).Should().BeTrue();
 
             wrappedGraph.RemoveVertex(1);
-            Assert.IsFalse(filteredGraph.ContainsVertex(1));
-            Assert.IsTrue(filteredGraph.ContainsVertex(2));
+            filteredGraph.ContainsVertex(1).Should().BeFalse();
+            filteredGraph.ContainsVertex(2).Should().BeTrue();
 
 
             wrappedGraph.Clear();
@@ -110,29 +109,29 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 2,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.ContainsVertex(1));
-            Assert.IsFalse(filteredGraph.ContainsVertex(2));
-            Assert.IsFalse(filteredGraph.ContainsVertex(3));
+            filteredGraph.ContainsVertex(1).Should().BeFalse();
+            filteredGraph.ContainsVertex(2).Should().BeFalse();
+            filteredGraph.ContainsVertex(3).Should().BeFalse();
 
             wrappedGraph.AddVertex(1);
-            Assert.IsTrue(filteredGraph.ContainsVertex(1));
-            Assert.IsFalse(filteredGraph.ContainsVertex(2));
-            Assert.IsFalse(filteredGraph.ContainsVertex(3));
+            filteredGraph.ContainsVertex(1).Should().BeTrue();
+            filteredGraph.ContainsVertex(2).Should().BeFalse();
+            filteredGraph.ContainsVertex(3).Should().BeFalse();
 
             wrappedGraph.AddVertex(2);
-            Assert.IsTrue(filteredGraph.ContainsVertex(1));
-            Assert.IsTrue(filteredGraph.ContainsVertex(2));
-            Assert.IsFalse(filteredGraph.ContainsVertex(3));
+            filteredGraph.ContainsVertex(1).Should().BeTrue();
+            filteredGraph.ContainsVertex(2).Should().BeTrue();
+            filteredGraph.ContainsVertex(3).Should().BeFalse();
 
             wrappedGraph.AddVertex(3);
-            Assert.IsTrue(filteredGraph.ContainsVertex(1));
-            Assert.IsTrue(filteredGraph.ContainsVertex(2));
-            Assert.IsFalse(filteredGraph.ContainsVertex(3));    // Filtered
+            filteredGraph.ContainsVertex(1).Should().BeTrue();
+            filteredGraph.ContainsVertex(2).Should().BeTrue();
+            filteredGraph.ContainsVertex(3).Should().BeFalse();    // Filtered
 
             wrappedGraph.RemoveVertex(1);
-            Assert.IsFalse(filteredGraph.ContainsVertex(1));
-            Assert.IsTrue(filteredGraph.ContainsVertex(2));
-            Assert.IsFalse(filteredGraph.ContainsVertex(3));
+            filteredGraph.ContainsVertex(1).Should().BeFalse();
+            filteredGraph.ContainsVertex(2).Should().BeTrue();
+            filteredGraph.ContainsVertex(3).Should().BeFalse();
         }
 
         #endregion
@@ -168,53 +167,53 @@ namespace FastGraph.Tests.Predicates
             var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeTrue();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeTrue();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(0, 10)));
+            filteredGraph.ContainsEdge(new Edge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(0, 1)));
+            filteredGraph.ContainsEdge(new Edge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(1, 0)));
+            filteredGraph.ContainsEdge(new Edge<int>(1, 0)).Should().BeFalse();
 
             #endregion
 
@@ -225,53 +224,53 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));   // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();   // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(0, 10)));
+            filteredGraph.ContainsEdge(new Edge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(0, 1)));
+            filteredGraph.ContainsEdge(new Edge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(1, 0)));
+            filteredGraph.ContainsEdge(new Edge<int>(1, 0)).Should().BeFalse();
 
             #endregion
 
@@ -282,53 +281,53 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex > 0 && vertex < 3,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));  // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(0, 10)));
+            filteredGraph.ContainsEdge(new Edge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(0, 1)));
+            filteredGraph.ContainsEdge(new Edge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new Edge<int>(1, 0)));
+            filteredGraph.ContainsEdge(new Edge<int>(1, 0)).Should().BeFalse();
 
             #endregion
         }
@@ -362,53 +361,53 @@ namespace FastGraph.Tests.Predicates
             var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeTrue();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeTrue();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 10)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 1)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(1, 0)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(1, 0)).Should().BeFalse();
 
             #endregion
 
@@ -419,53 +418,53 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));   // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();   // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 10)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 1)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(1, 0)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(1, 0)).Should().BeFalse();
 
             #endregion
 
@@ -476,53 +475,53 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex > 0 && vertex < 3,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeFalse();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge1));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge2));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(edge3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(edge4));  // Filtered
-            Assert.IsTrue(filteredGraph.ContainsEdge(otherEdge1));
+            filteredGraph.ContainsEdge(edge1).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge2).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(edge3).Should().BeTrue();
+            filteredGraph.ContainsEdge(edge4).Should().BeFalse();  // Filtered
+            filteredGraph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 10)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 1)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(new EquatableEdge<int>(1, 0)));
+            filteredGraph.ContainsEdge(new EquatableEdge<int>(1, 0)).Should().BeFalse();
 
             #endregion
         }
@@ -551,24 +550,24 @@ namespace FastGraph.Tests.Predicates
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeFalse();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeTrue();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 3));   // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(3, 1));   // Filtered
+            filteredGraph.ContainsEdge(1, 3).Should().BeFalse();   // Filtered
+            filteredGraph.ContainsEdge(3, 1).Should().BeFalse();   // Filtered
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(2, 2));
+            filteredGraph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(0, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(4, 1));
+            filteredGraph.ContainsEdge(0, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(1, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(4, 1).Should().BeFalse();
 
             #endregion
 
@@ -579,24 +578,24 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeFalse();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeTrue();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 3));
-            Assert.IsFalse(filteredGraph.ContainsEdge(3, 1));
+            filteredGraph.ContainsEdge(1, 3).Should().BeTrue();
+            filteredGraph.ContainsEdge(3, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 2));   // Filtered
+            filteredGraph.ContainsEdge(2, 2).Should().BeFalse();   // Filtered
 
             // Vertices is not present in the graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(0, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(4, 1));
+            filteredGraph.ContainsEdge(0, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(1, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(4, 1).Should().BeFalse();
 
             #endregion
 
@@ -607,24 +606,24 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex > 0 && vertex < 3,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeFalse();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeTrue();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 3));   // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(3, 1));   // Filtered
+            filteredGraph.ContainsEdge(1, 3).Should().BeFalse();   // Filtered
+            filteredGraph.ContainsEdge(3, 1).Should().BeFalse();   // Filtered
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 2));   // Filtered
+            filteredGraph.ContainsEdge(2, 2).Should().BeFalse();   // Filtered
 
             // Vertices is not present in the graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(0, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(4, 1));
+            filteredGraph.ContainsEdge(0, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(1, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(4, 1).Should().BeFalse();
 
             #endregion
         }
@@ -653,24 +652,24 @@ namespace FastGraph.Tests.Predicates
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeFalse();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeTrue();
+            filteredGraph.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 3));   // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(3, 1));   // Filtered
+            filteredGraph.ContainsEdge(1, 3).Should().BeFalse();   // Filtered
+            filteredGraph.ContainsEdge(3, 1).Should().BeFalse();   // Filtered
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(filteredGraph.ContainsEdge(2, 2));
+            filteredGraph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(0, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(4, 1));
+            filteredGraph.ContainsEdge(0, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(1, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(4, 1).Should().BeFalse();
 
             #endregion
 
@@ -681,24 +680,24 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeFalse();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeTrue();
+            filteredGraph.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 3));
-            Assert.IsTrue(filteredGraph.ContainsEdge(3, 1));
+            filteredGraph.ContainsEdge(1, 3).Should().BeTrue();
+            filteredGraph.ContainsEdge(3, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 2));   // Filtered
+            filteredGraph.ContainsEdge(2, 2).Should().BeFalse();   // Filtered
 
             // Vertices is not present in the graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(0, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(4, 1));
+            filteredGraph.ContainsEdge(0, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(1, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(4, 1).Should().BeFalse();
 
             #endregion
 
@@ -709,24 +708,24 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex > 0 && vertex < 3,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeFalse();
+            filteredGraph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(filteredGraph.ContainsEdge(1, 2));
-            Assert.IsTrue(filteredGraph.ContainsEdge(2, 1));
+            filteredGraph.ContainsEdge(1, 2).Should().BeTrue();
+            filteredGraph.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 3));   // Filtered
-            Assert.IsFalse(filteredGraph.ContainsEdge(3, 1));   // Filtered
+            filteredGraph.ContainsEdge(1, 3).Should().BeFalse();   // Filtered
+            filteredGraph.ContainsEdge(3, 1).Should().BeFalse();   // Filtered
 
             wrappedGraph.AddVerticesAndEdge(edge3);
-            Assert.IsFalse(filteredGraph.ContainsEdge(2, 2));   // Filtered
+            filteredGraph.ContainsEdge(2, 2).Should().BeFalse();   // Filtered
 
             // Vertices is not present in the graph
-            Assert.IsFalse(filteredGraph.ContainsEdge(0, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(1, 4));
-            Assert.IsFalse(filteredGraph.ContainsEdge(4, 1));
+            filteredGraph.ContainsEdge(0, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(1, 4).Should().BeFalse();
+            filteredGraph.ContainsEdge(4, 1).Should().BeFalse();
 
             #endregion
         }
@@ -764,11 +763,11 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 _ => true);
 
-            Assert.AreSame(edge11, filteredGraph.OutEdge(1, 0));
-            Assert.AreSame(edge13, filteredGraph.OutEdge(1, 2));
-            Assert.AreSame(edge33, filteredGraph.OutEdge(3, 0));
+            filteredGraph.OutEdge(1, 0).Should().BeSameAs(edge11);
+            filteredGraph.OutEdge(1, 2).Should().BeSameAs(edge13);
+            filteredGraph.OutEdge(3, 0).Should().BeSameAs(edge33);
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.OutEdge(4, 0)); // Filtered
+            Invoking(() => filteredGraph.OutEdge(4, 0)).Should().Throw<VertexNotFoundException>(); // Filtered
 
             #endregion
 
@@ -780,9 +779,9 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreSame(edge12, filteredGraph.OutEdge(1, 0));
-            Assert.AreSame(edge13, filteredGraph.OutEdge(1, 1));
-            Assert.AreSame(edge34, filteredGraph.OutEdge(3, 0));
+            filteredGraph.OutEdge(1, 0).Should().BeSameAs(edge12);
+            filteredGraph.OutEdge(1, 1).Should().BeSameAs(edge13);
+            filteredGraph.OutEdge(3, 0).Should().BeSameAs(edge34);
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(3, 1));  // Filtered
 
@@ -796,11 +795,11 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreSame(edge12, filteredGraph.OutEdge(1, 0));
-            Assert.AreSame(edge13, filteredGraph.OutEdge(1, 1));
+            filteredGraph.OutEdge(1, 0).Should().BeSameAs(edge12);
+            filteredGraph.OutEdge(1, 1).Should().BeSameAs(edge13);
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(3, 0));  // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.OutEdge(4, 1)); // Filtered
+            Invoking(() => filteredGraph.OutEdge(4, 1)).Should().Throw<VertexNotFoundException>(); // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -840,7 +839,7 @@ namespace FastGraph.Tests.Predicates
                 _ => true);
 
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(vertex1, 2));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.OutEdge(vertex3, 0));
+            Invoking(() => filteredGraph.OutEdge(vertex3, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -864,7 +863,7 @@ namespace FastGraph.Tests.Predicates
                 edge => edge.Source != 1);
 
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(vertex1, 0));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.OutEdge(vertex4, 0));
+            Invoking(() => filteredGraph.OutEdge(vertex4, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -888,7 +887,7 @@ namespace FastGraph.Tests.Predicates
 
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(vertex1, 0));
             AssertIndexOutOfRange(() => filteredGraph.OutEdge(vertex2, 1));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.OutEdge(vertex4, 0));
+            Invoking(() => filteredGraph.OutEdge(vertex4, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1001,12 +1000,12 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 _ => true);
 
-            Assert.AreSame(edge11, filteredGraph.InEdge(1, 0));
-            Assert.AreSame(edge21, filteredGraph.InEdge(1, 1));
-            Assert.AreSame(edge13, filteredGraph.InEdge(3, 0));
+            filteredGraph.InEdge(1, 0).Should().BeSameAs(edge11);
+            filteredGraph.InEdge(1, 1).Should().BeSameAs(edge21);
+            filteredGraph.InEdge(3, 0).Should().BeSameAs(edge13);
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             AssertIndexOutOfRange(() => filteredGraph.InEdge(1, 2));    // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.InEdge(4, 0)); // Filtered
+            Invoking(() => filteredGraph.InEdge(4, 0)).Should().Throw<VertexNotFoundException>(); // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1019,9 +1018,9 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreSame(edge21, filteredGraph.InEdge(1, 0));    // Filtered
-            Assert.AreSame(edge13, filteredGraph.InEdge(3, 0));
-            Assert.AreSame(edge14, filteredGraph.InEdge(4, 0));
+            filteredGraph.InEdge(1, 0).Should().BeSameAs(edge21);    // Filtered
+            filteredGraph.InEdge(3, 0).Should().BeSameAs(edge13);
+            filteredGraph.InEdge(4, 0).Should().BeSameAs(edge14);
 
             #endregion
 
@@ -1034,10 +1033,10 @@ namespace FastGraph.Tests.Predicates
                 edge => edge.Source != edge.Target);
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.AreSame(edge21, filteredGraph.InEdge(1, 0)); // Filtered
-            Assert.AreSame(edge13, filteredGraph.InEdge(3, 0));
+            filteredGraph.InEdge(1, 0).Should().BeSameAs(edge21); // Filtered
+            filteredGraph.InEdge(3, 0).Should().BeSameAs(edge13);
             AssertIndexOutOfRange(() => filteredGraph.InEdge(1, 2));    // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.InEdge(4, 0)); // Filtered
+            Invoking(() => filteredGraph.InEdge(4, 0)).Should().Throw<VertexNotFoundException>(); // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1077,7 +1076,7 @@ namespace FastGraph.Tests.Predicates
                 _ => true);
 
             AssertIndexOutOfRange(() => filteredGraph.InEdge(vertex1, 2));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.InEdge(vertex3, 0));
+            Invoking(() => filteredGraph.InEdge(vertex3, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1119,7 +1118,7 @@ namespace FastGraph.Tests.Predicates
                 edge => edge.Source != edge.Target);
 
             AssertIndexOutOfRange(() => filteredGraph.InEdge(vertex1, 1));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.InEdge(vertex3, 0));
+            Invoking(() => filteredGraph.InEdge(vertex3, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1247,12 +1246,12 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 _ => true);
 
-            Assert.AreSame(edge11, filteredGraph.AdjacentEdge(1, 0));
-            Assert.AreSame(edge13, filteredGraph.AdjacentEdge(1, 2));
-            Assert.AreSame(edge13, filteredGraph.AdjacentEdge(3, 0));
-            Assert.AreSame(edge33, filteredGraph.AdjacentEdge(3, 1));
+            filteredGraph.AdjacentEdge(1, 0).Should().BeSameAs(edge11);
+            filteredGraph.AdjacentEdge(1, 2).Should().BeSameAs(edge13);
+            filteredGraph.AdjacentEdge(3, 0).Should().BeSameAs(edge13);
+            filteredGraph.AdjacentEdge(3, 1).Should().BeSameAs(edge33);
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.AdjacentEdge(4, 1)); // Filtered
+            Invoking(() => filteredGraph.AdjacentEdge(4, 1)).Should().Throw<VertexNotFoundException>(); // Filtered
 
             #endregion
 
@@ -1264,9 +1263,9 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreSame(edge12, filteredGraph.AdjacentEdge(1, 0));
-            Assert.AreSame(edge13, filteredGraph.AdjacentEdge(1, 1));
-            Assert.AreSame(edge13, filteredGraph.AdjacentEdge(3, 0));
+            filteredGraph.AdjacentEdge(1, 0).Should().BeSameAs(edge12);
+            filteredGraph.AdjacentEdge(1, 1).Should().BeSameAs(edge13);
+            filteredGraph.AdjacentEdge(3, 0).Should().BeSameAs(edge13);
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(3, 1));  // Filtered
 
@@ -1280,12 +1279,12 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreSame(edge12, filteredGraph.AdjacentEdge(1, 0));
-            Assert.AreSame(edge13, filteredGraph.AdjacentEdge(1, 1));
-            Assert.AreSame(edge13, filteredGraph.AdjacentEdge(3, 0));
+            filteredGraph.AdjacentEdge(1, 0).Should().BeSameAs(edge12);
+            filteredGraph.AdjacentEdge(1, 1).Should().BeSameAs(edge13);
+            filteredGraph.AdjacentEdge(3, 0).Should().BeSameAs(edge13);
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(3, 1));  // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.AdjacentEdge(4, 1)); // Filtered
+            Invoking(() => filteredGraph.AdjacentEdge(4, 1)).Should().Throw<VertexNotFoundException>(); // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1325,7 +1324,7 @@ namespace FastGraph.Tests.Predicates
                 _ => true);
 
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex1, 2));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.AdjacentEdge(vertex3, 0));
+            Invoking(() => filteredGraph.AdjacentEdge(vertex3, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1351,7 +1350,7 @@ namespace FastGraph.Tests.Predicates
 
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex1, 0));
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex2, 1));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.AdjacentEdge(vertex5, 0));
+            Invoking(() => filteredGraph.AdjacentEdge(vertex5, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1375,7 +1374,7 @@ namespace FastGraph.Tests.Predicates
 
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex1, 0));
             AssertIndexOutOfRange(() => filteredGraph.AdjacentEdge(vertex2, 1));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.AdjacentEdge(vertex4, 0));
+            Invoking(() => filteredGraph.AdjacentEdge(vertex4, 0)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1498,11 +1497,11 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 _ => true);
 
-            Assert.AreEqual(2, filteredGraph.Degree(1));    // Filtered
-            Assert.AreEqual(2, filteredGraph.Degree(2));    // Filtered
-            Assert.AreEqual(4, filteredGraph.Degree(3));    // Self edge
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.Degree(4));    // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.Degree(5));    // Filtered
+            filteredGraph.Degree(1).Should().Be(2);    // Filtered
+            filteredGraph.Degree(2).Should().Be(2);    // Filtered
+            filteredGraph.Degree(3).Should().Be(4);    // Self edge
+            Invoking(() => filteredGraph.Degree(4)).Should().Throw<VertexNotFoundException>();    // Filtered
+            Invoking(() => filteredGraph.Degree(5)).Should().Throw<VertexNotFoundException>();    // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1518,11 +1517,11 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreEqual(3, filteredGraph.Degree(1));
-            Assert.AreEqual(3, filteredGraph.Degree(2));
-            Assert.AreEqual(2, filteredGraph.Degree(3));    // Filtered
-            Assert.AreEqual(2, filteredGraph.Degree(4));
-            Assert.AreEqual(0, filteredGraph.Degree(5));
+            filteredGraph.Degree(1).Should().Be(3);
+            filteredGraph.Degree(2).Should().Be(3);
+            filteredGraph.Degree(3).Should().Be(2);    // Filtered
+            filteredGraph.Degree(4).Should().Be(2);
+            filteredGraph.Degree(5).Should().Be(0);
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1538,11 +1537,11 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.AreEqual(2, filteredGraph.Degree(1));    // Filtered
-            Assert.AreEqual(2, filteredGraph.Degree(2));    // Filtered
-            Assert.AreEqual(2, filteredGraph.Degree(3));    // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.Degree(4));    // Filtered
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph.Degree(5));    // Filtered
+            filteredGraph.Degree(1).Should().Be(2);    // Filtered
+            filteredGraph.Degree(2).Should().Be(2);    // Filtered
+            filteredGraph.Degree(3).Should().Be(2);    // Filtered
+            Invoking(() => filteredGraph.Degree(4)).Should().Throw<VertexNotFoundException>();    // Filtered
+            Invoking(() => filteredGraph.Degree(5)).Should().Throw<VertexNotFoundException>();    // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             #endregion
@@ -1582,22 +1581,22 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
+            filteredGraph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            filteredGraph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            filteredGraph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 1, out _));
+            filteredGraph.TryGetEdge(2, 1, out _).Should().BeFalse();
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(5, 2, out _));  // Filtered
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 5, out _));  // Filtered
+            filteredGraph.TryGetEdge(5, 2, out _).Should().BeFalse();  // Filtered
+            filteredGraph.TryGetEdge(2, 5, out _).Should().BeFalse();  // Filtered
 
             #endregion
 
@@ -1610,21 +1609,21 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
+            filteredGraph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            filteredGraph.TryGetEdge(2, 4, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 2, out gotEdge));    // Filtered
+            filteredGraph.TryGetEdge(2, 2, out gotEdge).Should().BeFalse();    // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 1, out _));
+            filteredGraph.TryGetEdge(2, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(5, 2, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            filteredGraph.TryGetEdge(5, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
 
             #endregion
 
@@ -1637,21 +1636,21 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
+            filteredGraph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            filteredGraph.TryGetEdge(2, 4, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 2, out _));  // Filtered
+            filteredGraph.TryGetEdge(2, 2, out _).Should().BeFalse();  // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 1, out _));
+            filteredGraph.TryGetEdge(2, 1, out _).Should().BeFalse();
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(5, 2, out _));  // Filtered
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 5, out _));  // Filtered
+            filteredGraph.TryGetEdge(5, 2, out _).Should().BeFalse();  // Filtered
+            filteredGraph.TryGetEdge(2, 5, out _).Should().BeFalse();  // Filtered
 
             #endregion
         }
@@ -1685,19 +1684,19 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdges(0, 1, out _));
+            filteredGraph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
+            filteredGraph.TryGetEdges(2, 2, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            new[] { edge4 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsFalse(filteredGraph.TryGetEdges(2, 4, out _)); // Filtered
+            filteredGraph.TryGetEdges(2, 4, out _).Should().BeFalse(); // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+            filteredGraph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
             #endregion
 
@@ -1710,20 +1709,20 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdges(0, 1, out _));
+            filteredGraph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 2, out gotEdges)); // Filtered
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetEdges(2, 2, out gotEdges).Should().BeTrue(); // Filtered
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            filteredGraph.TryGetEdges(2, 4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+            filteredGraph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
             #endregion
 
@@ -1736,19 +1735,19 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex < 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdges(0, 1, out _));
+            filteredGraph.TryGetEdges(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdges(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 2, out gotEdges)); // Filtered
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetEdges(2, 2, out gotEdges).Should().BeTrue(); // Filtered
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsFalse(filteredGraph.TryGetEdges(2, 4, out _)); // Filtered
+            filteredGraph.TryGetEdges(2, 4, out _).Should().BeFalse(); // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(1, 2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
+            filteredGraph.TryGetEdges(1, 2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetEdges(2, 1, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetEdges(2, 1, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
             #endregion
         }
@@ -1783,24 +1782,24 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
+            filteredGraph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out Edge<int>? gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            filteredGraph.TryGetEdge(2, 4, out Edge<int>? gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            filteredGraph.TryGetEdge(2, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge4);
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(2, 1, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(5, 2, out _));  // Filtered
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 5, out _));  // Filtered
+            filteredGraph.TryGetEdge(5, 2, out _).Should().BeFalse();  // Filtered
+            filteredGraph.TryGetEdge(2, 5, out _).Should().BeFalse();  // Filtered
 
             #endregion
 
@@ -1813,26 +1812,26 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
+            filteredGraph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            filteredGraph.TryGetEdge(2, 4, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 2, out gotEdge));    // Filtered
+            filteredGraph.TryGetEdge(2, 2, out gotEdge).Should().BeFalse();    // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(2, 1, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(5, 2, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            filteredGraph.TryGetEdge(5, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 5, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            filteredGraph.TryGetEdge(2, 5, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge7);
 
             #endregion
 
@@ -1845,23 +1844,23 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(filteredGraph.TryGetEdge(0, 1, out _));
+            filteredGraph.TryGetEdge(0, 10, out _).Should().BeFalse();
+            filteredGraph.TryGetEdge(0, 1, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 4, out gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            filteredGraph.TryGetEdge(2, 4, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge5);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 2, out _));  // Filtered
+            filteredGraph.TryGetEdge(2, 2, out _).Should().BeFalse();  // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(filteredGraph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            filteredGraph.TryGetEdge(2, 1, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge1);
 
-            Assert.IsFalse(filteredGraph.TryGetEdge(5, 2, out _));  // Filtered
-            Assert.IsFalse(filteredGraph.TryGetEdge(2, 5, out _));  // Filtered
+            filteredGraph.TryGetEdge(5, 2, out _).Should().BeFalse();  // Filtered
+            filteredGraph.TryGetEdge(2, 5, out _).Should().BeFalse();  // Filtered
 
             #endregion
         }
@@ -1896,18 +1895,18 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.TryGetOutEdges(0, out _));
+            filteredGraph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsFalse(filteredGraph.TryGetOutEdges(5, out _)); // Filtered
+            filteredGraph.TryGetOutEdges(5, out _).Should().BeFalse(); // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(3, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetOutEdges(3, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge7 }, gotEdges);   // Filtered
+            filteredGraph.TryGetOutEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge7 }.Should().BeEquivalentTo(gotEdges);   // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4, edge5, edge6 }, gotEdges);
+            filteredGraph.TryGetOutEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge4, edge5, edge6 }.Should().BeEquivalentTo(gotEdges);
 
             #endregion
 
@@ -1919,19 +1918,19 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetOutEdges(0, out _));
+            filteredGraph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(5, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetOutEdges(5, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(3, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge7, edge8 }, gotEdges);
+            filteredGraph.TryGetOutEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge7, edge8 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5, edge6 }, gotEdges);   // Filtered
+            filteredGraph.TryGetOutEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge5, edge6 }.Should().BeEquivalentTo(gotEdges);   // Filtered
 
             #endregion
 
@@ -1943,18 +1942,18 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetOutEdges(0, out _));
+            filteredGraph.TryGetOutEdges(0, out _).Should().BeFalse();
 
-            Assert.IsFalse(filteredGraph.TryGetOutEdges(5, out _)); // Filtered
+            filteredGraph.TryGetOutEdges(5, out _).Should().BeFalse(); // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(3, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetOutEdges(3, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge7 }, gotEdges);   // Filtered
+            filteredGraph.TryGetOutEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge7 }.Should().BeEquivalentTo(gotEdges);   // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetOutEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5, edge6 }, gotEdges);   // Filtered
+            filteredGraph.TryGetOutEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge5, edge6 }.Should().BeEquivalentTo(gotEdges);   // Filtered
 
             #endregion
         }
@@ -1988,15 +1987,15 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 _ => true);
 
-            Assert.IsFalse(filteredGraph.TryGetInEdges(0, out _));
+            filteredGraph.TryGetInEdges(0, out _).Should().BeFalse();
 
-            Assert.IsFalse(filteredGraph.TryGetInEdges(5, out _));  // Filtered
+            filteredGraph.TryGetInEdges(5, out _).Should().BeFalse();  // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(4, out IEnumerable<Edge<int>>? gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            filteredGraph.TryGetInEdges(4, out IEnumerable<Edge<int>>? gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
+            filteredGraph.TryGetInEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2, edge4 }.Should().BeEquivalentTo(gotEdges);
 
             #endregion
 
@@ -2008,16 +2007,16 @@ namespace FastGraph.Tests.Predicates
                 _ => true,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetInEdges(0, out _));
+            filteredGraph.TryGetInEdges(0, out _).Should().BeFalse();
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(5, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            filteredGraph.TryGetInEdges(5, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            filteredGraph.TryGetInEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);    // Filtered
+            filteredGraph.TryGetInEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);    // Filtered
 
             #endregion
 
@@ -2029,15 +2028,15 @@ namespace FastGraph.Tests.Predicates
                 vertex => vertex <= 4,
                 edge => edge.Source != edge.Target);
 
-            Assert.IsFalse(filteredGraph.TryGetInEdges(0, out _));
+            filteredGraph.TryGetInEdges(0, out _).Should().BeFalse();
 
-            Assert.IsFalse(filteredGraph.TryGetInEdges(5, out _));  // Filtered
+            filteredGraph.TryGetInEdges(5, out _).Should().BeFalse();  // Filtered
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(4, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
+            filteredGraph.TryGetInEdges(4, out gotEdges).Should().BeTrue();
+            new[] { edge5 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(filteredGraph.TryGetInEdges(2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);    // Filtered
+            filteredGraph.TryGetInEdges(2, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2 }.Should().BeEquivalentTo(gotEdges);    // Filtered
 
             #endregion
         }

@@ -15,12 +15,12 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var font = new GraphvizFont("TestFont", 12.5f);
-            Assert.AreEqual("TestFont", font.Name);
-            Assert.AreEqual(12.5f, font.SizeInPoints);
+            font.Name.Should().Be("TestFont");
+            font.SizeInPoints.Should().Be(12.5f);
 
             font = new GraphvizFont("OtherFont", 22.0f);
-            Assert.AreEqual("OtherFont", font.Name);
-            Assert.AreEqual(22.0f, font.SizeInPoints);
+            font.Name.Should().Be("OtherFont");
+            font.SizeInPoints.Should().Be(22.0f);
         }
 
         [Test]
@@ -29,10 +29,10 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentException>(() => new GraphvizFont(default, 12.5f));
-            Assert.Throws<ArgumentException>(() => new GraphvizFont("", 12.5f));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new GraphvizFont("Font", 0.0f));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new GraphvizFont("Font", -1.0f));
+            Invoking(() => new GraphvizFont(default, 12.5f)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphvizFont("", 12.5f)).Should().Throw<ArgumentException>();
+            Invoking(() => new GraphvizFont("Font", 0.0f)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new GraphvizFont("Font", -1.0f)).Should().Throw<ArgumentOutOfRangeException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             // ReSharper restore ObjectCreationAsStatement
         }
