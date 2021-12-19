@@ -29,7 +29,7 @@
   <!-- Dependencies -->
   <!-- Externals -->
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
 

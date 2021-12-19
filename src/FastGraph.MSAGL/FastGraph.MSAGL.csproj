@@ -49,8 +49,8 @@ It should be seen as an alpha-quality cutting-edge alternative to QuikGraph.MSAG
   <!-- Dependencies -->
   <!-- Externals -->
   <ItemGroup>
-    <PackageReference Include="AutomaticGraphLayout" Version="1.1.11" />
-    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
+    <PackageReference Include="AutomaticGraphLayout" Version="1.1.12" />
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.12" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
 
