@@ -72,7 +72,7 @@ namespace FastGraph.Algorithms.MaximumFlow
         private IVertexListGraph<TVertex, TEdge> ResidualGraph =>
             new FilteredVertexListGraph<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>(
                 VisitedGraph,
-                vertex => true,
+                _ => true,
                 new ResidualEdgePredicate<TVertex, TEdge>(ResidualCapacities).Test);
 
         private void Augment(TVertex source, TVertex sink)

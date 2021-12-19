@@ -113,7 +113,7 @@ namespace FastGraph.Algorithms.Ranking
             var filterGraph = new FilteredBidirectionalGraph<TVertex, TEdge, IBidirectionalGraph<TVertex, TEdge>>(
                 VisitedGraph,
                 new InDictionaryVertexPredicate<TVertex, double>(Ranks).Test,
-                edge => true);
+                _ => true);
 
             int iteration = 0;
             double error;

@@ -47,7 +47,7 @@ namespace FastGraph.Algorithms.Exploration
         private readonly List<ITransitionFactory<TVertex, TEdge>> _transitionFactories =
             new List<ITransitionFactory<TVertex, TEdge>>();
 
-        private VertexPredicate<TVertex> _addVertexPredicate = vertex => true;
+        private VertexPredicate<TVertex> _addVertexPredicate = _ => true;
 
         /// <summary>
         /// Predicate that a vertex must match to be added in the graph.
@@ -59,7 +59,7 @@ namespace FastGraph.Algorithms.Exploration
             set => _addVertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        private VertexPredicate<TVertex> _exploreVertexPredicate = vertex => true;
+        private VertexPredicate<TVertex> _exploreVertexPredicate = _ => true;
 
         /// <summary>
         /// Predicate that checks if a given vertex should be explored or ignored.
@@ -71,7 +71,7 @@ namespace FastGraph.Algorithms.Exploration
             set => _exploreVertexPredicate = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        private EdgePredicate<TVertex, TEdge> _addEdgePredicate = edge => true;
+        private EdgePredicate<TVertex, TEdge> _addEdgePredicate = _ => true;
 
         /// <summary>
         /// Predicate that an edge must match to be added in the graph.

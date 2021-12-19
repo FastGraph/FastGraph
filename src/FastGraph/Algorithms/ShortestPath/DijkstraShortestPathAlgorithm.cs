@@ -225,7 +225,7 @@ namespace FastGraph.Algorithms.ShortestPath
                 bfs.StartVertex += StartVertex;
                 bfs.ExamineEdge += ExamineEdge;
 #if DEBUG
-                bfs.ExamineEdge += edge => AssertHeap();
+                bfs.ExamineEdge += _ => AssertHeap();
 #endif
                 bfs.ExamineVertex += ExamineVertex;
                 bfs.FinishVertex += FinishVertex;
