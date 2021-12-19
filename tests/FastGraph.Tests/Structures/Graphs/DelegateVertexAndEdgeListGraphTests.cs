@@ -34,8 +34,8 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
+                g.IsDirected.Should().BeTrue();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
             }
 
             #endregion
@@ -47,12 +47,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(default, GetEmptyGetter<int, Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(Enumerable.Empty<int>(), default));
-            Assert.Throws<ArgumentNullException>(
-                () => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(default, default));
+            Invoking(() => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(default, GetEmptyGetter<int, Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(Enumerable.Empty<int>(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DelegateVertexAndEdgeListGraph<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -132,11 +129,11 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(0);
 
             data.ShouldReturnValue = false;
-            Assert.IsFalse(graph.ContainsVertex(1));
+            graph.ContainsVertex(1).Should().BeFalse();
             data.CheckCalls(0); // Implementation override
 
             data.ShouldReturnValue = true;
-            Assert.IsFalse(graph.ContainsVertex(1));
+            graph.ContainsVertex(1).Should().BeFalse();
             data.CheckCalls(0); // Implementation override
 
 
@@ -144,15 +141,15 @@ namespace FastGraph.Tests.Structures
                 new[] { 1, 2 },
                 data.TryGetEdges);
             data.ShouldReturnValue = false;
-            Assert.IsFalse(graph.ContainsVertex(10));
+            graph.ContainsVertex(10).Should().BeFalse();
             data.CheckCalls(0); // Implementation override
-            Assert.IsTrue(graph.ContainsVertex(2));
+            graph.ContainsVertex(2).Should().BeTrue();
             data.CheckCalls(0); // Implementation override
 
             data.ShouldReturnValue = true;
-            Assert.IsFalse(graph.ContainsVertex(10));
+            graph.ContainsVertex(10).Should().BeFalse();
             data.CheckCalls(0); // Implementation override
-            Assert.IsTrue(graph.ContainsVertex(2));
+            graph.ContainsVertex(2).Should().BeTrue();
             data.CheckCalls(0); // Implementation override
         }
 
@@ -200,21 +197,21 @@ namespace FastGraph.Tests.Structures
             data.CheckCalls(0);
 
             data.ShouldReturnValue = false;
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(2, 1).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnValue = true;
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(2, 1).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnEdges = new[] { new Edge<int>(1, 3), new Edge<int>(1, 2) };
-            Assert.IsFalse(graph.ContainsEdge(1, 2));   // Vertices 1 and 2 are not part or the graph
+            graph.ContainsEdge(1, 2).Should().BeFalse();   // Vertices 1 and 2 are not part or the graph
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(2, 1).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
 
@@ -223,26 +220,26 @@ namespace FastGraph.Tests.Structures
                 data.TryGetEdges);
 
             data.ShouldReturnValue = false;
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
             data.CheckCalls(1);
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(2, 1).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnValue = true;
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
             data.CheckCalls(1);
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(2, 1).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             data.ShouldReturnEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 3) };
-            Assert.IsFalse(graph.ContainsEdge(1, 2));   // Vertices 2 is not part or the graph
+            graph.ContainsEdge(1, 2).Should().BeFalse();   // Vertices 2 is not part or the graph
             data.CheckCalls(1);
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(2, 1).Should().BeFalse();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
+            graph.ContainsEdge(1, 3).Should().BeTrue();
             data.CheckCalls(1);
-            Assert.IsFalse(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(3, 1).Should().BeFalse();
             data.CheckCalls(1);
         }
 
@@ -274,7 +271,7 @@ namespace FastGraph.Tests.Structures
             var edge12 = new Edge<int>(1, 2);
             data.ShouldReturnValue = true;
             data.ShouldReturnEdges = new[] { edge14, edge12 };
-            Assert.AreSame(edge12, graph.OutEdge(1, 0));
+            graph.OutEdge(1, 0).Should().BeSameAs(edge12);
             data.CheckCalls(1);
         }
 
@@ -292,7 +289,7 @@ namespace FastGraph.Tests.Structures
             var edge32 = new Edge<int>(3, 2);
             data.ShouldReturnEdges = new[] { edge32 };
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph1.OutEdge(3, 0));
+            Invoking(() => graph1.OutEdge(3, 0)).Should().Throw<VertexNotFoundException>();
             data.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
             var edge14 = new Edge<int>(1, 4);
@@ -343,7 +340,7 @@ namespace FastGraph.Tests.Structures
             var edge32 = new Edge<int>(3, 2);
             data1.ShouldReturnEdges = new[] { edge32 };
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph1.OutEdges(3));
+            Invoking(() => graph1.OutEdges(3)).Should().Throw<VertexNotFoundException>();
             data1.CheckCalls(0); // Vertex is not in graph so no need to call user code
 
 
@@ -373,19 +370,19 @@ namespace FastGraph.Tests.Structures
             data.ShouldReturnValue = true;
             data.ShouldReturnEdges = new[] { edge13, edge14, edge21 };
 
-            Assert.IsFalse(graph.TryGetEdge(1, 2, out Edge<int>? gotEdge));
+            graph.TryGetEdge(1, 2, out Edge<int>? gotEdge).Should().BeFalse();
 
             var edge12 = new Edge<int>(1, 2);
             data.ShouldReturnEdges = new[] { edge12, edge13, edge14, edge21 };
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge12, gotEdge);
+            graph.TryGetEdge(1, 2, out gotEdge).Should().BeTrue();
+            gotEdge.Should().BeSameAs(edge12);
 
             var edge51 = new Edge<int>(5, 1);
             var edge56 = new Edge<int>(5, 6);
             data.ShouldReturnEdges = new[] { edge12, edge13, edge51, edge56 };
-            Assert.IsFalse(graph.TryGetEdge(1, 5, out _));
-            Assert.IsFalse(graph.TryGetEdge(5, 1, out _));
-            Assert.IsFalse(graph.TryGetEdge(5, 6, out _));
+            graph.TryGetEdge(1, 5, out _).Should().BeFalse();
+            graph.TryGetEdge(5, 1, out _).Should().BeFalse();
+            graph.TryGetEdge(5, 6, out _).Should().BeFalse();
         }
 
         [Test]

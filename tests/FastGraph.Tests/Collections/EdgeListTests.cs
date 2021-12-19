@@ -15,15 +15,15 @@ namespace FastGraph.Tests.Collections
         public void Constructors()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.DoesNotThrow(() => new EdgeList<int, Edge<int>>());
-            Assert.DoesNotThrow(() => new EdgeList<int, Edge<int>>(12));
+            Invoking((Func<EdgeList<int, Edge<int>>>)(() => new EdgeList<int, Edge<int>>())).Should().NotThrow();
+            Invoking((Func<EdgeList<int, Edge<int>>>)(() => new EdgeList<int, Edge<int>>(12))).Should().NotThrow();
             var list = new EdgeList<int, EquatableEdge<int>>
             {
                 new EquatableEdge<int>(1, 2),
                 new EquatableEdge<int>(2, 3)
             };
             var otherList = new EdgeList<int, EquatableEdge<int>>(list);
-            CollectionAssert.AreEqual(list, otherList);
+            list.Should().BeEquivalentTo(otherList);
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -33,13 +33,13 @@ namespace FastGraph.Tests.Collections
             var list = new EdgeList<int, EquatableEdge<int>>();
 
             EdgeList<int, EquatableEdge<int>> clonedList = list.Clone();
-            CollectionAssert.IsEmpty(clonedList);
+            clonedList.Should().BeEmpty();
 
             clonedList = (EdgeList<int, EquatableEdge<int>>)((IEdgeList<int, EquatableEdge<int>>)list).Clone();
-            CollectionAssert.IsEmpty(clonedList);
+            clonedList.Should().BeEmpty();
 
             clonedList = (EdgeList<int, EquatableEdge<int>>)((ICloneable)list).Clone();
-            CollectionAssert.IsEmpty(clonedList);
+            clonedList.Should().BeEmpty();
 
             list.AddRange(new[]
             {
@@ -47,13 +47,13 @@ namespace FastGraph.Tests.Collections
                 new EquatableEdge<int>(2, 3)
             });
             clonedList = list.Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            list.Should().BeEquivalentTo(clonedList);
 
             clonedList = (EdgeList<int, EquatableEdge<int>>)((IEdgeList<int, EquatableEdge<int>>)list).Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            list.Should().BeEquivalentTo(clonedList);
 
             clonedList = (EdgeList<int, EquatableEdge<int>>)((ICloneable)list).Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            list.Should().BeEquivalentTo(clonedList);
         }
     }
 }

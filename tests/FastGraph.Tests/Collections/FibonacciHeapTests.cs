@@ -2,6 +2,7 @@
 
 using NUnit.Framework;
 using FastGraph.Collections;
+using FluentAssertions.Execution;
 using static FastGraph.Tests.AssertHelpers;
 
 namespace FastGraph.Tests.Collections
@@ -14,23 +15,27 @@ namespace FastGraph.Tests.Collections
     {
         #region Test helpers
 
+        [CustomAssertion]
         private static void AssertHeapSize<TPriority, TValue>(
             FibonacciHeap<TPriority, TValue> heap,
             int expectedCount)
             where TPriority : notnull
         {
-            if (expectedCount > 0)
+            using (_ = new AssertionScope())
             {
-                Assert.IsFalse(heap.IsEmpty);
-                Assert.IsNotNull(heap.Top);
-            }
-            else
-            {
-                Assert.IsTrue(heap.IsEmpty);
-                Assert.IsNull(heap.Top);
-            }
+                if (expectedCount > 0)
+                {
+                    heap.IsEmpty.Should().BeFalse();
+                    heap.Top.Should().NotBeNull();
+                }
+                else
+                {
+                    heap.IsEmpty.Should().BeTrue();
+                    heap.Top.Should().BeNull();
+                }
 
-            Assert.AreEqual(expectedCount, heap.Count);
+                heap.Should().HaveCount(expectedCount).And.HaveCount(heap.Count);
+            }
         }
 
         /// <summary>
@@ -63,13 +68,13 @@ namespace FastGraph.Tests.Collections
                 }
 
                 if (deletedCellsArray != default)
-                    CollectionAssert.DoesNotContain(deletedCellsArray, value, "Found item that was deleted.");
+                    deletedCellsArray.Should().NotContainEquivalentOf(value);
 
                 lastValue = value.Key;
                 --expectedCount;
             }
 
-            Assert.AreEqual(0, expectedCount, "Not all elements enqueued were dequeued.");
+            expectedCount.Should().Be(0, because: "Not all elements enqueued were dequeued.");
         }
 
         /// <summary>
@@ -102,13 +107,13 @@ namespace FastGraph.Tests.Collections
                 }
 
                 if (deletedCellsArray != default)
-                    CollectionAssert.DoesNotContain(deletedCellsArray, value, "Found item that was deleted.");
+                    deletedCellsArray.Should().NotContain(c => c.ToKeyValuePair().Equals(value));
 
                 lastValue = value.Key;
                 --expectedCount;
             }
 
-            Assert.AreEqual(0, expectedCount, "Not all elements enqueued were dequeued.");
+            expectedCount.Should().Be(0, because: "Not all elements enqueued were dequeued.");
         }
 
         /// <summary>
@@ -134,9 +139,10 @@ namespace FastGraph.Tests.Collections
                 --expectedCount;
             }
 
-            Assert.AreEqual(0, expectedCount, "Not all elements enqueued were dequeued.");
+            expectedCount.Should().Be(0, because: "Not all elements enqueued were dequeued.");
         }
 
+        [CustomAssertion]
         private static void AssertCell<TPriority, TValue>(
             FibonacciHeapCell<TPriority, TValue> cell,
             TPriority expectedPriority,
@@ -150,14 +156,17 @@ namespace FastGraph.Tests.Collections
             where TPriority : notnull
             where TValue : notnull
         {
-            Assert.AreEqual(expectedPriority, cell.Priority);
-            Assert.AreEqual(expectedValue, cell.Value);
-            Assert.AreEqual(expectedMarked, cell.Marked);
-            Assert.AreEqual(expectedRemoved, cell.Removed);
-            Assert.AreEqual(expectedDegree, cell.Degree);
-            Assert.AreEqual(expectedPrevious, cell.Previous);
-            Assert.AreEqual(expectedNext, cell.Next);
-            Assert.AreEqual(expectedParent, cell.Parent);
+            using (_ = new AssertionScope())
+            {
+                cell.Priority.Should().Be(expectedPriority);
+                cell.Value.Should().Be(expectedValue);
+                cell.Marked.Should().Be(expectedMarked);
+                cell.Removed.Should().Be(expectedRemoved);
+                cell.Degree.Should().Be(expectedDegree);
+                cell.Previous.Should().Be(expectedPrevious);
+                cell.Next.Should().Be(expectedNext);
+                cell.Parent.Should().Be(expectedParent);
+            }
         }
 
         private static void AssertNewCell<TPriority, TValue>(
@@ -204,11 +213,11 @@ namespace FastGraph.Tests.Collections
                 HeapDirection expectedDirection = HeapDirection.Increasing)
                 where TPriority : notnull
             {
-                Assert.AreEqual(0, heap.Count);
-                Assert.IsTrue(heap.IsEmpty);
-                Assert.IsNull(heap.Top);
-                Assert.AreEqual(expectedDirection, heap.Direction);
-                Assert.AreEqual(expectedComparer, heap.PriorityComparison);
+                heap.Count.Should().Be(0);
+                heap.IsEmpty.Should().BeTrue();
+                heap.Top.Should().BeNull();
+                heap.Direction.Should().Be(expectedDirection);
+                heap.PriorityComparison.Should().Be(expectedComparer);
             }
 
             void AssertHeapBaseProperties<TPriority, TValue>(
@@ -228,10 +237,8 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Increasing, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Decreasing, default));
+            Invoking(() => new FibonacciHeap<int, Edge<int>>(HeapDirection.Increasing, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<int, Edge<int>>(HeapDirection.Decreasing, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -323,8 +330,8 @@ namespace FastGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreEqual(topPriority, heap.Top!.Priority);
-                        Assert.AreEqual(topValue, heap.Top.Value);
+                        heap.Top!.Priority.Should().Be(topPriority);
+                        heap.Top.Value.Should().Be(topValue);
                     }
 
                     #endregion
@@ -394,8 +401,8 @@ namespace FastGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreSame(topPriority, heap.Top!.Priority);
-                        Assert.AreEqual(topValue, heap.Top.Value);
+                        heap.Top!.Priority.Should().BeSameAs(topPriority);
+                        heap.Top.Value.Should().Be(topValue);
                     }
 
                     #endregion
@@ -442,8 +449,8 @@ namespace FastGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreEqual(1, heap.Top!.Priority);
-                        Assert.AreEqual(value1, heap.Top.Value);
+                        heap.Top!.Priority.Should().Be(1);
+                        heap.Top.Value.Should().Be(value1);
                     }
 
                     #endregion
@@ -460,8 +467,8 @@ namespace FastGraph.Tests.Collections
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Enqueue(default, 1));
-            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Enqueue(default, 1));
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Enqueue(default, 1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Enqueue(default, 1)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -897,18 +904,12 @@ namespace FastGraph.Tests.Collections
             var cell = new FibonacciHeapCell<TestPriority, int>();
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(default, priority));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(default, priority));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(cell, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(cell, default));
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(default, priority)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(default, priority)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(cell, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(cell, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -1099,10 +1100,8 @@ namespace FastGraph.Tests.Collections
         {
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Delete(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Delete(default));
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Delete(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Delete(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -1150,32 +1149,32 @@ namespace FastGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue?> pair = heap.Dequeue();
-                    Assert.AreEqual(1.0, pair.Key);
+                    pair.Key.Should().Be(1.0);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(2.0, pair.Key);
+                    pair.Key.Should().Be(2.0);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(3.0, pair.Key);
+                    pair.Key.Should().Be(3.0);
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(6.0, pair.Key);
+                    pair.Key.Should().Be(6.0);
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(9.0, pair.Key);
+                    pair.Key.Should().Be(9.0);
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(10.0, pair.Key);
+                    pair.Key.Should().Be(10.0);
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1200,32 +1199,32 @@ namespace FastGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue?> pair = heap.Dequeue();
-                    Assert.AreSame(priority1, pair.Key);
+                    pair.Key.Should().BeSameAs(priority1);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority2, pair.Key);
+                    pair.Key.Should().BeSameAs(priority2);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority3, pair.Key);
+                    pair.Key.Should().BeSameAs(priority3);
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority6, pair.Key);
+                    pair.Key.Should().BeSameAs(priority6);
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority9, pair.Key);
+                    pair.Key.Should().BeSameAs(priority9);
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority10, pair.Key);
+                    pair.Key.Should().BeSameAs(priority10);
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1243,27 +1242,27 @@ namespace FastGraph.Tests.Collections
                     AssertHeapSize(heap, 5);
 
                     KeyValuePair<int, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1317,32 +1316,32 @@ namespace FastGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(10.0, pair.Key);
+                    pair.Key.Should().Be(10.0);
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(9.0, pair.Key);
+                    pair.Key.Should().Be(9.0);
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(6.0, pair.Key);
+                    pair.Key.Should().Be(6.0);
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(3.0, pair.Key);
+                    pair.Key.Should().Be(3.0);
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(2.0, pair.Key);
+                    pair.Key.Should().Be(2.0);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1.0, pair.Key);
+                    pair.Key.Should().Be(1.0);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1367,32 +1366,32 @@ namespace FastGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Dequeue();
-                    Assert.AreSame(priority10, pair.Key);
+                    pair.Key.Should().BeSameAs(priority10);
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority9, pair.Key);
+                    pair.Key.Should().BeSameAs(priority9);
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority6, pair.Key);
+                    pair.Key.Should().BeSameAs(priority6);
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority3, pair.Key);
+                    pair.Key.Should().BeSameAs(priority3);
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority2, pair.Key);
+                    pair.Key.Should().BeSameAs(priority2);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority1, pair.Key);
+                    pair.Key.Should().BeSameAs(priority1);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1410,27 +1409,27 @@ namespace FastGraph.Tests.Collections
                     AssertHeapSize(heap, 5);
 
                     KeyValuePair<int, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    pair.Key.Should().Be(1);
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1446,7 +1445,7 @@ namespace FastGraph.Tests.Collections
         {
             var heap = new FibonacciHeap<int, double>();
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<InvalidOperationException>(() => heap.Dequeue());
+            Invoking(() => heap.Dequeue()).Should().Throw<InvalidOperationException>();
         }
 
         [TestCase(HeapDirection.Increasing)]
@@ -1679,11 +1678,11 @@ namespace FastGraph.Tests.Collections
             var decreaseHeap = new FibonacciHeap<int, int>(HeapDirection.Decreasing);
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => increaseHeap.Merge(default));
+            Invoking(() => increaseHeap.Merge(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 
-            Assert.Throws<InvalidOperationException>(() => increaseHeap.Merge(decreaseHeap));
-            Assert.Throws<InvalidOperationException>(() => decreaseHeap.Merge(increaseHeap));
+            Invoking(() => increaseHeap.Merge(decreaseHeap)).Should().Throw<InvalidOperationException>();
+            Invoking(() => decreaseHeap.Merge(increaseHeap)).Should().Throw<InvalidOperationException>();
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -1748,83 +1747,69 @@ namespace FastGraph.Tests.Collections
         public void EnumerateHeap(HeapDirection direction)
         {
             var heap = new FibonacciHeap<double, int>(direction);
-            CollectionAssert.IsEmpty(heap);
+            heap.Should<KeyValuePair<double, int>>().BeEmpty();
 
             heap.Enqueue(1.0, 1);
-            CollectionAssert.AreEquivalent(
-                new[] { new KeyValuePair<double, int>(1.0, 1) },
-                heap);
+            heap.Should().BeEquivalentTo(new[] { new KeyValuePair<double, int>(1.0, 1) });
 
             heap.Enqueue(12.0, 1);
             FibonacciHeapCell<double, int> cell = heap.Enqueue(10.0, 2);
             heap.Enqueue(5.0, 4);
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(10.0, 2),
-                    new KeyValuePair<double, int>(12.0, 1)
-                },
-                heap);
+            heap.Should().BeEquivalentTo(new[]
+            {
+                new KeyValuePair<double, int>(1.0, 1),
+                new KeyValuePair<double, int>(5.0, 4),
+                new KeyValuePair<double, int>(10.0, 2),
+                new KeyValuePair<double, int>(12.0, 1)
+            });
 
             heap.Dequeue();
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    direction == HeapDirection.Increasing
-                        ? new KeyValuePair<double, int>(12.0, 1)
-                        : new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(10.0, 2)
-                },
-                heap);
+            heap.Should().BeEquivalentTo(new[]
+            {
+                direction == HeapDirection.Increasing
+                    ? new KeyValuePair<double, int>(12.0, 1)
+                    : new KeyValuePair<double, int>(1.0, 1),
+                new KeyValuePair<double, int>(5.0, 4),
+                new KeyValuePair<double, int>(10.0, 2)
+            });
 
             heap.ChangeKey(cell, -1);
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    direction == HeapDirection.Increasing
-                        ? new KeyValuePair<double, int>(12.0, 1)
-                        : new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(-1, 2)
-                },
-                heap);
+            heap.Should().BeEquivalentTo(new[]
+            {
+                direction == HeapDirection.Increasing
+                    ? new KeyValuePair<double, int>(12.0, 1)
+                    : new KeyValuePair<double, int>(1.0, 1),
+                new KeyValuePair<double, int>(5.0, 4),
+                new KeyValuePair<double, int>(-1, 2)
+            });
 
             while (heap.Count > 0)
             {
                 heap.Dequeue();
             }
 
-            CollectionAssert.IsEmpty(heap);
+            heap.Should<KeyValuePair<double, int>>().BeEmpty();
         }
 
         [Test]
         public void EnumerateHeapLinkedList()
         {
             var list = new FibonacciHeapLinkedList<int, int>();
-            CollectionAssert.IsEmpty(list);
+            list.Should().BeEmpty();
 
             var cell1 = new FibonacciHeapCell<int, int>();
             list.AddLast(cell1);
-            CollectionAssert.AreEqual(
-                new[] { cell1 },
-                list);
+            new[] { cell1 }.Should().BeEquivalentTo(list);
 
             var cell2 = new FibonacciHeapCell<int, int>();
             list.AddLast(cell2);
-            CollectionAssert.AreEqual(
-                new[] { cell1, cell2 },
-                list);
+            new[] { cell1, cell2 }.Should().BeEquivalentTo(list);
 
             list.Remove(cell1);
-            CollectionAssert.AreEqual(
-                new[] { cell2 },
-                list);
+            new[] { cell2 }.Should().BeEquivalentTo(list);
 
             list.Remove(cell2);
-            CollectionAssert.IsEmpty(list);
+            list.Should().BeEmpty();
         }
 
         [Test]

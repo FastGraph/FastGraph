@@ -29,10 +29,10 @@ namespace FastGraph.Tests.Algorithms
 
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices!.Length);
-            Assert.IsNotNull(algorithm.Degrees);
-            Assert.AreEqual(graph.VertexCount, algorithm.Degrees.Count);
+            algorithm.SortedVertices.Should().NotBeNull();
+            algorithm.SortedVertices!.Length.Should().Be(graph.VertexCount);
+            algorithm.Degrees.Should().NotBeNull();
+            algorithm.Degrees.Count.Should().Be(graph.VertexCount);
         }
 
         #endregion
@@ -66,9 +66,9 @@ namespace FastGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.SortedVertices);
-                CollectionAssert.IsEmpty(algo.Degrees);
-                Assert.AreEqual(allowCycles, algo.AllowCyclicGraph);
+                algo.SortedVertices.Should().BeNull();
+                algo.Degrees.Should().BeEmpty();
+                algo.AllowCyclicGraph.Should().Be(allowCycles);
             }
 
             #endregion
@@ -80,8 +80,7 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedFirstTopologicalSortAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new UndirectedFirstTopologicalSortAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -105,9 +104,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing, here the order
             // is more vertices ordered from lower to higher adjacent vertices
-            CollectionAssert.AreEqual(
-                new[] { 1, 8, 3, 7, 2, 6, 4, 5 },
-                algorithm.SortedVertices);
+            new[] { 1, 8, 3, 7, 2, 6, 4, 5 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -127,9 +124,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing, here the order
             // is more vertices ordered from lower to higher adjacent vertices
-            CollectionAssert.AreEqual(
-                new[] { 0, 4, 2, 3, 1 },
-                algorithm.SortedVertices);
+            new[] { 0, 4, 2, 3, 1 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -151,9 +146,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing, here the order
             // is more vertices ordered from lower to higher adjacent vertices
-            CollectionAssert.AreEqual(
-                new[] { 0, 6, 5, 4, 2, 3, 1 },
-                algorithm.SortedVertices);
+            new[] { 0, 6, 5, 4, 2, 3, 1 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -171,7 +164,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new UndirectedFirstTopologicalSortAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
 
             algorithm = new UndirectedFirstTopologicalSortAlgorithm<int, Edge<int>>(graph)
             {
@@ -181,9 +174,7 @@ namespace FastGraph.Tests.Algorithms
 
             // Order in undirected graph is some strange thing, here the order
             // is more vertices ordered from lower to higher adjacent vertices
-            CollectionAssert.AreEqual(
-                new[] { 0, 4, 1, 3, 2 },
-                algorithm.SortedVertices);
+            new[] { 0, 4, 1, 3, 2 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
         [Test]
@@ -215,13 +206,13 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new UndirectedFirstTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
-            Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
 
             algorithm = new UndirectedFirstTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph)
             {
                 AllowCyclicGraph = true
             };
-            Assert.DoesNotThrow(() => algorithm.Compute());
+            Invoking(() => algorithm.Compute()).Should().NotThrow();
         }
     }
 }

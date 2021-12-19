@@ -28,9 +28,9 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.IsNotNull(g.OriginalGraph);
+                g.IsDirected.Should().BeFalse();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
+                g.OriginalGraph.Should().NotBeNull();
                 AssertEmptyGraph(g);
             }
 
@@ -43,7 +43,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new UndirectedBidirectionalGraph<int, Edge<int>>(default));
+            Invoking(() => new UndirectedBidirectionalGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -163,7 +163,7 @@ namespace FastGraph.Tests.Structures
             var wrappedGraph = new BidirectionalGraph<int, Edge<int>>();
             var graph = new UndirectedBidirectionalGraph<int, Edge<int>>(wrappedGraph);
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<NotSupportedException>(() => graph.AdjacentEdge(1, 0));
+            Invoking(() => graph.AdjacentEdge(1, 0)).Should().Throw<NotSupportedException>();
         }
 
         [Test]

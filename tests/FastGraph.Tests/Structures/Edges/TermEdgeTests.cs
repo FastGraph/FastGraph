@@ -42,19 +42,19 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, v1));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(v1, default));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, default));
+            Invoking(() => new TermEdge<TestVertex>(default, v1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TermEdge<TestVertex>(v1, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TermEdge<TestVertex>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, v1, 0, 1));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(v1, default, 0, 1));
-            Assert.Throws<ArgumentNullException>(() => new TermEdge<TestVertex>(default, default, 0, 1));
+            Invoking(() => new TermEdge<TestVertex>(default, v1, 0, 1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TermEdge<TestVertex>(v1, default, 0, 1)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TermEdge<TestVertex>(default, default, 0, 1)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentException>(() => new TermEdge<TestVertex>(v1, v2, -1, 0));
-            Assert.Throws<ArgumentException>(() => new TermEdge<TestVertex>(v1, v2, 0, -1));
-            Assert.Throws<ArgumentException>(() => new TermEdge<TestVertex>(v1, v2, -1, -1));
+            Invoking(() => new TermEdge<TestVertex>(v1, v2, -1, 0)).Should().Throw<ArgumentException>();
+            Invoking(() => new TermEdge<TestVertex>(v1, v2, 0, -1)).Should().Throw<ArgumentException>();
+            Invoking(() => new TermEdge<TestVertex>(v1, v2, -1, -1)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -68,37 +68,36 @@ namespace FastGraph.Tests.Structures
             var edge5 = new TermEdge<int>(1, 2, 0, 1);
             var edge6 = new TermEdge<int>(1, 2, 0, 1);
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreEqual(edge3, edge3);
-            Assert.AreEqual(edge5, edge5);
+            edge1.Should().Be(edge1);
+            edge3.Should().Be(edge3);
+            edge5.Should().Be(edge5);
 
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge2, edge1);
-            Assert.IsFalse(edge1.Equals(edge2));
-            Assert.IsFalse(edge2.Equals(edge1));
+            edge2.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge2);
+            edge1.Equals(edge2).Should().BeFalse();
+            edge2.Equals(edge1).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            edge3.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge3);
+            edge1.Equals(edge3).Should().BeFalse();
+            edge3.Equals(edge1).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, edge5);
-            Assert.AreNotEqual(edge5, edge1);
-            Assert.IsFalse(edge1.Equals(edge5));
-            Assert.IsFalse(edge5.Equals(edge1));
+            edge5.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge5);
+            edge1.Equals(edge5).Should().BeFalse();
+            edge5.Equals(edge1).Should().BeFalse();
 
-            Assert.AreNotEqual(edge3, edge4);
-            Assert.AreNotEqual(edge4, edge3);
-            Assert.IsFalse(edge3.Equals(edge4));
-            Assert.IsFalse(edge4.Equals(edge3));
+            edge4.Should().NotBe(edge3);
+            edge3.Should().NotBe(edge4);
+            edge3.Equals(edge4).Should().BeFalse();
+            edge4.Equals(edge3).Should().BeFalse();
 
-            Assert.AreNotEqual(edge5, edge6);
-            Assert.AreNotEqual(edge6, edge5);
-            Assert.IsFalse(edge5.Equals(edge6));
-            Assert.IsFalse(edge6.Equals(edge5));
+            edge6.Should().NotBe(edge5);
+            edge5.Should().NotBe(edge6);
+            edge5.Equals(edge6).Should().BeFalse();
+            edge6.Equals(edge5).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, default);
-            Assert.IsFalse(edge1.Equals(default));
+            edge1.Equals(default).Should().BeFalse();
         }
 
         [Test]
@@ -108,9 +107,9 @@ namespace FastGraph.Tests.Structures
             var edge2 = new TermEdge<int>(1, 2, 1, 5);
             var edge3 = new TermEdge<int>(2, 1);
 
-            Assert.AreEqual("1 (0) -> 2 (0)", edge1.ToString());
-            Assert.AreEqual("1 (1) -> 2 (5)", edge2.ToString());
-            Assert.AreEqual("2 (0) -> 1 (0)", edge3.ToString());
+            edge1.ToString().Should().Be("1 (0) -> 2 (0)");
+            edge2.ToString().Should().Be("1 (1) -> 2 (5)");
+            edge3.ToString().Should().Be("2 (0) -> 1 (0)");
         }
     }
 }

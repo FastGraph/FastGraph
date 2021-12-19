@@ -31,7 +31,7 @@ namespace FastGraph.Tests.Collections
                 where TVertex : notnull
                 where TDistance : notnull
             {
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
             }
 
             #endregion
@@ -43,15 +43,11 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(default));
+            Invoking(() => new BinaryQueue<int, double>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(_ => 1.0, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(default, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(default, default));
+            Invoking(() => new BinaryQueue<int, double>(_ => 1.0, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new BinaryQueue<int, double>(default, (dist1, dist2) => dist1.CompareTo(dist2))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new BinaryQueue<int, double>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -179,7 +175,7 @@ namespace FastGraph.Tests.Collections
                     vertex2);
 
                 queue!.Update(vertex3);  // Added with distance 0.5
-                Assert.AreEqual(3, queue.Count);
+                queue.Count.Should().Be(3);
 
                 AssertEqual(vertex3, queue.Peek());
             }
@@ -238,7 +234,7 @@ namespace FastGraph.Tests.Collections
                 var queue = new BinaryQueue<TVertex, double>(_ => distances.Pop());
 
                 // Empty heap
-                CollectionAssert.IsEmpty(queue.ToPairsArray());
+                queue.ToPairsArray().Should<KeyValuePair<double, TVertex>>().BeEmpty();
 
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
@@ -247,40 +243,34 @@ namespace FastGraph.Tests.Collections
                 queue.Enqueue(vertex1);
 
                 // Array not sorted with distance
-                CollectionAssert.AreEquivalent(
-                    new[]
-                    {
-                        new KeyValuePair<double, TVertex>(1.0, vertex1),
-                        new KeyValuePair<double, TVertex>(5.0, vertex2),
-                        new KeyValuePair<double, TVertex>(4.0, vertex2),
-                        new KeyValuePair<double, TVertex>(2.0, vertex3),
-                        new KeyValuePair<double, TVertex>(3.0, vertex1)
-                    },
-                    queue.ToPairsArray());
+                queue.ToPairsArray().Should().BeEquivalentTo(new[]
+                {
+                    new KeyValuePair<double, TVertex>(1.0, vertex1),
+                    new KeyValuePair<double, TVertex>(5.0, vertex2),
+                    new KeyValuePair<double, TVertex>(4.0, vertex2),
+                    new KeyValuePair<double, TVertex>(2.0, vertex3),
+                    new KeyValuePair<double, TVertex>(3.0, vertex1)
+                });
 
                 queue.Dequeue();
                 queue.Dequeue();
 
                 // Array not sorted with distance
-                CollectionAssert.AreEquivalent(
-                    new[]
-                    {
-                        new KeyValuePair<double, TVertex>(3.0, vertex1),
-                        new KeyValuePair<double, TVertex>(5.0, vertex2),
-                        new KeyValuePair<double, TVertex>(4.0, vertex2)
-                    },
-                    queue.ToPairsArray());
+                queue.ToPairsArray().Should().BeEquivalentTo(new[]
+                {
+                    new KeyValuePair<double, TVertex>(3.0, vertex1),
+                    new KeyValuePair<double, TVertex>(5.0, vertex2),
+                    new KeyValuePair<double, TVertex>(4.0, vertex2)
+                });
 
                 queue.Dequeue();
                 queue.Dequeue();
                 queue.Dequeue();
 
-                CollectionAssert.IsEmpty(queue.ToPairsArray());
+                queue.ToPairsArray().Should<KeyValuePair<double, TVertex>>().BeEmpty();
 
                 queue.Enqueue(vertex4);
-                CollectionAssert.AreEqual(
-                    new[] { new KeyValuePair<double, TVertex>(123.0, vertex4) },
-                    queue.ToPairsArray());
+                new[] { new KeyValuePair<double, TVertex>(123.0, vertex4) }.Should().BeEquivalentTo(queue.ToPairsArray());
             }
 
             #endregion

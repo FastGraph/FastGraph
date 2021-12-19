@@ -18,11 +18,11 @@ namespace FastGraph.Tests.Algorithms.VertexCover
             var graph = new UndirectedGraph<int, Edge<int>>();
             var algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmState(algorithm, graph);
-            Assert.IsNull(algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeNull();
 
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph, new Random(123));
             AssertAlgorithmState(algorithm, graph);
-            Assert.IsNull(algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeNull();
         }
 
         [Test]
@@ -31,14 +31,10 @@ namespace FastGraph.Tests.Algorithms.VertexCover
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default, new Random(123)));
-            Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(new UndirectedGraph<int, Edge<int>>(), default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default, new Random(123))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(new UndirectedGraph<int, Edge<int>>(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -50,12 +46,12 @@ namespace FastGraph.Tests.Algorithms.VertexCover
             var graph = new UndirectedGraph<int, Edge<int>>();
             var algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
-            CollectionAssert.IsEmpty(algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEmpty();
 
             graph.AddVertexRange(new[] { 1, 2, 3 });
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
-            CollectionAssert.IsEmpty(algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEmpty();
 
             graph.AddVerticesAndEdgeRange(new[]
             {
@@ -65,16 +61,12 @@ namespace FastGraph.Tests.Algorithms.VertexCover
             });
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph, new Random(123456));
             algorithm.Compute();
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2 },
-                algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEquivalentTo(new[] { 1, 2 });
 
             graph.AddVertex(4);
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph, new Random(123456));
             algorithm.Compute();
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2 },
-                algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEquivalentTo(new[] { 1, 2 });
 
             graph.AddVerticesAndEdgeRange(new[]
             {
@@ -82,9 +74,7 @@ namespace FastGraph.Tests.Algorithms.VertexCover
             });
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph, new Random(123456));
             algorithm.Compute();
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2 },
-                algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEquivalentTo(new[] { 1, 2 });
 
             graph.AddVerticesAndEdgeRange(new[]
             {
@@ -94,16 +84,12 @@ namespace FastGraph.Tests.Algorithms.VertexCover
             });
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph, new Random(123456));
             algorithm.Compute();
-            CollectionAssert.AreEquivalent(
-                new[] { 2, 3, 7, 9 },
-                algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEquivalentTo(new[] { 2, 3, 7, 9 });
 
             // Other seed give other results
             algorithm = new MinimumVertexCoverApproximationAlgorithm<int, Edge<int>>(graph, new Random(456789));
             algorithm.Compute();
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 7, 8 },
-                algorithm.CoverSet);
+            algorithm.CoverSet.Should().BeEquivalentTo(new[] { 1, 2, 7, 8 });
         }
     }
 }

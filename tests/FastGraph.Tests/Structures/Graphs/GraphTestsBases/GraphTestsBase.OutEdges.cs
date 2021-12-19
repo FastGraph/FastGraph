@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using static FastGraph.Tests.AssertHelpers;
 using static FastGraph.Tests.GraphTestHelpers;
 
@@ -24,11 +23,11 @@ namespace FastGraph.Tests.Structures
 
             addVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
 
-            Assert.AreSame(edge11, graph.OutEdge(1, 0));
-            Assert.AreSame(edge13, graph.OutEdge(1, 2));
-            Assert.AreSame(edge24, graph.OutEdge(2, 0));
-            Assert.AreSame(edge33, graph.OutEdge(3, 0));
-            Assert.AreSame(edge41, graph.OutEdge(4, 0));
+            graph.OutEdge(1, 0).Should().BeSameAs(edge11);
+            graph.OutEdge(1, 2).Should().BeSameAs(edge13);
+            graph.OutEdge(2, 0).Should().BeSameAs(edge24);
+            graph.OutEdge(3, 0).Should().BeSameAs(edge33);
+            graph.OutEdge(4, 0).Should().BeSameAs(edge41);
         }
 
         protected static void OutEdge_Test(
@@ -53,11 +52,11 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
             IImplicitGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.AreSame(edge11, graph.OutEdge(1, 0));
-            Assert.AreSame(edge13, graph.OutEdge(1, 2));
-            Assert.AreSame(edge24, graph.OutEdge(2, 0));
-            Assert.AreSame(edge33, graph.OutEdge(3, 0));
-            Assert.AreSame(edge41, graph.OutEdge(4, 0));
+            graph.OutEdge(1, 0).Should().BeSameAs(edge11);
+            graph.OutEdge(1, 2).Should().BeSameAs(edge13);
+            graph.OutEdge(2, 0).Should().BeSameAs(edge24);
+            graph.OutEdge(3, 0).Should().BeSameAs(edge33);
+            graph.OutEdge(4, 0).Should().BeSameAs(edge41);
         }
 
         protected static void OutEdge_ImmutableGraph_Test(
@@ -74,11 +73,11 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVerticesAndEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
             IImplicitGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.AreEqual(new SEquatableEdge<int>(1, 1), graph.OutEdge(1, 0));
-            Assert.AreEqual(new SEquatableEdge<int>(1, 3), graph.OutEdge(1, 2));
-            Assert.AreEqual(new SEquatableEdge<int>(2, 4), graph.OutEdge(2, 0));
-            Assert.AreEqual(new SEquatableEdge<int>(3, 3), graph.OutEdge(3, 0));
-            Assert.AreEqual(new SEquatableEdge<int>(4, 1), graph.OutEdge(4, 0));
+            graph.OutEdge(1, 0).Should().Be(new SEquatableEdge<int>(1, 1));
+            graph.OutEdge(1, 2).Should().Be(new SEquatableEdge<int>(1, 3));
+            graph.OutEdge(2, 0).Should().Be(new SEquatableEdge<int>(2, 4));
+            graph.OutEdge(3, 0).Should().Be(new SEquatableEdge<int>(3, 3));
+            graph.OutEdge(4, 0).Should().Be(new SEquatableEdge<int>(4, 1));
         }
 
         protected static void OutEdge_ImmutableVertices_Test(
@@ -93,11 +92,11 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge11, edge12, edge13, edge24, edge33, edge41 });
 
-            Assert.AreSame(edge11, graph.OutEdge(1, 0));
-            Assert.AreSame(edge13, graph.OutEdge(1, 2));
-            Assert.AreSame(edge24, graph.OutEdge(2, 0));
-            Assert.AreSame(edge33, graph.OutEdge(3, 0));
-            Assert.AreSame(edge41, graph.OutEdge(4, 0));
+            graph.OutEdge(1, 0).Should().BeSameAs(edge11);
+            graph.OutEdge(1, 2).Should().BeSameAs(edge13);
+            graph.OutEdge(2, 0).Should().BeSameAs(edge24);
+            graph.OutEdge(3, 0).Should().BeSameAs(edge33);
+            graph.OutEdge(4, 0).Should().BeSameAs(edge41);
         }
 
         protected static void OutEdge_ImmutableGraph_ReversedTest(
@@ -130,7 +129,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.OutEdge(default, 0));
+            Invoking(() => graph.OutEdge(default, 0)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -143,7 +142,7 @@ namespace FastGraph.Tests.Structures
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(vertex1, 0));
+            Invoking(() => graph.OutEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             addVertex(vertex1);
             addVertex(vertex2);
@@ -174,7 +173,7 @@ namespace FastGraph.Tests.Structures
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(vertex1, 0));
+            Invoking(() => graph.OutEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             wrappedGraph.AddVertex(vertex1);
             wrappedGraph.AddVertex(vertex2);
@@ -191,8 +190,8 @@ namespace FastGraph.Tests.Structures
             BidirectionalMatrixGraph<Edge<int>> graph)
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(-1, 0));
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(4, 0));
+            Invoking(() => graph.OutEdge(-1, 0)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.OutEdge(4, 0)).Should().Throw<VertexNotFoundException>();
 
             graph.AddEdge(new Edge<int>(1, 2));
             AssertIndexOutOfRange(() => graph.OutEdge(1, 5));
@@ -209,7 +208,7 @@ namespace FastGraph.Tests.Structures
             const int vertex2 = 2;
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdge(vertex1, 0));
+            Invoking(() => graph.OutEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             wrappedGraph.AddVertex(vertex1);
             wrappedGraph.AddVertex(vertex2);
@@ -372,9 +371,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.IsOutEdgesEmpty(default));
-            Assert.Throws<ArgumentNullException>(() => graph.OutDegree(default));
-            Assert.Throws<ArgumentNullException>(() => graph.OutEdges(default).ToArray());
+            Invoking(() => graph.IsOutEdgesEmpty(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.OutDegree(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.OutEdges(default).ToArray()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -388,9 +387,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             var vertex = new TVertex();
-            Assert.Throws<VertexNotFoundException>(() => graph.IsOutEdgesEmpty(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.OutDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(vertex).ToArray());
+            Invoking(() => graph.IsOutEdgesEmpty(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.OutDegree(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.OutEdges(vertex).ToArray()).Should().Throw<VertexNotFoundException>();
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -402,9 +401,9 @@ namespace FastGraph.Tests.Structures
             const int vertex = 10;
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<VertexNotFoundException>(() => graph.IsOutEdgesEmpty(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.OutDegree(vertex));
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(vertex).ToArray());
+            Invoking(() => graph.IsOutEdgesEmpty(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.OutDegree(vertex)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.OutEdges(vertex).ToArray()).Should().Throw<VertexNotFoundException>();
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }

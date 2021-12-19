@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
 {
@@ -16,20 +15,20 @@ namespace FastGraph.Tests.Structures
             var vertex2 = new TestVertex("2");
             var otherVertex1 = new TestVertex("1");
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             graph.AddVertex(vertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             graph.AddVertex(vertex2);
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
+            graph.ContainsVertex(vertex2).Should().BeTrue();
 
             graph.AddVertex(otherVertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
         }
 
         protected static void ContainsVertex_ImmutableGraph_Test(
@@ -42,23 +41,23 @@ namespace FastGraph.Tests.Structures
             var vertex2 = new TestVertex("2");
             var otherVertex1 = new TestVertex("1");
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             wrappedGraph.AddVertex(vertex1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             wrappedGraph.AddVertex(vertex2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
+            graph.ContainsVertex(vertex2).Should().BeTrue();
 
             wrappedGraph.AddVertex(otherVertex1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
         }
 
         protected static void ContainsVertex_OnlyEdges_Test(
@@ -71,20 +70,20 @@ namespace FastGraph.Tests.Structures
             var otherVertex1 = new TestVertex("1");
             var toOtherVertex1 = new TestVertex("target 1");
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             graph.AddEdge(new Edge<TestVertex>(vertex1, toVertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             graph.AddEdge(new Edge<TestVertex>(vertex2, toVertex2));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
+            graph.ContainsVertex(vertex2).Should().BeTrue();
 
             graph.AddEdge(new Edge<TestVertex>(otherVertex1, toOtherVertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
         }
 
         protected static void ContainsVertex_EquatableVertex_Test(
@@ -94,20 +93,20 @@ namespace FastGraph.Tests.Structures
             var vertex2 = new EquatableTestVertex("2");
             var otherVertex1 = new EquatableTestVertex("1");
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             graph.AddVertex(vertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
 
             graph.AddVertex(vertex2);
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
+            graph.ContainsVertex(vertex2).Should().BeTrue();
 
             graph.AddVertex(otherVertex1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
         }
 
         protected static void ContainsVertex_EquatableVertex_ImmutableGraph_Test(
@@ -120,23 +119,23 @@ namespace FastGraph.Tests.Structures
             var vertex2 = new EquatableTestVertex("2");
             var otherVertex1 = new EquatableTestVertex("1");
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             wrappedGraph.AddVertex(vertex1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
 
             wrappedGraph.AddVertex(vertex2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
+            graph.ContainsVertex(vertex2).Should().BeTrue();
 
             wrappedGraph.AddVertex(otherVertex1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
         }
 
         protected static void ContainsVertex_EquatableVertex_OnlyEdges_Test(
@@ -149,20 +148,20 @@ namespace FastGraph.Tests.Structures
             var otherVertex1 = new EquatableTestVertex("1");
             var toOtherVertex1 = new EquatableTestVertex("target 1");
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
 
             graph.AddEdge(new Edge<EquatableTestVertex>(vertex1, toVertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
 
             graph.AddEdge(new Edge<EquatableTestVertex>(vertex2, toVertex2));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
+            graph.ContainsVertex(vertex2).Should().BeTrue();
 
             graph.AddEdge(new Edge<EquatableTestVertex>(otherVertex1, toOtherVertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
         }
 
         protected static void ContainsVertex_Throws_Test<TVertex>(
@@ -172,7 +171,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsVertex(default));
+            Invoking(() => graph.ContainsVertex(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 

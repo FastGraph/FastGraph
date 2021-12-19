@@ -1,6 +1,5 @@
 #nullable enable
 
-using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.Condensation;
 
@@ -22,7 +21,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             int count = 0;
             foreach (AdjacencyGraph<TVertex, TEdge> vertices in condensedGraph.Vertices)
                 count += vertices.VertexCount;
-            Assert.AreEqual(graph.VertexCount, count, $"{nameof(graph.VertexCount)} does not match.");
+            count.Should().Be(graph.VertexCount, because: $"{nameof(graph.VertexCount)} does not match.");
         }
 
         protected static void CheckEdgeCount<TVertex, TEdge>(
@@ -37,7 +36,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
                 count += edges.Edges.Count;
             foreach (AdjacencyGraph<TVertex, TEdge> vertices in condensedGraph.Vertices)
                 count += vertices.EdgeCount;
-            Assert.AreEqual(graph.EdgeCount, count, $"{nameof(graph.EdgeCount)} does not match.");
+            count.Should().Be(graph.EdgeCount, because: $"{nameof(graph.EdgeCount)} does not match.");
         }
 
         protected static void CheckDAG<TVertex, TEdge>(
@@ -45,7 +44,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            Assert.IsTrue(condensedGraph.IsDirectedAcyclicGraph());
+            condensedGraph.IsDirectedAcyclicGraph().Should().BeTrue();
         }
 
         #endregion

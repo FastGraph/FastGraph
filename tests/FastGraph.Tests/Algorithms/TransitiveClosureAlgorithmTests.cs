@@ -19,7 +19,7 @@ namespace FastGraph.Tests.Algorithms
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var algorithm = new TransitiveClosureAlgorithm<int, Edge<int>>(graph, (v1, v2) => new Edge<int>(v1, v2));
             AssertAlgorithmState(algorithm, graph);
-            Assert.IsNotNull(algorithm.TransitiveClosure);
+            algorithm.TransitiveClosure.Should().NotBeNull();
         }
 
         [Test]
@@ -29,12 +29,9 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new TransitiveClosureAlgorithm<int, Edge<int>>(default, (v1, v2) => new Edge<int>(v1, v2)));
-            Assert.Throws<ArgumentNullException>(
-                () => new TransitiveClosureAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new TransitiveClosureAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new TransitiveClosureAlgorithm<int, Edge<int>>(default, (v1, v2) => new Edge<int>(v1, v2))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TransitiveClosureAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TransitiveClosureAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

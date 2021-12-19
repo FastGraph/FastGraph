@@ -26,14 +26,14 @@ namespace FastGraph.Graphviz.Tests
                 GraphvizEdgeExtremity extremity,
                 bool head)
             {
-                Assert.AreEqual(head, extremity.IsHead);
-                Assert.IsTrue(extremity.IsClipped);
-                Assert.IsNull(extremity.Url);
-                Assert.IsFalse(extremity.IsHtmlLabel);
-                Assert.IsNull(extremity.Label);
-                Assert.IsNull(extremity.ToolTip);
-                Assert.IsNull(extremity.Logical);
-                Assert.IsNull(extremity.Same);
+                extremity.IsHead.Should().Be(head);
+                extremity.IsClipped.Should().BeTrue();
+                extremity.Url.Should().BeNull();
+                extremity.IsHtmlLabel.Should().BeFalse();
+                extremity.Label.Should().BeNull();
+                extremity.ToolTip.Should().BeNull();
+                extremity.Logical.Should().BeNull();
+                extremity.Same.Should().BeNull();
             }
 
             #endregion
@@ -166,7 +166,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var parameters = new Dictionary<string, object>();
             extremity.AddParameters(parameters);
-            CollectionAssert.AreEquivalent(expectedParameters, parameters);
+            parameters.Should().BeEquivalentTo(expectedParameters);
         }
 
         [Test]
@@ -175,9 +175,9 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
             var extremity = new GraphvizEdgeExtremity(false);
-            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(default));
+            Invoking(() => extremity.AddParameters(default)).Should().Throw<ArgumentNullException>();
             extremity = new GraphvizEdgeExtremity(true);
-            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(default));
+            Invoking(() => extremity.AddParameters(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }

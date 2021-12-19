@@ -18,7 +18,7 @@ namespace FastGraph.Tests.Algorithms
             UndirectedGraph<int, UndirectedEdge<int>> graph = CreateUndirectedGraph(Enumerable.Empty<Vertices>());
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeFalse();
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeTrue();
 
             // Not Hamiltonian
             graph = CreateUndirectedGraph(new[]
@@ -47,7 +47,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeFalse();
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeTrue();
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeTrue();
 
             // Not Hamiltonian
             graph = CreateUndirectedGraph(new[]
@@ -82,7 +82,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeFalse();
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeFalse();
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsFalse(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeFalse();
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeTrue();
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace FastGraph.Tests.Algorithms
             });
 
             var algorithm = new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.IsTrue(algorithm.IsHamiltonian());
+            algorithm.IsHamiltonian().Should().BeTrue();
         }
 
         #region Test helpers
@@ -281,7 +281,7 @@ namespace FastGraph.Tests.Algorithms
             var hashSet = new HashSet<List<int>>(new SequenceComparer<int>());
             hashSet.UnionWith(algorithm.GetPermutations());
 
-            Assert.AreEqual(hashSet.Count, Factorial(graph.VertexCount));
+            Factorial(graph.VertexCount).Should().Be(hashSet.Count);
         }
 
         [Test]
@@ -290,12 +290,10 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(default));
+            Invoking(() => new IsHamiltonianGraphAlgorithm<int, UndirectedEdge<int>>(default)).Should().Throw<ArgumentNullException>();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(
-                () => IsHamiltonianGraphAlgorithm.IsHamiltonian<int, UndirectedEdge<int>>(default));
+            Invoking(() => IsHamiltonianGraphAlgorithm.IsHamiltonian<int, UndirectedEdge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

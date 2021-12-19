@@ -20,10 +20,13 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            Assert.AreEqual(source, edges[0].Source);
+            edges[0].Source.Should().Be(source);
             for (int i = 0; i < edges.Length - 1; ++i)
-                Assert.AreEqual(edges[i].Target, edges[i + 1].Source);
-            Assert.AreEqual(target, edges[edges.Length - 1].Target);
+            {
+                edges[i + 1].Source.Should().Be(edges[i].Target);
+            }
+
+            edges[edges.Length - 1].Target.Should().Be(target);
         }
 
         private static void CompareAlgorithms<TVertex, TEdge, TGraph>(
@@ -53,7 +56,7 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                         continue;
 
                     bool pathExists = algorithm.TryGetPath(source, target, out IEnumerable<TEdge>? floydPath);
-                    Assert.AreEqual(pathExists, otherPaths(target, out IEnumerable<TEdge>? otherPath));
+                    otherPaths(target, out IEnumerable<TEdge>? otherPath).Should().Be(pathExists);
 
                     if (pathExists)
                     {

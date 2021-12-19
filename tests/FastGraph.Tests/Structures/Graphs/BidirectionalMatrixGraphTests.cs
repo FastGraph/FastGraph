@@ -27,8 +27,8 @@ namespace FastGraph.Tests.Structures
                 int nbVertices)
                 where TEdge : class, IEdge<int>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.IsFalse(g.AllowParallelEdges);
+                g.IsDirected.Should().BeTrue();
+                g.AllowParallelEdges.Should().BeFalse();
                 AssertHasVertices(g, Enumerable.Range(0, nbVertices));
                 AssertNoEdge(g);
             }
@@ -40,9 +40,9 @@ namespace FastGraph.Tests.Structures
         public void Construction_Throws()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.Throws<ArgumentException>(() => new BidirectionalMatrixGraph<Edge<int>>(0));
-            Assert.Throws<ArgumentException>(() => new BidirectionalMatrixGraph<Edge<int>>(-1));
-            Assert.Throws<ArgumentException>(() => new BidirectionalMatrixGraph<Edge<int>>(-42));
+            Invoking(() => new BidirectionalMatrixGraph<Edge<int>>(0)).Should().Throw<ArgumentException>();
+            Invoking(() => new BidirectionalMatrixGraph<Edge<int>>(-1)).Should().Throw<ArgumentException>();
+            Invoking(() => new BidirectionalMatrixGraph<Edge<int>>(-42)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -69,14 +69,14 @@ namespace FastGraph.Tests.Structures
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => graph.AddEdge(default));
+            Invoking(() => graph.AddEdge(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             graph.AddEdge(new Edge<int>(0, 1));
-            Assert.Throws<ParallelEdgeNotAllowedException>(() => graph.AddEdge(new Edge<int>(0, 1)));
+            Invoking(() => graph.AddEdge(new Edge<int>(0, 1))).Should().Throw<ParallelEdgeNotAllowedException>();
 
-            Assert.Throws<VertexNotFoundException>(() => graph.AddEdge(new Edge<int>(1, 2)));
-            Assert.Throws<VertexNotFoundException>(() => graph.AddEdge(new Edge<int>(2, 1)));
+            Invoking(() => graph.AddEdge(new Edge<int>(1, 2))).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.AddEdge(new Edge<int>(2, 1))).Should().Throw<VertexNotFoundException>();
         }
 
         [Test]
@@ -101,11 +101,11 @@ namespace FastGraph.Tests.Structures
         {
             var graph = new BidirectionalMatrixGraph<Edge<int>>(3);
 
-            Assert.IsTrue(graph.ContainsVertex(0));
-            Assert.IsTrue(graph.ContainsVertex(1));
-            Assert.IsTrue(graph.ContainsVertex(2));
-            Assert.IsFalse(graph.ContainsVertex(-1));
-            Assert.IsFalse(graph.ContainsVertex(12));
+            graph.ContainsVertex(0).Should().BeTrue();
+            graph.ContainsVertex(1).Should().BeTrue();
+            graph.ContainsVertex(2).Should().BeTrue();
+            graph.ContainsVertex(-1).Should().BeFalse();
+            graph.ContainsVertex(12).Should().BeFalse();
         }
 
         #endregion
@@ -279,7 +279,7 @@ namespace FastGraph.Tests.Structures
         public void RemoveEdgeIf_Throws()
         {
             var graph = new BidirectionalMatrixGraph<Edge<int>>(1);
-            Assert.Throws<NotSupportedException>(() => graph.RemoveEdgeIf(_ => true));
+            Invoking(() => graph.RemoveEdgeIf(_ => true)).Should().Throw<NotSupportedException>();
         }
 
         [Test]
@@ -323,7 +323,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -362,7 +362,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedEdgesRemoved)
             {
-                Assert.AreEqual(expectedEdgesRemoved, edgesRemoved);
+                edgesRemoved.Should().Be(expectedEdgesRemoved);
                 edgesRemoved = 0;
             }
 
@@ -378,7 +378,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -431,7 +431,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -447,7 +447,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -501,7 +501,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -517,7 +517,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -565,7 +565,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -582,12 +582,12 @@ namespace FastGraph.Tests.Structures
             AssertNoEdge(graph);
 
             var clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(graph, new[] { 0 });
             AssertNoEdge(graph);
 
             clonedGraph = (BidirectionalMatrixGraph<Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(graph, new[] { 0 });
             AssertNoEdge(graph);
 
@@ -600,12 +600,12 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 0, 1, 2 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = (BidirectionalMatrixGraph<Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 0, 1, 2 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
         }

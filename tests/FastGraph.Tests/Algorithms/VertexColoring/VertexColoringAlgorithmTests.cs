@@ -18,7 +18,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             var graph = new UndirectedGraph<int, Edge<int>>();
             var algorithm = new VertexColoringAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmState(algorithm, graph);
-            CollectionAssert.IsEmpty(algorithm.Colors);
+            algorithm.Colors.Should().BeEmpty();
         }
 
         [Test]
@@ -27,8 +27,7 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexColoringAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new VertexColoringAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -42,10 +41,10 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have first vertex color
-            Assert.IsFalse(coloredVertices.Values.Contains(1));
+            coloredVertices.Values.Contains(1).Should().BeFalse();
 
             // Expecting to no get any color
-            Assert.AreEqual(0, coloredVertices.Values.Count);
+            coloredVertices.Values.Count.Should().Be(0);
         }
 
         [Test]
@@ -65,25 +64,22 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have first vertex color
-            Assert.IsFalse(coloredVertices.Values.Contains(1));
+            coloredVertices.Values.Contains(1).Should().BeFalse();
 
             int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get only 1 color
-            Assert.AreEqual(1, result.Max() + 1);
+            (result.Max() + 1).Should().Be(1);
 
             // Not equal to default
-            foreach (int? color in result)
-            {
-                Assert.AreNotEqual(default, color);
-            }
+            result.Should().NotContain((int?)null);
 
             // and corresponding colors of vertices
-            Assert.AreEqual(0, result[0]); // 0 vertex = 0 color
-            Assert.AreEqual(0, result[1]); // 1 vertex = 0 color
-            Assert.AreEqual(0, result[2]); // 2 vertex = 0 color
-            Assert.AreEqual(0, result[3]); // 3 vertex = 0 color
-            Assert.AreEqual(0, result[4]); // 4 vertex = 0 color
+            result[0].Should().Be(0); // 0 vertex = 0 color
+            result[1].Should().Be(0); // 1 vertex = 0 color
+            result[2].Should().Be(0); // 2 vertex = 0 color
+            result[3].Should().Be(0); // 3 vertex = 0 color
+            result[4].Should().Be(0); // 4 vertex = 0 color
 
             #region Local function
 
@@ -120,25 +116,22 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have third vertex color
-            Assert.IsFalse(coloredVertices.Values.Contains(3));
+            coloredVertices.Values.Contains(3).Should().BeFalse();
 
             int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 3 different colors
-            Assert.AreEqual(3, result.Max() + 1);
+            (result.Max() + 1).Should().Be(3);
 
             // Not equal to default
-            foreach (int? color in result)
-            {
-                Assert.AreNotEqual(default, color);
-            }
+            result.Should().NotContain((int?)null);
 
             // and corresponding colors of vertices
-            Assert.AreEqual(0, result[0]); // 0 vertex = 0 color
-            Assert.AreEqual(1, result[1]); // 1 vertex = 1 color
-            Assert.AreEqual(2, result[2]); // 2 vertex = 2 color
-            Assert.AreEqual(0, result[3]); // 3 vertex = 0 color
-            Assert.AreEqual(1, result[4]); // 4 vertex = 1 color
+            result[0].Should().Be(0); // 0 vertex = 0 color
+            result[1].Should().Be(1); // 1 vertex = 1 color
+            result[2].Should().Be(2); // 2 vertex = 2 color
+            result[3].Should().Be(0); // 3 vertex = 0 color
+            result[4].Should().Be(1); // 4 vertex = 1 color
 
             #region Local function
 
@@ -184,28 +177,25 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have third vertex color
-            Assert.IsFalse(coloredVertices.Values.Contains(3));
+            coloredVertices.Values.Contains(3).Should().BeFalse();
 
             int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 3 different colors
-            Assert.AreEqual(3, result.Max() + 1);
+            (result.Max() + 1).Should().Be(3);
 
             // Not equal to default
-            foreach (int? color in result)
-            {
-                Assert.AreNotEqual(default, color);
-            }
+            result.Should().NotContain((int?)null);
 
             // And corresponding colors of vertices
-            Assert.AreEqual(0, result[0]); // 0 vertex = 0 color
-            Assert.AreEqual(0, result[1]); // 1 vertex = 0 color
-            Assert.AreEqual(1, result[2]); // 2 vertex = 1 color
-            Assert.AreEqual(1, result[3]); // 3 vertex = 1 color
-            Assert.AreEqual(2, result[4]); // 4 vertex = 2 color
-            Assert.AreEqual(0, result[5]); // 5 vertex = 0 color
-            Assert.AreEqual(0, result[6]); // 6 vertex = 0 color
-            Assert.AreEqual(1, result[7]); // 7 vertex = 1 color
+            result[0].Should().Be(0); // 0 vertex = 0 color
+            result[1].Should().Be(0); // 1 vertex = 0 color
+            result[2].Should().Be(1); // 2 vertex = 1 color
+            result[3].Should().Be(1); // 3 vertex = 1 color
+            result[4].Should().Be(2); // 4 vertex = 2 color
+            result[5].Should().Be(0); // 5 vertex = 0 color
+            result[6].Should().Be(0); // 6 vertex = 0 color
+            result[7].Should().Be(1); // 7 vertex = 1 color
 
             #region Local function
 
@@ -253,26 +243,23 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have sixth vertex color
-            Assert.IsFalse(coloredVertices.Values.Contains(6));
+            coloredVertices.Values.Contains(6).Should().BeFalse();
 
             int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 6 different colors
-            Assert.AreEqual(6, result.Max() + 1);
+            (result.Max() + 1).Should().Be(6);
 
             // Not equal to default
-            foreach (int? color in result)
-            {
-                Assert.AreNotEqual(default, color);
-            }
+            result.Should().NotContain((int?)null);
 
             // and corresponding colors of vertices
-            Assert.AreEqual(0, result[0]); // 0 vertex = 0 color
-            Assert.AreEqual(1, result[1]); // 1 vertex = 1 color
-            Assert.AreEqual(2, result[2]); // 2 vertex = 2 color
-            Assert.AreEqual(3, result[3]); // 3 vertex = 3 color
-            Assert.AreEqual(4, result[4]); // 4 vertex = 4 color
-            Assert.AreEqual(5, result[5]); // 5 vertex = 5 color
+            result[0].Should().Be(0); // 0 vertex = 0 color
+            result[1].Should().Be(1); // 1 vertex = 1 color
+            result[2].Should().Be(2); // 2 vertex = 2 color
+            result[3].Should().Be(3); // 3 vertex = 3 color
+            result[4].Should().Be(4); // 4 vertex = 4 color
+            result[5].Should().Be(5); // 5 vertex = 5 color
 
             #region Local function
 
@@ -330,27 +317,25 @@ namespace FastGraph.Tests.Algorithms.GraphColoring
             IDictionary<char, int?> coloredVertices = algorithm.Colors;
 
             // Graph doesn't have second vertex color
-            Assert.IsFalse(coloredVertices.Values.Contains(2));
+            coloredVertices.Values.Contains(2).Should().BeFalse();
 
             int?[] result = coloredVertices.Values.ToArray();
 
             // Expecting to get 2 different colors
-            Assert.AreEqual(2, result.Max() + 1);
+            (result.Max() + 1).Should().Be(2);
 
             // Not equal to default
+            result.Should().NotContain((int?)null);
             foreach (int? color in result)
-            {
-                Assert.AreNotEqual(default, color);
-            }
 
             // and corresponding colors of vertices
-            Assert.AreEqual(0, result[0]); // 0 vertex = 0 color
-            Assert.AreEqual(0, result[1]); // 1 vertex = 0 color
-            Assert.AreEqual(0, result[2]); // 2 vertex = 0 color
-            Assert.AreEqual(1, result[3]); // 3 vertex = 1 color
-            Assert.AreEqual(1, result[4]); // 4 vertex = 1 color
-            Assert.AreEqual(1, result[5]); // 5 vertex = 1 color
-            Assert.AreEqual(1, result[6]); // 6 vertex = 1 color
+            result[0].Should().Be(0); // 0 vertex = 0 color
+            result[1].Should().Be(0); // 1 vertex = 0 color
+            result[2].Should().Be(0); // 2 vertex = 0 color
+            result[3].Should().Be(1); // 3 vertex = 1 color
+            result[4].Should().Be(1); // 4 vertex = 1 color
+            result[5].Should().Be(1); // 5 vertex = 1 color
+            result[6].Should().Be(1); // 6 vertex = 1 color
 
             #region Local function
 

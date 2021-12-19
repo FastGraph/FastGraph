@@ -25,8 +25,8 @@ namespace FastGraph.Petri.Tests
         public void Constructor()
         {
             var transition = new Transition<int>("MyTransition");
-            Assert.AreEqual("MyTransition", transition.Name);
-            Assert.IsInstanceOf<AlwaysTrueConditionExpression<int>>(transition.Condition);
+            transition.Name.Should().Be("MyTransition");
+            transition.Condition.Should().BeAssignableTo<AlwaysTrueConditionExpression<int>>();
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace FastGraph.Petri.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new Transition<int>(default));
+            Invoking(() => new Transition<int>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -43,16 +43,16 @@ namespace FastGraph.Petri.Tests
         public void Condition()
         {
             var transition = new Transition<int>("MyTransition");
-            Assert.IsNotNull(transition.Condition);
+            transition.Condition.Should().NotBeNull();
 
             var newCondition = new AlwaysFalseCondition();
             transition.Condition = newCondition;
-            Assert.AreSame(newCondition, transition.Condition);
+            transition.Condition.Should().BeSameAs(newCondition);
 
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => transition.Condition = default);
+            Invoking(() => transition.Condition = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -60,10 +60,10 @@ namespace FastGraph.Petri.Tests
         public void ObjectToString()
         {
             var transition = new Transition<int>("TestName");
-            Assert.AreEqual("T(TestName)", transition.ToString());
+            transition.ToString().Should().Be("T(TestName)");
 
             transition = new Transition<int>("OtherTestName");
-            Assert.AreEqual("T(OtherTestName)", transition.ToString());
+            transition.ToString().Should().Be("T(OtherTestName)");
         }
     }
 }

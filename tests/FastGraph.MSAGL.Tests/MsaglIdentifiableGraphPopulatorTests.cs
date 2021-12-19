@@ -31,7 +31,7 @@ namespace FastGraph.MSAGL.Tests
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
-                Assert.IsNull(p.MsaglGraph);
+                p.MsaglGraph.Should().BeNull();
             }
 
             #endregion
@@ -46,12 +46,9 @@ namespace FastGraph.MSAGL.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglIdentifiableGraphPopulator<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglIdentifiableGraphPopulator<int, Edge<int>>(default, vertexIdentity));
-            Assert.Throws<ArgumentNullException>(
-                () => new MsaglIdentifiableGraphPopulator<int, Edge<int>>(default, default));
+            Invoking(() => new MsaglIdentifiableGraphPopulator<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MsaglIdentifiableGraphPopulator<int, Edge<int>>(default, vertexIdentity)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MsaglIdentifiableGraphPopulator<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -84,8 +81,8 @@ namespace FastGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph!.FindNode("MyTestId0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestId1"));
+            populator.MsaglGraph!.FindNode("MyTestId0").Should().BeNull();
+            populator.MsaglGraph.FindNode("MyTestId1").Should().NotBeNull();
         }
     }
 }

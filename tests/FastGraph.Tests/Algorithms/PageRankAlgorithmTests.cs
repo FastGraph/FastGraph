@@ -57,31 +57,31 @@ namespace FastGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                CollectionAssert.IsEmpty(algo.Ranks);
+                algo.Ranks.Should().BeEmpty();
                 if (d >= 0)
                 {
-                    Assert.AreEqual(d, algo.Damping);
+                    algo.Damping.Should().Be(d);
                 }
                 else
                 {
-                    Assert.GreaterOrEqual(algo.Damping, 0);
-                    Assert.LessOrEqual(algo.Damping, 1);
+                    algo.Damping.Should().BeGreaterThanOrEqualTo(0);
+                    algo.Damping.Should().BeLessThanOrEqualTo(1);
                 }
                 if (t >= 0)
                 {
-                    Assert.AreEqual(t, algo.Tolerance);
+                    algo.Tolerance.Should().Be(t);
                 }
                 else
                 {
-                    Assert.GreaterOrEqual(algo.Tolerance, 0);
+                    algo.Tolerance.Should().BeGreaterThanOrEqualTo(0);
                 }
                 if (iterations > 0)
                 {
-                    Assert.AreEqual(iterations, algo.MaxIterations);
+                    algo.MaxIterations.Should().Be(iterations);
                 }
                 else
                 {
-                    Assert.Positive(algo.MaxIterations);
+                    algo.MaxIterations.Should().BePositive();
                 }
             }
 
@@ -95,21 +95,20 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new PageRankAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new PageRankAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 
             var algorithm = new PageRankAlgorithm<int, Edge<int>>(graph);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Damping = -10.0);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Damping = -0.01);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Damping = 1.01);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Damping = 10.0);
+            Invoking(() => algorithm.Damping = -10.0).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => algorithm.Damping = -0.01).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => algorithm.Damping = 1.01).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => algorithm.Damping = 10.0).Should().Throw<ArgumentOutOfRangeException>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Tolerance = -10.0);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.Tolerance = -1);
+            Invoking(() => algorithm.Tolerance = -10.0).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => algorithm.Tolerance = -1).Should().Throw<ArgumentOutOfRangeException>();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.MaxIterations = -10);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.MaxIterations = -1);
+            Invoking(() => algorithm.MaxIterations = -10).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => algorithm.MaxIterations = -1).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -135,15 +134,13 @@ namespace FastGraph.Tests.Algorithms
             algorithm.Compute();
 
             IEnumerable<string> order = algorithm.Ranks.OrderByDescending(pair => pair.Value).Select(pair => pair.Key);
-            CollectionAssert.AreEqual(
-                new[] { "Microsoft", "Twitter", "Amazon", "Facebook", "Apple" },
-                order);
-            Assert.Positive(algorithm.GetRanksSum());
+            new[] { "Microsoft", "Twitter", "Amazon", "Facebook", "Apple" }.Should().BeEquivalentTo(order);
+            algorithm.GetRanksSum().Should().BePositive();
             double rankSum = algorithm.Ranks.Sum(pair => pair.Value);
-            Assert.AreEqual(rankSum, algorithm.GetRanksSum());
+            algorithm.GetRanksSum().Should().Be(rankSum);
 
-            Assert.Positive(algorithm.GetRanksSum());
-            Assert.AreEqual(rankSum / graph.VertexCount, algorithm.GetRanksMean());
+            algorithm.GetRanksSum().Should().BePositive();
+            algorithm.GetRanksMean().Should().Be(rankSum / graph.VertexCount);
         }
     }
 }

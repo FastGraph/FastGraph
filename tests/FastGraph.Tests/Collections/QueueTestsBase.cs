@@ -1,6 +1,5 @@
 #nullable enable
 
-using NUnit.Framework;
 using FastGraph.Collections;
 using static FastGraph.Tests.AssertHelpers;
 
@@ -17,32 +16,32 @@ namespace FastGraph.Tests.Collections
             TVertex vertex2)
             where TVertex : notnull
         {
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsFalse(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeFalse();
+            queue.Contains(vertex2).Should().BeFalse();
 
             queue.Enqueue(vertex1);
-            Assert.IsTrue(queue.Contains(vertex1));
-            Assert.IsFalse(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeTrue();
+            queue.Contains(vertex2).Should().BeFalse();
 
             queue.Enqueue(vertex2);
-            Assert.IsTrue(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeTrue();
+            queue.Contains(vertex2).Should().BeTrue();
 
             queue.Enqueue(vertex2);
-            Assert.IsTrue(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeTrue();
+            queue.Contains(vertex2).Should().BeTrue();
 
             queue.Dequeue();
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeFalse();
+            queue.Contains(vertex2).Should().BeTrue();
 
             queue.Dequeue();
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeFalse();
+            queue.Contains(vertex2).Should().BeTrue();
 
             queue.Dequeue();
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsFalse(queue.Contains(vertex2));
+            queue.Contains(vertex1).Should().BeFalse();
+            queue.Contains(vertex2).Should().BeFalse();
         }
 
         protected static void Enqueue_Test<TVertex>(
@@ -51,16 +50,16 @@ namespace FastGraph.Tests.Collections
             TVertex vertex2)
             where TVertex : notnull
         {
-            Assert.AreEqual(0, queue.Count);
+            queue.Count.Should().Be(0);
 
             queue.Enqueue(vertex1);
-            Assert.AreEqual(1, queue.Count);
+            queue.Count.Should().Be(1);
 
             queue.Enqueue(vertex2);
-            Assert.AreEqual(2, queue.Count);
+            queue.Count.Should().Be(2);
 
             queue.Enqueue(vertex2);
-            Assert.AreEqual(3, queue.Count);
+            queue.Count.Should().Be(3);
         }
 
         protected static void Dequeue_Test<TVertex>(
@@ -80,42 +79,42 @@ namespace FastGraph.Tests.Collections
             {
                 var order = new Stack<int>(new[] { 3, 2, 9, 1, 10 });
                 IQueue<TVertex> queue = createQueue(_ => order.Pop());
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
 
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex4);
-                Assert.AreEqual(5, queue.Count);
+                queue.Count.Should().Be(5);
 
                 AssertEqual(vertex2, queue.Dequeue());
-                Assert.AreEqual(4, queue.Count);
+                queue.Count.Should().Be(4);
 
                 AssertEqual(vertex2, queue.Dequeue());
-                Assert.AreEqual(3, queue.Count);
+                queue.Count.Should().Be(3);
 
                 AssertEqual(vertex4, queue.Dequeue());
-                Assert.AreEqual(2, queue.Count);
+                queue.Count.Should().Be(2);
 
                 AssertEqual(vertex3, queue.Dequeue());
-                Assert.AreEqual(1, queue.Count);
+                queue.Count.Should().Be(1);
 
                 AssertEqual(vertex1, queue.Dequeue());
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
             }
 
             void DequeueInternalSameDistanceTest()
             {
                 IQueue<TVertex> queue = createQueue(_ => 1.0);
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
 
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex4);
-                Assert.AreEqual(5, queue.Count);
+                queue.Count.Should().Be(5);
 
                 var counters = new Dictionary<TVertex, int>
                 {
@@ -127,29 +126,27 @@ namespace FastGraph.Tests.Collections
                 // Cannot assert exactly dequeued item since
                 // it depends on queue internal implementation
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(4, queue.Count);
+                queue.Count.Should().Be(4);
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(3, queue.Count);
+                queue.Count.Should().Be(3);
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(2, queue.Count);
+                queue.Count.Should().Be(2);
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(1, queue.Count);
+                queue.Count.Should().Be(1);
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
 
-                CollectionAssert.AreEquivalent(
-                    new[]
-                    {
-                        new KeyValuePair<TVertex, int>(vertex1, 1),
-                        new KeyValuePair<TVertex, int>(vertex2, 2),
-                        new KeyValuePair<TVertex, int>(vertex3, 1),
-                        new KeyValuePair<TVertex, int>(vertex4, 1)
-                    },
-                    counters);
+                counters.Should().BeEquivalentTo(new[]
+                {
+                    new KeyValuePair<TVertex, int>(vertex1, 1),
+                    new KeyValuePair<TVertex, int>(vertex2, 2),
+                    new KeyValuePair<TVertex, int>(vertex3, 1),
+                    new KeyValuePair<TVertex, int>(vertex4, 1)
+                });
             }
 
             #endregion
@@ -159,7 +156,7 @@ namespace FastGraph.Tests.Collections
             where TVertex : notnull
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
+            Invoking(() => queue.Dequeue()).Should().Throw<InvalidOperationException>();
         }
 
         protected static void Peek_Test<TVertex>(
@@ -178,64 +175,64 @@ namespace FastGraph.Tests.Collections
             {
                 var order = new Stack<int>(new[] { 3, 2, 9, 1, 10 });
                 IQueue<TVertex> queue = createQueue(_ => order.Pop());
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
 
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
-                Assert.AreEqual(5, queue.Count);
+                queue.Count.Should().Be(5);
 
                 AssertEqual(vertex2, queue.Peek());
-                Assert.AreEqual(5, queue.Count);
+                queue.Count.Should().Be(5);
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(3, queue.Count);
+                queue.Count.Should().Be(3);
 
                 AssertEqual(vertex1, queue.Peek());
-                Assert.AreEqual(3, queue.Count);
+                queue.Count.Should().Be(3);
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(1, queue.Count);
+                queue.Count.Should().Be(1);
 
                 AssertEqual(vertex3, queue.Peek());
-                Assert.AreEqual(1, queue.Count);
+                queue.Count.Should().Be(1);
             }
 
             void PeekInternalSameDistanceTest()
             {
                 IQueue<TVertex> queue = createQueue(_ => 1.0);
-                Assert.AreEqual(0, queue.Count);
+                queue.Count.Should().Be(0);
 
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
-                Assert.AreEqual(5, queue.Count);
+                queue.Count.Should().Be(5);
 
                 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
                 // Cannot assert exactly peeked item since
                 // it depends on queue internal implementation
-                Assert.DoesNotThrow(() => queue.Peek());
-                Assert.AreEqual(5, queue.Count);
+                Invoking((Func<TVertex>)(() => queue.Peek())).Should().NotThrow();
+                queue.Count.Should().Be(5);
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(3, queue.Count);
+                queue.Count.Should().Be(3);
 
-                Assert.DoesNotThrow(() => queue.Peek());
-                Assert.AreEqual(3, queue.Count);
+                Invoking((Func<TVertex>)(() => queue.Peek())).Should().NotThrow();
+                queue.Count.Should().Be(3);
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(1, queue.Count);
+                queue.Count.Should().Be(1);
 
-                Assert.DoesNotThrow(() => queue.Peek());
-                Assert.AreEqual(1, queue.Count);
+                Invoking((Func<TVertex>)(() => queue.Peek())).Should().NotThrow();
+                queue.Count.Should().Be(1);
                 // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             }
 
@@ -246,7 +243,7 @@ namespace FastGraph.Tests.Collections
             where TVertex : notnull
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<InvalidOperationException>(() => queue.Peek());
+            Invoking(() => queue.Peek()).Should().Throw<InvalidOperationException>();
         }
 
         protected static void Update_Test<TVertex>(
@@ -257,16 +254,16 @@ namespace FastGraph.Tests.Collections
         {
             var distances = new Stack<double>(new[] { 0.5, 10.0, 5.0, 1.0 });
             IPriorityQueue<TVertex> queue = createQueue(_ => distances.Pop());
-            Assert.AreEqual(0, queue.Count);
+            queue.Count.Should().Be(0);
 
             queue.Enqueue(vertex1);
             queue.Enqueue(vertex2);
-            Assert.AreEqual(2, queue.Count);
+            queue.Count.Should().Be(2);
 
             AssertEqual(vertex1, queue.Peek());
 
             queue.Update(vertex1);  // Distance from 1.0 to 10.0
-            Assert.AreEqual(2, queue.Count);
+            queue.Count.Should().Be(2);
 
             AssertEqual(vertex2, queue.Peek());
         }
@@ -283,7 +280,7 @@ namespace FastGraph.Tests.Collections
             IQueue<TVertex> queue = createQueue(_ => distances.Pop());
 
             // Empty heap
-            CollectionAssert.IsEmpty(queue.ToArray());
+            queue.ToArray().Should().BeEmpty();
 
             queue.Enqueue(vertex1);
             queue.Enqueue(vertex2);
@@ -292,28 +289,22 @@ namespace FastGraph.Tests.Collections
             queue.Enqueue(vertex1);
 
             // Array not sorted with distance
-            CollectionAssert.AreEquivalent(
-                new[] { vertex1, vertex2, vertex2, vertex3, vertex1 },
-                queue.ToArray());
+            queue.ToArray().Should().BeEquivalentTo(new[] { vertex1, vertex2, vertex2, vertex3, vertex1 });
 
             queue.Dequeue();
             queue.Dequeue();
 
             // Array not sorted with distance
-            CollectionAssert.AreEquivalent(
-                new[] { vertex1, vertex2, vertex2 },
-                queue.ToArray());
+            queue.ToArray().Should().BeEquivalentTo(new[] { vertex1, vertex2, vertex2 });
 
             queue.Dequeue();
             queue.Dequeue();
             queue.Dequeue();
 
-            CollectionAssert.IsEmpty(queue.ToArray());
+            queue.ToArray().Should().BeEmpty();
 
             queue.Enqueue(vertex4);
-            CollectionAssert.AreEqual(
-                new[] { vertex4 },
-                queue.ToArray());
+            new[] { vertex4 }.Should().BeEquivalentTo(queue.ToArray());
         }
     }
 }

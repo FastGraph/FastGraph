@@ -58,9 +58,9 @@ namespace FastGraph.Tests.Algorithms.Condensation
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default, graph));
-            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(graph, default));
-            Assert.Throws<ArgumentNullException>(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default, default));
+            Invoking(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default, graph)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -73,14 +73,14 @@ namespace FastGraph.Tests.Algorithms.Condensation
             var graph2 = new AdjacencyGraph<int, Edge<int>>();
 
             var edge = new CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(graph1, graph2);
-            CollectionAssert.IsEmpty(edge.Edges);
+            edge.Edges.Should().BeEmpty();
 
             var subEdge = new Edge<int>(1, 2);
             edge.Edges.Add(subEdge);
-            CollectionAssert.AreEqual(new[] { subEdge }, edge.Edges);
+            new[] { subEdge }.Should().BeEquivalentTo(edge.Edges);
 
             edge.Edges.RemoveAt(0);
-            CollectionAssert.IsEmpty(edge.Edges);
+            edge.Edges.Should().BeEmpty();
         }
 
         [Test]
@@ -97,12 +97,12 @@ namespace FastGraph.Tests.Algorithms.Condensation
             var subEdge = new Edge<int>(1, 2);
             edge4.Edges.Add(subEdge);
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge1, edge4);
+            edge1.Should().Be(edge1);
+            edge2.Should().NotBe(edge1);
+            edge3.Should().NotBe(edge1);
+            edge4.Should().NotBe(edge1);
 
-            Assert.AreNotEqual(edge1, default);
+            edge1.Should().NotBe(default);
         }
     }
 }

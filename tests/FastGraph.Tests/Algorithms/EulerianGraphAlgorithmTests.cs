@@ -19,8 +19,8 @@ namespace FastGraph.Tests.Algorithms
             IUndirectedGraph<int, UndirectedEdge<int>> graph)
         {
             var algorithm = new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(graph);
-            Assert.AreEqual(expectedEulerian, algorithm.IsEulerian());
-            Assert.AreEqual(expectedEulerian, IsEulerianGraphAlgorithm.IsEulerian(graph));
+            algorithm.IsEulerian().Should().Be(expectedEulerian);
+            IsEulerianGraphAlgorithm.IsEulerian(graph).Should().Be(expectedEulerian);
         }
 
         #endregion
@@ -163,12 +163,10 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(default));
+            Invoking(() => new IsEulerianGraphAlgorithm<int, UndirectedEdge<int>>(default)).Should().Throw<ArgumentNullException>();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(
-                () => IsEulerianGraphAlgorithm.IsEulerian<int, UndirectedEdge<int>>(default));
+            Invoking(() => IsEulerianGraphAlgorithm.IsEulerian<int, UndirectedEdge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

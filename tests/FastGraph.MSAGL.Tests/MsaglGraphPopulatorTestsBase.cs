@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
+using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
 using static FastGraph.MSAGL.Tests.MsaglGraphTestHelpers;
 
@@ -20,14 +21,14 @@ namespace FastGraph.MSAGL.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             MsaglGraphPopulator<int, Edge<int>> populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph!);
+            populator.MsaglGraph!.Should().BeOfType<Graph>().BeEquivalentTo(graph);
 
             // Only vertices
             graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVertexRange(new[] { 1, 2, 3 });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph!);
+            populator.MsaglGraph!.Should().BeOfType<Graph>().BeEquivalentTo(graph);
 
             // With vertices and edges
             graph = new AdjacencyGraph<int, Edge<int>>();
@@ -40,7 +41,7 @@ namespace FastGraph.MSAGL.Tests
             graph.AddVertexRange(new[] { 5, 6 });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph!);
+            populator.MsaglGraph!.Should().BeOfType<Graph>().BeEquivalentTo(graph);
 
             // With cycles
             graph = new AdjacencyGraph<int, Edge<int>>();
@@ -54,7 +55,7 @@ namespace FastGraph.MSAGL.Tests
             });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph!);
+            populator.MsaglGraph!.Should().BeOfType<Graph>().BeEquivalentTo(graph);
 
             // With self edge
             graph = new AdjacencyGraph<int, Edge<int>>();
@@ -67,7 +68,7 @@ namespace FastGraph.MSAGL.Tests
             });
             populator = createPopulator(graph);
             populator.Compute();
-            AssertAreEquivalent(graph, populator.MsaglGraph!);
+            populator.MsaglGraph!.Should().BeOfType<Graph>().BeEquivalentTo(graph);
 
             // Undirected graph
             var undirectedGraph = new UndirectedGraph<int, Edge<int>>();
@@ -80,10 +81,9 @@ namespace FastGraph.MSAGL.Tests
             });
             populator = createPopulator(undirectedGraph);
             populator.Compute();
-            AssertAreEquivalent(undirectedGraph, populator.MsaglGraph!);
+            populator.MsaglGraph!.Should().BeOfType<Graph>().BeEquivalentTo(undirectedGraph);
         }
 
-        [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
         protected static void Handlers_Test<TPopulator>(
             [InstantHandle] Func<IEdgeListGraph<int, Edge<int>>, TPopulator> createPopulator)
             where TPopulator : MsaglGraphPopulator<int, Edge<int>>
@@ -102,12 +102,12 @@ namespace FastGraph.MSAGL.Tests
             var expectedVerticesAdded = new HashSet<int> { 1, 2, 3 };
             populator.NodeAdded += (_, args) =>
             {
-                Assert.IsTrue(expectedVerticesAdded.Remove(args.Vertex));
-                Assert.AreEqual(args.Vertex, args.Node.UserData);
+                expectedVerticesAdded.Remove(args.Vertex).Should().BeTrue();
+                args.Node.UserData.Should().Be(args.Vertex);
             };
             populator.EdgeAdded += (_, _) => Assert.Fail($"{nameof(MsaglGraphPopulator<object, Edge<object>>.EdgeAdded)} event called.");
             populator.Compute();
-            CollectionAssert.IsEmpty(expectedVerticesAdded);
+            expectedVerticesAdded.Should().BeEmpty();
 
             // With vertices and edges
             var edge12 = new Edge<int>(1, 2);
@@ -121,17 +121,17 @@ namespace FastGraph.MSAGL.Tests
             var expectedEdgesAdded = new HashSet<Edge<int>> { edge12, edge13, edge23 };
             populator.NodeAdded += (_, args) =>
             {
-                Assert.IsTrue(expectedVerticesAdded.Remove(args.Vertex));
-                Assert.AreEqual(args.Vertex, args.Node.UserData);
+                expectedVerticesAdded.Remove(args.Vertex).Should().BeTrue();
+                args.Node.UserData.Should().Be(args.Vertex);
             };
             populator.EdgeAdded += (_, args) =>
             {
-                Assert.IsTrue(expectedEdgesAdded.Remove(args.Edge));
-                Assert.AreSame(args.Edge, args.MsaglEdge.UserData);
+                expectedEdgesAdded.Remove(args.Edge).Should().BeTrue();
+                args.MsaglEdge.UserData.Should().BeSameAs(args.Edge);
             };
             populator.Compute();
-            CollectionAssert.IsEmpty(expectedVerticesAdded);
-            CollectionAssert.IsEmpty(expectedEdgesAdded);
+            expectedVerticesAdded.Should().BeEmpty();
+            expectedEdgesAdded.Should().BeEmpty();
         }
     }
 }

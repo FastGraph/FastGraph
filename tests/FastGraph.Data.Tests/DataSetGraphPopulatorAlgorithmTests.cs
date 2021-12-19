@@ -3,7 +3,6 @@
 using System.Data;
 using NUnit.Framework;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Data.Tests.GraphTestHelpers;
 using static FastGraph.Tests.GraphTestHelpers;
 
 namespace FastGraph.Data.Tests
@@ -30,7 +29,7 @@ namespace FastGraph.Data.Tests
                 DataSet set)
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreSame(set, algo.DataSet);
+                algo.DataSet.Should().BeSameAs(set);
             }
 
             #endregion
@@ -45,9 +44,9 @@ namespace FastGraph.Data.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(graph, default));
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(default, dataSet));
-            Assert.Throws<ArgumentNullException>(() => new DataSetGraphPopulatorAlgorithm(default, default));
+            Invoking(() => new DataSetGraphPopulatorAlgorithm(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DataSetGraphPopulatorAlgorithm(default, dataSet)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new DataSetGraphPopulatorAlgorithm(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -114,14 +113,13 @@ namespace FastGraph.Data.Tests
             algorithm.Compute();
 
             AssertHasVertices(graph, new[] { addresses, customers, orders });
-            AssertHasRelations(
-                graph,
-                new[]
-                {
-                    new DataRelationEdge(customerOrders),
-                    new DataRelationEdge(customersAddresses),
-                    new DataRelationEdge(warehousesAddresses)
-                });
+            IReadOnlyList<DataRelation> expectedRelations = new[]
+            {
+                customerOrders,
+                customersAddresses,
+                warehousesAddresses
+            };
+            graph.Should().BeAssignableTo<IEdgeSet<DataTable, DataRelationEdge>>().HasRelations(expectedRelations);
         }
     }
 }

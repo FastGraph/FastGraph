@@ -28,7 +28,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.Throws<VertexNotFoundException>(() => { double _ = algorithm.GetDistance(3); });
+            Invoking(() => { double _ = algorithm.GetDistance(3); }).Should().Throw<VertexNotFoundException>();
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.Throws<InvalidOperationException>(() => { double _ = algorithm.GetDistance(2); });
+            Invoking(() => { double _ = algorithm.GetDistance(2); }).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => { double _ = algorithm.GetDistance(default); });
+            Invoking(() => { double _ = algorithm.GetDistance(default); }).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -81,7 +81,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.DoesNotThrow(() => { double _ = algorithm.GetDistance(2); });
+            Invoking(() => { double _ = algorithm.GetDistance(2); }).Should().NotThrow();
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.DoesNotThrow(() => { double _ = algorithm.GetDistance(3); });
+            Invoking(() => { double _ = algorithm.GetDistance(3); }).Should().NotThrow();
         }
     }
 }

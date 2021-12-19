@@ -13,8 +13,8 @@ namespace FastGraph.Petri.Tests
         public void Constructor()
         {
             var place = new Place<int>("MyPlace");
-            Assert.AreEqual("MyPlace", place.Name);
-            CollectionAssert.IsEmpty(place.Marking);
+            place.Name.Should().Be("MyPlace");
+            place.Marking.Should().BeEmpty();
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace FastGraph.Petri.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new Place<int>(default));
+            Invoking(() => new Place<int>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -32,7 +32,7 @@ namespace FastGraph.Petri.Tests
         {
             var place = new Place<int>("TestName");
             string expectedString = "P(TestName|0)";
-            Assert.AreEqual(expectedString, place.ToStringWithMarking());
+            place.ToStringWithMarking().Should().Be(expectedString);
 
             place.Marking.Add(1);
             place.Marking.Add(3);
@@ -44,23 +44,23 @@ namespace FastGraph.Petri.Tests
                 "\tInt32" + Environment.NewLine +
                 "\tInt32" + Environment.NewLine +
                 "\tInt32";
-            Assert.AreEqual(expectedString, place.ToStringWithMarking());
+            place.ToStringWithMarking().Should().Be(expectedString);
         }
 
         [Test]
         public void ObjectToString()
         {
             var place = new Place<int>("TestName");
-            Assert.AreEqual("P(TestName|0)", place.ToString());
+            place.ToString().Should().Be("P(TestName|0)");
 
             place = new Place<int>("OtherTestName");
-            Assert.AreEqual("P(OtherTestName|0)", place.ToString());
+            place.ToString().Should().Be("P(OtherTestName|0)");
 
             place = new Place<int>("TestName_1");
             place.Marking.Add(1);
             place.Marking.Add(3);
             place.Marking.Add(5);
-            Assert.AreEqual("P(TestName_1|3)", place.ToString());
+            place.ToString().Should().Be("P(TestName_1|3)");
         }
     }
 }

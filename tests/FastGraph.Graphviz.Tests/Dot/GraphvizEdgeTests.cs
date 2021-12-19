@@ -17,29 +17,29 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var edge = new GraphvizEdge();
-            Assert.IsNull(edge.Comment);
-            Assert.IsFalse(edge.Label.IsHtmlLabel);
-            Assert.IsNotNull(edge.Label);
-            Assert.IsNull(edge.ToolTip);
-            Assert.IsNull(edge.Url);
-            Assert.AreEqual(GraphvizEdgeDirection.Forward, edge.Direction);
-            Assert.IsNull(edge.Font);
-            Assert.AreEqual(GraphvizColor.Black, edge.FontColor);
-            Assert.AreEqual(1.0, edge.PenWidth);
-            Assert.IsNotNull(edge.Head);
-            Assert.IsNull(edge.HeadArrow);
-            Assert.IsNull(edge.HeadPort);
-            Assert.IsNotNull(edge.Tail);
-            Assert.IsNull(edge.TailArrow);
-            Assert.IsNull(edge.TailPort);
-            Assert.IsTrue(edge.IsConstrained);
-            Assert.IsFalse(edge.IsDecorated);
-            Assert.IsNull(edge.Layer);
-            Assert.AreEqual(GraphvizColor.Black, edge.StrokeColor);
-            Assert.AreEqual(GraphvizEdgeStyle.Unspecified, edge.Style);
-            Assert.AreEqual(1, edge.Weight);
-            Assert.AreEqual(1, edge.Length);
-            Assert.AreEqual(1, edge.MinLength);
+            edge.Comment.Should().BeNull();
+            edge.Label.IsHtmlLabel.Should().BeFalse();
+            edge.Label.Should().NotBeNull();
+            edge.ToolTip.Should().BeNull();
+            edge.Url.Should().BeNull();
+            edge.Direction.Should().Be(GraphvizEdgeDirection.Forward);
+            edge.Font.Should().BeNull();
+            edge.FontColor.Should().Be(GraphvizColor.Black);
+            edge.PenWidth.Should().Be(1.0);
+            edge.Head.Should().NotBeNull();
+            edge.HeadArrow.Should().BeNull();
+            edge.HeadPort.Should().BeNull();
+            edge.Tail.Should().NotBeNull();
+            edge.TailArrow.Should().BeNull();
+            edge.TailPort.Should().BeNull();
+            edge.IsConstrained.Should().BeTrue();
+            edge.IsDecorated.Should().BeFalse();
+            edge.Layer.Should().BeNull();
+            edge.StrokeColor.Should().Be(GraphvizColor.Black);
+            edge.Style.Should().Be(GraphvizEdgeStyle.Unspecified);
+            edge.Weight.Should().Be(1);
+            edge.Length.Should().Be(1);
+            edge.MinLength.Should().Be(1);
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace FastGraph.Graphviz.Tests
 
             var label = new GraphvizEdgeLabel();
             edge.Label = label;
-            Assert.AreSame(label, edge.Label);
+            edge.Label.Should().BeSameAs(label);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace FastGraph.Graphviz.Tests
             var edge = new GraphvizEdge();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => edge.Label = default);
+            Invoking(() => edge.Label = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -73,7 +73,7 @@ namespace FastGraph.Graphviz.Tests
 
             var headExtremity = new GraphvizEdgeExtremity(true);
             edge.Head = headExtremity;
-            Assert.AreSame(headExtremity, edge.Head);
+            edge.Head.Should().BeSameAs(headExtremity);
         }
 
         [Test]
@@ -82,9 +82,9 @@ namespace FastGraph.Graphviz.Tests
             var edge = new GraphvizEdge();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => edge.Head = default);
+            Invoking(() => edge.Head = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
-            Assert.Throws<ArgumentException>(() => edge.Head = new GraphvizEdgeExtremity(false));
+            Invoking(() => edge.Head = new GraphvizEdgeExtremity(false)).Should().Throw<ArgumentException>();
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace FastGraph.Graphviz.Tests
 
             var tailExtremity = new GraphvizEdgeExtremity(false);
             edge.Tail = tailExtremity;
-            Assert.AreSame(tailExtremity, edge.Tail);
+            edge.Tail.Should().BeSameAs(tailExtremity);
         }
 
         [Test]
@@ -105,9 +105,9 @@ namespace FastGraph.Graphviz.Tests
             var edge = new GraphvizEdge();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => edge.Tail = default);
+            Invoking(() => edge.Tail = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
-            Assert.Throws<ArgumentException>(() => edge.Tail = new GraphvizEdgeExtremity(true));
+            Invoking(() => edge.Tail = new GraphvizEdgeExtremity(true)).Should().Throw<ArgumentException>();
         }
 
         private static IEnumerable<TestCaseData> ToDotTestCases
@@ -281,8 +281,8 @@ namespace FastGraph.Graphviz.Tests
         [TestCaseSource(nameof(ToDotTestCases))]
         public void ToDot(GraphvizEdge edge, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, edge.ToDot());
-            Assert.AreEqual(expectedDot, edge.ToString());
+            edge.ToDot().Should().Be(expectedDot);
+            edge.ToString().Should().Be(expectedDot);
         }
 
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
@@ -320,12 +320,12 @@ namespace FastGraph.Graphviz.Tests
 
             using (CultureScope(EnglishCulture))
             {
-                Assert.AreEqual(expectedDot, convert(edge));
+                convert(edge).Should().Be(expectedDot);
             }
 
             using (CultureScope(FrenchCulture))
             {
-                Assert.AreEqual(expectedDot, convert(edge));
+                convert(edge).Should().Be(expectedDot);
             }
         }
     }

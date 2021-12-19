@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 using FastGraph.Algorithms;
 using static FastGraph.Tests.AssertHelpers;
 
@@ -19,11 +18,11 @@ namespace FastGraph.Tests.Algorithms
             where TVertex : notnull, new()
             where TGraph : IImplicitVertexSet<TVertex>
         {
-            Assert.IsFalse(algorithm.TryGetRootVertex(out _));
+            algorithm.TryGetRootVertex(out _).Should().BeFalse();
 
             var vertex = new TVertex();
             algorithm.SetRootVertex(vertex);
-            Assert.IsTrue(algorithm.TryGetRootVertex(out TVertex? root));
+            algorithm.TryGetRootVertex(out TVertex? root).Should().BeTrue();
             AssertEqual(vertex, root);
         }
 
@@ -36,26 +35,26 @@ namespace FastGraph.Tests.Algorithms
 
             const int vertex1 = 0;
             algorithm.SetRootVertex(vertex1);
-            Assert.AreEqual(1, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(1);
             algorithm.TryGetRootVertex(out int root);
-            Assert.AreEqual(vertex1, root);
+            root.Should().Be(vertex1);
 
             // Not changed
             algorithm.SetRootVertex(vertex1);
-            Assert.AreEqual(1, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(1);
             algorithm.TryGetRootVertex(out root);
-            Assert.AreEqual(vertex1, root);
+            root.Should().Be(vertex1);
 
             const int vertex2 = 1;
             algorithm.SetRootVertex(vertex2);
-            Assert.AreEqual(2, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(2);
             algorithm.TryGetRootVertex(out root);
-            Assert.AreEqual(vertex2, root);
+            root.Should().Be(vertex2);
 
             algorithm.SetRootVertex(vertex1);
-            Assert.AreEqual(3, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(3);
             algorithm.TryGetRootVertex(out root);
-            Assert.AreEqual(vertex1, root);
+            root.Should().Be(vertex1);
         }
 
         protected static void SetRootVertex_Throws_Test<TVertex, TGraph>(
@@ -65,7 +64,7 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => algorithm.SetRootVertex(default));
+            Invoking(() => algorithm.SetRootVertex(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -79,15 +78,15 @@ namespace FastGraph.Tests.Algorithms
             algorithm.RootVertexChanged += (_, _) => ++rootVertexChangeCount;
 
             algorithm.ClearRootVertex();
-            Assert.AreEqual(0, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(0);
 
             var vertex = new TVertex();
             SetRootVertex(vertex);
             algorithm.ClearRootVertex();
-            Assert.AreEqual(1, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(1);
 
             algorithm.ClearRootVertex();
-            Assert.AreEqual(1, rootVertexChangeCount);
+            rootVertexChangeCount.Should().Be(1);
 
             #region Local function
 
@@ -106,11 +105,11 @@ namespace FastGraph.Tests.Algorithms
             where TGraph : IImplicitVertexSet<int>
         {
             RootedAlgorithmBase<int, TGraph> algorithm = createAlgorithm();
-            Assert.DoesNotThrow(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().NotThrow();
 
             graph.AddVertexRange(new[] { 1, 2 });
             algorithm = createAlgorithm();
-            Assert.DoesNotThrow(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().NotThrow();
         }
 
         protected static void ComputeWithoutRoot_Throws_Test<TVertex, TGraph>(
@@ -119,12 +118,12 @@ namespace FastGraph.Tests.Algorithms
             where TGraph : IImplicitVertexSet<TVertex>
         {
             RootedAlgorithmBase<TVertex, TGraph> algorithm = createAlgorithm();
-            Assert.Throws<InvalidOperationException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().Throw<InvalidOperationException>();
 
             // Source vertex set but not to a vertex in the graph
             algorithm = createAlgorithm();
             algorithm.SetRootVertex(new TVertex());
-            Assert.Throws<VertexNotFoundException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().Throw<VertexNotFoundException>();
         }
 
         protected static void ComputeWithRoot_Test<TVertex, TGraph>(
@@ -133,8 +132,8 @@ namespace FastGraph.Tests.Algorithms
             where TGraph : IImplicitVertexSet<TVertex>
         {
             var vertex = new TVertex();
-            Assert.DoesNotThrow(() => algorithm.Compute(vertex));
-            Assert.IsTrue(algorithm.TryGetRootVertex(out TVertex? root));
+            Invoking(() => algorithm.Compute(vertex)).Should().NotThrow();
+            algorithm.TryGetRootVertex(out TVertex? root).Should().BeTrue();
             AssertEqual(vertex, root);
         }
 
@@ -146,13 +145,13 @@ namespace FastGraph.Tests.Algorithms
             RootedAlgorithmBase<TVertex, TGraph> algorithm = createAlgorithm();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.Compute(default));
+            Invoking(() => algorithm.Compute(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
-            Assert.IsFalse(algorithm.TryGetRootVertex(out _));
+            algorithm.TryGetRootVertex(out _).Should().BeFalse();
 
             // Vertex not in the graph
             algorithm = createAlgorithm();
-            Assert.Throws<ArgumentException>(() => algorithm.Compute(new TVertex()));
+            Invoking(() => algorithm.Compute(new TVertex())).Should().Throw<ArgumentException>();
         }
 
         #endregion

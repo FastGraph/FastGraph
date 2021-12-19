@@ -31,19 +31,13 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, _ => 1.0));
-            Assert.Throws<ArgumentNullException>(
-                () => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, _ => 1.0)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, default, _ => 1.0));
-            Assert.Throws<ArgumentNullException>(
-                () => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, default, _ => 1.0)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new KruskalMinimumSpanningTreeAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

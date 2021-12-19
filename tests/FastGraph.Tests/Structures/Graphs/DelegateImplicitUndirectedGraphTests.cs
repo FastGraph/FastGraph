@@ -30,9 +30,9 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.IsNotNull(g.EdgeEqualityComparer);
+                g.IsDirected.Should().BeFalse();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
+                g.EdgeEqualityComparer.Should().NotBeNull();
             }
 
             #endregion
@@ -44,7 +44,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new DelegateImplicitUndirectedGraph<int, Edge<int>>(default));
+            Invoking(() => new DelegateImplicitUndirectedGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 

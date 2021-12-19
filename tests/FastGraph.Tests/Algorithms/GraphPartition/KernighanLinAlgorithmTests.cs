@@ -19,7 +19,7 @@ namespace FastGraph.Tests.Algorithms.GraphPartitioning
             var graph = new UndirectedGraph<int, TaggedUndirectedEdge<int, double>>();
             var algorithm = new KernighanLinAlgorithm<int, TaggedUndirectedEdge<int, double>>(graph, 42);
             AssertAlgorithmState(algorithm, graph);
-            Assert.AreEqual(default(Partition<int>), algorithm.Partition);
+            algorithm.Partition.Should().Be(default(Partition<int>));
         }
 
         [Test]
@@ -27,9 +27,8 @@ namespace FastGraph.Tests.Algorithms.GraphPartitioning
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
 #pragma warning disable CS8625
-                () => new KernighanLinAlgorithm<int, TaggedUndirectedEdge<int, double>>(default, 42));
+            Invoking(() => new KernighanLinAlgorithm<int, TaggedUndirectedEdge<int, double>>(default, 42)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -58,7 +57,7 @@ namespace FastGraph.Tests.Algorithms.GraphPartitioning
             setB.Add(3);
             setB.Add(2);
             var expected = new Partition<int>(setA, setB, 3);
-            Assert.IsTrue(PartitionHelpers.AreEquivalent(expected, algorithm.Partition));
+            PartitionHelpers.AreEquivalent(expected, algorithm.Partition).Should().BeTrue();
         }
 
         [Test]
@@ -90,7 +89,7 @@ namespace FastGraph.Tests.Algorithms.GraphPartitioning
             }
 
             var expected = new Partition<int>(setA, setB, 3);
-            Assert.IsTrue(PartitionHelpers.AreEquivalent(expected, algorithm.Partition));
+            PartitionHelpers.AreEquivalent(expected, algorithm.Partition).Should().BeTrue();
         }
 
         /*
@@ -146,7 +145,7 @@ namespace FastGraph.Tests.Algorithms.GraphPartitioning
             }
 
             var expected = new Partition<int>(setA, setB, 3);
-            Assert.IsTrue(PartitionHelpers.AreEquivalent(expected, algorithm.Partition));
+            PartitionHelpers.AreEquivalent(expected, algorithm.Partition).Should().BeTrue();
         }
     }
 }

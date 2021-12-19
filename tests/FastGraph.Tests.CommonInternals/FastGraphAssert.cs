@@ -1,8 +1,8 @@
 #nullable enable
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using JetBrains.Annotations;
-using NUnit.Framework;
 
 namespace FastGraph.Tests
 {
@@ -12,64 +12,14 @@ namespace FastGraph.Tests
     internal static class FastGraphAssert
     {
         /// <summary>
-        /// Checks that the <paramref name="onValue"/> predicate is true for all <paramref name="values"/>.
-        /// </summary>
-        /// <typeparam name="T">Value type.</typeparam>
-        /// <param name="values">Values to check.</param>
-        /// <param name="onValue">Predicate.</param>
-        public static void TrueForAll<T>(
-            IEnumerable<T> values,
-            [InstantHandle] Predicate<T> onValue)
-        {
-            foreach (T value in values)
-            {
-                Assert.IsTrue(onValue(value));
-            }
-        }
-
-        /// <summary>
-        /// Asserts implication is true (if <paramref name="value" /> is true,
-        /// <paramref name="impliedValue" /> should hold).
-        /// </summary>
-        public static void ImpliesIsTrue(bool value, [InstantHandle] Func<bool> impliedValue)
-        {
-            if (!value)
-                return;
-            Assert.IsTrue(impliedValue());
-        }
-
-        /// <summary>
-        /// Determines whether two exceptions are same type.
-        /// </summary>
-        /// <param name="left">An exception object.</param>
-        /// <param name="right">An exception object.</param>
-        /// <returns>Returns true if <paramref name="left" /> and <paramref name="right" /> have
-        /// the same type, otherwise false.</returns>
-        private static bool EqualExceptions(Exception? left, Exception? right)
-        {
-            Assert.IsNotNull(left);
-            Assert.IsNotNull(right);
-            return left!.GetType() == right!.GetType();
-        }
-
-        /// <summary>
         /// Contains the exception from executing code, if an exception was thrown.
         /// </summary>
-        private struct CatchResult
+        private readonly record struct CatchResult(Exception? Exception)
         {
             /// <summary>
             /// Contains the exception object, if any.
             /// </summary>
-            public Exception? Exception { get; }
-
-            /// <summary>
-            /// Initializes a new instance of the structure.
-            /// </summary>
-            /// <param name="exception">The exception object.</param>
-            public CatchResult(Exception? exception)
-            {
-                Exception = exception;
-            }
+            public Exception? Exception { get; } = Exception;
 
             /// <summary>
             /// Indicates whether the structure contains an exception.
@@ -81,6 +31,23 @@ namespace FastGraph.Tests
             /// </summary>
             /// <remarks>If the structure does not contain an exception object, this property is null.</remarks>
             public Type? ExceptionType => Exception?.GetType();
+
+            private bool PrintMembers(StringBuilder builder)
+            {
+
+                if (HasException)
+                {
+                    builder.Append("raised '");
+                    builder.Append(ExceptionType);
+                    builder.Append("' ");
+                }
+                else
+                {
+                    builder.Append("returned ");
+                }
+
+                return true;
+            }
         }
 
         /// <summary>
@@ -109,35 +76,22 @@ namespace FastGraph.Tests
         /// <param name="left">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         /// <param name="right">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         /// <remarks>"Same behavior" is defined as both delegates throwing the same exception or neither delegate throwing an exception.</remarks>
+        [CustomAssertion]
         public static void AreBehaviorsEqual(
             [InstantHandle] Action left,
             [InstantHandle] Action right)
         {
             CatchResult catchResult1 = Catch(left);
             CatchResult catchResult2 = Catch(right);
-            if (!catchResult1.HasException)
-            {
-                Assert.IsTrue(
-                    (!catchResult2.HasException ? 1 : 0) != 0,
-                    $"returned <> raised '{catchResult2.ExceptionType}'");
-            }
-            else
-            {
-                Assert.IsTrue(
-                    (catchResult2.HasException ? 1 : 0) != 0,
-                    $"raised '{catchResult1.ExceptionType}' <> returned");
 
-                Assert.IsTrue(
-                    ((EqualExceptions(catchResult1.Exception, catchResult2.Exception)) ? 1 : 0) != 0,
-                    $"raised '{catchResult1.ExceptionType}' <> raised '{catchResult2.ExceptionType}'");
-            }
+            catchResult1.Should().Be(catchResult2);
         }
 
         /// <summary>
         /// Contains either a value returned by executing code or the exception that was thrown.
         /// </summary>
         /// <typeparam name="T">The return type.</typeparam>
-        public struct CatchResult<T>
+        public readonly record struct CatchResult<T>
         {
             /// <summary>
             /// Contains the return value, if any.
@@ -212,6 +166,32 @@ namespace FastGraph.Tests
             /// </summary>
             /// <remarks>If the structure does not contain an exception object, this property is null.</remarks>
             public Type? ExceptionType => Exception?.GetType();
+
+            private bool PrintMembers(StringBuilder builder)
+            {
+
+                if (HasValue)
+                {
+                    builder.Append("result");
+                } else if (HasException)
+                {
+                    builder.Append("raised");
+                }
+
+                builder.Append(" '");
+
+                if (HasValue)
+                {
+                    builder.Append(Value);
+                } else if (HasException)
+                {
+                    builder.Append(ExceptionType);
+                }
+
+                builder.Append("' ");
+
+                return true;
+            }
         }
 
         /// <summary>
@@ -241,75 +221,15 @@ namespace FastGraph.Tests
         /// <param name="left">A <see cref="Func{TResult}"/> delegate that performs a user-defined action and returns a value of type <typeparamref name="T"/>.</param>
         /// <param name="right">A <see cref="Func{TResult}"/> delegate that performs a user-defined action and returns a value of type <typeparamref name="T"/>.</param>
         /// <remarks>"Same behavior" is defined as both delegates returning the same value or both delegates throwing the same exception.</remarks>
+        [CustomAssertion]
         public static void AreBehaviorsEqual<T>(
             [InstantHandle] Func<T> left,
             [InstantHandle] Func<T> right)
         {
             CatchResult<T> catchResult1 = Catch(left);
             CatchResult<T> catchResult2 = Catch(right);
-            if (catchResult1.HasValue)
-            {
-                Assert.IsTrue(
-                    (catchResult2.HasValue ? 1 : 0) != 0,
-                    $"result '{catchResult1.Value}' <> raised '{catchResult2.ExceptionType}'");
 
-                Assert.IsTrue(
-                    (EqualityComparer<T?>.Default.Equals(catchResult1.Value, catchResult2.Value) ? 1 : 0) != 0,
-                    $"result '{catchResult1.Value}' <> result '{catchResult2.Value}'");
-            }
-            else
-            {
-                Assert.IsTrue(
-                    (catchResult2.HasException ? 1 : 0) != 0,
-                    $"raised '{catchResult1.ExceptionType}' <> return '{catchResult2.Value}'");
-
-                Assert.IsTrue(
-                    (EqualExceptions(catchResult1.Exception, catchResult2.Exception) ? 1 : 0) != 0,
-                    $"raised '{catchResult1.ExceptionType}' <> raised '{catchResult2.ExceptionType}'");
-            }
-        }
-
-        /// <summary>
-        /// Enumerates the specified <paramref name="enumerable"/> in a double "for each".
-        /// </summary>
-        /// <param name="enumerable">Enumerable.</param>
-        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        public static void DoubleForEach<T>(IEnumerable<T> enumerable)
-        {
-            Assert.IsNotNull(enumerable);
-            using (IEnumerator<T> enumerator1 = enumerable.GetEnumerator())
-            {
-                Assert.IsNotNull(enumerator1);
-                using (IEnumerator<T> enumerator2 = enumerable.GetEnumerator())
-                {
-                    Assert.IsNotNull(enumerator2);
-                    Assert.AreEqual(enumerator1.MoveNext(), enumerator2.MoveNext());
-                }
-            }
-        }
-
-        /// <summary>
-        /// Enumerates the specified <paramref name="enumerable"/> and reset it at each element.
-        /// </summary>
-        /// <param name="enumerable">Enumerable.</param>
-        public static void MoveNextAndReset<T>(IEnumerable<T> enumerable)
-        {
-            Assert.IsNotNull(enumerable);
-            using (IEnumerator<T> enumerator = enumerable.GetEnumerator())
-            {
-                Assert.IsNotNull(enumerator);
-                bool expected = enumerator.MoveNext();
-                try
-                {
-                    enumerator.Reset();
-                }
-                catch (NotSupportedException)
-                {
-                    return;
-                }
-                bool actual = enumerator.MoveNext();
-                Assert.AreEqual(expected, actual);
-            }
+            catchResult1.Should().Be(catchResult2);
         }
     }
 }

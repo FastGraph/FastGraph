@@ -16,13 +16,13 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void Constructor()
         {
             var recorder = new VertexTimeStamperObserver<int>();
-            CollectionAssert.IsEmpty(recorder.DiscoverTimes);
-            CollectionAssert.IsEmpty(recorder.FinishTimes);
+            recorder.DiscoverTimes.Should().BeEmpty();
+            recorder.FinishTimes.Should().BeEmpty();
 
             var discoverTimes = new Dictionary<int, int>();
             recorder = new VertexTimeStamperObserver<int>(discoverTimes);
-            Assert.AreSame(discoverTimes, recorder.DiscoverTimes);
-            Assert.IsNull(recorder.FinishTimes);
+            recorder.DiscoverTimes.Should().BeSameAs(discoverTimes);
+            recorder.FinishTimes.Should().BeNull();
 
             discoverTimes = new Dictionary<int, int>
             {
@@ -32,16 +32,16 @@ namespace FastGraph.Tests.Algorithms.Observers
                 [4] = 2
             };
             recorder = new VertexTimeStamperObserver<int>(discoverTimes);
-            Assert.AreSame(discoverTimes, recorder.DiscoverTimes);
-            Assert.IsNull(recorder.FinishTimes);
+            recorder.DiscoverTimes.Should().BeSameAs(discoverTimes);
+            recorder.FinishTimes.Should().BeNull();
 
             discoverTimes = new Dictionary<int, int>();
             var finishTimes = new Dictionary<int, int>();
             recorder = new VertexTimeStamperObserver<int>(
                 discoverTimes,
                 finishTimes);
-            Assert.AreSame(discoverTimes, recorder.DiscoverTimes);
-            Assert.AreSame(finishTimes, recorder.FinishTimes);
+            recorder.DiscoverTimes.Should().BeSameAs(discoverTimes);
+            recorder.FinishTimes.Should().BeSameAs(finishTimes);
 
             discoverTimes = new Dictionary<int, int>
             {
@@ -60,8 +60,8 @@ namespace FastGraph.Tests.Algorithms.Observers
             recorder = new VertexTimeStamperObserver<int>(
                 discoverTimes,
                 finishTimes);
-            CollectionAssert.AreEqual(discoverTimes, recorder.DiscoverTimes);
-            CollectionAssert.AreEqual(finishTimes, recorder.FinishTimes);
+            discoverTimes.Should().BeEquivalentTo(recorder.DiscoverTimes);
+            finishTimes.Should().BeEquivalentTo(recorder.FinishTimes);
         }
 
         [Test]
@@ -70,12 +70,12 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new VertexTimeStamperObserver<int>(default));
-            Assert.Throws<ArgumentNullException>(() =>
-                new VertexTimeStamperObserver<int>(new Dictionary<int, int>(), default));
-            Assert.Throws<ArgumentNullException>(() =>
-                new VertexTimeStamperObserver<int>(default, new Dictionary<int, int>()));
-            Assert.Throws<ArgumentNullException>(() => new VertexTimeStamperObserver<int>(default, default));
+            Invoking(() => new VertexTimeStamperObserver<int>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new VertexTimeStamperObserver<int>(new Dictionary<int, int>(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() =>
+                new VertexTimeStamperObserver<int>(default, new Dictionary<int, int>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new VertexTimeStamperObserver<int>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore ObjectCreationAsStatement
             // ReSharper restore AssignNullToNotNullAttribute
@@ -96,8 +96,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.DiscoverTimes);
-                    CollectionAssert.IsEmpty(recorder.FinishTimes);
+                    recorder.DiscoverTimes.Should().BeEmpty();
+                    recorder.FinishTimes.Should().BeEmpty();
                 }
             }
 
@@ -112,21 +112,17 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, int>
-                        {
-                            [1] = 0,
-                            [2] = 2
-                        },
-                        recorder.DiscoverTimes);
+                    new Dictionary<int, int>
+                    {
+                        [1] = 0,
+                        [2] = 2
+                    }.Should().BeEquivalentTo(recorder.DiscoverTimes);
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, int>
-                        {
-                            [1] = 1,
-                            [2] = 3
-                        },
-                        recorder.FinishTimes);
+                    new Dictionary<int, int>
+                    {
+                        [1] = 1,
+                        [2] = 3
+                    }.Should().BeEquivalentTo(recorder.FinishTimes);
                 }
             }
 
@@ -146,25 +142,21 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, int>
-                        {
-                            [1] = 0,
-                            [2] = 1,
-                            [3] = 4,
-                            [4] = 5
-                        },
-                        recorder.DiscoverTimes);
+                    new Dictionary<int, int>
+                    {
+                        [1] = 0,
+                        [2] = 1,
+                        [3] = 4,
+                        [4] = 5
+                    }.Should().BeEquivalentTo(recorder.DiscoverTimes);
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, int>
-                        {
-                            [1] = 3,
-                            [2] = 2,
-                            [3] = 7,
-                            [4] = 6
-                        },
-                        recorder.FinishTimes);
+                    new Dictionary<int, int>
+                    {
+                        [1] = 3,
+                        [2] = 2,
+                        [3] = 7,
+                        [4] = 6
+                    }.Should().BeEquivalentTo(recorder.FinishTimes);
                 }
             }
         }

@@ -39,17 +39,13 @@ namespace FastGraph.MSAGL.Tests
 
             void CreatePopulators_Test(IEdgeListGraph<int, Edge<int>> g)
             {
-                var populator = g.CreateMsaglPopulator();
-                Assert.IsNotNull(populator);
+                g.CreateMsaglPopulator().Should().NotBeNull();
 
-                populator = g.CreateMsaglPopulator("TestFormat {0}");
-                Assert.IsNotNull(populator);
+                g.CreateMsaglPopulator("TestFormat {0}").Should().NotBeNull();
 
-                populator = g.CreateMsaglPopulator("TestFormat {0}", new VertexTestFormatProvider());
-                Assert.IsNotNull(populator);
+                g.CreateMsaglPopulator("TestFormat {0}", new VertexTestFormatProvider()).Should().NotBeNull();
 
-                populator = g.CreateMsaglPopulator(v => v.ToString());
-                Assert.IsNotNull(populator);
+                g.CreateMsaglPopulator(v => v.ToString()).Should().NotBeNull();
             }
 
             #endregion
@@ -61,19 +57,18 @@ namespace FastGraph.MSAGL.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default));
+            Invoking(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, vertex => vertex.ToString()));
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator(graph, default));
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, default));
+            Invoking(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, vertex => vertex.ToString())).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.CreateMsaglPopulator(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, "Format {0}"));
+            Invoking(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(default, "Format {0}")).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
         public void ToMsaglGraph()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
@@ -113,36 +108,36 @@ namespace FastGraph.MSAGL.Tests
             void ToMsaglGraph_Test(IEdgeListGraph<int, Edge<int>> g)
             {
                 Graph msaglGraph = g.ToMsaglGraph();
-                AssertAreEquivalent(g, msaglGraph);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
 
                 var expectedVerticesAdded = new HashSet<int>(g.Vertices);
                 msaglGraph = g.IsVerticesEmpty
                     ? g.ToMsaglGraph(NoNodeAdded)
                     : g.ToMsaglGraph(NodeAdded);
-                AssertAreEquivalent(g, msaglGraph);
-                CollectionAssert.IsEmpty(expectedVerticesAdded);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
+                expectedVerticesAdded.Should().BeEmpty();
 
                 expectedVerticesAdded = new HashSet<int>(g.Vertices);
                 msaglGraph = g.IsVerticesEmpty
                     ? g.ToMsaglGraph(VertexIdentity, NoNodeAdded)
                     : g.ToMsaglGraph(VertexIdentity, NodeAdded);
-                AssertAreEquivalent(g, msaglGraph);
-                CollectionAssert.IsEmpty(expectedVerticesAdded);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
+                expectedVerticesAdded.Should().BeEmpty();
 
 
                 var expectedEdgesAdded = new HashSet<Edge<int>>(g.Edges);
                 msaglGraph = g.IsEdgesEmpty
                     ? g.ToMsaglGraph(edgeAdded: NoEdgeAdded)
                     : g.ToMsaglGraph(edgeAdded: EdgeAdded);
-                AssertAreEquivalent(g, msaglGraph);
-                CollectionAssert.IsEmpty(expectedEdgesAdded);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
+                expectedEdgesAdded.Should().BeEmpty();
 
                 expectedEdgesAdded = new HashSet<Edge<int>>(g.Edges);
                 msaglGraph = g.IsEdgesEmpty
                     ? g.ToMsaglGraph(VertexIdentity, edgeAdded: NoEdgeAdded)
                     : g.ToMsaglGraph(VertexIdentity, edgeAdded: EdgeAdded);
-                AssertAreEquivalent(g, msaglGraph);
-                CollectionAssert.IsEmpty(expectedEdgesAdded);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
+                expectedEdgesAdded.Should().BeEmpty();
 
 
                 expectedVerticesAdded = new HashSet<int>(g.Vertices);
@@ -163,9 +158,9 @@ namespace FastGraph.MSAGL.Tests
                 {
                     msaglGraph = g.ToMsaglGraph(NodeAdded, EdgeAdded);
                 }
-                AssertAreEquivalent(g, msaglGraph);
-                CollectionAssert.IsEmpty(expectedVerticesAdded);
-                CollectionAssert.IsEmpty(expectedEdgesAdded);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
+                expectedVerticesAdded.Should().BeEmpty();
+                expectedEdgesAdded.Should().BeEmpty();
 
                 expectedVerticesAdded = new HashSet<int>(g.Vertices);
                 expectedEdgesAdded = new HashSet<Edge<int>>(g.Edges);
@@ -185,9 +180,9 @@ namespace FastGraph.MSAGL.Tests
                 {
                     msaglGraph = g.ToMsaglGraph(VertexIdentity, NodeAdded, EdgeAdded);
                 }
-                AssertAreEquivalent(g, msaglGraph);
-                CollectionAssert.IsEmpty(expectedVerticesAdded);
-                CollectionAssert.IsEmpty(expectedEdgesAdded);
+                msaglGraph.Should().BeOfType<Graph>().BeEquivalentTo(g);
+                expectedVerticesAdded.Should().BeEmpty();
+                expectedEdgesAdded.Should().BeEmpty();
 
                 #region Local functions
 
@@ -203,7 +198,7 @@ namespace FastGraph.MSAGL.Tests
 
                 void NodeAdded(object sender, MsaglVertexEventArgs<int> args)
                 {
-                    Assert.IsTrue(expectedVerticesAdded.Remove(args.Vertex));
+                    expectedVerticesAdded.Remove(args.Vertex).Should().BeTrue();
                 }
 
                 void NoEdgeAdded(object sender, MsaglEdgeEventArgs<int, Edge<int>> args)
@@ -213,7 +208,7 @@ namespace FastGraph.MSAGL.Tests
 
                 void EdgeAdded(object sender, MsaglEdgeEventArgs<int, Edge<int>> args)
                 {
-                    Assert.IsTrue(expectedEdgesAdded.Remove(args.Edge));
+                    expectedEdgesAdded.Remove(args.Edge).Should().BeTrue();
                 }
 
                 #endregion

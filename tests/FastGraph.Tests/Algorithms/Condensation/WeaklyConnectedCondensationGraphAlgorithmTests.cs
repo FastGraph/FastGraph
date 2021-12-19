@@ -24,7 +24,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph =
                 graph.CondensateWeaklyConnected<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>();
 
-            Assert.IsNotNull(condensedGraph);
+            condensedGraph.Should().NotBeNull();
             CheckVertexCount(graph, condensedGraph);
             CheckEdgeCount(graph, condensedGraph);
             CheckComponentCount(graph, condensedGraph);
@@ -38,7 +38,7 @@ namespace FastGraph.Tests.Algorithms.Condensation
         {
             // Check number of vertices = number of strongly connected components
             int components = graph.WeaklyConnectedComponents(new Dictionary<TVertex, int>());
-            Assert.AreEqual(components, condensedGraph.VertexCount, "Component count does not match.");
+            condensedGraph.VertexCount.Should().Be(components, because: "Component count does not match.");
         }
 
         #endregion
@@ -76,8 +76,8 @@ namespace FastGraph.Tests.Algorithms.Condensation
                 where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>, new()
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreEqual(stronglyConnected, algo.StronglyConnected);
-                Assert.IsNull(algo.CondensedGraph);
+                algo.StronglyConnected.Should().Be(stronglyConnected);
+                algo.CondensedGraph.Should().BeNull();
             }
 
             #endregion
@@ -92,22 +92,15 @@ namespace FastGraph.Tests.Algorithms.Condensation
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components));
-            Assert.Throws<ArgumentNullException>(
-                () => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, components)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -144,11 +137,11 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
                 graph.CondensateWeaklyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>();
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(1, condensedGraph.VertexCount);
-            Assert.AreEqual(0, condensedGraph.EdgeCount);
-            CollectionAssert.AreEquivalent(graph.Vertices, condensedGraph.Vertices.ElementAt(0).Vertices);
-            CollectionAssert.AreEquivalent(graph.Edges, condensedGraph.Vertices.ElementAt(0).Edges);
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().Be(1);
+            condensedGraph.EdgeCount.Should().Be(0);
+            condensedGraph.Vertices.ElementAt(0).Vertices.Should().BeEquivalentTo(graph.Vertices);
+            condensedGraph.Vertices.ElementAt(0).Edges.Should().BeEquivalentTo(graph.Edges);
         }
 
         [Test]
@@ -176,29 +169,17 @@ namespace FastGraph.Tests.Algorithms.Condensation
             IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
                 graph.CondensateWeaklyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>();
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(3, condensedGraph.VertexCount);
-            Assert.AreEqual(0, condensedGraph.EdgeCount);
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2, 3, 4 },
-                condensedGraph.Vertices.ElementAt(0).Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edge12, edge13, edge23, edge42, edge43 },
-                condensedGraph.Vertices.ElementAt(0).Edges);
+            condensedGraph.Should().NotBeNull();
+            condensedGraph.VertexCount.Should().Be(3);
+            condensedGraph.EdgeCount.Should().Be(0);
+            condensedGraph.Vertices.ElementAt(0).Vertices.Should().BeEquivalentTo(new[] { 1, 2, 3, 4 });
+            condensedGraph.Vertices.ElementAt(0).Edges.Should().BeEquivalentTo(new[] { edge12, edge13, edge23, edge42, edge43 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 5, 6, 7 },
-                condensedGraph.Vertices.ElementAt(1).Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edge56, edge57, edge76 },
-                condensedGraph.Vertices.ElementAt(1).Edges);
+            condensedGraph.Vertices.ElementAt(1).Vertices.Should().BeEquivalentTo(new[] { 5, 6, 7 });
+            condensedGraph.Vertices.ElementAt(1).Edges.Should().BeEquivalentTo(new[] { edge56, edge57, edge76 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 8, 9 },
-                condensedGraph.Vertices.ElementAt(2).Vertices);
-            CollectionAssert.AreEquivalent(
-                new[] { edge89 },
-                condensedGraph.Vertices.ElementAt(2).Edges);
+            condensedGraph.Vertices.ElementAt(2).Vertices.Should().BeEquivalentTo(new[] { 8, 9 });
+            condensedGraph.Vertices.ElementAt(2).Edges.Should().BeEquivalentTo(new[] { edge89 });
         }
 
         [Test]

@@ -40,9 +40,9 @@ namespace FastGraph.Serialization.Tests
             string newGraphml = serializeGraph(serializedGraph);
 
             // => Serialization should produce the same result
-            Assert.AreEqual(graphml, newGraphml);
+            newGraphml.Should().Be(graphml);
 
-            Assert.AreNotSame(graph, serializeGraph);
+            serializeGraph.Should().NotBeSameAs(graph);
 
             return serializedGraph;
         }
@@ -158,10 +158,9 @@ namespace FastGraph.Serialization.Tests
                     }
                 });
 
-            Assert.IsTrue(
-                EquateGraphs.Equate(
-                    graph,
-                    serializedGraph));
+            EquateGraphs.Equate(
+                graph,
+                serializedGraph).Should().BeTrue();
         }
 
         #region Serialization
@@ -175,75 +174,61 @@ namespace FastGraph.Serialization.Tests
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
             // Filepath
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(WriteThrowsTestFilePath));
+            Invoking(() => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(WriteThrowsTestFilePath)).Should().Throw<ArgumentNullException>();
 
             var graph = new AdjacencyGraph<TestVertex, TestEdge>();
-            Assert.Throws<ArgumentException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>((string?)default));
-            Assert.Throws<ArgumentException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(""));
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>((string?)default)).Should().Throw<ArgumentException>();
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>("")).Should().Throw<ArgumentException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                    WriteThrowsTestFilePath,
-                    vertex => vertex.ID,
-                    edge => edge.ID));
+            Invoking(() => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                WriteThrowsTestFilePath,
+                vertex => vertex.ID,
+                edge => edge.ID)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                    (string?)default,
-                    vertex => vertex.ID,
-                    edge => edge.ID));
-            Assert.Throws<ArgumentException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                    "",
-                    vertex => vertex.ID,
-                    edge => edge.ID));
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                (string?)default,
+                vertex => vertex.ID,
+                edge => edge.ID)).Should().Throw<ArgumentException>();
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                "",
+                vertex => vertex.ID,
+                edge => edge.ID)).Should().Throw<ArgumentException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                    WriteThrowsTestFilePath,
-                    default,
-                    edge => edge.ID));
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                WriteThrowsTestFilePath,
+                default,
+                edge => edge.ID)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                    WriteThrowsTestFilePath,
-                    vertex => vertex.ID,
-                    default));
+            Invoking(() => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                WriteThrowsTestFilePath,
+                vertex => vertex.ID,
+                default)).Should().Throw<ArgumentNullException>();
 
             // XML writer
-            Assert.Throws<ArgumentNullException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>((XmlWriter?)default));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                    (XmlWriter?)default,
-                    vertex => vertex.ID,
-                    edge => edge.ID));
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>((XmlWriter?)default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                (XmlWriter?)default,
+                vertex => vertex.ID,
+                edge => edge.ID)).Should().Throw<ArgumentNullException>();
 
             using (var writer = XmlWriter.Create(WriteThrowsTestFilePath))
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(writer));
+                Invoking(() => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(writer)).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                        writer,
-                        vertex => vertex.ID,
-                        edge => edge.ID));
+                Invoking(() => ((AdjacencyGraph<TestVertex, TestEdge>?)default).SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                    writer,
+                    vertex => vertex.ID,
+                    edge => edge.ID)).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                        writer,
-                        default,
-                        edge => edge.ID));
+                Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                    writer,
+                    default,
+                    edge => edge.ID)).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
-                        writer,
-                        vertex => vertex.ID,
-                        default));
+                Invoking(() => graph.SerializeToGraphML<TestVertex, TestEdge, AdjacencyGraph<TestVertex, TestEdge>>(
+                    writer,
+                    vertex => vertex.ID,
+                    default)).Should().Throw<ArgumentNullException>();
             }
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
@@ -269,11 +254,10 @@ namespace FastGraph.Serialization.Tests
                 where TGraph : IMutableVertexAndEdgeListGraph<TestVertex, TestEdge>
                 where TException : Exception
             {
-                Assert.Throws<TException>(
-                    () => g.SerializeToGraphML<TestVertex, TestEdge, TGraph>(
-                        WriteThrowsTestFilePath,
-                        vertex => vertex.ID,
-                        edge => edge.ID));
+                Invoking(() => g.SerializeToGraphML<TestVertex, TestEdge, TGraph>(
+                    WriteThrowsTestFilePath,
+                    vertex => vertex.ID,
+                    edge => edge.ID)).Should().Throw<TException>();
             }
 
             #endregion
@@ -344,7 +328,7 @@ namespace FastGraph.Serialization.Tests
                     foreach (XPathNavigator? node in document.CreateNavigator()!.Select("/graphml/graph/node"))
                     {
                         string id = node!.GetAttribute("id", "");
-                        Assert.IsTrue(vertices.ContainsKey(id));
+                        vertices.ContainsKey(id).Should().BeTrue();
                     }
 
                     // Check all edges are loaded
@@ -352,7 +336,7 @@ namespace FastGraph.Serialization.Tests
                     {
                         string source = node!.GetAttribute("source", "");
                         string target = node.GetAttribute("target", "");
-                        Assert.IsTrue(graph.ContainsEdge(vertices[source], vertices[target]));
+                        graph.ContainsEdge(vertices[source], vertices[target]).Should().BeTrue();
                     }
                 }
             }
@@ -365,91 +349,78 @@ namespace FastGraph.Serialization.Tests
 #pragma warning disable CS8625
 #pragma warning disable CS8631
             // Filepath
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
-                    GetGraphFilePath(TestGraphFileName),
-                    id => id,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
+                GetGraphFilePath(TestGraphFileName),
+                id => id,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
             var graph = new AdjacencyGraph<string, Edge<string>>();
-            Assert.Throws<ArgumentException>(
-                () => graph.DeserializeFromGraphML(
-                    (string?)default,
-                    id => id,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => graph.DeserializeFromGraphML(
+                (string?)default,
+                id => id,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentException>();
 
-            Assert.Throws<ArgumentException>(
-                () => graph.DeserializeFromGraphML(
-                    "",
-                    id => id,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => graph.DeserializeFromGraphML(
+                "",
+                id => id,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                    GetGraphFilePath(TestGraphFileName),
-                    default,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                GetGraphFilePath(TestGraphFileName),
+                default,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                    GetGraphFilePath(TestGraphFileName),
-                    id => id,
-                    default));
+            Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                GetGraphFilePath(TestGraphFileName),
+                id => id,
+                default)).Should().Throw<ArgumentNullException>();
 
             // Text reader
-            Assert.Throws<ArgumentNullException>(
-                () => graph.DeserializeFromGraphML(
-                    (TextReader?)default,
-                    id => id,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => graph.DeserializeFromGraphML(
+                (TextReader?)default,
+                id => id,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
             using (var reader = new StreamReader(GetGraphFilePath(TestGraphFileName)))
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
-                        reader,
-                        id => id,
-                        (source, target, _) => new Edge<string>(source, target)));
+                Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
+                    reader,
+                    id => id,
+                    (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                        reader,
-                        default,
-                        (source, target, _) => new Edge<string>(source, target)));
+                Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                    reader,
+                    default,
+                    (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                        reader,
-                        id => id,
-                        default));
+                Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                    reader,
+                    id => id,
+                    default)).Should().Throw<ArgumentNullException>();
             }
 
             // XML reader
-            Assert.Throws<ArgumentNullException>(
-                () => graph.DeserializeFromGraphML(
-                    (XmlReader?)default,
-                    id => id,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => graph.DeserializeFromGraphML(
+                (XmlReader?)default,
+                id => id,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
             using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
-                        reader,
-                        id => id,
-                        (source, target, _) => new Edge<string>(source, target)));
+                Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
+                    reader,
+                    id => id,
+                    (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                        reader,
-                        default,
-                        (source, target, _) => new Edge<string>(source, target)));
+                Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                    reader,
+                    default,
+                    (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                        reader,
-                        id => id,
-                        default));
+                Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                    reader,
+                    id => id,
+                    default)).Should().Throw<ArgumentNullException>();
             }
 #pragma warning restore CS8631
 #pragma warning restore CS8625
@@ -479,11 +450,10 @@ namespace FastGraph.Serialization.Tests
                 where TGraph : IMutableVertexAndEdgeListGraph<TestVertex, TestEdge>
                 where TException : Exception
             {
-                Assert.Throws<TException>(
-                    () => g.DeserializeFromGraphML(
-                        GetGraphFilePath(fileName),
-                        id => new TestVertex(id),
-                        (source, target, id) => new TestEdge(source, target, id)));
+                Invoking(() => g.DeserializeFromGraphML(
+                    GetGraphFilePath(fileName),
+                    id => new TestVertex(id),
+                    (source, target, id) => new TestEdge(source, target, id))).Should().Throw<TException>();
             }
 
             #endregion
@@ -504,11 +474,10 @@ namespace FastGraph.Serialization.Tests
         {
             var method = new DynamicMethod("TestMethod", typeof(void), Type.EmptyTypes);
             ILGenerator generator = method.GetILGenerator();
-            Assert.Throws<NotSupportedException>(
-                () => ILHelpers.EmitValue(
-                    generator,
-                    typeof(TestClass).GetProperty(nameof(TestClass.Char)) ?? throw new AssertionException("Property must exist."),
-                    'a'));
+            Invoking(() => ILHelpers.EmitValue(
+                generator,
+                typeof(TestClass).GetProperty(nameof(TestClass.Char)) ?? throw new AssertionException("Property must exist."),
+                'a')).Should().Throw<NotSupportedException>();
         }
 
 #if SUPPORTS_XML_DTD_PROCESSING
@@ -551,7 +520,7 @@ namespace FastGraph.Serialization.Tests
                 $"serialization_to_graphml_test_{Guid.NewGuid().ToString()}.graphml");
 
             graph.SerializeToGraphML<TestVertex, TestEdge, TestGraph>(filePath);
-            Assert.IsTrue(File.Exists(filePath));
+            File.Exists(filePath).Should().BeTrue();
             return File.ReadAllText(filePath);
         }
 
@@ -566,7 +535,7 @@ namespace FastGraph.Serialization.Tests
                 filePath,
                 vertex => vertex.ID,
                 edge => edge.ID);
-            Assert.IsTrue(File.Exists(filePath));
+            File.Exists(filePath).Should().BeTrue();
             return File.ReadAllText(filePath);
         }
 
@@ -694,35 +663,35 @@ namespace FastGraph.Serialization.Tests
 
             TestGraph serializedGraph = VerifySerialization(graph, serializeGraph);
 
-            Assert.AreEqual(graph.Bool, serializedGraph.Bool);
-            Assert.AreEqual(graph.Double, serializedGraph.Double);
-            Assert.AreEqual(graph.Float, serializedGraph.Float);
-            Assert.AreEqual(graph.Int, serializedGraph.Int);
-            Assert.AreEqual(graph.Long, serializedGraph.Long);
-            Assert.AreEqual(graph.String, serializedGraph.String);
-            CollectionAssert.AreEqual(graph.BoolArray, serializedGraph.BoolArray);
-            CollectionAssert.AreEqual(graph.IntArray, serializedGraph.IntArray);
-            CollectionAssert.AreEqual(graph.LongArray, serializedGraph.LongArray);
-            CollectionAssert.AreEqual(graph.StringArray, serializedGraph.StringArray);
-            CollectionAssert.AreEqual(graph.FloatArray, serializedGraph.FloatArray, new FloatComparer(0.001F));
-            CollectionAssert.AreEqual(graph.DoubleArray, serializedGraph.DoubleArray, new DoubleComparer(0.0001));
-            CollectionAssert.AreEqual(graph.BoolIList, serializedGraph.BoolIList);
-            CollectionAssert.AreEqual(graph.IntIList, serializedGraph.IntIList);
-            CollectionAssert.AreEqual(graph.LongIList, serializedGraph.LongIList);
-            CollectionAssert.AreEqual(graph.StringIList, serializedGraph.StringIList);
-            CollectionAssert.AreEqual(graph.FloatIList, serializedGraph.FloatIList, new FloatComparer(0.001F));
-            CollectionAssert.AreEqual(graph.DoubleIList, serializedGraph.DoubleIList, new DoubleComparer(0.0001));
+            serializedGraph.Bool.Should().Be(graph.Bool);
+            serializedGraph.Double.Should().Be(graph.Double);
+            serializedGraph.Float.Should().Be(graph.Float);
+            serializedGraph.Int.Should().Be(graph.Int);
+            serializedGraph.Long.Should().Be(graph.Long);
+            serializedGraph.String.Should().Be(graph.String);
+            serializedGraph.BoolArray.Should().BeEquivalentTo(graph.BoolArray);
+            serializedGraph.IntArray.Should().BeEquivalentTo(graph.IntArray);
+            serializedGraph.LongArray.Should().BeEquivalentTo(graph.LongArray);
+            serializedGraph.StringArray.Should().BeEquivalentTo(graph.StringArray);
+            serializedGraph.FloatArray.Should().BeEquivalentTo(graph.FloatArray);
+            serializedGraph.DoubleArray.Should().BeEquivalentTo(graph.DoubleArray);
+            serializedGraph.BoolIList.Should().BeEquivalentTo(graph.BoolIList);
+            serializedGraph.IntIList.Should().BeEquivalentTo(graph.IntIList);
+            serializedGraph.LongIList.Should().BeEquivalentTo(graph.LongIList);
+            serializedGraph.StringIList.Should().BeEquivalentTo(graph.StringIList);
+            serializedGraph.FloatIList.Should().BeEquivalentTo(graph.FloatIList);
+            serializedGraph.DoubleIList.Should().BeEquivalentTo(graph.DoubleIList);
 
             TestVertex serializedVertex = serializedGraph.Vertices.First();
-            Assert.AreEqual("bar", serializedVertex.StringDefault);
-            Assert.AreEqual(vertex.String, serializedVertex.String);
-            Assert.AreEqual(vertex.Int, serializedVertex.Int);
-            Assert.AreEqual(vertex.Long, serializedVertex.Long);
-            Assert.AreEqual(vertex.Float, serializedVertex.Float);
-            Assert.AreEqual(vertex.Double, serializedVertex.Double);
-            Assert.AreEqual(vertex.Bool, serializedVertex.Bool);
-            CollectionAssert.AreEqual(vertex.IntArray, serializedVertex.IntArray);
-            CollectionAssert.AreEqual(vertex.IntIList, serializedVertex.IntIList);
+            serializedVertex.StringDefault.Should().Be("bar");
+            serializedVertex.String.Should().Be(vertex.String);
+            serializedVertex.Int.Should().Be(vertex.Int);
+            serializedVertex.Long.Should().Be(vertex.Long);
+            serializedVertex.Float.Should().Be(vertex.Float);
+            serializedVertex.Double.Should().Be(vertex.Double);
+            serializedVertex.Bool.Should().Be(vertex.Bool);
+            serializedVertex.IntArray.Should().BeEquivalentTo(vertex.IntArray);
+            serializedVertex.IntIList.Should().BeEquivalentTo(vertex.IntIList);
         }
 
         [TestCaseSource(nameof(GraphSerializationTestCases))]
@@ -781,13 +750,13 @@ namespace FastGraph.Serialization.Tests
 
             TestEdge serializedEdge = serializedGraph.Edges.First();
             if (keepIds)
-                Assert.AreEqual(edge.ID, serializedEdge.ID);
-            Assert.AreEqual(edge.String, serializedEdge.String);
-            Assert.AreEqual(edge.Int, serializedEdge.Int);
-            Assert.AreEqual(edge.Long, serializedEdge.Long);
-            Assert.AreEqual(edge.Float, serializedEdge.Float);
-            Assert.AreEqual(edge.Double, serializedEdge.Double);
-            Assert.AreEqual(edge.Bool, serializedEdge.Bool);
+                serializedEdge.ID.Should().Be(edge.ID);
+            serializedEdge.String.Should().Be(edge.String);
+            serializedEdge.Int.Should().Be(edge.Int);
+            serializedEdge.Long.Should().Be(edge.Long);
+            serializedEdge.Float.Should().Be(edge.Float);
+            serializedEdge.Double.Should().Be(edge.Double);
+            serializedEdge.Bool.Should().Be(edge.Bool);
         }
 
         [Test]
@@ -799,31 +768,27 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<string, Edge<string>>();
 
             // Text reader
-            Assert.Throws<ArgumentNullException>(
-                () => graph.DeserializeAndValidateFromGraphML(
-                    default,
-                    id => id,
-                    (source, target, _) => new Edge<string>(source, target)));
+            Invoking(() => graph.DeserializeAndValidateFromGraphML(
+                default,
+                id => id,
+                (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
             using (var reader = new StreamReader(GetGraphFilePath(TestGraphFileName)))
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeAndValidateFromGraphML(
-                        reader,
-                        id => id,
-                        (source, target, _) => new Edge<string>(source, target)));
+                Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeAndValidateFromGraphML(
+                    reader,
+                    id => id,
+                    (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.DeserializeAndValidateFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                        reader,
-                        default,
-                        (source, target, _) => new Edge<string>(source, target)));
+                Invoking(() => graph.DeserializeAndValidateFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                    reader,
+                    default,
+                    (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-                Assert.Throws<ArgumentNullException>(
-                    () => graph.DeserializeAndValidateFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                        reader,
-                        id => id,
-                        default));
+                Invoking(() => graph.DeserializeAndValidateFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
+                    reader,
+                    id => id,
+                    default)).Should().Throw<ArgumentNullException>();
             }
 #pragma warning restore CS8631
 #pragma warning restore CS8625
@@ -844,7 +809,7 @@ namespace FastGraph.Serialization.Tests
             where TInGraph : IEdgeListGraph<int, TInEdge>
             where TOutGraph : IEdgeListGraph<int, TOutEdge>
         {
-            Assert.IsNotNull(graph);
+            graph.Should().NotBeNull();
 
             using (var stream = new MemoryStream())
             {
@@ -864,8 +829,8 @@ namespace FastGraph.Serialization.Tests
                 using (var reader = XmlReader.Create(stream))
                 {
                     TOutGraph deserializedGraph = deserialize(reader);
-                    Assert.IsNotNull(deserializedGraph);
-                    Assert.AreNotSame(graph, deserializedGraph);
+                    deserializedGraph.Should().NotBeNull();
+                    deserializedGraph.Should().NotBeSameAs(graph);
                     return deserializedGraph;
                 }
             }
@@ -924,12 +889,12 @@ namespace FastGraph.Serialization.Tests
         {
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph1 =
                 SerializeDeserialize<AdjacencyGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph1));
+            EquateGraphs.Equate(graph, deserializedGraph1).Should().BeTrue();
 
             var arrayGraph = new ArrayAdjacencyGraph<int, EquatableEdge<int>>(graph);
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph2 =
                 SerializeDeserialize<ArrayAdjacencyGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(arrayGraph);
-            Assert.IsTrue(EquateGraphs.Equate(arrayGraph, deserializedGraph2));
+            EquateGraphs.Equate(arrayGraph, deserializedGraph2).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationAdjacencyGraphTestCases))]
@@ -938,7 +903,7 @@ namespace FastGraph.Serialization.Tests
             var bidirectionalAdapterGraph = new BidirectionalAdapterGraph<int, EquatableEdge<int>>(graph);
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
                 SerializeDeserialize<BidirectionalAdapterGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(bidirectionalAdapterGraph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+            EquateGraphs.Equate(graph, deserializedGraph).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationClusteredAdjacencyGraphTestCases))]
@@ -946,7 +911,7 @@ namespace FastGraph.Serialization.Tests
         {
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
                 SerializeDeserialize<ClusteredAdjacencyGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+            EquateGraphs.Equate(graph, deserializedGraph).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationCompressedGraphTestCases))]
@@ -954,7 +919,7 @@ namespace FastGraph.Serialization.Tests
         {
             AdjacencyGraph<int, SEquatableEdge<int>> deserializedGraph =
                 SerializeDeserialize_SEdge<CompressedSparseRowGraph<int>, AdjacencyGraph<int, SEquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+            EquateGraphs.Equate(graph, deserializedGraph).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationBidirectionalGraphTestCases))]
@@ -962,29 +927,28 @@ namespace FastGraph.Serialization.Tests
         {
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
                 SerializeDeserialize<BidirectionalGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+            EquateGraphs.Equate(graph, deserializedGraph).Should().BeTrue();
 
             var arrayGraph = new ArrayBidirectionalGraph<int, EquatableEdge<int>>(graph);
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph2 =
                 SerializeDeserialize<ArrayBidirectionalGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(arrayGraph);
-            Assert.IsTrue(EquateGraphs.Equate(arrayGraph, deserializedGraph2));
+            EquateGraphs.Equate(arrayGraph, deserializedGraph2).Should().BeTrue();
 
             var reversedGraph = new ReversedBidirectionalGraph<int, EquatableEdge<int>>(graph);
             BidirectionalGraph<int, EquatableEdge<int>> deserializedGraph3 =
                 SerializeDeserialize_Reversed<ReversedBidirectionalGraph<int, EquatableEdge<int>>, BidirectionalGraph<int, EquatableEdge<int>>>(reversedGraph);
-            Assert.IsTrue(
-                EquateGraphs.Equate(
-                    graph,
-                    deserializedGraph3,
-                    EqualityComparer<int>.Default,
-                    LambdaEqualityComparer<EquatableEdge<int>>.Create(
-                        (edge1, edge2) => Equals(edge1.Source, edge2.Target) && Equals(edge1.Target, edge2.Source),
-                        edge => edge.GetHashCode())));
+            EquateGraphs.Equate(
+                graph,
+                deserializedGraph3,
+                EqualityComparer<int>.Default,
+                LambdaEqualityComparer<EquatableEdge<int>>.Create(
+                    (edge1, edge2) => Equals(edge1.Source, edge2.Target) && Equals(edge1.Target, edge2.Source),
+                    edge => edge.GetHashCode())).Should().BeTrue();
 
             var undirectedBidirectionalGraph = new UndirectedBidirectionalGraph<int, EquatableEdge<int>>(graph);
             UndirectedGraph<int, EquatableEdge<int>> deserializedGraph4 =
                 SerializeDeserialize<UndirectedBidirectionalGraph<int, EquatableEdge<int>>, UndirectedGraph<int, EquatableEdge<int>>>(undirectedBidirectionalGraph);
-            Assert.IsTrue(EquateGraphs.Equate(undirectedBidirectionalGraph, deserializedGraph4));
+            EquateGraphs.Equate(undirectedBidirectionalGraph, deserializedGraph4).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationBidirectionalMatrixGraphTestCases))]
@@ -992,7 +956,7 @@ namespace FastGraph.Serialization.Tests
         {
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
                 SerializeDeserialize<BidirectionalMatrixGraph<EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+            EquateGraphs.Equate(graph, deserializedGraph).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationUndirectedGraphTestCases))]
@@ -1000,12 +964,12 @@ namespace FastGraph.Serialization.Tests
         {
             UndirectedGraph<int, EquatableEdge<int>> deserializedGraph1 =
                 SerializeDeserialize<UndirectedGraph<int, EquatableEdge<int>>, UndirectedGraph<int, EquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph1));
+            EquateGraphs.Equate(graph, deserializedGraph1).Should().BeTrue();
 
             var arrayGraph = new ArrayUndirectedGraph<int, EquatableEdge<int>>(graph);
             UndirectedGraph<int, EquatableEdge<int>> deserializedGraph2 =
                 SerializeDeserialize<ArrayUndirectedGraph<int, EquatableEdge<int>>, UndirectedGraph<int, EquatableEdge<int>>>(arrayGraph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph2));
+            EquateGraphs.Equate(graph, deserializedGraph2).Should().BeTrue();
         }
 
         [TestCaseSource(typeof(SerializationTestCaseSources), nameof(SerializationEdgeListGraphTestCases))]
@@ -1013,7 +977,7 @@ namespace FastGraph.Serialization.Tests
         {
             AdjacencyGraph<int, EquatableEdge<int>> deserializedGraph =
                 SerializeDeserialize<EdgeListGraph<int, EquatableEdge<int>>, AdjacencyGraph<int, EquatableEdge<int>>>(graph);
-            Assert.IsTrue(EquateGraphs.Equate(graph, deserializedGraph));
+            EquateGraphs.Equate(graph, deserializedGraph).Should().BeTrue();
         }
 
         #endregion

@@ -54,7 +54,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IVertexColorizerAlgorithm<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(3));
+            Invoking(() => algorithm.GetVertexColor(3)).Should().Throw<VertexNotFoundException>();
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
             IVertexColorizerAlgorithm<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             Type expectedExceptionType = GetExpectedExceptionType();
-            Assert.Throws(expectedExceptionType, () => algorithm.GetVertexColor(2));
+            Invoking(() => algorithm.GetVertexColor(2)).Should().Throw<Exception>().Which.Should().BeAssignableTo(expectedExceptionType);
 
             #region Local function
 
@@ -107,7 +107,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IVertexColorizerAlgorithm<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.IsNotNull(algorithm.GetVertexColor(2));
+            algorithm.Invoking(a => a.GetVertexColor(2)).Should().NotThrow();
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace FastGraph.Tests.Algorithms.Contracts
 
             IVertexColorizerAlgorithm<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.IsNotNull(algorithm.GetVertexColor(3));
+            algorithm.Invoking(a => a.GetVertexColor(3)).Should().NotThrow();
         }
 
         [Pure]

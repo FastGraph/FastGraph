@@ -14,11 +14,9 @@ namespace FastGraph.Tests.Predicates
         [Test]
         public void Construction()
         {
-            Assert.DoesNotThrow(
-                // ReSharper disable once ObjectCreationAsStatement
-                () => new ReversedResidualEdgePredicate<int, Edge<int>>(
-                    new Dictionary<Edge<int>, double>(),
-                    new Dictionary<Edge<int>, Edge<int>>()));
+            Invoking((Func<ReversedResidualEdgePredicate<int, Edge<int>>>)(() => new ReversedResidualEdgePredicate<int, Edge<int>>(
+                new Dictionary<Edge<int>, double>(),
+                new Dictionary<Edge<int>, Edge<int>>()))).Should().NotThrow();
         }
 
         [Test]
@@ -27,9 +25,9 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(default, new Dictionary<Edge<int>, Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(new Dictionary<Edge<int>, double>(), default));
-            Assert.Throws<ArgumentNullException>(() => new ReversedResidualEdgePredicate<int, Edge<int>>(default, default));
+            Invoking(() => new ReversedResidualEdgePredicate<int, Edge<int>>(default, new Dictionary<Edge<int>, Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ReversedResidualEdgePredicate<int, Edge<int>>(new Dictionary<Edge<int>, double>(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new ReversedResidualEdgePredicate<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -55,10 +53,10 @@ namespace FastGraph.Tests.Predicates
             predicate.ResidualCapacities.Add(edge13, 0);
             predicate.ResidualCapacities.Add(edge31, 1);
 
-            Assert.IsTrue(predicate.Test(edge12));
-            Assert.IsFalse(predicate.Test(edge21));
-            Assert.IsTrue(predicate.Test(edge13));
-            Assert.IsFalse(predicate.Test(edge31));
+            predicate.Test(edge12).Should().BeTrue();
+            predicate.Test(edge21).Should().BeFalse();
+            predicate.Test(edge13).Should().BeTrue();
+            predicate.Test(edge31).Should().BeFalse();
         }
 
         [Test]
@@ -71,13 +69,13 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+            Invoking(() => predicate.Test(default)).Should().Throw<ArgumentNullException>();
 
             var edge12 = new Edge<int>(1, 2);
-            Assert.Throws<KeyNotFoundException>(() => predicate.Test(edge12));
+            Invoking(() => predicate.Test(edge12)).Should().Throw<KeyNotFoundException>();
 
             predicate.ReversedEdges.Add(edge12, new Edge<int>(2, 1));
-            Assert.Throws<KeyNotFoundException>(() => predicate.Test(edge12));
+            Invoking(() => predicate.Test(edge12)).Should().Throw<KeyNotFoundException>();
 #pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }

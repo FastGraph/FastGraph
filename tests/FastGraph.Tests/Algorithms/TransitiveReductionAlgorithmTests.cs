@@ -19,7 +19,7 @@ namespace FastGraph.Tests.Algorithms
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var algorithm = new TransitiveReductionAlgorithm<int, Edge<int>>(graph);
             AssertAlgorithmState(algorithm, graph);
-            Assert.IsNotNull(algorithm.TransitiveReduction);
+            algorithm.TransitiveReduction.Should().NotBeNull();
         }
 
         [Test]
@@ -28,8 +28,7 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new TransitiveReductionAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new TransitiveReductionAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -57,7 +56,7 @@ namespace FastGraph.Tests.Algorithms
             AssertHasEdges(
                 result,
                 new[] { edge12, edge13, edge24, edge34, edge45 });
-            Assert.AreEqual(5, result.EdgeCount);
+            result.EdgeCount.Should().Be(5);
 
             // Test 2
             var edge01 = new SEdge<int>(0, 1);

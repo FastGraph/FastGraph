@@ -67,8 +67,8 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.AreEqual(isDirected, g.IsDirected);
-                Assert.AreEqual(allowParallelEdges, g.AllowParallelEdges);
+                g.IsDirected.Should().Be(isDirected);
+                g.AllowParallelEdges.Should().Be(allowParallelEdges);
             }
 
             #endregion
@@ -80,7 +80,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new BidirectionalAdapterGraph<int, Edge<int>>(default));
+            Invoking(() => new BidirectionalAdapterGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 

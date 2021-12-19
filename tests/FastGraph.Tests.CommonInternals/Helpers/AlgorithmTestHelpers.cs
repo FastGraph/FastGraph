@@ -1,7 +1,7 @@
 #nullable enable
 
-using NUnit.Framework;
 using FastGraph.Algorithms;
+using FluentAssertions.Execution;
 
 namespace FastGraph.Tests.Algorithms
 {
@@ -12,17 +12,21 @@ namespace FastGraph.Tests.Algorithms
     {
         #region Test helpers
 
+        [CustomAssertion]
         public static void AssertAlgorithmState<TGraph>(
             AlgorithmBase<TGraph> algorithm,
             TGraph treatedGraph,
             ComputationState state = ComputationState.NotRunning)
             where TGraph : notnull
         {
-            Assert.IsNotNull(treatedGraph);
-            Assert.AreSame(treatedGraph, algorithm.VisitedGraph);
-            Assert.IsNotNull(algorithm.Services);
-            Assert.IsNotNull(algorithm.SyncRoot);
-            Assert.AreEqual(state, algorithm.State);
+            using (_ = new AssertionScope())
+            {
+                treatedGraph.Should().NotBeNull();
+                algorithm.VisitedGraph.Should().BeSameAs(treatedGraph);
+                algorithm.Services.Should().NotBeNull();
+                algorithm.SyncRoot.Should().NotBeNull();
+                algorithm.State.Should().Be(state);
+            }
         }
 
         #endregion

@@ -36,20 +36,18 @@ namespace FastGraph.Tests.Algorithms
             algorithm.Compute();
             trails = algorithm.Trails().ToArray();
             algorithm.RemoveTemporaryEdges();
-            Assert.IsNotNull(algorithm.Circuit);
+            algorithm.Circuit.Should().NotBeNull();
             circuit = algorithm.Circuit;
 
             // Lets make sure all the edges are in the trail
             var edges = new HashSet<TEdge>();
             foreach (TEdge edge in graph.Edges)
-                Assert.IsTrue(edges.Add(edge));
+                edges.Add(edge).Should().BeTrue();
 
             foreach (ICollection<TEdge> trail in trails)
             {
-                Assert.AreEqual(graph.EdgeCount, edges.Count);
-                FastGraphAssert.TrueForAll(
-                    trail,
-                    edge => edges.Contains(edge));
+                edges.Count.Should().Be(graph.EdgeCount);
+                trail.Should().OnlyContain(edge => edges.Contains(edge));
             }
         }
 
@@ -74,29 +72,27 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new EulerianTrailAlgorithm<TVertex, TEdge>(graph);
             algorithm.AddTemporaryEdges((s, t) => edgeFactory(s, t));
             TEdge[] augmentedGraphEdges = graph.Edges.ToArray();
-            Assert.GreaterOrEqual(augmentedGraphEdges.Length, graphEdges.Length);
+            augmentedGraphEdges.Length.Should().BeGreaterThanOrEqualTo(graphEdges.Length);
             TEdge[] temporaryEdges = augmentedGraphEdges.Except(graphEdges).ToArray();
-            Assert.AreEqual(augmentedGraphEdges.Length - graphEdges.Length, temporaryEdges.Length);
+            temporaryEdges.Length.Should().Be(augmentedGraphEdges.Length - graphEdges.Length);
 
             algorithm.Compute();
             trails = algorithm.Trails(root).ToArray();
             algorithm.RemoveTemporaryEdges();
-            Assert.IsNotNull(algorithm.Circuit);
+            algorithm.Circuit.Should().NotBeNull();
             circuit = algorithm.Circuit;
 
             // Lets make sure all the edges are in the trail
             var edges = new HashSet<TEdge>();
             foreach (TEdge edge in graph.Edges)
-                Assert.IsTrue(edges.Add(edge));
+                edges.Add(edge).Should().BeTrue();
 
             foreach (ICollection<TEdge> trail in trails)
             {
-                Assert.AreEqual(graph.EdgeCount, edges.Count);
-                FastGraphAssert.TrueForAll(
-                    trail,
-                    // Edge in graph or part of temporary ones but is a root
+                edges.Count.Should().Be(graph.EdgeCount);
+                trail.Should().OnlyContain( // Edge in graph or part of temporary ones but is a root
                     edge => edges.Contains(edge)
-                            || (temporaryEdges.Contains(edge) && Equals(edge.Source, root)));
+                            || temporaryEdges.Contains(edge) && Equals(edge.Source, root));
             }
         }
 
@@ -122,7 +118,7 @@ namespace FastGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                CollectionAssert.IsEmpty(algo.Circuit);
+                algo.Circuit.Should().BeEmpty();
             }
 
             #endregion
@@ -134,10 +130,8 @@ namespace FastGraph.Tests.Algorithms
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new EulerianTrailAlgorithm<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => new EulerianTrailAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new EulerianTrailAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new EulerianTrailAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -279,8 +273,7 @@ namespace FastGraph.Tests.Algorithms
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => EulerianTrailAlgorithm<int, Edge<int>>.ComputeEulerianPathCount(default));
+            Invoking(() => EulerianTrailAlgorithm<int, Edge<int>>.ComputeEulerianPathCount(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -371,13 +364,13 @@ namespace FastGraph.Tests.Algorithms
             int edgeCount = graph.EdgeCount;
             EquatableEdge<int>[] tmpEdges = algorithm.AddTemporaryEdges(
                 (source, target) => new EquatableEdge<int>(source, target));
-            CollectionAssert.AreEquivalent(expectedTemporaryEdges, tmpEdges);
+            tmpEdges.Should().BeEquivalentTo(expectedTemporaryEdges);
 
-            Assert.AreEqual(edgeCount + tmpEdges.Length, graph.EdgeCount);
+            graph.EdgeCount.Should().Be(edgeCount + tmpEdges.Length);
             EquatableEdge<int>[] graphEdges = graph.Edges.ToArray();
             foreach (EquatableEdge<int> edge in tmpEdges)
             {
-                Assert.Contains(edge, graphEdges);
+                graphEdges.Should().Contain(edge);
             }
         }
 
@@ -389,7 +382,7 @@ namespace FastGraph.Tests.Algorithms
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.AddTemporaryEdges(default));
+            Invoking(() => algorithm.AddTemporaryEdges(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -446,10 +439,10 @@ namespace FastGraph.Tests.Algorithms
             int edgeCount = graph.EdgeCount;
             EquatableEdge<int>[] tmpEdges = algorithm.AddTemporaryEdges(
                 (source, target) => new EquatableEdge<int>(source, target));
-            Assert.AreEqual(edgeCount + tmpEdges.Length, graph.EdgeCount);
+            graph.EdgeCount.Should().Be(edgeCount + tmpEdges.Length);
 
             algorithm.RemoveTemporaryEdges();
-            Assert.AreEqual(edgeCount, graph.EdgeCount);
+            graph.EdgeCount.Should().Be(edgeCount);
         }
 
         #region Trails
@@ -464,8 +457,8 @@ namespace FastGraph.Tests.Algorithms
                 (s, t) => new Edge<string>(s, t),
                 out ICollection<Edge<string>>[] trails,
                 out Edge<string>[] circuit);
-            CollectionAssert.IsEmpty(trails);
-            CollectionAssert.IsEmpty(circuit);
+            trails.Should().BeEmpty();
+            circuit.Should().BeEmpty();
         }
 
         [Test]
@@ -492,12 +485,12 @@ namespace FastGraph.Tests.Algorithms
                 out Edge<char>[] circuit);
 
             Edge<char>[] expectedTrail = { edge3, edge1, edge4, edge6, edge5, edge7, edge2 };
-            Assert.AreEqual(1, trails.Length);
-            Assert.IsTrue(trails[0].IsPath<char, Edge<char>>());
-            CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
+            trails.Length.Should().Be(1);
+            trails[0].IsPath<char, Edge<char>>().Should().BeTrue();
+            trails[0].Should().BeEquivalentTo(expectedTrail);
 
-            Assert.IsTrue(circuit.IsPath<char, Edge<char>>());
-            CollectionAssert.AreEquivalent(expectedTrail, circuit);
+            circuit.IsPath<char, Edge<char>>().Should().BeTrue();
+            circuit.Should().BeEquivalentTo(expectedTrail);
         }
 
         [Test]
@@ -525,12 +518,12 @@ namespace FastGraph.Tests.Algorithms
                 out Edge<char>[] circuit);
 
             Edge<char>[] expectedTrail = { edge3, edge1, edge4, edge6, edge5, edge7, edge2 };
-            Assert.AreEqual(1, trails.Length);
-            Assert.IsTrue(trails[0].IsPath<char, Edge<char>>());
-            CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
+            trails.Length.Should().Be(1);
+            trails[0].IsPath<char, Edge<char>>().Should().BeTrue();
+            trails[0].Should().BeEquivalentTo(expectedTrail);
 
-            Assert.IsTrue(circuit.IsPath<char, Edge<char>>());
-            CollectionAssert.AreEquivalent(expectedTrail, circuit);
+            circuit.IsPath<char, Edge<char>>().Should().BeTrue();
+            circuit.Should().BeEquivalentTo(expectedTrail);
         }
 
         [Test]
@@ -559,12 +552,12 @@ namespace FastGraph.Tests.Algorithms
                 out Edge<int>[] circuit);
 
             Edge<int>[] expectedTrail = { edge3, edge7, edge9, edge6, edge5, edge8, edge4, edge1, edge2 };
-            Assert.AreEqual(1, trails.Length);
-            Assert.IsTrue(trails[0].IsPath<int, Edge<int>>());
-            CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
+            trails.Length.Should().Be(1);
+            trails[0].IsPath<int, Edge<int>>().Should().BeTrue();
+            trails[0].Should().BeEquivalentTo(expectedTrail);
 
-            Assert.IsTrue(circuit.IsPath<int, Edge<int>>());
-            CollectionAssert.AreEquivalent(expectedTrail, circuit);
+            circuit.IsPath<int, Edge<int>>().Should().BeTrue();
+            circuit.Should().BeEquivalentTo(expectedTrail);
         }
 
         [Test]
@@ -593,22 +586,20 @@ namespace FastGraph.Tests.Algorithms
 
             Edge<int>[] expectedTrail1 = { edge3, edge6, edge8, edge5 };
             Edge<int>[] expectedTrail2 = { edge7, edge4, edge1, edge2 };
-            Assert.AreEqual(2, trails.Length);
-            Assert.IsTrue(trails[0].IsPath<int, Edge<int>>());
-            Assert.IsTrue(trails[1].IsPath<int, Edge<int>>());
-            CollectionAssert.AreEquivalent(expectedTrail1, trails[0]);
-            CollectionAssert.AreEquivalent(expectedTrail2, trails[1]);
+            trails.Length.Should().Be(2);
+            trails[0].IsPath<int, Edge<int>>().Should().BeTrue();
+            trails[1].IsPath<int, Edge<int>>().Should().BeTrue();
+            trails[0].Should().BeEquivalentTo(expectedTrail1);
+            trails[1].Should().BeEquivalentTo(expectedTrail2);
 
-            Assert.IsTrue(circuit.IsPath<int, Edge<int>>());
-            Assert.AreEqual(
-                expectedTrail1.Length + expectedTrail2.Length + 1 /* Temporary edge */,
-                circuit.Length);
+            circuit.IsPath<int, Edge<int>>().Should().BeTrue();
+            circuit.Length.Should().Be(expectedTrail1.Length + expectedTrail2.Length + 1);
             foreach (Edge<int> edge in expectedTrail1.Concat(expectedTrail2))
             {
-                Assert.Contains(edge, circuit);
+                circuit.Should().Contain(edge);
             }
             // + Temporary edge
-            Assert.IsNotNull(circuit.FirstOrDefault(e => e.Source == 2 && e.Target == 4));
+            circuit.FirstOrDefault(e => e.Source == 2 && e.Target == 4).Should().NotBeNull();
         }
 
         #endregion
@@ -619,7 +610,7 @@ namespace FastGraph.Tests.Algorithms
         public void RootedNotEulerianTrailGraph_Throws()
         {
             AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("g.10.0.graphml"));
-            Assert.Throws<InvalidOperationException>(() =>
+            Invoking(() =>
             {
                 ComputeTrails(
                     graph,
@@ -627,7 +618,7 @@ namespace FastGraph.Tests.Algorithms
                     (s, t) => new Edge<string>(s, t),
                     out _,
                     out _);
-            });
+            }).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -656,13 +647,13 @@ namespace FastGraph.Tests.Algorithms
                 out Edge<char>[] circuit);
 
             Edge<char>[] expectedTrail = { edge4, edge6, edge5, edge7, edge2, edge3, edge1 };
-            Assert.AreEqual(1, trails.Length);
-            Assert.IsTrue(trails[0].IsPath<char, Edge<char>>());
-            CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
-            Assert.AreEqual('c', trails[0].ElementAt(0).Source);
+            trails.Length.Should().Be(1);
+            trails[0].IsPath<char, Edge<char>>().Should().BeTrue();
+            trails[0].Should().BeEquivalentTo(expectedTrail);
+            trails[0].ElementAt(0).Source.Should().Be('c');
 
-            Assert.IsTrue(circuit.IsPath<char, Edge<char>>());
-            CollectionAssert.AreEquivalent(expectedTrail, circuit);
+            circuit.IsPath<char, Edge<char>>().Should().BeTrue();
+            circuit.Should().BeEquivalentTo(expectedTrail);
         }
 
         [Test]
@@ -692,13 +683,13 @@ namespace FastGraph.Tests.Algorithms
                 out Edge<int>[] circuit);
 
             Edge<int>[] expectedTrail = { edge9, edge6, edge5, edge8, edge4, edge1, edge2, edge3, edge7 };
-            Assert.AreEqual(1, trails.Length);
-            Assert.IsTrue(trails[0].IsPath<int, Edge<int>>());
-            CollectionAssert.AreEquivalent(expectedTrail, trails[0]);
-            Assert.AreEqual(4, trails[0].ElementAt(0).Source);
+            trails.Length.Should().Be(1);
+            trails[0].IsPath<int, Edge<int>>().Should().BeTrue();
+            trails[0].Should().BeEquivalentTo(expectedTrail);
+            trails[0].ElementAt(0).Source.Should().Be(4);
 
-            Assert.IsTrue(circuit.IsPath<int, Edge<int>>());
-            CollectionAssert.AreEquivalent(expectedTrail, circuit);
+            circuit.IsPath<int, Edge<int>>().Should().BeTrue();
+            circuit.Should().BeEquivalentTo(expectedTrail);
         }
 
         [Test]
@@ -730,13 +721,11 @@ namespace FastGraph.Tests.Algorithms
             EquatableEdge<int>[] trail2 = { new EquatableEdge<int>(2, 4), edge7, edge4, edge1 };
             CheckTrails(trails, trail1, trail2);
 
-            Assert.IsTrue(circuit.IsPath<int, EquatableEdge<int>>());
-            Assert.AreEqual(
-                trail1.Length + trail2.Length /* Include temporary edge */,
-                circuit.Length);
+            circuit.IsPath<int, EquatableEdge<int>>().Should().BeTrue();
+            circuit.Length.Should().Be(trail1.Length + trail2.Length);
             foreach (EquatableEdge<int> edge in trail1.Concat(trail2))
             {
-                Assert.Contains(edge, circuit);
+                circuit.Should().Contain(edge);
             }
 
             // Root 3
@@ -750,16 +739,14 @@ namespace FastGraph.Tests.Algorithms
             trail2 = new[] { edge6, edge7, edge4, edge1, edge2, edge3 };
             CheckTrails(trails, trail1, trail2);
 
-            Assert.IsTrue(circuit.IsPath<int, EquatableEdge<int>>());
-            Assert.AreEqual(
-                trail1.Concat(trail2).Distinct().Count() /* Edge present in both paths */ + 1 /* One temporary edge */,
-                circuit.Length);
+            circuit.IsPath<int, EquatableEdge<int>>().Should().BeTrue();
+            circuit.Length.Should().Be(trail1.Concat(trail2).Distinct().Count() /* Edge present in both paths */ + 1);
             foreach (EquatableEdge<int> edge in trail1.Concat(trail2))
             {
-                Assert.Contains(edge, circuit);
+                circuit.Should().Contain(edge);
             }
             // + Temporary edge
-            Assert.IsNotNull(circuit.FirstOrDefault(e => e.Source == 2 && e.Target == 4));
+            circuit.FirstOrDefault(e => e.Source == 2 && e.Target == 4).Should().NotBeNull();
 
             #region Local function
 
@@ -768,11 +755,11 @@ namespace FastGraph.Tests.Algorithms
                 IEnumerable<EquatableEdge<int>> expectedTrail1,
                 IEnumerable<EquatableEdge<int>> expectedTrail2)
             {
-                Assert.AreEqual(2, computedTrails.Count);
-                Assert.IsTrue(computedTrails[0].IsPath<int, EquatableEdge<int>>());
-                Assert.IsTrue(computedTrails[1].IsPath<int, EquatableEdge<int>>());
-                CollectionAssert.AreEquivalent(expectedTrail1, computedTrails[0]);
-                CollectionAssert.AreEquivalent(expectedTrail2, computedTrails[1]);
+                computedTrails.Count.Should().Be(2);
+                computedTrails[0].IsPath<int, EquatableEdge<int>>().Should().BeTrue();
+                computedTrails[1].IsPath<int, EquatableEdge<int>>().Should().BeTrue();
+                computedTrails[0].Should().BeEquivalentTo(expectedTrail1);
+                computedTrails[1].Should().BeEquivalentTo(expectedTrail2);
             }
 
             #endregion
@@ -785,7 +772,7 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new EulerianTrailAlgorithm<TestVertex, Edge<TestVertex>>(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.Trails(default));
+            Invoking(() => algorithm.Trails(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 

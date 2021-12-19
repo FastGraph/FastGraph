@@ -46,20 +46,20 @@ namespace FastGraph.Petri.Tests
             var transition = new TestTransition();
 
             var arc = new Arc<int>(place, transition);
-            Assert.IsTrue(arc.IsInputArc);
-            Assert.AreSame(place, arc.Source);
-            Assert.AreSame(place, arc.Place);
-            Assert.AreSame(transition, arc.Target);
-            Assert.AreSame(transition, arc.Transition);
-            Assert.IsNotNull(arc.Annotation);
+            arc.IsInputArc.Should().BeTrue();
+            arc.Source.Should().BeSameAs(place);
+            arc.Place.Should().BeSameAs(place);
+            arc.Target.Should().BeSameAs(transition);
+            arc.Transition.Should().BeSameAs(transition);
+            arc.Annotation.Should().NotBeNull();
 
             arc = new Arc<int>(transition, place);
-            Assert.IsFalse(arc.IsInputArc);
-            Assert.AreSame(place, arc.Source);
-            Assert.AreSame(place, arc.Place);
-            Assert.AreSame(transition, arc.Target);
-            Assert.AreSame(transition, arc.Transition);
-            Assert.IsNotNull(arc.Annotation);
+            arc.IsInputArc.Should().BeFalse();
+            arc.Source.Should().BeSameAs(place);
+            arc.Place.Should().BeSameAs(place);
+            arc.Target.Should().BeSameAs(transition);
+            arc.Transition.Should().BeSameAs(transition);
+            arc.Annotation.Should().NotBeNull();
         }
 
         [Test]
@@ -71,13 +71,13 @@ namespace FastGraph.Petri.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(default, transition));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(place, default));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>((IPlace<int>?)default, default));
+            Invoking(() => new Arc<int>(default, transition)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new Arc<int>(place, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new Arc<int>((IPlace<int>?)default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(default, place));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>(transition, default));
-            Assert.Throws<ArgumentNullException>(() => new Arc<int>((ITransition<int>?)default, default));
+            Invoking(() => new Arc<int>(default, place)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new Arc<int>(transition, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new Arc<int>((ITransition<int>?)default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -90,10 +90,10 @@ namespace FastGraph.Petri.Tests
             var transition = new TestTransition();
 
             var arc = new Arc<int>(place, transition);
-            Assert.AreEqual("PlaceName -> TransitionName", arc.ToString());
+            arc.ToString().Should().Be("PlaceName -> TransitionName");
 
             arc = new Arc<int>(transition, place);
-            Assert.AreEqual("TransitionName -> PlaceName", arc.ToString());
+            arc.ToString().Should().Be("TransitionName -> PlaceName");
         }
     }
 }

@@ -41,12 +41,12 @@ namespace FastGraph.Tests.Predicates
                 where TEdge : IEdge<TVertex>
                 where TGraph : IUndirectedGraph<TVertex, TEdge>
             {
-                Assert.AreSame(graph, g.BaseGraph);
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.AreSame(vertexPredicate, g.VertexPredicate);
-                Assert.AreSame(edgePredicate, g.EdgePredicate);
-                Assert.IsNotNull(g.EdgeEqualityComparer);
+                g.BaseGraph.Should().BeSameAs(graph);
+                g.IsDirected.Should().BeFalse();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
+                g.VertexPredicate.Should().BeSameAs(vertexPredicate);
+                g.EdgePredicate.Should().BeSameAs(edgePredicate);
+                g.EdgeEqualityComparer.Should().NotBeNull();
                 AssertEmptyGraph(g);
             }
 
@@ -59,47 +59,40 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    new UndirectedGraph<int, Edge<int>>(),
-                    _ => true,
-                    default));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                new UndirectedGraph<int, Edge<int>>(),
+                _ => true,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    new UndirectedGraph<int, Edge<int>>(),
-                    default,
-                    _ => true));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                new UndirectedGraph<int, Edge<int>>(),
+                default,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    default,
-                    _ => true,
-                    _ => true));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                default,
+                _ => true,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    new UndirectedGraph<int, Edge<int>>(),
-                    default,
-                    default));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                new UndirectedGraph<int, Edge<int>>(),
+                default,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    default,
-                    _ => true,
-                    default));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                default,
+                _ => true,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    default,
-                    default,
-                    _ => true));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                default,
+                default,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
-                    default,
-                    default,
-                    default));
+            Invoking(() => new FilteredUndirectedGraph<int, Edge<int>, UndirectedGraph<int, Edge<int>>>(
+                default,
+                default,
+                default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -288,8 +281,8 @@ namespace FastGraph.Tests.Predicates
 
             graph2.AddVertexRange(new[] { 1, 2, 3, 4, 5 });
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph2.AdjacentEdges(4));
-            Assert.Throws<VertexNotFoundException>(() => filteredGraph2.AdjacentEdges(5));
+            Invoking(() => filteredGraph2.AdjacentEdges(4)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => filteredGraph2.AdjacentEdges(5)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 

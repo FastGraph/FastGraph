@@ -35,7 +35,7 @@ namespace FastGraph.Graphviz.Tests
                  + "2 -> 0;" + Environment.NewLine
                  + "}";
             string dotGraph = graph.ToGraphviz();
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace FastGraph.Graphviz.Tests
                 + @"1 -> 3;" + Environment.NewLine
                 + @"}";
             string dotGraph = graph.ToGraphviz();
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace FastGraph.Graphviz.Tests
                 + @"1 -> 3;" + Environment.NewLine
                 + @"}";
             string dotGraph = graph.ToGraphviz();
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace FastGraph.Graphviz.Tests
                 {
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace FastGraph.Graphviz.Tests
                     args.VertexFormat.Label = $"Test Vertex {args.Vertex}";
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -264,7 +264,7 @@ namespace FastGraph.Graphviz.Tests
                     args.EdgeFormat.ToolTip = $"Tooltip for Test Edge {args.Edge.Source} -> {args.Edge.Target}";
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -323,7 +323,7 @@ namespace FastGraph.Graphviz.Tests
                     }
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -380,7 +380,7 @@ namespace FastGraph.Graphviz.Tests
                     }
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            dotGraph.Should().Be(expectedDot);
         }
 
         [Test]
@@ -391,7 +391,7 @@ namespace FastGraph.Graphviz.Tests
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.ToGraphviz(default));
+            Invoking(() => graph.ToGraphviz(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

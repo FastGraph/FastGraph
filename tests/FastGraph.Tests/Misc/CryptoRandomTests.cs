@@ -16,8 +16,8 @@ namespace FastGraph.Tests.Utils
         public void Constructor()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.DoesNotThrow(() => new CryptoRandom());
-            Assert.DoesNotThrow(() => new CryptoRandom(123456));
+            Invoking((Func<CryptoRandom>)(() => new CryptoRandom())).Should().NotThrow();
+            Invoking((Func<CryptoRandom>)(() => new CryptoRandom(123456))).Should().NotThrow();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -26,8 +26,8 @@ namespace FastGraph.Tests.Utils
         {
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.DoesNotThrow(() => rng.Next());
-            Assert.DoesNotThrow(() => rng.Next());
+            Invoking((Func<int>)(() => rng.Next())).Should().NotThrow();
+            Invoking((Func<int>)(() => rng.Next())).Should().NotThrow();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -35,9 +35,9 @@ namespace FastGraph.Tests.Utils
         public void NextWithMax()
         {
             var rng = new CryptoRandom();
-            Assert.LessOrEqual(rng.Next(int.MaxValue), int.MaxValue);
-            Assert.LessOrEqual(rng.Next(10), 10);
-            Assert.AreEqual(0, rng.Next(0));
+            rng.Next(int.MaxValue).Should().BeLessThanOrEqualTo(int.MaxValue);
+            rng.Next(10).Should().BeLessThanOrEqualTo(10);
+            rng.Next(0).Should().Be(0);
         }
 
         [Test]
@@ -45,8 +45,8 @@ namespace FastGraph.Tests.Utils
         {
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentOutOfRangeException>(() => rng.Next(-1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => rng.Next(-12));
+            Invoking(() => rng.Next(-1)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => rng.Next(-12)).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -60,14 +60,14 @@ namespace FastGraph.Tests.Utils
             AssertBetween(rng.Next(-10, 10), -10, 10);
             AssertBetween(rng.Next(-10, 0), -10, 0);
             AssertBetween(rng.Next(-10, -1), -10, -1);
-            Assert.AreEqual(10, rng.Next(10, 10));
+            rng.Next(10, 10).Should().Be(10);
 
             #region Local function
 
             void AssertBetween(int value, int min, int max)
             {
-                Assert.LessOrEqual(value, max);
-                Assert.GreaterOrEqual(value, min);
+                value.Should().BeLessThanOrEqualTo(max);
+                value.Should().BeGreaterThanOrEqualTo(min);
             }
 
             #endregion
@@ -78,9 +78,9 @@ namespace FastGraph.Tests.Utils
         {
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentOutOfRangeException>(() => rng.Next(10, 9));
-            Assert.Throws<ArgumentOutOfRangeException>(() => rng.Next(10, -9));
-            Assert.Throws<ArgumentOutOfRangeException>(() => rng.Next(-10, -11));
+            Invoking(() => rng.Next(10, 9)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => rng.Next(10, -9)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => rng.Next(-10, -11)).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -89,8 +89,8 @@ namespace FastGraph.Tests.Utils
         {
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.DoesNotThrow(() => rng.NextDouble());
-            Assert.DoesNotThrow(() => rng.NextDouble());
+            Invoking((Func<double>)(() => rng.NextDouble())).Should().NotThrow();
+            Invoking((Func<double>)(() => rng.NextDouble())).Should().NotThrow();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -100,8 +100,8 @@ namespace FastGraph.Tests.Utils
             byte[] data = new byte[5];
             var rng = new CryptoRandom();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.DoesNotThrow(() => rng.NextBytes(data));
-            Assert.DoesNotThrow(() => rng.NextBytes(data));
+            Invoking(() => rng.NextBytes(data)).Should().NotThrow();
+            Invoking(() => rng.NextBytes(data)).Should().NotThrow();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -112,7 +112,7 @@ namespace FastGraph.Tests.Utils
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => rng.NextBytes(default));
+            Invoking(() => rng.NextBytes(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
     }

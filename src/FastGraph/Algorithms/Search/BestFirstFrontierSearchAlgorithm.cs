@@ -84,7 +84,7 @@ namespace FastGraph.Algorithms.Search
 
             // (1) Place the initial node in Open, with all its operators marked unused
             open.Add(0, root);
-            Dictionary<TEdge, GraphColor> operators = VisitedGraph.OutEdges(root).ToDictionary(edge => edge, _ => GraphColor.White);
+            var operators = VisitedGraph.OutEdges(root).ToDictionary(edge => edge, _ => GraphColor.White);
 
             while (open.Count > 0)
             {

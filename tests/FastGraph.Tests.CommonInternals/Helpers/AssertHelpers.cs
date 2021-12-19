@@ -15,8 +15,10 @@ namespace FastGraph.Tests
         /// <see cref="ArgumentOutOfRangeException"/> or <see cref="IndexOutOfRangeException"/>.
         /// </summary>
         /// <param name="action">Test delegate.</param>
+        [CustomAssertion]
         public static void AssertIndexOutOfRange([InstantHandle] TestDelegate action)
         {
+
             Assert.That(
                 action,
                 Throws.Exception
@@ -31,12 +33,13 @@ namespace FastGraph.Tests
         /// <typeparam name="T">Object type.</typeparam>
         /// <param name="arg1">First object.</param>
         /// <param name="arg2">Second object.</param>
+        [CustomAssertion]
         public static void AssertEqual<T>(T? arg1, T? arg2)
         {
             if (typeof(T).IsValueType)
-                Assert.AreEqual(arg1, arg2);
+                arg2.Should().Be(arg1);
             else
-                Assert.AreSame(arg1, arg2);
+                arg2.Should().BeSameAs(arg1);
         }
     }
 }

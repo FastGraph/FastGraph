@@ -15,10 +15,10 @@ namespace FastGraph.Petri.Tests
             var expression = new IdentityExpression<int>();
 
             var emptyMarkings = new List<int>();
-            Assert.AreSame(emptyMarkings, expression.Evaluate(emptyMarkings));
+            expression.Evaluate(emptyMarkings).Should().BeSameAs(emptyMarkings);
 
             var markings = new List<int> { 1, 5, 16 };
-            Assert.AreSame(markings, expression.Evaluate(markings));
+            expression.Evaluate(markings).Should().BeSameAs(markings);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace FastGraph.Petri.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => expression.Evaluate(default));
+            Invoking(() => expression.Evaluate(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

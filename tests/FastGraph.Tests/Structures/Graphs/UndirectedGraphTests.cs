@@ -28,7 +28,7 @@ namespace FastGraph.Tests.Structures
                 edge.Source.Equals(source) && edge.Target.Equals(target);
             graph = new UndirectedGraph<int, Edge<int>>(true, comparer);
             AssertGraphProperties(graph);
-            Assert.AreSame(comparer, graph.EdgeEqualityComparer);
+            graph.EdgeEqualityComparer.Should().BeSameAs(comparer);
 
             #region Local function
 
@@ -38,10 +38,10 @@ namespace FastGraph.Tests.Structures
                 where TVertex : notnull
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
+                g.IsDirected.Should().BeFalse();
+                g.AllowParallelEdges.Should().Be(parallelEdges);
                 AssertEmptyGraph(g);
-                Assert.AreEqual(-1, g.EdgeCapacity);
+                g.EdgeCapacity.Should().Be(-1);
             }
 
             #endregion
@@ -53,7 +53,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new UndirectedGraph<int, Edge<int>>(true, default));
+            Invoking(() => new UndirectedGraph<int, Edge<int>>(true, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -308,38 +308,26 @@ namespace FastGraph.Tests.Structures
                 edge51, edge65, edge66
             });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 2, 3, 4, 5 },
-                graph.AdjacentVertices(1));
+            graph.AdjacentVertices(1).Should().BeEquivalentTo(new[] { 2, 3, 4, 5 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 4 },
-                graph.AdjacentVertices(2));
+            graph.AdjacentVertices(2).Should().BeEquivalentTo(new[] { 1, 4 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 1 },
-                graph.AdjacentVertices(3));
+            graph.AdjacentVertices(3).Should().BeEquivalentTo(new[] { 1 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 2 },
-                graph.AdjacentVertices(4));
+            graph.AdjacentVertices(4).Should().BeEquivalentTo(new[] { 1, 2 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 1, 6 },
-                graph.AdjacentVertices(5));
+            graph.AdjacentVertices(5).Should().BeEquivalentTo(new[] { 1, 6 });
 
-            CollectionAssert.AreEquivalent(
-                new[] { 5 },
-                graph.AdjacentVertices(6));
+            graph.AdjacentVertices(6).Should().BeEquivalentTo(new[] { 5 });
 
-            CollectionAssert.IsEmpty(graph.AdjacentVertices(7));
+            graph.AdjacentVertices(7).Should().BeEmpty();
         }
 
         [Test]
         public void AdjacentVertices_Throws()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            Assert.Throws<VertexNotFoundException>(() => { IEnumerable<int> _ = graph.AdjacentVertices(10); });
+            Invoking(() => { IEnumerable<int> _ = graph.AdjacentVertices(10); }).Should().Throw<VertexNotFoundException>();
         }
 
         #region Try Get Edges
@@ -443,14 +431,13 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -466,22 +453,22 @@ namespace FastGraph.Tests.Structures
             graph.AddVertexRange(new[] { 1, 2, 3, 4 });
             graph.AddEdgeRange(new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(0, graph.RemoveEdges(Enumerable.Empty<Edge<int>>()));
+            graph.RemoveEdges(Enumerable.Empty<Edge<int>>()).Should().Be(0);
             CheckCounters(0);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge12, edge13, edge13Bis, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveEdges(new[] { edge12, edge13Bis }));
+            graph.RemoveEdges(new[] { edge12, edge13Bis }).Should().Be(2);
             CheckCounters(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge13, edge14, edge24, edge31, edge33 });
 
-            Assert.AreEqual(2, graph.RemoveEdges(new[] { edge13, edge14, edgeNotInGraph }));
+            graph.RemoveEdges(new[] { edge13, edge14, edgeNotInGraph }).Should().Be(2);
             CheckCounters(2);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(graph, new[] { edge24, edge31, edge33 });
 
-            Assert.AreEqual(3, graph.RemoveEdges(new[] { edge24, edge31, edge33 }));
+            graph.RemoveEdges(new[] { edge24, edge31, edge33 }).Should().Be(3);
             CheckCounters(3);
             AssertHasVertices(graph, new[] { 1, 2, 3, 4 });
             AssertNoEdge(graph);
@@ -490,8 +477,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedRemovedEdges)
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -508,14 +495,13 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 ++verticesRemoved;
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 ++edgesRemoved;
             };
 
@@ -524,15 +510,15 @@ namespace FastGraph.Tests.Structures
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdges(default));
+            Invoking(() => graph.RemoveEdges(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             AssertHasEdges(graph, new[] { edge });
             CheckCounters();
 
 #pragma warning disable CS8620
-            Assert.Throws<ArgumentNullException>(() => graph.RemoveEdges(new[] { edge, default }));
+            Invoking(() => graph.RemoveEdges(new[] { edge, default })).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8620
-            Assert.AreEqual(0, edgesRemoved);
+            edgesRemoved.Should().Be(0);
             AssertHasEdges(graph, new[] { edge });
             CheckCounters();
 
@@ -540,8 +526,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters()
             {
-                Assert.AreEqual(0, verticesRemoved);
-                Assert.AreEqual(0, edgesRemoved);
+                verticesRemoved.Should().Be(0);
+                edgesRemoved.Should().Be(0);
             }
 
             #endregion
@@ -575,14 +561,13 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.VertexRemoved += v =>
             {
-                Assert.IsNotNull(v);
                 // ReSharper disable once AccessToModifiedClosure
                 ++verticesRemoved;
             };
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -605,8 +590,8 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounters(int expectedVerticesRemoved, int expectedEdgesRemoved)
             {
-                Assert.AreEqual(expectedVerticesRemoved, verticesRemoved);
-                Assert.AreEqual(expectedEdgesRemoved, edgesRemoved);
+                verticesRemoved.Should().Be(expectedVerticesRemoved);
+                edgesRemoved.Should().Be(expectedEdgesRemoved);
                 verticesRemoved = 0;
                 edgesRemoved = 0;
             }
@@ -622,7 +607,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             graph.EdgeRemoved += e =>
             {
-                Assert.IsNotNull(e);
+                e.Should().NotBeNull();
                 // ReSharper disable once AccessToModifiedClosure
                 ++edgesRemoved;
             };
@@ -681,7 +666,7 @@ namespace FastGraph.Tests.Structures
 
             void CheckCounter(int expectedRemovedEdges)
             {
-                Assert.AreEqual(expectedRemovedEdges, edgesRemoved);
+                edgesRemoved.Should().Be(expectedRemovedEdges);
                 edgesRemoved = 0;
             }
 
@@ -709,11 +694,11 @@ namespace FastGraph.Tests.Structures
             AssertEmptyGraph(graph);
 
             var clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertEmptyGraph(clonedGraph);
 
             clonedGraph = (UndirectedGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertEmptyGraph(clonedGraph);
 
             graph.AddVertexRange(new[] { 1, 2, 3 });
@@ -721,12 +706,12 @@ namespace FastGraph.Tests.Structures
             AssertNoEdge(graph);
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertNoEdge(clonedGraph);
 
             clonedGraph = (UndirectedGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertNoEdge(clonedGraph);
 
@@ -738,12 +723,12 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = (UndirectedGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
@@ -752,12 +737,12 @@ namespace FastGraph.Tests.Structures
             AssertHasEdges(graph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = graph.Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
 
             clonedGraph = (UndirectedGraph<int, Edge<int>>)((ICloneable)graph).Clone();
-            Assert.IsNotNull(clonedGraph);
+            clonedGraph.Should().NotBeNull();
             AssertHasVertices(clonedGraph, new[] { 1, 2, 3, 4 });
             AssertHasEdges(clonedGraph, new[] { edge1, edge2, edge3 });
         }
@@ -773,7 +758,7 @@ namespace FastGraph.Tests.Structures
                 new Edge<int>(1, 4)
             });
 
-            Assert.DoesNotThrow(() => graph.TrimEdgeExcess());
+            Invoking(() => graph.TrimEdgeExcess()).Should().NotThrow();
         }
     }
 }

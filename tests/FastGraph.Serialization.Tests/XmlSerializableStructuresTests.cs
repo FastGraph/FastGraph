@@ -60,7 +60,7 @@ namespace FastGraph.Serialization.Tests
                 content =>
                 {
                     var regex = new Regex($@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*<vertices\s*\/>\s*<edges\s*\/>\s*<\/graph>");
-                    Assert.IsTrue(regex.Match(content).Success);
+                    regex.Match(content).Success.Should().BeTrue();
                 });
         }
 
@@ -101,7 +101,7 @@ namespace FastGraph.Serialization.Tests
 
                     var regex = new Regex(
                         $@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*{graphContent}\s*<\/graph>");
-                    Assert.IsTrue(regex.Match(content).Success);
+                    regex.Match(content).Success.Should().BeTrue();
                 });
         }
 
@@ -111,8 +111,8 @@ namespace FastGraph.Serialization.Tests
             var wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
             var graph = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(wrappedGraph);
 
-            CollectionAssert.IsEmpty(graph.Vertices);
-            CollectionAssert.IsEmpty(graph.Edges);
+            graph.Vertices.Should().BeEmpty();
+            graph.Edges.Should().BeEmpty();
 
             var vertices = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(wrappedGraph)
             {
@@ -120,10 +120,8 @@ namespace FastGraph.Serialization.Tests
             };
             graph.Vertices = vertices;
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 2 },
-                graph.Vertices);
-            CollectionAssert.IsEmpty(graph.Edges);
+            graph.Vertices.Should().BeEquivalentTo(new[] { 1, 2 });
+            graph.Edges.Should().BeEmpty();
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
@@ -133,12 +131,8 @@ namespace FastGraph.Serialization.Tests
             };
             graph.Edges = edges;
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 2 },
-                graph.Vertices);
-            CollectionAssert.AreEqual(
-                new[] { edge12, edge22 },
-                graph.Edges);
+            graph.Vertices.Should().BeEquivalentTo(new[] { 1, 2 });
+            graph.Edges.Should().BeEquivalentTo(new[] { edge12, edge22 });
         }
 
         [Test]
@@ -147,8 +141,7 @@ namespace FastGraph.Serialization.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default));
+            Invoking(() => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -158,23 +151,19 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var vertexList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
 
-            CollectionAssert.IsEmpty(vertexList);
+            vertexList.Should().BeEmpty();
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 2 },
-                vertexList);
+            vertexList.Should().BeEquivalentTo(new[] { 1, 2 });
 
             graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
             vertexList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 2 },
-                vertexList);
+            vertexList.Should().BeEquivalentTo(new[] { 1, 2 });
         }
 
         [Test]
@@ -183,8 +172,7 @@ namespace FastGraph.Serialization.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(default));
+            Invoking(() => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -194,19 +182,15 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var vertexList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
 
-            CollectionAssert.IsEmpty(vertexList);
+            vertexList.Should().BeEmpty();
 
             vertexList.Add(1);
 
-            CollectionAssert.AreEqual(
-                new[] { 1 },
-                vertexList);
+            vertexList.Should().BeEquivalentTo(new[] { 1 });
 
             vertexList.Add(2);
 
-            CollectionAssert.AreEqual(
-                new[] { 1, 2 },
-                vertexList);
+            vertexList.Should().BeEquivalentTo(new[] { 1, 2 });
         }
 
         [Test]
@@ -216,7 +200,7 @@ namespace FastGraph.Serialization.Tests
             var vertexList = new XmlSerializableGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>.XmlVertexList(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => vertexList.Add(default));
+            Invoking(() => vertexList.Add(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -226,23 +210,19 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
 
-            CollectionAssert.IsEmpty(edgeList);
+            edgeList.Should().BeEmpty();
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
 
-            CollectionAssert.AreEqual(
-                new[] { edge12, edge22 },
-                edgeList);
+            edgeList.Should().BeEquivalentTo(new[] { edge12, edge22 });
 
             graph = new AdjacencyGraph<int, Edge<int>>();
             graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
             edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
 
-            CollectionAssert.AreEqual(
-                new[] { edge12, edge22 },
-                edgeList);
+            edgeList.Should().BeEquivalentTo(new[] { edge12, edge22 });
         }
 
         [Test]
@@ -251,8 +231,7 @@ namespace FastGraph.Serialization.Tests
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(default));
+            Invoking(() => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -262,21 +241,17 @@ namespace FastGraph.Serialization.Tests
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
 
-            CollectionAssert.IsEmpty(edgeList);
+            edgeList.Should().BeEmpty();
 
             var edge12 = new Edge<int>(1, 2);
             edgeList.Add(edge12);
 
-            CollectionAssert.AreEqual(
-                new[] { edge12 },
-                edgeList);
+            edgeList.Should().BeEquivalentTo(new[] { edge12 });
 
             var edge22 = new Edge<int>(2, 2);
             edgeList.Add(edge22);
 
-            CollectionAssert.AreEqual(
-                new[] { edge12, edge22 },
-                edgeList);
+            edgeList.Should().BeEquivalentTo(new[] { edge12, edge22 });
         }
 
         [Test]
@@ -286,7 +261,7 @@ namespace FastGraph.Serialization.Tests
             var edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => edgeList.Add(default));
+            Invoking(() => edgeList.Add(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

@@ -47,7 +47,7 @@ namespace FastGraph.Algorithms
         [Pure]
         public List<List<TVertex>> GetPermutations()
         {
-            List<TVertex> vertices = _graph.Vertices.ToList();
+            var vertices = _graph.Vertices.ToList();
 
             var permutations = new List<List<TVertex>>();
             GetPermutations(vertices, 0, vertices.Count - 1, permutations);

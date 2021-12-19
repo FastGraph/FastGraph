@@ -14,10 +14,8 @@ namespace FastGraph.Tests.Predicates
         [Test]
         public void Construction()
         {
-            Assert.DoesNotThrow(
-                // ReSharper disable once ObjectCreationAsStatement
-                () => new ResidualEdgePredicate<int, Edge<int>>(
-                    new Dictionary<Edge<int>, double>()));
+            Invoking((Func<ResidualEdgePredicate<int, Edge<int>>>)(() => new ResidualEdgePredicate<int, Edge<int>>(
+                new Dictionary<Edge<int>, double>()))).Should().NotThrow();
         }
 
         [Test]
@@ -26,7 +24,7 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new ResidualEdgePredicate<int, Edge<int>>(default));
+            Invoking(() => new ResidualEdgePredicate<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -43,9 +41,9 @@ namespace FastGraph.Tests.Predicates
             predicate.ResidualCapacities.Add(edge13, 0);
             predicate.ResidualCapacities.Add(edge31, 1);
 
-            Assert.IsFalse(predicate.Test(edge12));
-            Assert.IsFalse(predicate.Test(edge13));
-            Assert.IsTrue(predicate.Test(edge31));
+            predicate.Test(edge12).Should().BeFalse();
+            predicate.Test(edge13).Should().BeFalse();
+            predicate.Test(edge31).Should().BeTrue();
         }
 
         [Test]
@@ -57,11 +55,11 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => predicate.Test(default));
+            Invoking(() => predicate.Test(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 
             var edge12 = new Edge<int>(1, 2);
-            Assert.Throws<KeyNotFoundException>(() => predicate.Test(edge12));
+            Invoking(() => predicate.Test(edge12)).Should().Throw<KeyNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
     }

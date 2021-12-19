@@ -29,10 +29,10 @@ namespace FastGraph.Tests.Structures
             // Struct break the contract with their implicit default constructor
             // Non struct edge should be preferred
             var defaultEdge = default(SUndirectedEdge<TestVertex>);
-            Assert.IsNull(defaultEdge.Source);
+            defaultEdge.Source.Should().BeNull();
             // ReSharper disable once HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge.Target);
+            defaultEdge.Target.Should().BeNull();
         }
 
         [Test]
@@ -41,9 +41,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new SUndirectedEdge<TestVertex>(default, new TestVertex("v1")));
-            Assert.Throws<ArgumentNullException>(() => new SUndirectedEdge<TestVertex>(new TestVertex("v1"), default));
-            Assert.Throws<ArgumentNullException>(() => new SUndirectedEdge<TestVertex>(default, default));
+            Invoking(() => new SUndirectedEdge<TestVertex>(default, new TestVertex("v1"))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new SUndirectedEdge<TestVertex>(new TestVertex("v1"), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new SUndirectedEdge<TestVertex>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -58,30 +58,29 @@ namespace FastGraph.Tests.Structures
             var edge4 = new SUndirectedEdge<int>(1, 2);
             var edge5 = new SUndirectedEdge<int>(2, 1);
 
-            Assert.AreEqual(edge1, edge1);
+            edge1.Should().Be(edge1);
 
-            Assert.AreEqual(edge1, edge2);  // Is equatable
-            Assert.AreEqual(edge2, edge1);  // Is equatable
-            Assert.IsTrue(edge1.Equals(edge2));  // Is equatable
-            Assert.IsTrue(edge2.Equals(edge1));  // Is equatable
+            edge2.Should().Be(edge1);  // Is equatable
+            edge1.Should().Be(edge2);  // Is equatable
+            edge1.Equals(edge2).Should().BeTrue();  // Is equatable
+            edge2.Equals(edge1).Should().BeTrue();  // Is equatable
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            edge3.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge3);
+            edge1.Equals(edge3).Should().BeFalse();
+            edge3.Equals(edge1).Should().BeFalse();
 
-            Assert.AreEqual(edge3, edge4);
-            Assert.AreEqual(edge4, edge3);
-            Assert.IsTrue(edge3.Equals(edge4));
-            Assert.IsTrue(edge4.Equals(edge3));
+            edge4.Should().Be(edge3);
+            edge3.Should().Be(edge4);
+            edge3.Equals(edge4).Should().BeTrue();
+            edge4.Equals(edge3).Should().BeTrue();
 
-            Assert.AreNotEqual(edge3, edge5);
-            Assert.AreNotEqual(edge5, edge3);
-            Assert.IsFalse(edge3.Equals(edge5));
-            Assert.IsFalse(edge5.Equals(edge3));
+            edge5.Should().NotBe(edge3);
+            edge3.Should().NotBe(edge5);
+            edge3.Equals(edge5).Should().BeFalse();
+            edge5.Equals(edge3).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, default);
-            Assert.IsFalse(edge1.Equals(default));
+            edge1.Equals(default).Should().BeFalse();
         }
 
         [Test]
@@ -90,10 +89,10 @@ namespace FastGraph.Tests.Structures
             var edge1 = default(SUndirectedEdge<int>);
             var edge2 = new SUndirectedEdge<int>();
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            edge2.Should().Be(edge1);
+            edge1.Should().Be(edge2);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge2.Equals(edge1).Should().BeTrue();
         }
 
         [Test]
@@ -102,8 +101,8 @@ namespace FastGraph.Tests.Structures
             var edge1 = new SUndirectedEdge<int>(1, 2);
             var edge2 = new SUndirectedEdge<int>(2, 1);
 
-            Assert.AreEqual("1 <-> 2", edge1.ToString());
-            Assert.AreEqual("2 <-> 1", edge2.ToString());
+            edge1.ToString().Should().Be("1 <-> 2");
+            edge2.ToString().Should().Be("2 <-> 1");
         }
     }
 }

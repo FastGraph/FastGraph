@@ -15,13 +15,13 @@ namespace FastGraph.Graphviz.Tests
         public void Constructor()
         {
             var edgeLabel = new GraphvizEdgeLabel();
-            Assert.AreEqual(-25.0, edgeLabel.Angle);
-            Assert.AreEqual(1.0, edgeLabel.Distance);
-            Assert.IsTrue(edgeLabel.Float);
-            Assert.IsNull(edgeLabel.Font);
-            Assert.AreEqual(GraphvizColor.Black, edgeLabel.FontColor);
-            Assert.IsFalse(edgeLabel.IsHtmlLabel);
-            Assert.IsNull(edgeLabel.Value);
+            edgeLabel.Angle.Should().Be(-25.0);
+            edgeLabel.Distance.Should().Be(1.0);
+            edgeLabel.Float.Should().BeTrue();
+            edgeLabel.Font.Should().BeNull();
+            edgeLabel.FontColor.Should().Be(GraphvizColor.Black);
+            edgeLabel.IsHtmlLabel.Should().BeFalse();
+            edgeLabel.Value.Should().BeNull();
         }
 
         private static IEnumerable<TestCaseData> AddParametersTestCases
@@ -96,7 +96,7 @@ namespace FastGraph.Graphviz.Tests
         {
             var parameters = new Dictionary<string, object>();
             label.AddParameters(parameters);
-            CollectionAssert.AreEquivalent(expectedParameters, parameters);
+            parameters.Should().BeEquivalentTo(expectedParameters);
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace FastGraph.Graphviz.Tests
             var extremity = new GraphvizEdgeLabel();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => extremity.AddParameters(default));
+            Invoking(() => extremity.AddParameters(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

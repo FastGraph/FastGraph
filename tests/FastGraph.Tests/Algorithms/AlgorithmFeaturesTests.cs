@@ -135,7 +135,7 @@ namespace FastGraph.Tests.Algorithms
             };
             algorithm.StateChanged += (_, _) =>
             {
-                Assert.AreEqual(expectedStates.Peek(), algorithm.State);
+                algorithm.State.Should().Be(expectedStates.Peek());
                 expectedStates.Dequeue();
             };
             algorithm.Aborted += (_, _) =>
@@ -143,34 +143,34 @@ namespace FastGraph.Tests.Algorithms
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.NotRunning);
 
             // Run the algorithm
             Task.Run(() =>
             {
-                Assert.DoesNotThrow(algorithm.Compute);
+                Invoking(algorithm.Compute).Should().NotThrow();
             });
 
             initialize.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
-            Assert.IsTrue(hasStarted);
+            algorithm.State.Should().Be(ComputationState.Running);
+            hasStarted.Should().BeTrue();
 
             algorithm.InitializedEvent.Set();
 
             compute.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.Running);
 
             algorithm.ComputedEvent.Set();
 
             clean.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.Running);
 
             algorithm.CleanedEvent.Set();
 
             finished.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Finished, algorithm.State);
-            Assert.IsTrue(hasFinished);
-            Assert.IsTrue(expectedStates.Count == 0);
+            algorithm.State.Should().Be(ComputationState.Finished);
+            hasFinished.Should().BeTrue();
+            (expectedStates.Count == 0).Should().BeTrue();
         }
 
         [Test]
@@ -200,17 +200,17 @@ namespace FastGraph.Tests.Algorithms
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.NotRunning);
 
             // Abort the algorithm
             Task.Run(() =>
             {
-                Assert.DoesNotThrow(() =>
+                Invoking(() =>
                 {
                     algorithm.Abort();
-                    Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+                    algorithm.State.Should().Be(ComputationState.NotRunning);
                     end.Set();
-                });
+                }).Should().NotThrow();
             });
 
             end.WaitOne(TimeoutDelay);
@@ -245,7 +245,7 @@ namespace FastGraph.Tests.Algorithms
             };
             algorithm.StateChanged += (_, _) =>
             {
-                Assert.AreEqual(expectedStates.Peek(), algorithm.State);
+                algorithm.State.Should().Be(expectedStates.Peek());
                 expectedStates.Dequeue();
             };
             algorithm.Aborted += (_, _) =>
@@ -256,34 +256,34 @@ namespace FastGraph.Tests.Algorithms
                 aborted.Set();
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.NotRunning);
 
             // Run the algorithm
             Task.Run(() =>
             {
-                Assert.DoesNotThrow(algorithm.Compute);
+                Invoking(algorithm.Compute).Should().NotThrow();
             });
 
             initialize.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
-            Assert.IsTrue(hasStarted);
+            algorithm.State.Should().Be(ComputationState.Running);
+            hasStarted.Should().BeTrue();
 
             algorithm.InitializedEvent.Set();
 
             compute.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.Running);
 
             algorithm.Abort();
             algorithm.ComputedEvent.Set();
 
-            Assert.AreEqual(ComputationState.PendingAbortion, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.PendingAbortion);
 
             algorithm.CleanedEvent.Set();
 
             aborted.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Aborted, algorithm.State);
-            Assert.IsTrue(hasAborted);
-            Assert.IsTrue(expectedStates.Count == 0);
+            algorithm.State.Should().Be(ComputationState.Aborted);
+            hasAborted.Should().BeTrue();
+            (expectedStates.Count == 0).Should().BeTrue();
         }
 
         [Test]
@@ -317,7 +317,7 @@ namespace FastGraph.Tests.Algorithms
             };
             algorithm.StateChanged += (_, _) =>
             {
-                Assert.AreEqual(expectedStates.Peek(), algorithm.State);
+                algorithm.State.Should().Be(expectedStates.Peek());
                 expectedStates.Dequeue();
             };
             algorithm.Aborted += (_, _) =>
@@ -325,36 +325,36 @@ namespace FastGraph.Tests.Algorithms
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.NotRunning);
 
             // Run the algorithm
             Task.Run(() =>
             {
-                Assert.DoesNotThrow(algorithm.Compute);
+                Invoking(algorithm.Compute).Should().NotThrow();
             });
 
             initialize.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
-            Assert.IsTrue(hasStarted);
+            algorithm.State.Should().Be(ComputationState.Running);
+            hasStarted.Should().BeTrue();
 
             algorithm.InitializedEvent.Set();
 
             compute.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.Running);
 
             algorithm.Services.CancelManager.Cancel();
             algorithm.Services.CancelManager.ResetCancel(); // These calls don't change algorithm state
             algorithm.Services.CancelManager.Cancel();
             algorithm.ComputedEvent.Set();
 
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            algorithm.State.Should().Be(ComputationState.Running);
 
             algorithm.CleanedEvent.Set();
 
             finished.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Finished, algorithm.State);
-            Assert.IsTrue(hasFinished);
-            Assert.IsTrue(expectedStates.Count == 0);
+            algorithm.State.Should().Be(ComputationState.Finished);
+            hasFinished.Should().BeTrue();
+            (expectedStates.Count == 0).Should().BeTrue();
         }
 
         [Test]
@@ -362,7 +362,7 @@ namespace FastGraph.Tests.Algorithms
         {
             var algorithm = new TestAlgorithm();
             var service = algorithm.GetService<TestService>();
-            Assert.IsInstanceOf<TestService>(service);
+            service.Should().BeAssignableTo<TestService>();
         }
 
         [Test]
@@ -370,8 +370,8 @@ namespace FastGraph.Tests.Algorithms
         {
             var algorithm = new TestAlgorithm();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => algorithm.GetService<TestNullService>());
-            Assert.Throws<InvalidOperationException>(() => algorithm.GetService<TestNotInService>());
+            Invoking(() => algorithm.GetService<TestNullService>()).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm.GetService<TestNotInService>()).Should().Throw<InvalidOperationException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -379,10 +379,10 @@ namespace FastGraph.Tests.Algorithms
         public void TryGetService()
         {
             var algorithm = new TestAlgorithm();
-            Assert.IsTrue(algorithm.TryGetService(out TestService? service));
-            Assert.IsInstanceOf<TestService>(service);
+            algorithm.TryGetService(out TestService? service).Should().BeTrue();
+            service.Should().BeAssignableTo<TestService>();
 
-            Assert.IsFalse(algorithm.TryGetService<TestNotInService>(out _));
+            algorithm.TryGetService<TestNotInService>(out _).Should().BeFalse();
         }
     }
 }

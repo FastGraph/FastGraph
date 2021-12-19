@@ -28,10 +28,10 @@ namespace FastGraph.Tests.Algorithms.Exploration
                 where TVertex : ICloneable
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.IsTrue(g.AllowParallelEdges);
-                Assert.IsNotNull(g.SuccessorVertexPredicate);
-                Assert.IsNotNull(g.SuccessorEdgePredicate);
+                g.IsDirected.Should().BeTrue();
+                g.AllowParallelEdges.Should().BeTrue();
+                g.SuccessorVertexPredicate.Should().NotBeNull();
+                g.SuccessorEdgePredicate.Should().NotBeNull();
             }
 
             #endregion
@@ -44,8 +44,8 @@ namespace FastGraph.Tests.Algorithms.Exploration
 
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.SuccessorVertexPredicate = default);
-            Assert.Throws<ArgumentNullException>(() => graph.SuccessorEdgePredicate = default);
+            Invoking(() => graph.SuccessorVertexPredicate = default).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.SuccessorEdgePredicate = default).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -61,17 +61,17 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(vertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory1);
 
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
 
             var vertex2 = new CloneableTestVertex("2");
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory2);
 
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
+            graph.ContainsTransitionFactory(factory2).Should().BeTrue();
 
             graph.AddTransitionFactory(factory1);
 
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.AddTransitionFactory(default));
+            Invoking(() => graph.AddTransitionFactory(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -95,16 +95,16 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactories(new[] { factory1, factory2 });
 
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
+            graph.ContainsTransitionFactory(factory2).Should().BeTrue();
 
             var vertex3 = new CloneableTestVertex("3");
             var factory3 = new TestTransitionFactory<CloneableTestVertex>(vertex3, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory3);
 
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory3));
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
+            graph.ContainsTransitionFactory(factory2).Should().BeTrue();
+            graph.ContainsTransitionFactory(factory3).Should().BeTrue();
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.AddTransitionFactories(default));
+            Invoking(() => graph.AddTransitionFactories(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -122,7 +122,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
         {
             var graph = new TransitionFactoryImplicitGraph<CloneableTestVertex, Edge<CloneableTestVertex>>();
 
-            Assert.IsFalse(graph.RemoveTransitionFactory(default!));
+            graph.RemoveTransitionFactory(default!).Should().BeFalse();
 
             var vertex1 = new CloneableTestVertex("1");
             var vertex2 = new CloneableTestVertex("2");
@@ -132,14 +132,14 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var factory3 = new TestTransitionFactory<CloneableTestVertex>(vertex3, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactories(new[] { factory1, factory2 });
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
+            graph.ContainsTransitionFactory(default!).Should().BeFalse();
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
+            graph.ContainsTransitionFactory(factory2).Should().BeTrue();
 
-            Assert.IsFalse(graph.RemoveTransitionFactory(factory3));
-            Assert.IsTrue(graph.RemoveTransitionFactory(factory1));
-            Assert.IsFalse(graph.RemoveTransitionFactory(factory1));
-            Assert.IsTrue(graph.RemoveTransitionFactory(factory2));
+            graph.RemoveTransitionFactory(factory3).Should().BeFalse();
+            graph.RemoveTransitionFactory(factory1).Should().BeTrue();
+            graph.RemoveTransitionFactory(factory1).Should().BeFalse();
+            graph.RemoveTransitionFactory(factory2).Should().BeTrue();
 
             var factory4 = new TestTransitionFactory<CloneableTestVertex>(
                 vertex1,
@@ -149,12 +149,12 @@ namespace FastGraph.Tests.Algorithms.Exploration
                     new Edge<CloneableTestVertex>(vertex1, vertex3)
                 });
             graph.AddTransitionFactory(factory4);
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory4));
+            graph.ContainsTransitionFactory(factory4).Should().BeTrue();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             graph.OutEdges(vertex1);    // Force exploration from vertex1
 
-            Assert.IsTrue(graph.RemoveTransitionFactory(factory4));
+            graph.RemoveTransitionFactory(factory4).Should().BeTrue();
         }
 
         [Test]
@@ -165,27 +165,27 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var vertex1 = new CloneableTestVertex("1");
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(vertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
-            Assert.IsFalse(graph.ContainsTransitionFactory(factory1));
+            graph.ContainsTransitionFactory(default!).Should().BeFalse();
+            graph.ContainsTransitionFactory(factory1).Should().BeFalse();
 
             graph.AddTransitionFactory(factory1);
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
+            graph.ContainsTransitionFactory(default!).Should().BeFalse();
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
 
             var vertex2 = new CloneableTestVertex("2");
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory2);
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
+            graph.ContainsTransitionFactory(default!).Should().BeFalse();
+            graph.ContainsTransitionFactory(factory1).Should().BeTrue();
+            graph.ContainsTransitionFactory(factory2).Should().BeTrue();
 
             graph.RemoveTransitionFactory(factory1);
 
-            Assert.IsFalse(graph.ContainsTransitionFactory(default!));
-            Assert.IsFalse(graph.ContainsTransitionFactory(factory1));
-            Assert.IsTrue(graph.ContainsTransitionFactory(factory2));
+            graph.ContainsTransitionFactory(default!).Should().BeFalse();
+            graph.ContainsTransitionFactory(factory1).Should().BeFalse();
+            graph.ContainsTransitionFactory(factory2).Should().BeTrue();
         }
 
         [Test]
@@ -243,79 +243,79 @@ namespace FastGraph.Tests.Algorithms.Exploration
 
             var edge34 = new Edge<CloneableTestVertex>(vertex3, vertex4);
 
-            Assert.IsFalse(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(vertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory1);
-            Assert.IsFalse(graph.ContainsVertex(vertex1));  // Not explored yet
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeFalse();  // Not explored yet
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             graph.OutEdges(vertex1);
 
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeFalse();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             var factory2 = new TestTransitionFactory<CloneableTestVertex>(vertex2, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factory2);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex2));  // Not explored yet
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeFalse();  // Not explored yet
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             graph.OutEdges(vertex2);
 
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse();
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             var factoryOther1 = new TestTransitionFactory<CloneableTestVertex>(otherVertex1, Enumerable.Empty<Edge<CloneableTestVertex>>());
             graph.AddTransitionFactory(factoryOther1);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-            Assert.IsFalse(graph.ContainsVertex(otherVertex1)); // Not explored yet
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeFalse(); // Not explored yet
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             graph.OutEdges(otherVertex1);
 
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex3).Should().BeFalse();
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             var factory3 = new TestTransitionFactory<CloneableTestVertex>(vertex3, new[] { edge34 });
             graph.AddTransitionFactory(factory3);
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
-            Assert.IsFalse(graph.ContainsVertex(vertex3));  // Not explored yet
-            Assert.IsFalse(graph.ContainsVertex(vertex4));
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex3).Should().BeFalse();  // Not explored yet
+            graph.ContainsVertex(vertex4).Should().BeFalse();
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             graph.OutEdges(vertex3);
 
-            Assert.IsTrue(graph.ContainsVertex(vertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex2));
-            Assert.IsTrue(graph.ContainsVertex(otherVertex1));
-            Assert.IsTrue(graph.ContainsVertex(vertex3));
-            Assert.IsTrue(graph.ContainsVertex(vertex4));   // Discovered when requesting vertex3
+            graph.ContainsVertex(vertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex2).Should().BeTrue();
+            graph.ContainsVertex(otherVertex1).Should().BeTrue();
+            graph.ContainsVertex(vertex3).Should().BeTrue();
+            graph.ContainsVertex(vertex4).Should().BeTrue();   // Discovered when requesting vertex3
         }
 
         [Test]
@@ -359,12 +359,12 @@ namespace FastGraph.Tests.Algorithms.Exploration
             graph.AddTransitionFactory(
                 new TestTransitionFactory<CloneableTestVertex>(vertex4, new[] { edge41 }));
 
-            Assert.AreSame(edge11, graph.OutEdge(vertex1, 0));
-            Assert.AreSame(edge13, graph.OutEdge(vertex1, 2));
-            Assert.AreSame(edge24, graph.OutEdge(vertex2, 0));
-            Assert.AreSame(edge33, graph.OutEdge(vertex3, 0));
-            Assert.AreSame(edge41, graph.OutEdge(vertex4, 0));
-            Assert.AreSame(edge41, graph.OutEdge(vertex4, 0));
+            graph.OutEdge(vertex1, 0).Should().BeSameAs(edge11);
+            graph.OutEdge(vertex1, 2).Should().BeSameAs(edge13);
+            graph.OutEdge(vertex2, 0).Should().BeSameAs(edge24);
+            graph.OutEdge(vertex3, 0).Should().BeSameAs(edge33);
+            graph.OutEdge(vertex4, 0).Should().BeSameAs(edge41);
+            graph.OutEdge(vertex4, 0).Should().BeSameAs(edge41);
         }
 
         [Test]
@@ -398,11 +398,11 @@ namespace FastGraph.Tests.Algorithms.Exploration
             graph.SuccessorVertexPredicate = vertex => vertex != vertex4;
             graph.SuccessorEdgePredicate = edge => edge != edge61;
 
-            Assert.AreSame(edge11, graph.OutEdge(vertex1, 0));
-            Assert.AreSame(edge13, graph.OutEdge(vertex1, 2));
+            graph.OutEdge(vertex1, 0).Should().BeSameAs(edge11);
+            graph.OutEdge(vertex1, 2).Should().BeSameAs(edge13);
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             AssertIndexOutOfRange(() => graph.OutEdge(vertex5, 0));    // Filtered
-            Assert.AreSame(edge67, graph.OutEdge(vertex6, 0));  // Because of the filter
+            graph.OutEdge(vertex6, 0).Should().BeSameAs(edge67);  // Because of the filter
             AssertIndexOutOfRange(() => graph.OutEdge(vertex6, 1));    // Filtered
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
@@ -410,9 +410,9 @@ namespace FastGraph.Tests.Algorithms.Exploration
             graph.SuccessorVertexPredicate = _ => true;
             graph.SuccessorEdgePredicate = _ => true;
 
-            Assert.AreSame(edge54, graph.OutEdge(vertex5, 0));
-            Assert.AreSame(edge61, graph.OutEdge(vertex6, 0));
-            Assert.AreSame(edge67, graph.OutEdge(vertex6, 1));
+            graph.OutEdge(vertex5, 0).Should().BeSameAs(edge54);
+            graph.OutEdge(vertex6, 0).Should().BeSameAs(edge61);
+            graph.OutEdge(vertex6, 1).Should().BeSameAs(edge67);
         }
 
         [Test]
@@ -427,7 +427,7 @@ namespace FastGraph.Tests.Algorithms.Exploration
             var vertex2 = new CloneableTestVertex("2");
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph2.OutEdge(vertex1, 0));
+            Invoking(() => graph2.OutEdge(vertex1, 0)).Should().Throw<VertexNotFoundException>();
 
             var factory1 = new TestTransitionFactory<CloneableTestVertex>(
                 vertex1,
@@ -590,22 +590,22 @@ namespace FastGraph.Tests.Algorithms.Exploration
             graph.AddTransitionFactory(
                 new TestTransitionFactory<CloneableTestVertex>(vertex4, new[] { edge7 }));
 
-            Assert.IsFalse(graph.TryGetOutEdges(vertex0, out _));
+            graph.TryGetOutEdges(vertex0, out _).Should().BeFalse();
 
-            Assert.IsFalse(graph.TryGetOutEdges(vertex5, out _));   // Vertex5 was not discovered
+            graph.TryGetOutEdges(vertex5, out _).Should().BeFalse();   // Vertex5 was not discovered
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex3, out IEnumerable<Edge<CloneableTestVertex>>? gotEdges));
-            CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
+            graph.TryGetOutEdges(vertex3, out IEnumerable<Edge<CloneableTestVertex>>? gotEdges).Should().BeTrue();
+            new[] { edge6 }.Should().BeEquivalentTo(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex1, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
+            graph.TryGetOutEdges(vertex1, out gotEdges).Should().BeTrue();
+            new[] { edge1, edge2, edge3 }.Should().BeEquivalentTo(gotEdges);
 
             // Trigger discover of vertex5
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             graph.OutEdges(vertex4);
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex5, out gotEdges));
-            CollectionAssert.IsEmpty(gotEdges);
+            graph.TryGetOutEdges(vertex5, out gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty();
         }
 
         [Test]
@@ -648,15 +648,15 @@ namespace FastGraph.Tests.Algorithms.Exploration
             graph.SuccessorVertexPredicate = vertex => vertex != vertex4;
             graph.SuccessorEdgePredicate = edge => edge.Source != edge.Target;
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex2, out IEnumerable<Edge<CloneableTestVertex>>? gotEdges));
-            CollectionAssert.IsEmpty(gotEdges); // Both edges filtered by the 2 filters combined
+            graph.TryGetOutEdges(vertex2, out IEnumerable<Edge<CloneableTestVertex>>? gotEdges).Should().BeTrue();
+            gotEdges.Should().BeEmpty(); // Both edges filtered by the 2 filters combined
 
             // Restore no filter
             graph.SuccessorVertexPredicate = _ => true;
             graph.SuccessorEdgePredicate = _ => true;
 
-            Assert.IsTrue(graph.TryGetOutEdges(vertex2, out gotEdges));
-            CollectionAssert.AreEqual(new[] { edge4, edge5 }, gotEdges);
+            graph.TryGetOutEdges(vertex2, out gotEdges).Should().BeTrue();
+            new[] { edge4, edge5 }.Should().BeEquivalentTo(gotEdges);
         }
 
         [Test]

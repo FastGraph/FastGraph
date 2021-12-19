@@ -33,14 +33,14 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 augmentor.EdgeAdded += _ => { added = true; };
 
                 augmentor.Compute();
-                Assert.IsTrue(added);
+                added.Should().BeTrue();
                 VerifyVertexCount(graph, augmentor, vertexCount);
                 VerifySourceConnector(graph, augmentor, noInEdgesVertices);
                 VerifySinkConnector(graph, augmentor, noOutEdgesVertices);
             }
 
-            Assert.AreEqual(graph.VertexCount, vertexCount);
-            Assert.AreEqual(graph.EdgeCount, edgeCount);
+            vertexCount.Should().Be(graph.VertexCount);
+            edgeCount.Should().Be(graph.EdgeCount);
         }
 
         private static void VerifyVertexCount<TVertex, TEdge>(
@@ -51,9 +51,9 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            Assert.AreEqual(vertexCount + 2 /* Source + Sink */, graph.VertexCount);
-            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSource!));
-            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSink!));
+            graph.VertexCount.Should().Be(vertexCount + 2);
+            graph.ContainsVertex(augmentor.SuperSource!).Should().BeTrue();
+            graph.ContainsVertex(augmentor.SuperSink!).Should().BeTrue();
         }
 
         private static void VerifySourceConnector<TVertex, TEdge>(
@@ -66,7 +66,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         {
             foreach (TVertex vertex in noInEdgesVertices)
             {
-                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource!, vertex));
+                graph.ContainsEdge(augmentor.SuperSource!, vertex).Should().BeTrue();
             }
 
             foreach (TVertex vertex in graph.Vertices.Except(noInEdgesVertices))
@@ -75,7 +75,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsFalse(graph.ContainsEdge(augmentor.SuperSource!, vertex));
+                graph.ContainsEdge(augmentor.SuperSource!, vertex).Should().BeFalse();
             }
         }
 
@@ -89,7 +89,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
         {
             foreach (TVertex vertex in noOutEdgesVertices)
             {
-                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink!));
+                graph.ContainsEdge(vertex, augmentor.SuperSink!).Should().BeTrue();
             }
 
             foreach (TVertex vertex in graph.Vertices.Except(noOutEdgesVertices))
@@ -98,7 +98,7 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsFalse(graph.ContainsEdge(vertex, augmentor.SuperSink!));
+                graph.ContainsEdge(vertex, augmentor.SuperSink!).Should().BeFalse();
             }
         }
 
@@ -128,12 +128,12 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsFalse(algo.Augmented);
-                CollectionAssert.IsEmpty(algo.AugmentedEdges);
-                Assert.AreSame(vFactory, algo.VertexFactory);
-                Assert.AreSame(eFactory, algo.EdgeFactory);
-                Assert.AreEqual(default(TVertex), algo.SuperSource);
-                Assert.AreEqual(default(TVertex), algo.SuperSink);
+                algo.Augmented.Should().BeFalse();
+                algo.AugmentedEdges.Should().BeEmpty();
+                algo.VertexFactory.Should().BeSameAs(vFactory);
+                algo.EdgeFactory.Should().BeSameAs(eFactory);
+                algo.SuperSource.Should().Be(default(TVertex));
+                algo.SuperSink.Should().Be(default(TVertex));
             }
 
             #endregion
@@ -149,35 +149,21 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, vertexFactory, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default, edgeFactory));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, vertexFactory, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default, default));
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, vertexFactory, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default, edgeFactory)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, vertexFactory, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new MultiSourceSinkGraphAugmentorAlgorithm<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

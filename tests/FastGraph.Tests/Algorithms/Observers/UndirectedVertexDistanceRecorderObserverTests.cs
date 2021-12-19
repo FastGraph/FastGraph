@@ -18,18 +18,18 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             Func<Edge<int>, double> edgeWeights = _ => 1.0;
             var recorder = new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(edgeWeights);
-            Assert.AreSame(edgeWeights, recorder.EdgeWeights);
-            Assert.IsNotNull(recorder.DistanceRelaxer);
-            Assert.IsNotNull(recorder.Distances);
+            recorder.EdgeWeights.Should().BeSameAs(edgeWeights);
+            recorder.DistanceRelaxer.Should().NotBeNull();
+            recorder.Distances.Should().NotBeNull();
 
             var distances = new Dictionary<int, double>();
             recorder = new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(
                 edgeWeights,
                 DistanceRelaxers.ShortestDistance,
                 distances);
-            Assert.AreSame(edgeWeights, recorder.EdgeWeights);
-            Assert.AreSame(DistanceRelaxers.ShortestDistance, recorder.DistanceRelaxer);
-            Assert.AreSame(distances, recorder.Distances);
+            recorder.EdgeWeights.Should().BeSameAs(edgeWeights);
+            recorder.DistanceRelaxer.Should().BeSameAs(DistanceRelaxers.ShortestDistance);
+            recorder.Distances.Should().BeSameAs(distances);
         }
 
         [Test]
@@ -38,21 +38,14 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default));
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, DistanceRelaxers.ShortestDistance, new Dictionary<int, double>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, default, new Dictionary<int, double>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, DistanceRelaxers.ShortestDistance, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, default, new Dictionary<int, double>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, default, default));
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, DistanceRelaxers.ShortestDistance, new Dictionary<int, double>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, default, new Dictionary<int, double>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, DistanceRelaxers.ShortestDistance, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, default, new Dictionary<int, double>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedVertexDistanceRecorderObserver<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -73,7 +66,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.Distances);
+                    recorder.Distances.Should().BeEmpty();
                 }
             }
 
@@ -88,7 +81,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.Distances);
+                    recorder.Distances.Should().BeEmpty();
                 }
             }
 
@@ -112,15 +105,13 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new Dictionary<int, double>
-                        {
-                            [1] = 0,
-                            [2] = 1,
-                            [3] = 3,
-                            [4] = 2
-                        },
-                        recorder.Distances);
+                    new Dictionary<int, double>
+                    {
+                        [1] = 0,
+                        [2] = 1,
+                        [3] = 3,
+                        [4] = 2
+                    }.Should().BeEquivalentTo(recorder.Distances);
                 }
             }
         }

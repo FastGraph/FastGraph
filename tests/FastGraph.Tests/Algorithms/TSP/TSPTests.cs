@@ -73,13 +73,13 @@ namespace FastGraph.Tests.Algorithms.TSP
                 where TGraph : BidirectionalGraph<TVertex, TEdge>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.VerticesColors);
+                algo.VerticesColors.Should().BeNull();
                 if (eWeights is null)
-                    Assert.IsNotNull(algo.Weights);
+                    algo.Weights.Should().NotBeNull();
                 else
-                    Assert.AreSame(eWeights, algo.Weights);
-                CollectionAssert.IsEmpty(algo.GetDistances());
-                Assert.AreSame(DistanceRelaxers.ShortestDistance, algo.DistanceRelaxer);
+                    algo.Weights.Should().BeSameAs(eWeights);
+                algo.GetDistances().Should<KeyValuePair<TVertex, double>>().BeEmpty();
+                algo.DistanceRelaxer.Should().BeSameAs(DistanceRelaxers.ShortestDistance);
             }
 
             #endregion
@@ -95,12 +95,9 @@ namespace FastGraph.Tests.Algorithms.TSP
             Func<EquatableEdge<int>, double> Weights = _ => 1.0;
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(default, Weights));
-            Assert.Throws<ArgumentNullException>(
-                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(default, default));
+            Invoking(() => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(default, Weights)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -178,17 +175,17 @@ namespace FastGraph.Tests.Algorithms.TSP
             graph.AddVertex(1);
             var algorithm = new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, _ => 1.0);
             algorithm.Compute(1);
-            Assert.IsFalse(algorithm.TryGetDistance(1, out double _));
+            algorithm.TryGetDistance(1, out double _).Should().BeFalse();
 
             var graph2 = new BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>();
             var algorithm2 = new TSP<TestVertex, EquatableEdge<TestVertex>, BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>>(graph2, _ => 1.0);
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm2.TryGetDistance(default, out _));
+            Invoking(() => algorithm2.TryGetDistance(default, out _)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 
             var vertex = new TestVertex();
-            Assert.Throws<InvalidOperationException>(() => algorithm2.TryGetDistance(vertex, out _));
+            Invoking(() => algorithm2.TryGetDistance(vertex, out _)).Should().Throw<InvalidOperationException>();
         }
 
         #endregion
@@ -203,7 +200,7 @@ namespace FastGraph.Tests.Algorithms.TSP
             algorithm.Compute(1);
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
+            Invoking(() => algorithm.GetVertexColor(1)).Should().Throw<VertexNotFoundException>();
         }
 
         [Test]
@@ -233,9 +230,9 @@ namespace FastGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(25, tsp.BestCost);
-            Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath!.IsDirectedAcyclicGraph());
+            tsp.BestCost.Should().Be(25);
+            tsp.ResultPath.Should().NotBeNull();
+            tsp.ResultPath!.IsDirectedAcyclicGraph().Should().BeFalse();
         }
 
         [Test]
@@ -265,9 +262,9 @@ namespace FastGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(47, tsp.BestCost);
-            Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath!.IsDirectedAcyclicGraph());
+            tsp.BestCost.Should().Be(47);
+            tsp.ResultPath.Should().NotBeNull();
+            tsp.ResultPath!.IsDirectedAcyclicGraph().Should().BeFalse();
         }
 
         [Test]
@@ -297,8 +294,8 @@ namespace FastGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(double.PositiveInfinity, tsp.BestCost);
-            Assert.IsNull(tsp.ResultPath);
+            tsp.BestCost.Should().Be(double.PositiveInfinity);
+            tsp.ResultPath.Should().BeNull();
         }
 
         [Test]
@@ -329,9 +326,9 @@ namespace FastGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(45, tsp.BestCost);
-            Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath!.IsDirectedAcyclicGraph());
+            tsp.BestCost.Should().Be(45);
+            tsp.ResultPath.Should().NotBeNull();
+            tsp.ResultPath!.IsDirectedAcyclicGraph().Should().BeFalse();
         }
 
         [Pure]

@@ -23,9 +23,9 @@ namespace FastGraph.Tests.Extensions
                     return false;
                 };
 
-            DelegateIncidenceGraph<int, Edge<int>> graph = tryGetEdges.ToDelegateIncidenceGraph();
+            var graph = tryGetEdges.ToDelegateIncidenceGraph();
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(1));
+            Invoking(() => graph.OutEdges(1)).Should().Throw<VertexNotFoundException>();
 
             var edge12 = new Edge<int>(1, 2);
             var edge21 = new Edge<int>(2, 1);
@@ -105,7 +105,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => tryGetEdges.ToDelegateIncidenceGraph());
+            Invoking(() => tryGetEdges.ToDelegateIncidenceGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -114,9 +114,9 @@ namespace FastGraph.Tests.Extensions
         {
             Func<int, IEnumerable<Edge<int>>?> getEdges = _ => default;
 
-            DelegateIncidenceGraph<int, Edge<int>> graph = getEdges.ToDelegateIncidenceGraph();
+            var graph = getEdges.ToDelegateIncidenceGraph();
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(1));
+            Invoking(() => graph.OutEdges(1)).Should().Throw<VertexNotFoundException>();
 
             var edge12 = new Edge<int>(1, 2);
             var edge21 = new Edge<int>(2, 1);
@@ -175,7 +175,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => getEdges.ToDelegateIncidenceGraph());
+            Invoking(() => getEdges.ToDelegateIncidenceGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
         }
 
@@ -183,7 +183,7 @@ namespace FastGraph.Tests.Extensions
         public void ToDelegateVertexAndEdgeListGraph()
         {
             var dictionary = new Dictionary<int, IEnumerable<Edge<int>>>();
-            DelegateVertexAndEdgeListGraph<int, Edge<int>> graph = dictionary.ToDelegateVertexAndEdgeListGraph
+            var graph = dictionary.ToDelegateVertexAndEdgeListGraph
             <
                 int,
                 Edge<int>,
@@ -217,8 +217,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<int, IEnumerable<Edge<int>>>?)default).ToDelegateVertexAndEdgeListGraph<int, Edge<int>, IEnumerable<Edge<int>>>());
+            Invoking(() => ((Dictionary<int, IEnumerable<Edge<int>>>?)default).ToDelegateVertexAndEdgeListGraph<int, Edge<int>, IEnumerable<Edge<int>>>()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -226,7 +225,7 @@ namespace FastGraph.Tests.Extensions
         public void ToDelegateVertexAndEdgeListGraph_ConverterEdges()
         {
             var dictionary = new Dictionary<int, int>();
-            DelegateVertexAndEdgeListGraph<int, Edge<int>> graph = dictionary.ToDelegateVertexAndEdgeListGraph(_ => Enumerable.Empty<Edge<int>>());
+            var graph = dictionary.ToDelegateVertexAndEdgeListGraph(_ => Enumerable.Empty<Edge<int>>());
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -263,14 +262,11 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<int, Edge<int>>?)default).ToDelegateVertexAndEdgeListGraph(pair => new[] { pair.Value }));
-            Assert.Throws<ArgumentNullException>(
-                () => ((Dictionary<int, Edge<int>>?)default).ToDelegateVertexAndEdgeListGraph((Converter<KeyValuePair<int, Edge<int>>, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => ((Dictionary<int, Edge<int>>?)default).ToDelegateVertexAndEdgeListGraph(pair => new[] { pair.Value })).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((Dictionary<int, Edge<int>>?)default).ToDelegateVertexAndEdgeListGraph((Converter<KeyValuePair<int, Edge<int>>, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 
             var dictionary = new Dictionary<int, Edge<int>>();
-            Assert.Throws<ArgumentNullException>(
-                () => dictionary.ToDelegateVertexAndEdgeListGraph((Converter<KeyValuePair<int, Edge<int>>, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => dictionary.ToDelegateVertexAndEdgeListGraph((Converter<KeyValuePair<int, Edge<int>>, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -280,7 +276,7 @@ namespace FastGraph.Tests.Extensions
         public void ToDelegateVertexAndEdgeListGraph_TryGetDelegate()
         {
             var vertices = new List<int>();
-            DelegateVertexAndEdgeListGraph<int, Edge<int>> graph = vertices.ToDelegateVertexAndEdgeListGraph(
+            var graph = vertices.ToDelegateVertexAndEdgeListGraph(
                 (int _, out IEnumerable<Edge<int>>? outEdges) =>
                 {
                     outEdges = default;
@@ -368,19 +364,16 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph(
-                    (int _, out IEnumerable<Edge<int>>? outEdges) =>
-                    {
-                        outEdges = default;
-                        return false;
-                    }));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph(
+                (int _, out IEnumerable<Edge<int>>? outEdges) =>
+                {
+                    outEdges = default;
+                    return false;
+                })).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 
             IEnumerable<int> vertices = Enumerable.Empty<int>();
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToDelegateVertexAndEdgeListGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => vertices.ToDelegateVertexAndEdgeListGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -390,7 +383,7 @@ namespace FastGraph.Tests.Extensions
         public void ToDelegateVertexAndEdgeListGraph_GetDelegate()
         {
             var vertices = new List<int>();
-            DelegateVertexAndEdgeListGraph<int, Edge<int>> graph = vertices.ToDelegateVertexAndEdgeListGraph<int, Edge<int>>(_ => Array.Empty<Edge<int>>());
+            var graph = vertices.ToDelegateVertexAndEdgeListGraph<int, Edge<int>>(_ => Array.Empty<Edge<int>>());
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -452,14 +445,11 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph<int, Edge<int>>(_ => Array.Empty<Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph((Func<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph<int, Edge<int>>(_ => Array.Empty<Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateVertexAndEdgeListGraph((Func<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 
             IEnumerable<int> vertices = Enumerable.Empty<int>();
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToDelegateVertexAndEdgeListGraph((Func<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => vertices.ToDelegateVertexAndEdgeListGraph((Func<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -481,10 +471,10 @@ namespace FastGraph.Tests.Extensions
                     return false;
                 };
 
-            DelegateBidirectionalIncidenceGraph<int, Edge<int>> graph = tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(tryGetInEdges);
+            var graph = tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(tryGetInEdges);
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.OutEdges(1));
-            Assert.Throws<VertexNotFoundException>(() => graph.InEdges(1));
+            Invoking(() => graph.OutEdges(1)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.InEdges(1)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             var edge12 = new Edge<int>(1, 2);
@@ -599,16 +589,14 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(default));
+            Invoking(() => tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(default)).Should().Throw<ArgumentNullException>();
             TryFunc<int, IEnumerable<Edge<int>>> tryGetInEdges =
                 (int _, out IEnumerable<Edge<int>>? inEdges) =>
                 {
                     inEdges = default;
                     return false;
                 };
-            Assert.Throws<ArgumentNullException>(
-                () => tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(tryGetInEdges));
+            Invoking(() => tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(tryGetInEdges)).Should().Throw<ArgumentNullException>();
 
 
             tryGetOutEdges =
@@ -617,8 +605,7 @@ namespace FastGraph.Tests.Extensions
                     outEdges = default;
                     return false;
                 };
-            Assert.Throws<ArgumentNullException>(
-                () => tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(default));
+            Invoking(() => tryGetOutEdges.ToDelegateBidirectionalIncidenceGraph(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
@@ -629,7 +616,7 @@ namespace FastGraph.Tests.Extensions
         public void ToDelegateUndirectedGraph_TryGetDelegate()
         {
             var vertices = new List<int>();
-            DelegateUndirectedGraph<int, Edge<int>> graph = vertices.ToDelegateUndirectedGraph(
+            var graph = vertices.ToDelegateUndirectedGraph(
                 (int _, out IEnumerable<Edge<int>>? adjacentEdges) =>
                 {
                     adjacentEdges = default;
@@ -704,19 +691,16 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8622
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph(
-                    (int _, out IEnumerable<Edge<int>> adjacentEdges) =>
-                    {
-                        adjacentEdges = default;
-                        return false;
-                    }));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph(
+                (int _, out IEnumerable<Edge<int>> adjacentEdges) =>
+                {
+                    adjacentEdges = default;
+                    return false;
+                })).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 
             IEnumerable<int> vertices = Enumerable.Empty<int>();
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToDelegateUndirectedGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => vertices.ToDelegateUndirectedGraph((TryFunc<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 #pragma warning restore CS8622
             // ReSharper restore AssignNullToNotNullAttribute
@@ -728,7 +712,7 @@ namespace FastGraph.Tests.Extensions
         {
             var vertices = new List<int>();
 #pragma warning disable CS8603
-            DelegateUndirectedGraph<int, Edge<int>> graph = vertices.ToDelegateUndirectedGraph<int, Edge<int>>(_ => default);
+            var graph = vertices.ToDelegateUndirectedGraph<int, Edge<int>>(_ => default);
 #pragma warning restore CS8603
             AssertEmptyGraph(graph);
 
@@ -783,14 +767,11 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph<int, Edge<int>>(_ => Array.Empty<Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph((Func<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph<int, Edge<int>>(_ => Array.Empty<Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToDelegateUndirectedGraph((Func<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 
             IEnumerable<int> vertices = Enumerable.Empty<int>();
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToDelegateUndirectedGraph((Func<int, IEnumerable<Edge<int>>>?)default));
+            Invoking(() => vertices.ToDelegateUndirectedGraph((Func<int, IEnumerable<Edge<int>>>?)default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -804,7 +785,7 @@ namespace FastGraph.Tests.Extensions
         public void ToAdjacencyGraph_EdgeArray()
         {
             int[][] edges = { new int[] { }, new int[] { } };
-            AdjacencyGraph<int, SEquatableEdge<int>> graph = edges.ToAdjacencyGraph();
+            var graph = edges.ToAdjacencyGraph();
             AssertEmptyGraph(graph);
 
             edges = new[]
@@ -832,28 +813,28 @@ namespace FastGraph.Tests.Extensions
 #pragma warning disable CS8604
 #pragma warning disable CS8620
             int[]?[]? edges = default;
-            Assert.Throws<ArgumentNullException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentNullException>();
 
             edges = new int[][] { };
-            Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentException>();
             edges = new[] { new int[] { } };
-            Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentException>();
             edges = new[] { new int[] { }, new int[] { }, new int[] { } };
-            Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentException>();
 
             edges = new[] { new int[] { }, default };
-            Assert.Throws<ArgumentNullException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentNullException>();
             edges = new[] { default, new int[] { } };
-            Assert.Throws<ArgumentNullException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentNullException>();
             edges = new int[]?[] { default, default };
-            Assert.Throws<ArgumentNullException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentNullException>();
 
             edges = new[] { new int[] { }, new[] { 1 } };
-            Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentException>();
             edges = new[] { new[] { 1 }, new int[] { } };
-            Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentException>();
             edges = new[] { new[] { 1, 2 }, new[] { 1 } };
-            Assert.Throws<ArgumentException>(() => edges.ToAdjacencyGraph());
+            Invoking(() => edges.ToAdjacencyGraph()).Should().Throw<ArgumentException>();
 #pragma warning restore CS8620
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
@@ -864,7 +845,7 @@ namespace FastGraph.Tests.Extensions
         public void ToAdjacencyGraph_EdgeSet()
         {
             var edges = new List<Edge<int>>();
-            AdjacencyGraph<int, Edge<int>> graph = edges.ToAdjacencyGraph<int, Edge<int>>();
+            var graph = edges.ToAdjacencyGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
             graph = edges.ToAdjacencyGraph<int, Edge<int>>(false);
@@ -898,10 +879,8 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>?)default).ToAdjacencyGraph<int, Edge<int>>());
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>?)default).ToAdjacencyGraph<int, Edge<int>>(false));
+            Invoking(() => ((IEnumerable<Edge<int>>?)default).ToAdjacencyGraph<int, Edge<int>>()).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<Edge<int>>?)default).ToAdjacencyGraph<int, Edge<int>>(false)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -911,7 +890,7 @@ namespace FastGraph.Tests.Extensions
         public void ToAdjacencyGraph_VertexPairs()
         {
             var vertices = new List<SEquatableEdge<int>>();
-            AdjacencyGraph<int, SEquatableEdge<int>> graph = vertices.ToAdjacencyGraph();
+            var graph = vertices.ToAdjacencyGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new SEquatableEdge<int>(1, 2);
@@ -928,8 +907,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<SEquatableEdge<int>>?)default).ToAdjacencyGraph());
+            Invoking(() => ((IEnumerable<SEquatableEdge<int>>?)default).ToAdjacencyGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -937,7 +915,7 @@ namespace FastGraph.Tests.Extensions
         public void ToAdjacencyGraph_EdgeSetWithFactory()
         {
             var vertices = new List<int>();
-            AdjacencyGraph<int, Edge<int>> graph = vertices.ToAdjacencyGraph(
+            var graph = vertices.ToAdjacencyGraph(
                 _ => Enumerable.Empty<Edge<int>>());
             AssertEmptyGraph(graph);
 
@@ -982,20 +960,14 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToAdjacencyGraph(_ => Enumerable.Empty<Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToAdjacencyGraph<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToAdjacencyGraph(_ => Enumerable.Empty<Edge<int>>(), false));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToAdjacencyGraph<int, Edge<int>>(default, false));
+            Invoking(() => ((IEnumerable<int>?)default).ToAdjacencyGraph(_ => Enumerable.Empty<Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToAdjacencyGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToAdjacencyGraph(_ => Enumerable.Empty<Edge<int>>(), false)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToAdjacencyGraph<int, Edge<int>>(default, false)).Should().Throw<ArgumentNullException>();
 
             IEnumerable<int> vertices = Enumerable.Empty<int>();
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToAdjacencyGraph<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToAdjacencyGraph<int, Edge<int>>(default, false));
+            Invoking(() => vertices.ToAdjacencyGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => vertices.ToAdjacencyGraph<int, Edge<int>>(default, false)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1005,7 +977,7 @@ namespace FastGraph.Tests.Extensions
         public void ToArrayAdjacencyGraph()
         {
             var wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
-            ArrayAdjacencyGraph<int, Edge<int>> graph = wrappedGraph.ToArrayAdjacencyGraph();
+            var graph = wrappedGraph.ToArrayAdjacencyGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -1022,8 +994,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<int, Edge<int>>?)default).ToArrayAdjacencyGraph());
+            Invoking(() => ((AdjacencyGraph<int, Edge<int>>?)default).ToArrayAdjacencyGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1037,7 +1008,7 @@ namespace FastGraph.Tests.Extensions
             var initialGraph2 = new BidirectionalGraph<int, Edge<int>>();
             graph = initialGraph2.ToBidirectionalGraph();
             AssertEmptyGraph(graph);
-            Assert.AreSame(initialGraph2, graph);
+            graph.Should().BeSameAs(initialGraph2);
 
             var edge12 = new Edge<int>(1, 2);
             var edge21 = new Edge<int>(2, 1);
@@ -1077,8 +1048,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<int, Edge<int>>?)default).ToBidirectionalGraph());
+            Invoking(() => ((IVertexAndEdgeListGraph<int, Edge<int>>?)default).ToBidirectionalGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1086,7 +1056,7 @@ namespace FastGraph.Tests.Extensions
         public void ToBidirectionalGraph_EdgeSet()
         {
             var edges = new List<Edge<int>>();
-            BidirectionalGraph<int, Edge<int>> graph = edges.ToBidirectionalGraph<int, Edge<int>>();
+            var graph = edges.ToBidirectionalGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
             graph = edges.ToBidirectionalGraph<int, Edge<int>>(false);
@@ -1120,10 +1090,8 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>?)default).ToBidirectionalGraph<int, Edge<int>>());
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>?)default).ToBidirectionalGraph<int, Edge<int>>(false));
+            Invoking(() => ((IEnumerable<Edge<int>>?)default).ToBidirectionalGraph<int, Edge<int>>()).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<Edge<int>>?)default).ToBidirectionalGraph<int, Edge<int>>(false)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1133,7 +1101,7 @@ namespace FastGraph.Tests.Extensions
         public void ToBidirectionalGraph_VertexPairs()
         {
             var vertices = new List<SEquatableEdge<int>>();
-            BidirectionalGraph<int, SEquatableEdge<int>> graph = vertices.ToBidirectionalGraph();
+            var graph = vertices.ToBidirectionalGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new SEquatableEdge<int>(1, 2);
@@ -1150,8 +1118,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<SEquatableEdge<int>>?)default).ToBidirectionalGraph());
+            Invoking(() => ((IEnumerable<SEquatableEdge<int>>?)default).ToBidirectionalGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1159,7 +1126,7 @@ namespace FastGraph.Tests.Extensions
         public void ToBidirectionalGraph_EdgeSetWithFactory()
         {
             var vertices = new List<int>();
-            BidirectionalGraph<int, Edge<int>> graph = vertices.ToBidirectionalGraph(
+            var graph = vertices.ToBidirectionalGraph(
                 _ => Enumerable.Empty<Edge<int>>());
             AssertEmptyGraph(graph);
 
@@ -1204,20 +1171,14 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToBidirectionalGraph(_ => Enumerable.Empty<Edge<int>>()));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToBidirectionalGraph<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToBidirectionalGraph(_ => Enumerable.Empty<Edge<int>>(), false));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<int>?)default).ToBidirectionalGraph<int, Edge<int>>(default, false));
+            Invoking(() => ((IEnumerable<int>?)default).ToBidirectionalGraph(_ => Enumerable.Empty<Edge<int>>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToBidirectionalGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToBidirectionalGraph(_ => Enumerable.Empty<Edge<int>>(), false)).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<int>?)default).ToBidirectionalGraph<int, Edge<int>>(default, false)).Should().Throw<ArgumentNullException>();
 
             var vertices = Enumerable.Empty<int>();
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToBidirectionalGraph<int, Edge<int>>(default));
-            Assert.Throws<ArgumentNullException>(
-                () => vertices.ToBidirectionalGraph<int, Edge<int>>(default, false));
+            Invoking(() => vertices.ToBidirectionalGraph<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => vertices.ToBidirectionalGraph<int, Edge<int>>(default, false)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1227,7 +1188,7 @@ namespace FastGraph.Tests.Extensions
         public void ToBidirectionalGraph_FromUndirectedGraph()
         {
             var initialGraph = new UndirectedGraph<int, Edge<int>>();
-            BidirectionalGraph<int, Edge<int>> graph = initialGraph.ToBidirectionalGraph();
+            var graph = initialGraph.ToBidirectionalGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -1255,8 +1216,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IUndirectedGraph<int, Edge<int>>?)default).ToBidirectionalGraph());
+            Invoking(() => ((IUndirectedGraph<int, Edge<int>>?)default).ToBidirectionalGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1264,7 +1224,7 @@ namespace FastGraph.Tests.Extensions
         public void ToArrayBidirectionalGraph()
         {
             var wrappedGraph = new BidirectionalGraph<int, Edge<int>>();
-            ArrayBidirectionalGraph<int, Edge<int>> graph = wrappedGraph.ToArrayBidirectionalGraph();
+            var graph = wrappedGraph.ToArrayBidirectionalGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -1281,8 +1241,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((BidirectionalGraph<int, Edge<int>>?)default).ToArrayBidirectionalGraph());
+            Invoking(() => ((BidirectionalGraph<int, Edge<int>>?)default).ToArrayBidirectionalGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1290,7 +1249,7 @@ namespace FastGraph.Tests.Extensions
         public void ToUndirectedGraph()
         {
             var edges = new List<Edge<int>>();
-            UndirectedGraph<int, Edge<int>> graph = edges.ToUndirectedGraph<int, Edge<int>>();
+            var graph = edges.ToUndirectedGraph<int, Edge<int>>();
             AssertEmptyGraph(graph);
 
             graph = edges.ToUndirectedGraph<int, Edge<int>>(false);
@@ -1324,10 +1283,8 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>?)default).ToUndirectedGraph<int, Edge<int>>());
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>?)default).ToUndirectedGraph<int, Edge<int>>(false));
+            Invoking(() => ((IEnumerable<Edge<int>>?)default).ToUndirectedGraph<int, Edge<int>>()).Should().Throw<ArgumentNullException>();
+            Invoking(() => ((IEnumerable<Edge<int>>?)default).ToUndirectedGraph<int, Edge<int>>(false)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -1337,7 +1294,7 @@ namespace FastGraph.Tests.Extensions
         public void ToUndirectedGraph_VertexPairs()
         {
             var vertices = new List<SEquatableEdge<int>>();
-            UndirectedGraph<int, SEquatableEdge<int>> graph = vertices.ToUndirectedGraph();
+            var graph = vertices.ToUndirectedGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new SEquatableEdge<int>(1, 2);
@@ -1354,8 +1311,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<SEquatableEdge<int>>?)default).ToUndirectedGraph());
+            Invoking(() => ((IEnumerable<SEquatableEdge<int>>?)default).ToUndirectedGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1363,7 +1319,7 @@ namespace FastGraph.Tests.Extensions
         public void ToArrayUndirectedGraph()
         {
             var wrappedGraph = new UndirectedGraph<int, Edge<int>>();
-            ArrayUndirectedGraph<int, Edge<int>> graph = wrappedGraph.ToArrayUndirectedGraph();
+            var graph = wrappedGraph.ToArrayUndirectedGraph();
             AssertEmptyGraph(graph);
 
             var edge12 = new Edge<int>(1, 2);
@@ -1380,8 +1336,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>?)default).ToArrayUndirectedGraph());
+            Invoking(() => ((UndirectedGraph<int, Edge<int>>?)default).ToArrayUndirectedGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -1412,8 +1367,7 @@ namespace FastGraph.Tests.Extensions
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<int, Edge<int>>?)default).ToCompressedRowGraph());
+            Invoking(() => ((AdjacencyGraph<int, Edge<int>>?)default).ToCompressedRowGraph()).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 

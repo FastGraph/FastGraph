@@ -1,7 +1,5 @@
 #nullable enable
 
-using NUnit.Framework;
-
 namespace FastGraph.Tests.Algorithms.Observers
 {
     /// <summary>
@@ -15,7 +13,7 @@ namespace FastGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => observer.Attach(default));
+            Invoking(() => observer.Attach(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
     }

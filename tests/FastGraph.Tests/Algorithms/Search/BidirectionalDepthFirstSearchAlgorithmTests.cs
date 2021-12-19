@@ -31,17 +31,17 @@ namespace FastGraph.Tests.Algorithms.Search
 
             dfs.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[vertex]);
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.White);
             };
 
             dfs.StartVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[vertex]);
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.White);
             };
 
             dfs.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[vertex]);
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.Gray);
                 discoverTimes[vertex] = time++;
             };
 
@@ -50,10 +50,9 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
-                    dfs.VerticesColors[edge.Source] == GraphColor.Gray
-                    ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.Gray);
+                (dfs.VerticesColors[edge.Source] == GraphColor.Gray
+                 ||
+                 dfs.VerticesColors[edge.Target] == GraphColor.Gray).Should().BeTrue();
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
@@ -61,10 +60,9 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
-                    dfs.VerticesColors[edge.Source] == GraphColor.White
-                    ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.White);
+                (dfs.VerticesColors[edge.Source] == GraphColor.White
+                 ||
+                 dfs.VerticesColors[edge.Target] == GraphColor.White).Should().BeTrue();
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
@@ -72,10 +70,9 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
-                    dfs.VerticesColors[edge.Source] == GraphColor.Gray
-                    ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.Gray);
+                (dfs.VerticesColors[edge.Source] == GraphColor.Gray
+                 ||
+                 dfs.VerticesColors[edge.Target] == GraphColor.Gray).Should().BeTrue();
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
@@ -83,15 +80,14 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
-                    dfs.VerticesColors[edge.Source] == GraphColor.Black
-                    ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.Black);
+                (dfs.VerticesColors[edge.Source] == GraphColor.Black
+                 ||
+                 dfs.VerticesColors[edge.Target] == GraphColor.Black).Should().BeTrue();
             };
 
             dfs.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[vertex]);
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.Black);
                 finishTimes[vertex] = time++;
             };
 
@@ -101,8 +97,8 @@ namespace FastGraph.Tests.Algorithms.Search
             // All vertices should be black
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.IsTrue(dfs.VerticesColors.ContainsKey(vertex));
-                Assert.AreEqual(dfs.VerticesColors[vertex], GraphColor.Black);
+                dfs.VerticesColors.ContainsKey(vertex).Should().BeTrue();
+                dfs.VerticesColors[vertex].Should().Be(GraphColor.Black);
             }
 
             foreach (TVertex u in graph.Vertices)
@@ -111,11 +107,10 @@ namespace FastGraph.Tests.Algorithms.Search
                 {
                     if (!u.Equals(v))
                     {
-                        Assert.IsTrue(
-                            finishTimes[u] < discoverTimes[v]
-                            || finishTimes[v] < discoverTimes[u]
-                            || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v])
-                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u]));
+                        (finishTimes[u] < discoverTimes[v]
+                         || finishTimes[v] < discoverTimes[u]
+                         || discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v]
+                         || discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u]).Should().BeTrue();
                     }
                 }
             }
@@ -156,11 +151,11 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 AssertAlgorithmState(algo, g);
                 if (vColors is null)
-                    CollectionAssert.IsEmpty(algo.VerticesColors);
+                    algo.VerticesColors.Should().BeEmpty();
                 else
-                    Assert.AreSame(vColors, algo.VerticesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
-                Assert.AreEqual(processAllComponents, algo.ProcessAllComponents);
+                    algo.VerticesColors.Should().BeSameAs(vColors);
+                algo.MaxDepth.Should().Be(maxDepth);
+                algo.ProcessAllComponents.Should().Be(processAllComponents);
             }
 
             #endregion
@@ -175,27 +170,20 @@ namespace FastGraph.Tests.Algorithms.Search
             var verticesColors = new Dictionary<int, GraphColor>();
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Invoking(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1).Should().Throw<ArgumentOutOfRangeException>();
         }
 
         #region Rooted algorithm
@@ -269,12 +257,12 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph);
             // Algorithm not run
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
+            Invoking(() => algorithm.GetVertexColor(1)).Should().Throw<VertexNotFoundException>();
 
             algorithm.Compute();
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            algorithm.GetVertexColor(1).Should().Be(GraphColor.Black);
+            algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
         [Test]
@@ -314,16 +302,13 @@ namespace FastGraph.Tests.Algorithms.Search
 
             if (processAll)
             {
-                FastGraphAssert.TrueForAll(algorithm.VerticesColors, pair => pair.Value == GraphColor.Black);
+                algorithm.VerticesColors.Should().OnlyContain(pair => pair.Value == GraphColor.Black);
             }
             else
             {
-                FastGraphAssert.TrueForAll(
-                    new[] { 1, 2, 3, 4, 5 },
-                    vertex => algorithm.VerticesColors[vertex] == GraphColor.Black);
-                FastGraphAssert.TrueForAll(
-                    new[] { 6, 7, 8 },
-                    vertex => algorithm.VerticesColors[vertex] == GraphColor.White);
+                algorithm.VerticesColors.Should().OnlyContain(kvp =>
+                    kvp.Key >= 1 && kvp.Key <= 5 && kvp.Value == GraphColor.Black
+                    || kvp.Key >= 6 && kvp.Key <= 8 && kvp.Value == GraphColor.White);
             }
         }
 

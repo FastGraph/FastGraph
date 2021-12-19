@@ -26,18 +26,16 @@ namespace FastGraph.Tests.Structures
             var v2 = new ComparableTestVertex("v2");
             CheckTaggedEdge(new STaggedUndirectedEdge<ComparableTestVertex, TestObject>(v1, v2, default), v1, v2, (TestObject?)default);
             CheckTaggedEdge(new STaggedUndirectedEdge<ComparableTestVertex, TestObject>(v1, v1, default), v1, v1, (TestObject?)default);
-#pragma warning disable CS8714
             CheckStructTaggedEdge(default(STaggedUndirectedEdge<ComparableTestVertex, TestObject>), (ComparableTestVertex?)default, default, (TestObject?)default);
-#pragma warning restore CS8714
             CheckTaggedEdge(new STaggedUndirectedEdge<ComparableTestVertex, TestObject>(v1, v2, tag), v1, v2, tag);
 
             // Struct break the contract with their implicit default constructor
             // Non struct edge should be preferred
             var defaultEdge = default(STaggedUndirectedEdge<ComparableTestVertex, int>);
-            Assert.IsNull(defaultEdge.Source);
+            defaultEdge.Source.Should().BeNull();
             // ReSharper disable once HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge.Target);
+            defaultEdge.Target.Should().BeNull();
         }
 
         [Test]
@@ -46,22 +44,22 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new STaggedUndirectedEdge<TestVertex, TestObject>(default, new TestVertex("v1"), default));
-            Assert.Throws<ArgumentNullException>(() => new STaggedUndirectedEdge<TestVertex, TestObject>(new TestVertex("v1"), default, default));
-            Assert.Throws<ArgumentNullException>(() => new STaggedUndirectedEdge<TestVertex, TestObject>(default, default, default));
+            Invoking(() => new STaggedUndirectedEdge<TestVertex, TestObject>(default, new TestVertex("v1"), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new STaggedUndirectedEdge<TestVertex, TestObject>(new TestVertex("v1"), default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new STaggedUndirectedEdge<TestVertex, TestObject>(default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentException>(() => new STaggedUndirectedEdge<int, TestObject>(2, 1, default));
+            Invoking(() => new STaggedUndirectedEdge<int, TestObject>(2, 1, default)).Should().Throw<ArgumentException>();
 
             // Not comparable
             var v1 = new TestVertex("v1");
             var v2 = new TestVertex("v2");
-            Assert.Throws<ArgumentException>(() => new STaggedUndirectedEdge<TestVertex, TestObject>(v1, v2, default));
+            Invoking(() => new STaggedUndirectedEdge<TestVertex, TestObject>(v1, v2, default)).Should().Throw<ArgumentException>();
 
             var comparableV1 = new ComparableTestVertex("v1");
             var comparableV2 = new ComparableTestVertex("v2");
-            Assert.Throws<ArgumentException>(() => new STaggedUndirectedEdge<ComparableTestVertex, TestObject>(comparableV2, comparableV1, default));
+            Invoking(() => new STaggedUndirectedEdge<ComparableTestVertex, TestObject>(comparableV2, comparableV1, default)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -78,40 +76,39 @@ namespace FastGraph.Tests.Structures
             var edge7 = new STaggedUndirectedEdge<int, TestObject>(1, 2, tag1);
             var edge8 = new STaggedUndirectedEdge<int, TestObject>(1, 2, tag2);
 
-            Assert.AreEqual(edge1, edge1);
+            edge1.Should().Be(edge1);
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            edge2.Should().Be(edge1);
+            edge1.Should().Be(edge2);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge2.Equals(edge1).Should().BeTrue();
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            edge3.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge3);
+            edge1.Equals(edge3).Should().BeFalse();
+            edge3.Equals(edge1).Should().BeFalse();
 
-            Assert.AreEqual(edge3, edge4);
-            Assert.AreEqual(edge4, edge3);
-            Assert.IsTrue(edge3.Equals(edge4));
-            Assert.IsTrue(edge4.Equals(edge3));
+            edge4.Should().Be(edge3);
+            edge3.Should().Be(edge4);
+            edge3.Equals(edge4).Should().BeTrue();
+            edge4.Equals(edge3).Should().BeTrue();
 
-            Assert.AreNotEqual(edge3, edge6);
-            Assert.AreNotEqual(edge6, edge3);
-            Assert.IsFalse(edge3.Equals(edge6));
-            Assert.IsFalse(edge6.Equals(edge3));
+            edge6.Should().NotBe(edge3);
+            edge3.Should().NotBe(edge6);
+            edge3.Equals(edge6).Should().BeFalse();
+            edge6.Equals(edge3).Should().BeFalse();
 
-            Assert.AreEqual(edge6, edge7);
-            Assert.AreEqual(edge7, edge6);
-            Assert.IsTrue(edge6.Equals(edge7));
-            Assert.IsTrue(edge7.Equals(edge6));
+            edge7.Should().Be(edge6);
+            edge6.Should().Be(edge7);
+            edge6.Equals(edge7).Should().BeTrue();
+            edge7.Equals(edge6).Should().BeTrue();
 
-            Assert.AreNotEqual(edge6, edge8);
-            Assert.AreNotEqual(edge8, edge6);
-            Assert.IsFalse(edge6.Equals(edge8));
-            Assert.IsFalse(edge8.Equals(edge6));
+            edge8.Should().NotBe(edge6);
+            edge6.Should().NotBe(edge8);
+            edge6.Equals(edge8).Should().BeFalse();
+            edge8.Equals(edge6).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, default);
-            Assert.IsFalse(edge1.Equals(default));
+            edge1.Equals(default).Should().BeFalse();
         }
 
         [Test]
@@ -120,10 +117,10 @@ namespace FastGraph.Tests.Structures
             var edge1 = default(STaggedUndirectedEdge<int, TestObject>);
             var edge2 = new STaggedUndirectedEdge<int, TestObject>();
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            edge2.Should().Be(edge1);
+            edge1.Should().Be(edge2);
+            edge1.Equals(edge2).Should().BeTrue();
+            edge2.Equals(edge1).Should().BeTrue();
         }
 
         [Test]
@@ -135,21 +132,21 @@ namespace FastGraph.Tests.Structures
             edge.TagChanged += (_, _) => ++changeCount;
 
             edge.Tag = default;
-            Assert.AreEqual(0, changeCount);
+            changeCount.Should().Be(0);
 
             var tag1 = new TestObject(1);
             edge.Tag = tag1;
-            Assert.AreEqual(1, changeCount);
+            changeCount.Should().Be(1);
 
             edge.Tag = tag1;
-            Assert.AreEqual(1, changeCount);
+            changeCount.Should().Be(1);
 
             var tag2 = new TestObject(2);
             edge.Tag = tag2;
-            Assert.AreEqual(2, changeCount);
+            changeCount.Should().Be(2);
 
             edge.Tag = tag1;
-            Assert.AreEqual(3, changeCount);
+            changeCount.Should().Be(3);
         }
 
         [Test]
@@ -158,8 +155,8 @@ namespace FastGraph.Tests.Structures
             var edge1 = new STaggedUndirectedEdge<int, TestObject>(1, 2, default);
             var edge2 = new STaggedUndirectedEdge<int, TestObject>(1, 2, new TestObject(42));
 
-            Assert.AreEqual("1 <-> 2 (no tag)", edge1.ToString());
-            Assert.AreEqual("1 <-> 2 (42)", edge2.ToString());
+            edge1.ToString().Should().Be("1 <-> 2 (no tag)");
+            edge2.ToString().Should().Be("1 <-> 2 (42)");
         }
     }
 }

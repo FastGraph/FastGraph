@@ -30,22 +30,22 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new UndirectedEdge<TestVertex>(default, new TestVertex("v1")));
-            Assert.Throws<ArgumentNullException>(() => new UndirectedEdge<TestVertex>(new TestVertex("v1"), default));
-            Assert.Throws<ArgumentNullException>(() => new UndirectedEdge<TestVertex>(default, default));
+            Invoking(() => new UndirectedEdge<TestVertex>(default, new TestVertex("v1"))).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedEdge<TestVertex>(new TestVertex("v1"), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedEdge<TestVertex>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentException>(() => new UndirectedEdge<int>(2, 1));
+            Invoking(() => new UndirectedEdge<int>(2, 1)).Should().Throw<ArgumentException>();
 
             // Not comparable
             var v1 = new TestVertex("v1");
             var v2 = new TestVertex("v2");
-            Assert.Throws<ArgumentException>(() => new UndirectedEdge<TestVertex>(v1, v2));
+            Invoking(() => new UndirectedEdge<TestVertex>(v1, v2)).Should().Throw<ArgumentException>();
 
             var comparableV1 = new ComparableTestVertex("v1");
             var comparableV2 = new ComparableTestVertex("v2");
-            Assert.Throws<ArgumentException>(() => new UndirectedEdge<ComparableTestVertex>(comparableV2, comparableV1));
+            Invoking(() => new UndirectedEdge<ComparableTestVertex>(comparableV2, comparableV1)).Should().Throw<ArgumentException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -55,15 +55,15 @@ namespace FastGraph.Tests.Structures
             var edge1 = new UndirectedEdge<int>(1, 2);
             var edge2 = new UndirectedEdge<int>(1, 2);
 
-            Assert.AreEqual(edge1, edge1);
+            edge1.Should().Be(edge1);
 
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge2, edge1);
-            Assert.IsFalse(edge1.Equals(edge2));
-            Assert.IsFalse(edge2.Equals(edge1));
+            edge2.Should().NotBe(edge1);
+            edge1.Should().NotBe(edge2);
+            edge1.Equals(edge2).Should().BeFalse();
+            edge2.Equals(edge1).Should().BeFalse();
 
-            Assert.AreNotEqual(edge1, default);
-            Assert.IsFalse(edge1.Equals(default));
+            edge1.Should().NotBe(default);
+            edge1.Equals(default).Should().BeFalse();
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace FastGraph.Tests.Structures
         {
             var edge = new UndirectedEdge<int>(1, 2);
 
-            Assert.AreEqual("1 <-> 2", edge.ToString());
+            edge.ToString().Should().Be("1 <-> 2");
         }
     }
 }

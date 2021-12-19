@@ -56,11 +56,11 @@ namespace FastGraph.Tests.Predicates
                 where TEdge : IEdge<TVertex>
                 where TGraph : IGraph<TVertex, TEdge>, IImplicitVertexSet<TVertex>
             {
-                Assert.AreSame(expectedGraph, g.BaseGraph);
-                Assert.AreEqual(isDirected, g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.AreSame(vertexPredicate, g.VertexPredicate);
-                Assert.AreSame(edgePredicate, g.EdgePredicate);
+                g.BaseGraph.Should().BeSameAs(expectedGraph);
+                g.IsDirected.Should().Be(isDirected);
+                g.AllowParallelEdges.Should().Be(parallelEdges);
+                g.VertexPredicate.Should().BeSameAs(vertexPredicate);
+                g.EdgePredicate.Should().BeSameAs(edgePredicate);
             }
 
             #endregion
@@ -72,47 +72,40 @@ namespace FastGraph.Tests.Predicates
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    new AdjacencyGraph<int, Edge<int>>(),
-                    _ => true,
-                    default));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                new AdjacencyGraph<int, Edge<int>>(),
+                _ => true,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    new AdjacencyGraph<int, Edge<int>>(),
-                    default,
-                    _ => true));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                new AdjacencyGraph<int, Edge<int>>(),
+                default,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    default,
-                    _ => true,
-                    _ => true));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                default,
+                _ => true,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    new AdjacencyGraph<int, Edge<int>>(),
-                    default,
-                    default));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                new AdjacencyGraph<int, Edge<int>>(),
+                default,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    default,
-                    _ => true,
-                    default));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                default,
+                _ => true,
+                default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    default,
-                    default,
-                    _ => true));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                default,
+                default,
+                _ => true)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
-                    default,
-                    default,
-                    default));
+            Invoking(() => new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
+                default,
+                default,
+                default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement

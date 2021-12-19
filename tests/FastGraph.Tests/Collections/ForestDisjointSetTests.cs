@@ -2,6 +2,7 @@
 
 using NUnit.Framework;
 using FastGraph.Collections;
+using FluentAssertions.Execution;
 using static FastGraph.Tests.AssertHelpers;
 
 namespace FastGraph.Tests.Collections
@@ -14,14 +15,18 @@ namespace FastGraph.Tests.Collections
     {
         #region Test helpers
 
+        [CustomAssertion]
         private static void AssertSetSizes<T>(
             ForestDisjointSet<T> set,
             int expectedSetCount,
             int expectedCount)
             where T : notnull
         {
-            Assert.AreEqual(expectedSetCount, set.SetCount);
-            Assert.AreEqual(expectedCount, set.ElementCount);
+            using (_ = new AssertionScope())
+            {
+                set.SetCount.Should().Be(expectedSetCount);
+                set.ElementCount.Should().Be(expectedCount);
+            }
         }
 
         #endregion
@@ -47,8 +52,8 @@ namespace FastGraph.Tests.Collections
         public void Constructor_Throws()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Assert.Throws<ArgumentOutOfRangeException>(() => new ForestDisjointSet<int>(-1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new ForestDisjointSet<int>(int.MaxValue));
+            Invoking(() => new ForestDisjointSet<int>(-1)).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => new ForestDisjointSet<int>(int.MaxValue)).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -88,12 +93,12 @@ namespace FastGraph.Tests.Collections
             var set = new ForestDisjointSet<TestVertex>();
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => set.MakeSet(default));
+            Invoking(() => set.MakeSet(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 
             set.MakeSet(testObject);
             // Double insert
-            Assert.Throws<ArgumentException>(() => set.MakeSet(testObject));
+            Invoking(() => set.MakeSet(testObject)).Should().Throw<ArgumentException>();
         }
 
         [Test]
@@ -141,8 +146,8 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => set.FindSet(default));
-            Assert.Throws<KeyNotFoundException>(() => set.FindSet(vertex));
+            Invoking(() => set.FindSet(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => set.FindSet(vertex)).Should().Throw<KeyNotFoundException>();
 #pragma warning restore CS8625
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -167,19 +172,19 @@ namespace FastGraph.Tests.Collections
                 AssertSetSizes(set, 0, 0);
 
                 set.MakeSet(value1);
-                Assert.IsTrue(set.AreInSameSet(value1, value1));
+                set.AreInSameSet(value1, value1).Should().BeTrue();
 
                 set.MakeSet(value2);
-                Assert.IsTrue(set.AreInSameSet(value1, value1));
-                Assert.IsFalse(set.AreInSameSet(value1, value2));
-                Assert.IsFalse(set.AreInSameSet(value2, value1));
-                Assert.IsTrue(set.AreInSameSet(value2, value2));
+                set.AreInSameSet(value1, value1).Should().BeTrue();
+                set.AreInSameSet(value1, value2).Should().BeFalse();
+                set.AreInSameSet(value2, value1).Should().BeFalse();
+                set.AreInSameSet(value2, value2).Should().BeTrue();
 
                 set.Union(value1, value2);
-                Assert.IsTrue(set.AreInSameSet(value1, value1));
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value2, value1));
-                Assert.IsTrue(set.AreInSameSet(value2, value2));
+                set.AreInSameSet(value1, value1).Should().BeTrue();
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value2, value1).Should().BeTrue();
+                set.AreInSameSet(value2, value2).Should().BeTrue();
             }
 
             #endregion
@@ -194,22 +199,22 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(vertex, default));
-            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => set.AreInSameSet(default, default));
+            Invoking(() => set.AreInSameSet(vertex, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => set.AreInSameSet(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => set.AreInSameSet(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex, vertex2));
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex2, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex2, vertex2));
+            Invoking(() => set.AreInSameSet(vertex, vertex)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.AreInSameSet(vertex, vertex2)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.AreInSameSet(vertex2, vertex)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.AreInSameSet(vertex2, vertex2)).Should().Throw<KeyNotFoundException>();
 
             set.MakeSet(vertex);
-            Assert.DoesNotThrow(() => set.AreInSameSet(vertex, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex, vertex2));
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex2, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.AreInSameSet(vertex2, vertex2));
+            Invoking((Func<bool>)(() => set.AreInSameSet(vertex, vertex))).Should().NotThrow();
+            Invoking(() => set.AreInSameSet(vertex, vertex2)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.AreInSameSet(vertex2, vertex)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.AreInSameSet(vertex2, vertex2)).Should().Throw<KeyNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -243,63 +248,63 @@ namespace FastGraph.Tests.Collections
                 ForestDisjointSet<TValue> set = MakeAndFillSet();
                 set.Union(value1, value2);
                 AssertSetSizes(set, 4, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
 
                 set.Union(value4, value3);
                 AssertSetSizes(set, 3, 5);
-                Assert.IsTrue(set.AreInSameSet(value3, value4));
+                set.AreInSameSet(value3, value4).Should().BeTrue();
 
                 set.Union(value1, value4);
                 AssertSetSizes(set, 2, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value3).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
 
                 set.Union(value1, value5);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value3).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
+                set.AreInSameSet(value1, value5).Should().BeTrue();
 
                 // Already merged
                 set.Union(value1, value1);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value3).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
+                set.AreInSameSet(value1, value5).Should().BeTrue();
 
                 set.Union(value1, value4);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value3).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
+                set.AreInSameSet(value1, value5).Should().BeTrue();
 
                 set.Union(value4, value1);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value3).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
+                set.AreInSameSet(value1, value5).Should().BeTrue();
 
 
                 set = MakeAndFillSet();
                 set.Union(value1, value2);
                 AssertSetSizes(set, 4, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
 
                 set.Union(value2, value4);
                 AssertSetSizes(set, 3, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
 
                 set.Union(value5, value2);
                 AssertSetSizes(set, 2, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                set.AreInSameSet(value1, value2).Should().BeTrue();
+                set.AreInSameSet(value1, value4).Should().BeTrue();
+                set.AreInSameSet(value1, value5).Should().BeTrue();
 
                 #region Local function
 
@@ -332,22 +337,22 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => set.Union(vertex, default));
-            Assert.Throws<ArgumentNullException>(() => set.Union(default, vertex));
-            Assert.Throws<ArgumentNullException>(() => set.Union(default, default));
+            Invoking(() => set.Union(vertex, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => set.Union(default, vertex)).Should().Throw<ArgumentNullException>();
+            Invoking(() => set.Union(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex, vertex2));
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex2, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex2, vertex2));
+            Invoking(() => set.Union(vertex, vertex)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.Union(vertex, vertex2)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.Union(vertex2, vertex)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.Union(vertex2, vertex2)).Should().Throw<KeyNotFoundException>();
 
             set.MakeSet(vertex);
-            Assert.DoesNotThrow(() => set.Union(vertex, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex, vertex2));
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex2, vertex));
-            Assert.Throws<KeyNotFoundException>(() => set.Union(vertex2, vertex2));
+            Invoking((Func<bool>)(() => set.Union(vertex, vertex))).Should().NotThrow();
+            Invoking(() => set.Union(vertex, vertex2)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.Union(vertex2, vertex)).Should().Throw<KeyNotFoundException>();
+            Invoking(() => set.Union(vertex2, vertex2)).Should().Throw<KeyNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -368,20 +373,20 @@ namespace FastGraph.Tests.Collections
                 where TValue : notnull
             {
                 var set = new ForestDisjointSet<TValue>();
-                Assert.IsFalse(set.Contains(value1));
-                Assert.IsFalse(set.Contains(value2));
+                set.Contains(value1).Should().BeFalse();
+                set.Contains(value2).Should().BeFalse();
 
                 set.MakeSet(value1);
-                Assert.IsTrue(set.Contains(value1));
-                Assert.IsFalse(set.Contains(value2));
+                set.Contains(value1).Should().BeTrue();
+                set.Contains(value2).Should().BeFalse();
 
                 set.MakeSet(value2);
-                Assert.IsTrue(set.Contains(value1));
-                Assert.IsTrue(set.Contains(value2));
+                set.Contains(value1).Should().BeTrue();
+                set.Contains(value2).Should().BeTrue();
 
                 set.Union(value1, value2);
-                Assert.IsTrue(set.Contains(value1));
-                Assert.IsTrue(set.Contains(value2));
+                set.Contains(value1).Should().BeTrue();
+                set.Contains(value2).Should().BeTrue();
             }
 
             #endregion
@@ -394,7 +399,7 @@ namespace FastGraph.Tests.Collections
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => set.Contains(default));
+            Invoking(() => set.Contains(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
     }

@@ -16,7 +16,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
         {
             int[,] costs = new int[0, 0];
             var algorithm = new HungarianAlgorithm(costs);
-            Assert.IsNull(algorithm.AgentsTasks);
+            algorithm.AgentsTasks.Should().BeNull();
 
             costs = new[,]
             {
@@ -24,7 +24,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
                 { 1, 2, 3 },
             };
             algorithm = new HungarianAlgorithm(costs);
-            Assert.IsNull(algorithm.AgentsTasks);
+            algorithm.AgentsTasks.Should().BeNull();
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace FastGraph.Tests.Algorithms.Assignment
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new HungarianAlgorithm(default));
+            Invoking(() => new HungarianAlgorithm(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -49,9 +49,9 @@ namespace FastGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             int[] tasks = algorithm.Compute();
 
-            Assert.AreEqual(0, tasks[0]);
-            Assert.AreEqual(1, tasks[1]);
-            Assert.AreEqual(2, tasks[2]);
+            tasks[0].Should().Be(0);
+            tasks[1].Should().Be(1);
+            tasks[2].Should().Be(2);
         }
 
         [Test]
@@ -74,16 +74,34 @@ namespace FastGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.AgentsTasks);
+            algorithm.AgentsTasks.Should().NotBeNull();
             int[] tasks = algorithm.AgentsTasks!;
-            Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
-            Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
-            Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
-            Assert.AreEqual(3, tasks[3]); // J4 to be done by W4
+            tasks[0].Should().Be(2); // J1 to be done by W3
+            tasks[1].Should().Be(1); // J2 to be done by W2
+            tasks[2].Should().Be(0); // J3 to be done by W1
+            tasks[3].Should().Be(3); // J4 to be done by W4
         }
 
         [Test]
-        public void SimpleAssignmentIterations()
+        public void SimpleAssignmentIterations_HasTasks()
+        {
+            int[,] matrix =
+            {
+                { 1, 2, 3 },
+                { 3, 3, 3 },
+                { 3, 3, 2 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            _ = algorithm.Compute();
+
+            int[] tasks = algorithm.AgentsTasks!;
+            tasks[0].Should().Be(0);
+            tasks[1].Should().Be(1);
+            tasks[2].Should().Be(2);
+        }
+
+        [Test]
+        public void SimpleAssignmentIterations_HasIterations()
         {
             int[,] matrix =
             {
@@ -94,56 +112,149 @@ namespace FastGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
-            int[] tasks = algorithm.AgentsTasks!;
-            Assert.AreEqual(0, tasks[0]);
-            Assert.AreEqual(1, tasks[1]);
-            Assert.AreEqual(2, tasks[2]);
+            iterations.Should().HaveCount(3);
+        }
 
-            Assert.AreEqual(3, iterations.Length);
-            CollectionAssert.AreEqual(
+        [Test]
+        public void SimpleAssignmentIterations_HasIterationsWith_ExpectedMatrices()
+        {
+            int[,] matrix =
+            {
+                { 1, 2, 3 },
+                { 3, 3, 3 },
+                { 3, 3, 2 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedMatrices =
                 new[]
                 {
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } },
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } },
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } }
-                },
-                iterations.Select(iteration => iteration.Matrix));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.Matrix).Should().BeEquivalentTo(expectedMatrices);
+        }
+
+        [Test]
+        public void SimpleAssignmentIterations_HasIterationsWith_ExpectedMasks()
+        {
+            int[,] matrix =
+            {
+                { 1, 2, 3 },
+                { 3, 3, 3 },
+                { 3, 3, 2 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedMasks =
                 new[]
                 {
-                    new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
-                    new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
-                    new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }
-                },
-                iterations.Select(iteration => iteration.Mask));
-            CollectionAssert.AreEqual(
+                    new byte[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
+                    new byte[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
+                    new byte[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }
+                };
+            iterations.Select(iteration => iteration.Mask).Should().BeEquivalentTo(expectedMasks);
+        }
+
+        [Test]
+        public void SimpleAssignmentIterations_HasIterationsWith_ExpectedRowsCovered()
+        {
+            int[,] matrix =
+            {
+                { 1, 2, 3 },
+                { 3, 3, 3 },
+                { 3, 3, 2 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedRowsCovereds =
                 new[]
                 {
                     new[] { false, false, false },
                     new[] { false, false, false },
                     new[] { false, false, false }
-                },
-                iterations.Select(iteration => iteration.RowsCovered));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.RowsCovered).Should().BeEquivalentTo(expectedRowsCovereds);
+        }
+
+        [Test]
+        public void SimpleAssignmentIterations_HasIterationsWith_ExpectedColumnsCovered()
+        {
+            int[,] matrix =
+            {
+                { 1, 2, 3 },
+                { 3, 3, 3 },
+                { 3, 3, 2 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedColumnsCovereds =
                 new[]
                 {
                     new[] { false, false, false },
                     new[] { true,  true,  true },
                     new[] { true,  true,  true }
-                },
-                iterations.Select(iteration => iteration.ColumnsCovered));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.ColumnsCovered).Should().BeEquivalentTo(expectedColumnsCovereds);
+        }
+
+        [Test]
+        public void SimpleAssignmentIterations_HasIterationsWith_ExpectedSteps()
+        {
+            int[,] matrix =
+            {
+                { 1, 2, 3 },
+                { 3, 3, 3 },
+                { 3, 3, 2 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedSteps =
                 new[]
                 {
                     HungarianAlgorithm.Steps.Init,
                     HungarianAlgorithm.Steps.Step1,
                     HungarianAlgorithm.Steps.End
-                },
-                iterations.Select(iteration => iteration.Step));
+                };
+            iterations.Select(iteration => iteration.Step).Should().BeEquivalentTo(expectedSteps);
         }
 
         [Test]
-        public void JobAssignmentIterations()
+        public void JobAssignmentIterations_AgentTasks()
+        {
+            // J = Job | W = Worker
+            //     J1  J2  J3  J4
+            // W1  82  83  69  92
+            // W2  77  37  49  92
+            // W3  11  69  5   86
+            // W4  8   9   98  23
+
+            int[,] matrix =
+            {
+                { 82, 83, 69, 92 },
+                { 77, 37, 49, 92 },
+                { 11, 69, 5,  86 },
+                { 8,  9,  98, 23 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            algorithm.Compute();
+
+            algorithm.AgentsTasks.Should().NotBeNull();
+            int[] tasks = algorithm.AgentsTasks!;
+            tasks[0].Should().Be(2); // J1 to be done by W3
+            tasks[1].Should().Be(1); // J2 to be done by W2
+            tasks[2].Should().Be(0); // J3 to be done by W1
+            tasks[3].Should().Be(3); // J4 to be done by W4
+        }
+
+        [Test]
+        public void JobAssignmentIterations_HasIterations()
         {
             // J = Job | W = Worker
             //     J1  J2  J3  J4
@@ -162,15 +273,30 @@ namespace FastGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
-            Assert.IsNotNull(algorithm.AgentsTasks);
-            int[] tasks = algorithm.AgentsTasks!;
-            Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
-            Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
-            Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
-            Assert.AreEqual(3, tasks[3]); // J4 to be done by W4
+            iterations.Should().HaveCount(11);
+        }
 
-            Assert.AreEqual(11, iterations.Length);
-            CollectionAssert.AreEqual(
+        [Test]
+        public void JobAssignmentIterations_HasIterations_WithExpectedMatrices()
+        {
+            // J = Job | W = Worker
+            //     J1  J2  J3  J4
+            // W1  82  83  69  92
+            // W2  77  37  49  92
+            // W3  11  69  5   86
+            // W4  8   9   98  23
+
+            int[,] matrix =
+            {
+                { 82, 83, 69, 92 },
+                { 77, 37, 49, 92 },
+                { 11, 69, 5,  86 },
+                { 8,  9,  98, 23 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedMatrices =
                 new[]
                 {
                     new[,] { { 13, 14, 0, 23 }, { 40, 0, 12, 55 }, { 6, 64, 0, 81 }, { 0, 1, 90, 15 } },
@@ -184,9 +310,31 @@ namespace FastGraph.Tests.Algorithms.Assignment
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } },
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } },
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } }
-                },
-                iterations.Select(iteration => iteration.Matrix));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.Matrix).Should().BeEquivalentTo(expectedMatrices);
+        }
+
+        [Test]
+        public void JobAssignmentIterations_HasIterations_WithExpectedMasks()
+        {
+            // J = Job | W = Worker
+            //     J1  J2  J3  J4
+            // W1  82  83  69  92
+            // W2  77  37  49  92
+            // W3  11  69  5   86
+            // W4  8   9   98  23
+
+            int[,] matrix =
+            {
+                { 82, 83, 69, 92 },
+                { 77, 37, 49, 92 },
+                { 11, 69, 5,  86 },
+                { 8,  9,  98, 23 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedMasks =
                 new[]
                 {
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 1, 0, 0, 0 } },
@@ -200,9 +348,31 @@ namespace FastGraph.Tests.Algorithms.Assignment
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } }
-                },
-                iterations.Select(iteration => iteration.Mask));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.Mask).Should().BeEquivalentTo(expectedMasks);
+        }
+
+        [Test]
+        public void JobAssignmentIterations_HasIterations_WithExpectedRowsCovered()
+        {
+            // J = Job | W = Worker
+            //     J1  J2  J3  J4
+            // W1  82  83  69  92
+            // W2  77  37  49  92
+            // W3  11  69  5   86
+            // W4  8   9   98  23
+
+            int[,] matrix =
+            {
+                { 82, 83, 69, 92 },
+                { 77, 37, 49, 92 },
+                { 11, 69, 5,  86 },
+                { 8,  9,  98, 23 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedRowsCovereds =
                 new[]
                 {
                     new[] { false, false, false, false },
@@ -216,9 +386,31 @@ namespace FastGraph.Tests.Algorithms.Assignment
                     new[] { false, false, false, false },
                     new[] { false, false, false, false },
                     new[] { false, false, false, false }
-                },
-                iterations.Select(iteration => iteration.RowsCovered));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.RowsCovered).Should().BeEquivalentTo(expectedRowsCovereds);
+        }
+
+        [Test]
+        public void JobAssignmentIterations_HasIterations_WithExpectedColumnsCovered()
+        {
+            // J = Job | W = Worker
+            //     J1  J2  J3  J4
+            // W1  82  83  69  92
+            // W2  77  37  49  92
+            // W3  11  69  5   86
+            // W4  8   9   98  23
+
+            int[,] matrix =
+            {
+                { 82, 83, 69, 92 },
+                { 77, 37, 49, 92 },
+                { 11, 69, 5,  86 },
+                { 8,  9,  98, 23 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedColumnsCovereds =
                 new[]
                 {
                     new[] { false, false, false, false },
@@ -232,9 +424,31 @@ namespace FastGraph.Tests.Algorithms.Assignment
                     new[] { false, false, false, false },
                     new[] { true,  true,  true,  true },
                     new[] { true,  true,  true,  true }
-                },
-                iterations.Select(iteration => iteration.ColumnsCovered));
-            CollectionAssert.AreEqual(
+                };
+            iterations.Select(iteration => iteration.ColumnsCovered).Should().BeEquivalentTo(expectedColumnsCovereds);
+        }
+
+        [Test]
+        public void JobAssignmentIterations_HasIterations_WithExpectedSteps()
+        {
+            // J = Job | W = Worker
+            //     J1  J2  J3  J4
+            // W1  82  83  69  92
+            // W2  77  37  49  92
+            // W3  11  69  5   86
+            // W4  8   9   98  23
+
+            int[,] matrix =
+            {
+                { 82, 83, 69, 92 },
+                { 77, 37, 49, 92 },
+                { 11, 69, 5,  86 },
+                { 8,  9,  98, 23 }
+            };
+            var algorithm = new HungarianAlgorithm(matrix);
+            HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
+
+            var expectedSteps =
                 new[]
                 {
                     HungarianAlgorithm.Steps.Init,
@@ -248,8 +462,8 @@ namespace FastGraph.Tests.Algorithms.Assignment
                     HungarianAlgorithm.Steps.Step3,
                     HungarianAlgorithm.Steps.Step1,
                     HungarianAlgorithm.Steps.End
-                },
-                iterations.Select(iteration => iteration.Step));
+                };
+            iterations.Select(iteration => iteration.Step).Should().BeEquivalentTo(expectedSteps);
         }
     }
 }

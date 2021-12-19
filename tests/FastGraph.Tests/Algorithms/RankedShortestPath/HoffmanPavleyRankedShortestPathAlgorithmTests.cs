@@ -25,7 +25,7 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            FastGraphAssert.TrueForAll(graph.Edges, edgeWeights.ContainsKey);
+            graph.Edges.Should().OnlyContain(e => edgeWeights.ContainsKey(e));
 
             var target = new HoffmanPavleyRankedShortestPathAlgorithm<TVertex, TEdge>(graph, e => edgeWeights[e])
             {
@@ -37,10 +37,10 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             foreach (TEdge[] path in target.ComputedShortestPaths.Select(p => p.ToArray()))
             {
                 double weight = path.Sum(e => edgeWeights[e]);
-                Assert.IsTrue(lastWeight <= weight, $"{lastWeight} <= {weight}");
-                Assert.AreEqual(rootVertex, path.First().Source);
-                Assert.AreEqual(targetVertex, path.Last().Target);
-                Assert.IsTrue(path.IsPathWithoutCycles<TVertex, TEdge>());
+                (lastWeight <= weight).Should().BeTrue();
+                path.First().Source.Should().Be(rootVertex);
+                path.Last().Target.Should().Be(targetVertex);
+                path.IsPathWithoutCycles<TVertex, TEdge>().Should().BeTrue();
 
                 lastWeight = weight;
             }
@@ -73,13 +73,13 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreEqual(3, algo.ShortestPathCount);
-                CollectionAssert.IsEmpty(algo.ComputedShortestPaths);
-                Assert.AreEqual(0, algo.ComputedShortestPathCount);
+                algo.ShortestPathCount.Should().Be(3);
+                algo.ComputedShortestPaths.Should().BeEmpty();
+                algo.ComputedShortestPathCount.Should().Be(0);
                 if (relaxer is null)
-                    Assert.IsNotNull(algo.DistanceRelaxer);
+                    algo.DistanceRelaxer.Should().NotBeNull();
                 else
-                    Assert.AreSame(relaxer, algo.DistanceRelaxer);
+                    algo.DistanceRelaxer.Should().BeSameAs(relaxer);
             }
 
             #endregion
@@ -95,47 +95,30 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             Func<Edge<int>, double> Weights = _ => 1.0;
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, Weights));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, Weights)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, Weights, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, Weights, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, graph, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, default, default));
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, graph, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, graph, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, default, DistanceRelaxers.CriticalDistance)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, Weights, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
 
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, Weights);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.ShortestPathCount = 0);
-            Assert.Throws<ArgumentOutOfRangeException>(() => algorithm.ShortestPathCount = -1);
+            Invoking(() => algorithm.ShortestPathCount = 0).Should().Throw<ArgumentOutOfRangeException>();
+            Invoking(() => algorithm.ShortestPathCount = -1).Should().Throw<ArgumentOutOfRangeException>();
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -182,21 +165,21 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
                 () => new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0));
 
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
-            Assert.Throws<InvalidOperationException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().Throw<InvalidOperationException>();
 
             // Source (and target) vertex set but not to a vertex in the graph
             const int vertex1 = 1;
             algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.SetRootVertex(vertex1);
             algorithm.SetTargetVertex(vertex1);
-            Assert.Throws<VertexNotFoundException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().Throw<VertexNotFoundException>();
 
             const int vertex2 = 2;
             graph.AddVertex(vertex1);
             algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.SetRootVertex(vertex1);
             algorithm.SetTargetVertex(vertex2);
-            Assert.Throws<VertexNotFoundException>(algorithm.Compute);
+            Invoking(algorithm.Compute).Should().Throw<VertexNotFoundException>();
         }
 
         #endregion
@@ -209,11 +192,11 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
 
-            Assert.IsFalse(algorithm.TryGetTargetVertex(out _));
+            algorithm.TryGetTargetVertex(out _).Should().BeFalse();
 
             const int vertex = 0;
             algorithm.SetTargetVertex(vertex);
-            Assert.IsTrue(algorithm.TryGetTargetVertex(out int target));
+            algorithm.TryGetTargetVertex(out int target).Should().BeTrue();
             AssertEqual(vertex, target);
         }
 
@@ -226,17 +209,17 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             const int vertex1 = 0;
             algorithm.SetTargetVertex(vertex1);
             algorithm.TryGetTargetVertex(out int target);
-            Assert.AreEqual(vertex1, target);
+            target.Should().Be(vertex1);
 
             // Not changed
             algorithm.SetTargetVertex(vertex1);
             algorithm.TryGetTargetVertex(out target);
-            Assert.AreEqual(vertex1, target);
+            target.Should().Be(vertex1);
 
             const int vertex2 = 1;
             algorithm.SetTargetVertex(vertex2);
             algorithm.TryGetTargetVertex(out target);
-            Assert.AreEqual(vertex2, target);
+            target.Should().Be(vertex2);
         }
 
         [Test]
@@ -247,7 +230,7 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
 
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm.SetTargetVertex(default));
+            Invoking(() => algorithm.SetTargetVertex(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -261,9 +244,9 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             graph.AddVertexRange(new[] { start, end });
             var algorithm = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
 
-            Assert.DoesNotThrow(() => algorithm.Compute(start, end));
-            Assert.IsTrue(algorithm.TryGetRootVertex(out int root));
-            Assert.IsTrue(algorithm.TryGetTargetVertex(out int target));
+            Invoking(() => algorithm.Compute(start, end)).Should().NotThrow();
+            algorithm.TryGetRootVertex(out int root).Should().BeTrue();
+            algorithm.TryGetTargetVertex(out int target).Should().BeTrue();
             AssertEqual(start, root);
             AssertEqual(end, target);
         }
@@ -277,11 +260,11 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             var graph1 = new BidirectionalGraph<int, Edge<int>>();
             var algorithm1 = new HoffmanPavleyRankedShortestPathAlgorithm<int, Edge<int>>(graph1, _ => 1.0);
 
-            Assert.Throws<ArgumentException>(() => algorithm1.Compute(start1));
+            Invoking(() => algorithm1.Compute(start1)).Should().Throw<ArgumentException>();
             graph1.AddVertex(start1);
 
-            Assert.Throws<InvalidOperationException>(() => algorithm1.Compute(start1));
-            Assert.Throws<ArgumentException>(() => algorithm1.Compute(start1, end1));
+            Invoking(() => algorithm1.Compute(start1)).Should().Throw<InvalidOperationException>();
+            Invoking(() => algorithm1.Compute(start1, end1)).Should().Throw<ArgumentException>();
 
 
             var start2 = new TestVertex("1");
@@ -292,10 +275,10 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
 
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => algorithm2.Compute(default));
-            Assert.Throws<ArgumentNullException>(() => algorithm2.Compute(start2, default));
-            Assert.Throws<ArgumentNullException>(() => algorithm2.Compute(default, end2));
-            Assert.Throws<ArgumentNullException>(() => algorithm2.Compute(default, default));
+            Invoking(() => algorithm2.Compute(default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm2.Compute(start2, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm2.Compute(default, end2)).Should().Throw<ArgumentNullException>();
+            Invoking(() => algorithm2.Compute(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -384,7 +367,7 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
                 graph.AddVerticesAndEdge(edge);
                 weights[edge] = data[i + 2];
             }
-            Assert.AreEqual(data.Length, i);
+            i.Should().Be(data.Length);
 
             RunHoffmanPavleyRankedShortestPathAndCheck(graph, weights, 9, 1, 10);
         }
@@ -399,7 +382,7 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
                 ShortestPathCount = 5
             };
             algorithm.Compute(1626, 1965);
-            Assert.AreEqual(4, algorithm.ComputedShortestPathCount);
+            algorithm.ComputedShortestPathCount.Should().Be(4);
 
             #region Local function
 
@@ -515,7 +498,7 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
             {
                 ShortestPathCount = 5
             };
-            Assert.DoesNotThrow(() => algorithm.Compute(5, 2));
+            Invoking(() => algorithm.Compute(5, 2)).Should().NotThrow();
 
             #region Local function
 

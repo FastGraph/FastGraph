@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
 {
@@ -22,11 +21,11 @@ namespace FastGraph.Tests.Structures
             graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
             graph.AddVertex(5);
 
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            graph.Degree(1).Should().Be(3);
+            graph.Degree(2).Should().Be(3);
+            graph.Degree(3).Should().Be(4); // Self edge
+            graph.Degree(4).Should().Be(2);
+            graph.Degree(5).Should().Be(0);
         }
 
         protected static void Degree_ImmutableGraph_Test(
@@ -44,11 +43,11 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVertex(5);
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            graph.Degree(1).Should().Be(3);
+            graph.Degree(2).Should().Be(3);
+            graph.Degree(3).Should().Be(4); // Self edge
+            graph.Degree(4).Should().Be(2);
+            graph.Degree(5).Should().Be(0);
         }
 
         protected static void Degree_ImmutableVertices_Test(
@@ -63,11 +62,11 @@ namespace FastGraph.Tests.Structures
 
             graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
 
-            Assert.AreEqual(0, graph.Degree(0));
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
+            graph.Degree(0).Should().Be(0);
+            graph.Degree(1).Should().Be(3);
+            graph.Degree(2).Should().Be(3);
+            graph.Degree(3).Should().Be(4); // Self edge
+            graph.Degree(4).Should().Be(2);
         }
 
         protected static void Degree_ImmutableGraph_ReversedTest(
@@ -85,11 +84,11 @@ namespace FastGraph.Tests.Structures
             wrappedGraph.AddVertex(5);
             IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            graph.Degree(1).Should().Be(3);
+            graph.Degree(2).Should().Be(3);
+            graph.Degree(3).Should().Be(4); // Self edge
+            graph.Degree(4).Should().Be(2);
+            graph.Degree(5).Should().Be(0);
         }
 
         protected static void Degree_Throws_Test<TVertex, TEdge>(
@@ -100,9 +99,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.Degree(default));
+            Invoking(() => graph.Degree(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
-            Assert.Throws<VertexNotFoundException>(() => graph.Degree(new TVertex()));
+            Invoking(() => graph.Degree(new TVertex())).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -111,8 +110,8 @@ namespace FastGraph.Tests.Structures
             where TEdge : class, IEdge<int>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => graph.Degree(-1));
-            Assert.Throws<VertexNotFoundException>(() => graph.Degree(10));
+            Invoking(() => graph.Degree(-1)).Should().Throw<VertexNotFoundException>();
+            Invoking(() => graph.Degree(10)).Should().Throw<VertexNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 

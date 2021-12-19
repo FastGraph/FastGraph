@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using NUnit.Framework;
 using FastGraph.Graphviz.Dot;
@@ -35,10 +35,10 @@ namespace FastGraph.Graphviz.Tests
 
             void CheckColor(GraphvizColor c, byte a, byte r, byte g, byte b)
             {
-                Assert.AreEqual(a, c.A);
-                Assert.AreEqual(r, c.R);
-                Assert.AreEqual(g, c.G);
-                Assert.AreEqual(b, c.B);
+                c.A.Should().Be(a);
+                c.R.Should().Be(r);
+                c.G.Should().Be(g);
+                c.B.Should().Be(b);
             }
 
             #endregion
@@ -54,40 +54,40 @@ namespace FastGraph.Graphviz.Tests
             var color5 = new GraphvizColor(255, 150, 120, 25);
             var color6 = new GraphvizColor(255, 150, 160, 30);
 
-            Assert.AreEqual(color1, color1);
+            color1.Should().Be(color1);
 
-            Assert.IsTrue(color1 == color2);
-            Assert.IsTrue(color1.Equals(color2));
-            Assert.IsTrue(color1.Equals((object)color2));
-            Assert.IsFalse(color1 != color2);
-            Assert.AreEqual(color1, color2);
+            (color1 == color2).Should().BeTrue();
+            color1.Equals(color2).Should().BeTrue();
+            color1.Equals(color2).Should().BeTrue();
+            (color1 != color2).Should().BeFalse();
+            color2.Should().Be(color1);
 
-            Assert.IsFalse(color1 == color3);
-            Assert.IsFalse(color1.Equals(color3));
-            Assert.IsFalse(color1.Equals((object)color3));
-            Assert.IsTrue(color1 != color3);
-            Assert.AreNotEqual(color1, color3);
+            (color1 == color3).Should().BeFalse();
+            color1.Equals(color3).Should().BeFalse();
+            color1.Equals(color3).Should().BeFalse();
+            (color1 != color3).Should().BeTrue();
+            color3.Should().NotBe(color1);
 
-            Assert.IsFalse(color1 == color4);
-            Assert.IsFalse(color1.Equals(color4));
-            Assert.IsFalse(color1.Equals((object)color4));
-            Assert.IsTrue(color1 != color4);
-            Assert.AreNotEqual(color1, color4);
+            (color1 == color4).Should().BeFalse();
+            color1.Equals(color4).Should().BeFalse();
+            color1.Equals(color4).Should().BeFalse();
+            (color1 != color4).Should().BeTrue();
+            color4.Should().NotBe(color1);
 
-            Assert.IsFalse(color1 == color5);
-            Assert.IsFalse(color1.Equals(color5));
-            Assert.IsFalse(color1.Equals((object)color5));
-            Assert.IsTrue(color1 != color5);
-            Assert.AreNotEqual(color1, color5);
+            (color1 == color5).Should().BeFalse();
+            color1.Equals(color5).Should().BeFalse();
+            color1.Equals(color5).Should().BeFalse();
+            (color1 != color5).Should().BeTrue();
+            color5.Should().NotBe(color1);
 
-            Assert.IsFalse(color1 == color6);
-            Assert.IsFalse(color1.Equals(color6));
-            Assert.IsFalse(color1.Equals((object)color6));
-            Assert.IsTrue(color1 != color6);
-            Assert.AreNotEqual(color1, color6);
+            (color1 == color6).Should().BeFalse();
+            color1.Equals(color6).Should().BeFalse();
+            color1.Equals(color6).Should().BeFalse();
+            (color1 != color6).Should().BeTrue();
+            color6.Should().NotBe(color1);
 
-            Assert.AreNotEqual(color1, default);
-            Assert.AreNotEqual(color1, new TestClass());
+            color1.Should().NotBe(default);
+            new TestClass().Should().NotBe(color1);
         }
 
         [Test]
@@ -98,9 +98,9 @@ namespace FastGraph.Graphviz.Tests
             var color3 = new GraphvizColor(125, 150, 160, 25);
             var color4 = new GraphvizColor(125, 150, 160, 25);
 
-            Assert.AreEqual(color1.GetHashCode(), color2.GetHashCode());
-            Assert.AreNotEqual(color1.GetHashCode(), color3.GetHashCode());
-            Assert.AreEqual(color3.GetHashCode(), color4.GetHashCode());
+            color2.GetHashCode().Should().Be(color1.GetHashCode());
+            color3.GetHashCode().Should().NotBe(color1.GetHashCode());
+            color4.GetHashCode().Should().Be(color3.GetHashCode());
         }
     }
 }

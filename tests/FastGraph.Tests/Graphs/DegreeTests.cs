@@ -21,7 +21,7 @@ namespace FastGraph.Tests.Graphs
             foreach (TVertex vertex in graph.Vertices)
                 totalDegree += graph.Degree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount * 2, totalDegree);
+            totalDegree.Should().Be(graph.EdgeCount * 2);
         }
 
         private static void AssertInDegreeSumEqualsEdgeCount<TVertex, TEdge>(
@@ -33,7 +33,7 @@ namespace FastGraph.Tests.Graphs
             foreach (TVertex vertex in graph.Vertices)
                 totalInDegree += graph.InDegree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount, totalInDegree);
+            totalInDegree.Should().Be(graph.EdgeCount);
         }
 
         private static void OutDegreeSumEqualsEdgeCount<TVertex, TEdge>(
@@ -45,7 +45,7 @@ namespace FastGraph.Tests.Graphs
             foreach (TVertex vertex in graph.Vertices)
                 totalOutDegree += graph.OutDegree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount, totalOutDegree);
+            totalOutDegree.Should().Be(graph.EdgeCount);
         }
 
         private static void AssertAdjacentDegreeSumEqualsTwiceEdgeCount<TVertex, TEdge>(
@@ -57,7 +57,7 @@ namespace FastGraph.Tests.Graphs
             foreach (TVertex vertex in graph.Vertices)
                 totalAdjacentDegree += graph.AdjacentDegree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount * 2, totalAdjacentDegree);
+            totalAdjacentDegree.Should().Be(graph.EdgeCount * 2);
         }
 
         #endregion

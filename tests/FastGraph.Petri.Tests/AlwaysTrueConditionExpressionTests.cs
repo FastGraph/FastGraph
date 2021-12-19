@@ -15,10 +15,10 @@ namespace FastGraph.Petri.Tests
             var expression = new AlwaysTrueConditionExpression<int>();
 
             var emptyTokens = new List<int>();
-            Assert.IsTrue(expression.IsEnabled(emptyTokens));
+            expression.IsEnabled(emptyTokens).Should().BeTrue();
 
             var tokens = new List<int> { 1, 5, 16 };
-            Assert.IsTrue(expression.IsEnabled(tokens));
+            expression.IsEnabled(tokens).Should().BeTrue();
         }
     }
 }

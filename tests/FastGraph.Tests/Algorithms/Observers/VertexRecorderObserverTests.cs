@@ -16,12 +16,10 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void Constructor()
         {
             var recorder = new VertexRecorderObserver<int>();
-            CollectionAssert.IsEmpty(recorder.Vertices);
+            recorder.Vertices.Should().BeEmpty();
 
             recorder = new VertexRecorderObserver<int>(new[] { 1, 2, 3 });
-            CollectionAssert.AreEqual(
-                new[] { 1, 2, 3 },
-                recorder.Vertices);
+            new[] { 1, 2, 3 }.Should().BeEquivalentTo(recorder.Vertices);
         }
 
         [Test]
@@ -30,7 +28,7 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => new VertexRecorderObserver<int>(default));
+            Invoking(() => new VertexRecorderObserver<int>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -49,7 +47,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.Vertices);
+                    recorder.Vertices.Should().BeEmpty();
                 }
             }
 
@@ -64,9 +62,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new[] { 1, 2 },
-                        recorder.Vertices);
+                    new[] { 1, 2 }.Should().BeEquivalentTo(recorder.Vertices);
                 }
             }
 
@@ -81,9 +77,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new[] { 1, 1, 2 },  // Add without checking if vertex already exists
-                        recorder.Vertices);
+                    new[] { 1, 1, 2 }.Should().BeEquivalentTo(recorder.Vertices);
                 }
             }
 
@@ -103,9 +97,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
-                        new[] { 1, 2, 3, 4 },
-                        recorder.Vertices);
+                    new[] { 1, 2, 3, 4 }.Should().BeEquivalentTo(recorder.Vertices);
                 }
             }
         }

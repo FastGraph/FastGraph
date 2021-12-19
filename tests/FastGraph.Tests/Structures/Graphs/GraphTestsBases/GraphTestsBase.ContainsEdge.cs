@@ -1,7 +1,6 @@
 #nullable enable
 
 using JetBrains.Annotations;
-using NUnit.Framework;
 
 namespace FastGraph.Tests.Structures
 {
@@ -19,53 +18,53 @@ namespace FastGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             addVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             addVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             addVerticesAndEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             addVerticesAndEdge(edge4);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             addVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(0, 10)));
+            graph.ContainsEdge(new Edge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(0, 1)));
+            graph.ContainsEdge(new Edge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 0)));
+            graph.ContainsEdge(new Edge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_Test(
@@ -88,58 +87,58 @@ namespace FastGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(0, 10)));
+            graph.ContainsEdge(new Edge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(0, 1)));
+            graph.ContainsEdge(new Edge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 0)));
+            graph.ContainsEdge(new Edge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_ImmutableGraph_Test(
@@ -159,58 +158,58 @@ namespace FastGraph.Tests.Structures
             var otherEdge1 = new Edge<int>(1, 2);
             var equatableOtherEdge1 = new SEquatableEdge<int>(otherEdge1.Source, otherEdge1.Target);
 
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge1));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge2));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge3));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
-            Assert.IsFalse(graph.ContainsEdge(equatableOtherEdge1));
+            graph.ContainsEdge(equatableEdge1).Should().BeFalse();
+            graph.ContainsEdge(equatableEdge2).Should().BeFalse();
+            graph.ContainsEdge(equatableEdge3).Should().BeFalse();
+            graph.ContainsEdge(equatableEdge4).Should().BeFalse();
+            graph.ContainsEdge(equatableOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge2));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge3));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
-            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+            graph.ContainsEdge(equatableEdge1).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge2).Should().BeFalse();
+            graph.ContainsEdge(equatableEdge3).Should().BeFalse();
+            graph.ContainsEdge(equatableEdge4).Should().BeFalse();
+            graph.ContainsEdge(equatableOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge3));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
-            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+            graph.ContainsEdge(equatableEdge1).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge2).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge3).Should().BeFalse();
+            graph.ContainsEdge(equatableEdge4).Should().BeFalse();
+            graph.ContainsEdge(equatableOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge3));
-            Assert.IsFalse(graph.ContainsEdge(equatableEdge4));
-            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+            graph.ContainsEdge(equatableEdge1).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge2).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge3).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge4).Should().BeFalse();
+            graph.ContainsEdge(equatableOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge3));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge4));
-            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+            graph.ContainsEdge(equatableEdge1).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge2).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge3).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge4).Should().BeTrue();
+            graph.ContainsEdge(equatableOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge1));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge2));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge3));
-            Assert.IsTrue(graph.ContainsEdge(equatableEdge4));
-            Assert.IsTrue(graph.ContainsEdge(equatableOtherEdge1));
+            graph.ContainsEdge(equatableEdge1).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge2).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge3).Should().BeTrue();
+            graph.ContainsEdge(equatableEdge4).Should().BeTrue();
+            graph.ContainsEdge(equatableOtherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new SEquatableEdge<int>(0, 10)));
+            graph.ContainsEdge(new SEquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new SEquatableEdge<int>(0, 1)));
+            graph.ContainsEdge(new SEquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new SEquatableEdge<int>(1, 0)));
+            graph.ContainsEdge(new SEquatableEdge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_EdgesOnly_Test(
@@ -222,53 +221,53 @@ namespace FastGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(0, 10)));
+            graph.ContainsEdge(new Edge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(0, 1)));
+            graph.ContainsEdge(new Edge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 0)));
+            graph.ContainsEdge(new Edge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_ForbiddenParallelEdges_ImmutableVertices_Test(
@@ -280,46 +279,46 @@ namespace FastGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 2);
             var otherEdge1 = new Edge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddEdge(edge4);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(10, 11)));
+            graph.ContainsEdge(new Edge<int>(10, 11)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(10, 1)));
+            graph.ContainsEdge(new Edge<int>(10, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new Edge<int>(1, 10)));
+            graph.ContainsEdge(new Edge<int>(1, 10)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_ImmutableGraph_ReversedTest(
@@ -339,67 +338,64 @@ namespace FastGraph.Tests.Structures
             var otherEdge1 = new Edge<int>(1, 2);
             var reversedOtherEdge1 = new SReversedEdge<int, Edge<int>>(otherEdge1);
 
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge1));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge2).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge3).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge3).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
-            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge4).Should().BeTrue();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
-            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge4).Should().BeTrue();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(
-                graph.ContainsEdge(
-                    new SReversedEdge<int, Edge<int>>(
-                        new Edge<int>(0, 10))));
+            graph.ContainsEdge(
+                new SReversedEdge<int, Edge<int>>(
+                    new Edge<int>(0, 10))).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(
-                graph.ContainsEdge(
-                    new SReversedEdge<int, Edge<int>>(
-                        new Edge<int>(0, 1))));
+            graph.ContainsEdge(
+                new SReversedEdge<int, Edge<int>>(
+                    new Edge<int>(0, 1))).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(
-                graph.ContainsEdge(
-                    new SReversedEdge<int, Edge<int>>(
-                        new Edge<int>(1, 0))));
+            graph.ContainsEdge(
+                new SReversedEdge<int, Edge<int>>(
+                    new Edge<int>(1, 0))).Should().BeFalse();
         }
 
         protected static void ContainsEdge_EquatableEdge_Test(
@@ -412,53 +408,53 @@ namespace FastGraph.Tests.Structures
             var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             addVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             addVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             addVerticesAndEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             addVerticesAndEdge(edge4);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             addVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(0, 10)));
+            graph.ContainsEdge(new EquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(0, 1)));
+            graph.ContainsEdge(new EquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(1, 0)));
+            graph.ContainsEdge(new EquatableEdge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_EquatableEdge_Test(
@@ -481,58 +477,58 @@ namespace FastGraph.Tests.Structures
             var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(0, 10)));
+            graph.ContainsEdge(new EquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(0, 1)));
+            graph.ContainsEdge(new EquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(1, 0)));
+            graph.ContainsEdge(new EquatableEdge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_EquatableEdge_EdgesOnly_Test(
@@ -544,53 +540,53 @@ namespace FastGraph.Tests.Structures
             var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddVerticesAndEdge(edge4);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddVerticesAndEdge(otherEdge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(0, 10)));
+            graph.ContainsEdge(new EquatableEdge<int>(0, 10)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(0, 1)));
+            graph.ContainsEdge(new EquatableEdge<int>(0, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(1, 0)));
+            graph.ContainsEdge(new EquatableEdge<int>(1, 0)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_EquatableEdges_ForbiddenParallelEdges_ImmutableVertices_Test(
@@ -602,46 +598,46 @@ namespace FastGraph.Tests.Structures
             var edge4 = new EquatableEdge<int>(2, 2);
             var otherEdge1 = new EquatableEdge<int>(1, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsFalse(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeFalse();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeFalse();
 
             graph.AddEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsFalse(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeFalse();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsFalse(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeFalse();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsFalse(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeFalse();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             graph.AddEdge(edge4);
-            Assert.IsTrue(graph.ContainsEdge(edge1));
-            Assert.IsTrue(graph.ContainsEdge(edge2));
-            Assert.IsTrue(graph.ContainsEdge(edge3));
-            Assert.IsTrue(graph.ContainsEdge(edge4));
-            Assert.IsTrue(graph.ContainsEdge(otherEdge1));
+            graph.ContainsEdge(edge1).Should().BeTrue();
+            graph.ContainsEdge(edge2).Should().BeTrue();
+            graph.ContainsEdge(edge3).Should().BeTrue();
+            graph.ContainsEdge(edge4).Should().BeTrue();
+            graph.ContainsEdge(otherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(10, 11)));
+            graph.ContainsEdge(new EquatableEdge<int>(10, 11)).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(10, 1)));
+            graph.ContainsEdge(new EquatableEdge<int>(10, 1)).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(graph.ContainsEdge(new EquatableEdge<int>(1, 10)));
+            graph.ContainsEdge(new EquatableEdge<int>(1, 10)).Should().BeFalse();
         }
 
         protected static void ContainsEdge_EquatableEdge_ImmutableGraph_ReversedTest(
@@ -661,67 +657,64 @@ namespace FastGraph.Tests.Structures
             var otherEdge1 = new EquatableEdge<int>(1, 2);
             var reversedOtherEdge1 = new SReversedEdge<int, EquatableEdge<int>>(otherEdge1);
 
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge1));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsFalse(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge2).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge3).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge2));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge3).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeFalse();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
-            Assert.IsFalse(graph.ContainsEdge(reversedEdge4));
-            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge4).Should().BeFalse();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge4);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
-            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge4).Should().BeTrue();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(otherEdge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge1));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge2));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge3));
-            Assert.IsTrue(graph.ContainsEdge(reversedEdge4));
-            Assert.IsTrue(graph.ContainsEdge(reversedOtherEdge1));
+            graph.ContainsEdge(reversedEdge1).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge2).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge3).Should().BeTrue();
+            graph.ContainsEdge(reversedEdge4).Should().BeTrue();
+            graph.ContainsEdge(reversedOtherEdge1).Should().BeTrue();
 
             // Both vertices not in graph
-            Assert.IsFalse(
-                graph.ContainsEdge(
-                    new SReversedEdge<int, EquatableEdge<int>>(
-                        new EquatableEdge<int>(0, 10))));
+            graph.ContainsEdge(
+                new SReversedEdge<int, EquatableEdge<int>>(
+                    new EquatableEdge<int>(0, 10))).Should().BeFalse();
             // Source not in graph
-            Assert.IsFalse(
-                graph.ContainsEdge(
-                    new SReversedEdge<int, EquatableEdge<int>>(
-                        new EquatableEdge<int>(0, 1))));
+            graph.ContainsEdge(
+                new SReversedEdge<int, EquatableEdge<int>>(
+                    new EquatableEdge<int>(0, 1))).Should().BeFalse();
             // Target not in graph
-            Assert.IsFalse(
-                graph.ContainsEdge(
-                    new SReversedEdge<int, EquatableEdge<int>>(
-                        new EquatableEdge<int>(1, 0))));
+            graph.ContainsEdge(
+                new SReversedEdge<int, EquatableEdge<int>>(
+                    new EquatableEdge<int>(1, 0))).Should().BeFalse();
         }
 
         protected static void ContainsEdge_SourceTarget_Test(
@@ -732,24 +725,24 @@ namespace FastGraph.Tests.Structures
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             addVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeTrue();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             addVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
-            Assert.IsFalse(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(1, 3).Should().BeTrue();
+            graph.ContainsEdge(3, 1).Should().BeFalse();
 
             addVerticesAndEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(2, 2));
+            graph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph.ContainsEdge(0, 4));
-            Assert.IsFalse(graph.ContainsEdge(1, 4));
-            Assert.IsFalse(graph.ContainsEdge(4, 1));
+            graph.ContainsEdge(0, 4).Should().BeFalse();
+            graph.ContainsEdge(1, 4).Should().BeFalse();
+            graph.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_SourceTarget_Test(
@@ -771,27 +764,27 @@ namespace FastGraph.Tests.Structures
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeTrue();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
-            Assert.IsFalse(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(1, 3).Should().BeTrue();
+            graph.ContainsEdge(3, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(2, 2));
+            graph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph.ContainsEdge(0, 4));
-            Assert.IsFalse(graph.ContainsEdge(1, 4));
-            Assert.IsFalse(graph.ContainsEdge(4, 1));
+            graph.ContainsEdge(0, 4).Should().BeFalse();
+            graph.ContainsEdge(1, 4).Should().BeFalse();
+            graph.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_SourceTarget_ForbiddenParallelEdges_Test(
@@ -801,24 +794,24 @@ namespace FastGraph.Tests.Structures
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             graph.AddEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeTrue();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             graph.AddEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
-            Assert.IsFalse(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(1, 3).Should().BeTrue();
+            graph.ContainsEdge(3, 1).Should().BeFalse();
 
             graph.AddEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(2, 2));
+            graph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph.ContainsEdge(4, 5));
-            Assert.IsFalse(graph.ContainsEdge(1, 4));
-            Assert.IsFalse(graph.ContainsEdge(4, 1));
+            graph.ContainsEdge(4, 5).Should().BeFalse();
+            graph.ContainsEdge(1, 4).Should().BeFalse();
+            graph.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_SourceTarget_ImmutableGraph_ReversedTest(
@@ -831,27 +824,27 @@ namespace FastGraph.Tests.Structures
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsTrue(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsFalse(graph.ContainsEdge(1, 3));
-            Assert.IsTrue(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(1, 3).Should().BeFalse();
+            graph.ContainsEdge(3, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(2, 2));
+            graph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph.ContainsEdge(0, 4));
-            Assert.IsFalse(graph.ContainsEdge(1, 4));
-            Assert.IsFalse(graph.ContainsEdge(4, 1));
+            graph.ContainsEdge(0, 4).Should().BeFalse();
+            graph.ContainsEdge(1, 4).Should().BeFalse();
+            graph.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_SourceTarget_UndirectedGraph_Test(
@@ -861,24 +854,24 @@ namespace FastGraph.Tests.Structures
             var edge2 = new Edge<int>(1, 3);
             var edge3 = new Edge<int>(2, 2);
 
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             graph.AddVerticesAndEdge(edge1);
-            Assert.IsTrue(graph.ContainsEdge(1, 2));
-            Assert.IsTrue(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeTrue();
+            graph.ContainsEdge(2, 1).Should().BeTrue();
 
             graph.AddVerticesAndEdge(edge2);
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
-            Assert.IsTrue(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(1, 3).Should().BeTrue();
+            graph.ContainsEdge(3, 1).Should().BeTrue();
 
             graph.AddVerticesAndEdge(edge3);
-            Assert.IsTrue(graph.ContainsEdge(2, 2));
+            graph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph.ContainsEdge(0, 4));
-            Assert.IsFalse(graph.ContainsEdge(1, 4));
-            Assert.IsFalse(graph.ContainsEdge(4, 1));
+            graph.ContainsEdge(0, 4).Should().BeFalse();
+            graph.ContainsEdge(1, 4).Should().BeFalse();
+            graph.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_SourceTarget_ImmutableGraph_UndirectedGraph_Test(
@@ -890,27 +883,27 @@ namespace FastGraph.Tests.Structures
             var edge3 = new Edge<int>(2, 2);
 
             IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
-            Assert.IsFalse(graph.ContainsEdge(1, 2));
-            Assert.IsFalse(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeFalse();
+            graph.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph.AddVerticesAndEdge(edge1);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(1, 2));
-            Assert.IsTrue(graph.ContainsEdge(2, 1));
+            graph.ContainsEdge(1, 2).Should().BeTrue();
+            graph.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge2);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(1, 3));
-            Assert.IsTrue(graph.ContainsEdge(3, 1));
+            graph.ContainsEdge(1, 3).Should().BeTrue();
+            graph.ContainsEdge(3, 1).Should().BeTrue();
 
             wrappedGraph.AddVerticesAndEdge(edge3);
             graph = createGraph();
-            Assert.IsTrue(graph.ContainsEdge(2, 2));
+            graph.ContainsEdge(2, 2).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph.ContainsEdge(0, 4));
-            Assert.IsFalse(graph.ContainsEdge(1, 4));
-            Assert.IsFalse(graph.ContainsEdge(4, 1));
+            graph.ContainsEdge(0, 4).Should().BeFalse();
+            graph.ContainsEdge(1, 4).Should().BeFalse();
+            graph.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_NullThrows_Test<TVertex, TEdge>(
@@ -921,7 +914,7 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
+            Invoking(() => graph.ContainsEdge(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
         }
 
@@ -931,7 +924,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
+            Invoking(() => graph.ContainsEdge(default)).Should().Throw<ArgumentNullException>();
         }
 
         protected static void ContainsEdge_NullThrows_ReversedTest<TVertex, TEdge>(
@@ -941,7 +934,7 @@ namespace FastGraph.Tests.Structures
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default));
+            Invoking(() => graph.ContainsEdge(default)).Should().Throw<ArgumentNullException>();
         }
 
         protected static void ContainsEdge_SourceTarget_Throws_Test<TVertex, TEdge>(
@@ -952,9 +945,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), default));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, new TVertex()));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, default));
+            Invoking(() => graph.ContainsEdge(new TVertex(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ContainsEdge(default, new TVertex())).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ContainsEdge(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -968,9 +961,9 @@ namespace FastGraph.Tests.Structures
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8604
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(new TVertex(), default));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, new TVertex()));
-            Assert.Throws<ArgumentNullException>(() => graph.ContainsEdge(default, default));
+            Invoking(() => graph.ContainsEdge(new TVertex(), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ContainsEdge(default, new TVertex())).Should().Throw<ArgumentNullException>();
+            Invoking(() => graph.ContainsEdge(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8604
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -988,21 +981,21 @@ namespace FastGraph.Tests.Structures
             var equatableEdge1 = new EquatableEdge<int>(1, 2);
             var equatableEdge2 = new EquatableEdge<int>(1, 3);
 
-            Assert.IsFalse(graph1.ContainsEdge(1, 2));
-            Assert.IsFalse(graph1.ContainsEdge(2, 1));
+            graph1.ContainsEdge(1, 2).Should().BeFalse();
+            graph1.ContainsEdge(2, 1).Should().BeFalse();
 
             graph1.AddVerticesAndEdge(equatableEdge1);
-            Assert.IsTrue(graph1.ContainsEdge(1, 2));
-            Assert.IsTrue(graph1.ContainsEdge(2, 1));
+            graph1.ContainsEdge(1, 2).Should().BeTrue();
+            graph1.ContainsEdge(2, 1).Should().BeTrue();
 
             graph1.AddVerticesAndEdge(equatableEdge2);
-            Assert.IsTrue(graph1.ContainsEdge(1, 3));
-            Assert.IsTrue(graph1.ContainsEdge(3, 1));
+            graph1.ContainsEdge(1, 3).Should().BeTrue();
+            graph1.ContainsEdge(3, 1).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph1.ContainsEdge(0, 4));
-            Assert.IsFalse(graph1.ContainsEdge(1, 4));
-            Assert.IsFalse(graph1.ContainsEdge(4, 1));
+            graph1.ContainsEdge(0, 4).Should().BeFalse();
+            graph1.ContainsEdge(1, 4).Should().BeFalse();
+            graph1.ContainsEdge(4, 1).Should().BeFalse();
 
 
 
@@ -1010,21 +1003,21 @@ namespace FastGraph.Tests.Structures
             var equatableUndirectedEdge1 = new EquatableUndirectedEdge<int>(1, 2);
             var equatableUndirectedEdge2 = new EquatableUndirectedEdge<int>(1, 3);
 
-            Assert.IsFalse(graph2.ContainsEdge(1, 2));
-            Assert.IsFalse(graph2.ContainsEdge(2, 1));
+            graph2.ContainsEdge(1, 2).Should().BeFalse();
+            graph2.ContainsEdge(2, 1).Should().BeFalse();
 
             graph2.AddVerticesAndEdge(equatableUndirectedEdge1);
-            Assert.IsTrue(graph2.ContainsEdge(1, 2));
-            Assert.IsTrue(graph2.ContainsEdge(2, 1));
+            graph2.ContainsEdge(1, 2).Should().BeTrue();
+            graph2.ContainsEdge(2, 1).Should().BeTrue();
 
             graph2.AddVerticesAndEdge(equatableUndirectedEdge2);
-            Assert.IsTrue(graph2.ContainsEdge(1, 3));
-            Assert.IsTrue(graph2.ContainsEdge(3, 1));
+            graph2.ContainsEdge(1, 3).Should().BeTrue();
+            graph2.ContainsEdge(3, 1).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph2.ContainsEdge(0, 4));
-            Assert.IsFalse(graph2.ContainsEdge(1, 4));
-            Assert.IsFalse(graph2.ContainsEdge(4, 1));
+            graph2.ContainsEdge(0, 4).Should().BeFalse();
+            graph2.ContainsEdge(1, 4).Should().BeFalse();
+            graph2.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         protected static void ContainsEdge_UndirectedEdge_ImmutableGraph_UndirectedGraph_Test(
@@ -1041,23 +1034,23 @@ namespace FastGraph.Tests.Structures
             var equatableEdge2 = new EquatableEdge<int>(1, 3);
 
             IImplicitUndirectedGraph<int, EquatableEdge<int>> graph1 = createEquatableEdgeGraph();
-            Assert.IsFalse(graph1.ContainsEdge(1, 2));
-            Assert.IsFalse(graph1.ContainsEdge(2, 1));
+            graph1.ContainsEdge(1, 2).Should().BeFalse();
+            graph1.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph1.AddVerticesAndEdge(equatableEdge1);
             graph1 = createEquatableEdgeGraph();
-            Assert.IsTrue(graph1.ContainsEdge(1, 2));
-            Assert.IsTrue(graph1.ContainsEdge(2, 1));
+            graph1.ContainsEdge(1, 2).Should().BeTrue();
+            graph1.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph1.AddVerticesAndEdge(equatableEdge2);
             graph1 = createEquatableEdgeGraph();
-            Assert.IsTrue(graph1.ContainsEdge(1, 3));
-            Assert.IsTrue(graph1.ContainsEdge(3, 1));
+            graph1.ContainsEdge(1, 3).Should().BeTrue();
+            graph1.ContainsEdge(3, 1).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph1.ContainsEdge(0, 4));
-            Assert.IsFalse(graph1.ContainsEdge(1, 4));
-            Assert.IsFalse(graph1.ContainsEdge(4, 1));
+            graph1.ContainsEdge(0, 4).Should().BeFalse();
+            graph1.ContainsEdge(1, 4).Should().BeFalse();
+            graph1.ContainsEdge(4, 1).Should().BeFalse();
 
 
 
@@ -1066,23 +1059,23 @@ namespace FastGraph.Tests.Structures
             var equatableUndirectedEdge2 = new EquatableUndirectedEdge<int>(1, 3);
 
             IImplicitUndirectedGraph<int, EquatableUndirectedEdge<int>> graph2 = createEquatableUndirectedEdgeGraph();
-            Assert.IsFalse(graph2.ContainsEdge(1, 2));
-            Assert.IsFalse(graph2.ContainsEdge(2, 1));
+            graph2.ContainsEdge(1, 2).Should().BeFalse();
+            graph2.ContainsEdge(2, 1).Should().BeFalse();
 
             wrappedGraph2.AddVerticesAndEdge(equatableUndirectedEdge1);
             graph2 = createEquatableUndirectedEdgeGraph();
-            Assert.IsTrue(graph2.ContainsEdge(1, 2));
-            Assert.IsTrue(graph2.ContainsEdge(2, 1));
+            graph2.ContainsEdge(1, 2).Should().BeTrue();
+            graph2.ContainsEdge(2, 1).Should().BeTrue();
 
             wrappedGraph2.AddVerticesAndEdge(equatableUndirectedEdge2);
             graph2 = createEquatableUndirectedEdgeGraph();
-            Assert.IsTrue(graph2.ContainsEdge(1, 3));
-            Assert.IsTrue(graph2.ContainsEdge(3, 1));
+            graph2.ContainsEdge(1, 3).Should().BeTrue();
+            graph2.ContainsEdge(3, 1).Should().BeTrue();
 
             // Vertices is not present in the graph
-            Assert.IsFalse(graph2.ContainsEdge(0, 4));
-            Assert.IsFalse(graph2.ContainsEdge(1, 4));
-            Assert.IsFalse(graph2.ContainsEdge(4, 1));
+            graph2.ContainsEdge(0, 4).Should().BeFalse();
+            graph2.ContainsEdge(1, 4).Should().BeFalse();
+            graph2.ContainsEdge(4, 1).Should().BeFalse();
         }
 
         #endregion

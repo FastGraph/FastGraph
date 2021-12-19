@@ -16,21 +16,21 @@ namespace FastGraph.Tests.Algorithms.Observers
         public void Constructor()
         {
             var recorder = new EdgePredecessorRecorderObserver<int, Edge<int>>();
-            CollectionAssert.IsEmpty(recorder.EdgesPredecessors);
-            CollectionAssert.IsEmpty(recorder.EndPathEdges);
+            recorder.EdgesPredecessors.Should().BeEmpty();
+            recorder.EndPathEdges.Should().BeEmpty();
 
             var predecessors = new Dictionary<Edge<int>, Edge<int>>();
             recorder = new EdgePredecessorRecorderObserver<int, Edge<int>>(predecessors);
-            Assert.AreSame(predecessors, recorder.EdgesPredecessors);
-            CollectionAssert.IsEmpty(recorder.EndPathEdges);
+            recorder.EdgesPredecessors.Should().BeSameAs(predecessors);
+            recorder.EndPathEdges.Should().BeEmpty();
 
             predecessors = new Dictionary<Edge<int>, Edge<int>>
             {
                 [new Edge<int>(3, 2)] = new Edge<int>(2, 1)
             };
             recorder = new EdgePredecessorRecorderObserver<int, Edge<int>>(predecessors);
-            Assert.AreSame(predecessors, recorder.EdgesPredecessors);
-            CollectionAssert.IsEmpty(recorder.EndPathEdges);
+            recorder.EdgesPredecessors.Should().BeSameAs(predecessors);
+            recorder.EndPathEdges.Should().BeEmpty();
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Throws<ArgumentNullException>(() => new EdgePredecessorRecorderObserver<int, Edge<int>>(default));
+            Invoking(() => new EdgePredecessorRecorderObserver<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
@@ -56,8 +56,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.EdgesPredecessors);
-                    CollectionAssert.IsEmpty(recorder.EndPathEdges);
+                    recorder.EdgesPredecessors.Should().BeEmpty();
+                    recorder.EndPathEdges.Should().BeEmpty();
                 }
             }
 
@@ -72,8 +72,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.EdgesPredecessors);
-                    CollectionAssert.IsEmpty(recorder.EndPathEdges);
+                    recorder.EdgesPredecessors.Should().BeEmpty();
+                    recorder.EndPathEdges.Should().BeEmpty();
                 }
             }
 
@@ -99,7 +99,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
+                    recorder.EdgesPredecessors.Should().BeEquivalentTo(
                         new Dictionary<Edge<int>, Edge<int>>
                         {
                             [edge14] = edge31,
@@ -107,11 +107,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                             [edge31] = edge13,
                             [edge33] = edge13,
                             [edge34] = edge33
-                        },
-                        recorder.EdgesPredecessors);
-                    CollectionAssert.AreEquivalent(
-                        new[] { edge14, edge24, edge34 },
-                        recorder.EndPathEdges);
+                        });
+                    recorder.EndPathEdges.Should().BeEquivalentTo(new[] { edge14, edge24, edge34 });
                 }
             }
 
@@ -138,7 +135,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEqual(
+                    recorder.EdgesPredecessors.Should().BeEquivalentTo(
                         new Dictionary<Edge<int>, Edge<int>>
                         {
                             [edge13] = edge41,
@@ -148,11 +145,8 @@ namespace FastGraph.Tests.Algorithms.Observers
                             [edge33] = edge13,
                             [edge34] = edge33,
                             [edge41] = edge24
-                        },
-                        recorder.EdgesPredecessors);
-                    CollectionAssert.AreEquivalent(
-                        new[] { edge14, edge34 },
-                        recorder.EndPathEdges);
+                        });
+                    recorder.EndPathEdges.Should().BeEquivalentTo(new[] { edge14, edge34 });
                 }
             }
         }
@@ -178,9 +172,7 @@ namespace FastGraph.Tests.Algorithms.Observers
 
                     var edge12 = new Edge<int>(1, 2);
                     // Not in the graph => return the edge itself
-                    CollectionAssert.AreEqual(
-                        new[] { edge12 },
-                        recorder.Path(edge12));
+                    recorder.Path(edge12).Should().BeEquivalentTo(new[] { edge12 });
                 }
             }
 
@@ -206,13 +198,9 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new[] { edge13, edge31, edge14 },
-                        recorder.Path(edge14));
+                    recorder.Path(edge14).Should().BeEquivalentTo(new[] { edge13, edge31, edge14 });
 
-                    CollectionAssert.AreEquivalent(
-                        new[] { edge13, edge33 },
-                        recorder.Path(edge33));
+                    recorder.Path(edge33).Should().BeEquivalentTo(new[] { edge13, edge33 });
                 }
             }
 
@@ -239,13 +227,9 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new[] { edge12, edge24, edge41, edge13, edge31, edge14 },
-                        recorder.Path(edge14));
+                    recorder.Path(edge14).Should().BeEquivalentTo(new[] { edge12, edge24, edge41, edge13, edge31, edge14 });
 
-                    CollectionAssert.AreEquivalent(
-                        new[] { edge12, edge24, edge41, edge13, edge33 },
-                        recorder.Path(edge33));
+                    recorder.Path(edge33).Should().BeEquivalentTo(new[] { edge12, edge24, edge41, edge13, edge33 });
                 }
             }
         }
@@ -257,9 +241,8 @@ namespace FastGraph.Tests.Algorithms.Observers
 
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                () => recorder.Path(default));
+            Invoking(() => recorder.Path(default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
@@ -276,7 +259,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEmpty();
                 }
             }
 
@@ -302,14 +285,12 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new IEnumerable<Edge<int>>[]
-                        {
-                            new[] { edge12, edge24 },
-                            new[] { edge13, edge31, edge14 },
-                            new[] { edge13, edge33, edge34 }
-                        },
-                        recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEquivalentTo(new []
+                    {
+                        new[] { edge12, edge24 },
+                        new[] { edge13, edge31, edge14 },
+                        new[] { edge13, edge33, edge34 }
+                    });
                 }
             }
 
@@ -336,13 +317,11 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new IEnumerable<Edge<int>>[]
-                        {
-                            new[] { edge12, edge24, edge41, edge13, edge31, edge14 },
-                            new[] { edge12, edge24, edge41, edge13, edge33, edge34 }
-                        },
-                        recorder.AllPaths());
+                    recorder.AllPaths().Should().BeEquivalentTo(new []
+                    {
+                        new[] { edge12, edge24, edge41, edge13, edge31, edge14 },
+                        new[] { edge12, edge24, edge41, edge13, edge33, edge34 }
+                    });
                 }
             }
         }
@@ -367,13 +346,11 @@ namespace FastGraph.Tests.Algorithms.Observers
                     };
 
                     // Not in the graph and edge marked as already used!
-                    CollectionAssert.IsEmpty(recorder.MergedPath(edge12, colors));
+                    recorder.MergedPath(edge12, colors).Should().BeEmpty();
 
                     // Not in the graph => return the edge itself
                     colors[edge12] = GraphColor.White;
-                    CollectionAssert.AreEqual(
-                        new[] { edge12 },
-                        recorder.MergedPath(edge12, colors));
+                    recorder.MergedPath(edge12, colors).Should().BeEquivalentTo(new[] { edge12 });
                 }
             }
 
@@ -399,20 +376,16 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Dictionary<Edge<int>, GraphColor> colors = graph.Edges.ToDictionary(
+                    var colors = graph.Edges.ToDictionary(
                         edge => edge,
                         _ => GraphColor.White);
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge12, edge24 },
-                        recorder.MergedPath(edge24, colors));
+                    new[] { edge12, edge24 }.Should().BeEquivalentTo(recorder.MergedPath(edge24, colors));
 
                     // Already used
-                    CollectionAssert.IsEmpty(recorder.MergedPath(edge24, colors));
+                    recorder.MergedPath(edge24, colors).Should().BeEmpty();
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge13, edge31 },
-                        recorder.MergedPath(edge31, colors));
+                    new[] { edge13, edge31 }.Should().BeEquivalentTo(recorder.MergedPath(edge31, colors));
                 }
             }
 
@@ -439,20 +412,16 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    Dictionary<Edge<int>, GraphColor> colors = graph.Edges.ToDictionary(
+                    var colors = graph.Edges.ToDictionary(
                         edge => edge,
                         _ => GraphColor.White);
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge12, edge24, edge41 },
-                        recorder.MergedPath(edge41, colors));
+                    new[] { edge12, edge24, edge41 }.Should().BeEquivalentTo(recorder.MergedPath(edge41, colors));
 
                     // Already used
-                    CollectionAssert.IsEmpty(recorder.MergedPath(edge41, colors));
+                    recorder.MergedPath(edge41, colors).Should().BeEmpty();
 
-                    CollectionAssert.AreEqual(
-                        new[] { edge13, edge33, edge34 },
-                        recorder.MergedPath(edge34, colors));
+                    new[] { edge13, edge33, edge34 }.Should().BeEquivalentTo(recorder.MergedPath(edge34, colors));
                 }
             }
         }
@@ -464,18 +433,14 @@ namespace FastGraph.Tests.Algorithms.Observers
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var recorder = new EdgePredecessorRecorderObserver<int, Edge<int>>();
-            Assert.Throws<ArgumentNullException>(
-                () => recorder.MergedPath(default, new Dictionary<Edge<int>, GraphColor>()));
-            Assert.Throws<ArgumentNullException>(
-                () => recorder.MergedPath(new Edge<int>(1, 2), default));
-            Assert.Throws<ArgumentNullException>(
-                () => recorder.MergedPath(default, default));
+            Invoking(() => recorder.MergedPath(default, new Dictionary<Edge<int>, GraphColor>())).Should().Throw<ArgumentNullException>();
+            Invoking(() => recorder.MergedPath(new Edge<int>(1, 2), default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => recorder.MergedPath(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             // ReSharper restore AssignNullToNotNullAttribute
 
             var edge = new Edge<int>(1, 2);
-            Assert.Throws<KeyNotFoundException>(
-                () => recorder.MergedPath(edge, new Dictionary<Edge<int>, GraphColor>()));
+            Invoking(() => recorder.MergedPath(edge, new Dictionary<Edge<int>, GraphColor>())).Should().Throw<KeyNotFoundException>();
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -492,7 +457,7 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.IsEmpty(recorder.AllMergedPaths());
+                    recorder.AllMergedPaths().Should().BeEmpty();
                 }
             }
 
@@ -518,14 +483,12 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new IEnumerable<Edge<int>>[]
-                        {
-                            new[] { edge12, edge24 },
-                            new[] { edge13, edge31, edge14 },
-                            new[] { /* edge13 can't be reused */ edge33, edge34 }
-                        },
-                        recorder.AllMergedPaths());
+                    recorder.AllMergedPaths().Should().BeEquivalentTo(new IEnumerable<Edge<int>>[]
+                    {
+                        new[] { edge12, edge24 },
+                        new[] { edge13, edge31, edge14 },
+                        new[] { /* edge13 can't be reused */ edge33, edge34 }
+                    });
                 }
             }
 
@@ -552,13 +515,11 @@ namespace FastGraph.Tests.Algorithms.Observers
                 {
                     dfs.Compute();
 
-                    CollectionAssert.AreEquivalent(
-                        new IEnumerable<Edge<int>>[]
-                        {
-                            new[] { edge12, edge24, edge41, edge13, edge31, edge14 },
-                            new[] { /* edge12, edge24, edge41, edge13 can't be reused */ edge33, edge34 }
-                        },
-                        recorder.AllMergedPaths());
+                    recorder.AllMergedPaths().Should().BeEquivalentTo(new IEnumerable<Edge<int>>[]
+                    {
+                        new[] { edge12, edge24, edge41, edge13, edge31, edge14 },
+                        new[] { /* edge12, edge24, edge41, edge13 can't be reused */ edge33, edge34 }
+                    });
                 }
             }
         }

@@ -32,9 +32,7 @@ namespace FastGraph.Tests.Collections
 
             public override bool Equals(object? obj)
             {
-#pragma warning disable CS8604
                 return ReferenceEquals(this, obj) || Equals(obj as TestPriority);
-#pragma warning restore CS8604
             }
 
             public int CompareTo(TestPriority? other)

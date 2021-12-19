@@ -31,35 +31,35 @@ namespace FastGraph.Tests.Algorithms.Search
 
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.White);
             };
 
             algorithm.StartVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.White);
             };
 
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.Gray);
                 if (vertex.Equals(sourceVertex))
                 {
                     currentVertex = sourceVertex;
                 }
                 else
                 {
-                    Assert.IsNotNull(currentVertex);
-                    Assert.AreEqual(parents[vertex], currentVertex);
+                    currentVertex.Should().NotBeNull();
+                    parents[vertex].Should().Be(currentVertex);
                     // ReSharper disable once AccessToModifiedClosure
-                    Assert.AreEqual(distances[vertex], currentDistance + 1);
-                    Assert.AreEqual(distances[vertex], distances[parents[vertex]] + 1);
+                    distances[vertex].Should().Be(currentDistance + 1);
+                    distances[vertex].Should().Be(distances[parents[vertex]] + 1);
                 }
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             algorithm.ExamineEdge += edge =>
             {
-                Assert.IsTrue(edge.Source.Equals(currentVertex) || edge.Target.Equals(currentVertex));
+                (edge.Source.Equals(currentVertex) || edge.Target.Equals(currentVertex)).Should().BeTrue();
             };
 
             algorithm.ExamineVertex += vertex =>
@@ -68,7 +68,7 @@ namespace FastGraph.Tests.Algorithms.Search
                 currentVertex = u;
                 // Ensure that the distances monotonically increase.
                 // ReSharper disable AccessToModifiedClosure
-                Assert.IsTrue(distances[u] == currentDistance || distances[u] == currentDistance + 1);
+                (distances[u] == currentDistance || distances[u] == currentDistance + 1).Should().BeTrue();
 
                 if (distances[u] == currentDistance + 1) // New level
                     ++currentDistance;
@@ -86,8 +86,8 @@ namespace FastGraph.Tests.Algorithms.Search
                     v = temp;
                 }
 
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[v]);
-                Assert.AreEqual(distances[u], currentDistance);
+                algorithm.VerticesColors[v].Should().Be(GraphColor.White);
+                currentDistance.Should().Be(distances[u]);
                 parents[v] = u;
                 distances[v] = distances[u] + 1;
             };
@@ -103,39 +103,38 @@ namespace FastGraph.Tests.Algorithms.Search
                     v = temp;
                 }
 
-                Assert.IsFalse(algorithm.VerticesColors[v] == GraphColor.White);
+                (algorithm.VerticesColors[v] == GraphColor.White).Should().BeFalse();
 
                 if (algorithm.VisitedGraph.IsDirected)
                 {
                     // Cross or back edge
-                    Assert.IsTrue(distances[v] <= distances[u] + 1);
+                    (distances[v] <= distances[u] + 1).Should().BeTrue();
                 }
                 else
                 {
                     // Cross edge (or going backwards on a tree edge)
-                    Assert.IsTrue(
-                        distances[v] == distances[u]
-                        || distances[v] == distances[u] + 1
-                        || distances[v] == distances[u] - 1);
+                    (distances[v] == distances[u]
+                     || distances[v] == distances[u] + 1
+                     || distances[v] == distances[u] - 1).Should().BeTrue();
                 }
             };
 
             algorithm.GrayTarget += (_, args) =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[args.Target]);
+                algorithm.VerticesColors[args.Target].Should().Be(GraphColor.Gray);
             };
 
             algorithm.BlackTarget += (_, args) =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[args.Target]);
+                algorithm.VerticesColors[args.Target].Should().Be(GraphColor.Black);
 
                 foreach (TEdge edge in algorithm.VisitedGraph.AdjacentEdges(args.Target))
-                    Assert.IsFalse(algorithm.VerticesColors[edge.Target] == GraphColor.White);
+                    (algorithm.VerticesColors[edge.Target] == GraphColor.White).Should().BeFalse();
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                algorithm.VerticesColors[vertex].Should().Be(GraphColor.Black);
             };
 
             parents.Clear();
@@ -166,8 +165,8 @@ namespace FastGraph.Tests.Algorithms.Search
                     {
                         foreach (TEdge edge in path)
                         {
-                            Assert.AreNotEqual(sourceVertex, edge.Source);
-                            Assert.AreNotEqual(sourceVertex, edge.Target);
+                            edge.Source.Should().NotBe(sourceVertex);
+                            edge.Target.Should().NotBe(sourceVertex);
                         }
                     }
                 }
@@ -178,7 +177,9 @@ namespace FastGraph.Tests.Algorithms.Search
             foreach (TVertex vertex in graph.Vertices)
             {
                 if (!parents[vertex].Equals(vertex)) // Not the root of the BFS tree
-                    Assert.AreEqual(distances[vertex], distances[parents[vertex]] + 1);
+                {
+                    distances[vertex].Should().Be(distances[parents[vertex]] + 1);
+                }
             }
         }
 
@@ -210,9 +211,9 @@ namespace FastGraph.Tests.Algorithms.Search
             {
                 AssertAlgorithmState(algo, g);
                 if (vColors is null)
-                    CollectionAssert.IsEmpty(algo.VerticesColors);
+                    algo.VerticesColors.Should().BeEmpty();
                 else
-                    Assert.AreSame(vColors, algo.VerticesColors);
+                    algo.VerticesColors.Should().BeSameAs(vColors);
             }
 
             #endregion
@@ -228,38 +229,23 @@ namespace FastGraph.Tests.Algorithms.Search
             var queue = new BinaryQueue<int, double>(_ => 1.0);
 
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, queue, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, default, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, queue, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default));
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, queue, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, default, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, queue, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, queue, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, queue, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, queue, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, queue, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, default));
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, default));
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, queue, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, queue, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, verticesColors)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, queue, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, graph, default, default)).Should().Throw<ArgumentNullException>();
+            Invoking(() => new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(default, default, default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -335,12 +321,12 @@ namespace FastGraph.Tests.Algorithms.Search
             var algorithm = new UndirectedBreadthFirstSearchAlgorithm<int, Edge<int>>(graph);
             // Algorithm not run
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<VertexNotFoundException>(() => algorithm.GetVertexColor(1));
+            Invoking(() => algorithm.GetVertexColor(1)).Should().Throw<VertexNotFoundException>();
 
             algorithm.Compute(1);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            algorithm.GetVertexColor(1).Should().Be(GraphColor.Black);
+            algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
         [Test]

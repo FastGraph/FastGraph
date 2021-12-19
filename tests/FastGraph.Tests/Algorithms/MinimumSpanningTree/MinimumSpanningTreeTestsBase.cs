@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Collections.Immutable;
 using System.Xml;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -8,6 +9,8 @@ using FastGraph.Algorithms.MinimumSpanningTree;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Collections;
 using FastGraph.Serialization;
+using FluentAssertions.Collections;
+using FluentAssertions.Primitives;
 using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
@@ -48,49 +51,39 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             return graph;
         }
 
-        private static double CompareRoot<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
+        [CustomAssertion]
+        private static void HavePrimAndKruskalCostsFromRoot<TVertex, TEdge>(AndWhichConstraint<ObjectAssertions, IUndirectedGraph<TVertex, TEdge>> actual, double expectedCost)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
-            foreach (TEdge edge in graph.Edges)
-                distances[edge] = graph.AdjacentDegree(edge.Source) + 1;
+            foreach (TEdge edge in actual.Subject.Edges)
+                distances[edge] = actual.Subject.AdjacentDegree(edge.Source) + 1;
 
-            TEdge[] prim = graph.MinimumSpanningTreePrim(e => distances[e]).ToArray();
-            TEdge[] kruskal = graph.MinimumSpanningTreeKruskal(e => distances[e]).ToArray();
-
+            TEdge[] prim = actual.Subject.MinimumSpanningTreePrim(e => distances[e]).ToArray();
+            TEdge[] kruskal = actual.Subject.MinimumSpanningTreeKruskal(e => distances[e]).ToArray();
             double primCost = prim.Sum(e => distances[e]);
             double kruskalCost = kruskal.Sum(e => distances[e]);
-            if (Math.Abs(primCost - kruskalCost) > double.Epsilon)
-                Assert.Fail("Cost do not match.");
 
-            return kruskalCost;
+            primCost.Should().BeApproximately(kruskalCost, double.Epsilon).And.BeApproximately(expectedCost, double.Epsilon);
         }
 
-        private static void AssertSpanningTree<TVertex, TEdge>(
-            IUndirectedGraph<TVertex, TEdge> graph,
-            IEnumerable<TEdge> tree)
+        [CustomAssertion]
+        private static void AssertSpanningEdgesFromSourceGraph<TVertex, TEdge>(
+            GenericCollectionAssertions<TEdge> actualSpanningEdges,
+            IUndirectedGraph<TVertex, TEdge> expectedMatchingSourceGraph)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            var spanned = new Dictionary<TVertex, TEdge?>();
-            foreach (TEdge edge in tree)
-            {
-                spanned[edge.Source] = spanned[edge.Target] = default;
-            }
+            var actualSpannedVertices = SelectDistinctVertices<TVertex, TEdge>(actualSpanningEdges.Subject);
 
-            // Find vertices that are connected to some edge
-            var treeable = new Dictionary<TVertex, TEdge>();
-            foreach (TEdge edge in graph.Edges)
-                treeable[edge.Source] = treeable[edge.Target] = edge;
+            var expectedMatchingSourceGraphVertices = SelectDistinctVertices<TVertex, TEdge>(expectedMatchingSourceGraph.Edges);
 
-            // Ensure they are in the tree
-            foreach (TVertex vertex in treeable.Keys)
-                Assert.IsTrue(spanned.ContainsKey(vertex), $"{vertex} not in tree.");
+            expectedMatchingSourceGraphVertices.Should().BeSubsetOf(actualSpannedVertices);
         }
 
         private static void AssertMinimumSpanningTree<TVertex, TEdge>(
-            IUndirectedGraph<TVertex, TEdge> graph,
+            IUndirectedGraph<TVertex, TEdge> sourceGraph,
             IMinimumSpanningTreeAlgorithm<TVertex, TEdge> algorithm)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
@@ -99,7 +92,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             using (edgeRecorder.Attach(algorithm))
                 algorithm.Compute();
 
-            AssertSpanningTree(graph, edgeRecorder.Edges);
+            AssertSpanningEdgesFromSourceGraph(edgeRecorder.Edges.Should(), sourceGraph);
         }
 
         protected static void PrimSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph, Func<TEdge, double> edgeWeights)
@@ -123,7 +116,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
                 distances[edge] = graph.AdjacentDegree(edge.Source) + 1;
 
             IEnumerable<TEdge> edges = graph.MinimumSpanningTreePrim(e => distances[e]);
-            AssertSpanningTree(graph, edges);
+            AssertSpanningEdgesFromSourceGraph(edges.Should(), graph);
         }
 
         protected static void KruskalSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph, Func<TEdge, double> edgeWeights)
@@ -147,7 +140,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
                 distances[edge] = graph.AdjacentDegree(edge.Source) + 1;
 
             IEnumerable<TEdge> edges = graph.MinimumSpanningTreeKruskal(e => distances[e]);
-            AssertSpanningTree(graph, edges);
+            AssertSpanningEdgesFromSourceGraph(edges.Should(), graph);
         }
 
         #endregion
@@ -161,8 +154,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             graph.AddVerticesAndEdge(new Edge<int>(3, 4));
             graph.AddVerticesAndEdge(new Edge<int>(1, 4));
 
-            double cost = CompareRoot(graph);
-            Assert.AreEqual(9, cost);
+            HavePrimAndKruskalCostsFromRoot(graph.Should().BeAssignableTo<IUndirectedGraph<int, Edge<int>>>(), 9);
         }
 
         [Test]
@@ -194,8 +186,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
                     return adjacentEdges != default;
                 });
 
-            double cost = CompareRoot(graph);
-            Assert.AreEqual(9, cost);
+            HavePrimAndKruskalCostsFromRoot(graph.Should().BeAssignableTo<IUndirectedGraph<int, EquatableEdge<int>>>(), 9);
         }
 
         [Test]
@@ -221,8 +212,23 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             TaggedEdge<string, double>[] kruskal = undirectedGraph.MinimumSpanningTreeKruskal<string, TaggedEdge<string, double>>(e => e.Tag).ToArray<TaggedEdge<string, double>>();
             double kruskalCost = kruskal.Sum<TaggedEdge<string, double>>(e => e.Tag);
 
-            Assert.AreEqual(63, primCost);
-            Assert.AreEqual(primCost, kruskalCost);
+            primCost.Should().Be(63);
+            kruskalCost.Should().Be(primCost);
+        }
+
+        private static IImmutableSet<TVertex> SelectDistinctVertices<TVertex, TEdge>(IEnumerable<TEdge> edges)
+            where TVertex : notnull
+            where TEdge : IEdge<TVertex>
+        {
+            var resultBuilder = ImmutableHashSet<TVertex>.Empty.ToBuilder();
+
+            foreach (var edge in edges)
+            {
+                resultBuilder.Add(edge.Source);
+                resultBuilder.Add(edge.Target);
+            }
+
+            return resultBuilder.ToImmutable();
         }
     }
 }

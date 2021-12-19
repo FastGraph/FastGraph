@@ -30,11 +30,9 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
 #pragma warning disable CS8625
-            Assert.Throws<ArgumentNullException>(
-                () => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default));
+            Invoking(() => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default)).Should().Throw<ArgumentNullException>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default, default));
+            Invoking(() => new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(default, default)).Should().Throw<ArgumentNullException>();
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
@@ -46,8 +44,8 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
 
-            Assert.Throws<InvalidOperationException>(() => { int _ = algorithm.ComponentCount; });
-            Assert.Throws<InvalidOperationException>(() => algorithm.GetComponents());
+            Invoking(() => { int _ = algorithm.ComponentCount; }).Should().Throw<InvalidOperationException>();
+            Invoking(() => algorithm.GetComponents()).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -59,87 +57,75 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(4, algorithm.ComponentCount);
-            Assert.AreEqual(4, algorithm.GetComponents().Key);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [0] = 0,
-                    [1] = 1,
-                    [2] = 2,
-                    [3] = 3
-                },
-                algorithm.GetComponents().Value);
+            algorithm.ComponentCount.Should().Be(4);
+            algorithm.GetComponents().Key.Should().Be(4);
+            algorithm.GetComponents().Value.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [0] = 0,
+                [1] = 1,
+                [2] = 2,
+                [3] = 3
+            });
 
             graph.AddEdge(new Edge<int>(0, 1));
-            Assert.AreEqual(3, algorithm.ComponentCount);
-            Assert.AreEqual(3, algorithm.GetComponents().Key);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [0] = 0,
-                    [1] = 0,
-                    [2] = 1,
-                    [3] = 2
-                },
-                algorithm.GetComponents().Value);
+            algorithm.ComponentCount.Should().Be(3);
+            algorithm.GetComponents().Key.Should().Be(3);
+            algorithm.GetComponents().Value.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [0] = 0,
+                [1] = 0,
+                [2] = 1,
+                [3] = 2
+            });
 
             graph.AddEdge(new Edge<int>(2, 3));
-            Assert.AreEqual(2, algorithm.ComponentCount);
-            Assert.AreEqual(2, algorithm.GetComponents().Key);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [0] = 0,
-                    [1] = 0,
-                    [2] = 1,
-                    [3] = 1
-                },
-                algorithm.GetComponents().Value);
+            algorithm.ComponentCount.Should().Be(2);
+            algorithm.GetComponents().Key.Should().Be(2);
+            algorithm.GetComponents().Value.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [0] = 0,
+                [1] = 0,
+                [2] = 1,
+                [3] = 1
+            });
 
             graph.AddEdge(new Edge<int>(1, 3));
-            Assert.AreEqual(1, algorithm.ComponentCount);
-            Assert.AreEqual(1, algorithm.GetComponents().Key);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [0] = 0,
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0
-                },
-                algorithm.GetComponents().Value);
+            algorithm.ComponentCount.Should().Be(1);
+            algorithm.GetComponents().Key.Should().Be(1);
+            algorithm.GetComponents().Value.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [0] = 0,
+                [1] = 0,
+                [2] = 0,
+                [3] = 0
+            });
 
             graph.AddVerticesAndEdge(new Edge<int>(4, 5));
-            Assert.AreEqual(2, algorithm.ComponentCount);
-            Assert.AreEqual(2, algorithm.GetComponents().Key);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [0] = 0,
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 1,
-                    [5] = 1
-                },
-                algorithm.GetComponents().Value);
+            algorithm.ComponentCount.Should().Be(2);
+            algorithm.GetComponents().Key.Should().Be(2);
+            algorithm.GetComponents().Value.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [0] = 0,
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 1,
+                [5] = 1
+            });
 
             graph.AddVertex(6);
-            Assert.AreEqual(3, algorithm.ComponentCount);
-            Assert.AreEqual(3, algorithm.GetComponents().Key);
-            CollectionAssert.AreEquivalent(
-                new Dictionary<int, int>
-                {
-                    [0] = 0,
-                    [1] = 0,
-                    [2] = 0,
-                    [3] = 0,
-                    [4] = 1,
-                    [5] = 1,
-                    [6] = 2
-                },
-                algorithm.GetComponents().Value);
+            algorithm.ComponentCount.Should().Be(3);
+            algorithm.GetComponents().Key.Should().Be(3);
+            algorithm.GetComponents().Value.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [0] = 0,
+                [1] = 0,
+                [2] = 0,
+                [3] = 0,
+                [4] = 1,
+                [5] = 1,
+                [6] = 2
+            });
         }
 
         [Test]
@@ -157,8 +143,8 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
 
             using (graph.IncrementalConnectedComponents(out Func<KeyValuePair<int, IDictionary<int, int>>> _))
             {
-                Assert.Throws<InvalidOperationException>(() => graph.RemoveVertex(6));
-                Assert.Throws<InvalidOperationException>(() => graph.RemoveEdge(edge13));
+                Invoking(() => graph.RemoveVertex(6)).Should().Throw<InvalidOperationException>();
+                Invoking(() => graph.RemoveEdge(edge13)).Should().Throw<InvalidOperationException>();
             }
         }
 
@@ -167,11 +153,11 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
-            Assert.DoesNotThrow(() =>
+            Invoking(() =>
             {
                 algorithm.Compute();
                 algorithm.Compute();
-            });
+            }).Should().NotThrow();
         }
 
         [Test]
@@ -179,11 +165,11 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
-            Assert.DoesNotThrow(() => algorithm.Dispose());
+            Invoking(() => algorithm.Dispose()).Should().NotThrow();
 
             algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
-            Assert.DoesNotThrow(() => algorithm.Dispose());
+            Invoking(() => algorithm.Dispose()).Should().NotThrow();
         }
     }
 }

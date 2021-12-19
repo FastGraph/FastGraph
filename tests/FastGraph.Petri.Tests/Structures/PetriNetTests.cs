@@ -14,10 +14,10 @@ namespace FastGraph.Petri.Tests
         public void Constructor()
         {
             var net = new PetriNet<int>();
-            CollectionAssert.IsEmpty(net.Places);
-            CollectionAssert.IsEmpty(net.Transitions);
-            CollectionAssert.IsEmpty(net.Arcs);
-            Assert.IsNotNull(net.Graph);
+            net.Places.Should().BeEmpty();
+            net.Transitions.Should().BeEmpty();
+            net.Arcs.Should().BeEmpty();
+            net.Graph.Should().NotBeNull();
             AssertEmptyGraph(net.Graph);
         }
 
@@ -26,40 +26,40 @@ namespace FastGraph.Petri.Tests
         {
             var net = new PetriNet<int>();
             var place1 = net.AddPlace("P1");
-            CollectionAssert.AreEquivalent(new[] { place1 }, net.Places);
-            CollectionAssert.IsEmpty(net.Transitions);
-            CollectionAssert.IsEmpty(net.Arcs);
+            net.Places.Should().BeEquivalentTo(new[] { place1 });
+            net.Transitions.Should().BeEmpty();
+            net.Arcs.Should().BeEmpty();
             AssertHasVertices(net.Graph, new[] { place1 });
             AssertNoEdge(net.Graph);
 
             var transition1 = net.AddTransition("T1");
-            CollectionAssert.AreEquivalent(new[] { place1 }, net.Places);
-            CollectionAssert.AreEquivalent(new[] { transition1 }, net.Transitions);
-            CollectionAssert.IsEmpty(net.Arcs);
+            net.Places.Should().BeEquivalentTo(new[] { place1 });
+            net.Transitions.Should().BeEquivalentTo(new[] { transition1 });
+            net.Arcs.Should().BeEmpty();
             AssertHasVertices(net.Graph, new IPetriVertex[] { place1, transition1 });
             AssertNoEdge(net.Graph);
 
             var place2 = net.AddPlace("P2");
             var transition2 = net.AddTransition("T2");
             var place3 = net.AddPlace("P3");
-            CollectionAssert.AreEquivalent(new[] { place1, place2, place3 }, net.Places);
-            CollectionAssert.AreEquivalent(new[] { transition1, transition2 }, net.Transitions);
-            CollectionAssert.IsEmpty(net.Arcs);
+            net.Places.Should().BeEquivalentTo(new[] { place1, place2, place3 });
+            net.Transitions.Should().BeEquivalentTo(new[] { transition1, transition2 });
+            net.Arcs.Should().BeEmpty();
             AssertHasVertices(net.Graph, new IPetriVertex[] { place1, place2, place3, transition1, transition2 });
             AssertNoEdge(net.Graph);
 
             var arc1 = net.AddArc(place1, transition1);
-            CollectionAssert.AreEquivalent(new[] { place1, place2, place3 }, net.Places);
-            CollectionAssert.AreEquivalent(new[] { transition1, transition2 }, net.Transitions);
-            CollectionAssert.AreEquivalent(new[] { arc1 }, net.Arcs);
+            net.Places.Should().BeEquivalentTo(new[] { place1, place2, place3 });
+            net.Transitions.Should().BeEquivalentTo(new[] { transition1, transition2 });
+            net.Arcs.Should().BeEquivalentTo(new[] { arc1 });
             AssertHasVertices(net.Graph, new IPetriVertex[] { place1, place2, place3, transition1, transition2 });
             AssertHasEdges(net.Graph, new[] { arc1 });
 
             var arc2 = net.AddArc(transition2, place3);
             var arc3 = net.AddArc(place2, transition2);
-            CollectionAssert.AreEquivalent(new[] { place1, place2, place3 }, net.Places);
-            CollectionAssert.AreEquivalent(new[] { transition1, transition2 }, net.Transitions);
-            CollectionAssert.AreEquivalent(new[] { arc1, arc2, arc3 }, net.Arcs);
+            net.Places.Should().BeEquivalentTo(new[] { place1, place2, place3 });
+            net.Transitions.Should().BeEquivalentTo(new[] { transition1, transition2 });
+            net.Arcs.Should().BeEquivalentTo(new[] { arc1, arc2, arc3 });
             AssertHasVertices(net.Graph, new IPetriVertex[] { place1, place2, place3, transition1, transition2 });
             AssertHasEdges(net.Graph, new[] { arc1, arc2, arc3 });
         }
@@ -71,11 +71,11 @@ namespace FastGraph.Petri.Tests
             AssertEmpty(net);
 
             var clonedNet = net.Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertEmpty(clonedNet);
 
             clonedNet = (PetriNet<int>)((ICloneable)net).Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertEmpty(clonedNet);
 
             var place1 = net.AddPlace("p1");
@@ -85,11 +85,11 @@ namespace FastGraph.Petri.Tests
             AssertNoEdge(net.Graph);
 
             clonedNet = net.Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertAreEqual(net, clonedNet);
 
             clonedNet = (PetriNet<int>)((ICloneable)net).Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertAreEqual(net, clonedNet);
 
             var place3 = net.AddPlace("p3");
@@ -103,11 +103,11 @@ namespace FastGraph.Petri.Tests
             AssertHasEdges(net.Graph, new[] { arc1, arc2, arc3, arc4, arc5 });
 
             clonedNet = net.Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertAreEqual(net, clonedNet);
 
             clonedNet = (PetriNet<int>)((ICloneable)net).Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertAreEqual(net, clonedNet);
 
             var place4 = net.AddPlace("p4");
@@ -116,28 +116,28 @@ namespace FastGraph.Petri.Tests
             AssertHasEdges(net.Graph, new[] { arc1, arc2, arc3, arc4, arc5 });
 
             clonedNet = net.Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertAreEqual(net, clonedNet);
 
             clonedNet = (PetriNet<int>)((ICloneable)net).Clone();
-            Assert.IsNotNull(clonedNet);
+            clonedNet.Should().NotBeNull();
             AssertAreEqual(net, clonedNet);
 
             #region Local function
 
             void AssertEmpty<TToken>(PetriNet<TToken> n)
             {
-                CollectionAssert.IsEmpty(n.Places);
-                CollectionAssert.IsEmpty(n.Transitions);
-                CollectionAssert.IsEmpty(n.Arcs);
+                n.Places.Should().BeEmpty();
+                n.Transitions.Should().BeEmpty();
+                n.Arcs.Should().BeEmpty();
                 AssertEmptyGraph(n.Graph);
             }
 
             void AssertAreEqual<TToken>(PetriNet<TToken> expected, PetriNet<TToken> actual)
             {
-                CollectionAssert.AreEqual(expected.Places, actual.Places);
-                CollectionAssert.AreEqual(expected.Transitions, actual.Transitions);
-                CollectionAssert.AreEqual(expected.Arcs, actual.Arcs);
+                actual.Places.Should().BeEquivalentTo(expected.Places);
+                actual.Transitions.Should().BeEquivalentTo(expected.Transitions);
+                actual.Arcs.Should().BeEquivalentTo(expected.Arcs);
                 AssertEquivalentGraphs(expected.Graph, actual.Graph);
             }
 
@@ -153,7 +153,7 @@ namespace FastGraph.Petri.Tests
                 "Places (0)" + Environment.NewLine +
                 "Transitions (0)" + Environment.NewLine +
                 "Arcs" + Environment.NewLine;
-            Assert.AreEqual(expectedString, net.ToString());
+            net.ToString().Should().Be(expectedString);
 
             var place1 = net.AddPlace("TestPlace");
             expectedString =
@@ -163,7 +163,7 @@ namespace FastGraph.Petri.Tests
                 Environment.NewLine +
                 "Transitions (0)" + Environment.NewLine +
                 "Arcs" + Environment.NewLine;
-            Assert.AreEqual(expectedString, net.ToString());
+            net.ToString().Should().Be(expectedString);
 
             place1.Marking.Add(1);
             place1.Marking.Add(5);
@@ -179,7 +179,7 @@ namespace FastGraph.Petri.Tests
                 Environment.NewLine +
                 "Transitions (0)" + Environment.NewLine +
                 "Arcs" + Environment.NewLine;
-            Assert.AreEqual(expectedString, net.ToString());
+            net.ToString().Should().Be(expectedString);
 
             var transition = net.AddTransition("Transition");
             expectedString =
@@ -195,7 +195,7 @@ namespace FastGraph.Petri.Tests
                 "\tT(Transition)" + Environment.NewLine +
                 Environment.NewLine +
                 "Arcs" + Environment.NewLine;
-            Assert.AreEqual(expectedString, net.ToString());
+            net.ToString().Should().Be(expectedString);
 
             net.AddArc(place1, transition);
             net.AddArc(transition, place2);
@@ -214,7 +214,7 @@ namespace FastGraph.Petri.Tests
                 "Arcs" + Environment.NewLine +
                 "\tP(TestPlace|2) -> T(Transition)" + Environment.NewLine +
                 "\tT(Transition) -> P(TestPlace2|0)" + Environment.NewLine;
-            Assert.AreEqual(expectedString, net.ToString());
+            net.ToString().Should().Be(expectedString);
         }
     }
 }
