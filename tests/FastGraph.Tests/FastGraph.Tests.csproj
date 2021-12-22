@@ -32,6 +32,7 @@
 
   <!-- Dependencies -->
   <!-- Shared Projects -->
+  <Import Project="..\FastGraph.Tests.CommonInternals\FastGraph.Tests.CommonInternals.projitems" Label="Shared" />
   <Import Project="..\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
@@ -39,6 +40,7 @@
     <ProjectReference Include="..\..\src\FastGraph.Serialization\FastGraph.Serialization.csproj" />
   </ItemGroup>
 
+  <!-- Externals -->
   <ItemGroup>
     <PackageReference Remove="Nullable" />
   </ItemGroup>

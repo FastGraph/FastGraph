@@ -28,13 +28,16 @@
 
   <!-- Dependencies -->
   <!-- Shared Projects -->
+  <Import Project="..\FastGraph.Tests.CommonInternals\FastGraph.Tests.CommonInternals.projitems" Label="Shared" />
   <Import Project="..\..\src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
-  </ItemGroup>
 
   <!-- Projects -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\FastGraph.Data\FastGraph.Data.csproj" />
+  </ItemGroup>
+
+  <!--Externals -->
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
 </Project>

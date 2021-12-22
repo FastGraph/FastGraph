@@ -27,14 +27,15 @@
   </PropertyGroup>
 
   <!-- Dependencies -->
+  <!-- Shared Projects -->
+  <Import Project="..\FastGraph.Tests.CommonInternals\FastGraph.Tests.CommonInternals.projitems" Label="Shared" />
+  <Import Project="..\..\src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
+
   <!-- Externals -->
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
-
-  <!-- Shared Projects -->
-  <Import Project="..\..\src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
   <ItemGroup>
