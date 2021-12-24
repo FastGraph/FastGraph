@@ -264,11 +264,10 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
 
         #endregion
 
-        [Test]
-        public void RandomWalk()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void RandomWalk(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunRandomWalkAndCheck(graph);
+            RunRandomWalkAndCheck(testGraph.Instance);
         }
 
         [Test]
@@ -320,5 +319,11 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             Invoking(() => algorithm.Generate(1)).Should().Throw<VertexNotFoundException>();
             Invoking(() => algorithm.Generate(1, 12)).Should().Throw<VertexNotFoundException>();
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

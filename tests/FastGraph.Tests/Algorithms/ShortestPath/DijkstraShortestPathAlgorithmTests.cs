@@ -6,7 +6,6 @@ using FastGraph.Algorithms;
 using FastGraph.Algorithms.Observers;
 using FastGraph.Algorithms.ShortestPath;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms.ShortestPath
 {
@@ -228,15 +227,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests_AllVertices))]
         [Category(TestCategories.LongRunning)]
-        public void Dijkstra()
+        public void Dijkstra(TestGraphInstanceWithSelectedVertex<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-            {
-                foreach (string root in graph.Vertices)
-                    RunDijkstraAndCheck(graph, root);
-            }
+            RunDijkstraAndCheck(testGraph.Instance, testGraph.SelectedVertex);
         }
 
         [Test]
@@ -356,18 +351,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             #endregion
         }
 
-        [Test]
-        [Category(TestCategories.CISkip)]
-        public void DijkstraRepro12359()
+        [TestCaseSource(nameof(GraphForRepro12359_FirstSeveralVertices))]
+        [Category(TestCategories.LongRunning)]
+        public void DijkstraRepro12359(TestGraphInstanceWithSelectedVertex<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("repro12359.graphml"));
-            int cut = 0;
-            foreach (string root in graph.Vertices)
-            {
-                if (cut++ > 5)
-                    break;
-                RunDijkstraAndCheck(graph, root);
-            }
+            RunDijkstraAndCheck(testGraph.Instance, testGraph.SelectedVertex);
         }
 
         [Test]
@@ -620,5 +608,22 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests_AllVertices =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .SelectMany(tgi => tgi.Select())
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> GraphForRepro12359_FirstSeveralVertices =
+            TestGraphSourceProvider
+                .Instance
+                .repro12359
+                .DeferDeserializeAsAdjacencyGraph()
+                .CreateInstanceHandle()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Take(6)
+                .Memoize();
     }
 }

@@ -279,15 +279,12 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void DagShortestPath()
+        public void DagShortestPath(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests(50))
-            {
-                DagShortestPath_Test(graph);
-                DagCriticalPath_Test(graph);
-            }
+            DagShortestPath_Test(testGraph.Instance);
+            DagCriticalPath_Test(testGraph.Instance);
         }
 
         [Pure]
@@ -306,5 +303,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests =
+            TestGraphFactory
+                .SampleAdjacencyGraphs(50)
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

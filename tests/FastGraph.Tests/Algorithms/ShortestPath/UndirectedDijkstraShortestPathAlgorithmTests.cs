@@ -222,20 +222,13 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
+        [TestCaseSource(nameof(UndirectedGraphs_SlowTests_FirstSeveralVerticesOfEach))]
         [Category(TestCategories.LongRunning)]
-        public void UndirectedDijkstra()
+        public void UndirectedDijkstra(TestGraphInstanceWithSelectedVertex<UndirectedGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests(20))
-            {
-                int cut = 0;
-                foreach (string root in graph.Vertices)
-                {
-                    if (cut++ > 10)
-                        break;
-                    RunUndirectedDijkstraAndCheck(graph, root);
-                }
-            }
+            var graph = testGraph.Instance;
+            var root = testGraph.SelectedVertex;
+            RunUndirectedDijkstraAndCheck(graph, root);
         }
 
         [Test]
@@ -281,5 +274,12 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_SlowTests_FirstSeveralVerticesOfEach =
+            TestGraphFactory
+                .SampleUndirectedGraphs(20)
+                .SelectMany(t => t.Select().Take(11))
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

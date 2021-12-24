@@ -19,27 +19,11 @@ namespace FastGraph.Tests
         }
 
         /// <summary>
-        /// Returns the path to the current test ML graph directory.
-        /// </summary>
-        public static string GetTestGraphDirectory()
-        {
-            return Path.Combine(GetTestDirectory(), "GraphML");
-        }
-
-        /// <summary>
         /// Returns the path to the temporary test directory.
         /// </summary>
         public static string GetTemporaryTestDirectory()
         {
             return Path.Combine(GetTestDirectory(), "Temp");
-        }
-
-        /// <summary>
-        /// Returns the path to the current test ML graph directory.
-        /// </summary>
-        public static string GetGraphFilePath(string fileName)
-        {
-            return Path.Combine(GetTestGraphDirectory(), fileName);
         }
 
         /// <summary>

@@ -224,15 +224,13 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests_AllVertices))]
         [Category(TestCategories.LongRunning)]
-        public void BellmanFord()
+        public void BellmanFord(TestGraphInstanceWithSelectedVertex<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-            {
-                foreach (string root in graph.Vertices)
-                    RunBellmanFordAndCheck(graph, root);
-            }
+            var graph = testGraph.Instance;
+            var root = testGraph.SelectedVertex;
+            RunBellmanFordAndCheck(graph, root);
         }
 
         [Test]
@@ -307,5 +305,12 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests_AllVertices =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .SelectMany(t => t.Select())
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

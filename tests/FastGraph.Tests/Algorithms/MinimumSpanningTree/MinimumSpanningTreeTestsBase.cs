@@ -11,7 +11,6 @@ using FastGraph.Collections;
 using FastGraph.Serialization;
 using FluentAssertions.Collections;
 using FluentAssertions.Primitives;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
 {
@@ -193,7 +192,7 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
         public void TestGraph()
         {
             UndirectedGraph<string, TaggedEdge<string, double>> undirectedGraph = XmlReader
-                .Create(GetGraphFilePath("testGraph.xml"))
+                .Create(TestGraphSourceProvider.Instance.testGraph.SourcePath!)
                 .DeserializeFromXml(
                     "graph",
                     "node",

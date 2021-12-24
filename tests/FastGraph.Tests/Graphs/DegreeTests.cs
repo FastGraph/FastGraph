@@ -62,34 +62,52 @@ namespace FastGraph.Tests.Graphs
 
         #endregion
 
-        [Test]
-        public void DegreeSumEqualsTwiceEdgeCount()
+        [TestCaseSource(nameof(BidirectionalGraphs_All))]
+        public void DegreeSumEqualsTwiceEdgeCount(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
-                AssertDegreeSumEqualsTwiceEdgeCount(graph);
+            AssertDegreeSumEqualsTwiceEdgeCount(testGraph.Instance);
         }
 
-        [Test]
-        public void InDegreeSumEqualsEdgeCount()
+        [TestCaseSource(nameof(BidirectionalGraphs_All))]
+        public void InDegreeSumEqualsEdgeCount(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
-                AssertInDegreeSumEqualsEdgeCount(graph);
+            AssertInDegreeSumEqualsEdgeCount(testGraph.Instance);
         }
 
-        [Test]
-        public void OutDegreeSumEqualsEdgeCount()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void OutDegreeSumEqualsEdgeCount_Adjacency(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                OutDegreeSumEqualsEdgeCount(graph);
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
-                OutDegreeSumEqualsEdgeCount(graph);
+            OutDegreeSumEqualsEdgeCount(testGraph.Instance);
         }
 
-        [Test]
-        public void AdjacentDegreeSumEqualsTwiceEdgeCount()
+        [TestCaseSource(nameof(BidirectionalGraphs_All))]
+        public void OutDegreeSumEqualsEdgeCount_Bidirectional(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
-                AssertAdjacentDegreeSumEqualsTwiceEdgeCount(graph);
+            OutDegreeSumEqualsEdgeCount(testGraph.Instance);
         }
+
+        [TestCaseSource(nameof(UndirectedGraphs_All))]
+        public void AdjacentDegreeSumEqualsTwiceEdgeCount(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
+        {
+            AssertAdjacentDegreeSumEqualsTwiceEdgeCount(testGraph.Instance);
+        }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_All =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_All =
+            TestGraphFactory
+                .SampleUndirectedGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -36,8 +36,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastGraph.Petri", "src\Fast
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FastGraph.Tests.CommonInternals", "tests\FastGraph.Tests.CommonInternals\FastGraph.Tests.CommonInternals.shproj", "{52F3FFCF-1638-48D8-B124-0347C723F2FC}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FastGraph.Serialization.Tests.CommonInternals", "tests\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.shproj", "{98E60A67-C326-4B83-8EFF-B77E9C651945}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastGraph.Tests", "tests\FastGraph.Tests\FastGraph.Tests.csproj", "{61DF76E1-DE2B-4DF1-AD5F-89939AB06693}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastGraph.Serialization.Tests", "tests\FastGraph.Serialization.Tests\FastGraph.Serialization.Tests.csproj", "{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD}"
@@ -50,14 +48,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastGraph.MSAGL.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastGraph.Petri.Tests", "tests\FastGraph.Petri.Tests\FastGraph.Petri.Tests.csproj", "{CD993F58-A275-4E67-9F8E-BAF3BE6F21B6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastGraph.TestSupport.Internal", "src\FastGraph.TestSupport.Internal\FastGraph.TestSupport.Internal.csproj", "{0276B32A-79C5-44F5-8F22-E1F6B3F9C0F6}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		tests\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems*{61df76e1-de2b-4df1-ad5f-89939ab06693}*SharedItemsImports = 5
 		src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems*{69dfd21c-d3a3-4764-b3f0-2fdf612e1f65}*SharedItemsImports = 5
 		src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems*{7160ddab-12b0-491f-9a79-bf3b5e0cd872}*SharedItemsImports = 5
-		tests\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems*{8adddae1-fa2c-4637-c67f-8743beb126cd}*SharedItemsImports = 5
 		src\FastGraph.CommonInternals\FastGraph.CommonInternals.projitems*{908fe868-7abe-4fe8-bfa6-c5e6572b780d}*SharedItemsImports = 5
-		tests\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems*{98e60a67-c326-4b83-8eff-b77e9c651945}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,6 +109,10 @@ Global
 		{CD993F58-A275-4E67-9F8E-BAF3BE6F21B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD993F58-A275-4E67-9F8E-BAF3BE6F21B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD993F58-A275-4E67-9F8E-BAF3BE6F21B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0276B32A-79C5-44F5-8F22-E1F6B3F9C0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0276B32A-79C5-44F5-8F22-E1F6B3F9C0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0276B32A-79C5-44F5-8F22-E1F6B3F9C0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0276B32A-79C5-44F5-8F22-E1F6B3F9C0F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,13 +126,13 @@ Global
 		{1C978139-80BD-4081-94CC-14CBAEEFEB24} = {7A2A3C07-B652-4759-AFC4-49378D764784}
 		{F7008BAF-1F3A-4406-80B1-4A2F2CDC0CDD} = {7A2A3C07-B652-4759-AFC4-49378D764784}
 		{52F3FFCF-1638-48D8-B124-0347C723F2FC} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
-		{98E60A67-C326-4B83-8EFF-B77E9C651945} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{61DF76E1-DE2B-4DF1-AD5F-89939AB06693} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{8ADDDAE1-FA2C-4637-C67F-8743BEB126CD} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{69DFD21C-D3A3-4764-B3F0-2FDF612E1F65} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{908FE868-7ABE-4FE8-BFA6-C5E6572B780D} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{7160DDAB-12B0-491F-9A79-BF3B5E0CD872} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
 		{CD993F58-A275-4E67-9F8E-BAF3BE6F21B6} = {22937B93-4129-4F68-AB14-F7AFE020BA8F}
+		{0276B32A-79C5-44F5-8F22-E1F6B3F9C0F6} = {7A2A3C07-B652-4759-AFC4-49378D764784}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C26EFBC1-5149-4422-AFD3-172667AA018F}

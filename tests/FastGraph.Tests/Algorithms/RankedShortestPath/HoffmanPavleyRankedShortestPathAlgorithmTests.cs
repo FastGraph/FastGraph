@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Collections.Immutable;
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using FastGraph.Algorithms.RankedShortestPath;
@@ -285,26 +286,22 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
 
         #endregion
 
-        [Test]
+        [TestCaseSource(nameof(GetBidirectionalGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void HoffmanPavleyRankedShortestPath()
+        public void HoffmanPavleyRankedShortestPath(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
-            {
-                if (graph.VertexCount == 0)
-                    continue;
+            var graph = testGraph.Instance;
 
-                var weights = new Dictionary<Edge<string>, double>();
-                foreach (Edge<string> edge in graph.Edges)
-                    weights.Add(edge, graph.OutDegree(edge.Source) + 1);
+            var weights = new Dictionary<Edge<string>, double>();
+            foreach (Edge<string> edge in graph.Edges)
+                weights.Add(edge, graph.OutDegree(edge.Source) + 1);
 
-                RunHoffmanPavleyRankedShortestPathAndCheck(
-                    graph,
-                    weights,
-                    graph.Vertices.First(),
-                    graph.Vertices.Last(),
-                    graph.VertexCount);
-            }
+            RunHoffmanPavleyRankedShortestPathAndCheck(
+                graph,
+                weights,
+                graph.Vertices.First(),
+                graph.Vertices.Last(),
+                graph.VertexCount);
         }
 
         [Test]
@@ -529,5 +526,12 @@ namespace FastGraph.Tests.Algorithms.RankedShortestPath
 
             #endregion
         }
+
+        private static IEnumerable<TestCaseData> GetBidirectionalGraphs_SlowTests() =>
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Where(t => t.VertexCount != 0)
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -3,7 +3,6 @@
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms
 {
@@ -153,18 +152,16 @@ namespace FastGraph.Tests.Algorithms
             Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
 
-        [Test]
-        public void SourceFirstTopologicalSort()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void SourceFirstTopologicalSort(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunSourceFirstTopologicalSortAndCheck(graph);
+            RunSourceFirstTopologicalSortAndCheck(testGraph.Instance);
         }
 
-        [Test]
-        public void SourceFirstTopologicalSort_DCT8()
+        [TestCaseSource(nameof(LoadAdjacencyGraph_DTC8))]
+        public void SourceFirstTopologicalSort_DCT8(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("DCT8.graphml"));
-            RunSourceFirstTopologicalSortAndCheck(graph);
+            RunSourceFirstTopologicalSortAndCheck(testGraph.Instance);
         }
 
         [Test]
@@ -182,5 +179,14 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
             Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> LoadAdjacencyGraph_DTC8 =
+            new[] { new TestCaseData(TestGraphSourceProvider.Instance.DCT8.DeferDeserializeAsAdjacencyGraph().CreateInstanceHandle()) };
     }
 }

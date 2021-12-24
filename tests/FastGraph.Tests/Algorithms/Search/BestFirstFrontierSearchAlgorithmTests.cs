@@ -272,30 +272,36 @@ namespace FastGraph.Tests.Algorithms.Search
             RunAndCheckSearch(graph);
         }
 
-        [Test]
+        [TestCaseSource(nameof(BidirectionalGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void BestFirstFrontierSearch()
+        public void BestFirstFrontierSearch(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
-                RunAndCheckSearch(graph);
+            RunAndCheckSearch(testGraph.Instance);
         }
 
-        [Test]
+        [TestCaseSource(nameof(BidirectionalGraphs_SlowTests_RootedVertices))]
         [Category(TestCategories.LongRunning)]
-        public void BestFirstFrontierComparedToDijkstraSearch()
+        public void BestFirstFrontierComparedToDijkstraSearch(TestGraphInstanceWithSelectedVertexPair<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
-            {
-                if (graph.VertexCount == 0)
-                    continue;
-
-                string root = graph.Vertices.First();
-                foreach (string vertex in graph.Vertices)
-                {
-                    if (!root.Equals(vertex))
-                        CompareSearches(graph, root, vertex);
-                }
-            }
+            var graph = testGraph.Instance;
+            var root = testGraph.SelectedVertex0;
+            var vertex = testGraph.SelectedVertex1;
+            CompareSearches(graph, root, vertex);
         }
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_SlowTests =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_SlowTests_RootedVertices =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Where(t => t.VertexCount > 1)
+                .Select(t => t.Select().First())
+                .SelectMany(t => t.Select().Where(t => t.SelectedVertex0 != t.SelectedVertex1))
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

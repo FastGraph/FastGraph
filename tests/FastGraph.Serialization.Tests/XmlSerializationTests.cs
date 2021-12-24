@@ -6,6 +6,7 @@ using System.Xml.XPath;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
+using FastGraph.Tests;
 using static FastGraph.Tests.GraphTestHelpers;
 using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 using static FastGraph.Serialization.Tests.SerializationTestCaseSources;
@@ -298,11 +299,10 @@ namespace FastGraph.Serialization.Tests
 
         #region Deserialization
 
-        [NotNull]
-        private const string EmptyGraphFileName = "emptyGraph.xml";
+        private static readonly NamedTestGraphSource EmptyGraph = TestGraphSourceProvider.Instance.emptyGraph;
 
         [NotNull]
-        private const string TestGraphFileName = "testGraph.xml";
+        private static readonly NamedTestGraphSource TestGraph = TestGraphSourceProvider.Instance.testGraph;
 
         #region Test helpers
 
@@ -352,7 +352,7 @@ namespace FastGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Document_Empty()
         {
-            var document = new XPathDocument(GetGraphFilePath(EmptyGraphFileName));
+            var document = new XPathDocument(EmptyGraph.SourcePath!);
 
             // Directed graph
             AdjacencyGraph<string, Edge<string>> adjacencyGraph = document.DeserializeFromXml(
@@ -395,7 +395,7 @@ namespace FastGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Document()
         {
-            var document = new XPathDocument(GetGraphFilePath(TestGraphFileName));
+            var document = new XPathDocument(TestGraph.SourcePath!);
 
             // Directed graph
             AdjacencyGraph<string, EquatableEdge<string>> adjacencyGraph = document.DeserializeFromXml(
@@ -457,7 +457,7 @@ namespace FastGraph.Serialization.Tests
                     nav.GetAttribute("source", ""),
                     nav.GetAttribute("target", "")))).Should().Throw<ArgumentNullException>();
 
-            var document = new XPathDocument(GetGraphFilePath(TestGraphFileName));
+            var document = new XPathDocument(TestGraph.SourcePath!);
 
             Invoking(() => document.DeserializeFromXml(
                 default,
@@ -565,7 +565,7 @@ namespace FastGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Reader_Empty()
         {
-            using (var reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
+            using (var reader = XmlReader.Create(EmptyGraph.SourcePath!))
             {
                 AdjacencyGraph<string, Edge<string>> adjacencyGraph = reader.DeserializeFromXml(
                     "graph",
@@ -580,7 +580,7 @@ namespace FastGraph.Serialization.Tests
                 AssertEmptyGraph(adjacencyGraph);
             }
 
-            using (var reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
+            using (var reader = XmlReader.Create(EmptyGraph.SourcePath!))
             {
                 BidirectionalGraph<string, Edge<string>> bidirectionalGraph = reader.DeserializeFromXml(
                     "graph",
@@ -595,7 +595,7 @@ namespace FastGraph.Serialization.Tests
                 AssertEmptyGraph(bidirectionalGraph);
             }
 
-            using (var reader = XmlReader.Create(GetGraphFilePath(EmptyGraphFileName)))
+            using (var reader = XmlReader.Create(EmptyGraph.SourcePath!))
             {
                 UndirectedGraph<string, TaggedEdge<string, double>> undirectedGraph = reader.DeserializeFromXml(
                     "graph",
@@ -616,7 +616,7 @@ namespace FastGraph.Serialization.Tests
         [Test]
         public void DeserializeFromXml_Reader()
         {
-            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(TestGraph.SourcePath!))
             {
                 AdjacencyGraph<string, EquatableEdge<string>> adjacencyGraph = reader.DeserializeFromXml(
                     "graph",
@@ -633,7 +633,7 @@ namespace FastGraph.Serialization.Tests
                     (v1, v2, _) => new EquatableEdge<string>(v1, v2));
             }
 
-            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(TestGraph.SourcePath!))
             {
                 BidirectionalGraph<string, EquatableEdge<string>> bidirectionalGraph = reader.DeserializeFromXml(
                     "graph",
@@ -650,7 +650,7 @@ namespace FastGraph.Serialization.Tests
                     (v1, v2, _) => new EquatableEdge<string>(v1, v2));
             }
 
-            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(TestGraph.SourcePath!))
             {
                 UndirectedGraph<string, EquatableTaggedEdge<string, double>> undirectedGraph = reader.DeserializeFromXml(
                     "graph",
@@ -687,7 +687,7 @@ namespace FastGraph.Serialization.Tests
                     r.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
                     r.GetAttribute("target") ?? throw new AssertionException("Must have target attribute")))).Should().Throw<ArgumentNullException>();
 
-            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(TestGraph.SourcePath!))
             {
                 Invoking(() => reader.DeserializeFromXml<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
                     "graph",

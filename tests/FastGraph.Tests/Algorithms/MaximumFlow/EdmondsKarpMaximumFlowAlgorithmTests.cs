@@ -336,15 +336,11 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
             algorithm.GetVertexColor(3).Should().Be(GraphColor.White);
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void EdmondsKarpMaxFlow()
+        public void EdmondsKarpMaxFlow(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests(100))
-            {
-                if (graph.VertexCount > 1)
-                    EdmondsKarpMaxFlow(graph, (source, target) => new Edge<string>(source, target));
-            }
+            EdmondsKarpMaxFlow(testGraph.Instance, (source, target) => new Edge<string>(source, target));
         }
 
         [Test]
@@ -485,5 +481,12 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
                 algorithm.Compute(scenario.Root!, scenario.AccessibleVerticesFromRoot.First());
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests =
+            TestGraphFactory
+                .SampleAdjacencyGraphs(100)
+                .Where(t => t.VertexCount > 1)
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

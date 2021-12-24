@@ -270,14 +270,11 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
-        public void DepthFirstSearch()
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
+        public void DepthFirstSearch(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-            {
-                RunDFSAndCheck(graph);
-                RunDFSAndCheck(graph, 12);
-            }
+            RunDFSAndCheck(testGraph.Instance);
+            RunDFSAndCheck(testGraph.Instance, 12);
         }
 
         [TestCase(false)]
@@ -331,5 +328,11 @@ namespace FastGraph.Tests.Algorithms.Search
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -188,36 +188,25 @@ namespace FastGraph.Tests.Algorithms
             Invoking(() => algorithm.SetVertexPairs(new[] { new SEquatableEdge<int>(1, 2) })).Should().Throw<ArgumentException>();
         }
 
-        [Test]
-        public void TarjanOfflineLeastCommonAncestor()
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests_FirstSeveralVerticesOfEach))]
+        public void TarjanOfflineLeastCommonAncestor(TestGraphInstanceWithSelectedVertex<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
+            var graph = testGraph.Instance;
+            var root = testGraph.SelectedVertex;
+            var pairs = new List<SEquatableEdge<string>>();
+            foreach (string u in graph.Vertices)
             {
-                if (graph.VertexCount == 0)
-                    continue;
-
-                var pairs = new List<SEquatableEdge<string>>();
-                foreach (string u in graph.Vertices)
+                foreach (string v in graph.Vertices)
                 {
-                    foreach (string v in graph.Vertices)
-                    {
-                        if (!u.Equals(v))
-                            pairs.Add(new SEquatableEdge<string>(u, v));
-                    }
-                }
-
-                int count = 0;
-                foreach (string root in graph.Vertices)
-                {
-                    RunTarjanOfflineLeastCommonAncestorAndCheck(
-                        graph,
-                        root,
-                        pairs.ToArray());
-
-                    if (count++ > 10)
-                        break;
+                    if (!u.Equals(v))
+                        pairs.Add(new SEquatableEdge<string>(u, v));
                 }
             }
+
+            RunTarjanOfflineLeastCommonAncestorAndCheck(
+                graph,
+                root,
+                pairs.ToArray());
         }
 
         [Test]
@@ -244,5 +233,13 @@ namespace FastGraph.Tests.Algorithms
             algorithm.SetRootVertex(vertex1);
             Invoking(() => algorithm.Compute()).Should().Throw<InvalidOperationException>();
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests_FirstSeveralVerticesOfEach =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Where(t => t.VertexCount != 0)
+                .SelectMany(t => t.Select().Take(11))
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

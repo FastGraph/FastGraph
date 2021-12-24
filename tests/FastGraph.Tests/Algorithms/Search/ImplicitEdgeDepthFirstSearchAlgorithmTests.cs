@@ -203,18 +203,21 @@ namespace FastGraph.Tests.Algorithms.Search
 
         #endregion
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests_AllVertices))]
         [Category(TestCategories.LongRunning)]
-        public void EdgeDepthFirstSearch()
+        public void EdgeDepthFirstSearch(TestGraphInstanceWithSelectedVertex<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-            {
-                foreach (string vertex in graph.Vertices)
-                {
-                    RunImplicitEdgeDFSAndCheck(graph, vertex);
-                    RunImplicitEdgeDFSAndCheck(graph, vertex, 12);
-                }
-            }
+            var graph = testGraph.Instance;
+            var vertex = testGraph.SelectedVertex;
+            RunImplicitEdgeDFSAndCheck(graph, vertex);
+            RunImplicitEdgeDFSAndCheck(graph, vertex, 12);
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests_AllVertices =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .SelectMany(t => t.Select())
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

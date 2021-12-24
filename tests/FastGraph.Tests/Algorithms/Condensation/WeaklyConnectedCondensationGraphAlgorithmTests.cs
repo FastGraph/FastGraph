@@ -182,12 +182,17 @@ namespace FastGraph.Tests.Algorithms.Condensation
             condensedGraph.Vertices.ElementAt(2).Edges.Should().BeEquivalentTo(new[] { edge89 });
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
         [Category(TestCategories.LongRunning)]
-        public void WeaklyConnectedCondensation()
+        public void WeaklyConnectedCondensation(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunWeaklyConnectedCondensationAndCheck(graph);
+            RunWeaklyConnectedCondensationAndCheck(testGraph.Instance);
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -4,7 +4,6 @@ using System.Text;
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms
 {
@@ -163,18 +162,16 @@ namespace FastGraph.Tests.Algorithms
             Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
 
-        [Test]
-        public void TopologicalSort()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void TopologicalSort(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunTopologicalSortAndCheck(graph);
+            RunTopologicalSortAndCheck(testGraph.Instance);
         }
 
-        [Test]
-        public void TopologicalSort_DCT8()
+        [TestCaseSource(nameof(LoadAdjacencyGraph_DCT8))]
+        public void TopologicalSort_DCT8(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("DCT8.graphml"));
-            RunTopologicalSortAndCheck(graph);
+            RunTopologicalSortAndCheck(testGraph.Instance);
         }
 
         [Test]
@@ -296,5 +293,14 @@ namespace FastGraph.Tests.Algorithms
 
             word.Should().Be("invitees");
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> LoadAdjacencyGraph_DCT8 =
+            new[] { new TestCaseData(TestGraphSourceProvider.Instance.DCT8.DeferDeserializeAsAdjacencyGraph().CreateInstanceHandle()) };
     }
 }

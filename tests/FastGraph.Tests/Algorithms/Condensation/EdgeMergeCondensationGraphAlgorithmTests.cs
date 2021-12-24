@@ -192,16 +192,21 @@ namespace FastGraph.Tests.Algorithms.Condensation
             condensedGraph.Edges.ElementAt(5).Edges.Should().BeEquivalentTo(new[] { edge45, edge57, edge71, edge12, edge23, edge38 });
         }
 
-        [Test]
+        [TestCaseSource(nameof(BidirectionalGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void EdgeCondensation()
+        public void EdgeCondensation(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
             var rand = new Random(123456);
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
-            {
-                RunEdgesCondensationAndCheck(graph, _ => true);
-                RunEdgesCondensationAndCheck(graph, _ => rand.Next(0, 1) == 1);
-            }
+
+            RunEdgesCondensationAndCheck(testGraph.Instance, _ => true);
+            RunEdgesCondensationAndCheck(testGraph.Instance, _ => rand.Next(0, 1) == 1);
         }
+
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_SlowTests =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

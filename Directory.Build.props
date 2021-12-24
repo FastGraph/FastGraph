@@ -78,4 +78,15 @@
     <PackageReference Include="Linq.IndexRange" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <ImplicitUsing Include="System.Collections.Immutable" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <ImplicitUsing Include="System.Collections.Immutable" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+    <ImplicitUsing Include="System.Collections.Immutable" />
+  </ItemGroup>
 </Project>

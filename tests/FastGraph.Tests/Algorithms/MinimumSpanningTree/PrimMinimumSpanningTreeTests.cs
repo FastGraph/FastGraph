@@ -66,11 +66,16 @@ namespace FastGraph.Tests.Algorithms.MinimumSpanningTree
             PrimSpanningTree(graph, x => x.Tag);
         }
 
-        [Test]
-        public void PrimMinimumSpanningTree()
+        [TestCaseSource(nameof(UndirectedGraphs_All))]
+        public void PrimMinimumSpanningTree(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
-                Prim(graph);
+            Prim(testGraph.Instance);
         }
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_All =
+            TestGraphFactory
+                .SampleUndirectedGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

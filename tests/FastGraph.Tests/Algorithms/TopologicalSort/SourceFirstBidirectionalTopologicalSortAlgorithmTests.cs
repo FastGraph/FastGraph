@@ -3,7 +3,6 @@
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms
 {
@@ -201,22 +200,18 @@ namespace FastGraph.Tests.Algorithms
             Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
 
-        [Test]
-        public void SourceFirstBidirectionalTopologicalSort()
+        [TestCaseSource(nameof(BidirectionalGraphs_All))]
+        public void SourceFirstBidirectionalTopologicalSort(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraphInstance)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
-            {
-                RunSourceFirstTopologicalSortAndCheck(graph, TopologicalSortDirection.Forward);
-                RunSourceFirstTopologicalSortAndCheck(graph, TopologicalSortDirection.Backward);
-            }
+            RunSourceFirstTopologicalSortAndCheck(testGraphInstance.Instance, TopologicalSortDirection.Forward);
+            RunSourceFirstTopologicalSortAndCheck(testGraphInstance.Instance, TopologicalSortDirection.Backward);
         }
 
-        [Test]
-        public void SourceFirstBidirectionalTopologicalSort_DCT8()
+        [TestCaseSource(nameof(LoadBidirectionalGraph_DCT8))]
+        public void SourceFirstBidirectionalTopologicalSort_DCT8(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraphInstance)
         {
-            BidirectionalGraph<string, Edge<string>> graph = TestGraphFactory.LoadBidirectionalGraph(GetGraphFilePath("DCT8.graphml"));
-            RunSourceFirstTopologicalSortAndCheck(graph, TopologicalSortDirection.Forward);
-            RunSourceFirstTopologicalSortAndCheck(graph, TopologicalSortDirection.Backward);
+            RunSourceFirstTopologicalSortAndCheck(testGraphInstance.Instance, TopologicalSortDirection.Forward);
+            RunSourceFirstTopologicalSortAndCheck(testGraphInstance.Instance, TopologicalSortDirection.Backward);
         }
 
         [Test]
@@ -234,5 +229,14 @@ namespace FastGraph.Tests.Algorithms
             var algorithm = new SourceFirstBidirectionalTopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
             Invoking(() => algorithm.Compute()).Should().Throw<NonAcyclicGraphException>();
         }
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_All =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> LoadBidirectionalGraph_DCT8 =
+            new[] { new TestCaseData(TestGraphSourceProvider.Instance.DCT8.DeferDeserializeAsBidirectionalGraph().CreateInstanceHandle()) };
     }
 }

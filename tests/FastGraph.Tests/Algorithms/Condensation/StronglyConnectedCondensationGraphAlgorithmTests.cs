@@ -118,12 +118,17 @@ namespace FastGraph.Tests.Algorithms.Condensation
             condensedGraph.Vertices.ElementAt(3).Edges.Should().BeEmpty();
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
         [Category(TestCategories.LongRunning)]
-        public void StronglyConnectedCondensation()
+        public void StronglyConnectedCondensation(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunStronglyConnectedCondensationAndCheck(graph);
+            RunStronglyConnectedCondensationAndCheck(testGraph.Instance);
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

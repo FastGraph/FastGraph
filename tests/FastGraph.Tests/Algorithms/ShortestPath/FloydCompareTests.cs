@@ -87,12 +87,11 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
 
         #endregion
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void FloydVsBellmannGraphML()
+        public void FloydVsBellmannGraphML(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-                CompareAlgorithms(graph, _ => 1.0, (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
+            CompareAlgorithms(testGraph.Instance, _ => 1.0, (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
 
         [Test]
@@ -103,12 +102,17 @@ namespace FastGraph.Tests.Algorithms.ShortestPath
             CompareAlgorithms(graph, e => distances[e], (g, d) => new DijkstraShortestPathAlgorithm<char, Edge<char>>(g, d));
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void FloydVsDijkstraGraphML()
+        public void FloydVsDijkstraGraphML(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-                CompareAlgorithms(graph, _ => 1, (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
+            CompareAlgorithms(testGraph.Instance, _ => 1, (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -3,7 +3,6 @@
 using NUnit.Framework;
 using FastGraph.Algorithms.TopologicalSort;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 
 namespace FastGraph.Tests.Algorithms
@@ -174,20 +173,16 @@ namespace FastGraph.Tests.Algorithms
             new[] { 0, 1, 2, 3, 4 }.Should().BeEquivalentTo(algorithm.SortedVertices);
         }
 
-        [Test]
-        public void UndirectedTopologicalSort()
+        [TestCaseSource(nameof(UndirectedGraphs_All))]
+        public void UndirectedTopologicalSort(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
-            {
-                RunUndirectedTopologicalSortAndCheck(graph, true);
-            }
+            RunUndirectedTopologicalSortAndCheck(testGraph.Instance, true);
         }
 
-        [Test]
-        public void UndirectedTopologicalSort_DCT8()
+        [TestCaseSource(nameof(LoadUndirectedGraph_DCT8))]
+        public void UndirectedTopologicalSort_DCT8(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
         {
-            UndirectedGraph<string, Edge<string>> graph = TestGraphFactory.LoadUndirectedGraph(GetGraphFilePath("DCT8.graphml"));
-            RunUndirectedTopologicalSortAndCheck(graph, true);
+            RunUndirectedTopologicalSortAndCheck(testGraph.Instance, true);
         }
 
         [Test]
@@ -211,5 +206,14 @@ namespace FastGraph.Tests.Algorithms
             };
             Invoking(() => algorithm.Compute()).Should().NotThrow();
         }
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_All =
+            TestGraphFactory
+                .SampleUndirectedGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> LoadUndirectedGraph_DCT8 =
+            new[] { new TestCaseData(TestGraphSourceProvider.Instance.DCT8.DeferDeserializeAsUndirectedGraph().CreateInstanceHandle()) };
     }
 }

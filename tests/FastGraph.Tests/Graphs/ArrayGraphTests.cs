@@ -87,15 +87,40 @@ namespace FastGraph.Tests.Structures
 
         #endregion
 
-        [Test]
-        public void ConversionToArrayGraph()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void ConversionToArrayGraph_Adjacency(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                AssertSameProperties(graph);
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
-                AssertSameProperties(graph);
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_All())
-                AssertSameProperties(graph);
+            AssertSameProperties(testGraph.Instance);
         }
+
+        [TestCaseSource(nameof(BidirectionalGraphs_All))]
+        public void ConversionToArrayGraph_Bidirectional(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
+        {
+            AssertSameProperties(testGraph.Instance);
+        }
+
+        [TestCaseSource(nameof(UndirectedGraphs_All))]
+        public void ConversionToArrayGraph_Undirected(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
+        {
+            AssertSameProperties(testGraph.Instance);
+        }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_All =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_All =
+            TestGraphFactory
+                .SampleUndirectedGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

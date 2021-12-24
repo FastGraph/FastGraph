@@ -233,12 +233,17 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             algorithm.Graphs[3].Vertices.Should().BeEquivalentTo(new[] { 10 });
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
         [Category(TestCategories.LongRunning)]
-        public void StronglyConnectedComponents()
+        public void StronglyConnectedComponents(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunStronglyConnectedComponentsAndCheck(graph);
+            RunStronglyConnectedComponentsAndCheck(testGraph.Instance);
         }
+
+        private static IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

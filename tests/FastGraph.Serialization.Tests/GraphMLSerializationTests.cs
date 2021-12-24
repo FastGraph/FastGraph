@@ -267,77 +267,67 @@ namespace FastGraph.Serialization.Tests
 
         #region Deserialization
 
-        [NotNull]
-        private const string TestGraphFileName = "DCT8.graphml";
+        private static readonly NamedTestGraphSource TestGraph = TestGraphSourceProvider.Instance.DCT8;
 
-        [NotNull]
-        private const string MissingAttributeTestGraphFileName = "DCT8_with_missing_attribute.graphml";
+        private static readonly NamedTestGraphSource MissingAttributeTestGraph = TestGraphSourceProvider.Instance.DCT8_with_missing_attribute;
 
-        [NotNull]
-        private const string MissingSourceTestGraphFileName = "DCT8_with_missing_source_id.graphml";
+        private static readonly NamedTestGraphSource MissingSourceTestGraph = TestGraphSourceProvider.Instance.DCT8_with_missing_source_id;
 
-        [NotNull]
-        private const string MissingTargetTestGraphFileName = "DCT8_with_missing_target_id.graphml";
+        private static readonly NamedTestGraphSource MissingTargetTestGraph = TestGraphSourceProvider.Instance.DCT8_with_missing_target_id;
 
-        [NotNull]
-        private const string InvalidTagTestGraphFileName = "DCT8_invalid_tag.graphml";
+        private static readonly NamedTestGraphSource InvalidTagTestGraph = TestGraphSourceProvider.Instance.DCT8_invalid_tag;
 
-        [NotNull]
-        private const string MissingGraphMLTestGraphFileName = "DCT8_missing_graphml_tag.graphml";
+        private static readonly NamedTestGraphSource MissingGraphMLTestGraph = TestGraphSourceProvider.Instance.DCT8_missing_graphml_tag;
 
-        [NotNull]
-        private const string MissingGraphTestGraphFileName = "DCT8_missing_graph_tag.graphml";
+        private static readonly NamedTestGraphSource MissingGraphTestGraph = TestGraphSourceProvider.Instance.DCT8_missing_graph_tag;
 
-        [Test]
-        public void DeserializeFromGraphML()
+        [TestCaseSource(nameof(GetGraphMLFiles_All))]
+        public void DeserializeFromGraphML(NamedTestGraphSource namedTestGraphSource)
         {
-            foreach (string graphMLFilePath in TestGraphFactory.GetGraphMLFilePaths())
+            var graph = new AdjacencyGraph<string, Edge<string>>();
+            using (var reader = new StringReader(namedTestGraphSource.SourceContent))
             {
-                var graph = new AdjacencyGraph<string, Edge<string>>();
-                using (var reader = new StreamReader(graphMLFilePath))
+                graph.DeserializeFromGraphML(
+                    reader,
+                    id => id,
+                    (source, target, _) => new Edge<string>(source, target));
+            }
+
+            var vertices = new Dictionary<string, string>();
+            foreach (string vertex in graph.Vertices)
+                vertices.Add(vertex, vertex);
+
+            // Check all nodes are loaded
+#if SUPPORTS_XML_DTD_PROCESSING
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Ignore,
+                XmlResolver = new GraphMLXmlResolver(),
+                ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings
+            };
+
+            using (var reader = XmlReader.Create(new StringReader(namedTestGraphSource.SourceContent), settings))
+            {
+#else
+            using (var reader = new XmlTextReader(graphmlFileInfo.FullName))
+            {
+                reader.ProhibitDtd = false;
+                reader.XmlResolver = default;
+#endif
+                var document = new XPathDocument(reader);
+
+                foreach (XPathNavigator? node in document.CreateNavigator()!.Select("/graphml/graph/node"))
                 {
-                    graph.DeserializeFromGraphML(
-                        reader,
-                        id => id,
-                        (source, target, _) => new Edge<string>(source, target));
+                    string id = node!.GetAttribute("id", "");
+                    vertices.ContainsKey(id).Should().BeTrue();
                 }
 
-                var vertices = new Dictionary<string, string>();
-                foreach (string vertex in graph.Vertices)
-                    vertices.Add(vertex, vertex);
-
-                // Check all nodes are loaded
-#if SUPPORTS_XML_DTD_PROCESSING
-                var settings = new XmlReaderSettings
+                // Check all edges are loaded
+                foreach (XPathNavigator? node in document.CreateNavigator()!.Select("/graphml/graph/edge"))
                 {
-                    DtdProcessing = DtdProcessing.Ignore,
-                    XmlResolver = new GraphMLXmlResolver(),
-                    ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings
-                };
-
-                using (var reader = XmlReader.Create(graphMLFilePath, settings))
-                {
-#else
-                using (var reader = new XmlTextReader(graphMLFilePath))
-                {
-                    reader.ProhibitDtd = false;
-                    reader.XmlResolver = default;
-#endif
-                    var document = new XPathDocument(reader);
-
-                    foreach (XPathNavigator? node in document.CreateNavigator()!.Select("/graphml/graph/node"))
-                    {
-                        string id = node!.GetAttribute("id", "");
-                        vertices.ContainsKey(id).Should().BeTrue();
-                    }
-
-                    // Check all edges are loaded
-                    foreach (XPathNavigator? node in document.CreateNavigator()!.Select("/graphml/graph/edge"))
-                    {
-                        string source = node!.GetAttribute("source", "");
-                        string target = node.GetAttribute("target", "");
-                        graph.ContainsEdge(vertices[source], vertices[target]).Should().BeTrue();
-                    }
+                    string source = node!.GetAttribute("source", "");
+                    string target = node.GetAttribute("target", "");
+                    graph.ContainsEdge(vertices[source], vertices[target]).Should().BeTrue();
                 }
             }
         }
@@ -350,7 +340,7 @@ namespace FastGraph.Serialization.Tests
 #pragma warning disable CS8631
             // Filepath
             Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
-                GetGraphFilePath(TestGraphFileName),
+                TestGraph.SourcePath!,
                 id => id,
                 (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
@@ -366,12 +356,12 @@ namespace FastGraph.Serialization.Tests
                 (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentException>();
 
             Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                GetGraphFilePath(TestGraphFileName),
+                TestGraph.SourcePath!,
                 default,
                 (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
             Invoking(() => graph.DeserializeFromGraphML<string, Edge<string>, AdjacencyGraph<string, Edge<string>>>(
-                GetGraphFilePath(TestGraphFileName),
+                TestGraph.SourcePath!,
                 id => id,
                 default)).Should().Throw<ArgumentNullException>();
 
@@ -381,7 +371,7 @@ namespace FastGraph.Serialization.Tests
                 id => id,
                 (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-            using (var reader = new StreamReader(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = new StreamReader(TestGraph.SourcePath!))
             {
                 Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
                     reader,
@@ -405,7 +395,7 @@ namespace FastGraph.Serialization.Tests
                 id => id,
                 (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-            using (var reader = XmlReader.Create(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = XmlReader.Create(TestGraph.SourcePath!))
             {
                 Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeFromGraphML(
                     reader,
@@ -437,21 +427,22 @@ namespace FastGraph.Serialization.Tests
             AssertDeserializationFail<TestGraphNotSupportedType, TypeInitializationException>(new TestGraphNotSupportedType());
 
             var graph = new TestGraph();
-            AssertDeserializationFail<TestGraph, ArgumentException>(graph, MissingAttributeTestGraphFileName);
-            AssertDeserializationFail<TestGraph, ArgumentException>(graph, MissingSourceTestGraphFileName);
-            AssertDeserializationFail<TestGraph, ArgumentException>(graph, MissingTargetTestGraphFileName);
-            AssertDeserializationFail<TestGraph, InvalidOperationException>(graph, InvalidTagTestGraphFileName);
-            AssertDeserializationFail<TestGraph, InvalidOperationException>(graph, MissingGraphTestGraphFileName);
-            AssertDeserializationFail<TestGraph, InvalidOperationException>(graph, MissingGraphMLTestGraphFileName);
+            AssertDeserializationFail<TestGraph, ArgumentException>(graph, MissingAttributeTestGraph.SourcePath!);
+            AssertDeserializationFail<TestGraph, ArgumentException>(graph, MissingSourceTestGraph.SourcePath!);
+            AssertDeserializationFail<TestGraph, ArgumentException>(graph, MissingTargetTestGraph.SourcePath!);
+            AssertDeserializationFail<TestGraph, InvalidOperationException>(graph, InvalidTagTestGraph.SourcePath!);
+            AssertDeserializationFail<TestGraph, InvalidOperationException>(graph, MissingGraphTestGraph.SourcePath!);
+            AssertDeserializationFail<TestGraph, InvalidOperationException>(graph, MissingGraphMLTestGraph.SourcePath!);
 
             #region Local function
 
-            void AssertDeserializationFail<TGraph, TException>(TGraph g, string fileName = TestGraphFileName)
+            void AssertDeserializationFail<TGraph, TException>(TGraph g, string? fileName = null)
                 where TGraph : IMutableVertexAndEdgeListGraph<TestVertex, TestEdge>
                 where TException : Exception
             {
+                fileName ??= TestGraph.SourcePath!;
                 Invoking(() => g.DeserializeFromGraphML(
-                    GetGraphFilePath(fileName),
+                    fileName,
                     id => new TestVertex(id),
                     (source, target, id) => new TestEdge(source, target, id))).Should().Throw<TException>();
             }
@@ -773,7 +764,7 @@ namespace FastGraph.Serialization.Tests
                 id => id,
                 (source, target, _) => new Edge<string>(source, target))).Should().Throw<ArgumentNullException>();
 
-            using (var reader = new StreamReader(GetGraphFilePath(TestGraphFileName)))
+            using (var reader = new StreamReader(TestGraph.SourcePath!))
             {
                 Invoking(() => ((AdjacencyGraph<string, Edge<string>>?)default).DeserializeAndValidateFromGraphML(
                     reader,
@@ -981,5 +972,7 @@ namespace FastGraph.Serialization.Tests
         }
 
         #endregion
+
+        private static IEnumerable<TestCaseData> GetGraphMLFiles_All() => TestGraphSourceProvider.Instance.AllGeneralPurpose.Select(namedTestGraphSource => new TestCaseData(namedTestGraphSource));
     }
 }

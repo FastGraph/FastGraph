@@ -220,11 +220,16 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
         #endregion
 
-        [Test]
-        public void MultiSourceSinkGraphAugmentor()
+        [TestCaseSource(nameof(BidirectionalGraphs_All))]
+        public void MultiSourceSinkGraphAugmentor(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_All())
-                RunAugmentationAndCheck(graph);
+            RunAugmentationAndCheck(testGraph.Instance);
         }
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_All =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }
