@@ -231,15 +231,12 @@ namespace FastGraph.Tests.Algorithms.Search
 
         #endregion
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void EdgeDepthFirstSearch()
+        public void EdgeDepthFirstSearch(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-            {
-                RunEdgeDFSAndCheck(graph);
-                RunEdgeDFSAndCheck(graph, 12);
-            }
+            RunEdgeDFSAndCheck(testGraph.Instance);
+            RunEdgeDFSAndCheck(testGraph.Instance, 12);
         }
 
         [TestCase(false)]
@@ -280,5 +277,11 @@ namespace FastGraph.Tests.Algorithms.Search
                 new[] { edge67, edge68, edge86 }.Should().OnlyContain(edge => algorithm.EdgesColors[edge] == GraphColor.White);
             }
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

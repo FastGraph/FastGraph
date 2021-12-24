@@ -33,11 +33,11 @@
   <!-- Dependencies -->
   <!-- Shared Projects -->
   <Import Project="..\FastGraph.Tests.CommonInternals\FastGraph.Tests.CommonInternals.projitems" Label="Shared" />
-  <Import Project="..\FastGraph.Serialization.Tests.CommonInternals\FastGraph.Serialization.Tests.CommonInternals.projitems" Label="Shared" />
 
   <!-- Projects -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\FastGraph.Serialization\FastGraph.Serialization.csproj" />
+    <ProjectReference Include="..\..\src\FastGraph.TestSupport.Internal\FastGraph.TestSupport.Internal.csproj" />
   </ItemGroup>
 
   <!-- Externals -->

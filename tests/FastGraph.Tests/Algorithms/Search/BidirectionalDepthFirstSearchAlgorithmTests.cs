@@ -265,15 +265,12 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
+        [TestCaseSource(nameof(BidirectionalGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void DepthFirstSearch()
+        public void DepthFirstSearch(TestGraphInstance<BidirectionalGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
-            {
-                RunDFSAndCheck(graph);
-                RunDFSAndCheck(graph, 12);
-            }
+            RunDFSAndCheck(testGraph.Instance);
+            RunDFSAndCheck(testGraph.Instance, 12);
         }
 
         [TestCase(false)]
@@ -327,5 +324,11 @@ namespace FastGraph.Tests.Algorithms.Search
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> BidirectionalGraphs_SlowTests =
+            TestGraphFactory
+                .SampleBidirectionalGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

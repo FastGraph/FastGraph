@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 using NUnit.Framework;
 using FastGraph.Algorithms;
 using static FastGraph.Tests.Algorithms.AlgorithmTestHelpers;
-using static FastGraph.Tests.FastGraphUnitTestsHelpers;
 
 namespace FastGraph.Tests.Algorithms
 {
@@ -447,10 +446,11 @@ namespace FastGraph.Tests.Algorithms
 
         #region Trails
 
-        [Test]
-        public void NotEulerianTrailGraph()
+        [TestCaseSource(nameof(LoadGraph_G_42_34))]
+        public void NotEulerianTrailGraph(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("g.42.34.graphml"));
+            var graph = testGraph.Instance;
+
             // No trails in tests graphs there
             ComputeTrails(
                 graph,
@@ -606,10 +606,10 @@ namespace FastGraph.Tests.Algorithms
 
         #region Rooted trails
 
-        [Test]
-        public void RootedNotEulerianTrailGraph_Throws()
+        [TestCaseSource(nameof(LoadGraph_G_10_0))]
+        public void RootedNotEulerianTrailGraph_Throws(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            AdjacencyGraph<string, Edge<string>> graph = TestGraphFactory.LoadGraph(GetGraphFilePath("g.10.0.graphml"));
+            var graph = testGraph.Instance;
             Invoking(() =>
             {
                 ComputeTrails(
@@ -777,5 +777,11 @@ namespace FastGraph.Tests.Algorithms
         }
 
         #endregion
+
+        private static IEnumerable<TestCaseData> LoadGraph_G_42_34() =>
+            new[] { new TestCaseData(TestGraphSourceProvider.Instance.G_42_34.DeferDeserializeAsAdjacencyGraph().CreateInstanceHandle()) };
+
+        private static IEnumerable<TestCaseData> LoadGraph_G_10_0() =>
+            new[] { new TestCaseData(TestGraphSourceProvider.Instance.G_10_0.DeferDeserializeAsAdjacencyGraph().CreateInstanceHandle()) };
     }
 }

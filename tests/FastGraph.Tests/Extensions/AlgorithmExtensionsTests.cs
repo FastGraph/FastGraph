@@ -831,11 +831,10 @@ namespace FastGraph.Tests.Extensions
             graph.Roots().Should().BeEquivalentTo(expectedRoots);
         }
 
-        [Test]
-        public void AdjacencyGraphRoots()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void AdjacencyGraphRoots(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                CheckRoots(graph);
+            CheckRoots(testGraph.Instance);
 
             #region Local function
 
@@ -1782,5 +1781,11 @@ namespace FastGraph.Tests.Extensions
 #pragma warning restore CS8625
             // ReSharper restore AssignNullToNotNullAttribute
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t))
+                .Memoize();
     }
 }

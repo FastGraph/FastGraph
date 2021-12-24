@@ -203,11 +203,16 @@ namespace FastGraph.Tests.Algorithms.MaximumFlow
 
         #endregion
 
-        [Test]
-        public void AllVerticesAugmentor()
+        [TestCaseSource(nameof(AdjacencyGraphs_All))]
+        public void AllVerticesAugmentor(TestGraphInstance<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
-                RunAugmentationAndCheck(graph);
+            RunAugmentationAndCheck(testGraph.Instance);
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_All =
+            TestGraphFactory
+                .SampleAdjacencyGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -199,18 +199,22 @@ namespace FastGraph.Tests.Algorithms.ConnectedComponents
             });
         }
 
-        [Test]
+        [TestCaseSource(nameof(UndirectedGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void ConnectedComponents()
+        public void ConnectedComponents(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests(10))
+            var graph = testGraph.Instance;
+            while (graph.EdgeCount > 0)
             {
-                while (graph.EdgeCount > 0)
-                {
-                    RunConnectedComponentsAndCheck(graph);
-                    graph.RemoveEdge(graph.Edges.First());
-                }
+                RunConnectedComponentsAndCheck(graph);
+                graph.RemoveEdge(graph.Edges.First());
             }
         }
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_SlowTests =
+            TestGraphFactory
+                .SampleUndirectedGraphs(10)
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }

@@ -347,17 +347,13 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
             }
         }
 
-        [Test]
+        [TestCaseSource(nameof(AdjacencyGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void CyclePoppingRandomTree()
+        public void CyclePoppingRandomTree(TestGraphInstanceWithSelectedVertex<AdjacencyGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests(10))
-            {
-                foreach (string root in graph.Vertices)
-                {
-                    RunCyclePoppingRandomTreeAndCheck(graph, root);
-                }
-            }
+            var graph = testGraph.Instance;
+            var root = testGraph.SelectedVertex;
+            RunCyclePoppingRandomTreeAndCheck(graph, root);
         }
 
         [Test]
@@ -414,5 +410,11 @@ namespace FastGraph.Tests.Algorithms.RandomWalks
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> AdjacencyGraphs_SlowTests =
+            TestGraphFactory
+                .SampleAdjacencyGraphs(10)
+                .SelectMany(t => t.Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() }))
+                .Memoize();
     }
 }

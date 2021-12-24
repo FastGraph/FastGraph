@@ -263,15 +263,12 @@ namespace FastGraph.Tests.Algorithms.Search
             algorithm.GetVertexColor(2).Should().Be(GraphColor.Black);
         }
 
-        [Test]
+        [TestCaseSource(nameof(UndirectedGraphs_SlowTests))]
         [Category(TestCategories.LongRunning)]
-        public void UndirectedDepthFirstSearch()
+        public void UndirectedDepthFirstSearch(TestGraphInstance<UndirectedGraph<string, Edge<string>>, string> testGraph)
         {
-            foreach (UndirectedGraph<string, Edge<string>> graph in TestGraphFactory.GetUndirectedGraphs_SlowTests())
-            {
-                RunUndirectedDFSAndCheck(graph);
-                RunUndirectedDFSAndCheck(graph, 12);
-            }
+            RunUndirectedDFSAndCheck(testGraph.Instance);
+            RunUndirectedDFSAndCheck(testGraph.Instance, 12);
         }
 
         [TestCase(false)]
@@ -324,5 +321,11 @@ namespace FastGraph.Tests.Algorithms.Search
                 algorithm.Compute(scenario.Root!);
             return algorithm;
         }
+
+        private static readonly IEnumerable<TestCaseData> UndirectedGraphs_SlowTests =
+            TestGraphFactory
+                .SampleUndirectedGraphs()
+                .Select(t => new TestCaseData(t) { TestName = t.DescribeForTestCase() })
+                .Memoize();
     }
 }
